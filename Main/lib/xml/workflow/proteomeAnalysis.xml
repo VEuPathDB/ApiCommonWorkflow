@@ -20,59 +20,59 @@
   <constant name="proteinsFile">$$dataDir$$/AnnotatedProteins.fsa</constant>
 
     <step name="calcAASequenceAttributes"
-          stepClass="ApiCommonData::Load::WorkflowSteps::CalculateAASeqAttributes" stepLoadTypes="plugin">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateAASeqAttributes" stepLoadTypes="plugin">
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="table">DoTS.TranslatedAASequence</paramValue>
       <paramValue name="idSql">select taas.aa_sequence_id, taas.sequence from DoTS.TranslatedAASequence taas, DoTs.AAFeature af, DOTS.NAFeature nf where taas.aa_sequence_id=af.aa_sequence_id and af.na_feature_id=nf.na_feature_id and nf.name not in ('ORF') and taas.external_database_release_id = ?</paramValue>
     </step>
 
-    <step name="makeDataDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeDataDir">
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
     <step name="extractProteins"
-          stepClass="ApiCommonData::Load::WorkflowSteps::ExtractAnnotatedProteinsBySpecies">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAnnotatedProteinsBySpecies">
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="outputFile">$$proteinsFile$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="mirrorProteinsToCluster" stepClass="ApiCommonData::Load::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
+    <step name="mirrorProteinsToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="extractProteins"/>
     </step>
 
     <step name="runTmhmm"
-          stepClass="ApiCommonData::Load::WorkflowSteps::RunTmhmm">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTmhmm">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/tmhmm.out</paramValue>
       <depends name="extractProteins"/>
     </step>
 
     <step name="insertTmhmm"
-          stepClass="ApiCommonData::Load::WorkflowSteps::InsertTmhmm" stepLoadTypes="plugin">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTmhmm" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/tmhmm.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="runTmhmm"/>
     </step>
 
     <step name="runExportPred"
-          stepClass="ApiCommonData::Load::WorkflowSteps::RunExportPred" includeIf="$$runExportPred$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunExportPred" includeIf="$$runExportPred$$">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/exportPred.out</paramValue>
       <depends name="extractProteins"/>
     </step>
 
     <step name="insertExportPred"
-          stepClass="ApiCommonData::Load::WorkflowSteps::InsertExportPred" stepLoadTypes="plugin" includeIf="$$runExportPred$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExportPred" stepLoadTypes="plugin" includeIf="$$runExportPred$$">
       <paramValue name="inputFile">$$dataDir$$/exportPred.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="runExportPred"/>
     </step>
 
     <step name="runSignalP"
-          stepClass="ApiCommonData::Load::WorkflowSteps::RunSignalP">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunSignalP">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/signalP.out</paramValue>
       <paramValue name="options">-t euk -f short -m nn+hmm -q -trunc 70</paramValue>
@@ -80,7 +80,7 @@
     </step>
 
     <step name="insertSignalP"
-          stepClass="ApiCommonData::Load::WorkflowSteps::InsertSignalP" stepLoadTypes="plugin">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSignalP" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/signalP.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="runSignalP"/>
@@ -96,7 +96,7 @@
     </subgraph>
 
    <step name="runLowComplexityFilter"
-          stepClass="ApiCommonData::Load::WorkflowSteps::RunLowComplexityFilter"> 
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunLowComplexityFilter"> 
 
       <paramValue name="seqFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputFile">$$proteinsFile$$.seg</paramValue>
@@ -106,7 +106,7 @@
     </step>
 
     <step name="loadLowComplexityFile"
-          stepClass="ApiCommonData::Load::WorkflowSteps::InsertLowComplexitySequences" stepLoadTypes="plugin">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertLowComplexitySequences" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$proteinsFile$$.seg</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="seqType">protein</paramValue>
@@ -115,7 +115,7 @@
       <depends name="runLowComplexityFilter"/>
     </step>
 
-    <step name="findNrdbXrefs" stepClass="ApiCommonData::Load::WorkflowSteps::FindNrdbXrefs">
+    <step name="findNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindNrdbXrefs">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="nrdbFile">$$nrdbFile$$</paramValue>
       <paramValue name="proteinsFileRegex">^([\\w\\.]+)</paramValue>
@@ -124,7 +124,7 @@
        <depends name="extractProteins"/>
     </step>
 
-    <step name="loadNrdbXrefs" stepClass="ApiCommonData::Load::WorkflowSteps::LoadNrdbXrefs" stepLoadTypes="plugin">
+    <step name="loadNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadNrdbXrefs" stepLoadTypes="plugin">
       <paramValue name="xrefsFile">$$dataDir$$/nrdbXrefs.txt</paramValue>
       <paramValue name="dbAbbrevList">emb,gb,dbj,ref,sp,pdb</paramValue>
       <paramValue name="nrdbExtDbRlsSpec">$$nrdbExtDbRlsSpec$$</paramValue>

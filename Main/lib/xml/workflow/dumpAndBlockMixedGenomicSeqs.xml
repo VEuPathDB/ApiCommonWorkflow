@@ -9,11 +9,11 @@
 
     <constant name="dataDir">$$parentDataDir$$/mixedGenomicSeqs</constant>
 
-    <step name="makeDataDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeDataDir">
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
  
-    <step name="dumpMixedGenomicSeqs" stepClass="ApiCommonData::Load::WorkflowSteps::ExtractMixedGenomicSeqs">
+    <step name="dumpMixedGenomicSeqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractMixedGenomicSeqs">
       <paramValue name="outputFile">$$dataDir$$/mixedGenomic.fsa</paramValue>
       <paramValue name="genomeVirtualSeqsExtDbRlsSpec">$$genomeVirtualSeqsExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -21,7 +21,7 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="makeClusterTaskInputDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeRepeatMaskTaskInputDir" stepLoadTypes="cluster">
+    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskTaskInputDir" stepLoadTypes="cluster">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="seqsFile">$$dataDir$$/mixedGenomic.fsa</paramValue>
       <paramValue name="dangleMax">30</paramValue>
@@ -29,26 +29,26 @@
       <depends name="dumpMixedGenomicSeqs"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonData::Load::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeClusterTaskInputDir"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ApiCommonData::Load::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster">
+    <step name="runClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="numNodes">1</paramValue>
       <paramValue name="processorsPerNode">1</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
 
-    <step name="mirrorFromCluster" stepClass="ApiCommonData::Load::WorkflowSteps::MirrorFromComputeCluster" stepLoadTypes="cluster">
+    <step name="mirrorFromCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorFromComputeCluster" stepLoadTypes="cluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blocked.seq</paramValue>
       <depends name="runClusterTask"/>
     </step>
 
-    <step name="copyBlockedFileToMercatorDataDir" stepClass="ApiCommonData::Load::WorkflowSteps::CopyDataDirFile">
+    <step name="copyBlockedFileToMercatorDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
       <paramValue name="fromFile">$$dataDir$$/master/mainresult/blocked.seq</paramValue>
       <paramValue name="toFile">common/mercator/$$organismName$$BlockedMixedGenomicSeq.fsa</paramValue>
     <depends name="mirrorFromCluster"/>

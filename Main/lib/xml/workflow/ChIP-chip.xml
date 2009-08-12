@@ -9,18 +9,18 @@
 
     <constant name="dataDir">$$parentDataDir$$/$$chipNickName$$</constant>
 
-    <step name="makeDataDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeDataDir">
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="mapChIPSeqsToNaSequences" stepClass="ApiCommonData::Load::WorkflowSteps::MapSageTagsToNaSequences">
+    <step name="mapChIPSeqsToNaSequences" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MapSageTagsToNaSequences">
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="sageTagFile">$$tagFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/mapChIPSeqsToNaSequences.out</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="loadExpressionFeature" stepClass="ApiCommonData::Load::WorkflowSteps::LoadExpressionFeature" stepLoadTypes="plugin">
+    <step name="loadExpressionFeature" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadExpressionFeature" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/mapChIPSeqsToNaSequences.out</paramValue>
       <paramValue name="extDbRlsSpec">$$chipExtDbRlsSpec$$</paramValue>
       <paramValue name="featureType">ArrayElementFeature</paramValue>

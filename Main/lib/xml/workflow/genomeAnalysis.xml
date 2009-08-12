@@ -29,12 +29,12 @@
   <constant name="mapAssemblySeqsDataDir">$$dataDir$$/mapAssemblySeqs</constant>
   <constant name="assembliesDataDir">$$dataDir$$/makeAssemblies</constant>
 
-  <step name="makeDataDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeDataDir">
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
   <step name="extractGenomicSeqs"
-          stepClass="ApiCommonData::Load::WorkflowSteps::ExtractNaSeqs">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
       <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="table">ExternalNASequence</paramValue>
       <paramValue name="alternateDefline"></paramValue>
@@ -44,7 +44,7 @@
       <depends name="makeDataDir"/> 
     </step>
 
-   <step name="mirrorToCluster" stepClass="ApiCommonData::Load::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
+   <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="extractGenomicSeqs"/>
     </step>
@@ -80,7 +80,7 @@
 
 
     <step name="makeOrfFile"
-          stepClass="ApiCommonData::Load::WorkflowSteps::MakeOrfFile">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfFile">
       <paramValue name="seqFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="minPepLength">50</paramValue>
       <paramValue name="outputFile">$$dataDir$$/Orf50.gff</paramValue>
@@ -88,7 +88,7 @@
     </step>
 
     <step name="loadOrfFile"
-          stepClass="ApiCommonData::Load::WorkflowSteps::InsertOrfFile" stepLoadTypes="plugin">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrfFile" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/Orf50.gff</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="substepClass">ExternalNASequence</paramValue>
@@ -99,7 +99,7 @@
     </step>
 
     <step name="findTandemRepeats"
-          stepClass="ApiCommonData::Load::WorkflowSteps::FindTandemRepeats">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindTandemRepeats">
       <paramValue name="seqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="repeatFinderArgs">2 7 7 80 20 50 500</paramValue>
       <paramValue name="outputFile">$$dataDir$$/tandemRepeats.out</paramValue>
@@ -107,14 +107,14 @@
     </step>
 
     <step name="loadTandemRepeats"
-          stepClass="ApiCommonData::Load::WorkflowSteps::InsertTandemRepeats" stepLoadTypes="plugin">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTandemRepeats" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/tandemRepeats.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="findTandemRepeats"/>
     </step>
 
    <step name="runLowComplexityFilter"
-          stepClass="ApiCommonData::Load::WorkflowSteps::RunLowComplexityFilter">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunLowComplexityFilter">
 
       <paramValue name="seqFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="outputFile">$$genomicSeqsFile$$.dust</paramValue>
@@ -124,7 +124,7 @@
     </step>
 
     <step name="loadLowComplexityFile"
-          stepClass="ApiCommonData::Load::WorkflowSteps::InsertLowComplexitySequences" stepLoadTypes="plugin">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertLowComplexitySequences" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$genomicSeqsFile$$.dust</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="seqType">dna</paramValue>

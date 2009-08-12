@@ -9,24 +9,24 @@
     <param name="repeatMaskSpecies"/>
     <param name="makeAssemblySeqs"/>
 
-    <step name="makeDataDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeDataDir">
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeAssemblySeqs" stepClass="ApiCommonData::Load::WorkflowSteps::MakeAssemblySeqs" includeIf="$$makeAssemblySeqs$$">
+    <step name="makeAssemblySeqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAssemblySeqs" includeIf="$$makeAssemblySeqs$$">
       <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
       <paramValue name="useTaxonHierarchy">true</paramValue>
       <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
     </step>
 
-    <step name="makeAssemblySeqsFromPredictedTranscripts" stepClass="ApiCommonData::Load::WorkflowSteps::MakeAssemblySeqs" includeIf="$$usePredictedTranscripts$$">
+    <step name="makeAssemblySeqsFromPredictedTranscripts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAssemblySeqs" includeIf="$$usePredictedTranscripts$$">
       <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
       <paramValue name="useTaxonHierarchy">true</paramValue>
       <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
     </step>
 
    <step name="extractAssemblySeqs"
-          stepClass="ApiCommonData::Load::WorkflowSteps::ExtractAssemblySeqs">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAssemblySeqs">
       <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
       <paramValue name="useTaxonHierarchy">true</paramValue>
       <paramValue name="outputFile">$$dataDir$$/assemblySeqs.fsa</paramValue>
@@ -34,7 +34,7 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="makeClusterTaskInputDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeRepeatMaskTaskInputDir">
+    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskTaskInputDir">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="seqsFile">$$dataDir$$/assemblySeqs.fsa</paramValue>
       <paramValue name="dangleMax">30</paramValue>
@@ -42,19 +42,19 @@
       <depends name="extractAssemblySeqs"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonData::Load::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeClusterTaskInputDir"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ApiCommonData::Load::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster">
+    <step name="runClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="numNodes">20</paramValue>
       <paramValue name="processorsPerNode">2</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
 
-    <step name="mirrorFromCluster" stepClass="ApiCommonData::Load::WorkflowSteps::MirrorFromComputeCluster" stepLoadTypes="cluster">
+    <step name="mirrorFromCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorFromComputeCluster" stepLoadTypes="cluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blocked.err,blocked.seq</paramValue>

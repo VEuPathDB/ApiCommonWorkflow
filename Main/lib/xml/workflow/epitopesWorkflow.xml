@@ -9,28 +9,28 @@
     <constant name="dataDir">$$parentDataDir$$/iedb</constant>
     <constant name="proteinsFileSimpleDefline">$$dataDir$$/blastDb/proteinsSimpleDefline.fsa</constant>
 
-    <step name="makeDataDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeDataDir">
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeBlastDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeDataDir">
+    <step name="makeBlastDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$/blastDb</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="makeInputDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeDataDir">
+    <step name="makeInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$/input</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="copyAndCatIedbFiles" stepClass="ApiCommonData::Load::WorkflowSteps::CopyAndCatIedbFiles">
+    <step name="copyAndCatIedbFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndCatIedbFiles">
       <paramValue name="inputDirRelativeToDownloadsDir">IEDB_Epitopes_fixed</paramValue>
       <paramValue name="outputDir">$$dataDir$$/input</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
       <depends name="makeInputDir"/>
     </step>
 
-    <step name="formatNcbiBlastFile" stepClass="ApiCommonData::Load::WorkflowSteps::FormatNcbiBlastFile">
+    <step name="formatNcbiBlastFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatNcbiBlastFile">
       <paramValue name="inputFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputBlastDbDir">$$dataDir$$/blastDb</paramValue>
       <paramValue name="formatterArgs">T</paramValue>
@@ -38,7 +38,7 @@
     </step>
 
 
-    <step name="createEpitopeMapFile" stepClass="ApiCommonData::Load::WorkflowSteps::CreateEpitopeMapFile">
+    <step name="createEpitopeMapFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateEpitopeMapFile">
       <paramValue name="inputDir">$$dataDir$$/input</paramValue>
       <paramValue name="blastDbDir">$$dataDir$$/blastDb</paramValue>
       <paramValue name="queryDir">$$dataDir$$/fsa</paramValue>
@@ -49,7 +49,7 @@
       <depends name="copyAndCatIedbFiles"/>
     </step>
 
-    <step name="insertEpitopeMapping" stepClass="ApiCommonData::Load::WorkflowSteps::InsertEpitopeMapping" stepLoadTypes="plugin">
+    <step name="insertEpitopeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertEpitopeMapping" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/results/IEDBExport.out</paramValue>
       <paramValue name="iedbExtDbRlsSpec">$$iedbExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>

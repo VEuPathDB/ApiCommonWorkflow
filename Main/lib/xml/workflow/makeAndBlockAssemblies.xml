@@ -10,11 +10,11 @@
     <param name="repeatMaskSpecies"/>
     <param name="makeAssemblies"/>
 
-    <step name="makeDataDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeDataDir">
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="clusterTranscriptsByGenomeAlignment" stepClass="ApiCommonData::Load::WorkflowSteps::ClusterTranscriptsByGenomeAlignment" includeIf="$$makeAssemblies$$">
+    <step name="clusterTranscriptsByGenomeAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ClusterTranscriptsByGenomeAlignment" includeIf="$$makeAssemblies$$">
       <paramValue name="outputFile">$$dataDir$$/alignedClusters.out</paramValue>
       <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -23,7 +23,7 @@
     </step>
 
    <step name="putUnalignedTranscriptsIntoOneCluster"
-          stepClass="ApiCommonData::Load::WorkflowSteps::PutUnalignedTranscriptsIntoOneCluster" includeIf="$$makeAssemblies$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PutUnalignedTranscriptsIntoOneCluster" includeIf="$$makeAssemblies$$">
       <paramValue name="alignedClustersFile">$$dataDir$$/alignedClusters.out</paramValue>
       <paramValue name="allClustersOutputFile">$$dataDir$$/allClusters.out</paramValue>
       <paramValue name="repeatMaskErrFile">$$assemblySeqsDataDir$$/master/mainresult/blocked.err</paramValue>
@@ -35,7 +35,7 @@
 
 
    <step name="splitClusterFile"
-          stepClass="ApiCommonData::Load::WorkflowSteps::SplitClusterFile" includeIf="$$makeAssemblies$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SplitClusterFile" includeIf="$$makeAssemblies$$">
       <paramValue name="inputFile">$$dataDir$$/allClusters.out</paramValue>
       <paramValue name="outputSmallFile">$$dataDir$$/smallClusters.out</paramValue>
       <paramValue name="outputBigFile">$$dataDir$$/bigClusters.out</paramValue>
@@ -43,7 +43,7 @@
     </step>
 
    <step name="makeAndLoadAssembliesFromSmallClusters"
-          stepClass="ApiCommonData::Load::WorkflowSteps::MakeAndLoadAssemblies" stepLoadTypes="plugin" includeIf="$$makeAssemblies$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAndLoadAssemblies" stepLoadTypes="plugin" includeIf="$$makeAssemblies$$">
       <paramValue name="inputFile">$$dataDir$$/smallClusters.out</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="reassemble"></paramValue>
@@ -51,7 +51,7 @@
     </step>
 
    <step name="makeAndLoadAssembliesFromBigClusters"
-          stepClass="ApiCommonData::Load::WorkflowSteps::MakeAndLoadAssemblies" stepLoadTypes="plugin" includeIf="$$makeAssemblies$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAndLoadAssemblies" stepLoadTypes="plugin" includeIf="$$makeAssemblies$$">
       <paramValue name="inputFile">$$dataDir$$/bigClusters.out</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="reassemble"></paramValue>
@@ -59,14 +59,14 @@
     </step>
 
    <step name="extractAssemblies"
-          stepClass="ApiCommonData::Load::WorkflowSteps::ExtractAssemblies">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAssemblies">
       <paramValue name="outputFile">$$dataDir$$/assemblies.fsa</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <depends name="makeAndLoadAssembliesFromSmallClusters"/>
       <depends name="makeAndLoadAssembliesFromBigClusters"/>
     </step>
 
-    <step name="makeClusterTaskInputDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeRepeatMaskTaskInputDir">
+    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskTaskInputDir">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="seqsFile">$$dataDir$$/assemblies.fsa</paramValue>
       <paramValue name="dangleMax">30</paramValue>
@@ -76,19 +76,19 @@
       <depends name="extractAssemblies"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonData::Load::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeClusterTaskInputDir"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ApiCommonData::Load::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster">
+    <step name="runClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="numNodes">1</paramValue>
       <paramValue name="processorsPerNode">1</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
 
-    <step name="mirrorFromCluster" stepClass="ApiCommonData::Load::WorkflowSteps::MirrorFromComputeCluster" stepLoadTypes="cluster">
+    <step name="mirrorFromCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorFromComputeCluster" stepLoadTypes="cluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blocked.seq</paramValue>

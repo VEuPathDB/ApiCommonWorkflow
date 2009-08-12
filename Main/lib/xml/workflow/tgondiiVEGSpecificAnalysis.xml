@@ -18,12 +18,12 @@
   <constant name="BACEndsDir">$$dataDir$$/makeBACEnds</constant>
   <constant name="cosmidEndsDir">$$dataDir$$/makeBACEnds</constant>
 
-  <step name="makeDataDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeDataDir">
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
   <step name="extractGenbankIsolateSeqs"
-          stepClass="ApiCommonData::Load::WorkflowSteps::ExtractNaSeqs">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
       <paramValue name="extDbRlsSpec">$$genbankIsolateExtDbRlsSpec$$</paramValue>
       <paramValue name="table">ExternalNASequence</paramValue>
       <paramValue name="alternateDefline"></paramValue>
@@ -34,7 +34,7 @@
     </step>
 
   <step name="extractSibleyIsolateSeqs"
-          stepClass="ApiCommonData::Load::WorkflowSteps::ExtractNaSeqs">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
       <paramValue name="extDbRlsSpec">$$sibleyIsolateExtDbRlsSpec$$</paramValue>
       <paramValue name="table">ExternalNASequence</paramValue>
       <paramValue name="alternateDefline"></paramValue>
@@ -63,7 +63,7 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonData::Load::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="extractGenbankIsolateSeqs"/>
       <depends name="extractSibleyIsolateSeqs"/>

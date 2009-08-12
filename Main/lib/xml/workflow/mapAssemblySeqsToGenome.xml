@@ -9,12 +9,12 @@
     <param name="dataDir"/>
     <param name="genomicSeqsDir"/>
 
-    <step name="makeDataDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeDataDir">
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
     <step name="extractGenomicSeqsIntoSeparateFastaFiles"
-          stepClass="ApiCommonData::Load::WorkflowSteps::ExtractNaSeqs">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
       <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="table">ExternalNASequence</paramValue>
       <paramValue name="outputFile"></paramValue>
@@ -24,7 +24,7 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="makeTaskInputDir" stepClass="ApiCommonData::Load::WorkflowSteps::MakeGfClientTaskInputDir">
+    <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDir">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="queryFile">$$assemblySeqsDataDir$$/master/mainresult/blocked.seq</paramValue>
@@ -33,33 +33,33 @@
       <depends name="extractGenomicSeqsIntoSeparateFastaFiles"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonData::Load::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster" stepLoadTypes="cluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeTaskInputDir"/>
       <depends name="extractGenomicSeqsIntoSeparateFastaFiles"/>
     </step>
 
-    <step name="runNibOnCluster" stepClass="ApiCommonData::Load::WorkflowSteps::RunNibOnCluster" stepLoadTypes="cluster">
+    <step name="runNibOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNibOnCluster" stepLoadTypes="cluster">
       <paramValue name="inputFile">$$dataDir$$/input/targetList</paramValue>
       <paramValue name="outputDir">$$genomicSeqsDir$$</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ApiCommonData::Load::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster">
+    <step name="runClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="numNodes">1</paramValue>
       <paramValue name="processorsPerNode">1</paramValue>
       <depends name="runNibOnCluster"/>
     </step>
 
-    <step name="mirrorFromCluster" stepClass="ApiCommonData::Load::WorkflowSteps::MirrorFromComputeCluster" stepLoadTypes="cluster">
+    <step name="mirrorFromCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorFromComputeCluster" stepLoadTypes="cluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">out.psl</paramValue>
       <depends name="runClusterTask"/>
     </step>
 
-    <step name="insertBlatAlignment" stepClass="ApiCommonData::Load::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
+    <step name="insertBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
 
       <paramValue name="targetNcbiTaxId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="queryNcbiTaxId">$$parentNcbiTaxonId$$</paramValue>
@@ -75,7 +75,7 @@
       <depends name="mirrorFromCluster"/>
     </step>
 
-    <step name="setBestBlatAlignment" stepClass="ApiCommonData::Load::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
+    <step name="setBestBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
 
       <paramValue name="targetNcbiTaxId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="queryNcbiTaxId">$$parentNcbiTaxonId$$</paramValue>
