@@ -1,9 +1,9 @@
-package ApiCommonData::Load::WorkflowSteps::LoadSageTagMap;
+package ApiCommonWorkflow::Main::WorkflowSteps::LoadSageTagMap;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
 sub run {
@@ -19,7 +19,7 @@ sub run {
     $self->testInputFile('inputFile', "$localDataDir/$inputFile");
   }
 
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadExpressionFeature", $args);
+  $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::LoadExpressionFeature", $args);
 
 }
 

@@ -1,8 +1,8 @@
-package ApiCommonData::Load::WorkflowSteps::MakeApiSiteFilesDir;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 ## make a dir relative to the workflow's data dir
 

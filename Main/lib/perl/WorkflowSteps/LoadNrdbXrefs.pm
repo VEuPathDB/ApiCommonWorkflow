@@ -1,8 +1,8 @@
-package ApiCommonData::Load::WorkflowSteps::LoadNrdbXrefs;
+package ApiCommonWorkflow::Main::WorkflowSteps::LoadNrdbXrefs;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
   my ($self, $test, $undo) = @_;
@@ -18,7 +18,7 @@ sub run {
       $self->testInputFile('xrefsFile', "$localDataDir/$xrefsFile");
     }
 
-   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertNrdbXrefs", $args);
+   $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::InsertNrdbXrefs", $args);
 
 
 }

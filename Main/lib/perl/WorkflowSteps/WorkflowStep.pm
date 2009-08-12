@@ -1,4 +1,4 @@
-package ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+package ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 ########################################
 ## Super class for ApiDB workflow steps

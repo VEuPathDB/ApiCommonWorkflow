@@ -1,9 +1,9 @@
-package ApiCommonData::Load::WorkflowSteps::InsertTmhmm;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertTmhmm;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
 sub run {
@@ -24,7 +24,7 @@ sub run {
     $self->testInputFile('inputFile', "$localDataDir/$inputFile");
   }
 
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadTMDomains", $args);
+  $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::LoadTMDomains", $args);
 
 }
 

@@ -1,9 +1,9 @@
-package ApiCommonData::Load::WorkflowSteps::InsertAASeqMWMinMax;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertAASeqMWMinMax;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
 sub run {
@@ -16,7 +16,7 @@ sub run {
 
   my $args = "--extDbRlsName '$extDbName' --extDbRlsVer '$extDbRlsVer' --seqTable $table";
 
-  $self->runPlugin($test, "ApiCommonData::Load::Plugin::CalculateAASeqMolWtMinMax",$args);
+  $self->runPlugin($test, "ApiCommonWorkflow::Main::Plugin::CalculateAASeqMolWtMinMax",$args);
 
 }
 

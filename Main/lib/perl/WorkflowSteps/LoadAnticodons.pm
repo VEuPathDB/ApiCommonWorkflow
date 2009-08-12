@@ -1,9 +1,9 @@
-package ApiCommonData::Load::WorkflowSteps::LoadAnticodons;
+package ApiCommonWorkflow::Main::WorkflowSteps::LoadAnticodons;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
 sub run {
@@ -23,7 +23,7 @@ sub run {
     $self->testInputFile('inputFile', "$manualDeliveryDir/$inputFileRelativeToManualDeliveryDir");
   }
 
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertAntiCodon", $args);
+  $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::InsertAntiCodon", $args);
 
 }
 

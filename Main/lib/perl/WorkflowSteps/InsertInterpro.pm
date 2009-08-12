@@ -1,9 +1,9 @@
-package ApiCommonData::Load::WorkflowSteps::InsertInterpro;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertInterpro;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
 sub run {
@@ -32,7 +32,7 @@ EOF
     $self->testInputFile('inputDir', "$localDataDir/$inputDir");
   }
 
-    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertInterproscanResults", $args);
+    $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::InsertInterproscanResults", $args);
 
 }
 

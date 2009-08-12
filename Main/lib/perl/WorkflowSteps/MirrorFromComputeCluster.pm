@@ -1,9 +1,9 @@
-package ApiCommonData::Load::WorkflowSteps::MirrorFromComputeCluster;
+package ApiCommonWorkflow::Main::WorkflowSteps::MirrorFromComputeCluster;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 use File::Basename;
 
 sub run {

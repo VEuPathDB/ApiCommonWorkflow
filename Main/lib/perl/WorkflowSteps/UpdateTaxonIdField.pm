@@ -1,9 +1,9 @@
-package ApiCommonData::Load::WorkflowSteps::UpdateTaxonIdField;
+package ApiCommonWorkflow::Main::WorkflowSteps::UpdateTaxonIdField;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
 sub run {
@@ -26,7 +26,7 @@ sub run {
     $self->testInputFile('mappingFile', "$mappingFile");
   }
 
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::UpdateTaxonFieldFromFile", $args);
+  $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::UpdateTaxonFieldFromFile", $args);
 
 }
 

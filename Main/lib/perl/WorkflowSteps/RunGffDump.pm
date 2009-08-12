@@ -1,8 +1,8 @@
-package ApiCommonData::Load::WorkflowSteps::RunGffDump;
+package ApiCommonWorkflow::Main::WorkflowSteps::RunGffDump;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
 sub run {

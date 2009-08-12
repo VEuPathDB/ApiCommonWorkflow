@@ -1,9 +1,9 @@
-package ApiCommonData::Load::WorkflowSteps::CreateFullRecordCache;
+package ApiCommonWorkflow::Main::WorkflowSteps::CreateFullRecordCache;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
 sub run {

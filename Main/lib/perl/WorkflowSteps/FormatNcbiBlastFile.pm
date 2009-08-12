@@ -1,9 +1,9 @@
- package ApiCommonData::Load::WorkflowSteps::FormatNcbiBlastFile;
+ package ApiCommonWorkflow::Main::WorkflowSteps::FormatNcbiBlastFile;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 use File::Basename;
 
 sub run {

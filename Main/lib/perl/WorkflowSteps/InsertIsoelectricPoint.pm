@@ -1,9 +1,9 @@
-package ApiCommonData::Load::WorkflowSteps::InsertIsoelectricPoint;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertIsoelectricPoint;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
 sub run {
@@ -16,7 +16,7 @@ sub run {
 
   my $args = "--extDbRlsName '$extDbName' --extDbRlsVer '$extDbRlsVer' --seqTable $table";
 
-  $self->runPlugin($test,0, "ApiCommonData::Load::Plugin::CalculateAASequenceIsoelectricPoint",$args);
+  $self->runPlugin($test,0, "ApiCommonWorkflow::Main::Plugin::CalculateAASequenceIsoelectricPoint",$args);
 
 }
 

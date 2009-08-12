@@ -1,9 +1,9 @@
-package ApiCommonData::Load::WorkflowSteps::ClusterTranscriptsByGenomeAlignment;
+package ApiCommonWorkflow::Main::WorkflowSteps::ClusterTranscriptsByGenomeAlignment;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
   my ($self, $test, $undo) = @_;

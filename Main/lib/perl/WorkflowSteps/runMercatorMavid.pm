@@ -1,8 +1,8 @@
-package ApiCommonData::Load::WorkflowSteps::runMercatorMavid;
+package ApiCommonWorkflow::Main::WorkflowSteps::runMercatorMavid;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 TEMPLATE
 sub run {

@@ -1,8 +1,8 @@
-package ApiCommonData::Load::WorkflowSteps::InsertTRNAScan;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertTRNAScan;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
   my ($self, $test, $undo) = @_;
@@ -27,7 +27,7 @@ sub run {
       $self->testInputFile('inputFile', "$localDataDir/$inputFile");
     }
 
-   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadTRNAScan", $args);
+   $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::LoadTRNAScan", $args);
 
 
 }

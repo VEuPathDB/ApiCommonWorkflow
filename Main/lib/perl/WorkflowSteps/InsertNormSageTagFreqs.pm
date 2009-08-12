@@ -1,9 +1,9 @@
-package ApiCommonData::Load::WorkflowSteps::InsertNormSageTagFreqs;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertNormSageTagFreqs;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
 sub run {
@@ -47,7 +47,7 @@ sub run {
      
       close F;
       
-      $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertRadAnalysis", $args);
+      $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::InsertRadAnalysis", $args);
   }
 
 

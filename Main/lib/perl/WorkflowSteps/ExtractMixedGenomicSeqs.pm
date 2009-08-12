@@ -1,9 +1,9 @@
-package ApiCommonData::Load::WorkflowSteps::ExtractMixedGenomicSeqs;
+package ApiCommonWorkflow::Main::WorkflowSteps::ExtractMixedGenomicSeqs;
 
-@ISA = (ApiCommonData::Load::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use ApiCommonData::Load::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
 ## to do
