@@ -10,7 +10,10 @@ sub run {
 
 
     my $inputDirRelativeToDownloadsDir = $self->getParamValue('inputDirRelativeToDownloadsDir');
-    my $organismName = $self->getParamValue('organismName');
+
+    #Now we use one IEDB file for all species, test this for all organisms.
+    #my $organismName = $self->getParamValue('organismName');
+
     my $outputDir = $self->getParamValue('outputDir');
 
 
@@ -19,7 +22,7 @@ sub run {
 
     my $inputDir="$downloadDir/$inputDirRelativeToDownloadsDir";
     my $cmd = "cat ";
-    my @inputFileNames = $self->getInputFiles($test,$inputDir,$organismName);
+    my @inputFileNames = $self->getInputFiles($test,$inputDir);
     my $size=scalar @inputFileNames;
 
     if (scalar @inputFileNames==0){
