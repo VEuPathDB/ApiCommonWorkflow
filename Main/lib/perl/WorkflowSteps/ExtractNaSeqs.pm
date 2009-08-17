@@ -26,7 +26,7 @@ sub run {
 
   }
 
-
+  $dbRlsIds =~ s/(,)$//g;
 
   my $deflineSelect = $alternateDefline?
     $alternateDefline :

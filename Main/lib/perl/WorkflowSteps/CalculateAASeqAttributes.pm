@@ -20,7 +20,7 @@ sub run {
 
   $args .= " --idSql \"$idSql\"" if $idSql;
 
-  $self->runPlugin($test,$undo, "ApiCommonWorkflow::Main::Plugin::CalculateAASeqAttributes",$args);
+  $self->runPlugin($test,$undo, "ApiCommonData::Load::Plugin::CalculateAASeqAttributes",$args);
 
 }
 

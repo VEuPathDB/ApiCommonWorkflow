@@ -16,7 +16,7 @@ sub run {
 
   my $args = "--extDbRlsName '$extDbName' --extDbRlsVer '$extDbRlsVer' --seqTable $table";
 
-  $self->runPlugin($test, "ApiCommonWorkflow::Main::Plugin::CalculateAASeqMolWtMinMax",$args);
+  $self->runPlugin($test, "ApiCommonData::Load::Plugin::CalculateAASeqMolWtMinMax",$args);
 
 }
 

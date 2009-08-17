@@ -16,7 +16,6 @@ sub run {
   $algName =~ s/\s//g;
   $algName =~ s/\///g;
 
-  $algResult =~ s/\s/_/g;
 
   my $args = "--AlgorithmName $algName --AlgorithmDescription $algDesc --AlgImpVersion $algVersion  --AlgInvocStart '2000-01-01' --AlgInvocEnd '2000-01-01' --AlgInvocResult $algResult";
 

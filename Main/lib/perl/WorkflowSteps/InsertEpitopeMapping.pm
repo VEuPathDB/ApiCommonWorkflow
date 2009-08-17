@@ -20,7 +20,7 @@ sub run {
       $self->testInputFile('inputFile', "$localDataDir/$inputFile");
     }
 
-    $self->runPlugin ($test,$undo, "ApiCommonWorkflow::Main::Plugin::InsertEpitopeFeature","$args");
+    $self->runPlugin ($test,$undo, "ApiCommonData::Load::Plugin::InsertEpitopeFeature","$args");
 
 
 }

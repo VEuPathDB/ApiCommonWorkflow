@@ -32,7 +32,7 @@ EOF
     $self->testInputFile('inputDir', "$localDataDir/$inputDir");
   }
 
-    $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::InsertInterproscanResults", $args);
+    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertInterproscanResults", $args);
 
 }
 

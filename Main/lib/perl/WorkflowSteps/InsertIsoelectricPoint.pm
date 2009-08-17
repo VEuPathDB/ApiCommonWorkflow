@@ -16,7 +16,7 @@ sub run {
 
   my $args = "--extDbRlsName '$extDbName' --extDbRlsVer '$extDbRlsVer' --seqTable $table";
 
-  $self->runPlugin($test,0, "ApiCommonWorkflow::Main::Plugin::CalculateAASequenceIsoelectricPoint",$args);
+  $self->runPlugin($test,0, "ApiCommonData::Load::Plugin::CalculateAASequenceIsoelectricPoint",$args);
 
 }
 

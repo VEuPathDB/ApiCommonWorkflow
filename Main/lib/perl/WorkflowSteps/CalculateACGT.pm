@@ -13,7 +13,7 @@ sub run {
 
   my $args = "--sqlVerbose $nullsOnly";
 
-  $self->runPlugin($test, $undo,  "ApiCommonWorkflow::Main::Plugin::CalculateACGTContent", $args);
+  $self->runPlugin($test, $undo,  "ApiCommonData::Load::Plugin::CalculateACGTContent", $args);
 
 }
 

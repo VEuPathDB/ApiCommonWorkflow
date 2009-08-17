@@ -23,7 +23,7 @@ sub run {
     $self->testInputFile('inputFile', "$manualDeliveryDir/$inputFileRelativeToManualDeliveryDir");
   }
 
-  $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::InsertAntiCodon", $args);
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertAntiCodon", $args);
 
 }
 

@@ -26,7 +26,7 @@ sub run {
     $self->testInputFile('mappingFile', "$mappingFile");
   }
 
-  $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::UpdateTaxonFieldFromFile", $args);
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::UpdateTaxonFieldFromFile", $args);
 
 }
 

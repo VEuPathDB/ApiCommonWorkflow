@@ -22,7 +22,7 @@ sub run {
 
     my $inputDir="$downloadDir/$inputDirRelativeToDownloadsDir";
     my $cmd = "cat ";
-    my @inputFileNames = $self->getInputFiles($test,$inputDir);
+    my @inputFileNames = $self->getInputFiles($test,$inputDir,'','txt');
     my $size=scalar @inputFileNames;
 
     if (scalar @inputFileNames==0){

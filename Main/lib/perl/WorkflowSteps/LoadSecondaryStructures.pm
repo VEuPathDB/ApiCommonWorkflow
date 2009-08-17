@@ -18,6 +18,9 @@ sub run {
     my $algImpVer = "2.5";
     my $algInvStart = "2000-01-01";
     my $algInvEnd = "2000-01-01";
+    $algName =~ s/\s//g;
+    $algName =~ s/\///g;
+
     my $args = "--predAlgName $algName  --predAlgImpVersion $algImpVer --predAlgInvStart $algInvStart --predAlgInvEnd $algInvEnd --directory $localDataDir/$inputDir --setPercentages";
 
     if ($test) {
@@ -38,7 +41,7 @@ sub getParamsDeclaration {
 
 sub getConfigDeclaration {
     return (
-            # [name, default, description]
+            # [name, default, descriptio]n
            );
 }
 

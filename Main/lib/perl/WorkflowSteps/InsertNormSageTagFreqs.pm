@@ -47,7 +47,7 @@ sub run {
      
       close F;
       
-      $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::InsertRadAnalysis", $args);
+      $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertRadAnalysis", $args);
   }
 
 

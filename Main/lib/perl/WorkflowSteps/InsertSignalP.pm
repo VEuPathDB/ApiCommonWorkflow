@@ -24,7 +24,7 @@ sub run {
     $self->testInputFile('inputFile', "$localDataDir/$inputFile");
   }
 
-  $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::LoadSignalP", $args);
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadSignalP", $args);
 
 }
 

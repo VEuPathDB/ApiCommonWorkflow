@@ -24,7 +24,7 @@ sub run {
     $self->testInputFile('idsFile', "$localDataDir/$idsFile");
   }
 
-  $self->runPlugin($test,$undo, "ApiCommonWorkflow::Main::Plugin::LoadFastaSequences",$args);
+  $self->runPlugin($test,$undo, "GUS::Supported::Plugin::LoadFastaSequences",$args);
 
 }
 

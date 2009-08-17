@@ -34,7 +34,7 @@ sub run {
 	  $self->runCmd(0,"mkdir -p $localDataDir/$outputDir/$normFileDir");
 	  $self->runCmd(0,"echo test > $localDataDir/$outputDir/$normFileDir/test.out");
       }else{
-	  $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::CreateSageTagNormalizationFiles", $args);
+	  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CreateSageTagNormalizationFiles", $args);
       }
   }
 }

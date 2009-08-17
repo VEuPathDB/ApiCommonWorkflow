@@ -18,7 +18,7 @@ sub run {
       $self->testInputFile('xrefsFile', "$localDataDir/$xrefsFile");
     }
 
-   $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::InsertNrdbXrefs", $args);
+   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertNrdbXrefs", $args);
 
 
 }

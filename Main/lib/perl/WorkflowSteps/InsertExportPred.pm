@@ -20,7 +20,7 @@ sub run {
     $self->testInputFile('inputFile', "$localDataDir/$inputFile");
   }
 
-  $self->runPlugin($test, $undo, "ApiCommonWorkflow::Main::Plugin::InsertExportPredFeature", $args);
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertExportPredFeature", $args);
 
 }
 
