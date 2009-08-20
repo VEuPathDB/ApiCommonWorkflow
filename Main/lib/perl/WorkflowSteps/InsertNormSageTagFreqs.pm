@@ -42,7 +42,7 @@ sub run {
 
 	  $cfgFile =~ s/\.dat/\.cfg/;
     
-	  print F "$cfgFile\t$dataFile\n";
+	  print F "$localDataDir/$inputDir/$cfgFile\t$localDataDir/$inputDir/$dataFile\n";
       }
      
       close F;
