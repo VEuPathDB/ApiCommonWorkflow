@@ -17,7 +17,7 @@ sub run {
   $algName =~ s/\///g;
 
 
-  my $args = "--AlgorithmName $algName --AlgorithmDescription $algDesc --AlgImpVersion $algVersion  --AlgInvocStart '2000-01-01' --AlgInvocEnd '2000-01-01' --AlgInvocResult $algResult";
+  my $args = "--AlgorithmName $algName --AlgorithmDescription $algDesc --AlgImpVersion $algVersion  --AlgInvocStart '2000-01-01' --AlgInvocEnd '2000-01-01' --AlgInvocResult '$algResult'";
 
   $self->runPlugin($test, $undo,
 		   "GUS::Community::Plugin::InsertMinimalAlgorithmInvocation",
