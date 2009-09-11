@@ -14,10 +14,25 @@ sub run {
   my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
   my $attributesTable = $self->getParamValue('attributesTable');
 
-  my $sql = "delete from $cacheTable where source_id in (select distinct source_id from $attributesTable where organism='$organismFullName' and is_deprecated=$deprecated)";
+  my $sql = "delete from $cacheTable where source_id in (select distinct source_id from $attributesTable";
 
-  $sql = "delete from $cacheTable where source_id in (select distinct source_id from $attributesTable where is_deprecated=$deprecated)" if ($organismFullName eq '');
+  my ($organismSql, $deprecatedSql) ;
+      
+  $organismSql= "organism='$organismFullName'" unless ($organismFullName eq '');
 
+  $deprecatedSql = "is_deprecated=$deprecated" if (lc($cacheTable) eq 'apidb.genedetail');
+
+  if ($organismSql && $deprecatedSql){
+
+      $sql .= " where $organismSql and $deprecatedSql";
+  }elsif ($organismSql){
+
+      $sql .= " where $organismSql";
+  }elsif($deprecatedSql){
+      $sql .= " where $deprecatedSql";
+  }
+
+  $sql .=")";
 
   my $cmd = "executeIdSQL.pl --idSQL \"$sql\"";
 
