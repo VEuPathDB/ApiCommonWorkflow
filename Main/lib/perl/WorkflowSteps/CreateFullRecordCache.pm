@@ -18,9 +18,24 @@ sub run {
 
   my $sqlFile="all_PKs.sql";
 
-  my $sqlFileString="SELECT DISTINCT project_id, source_id FROM $attributesTable where organism ='$organismFullName' and is_deprecated=$deprecated";
+  my $sqlFileString="SELECT DISTINCT project_id, source_id FROM $attributesTable";
 
-  $sqlFileString="SELECT DISTINCT project_id, source_id FROM $attributesTable where is_deprecated=$deprecated" if ($organismFullName eq '');
+  my ($organismSql, $deprecatedSql) ;
+      
+  $organismSql= "organism='$organismFullName'" unless ($organismFullName eq '');
+
+  $deprecatedSql = "is_deprecated=$deprecated" if (lc($cacheTable) eq 'apidb.genedetail');
+
+  if ($organismSql && $deprecatedSql){
+
+      $sqlFileString .= " where $organismSql and $deprecatedSql";
+  }elsif ($organismSql){
+
+      $sqlFileString .= " where $organismSql";
+  }elsif($deprecatedSql){
+      $sqlFileString .= " where $deprecatedSql";
+  }
+
   open(F,">$sqlFile");
   print F $sqlFileString;
   close F;

@@ -29,7 +29,7 @@ sub run {
         ||' | organism='|| 
         replace(tn.name, ' ', '_')
         ||' | description='||
-        decode (enas.description,null,'$extDbNameList',enas.description)
+        decode (enas.description,null,$extDbNameList,enas.description)
         ||' | length='||
         enas.length
         as defline,
