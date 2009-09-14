@@ -16,6 +16,7 @@
     <param name="deprecated"/>
     <param name="makeESTDownloadFile"/>
     <param name="makeProteomeDownloadFile"/>
+    <param name="makeGenomicDownloadFile"/>
 
 
     <step name="makeDownloadSiteDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
@@ -103,7 +104,7 @@
     <depends name="makeAnnotatedProteinsDownloadFile"/>
     </step>
 
-    <step name="makeMixedGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMixedGenomicDownloadFile">
+    <step name="makeMixedGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMixedGenomicDownloadFile" includeIf="$$makeGenomicDownloadFile$$">
       <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismName$$/$$organismName$$Genomic_$$projectName$$-$$projectVersion$$.fasta</paramValue>
       <paramValue name="organismSource">$$genomeSource$$</paramValue>
       <paramValue name="genomeExtDbSpecList">$$genomeExtDbRlsSpec$$,$$genomeVirtualSeqsExtDbRlsSpec$$</paramValue>
@@ -119,7 +120,7 @@
     </step>
 
 
-    <step name="makeOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfDownloadFile">
+    <step name="makeOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfDownloadFile" includeIf="$$makeGenomicDownloadFile$$">
       <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismName$$/$$organismName$$ORFs_$$projectName$$-$$projectVersion$$.fasta</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeVirtualSeqsExtDbRlsSpec">$$genomeVirtualSeqsExtDbRlsSpec$$</paramValue>
@@ -135,7 +136,7 @@
     <depends name="makeOrfDownloadFile"/>
     </step>
 
-    <step name="makeOrfNADownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfNADownloadFile">
+    <step name="makeOrfNADownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfNADownloadFile" includeIf="$$makeGenomicDownloadFile$$">
       <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismName$$/$$organismName$$ORFNAs_$$projectName$$-$$projectVersion$$.fasta</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeVirtualSeqsExtDbRlsSpec">$$genomeVirtualSeqsExtDbRlsSpec$$</paramValue>
@@ -167,7 +168,7 @@
     <paramValue name="deprecated">$$deprecated$$</paramValue>
   </subgraph>
 
-   <subgraph name="createFullRecordCacheAndFileForSequence" xmlFile="createFullRecordCacheAndFile.xml">
+   <subgraph name="createFullRecordCacheAndFileForSequence" xmlFile="createFullRecordCacheAndFile.xml" includeIf="$$makeGenomicDownloadFile$$">
     <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$/$$organismName$$</paramValue>
     <paramValue name="organismName">$$organismName$$</paramValue>
     <paramValue name="organismFullName">$$organismFullName$$</paramValue>
