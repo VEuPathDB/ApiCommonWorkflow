@@ -7,13 +7,13 @@
   <param name="sibleySnpExtDbRlsSpec"/>
   <param name="nucmerSnpExtDbRlsSpec"/>
   <param name="sageTagExtDbRlsSpec"/>
-  <param name="einsteinChipTagFile"/>
+  <param name="einsteinChipProbeFile"/>
   <param name="einsteinChipExtDbRlsSpec"/>
-  <param name="einsteinChipPeaksTagFile"/>
+  <param name="einsteinChipPeaksProbeFile"/>
   <param name="einsteinChipPeaksExtDbRlsSpec"/>
-  <param name="hakimiChipTagFile"/>
+  <param name="hakimiChipProbeFile"/>
   <param name="hakimiChipExtDbRlsSpec"/>
-  <param name="hakimiChipPeaksTagFile"/>
+  <param name="hakimiChipPeaksProbeFile"/>
   <param name="hakimiChipPeaksExtDbRlsSpec"/>
   <param name="einsteinChipRadAnalysisWorkingDir"/>
   <param name="hakimiChipRadAnalysisWorkingDir"/>
@@ -196,8 +196,10 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="chipNickName">einsteinChIP-chip</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="tagFile">$$einsteinChipTagFile$$</paramValue>
+    <paramValue name="probeFile">$$einsteinChipProbeFile$$</paramValue>
     <paramValue name="chipExtDbRlsSpec">$$einsteinChipExtDbRlsSpec$$</paramValue>
+    <paramValue name="inputDir">$$einsteinChipRadAnalysisWorkingDir$$</paramValue>
+    <paramValue name="mapProbesToNaSequences">true</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
@@ -206,8 +208,10 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="chipNickName">einsteinChIP-chipdPeaks</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="tagFile">$$einsteinChipPeaksTagFile$$</paramValue>
+    <paramValue name="probeFile">$$einsteinChipPeaksProbeFile$$</paramValue>
     <paramValue name="chipExtDbRlsSpec">$$einsteinChipPeaksExtDbRlsSpec$$</paramValue>
+    <paramValue name="inputDir">$$einsteinChipRadAnalysisWorkingDir$$</paramValue>
+    <paramValue name="mapProbesToNaSequences">true</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
@@ -216,8 +220,10 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="chipNickName">hakimiChIP-chip</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="tagFile">$$hakimiChipTagFile$$</paramValue>
+    <paramValue name="probeFile">$$hakimiChipProbeFile$$</paramValue>
     <paramValue name="chipExtDbRlsSpec">$$hakimiChipExtDbRlsSpec$$</paramValue>
+    <paramValue name="inputDir">$$hakimiChipRadAnalysisWorkingDir$$</paramValue>
+    <paramValue name="mapProbesToNaSequences">true</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
@@ -225,26 +231,24 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="chipNickName">hakimiChIP-chipPeaks</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="tagFile">$$hakimiChipPeaksTagFile$$</paramValue>
+    <paramValue name="probeFile">$$hakimiChipPeaksProbeFile$$</paramValue>
     <paramValue name="chipExtDbRlsSpec">$$hakimiChipPeaksExtDbRlsSpec$$</paramValue>
+    <paramValue name="inputDir">$$hakimiChipRadAnalysisWorkingDir$$</paramValue>
+    <paramValue name="mapProbesToNaSequences">true</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
-  <step name="einsteinChipInsertSimpleRadAnalysisFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig">
-     <paramValue name="analysisWorkingDir">$$einsteinChipRadAnalysisWorkingDir$$</paramValue>
-    <depends name="einsteinChIP"/>
-    <depends name="einsteinChIPPeaks"/>
-  </step>
+  <subgraph name="einsteinCentromereChIP" xmlFile="ChIP-chip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="chipNickName">einsteinCentromereChIP-chip</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="probeFile"></paramValue>
+    <paramValue name="chipExtDbRlsSpec"></paramValue>
+    <paramValue name="inputDir">$$einsteinCentromereRadAnalysisWorkingDir$$</paramValue>
+    <paramValue name="mapProbesToNaSequences">false</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
 
-  <step name="hakimiChIPInsertSimpleRadAnalysisFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig">
-     <paramValue name="analysisWorkingDir">$$hakimiChipRadAnalysisWorkingDir$$</paramValue>
-    <depends name="hakimiChIP"/>
-    <depends name="hakimiChIPPeaks"/>
-  </step>
-
-  <step name="einsteinCentromereInsertSimpleRadAnalysisFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig">
-     <paramValue name="analysisWorkingDir">$$einsteinCentromereRadAnalysisWorkingDir$$</paramValue>
-  </step>
 </workflowGraph>
 
 

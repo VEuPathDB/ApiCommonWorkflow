@@ -3,9 +3,10 @@
     <param name="parentDataDir"/>
     <param name="chipNickName"/>
     <param name="genomicSeqsFile"/>
-    <param name="tagFile"/>
-    <param name="tagToSeqOutputFile"/>
+    <param name="probeFile"/>
     <param name="chipExtDbRlsSpec"/>
+    <param name="inputDir"/>
+    <param name="mapProbesToNaSequences"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$chipNickName$$</constant>
 
@@ -13,18 +14,26 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="mapChIPSeqsToNaSequences" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MapSageTagsToNaSequences">
+    <step name="mapProbesToNaSequences" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MapSageTagsToNaSequences" includeIf="$$mapProbesToNaSequences$$">
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="sageTagFile">$$tagFile$$</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/mapChIPSeqsToNaSequences.out</paramValue>
+      <paramValue name="sageTagFile">$$probeFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/mapProbesToNaSequences.out</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="loadExpressionFeature" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadExpressionFeature" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$dataDir$$/mapChIPSeqsToNaSequences.out</paramValue>
+    <step name="loadProbesToNaSequencesMap" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadExpressionFeature" stepLoadTypes="plugin" includeIf="$$mapProbesToNaSequences$$">
+      <paramValue name="inputFile">$$dataDir$$/mapProbesToNaSequences.out</paramValue>
       <paramValue name="extDbRlsSpec">$$chipExtDbRlsSpec$$</paramValue>
       <paramValue name="featureType">ArrayElementFeature</paramValue>
-      <depends name="mapChIPSeqsToNaSequences"/>
+      <depends name="mapProbesToNaSequences"/>
+    </step>
+
+    <step name="insertSimpleRadAnalysisFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin">
+      <paramValue name="analysisWorkingDir">$$inputDir$$</paramValue>
+      <paramValue name="analysisResultView">DataTransformationResult</paramValue>
+      <paramValue name="naFeatureView">ArrayElementFeature</paramValue>
+      <paramValue name="useSqlLdr">true</paramValue>
+      <depends name="loadProbesToNaSequencesMap"/>
     </step>
 
 </workflowGraph>
