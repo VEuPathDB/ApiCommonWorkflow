@@ -12,8 +12,18 @@ sub run {
   my $analysisWorkingDir = $self->getParamValue('analysisWorkingDir');
 
   my $configFile = "$analysisWorkingDir/config.txt";
+
+  my $analysisResultView =  $self->getParamValue('analysisResultView');
+
+  my $naFeatureView =  $self->getParamValue('naFeatureView');
+
+  my $useSqlLdr =  $self->getParamValue('useSqlLdr');
+
+
       
-  my $args = "--inputDir $analysisWorkingDir --configFile $configFile --analysisResultView DataTransformationResult  --naFeatureView ArrayElementFeature";
+  my $args = "--inputDir $analysisWorkingDir --configFile $configFile --analysisResultView $analysisResultView  --naFeatureView $naFeatureView";
+
+  $args.=" --useSqlLdr" if($sqlLdr); 
 
   if ($test) {
     $self->testInputFile('analysisWorkingDir', "$analysisWorkingDir");
@@ -26,6 +36,9 @@ sub run {
 sub getParamDeclaration {
   return (
 	  'analysisWorkingDir',
+	  'analysisResultView',
+	  'naFeatureView',
+	  'useSqlLdr',
 	 );
 }
 
