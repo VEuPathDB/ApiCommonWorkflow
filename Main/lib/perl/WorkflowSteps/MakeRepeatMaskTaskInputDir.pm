@@ -25,26 +25,25 @@ sub run {
   }else {
       if ($test) {
 	  $self->testInputFile('seqsFile', "$localDataDir/$seqsFile");
-      }else{
-	  $self->runCmd(0,"mkdir -p $localDataDir/$taskInputDir");
+      }
+      $self->runCmd(0,"mkdir -p $localDataDir/$taskInputDir");
 
-	  # make controller.prop file
-	  $self->makeClusterControllerPropFile($taskInputDir, 2, $taskSize,
-				       "DJob::DistribJobTasks::RepeatMaskerTask");
+      # make controller.prop file
+      $self->makeClusterControllerPropFile($taskInputDir, 2, $taskSize,
+      			       "DJob::DistribJobTasks::RepeatMaskerTask");
+      
+      # make task.prop file
+      my $taskPropFile = "$localDataDir/$taskInputDir/task.prop";
+      open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
 
-	  # make task.prop file
-	  my $taskPropFile = "$localDataDir/$taskInputDir/task.prop";
-	  open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
-
-	  print F 
+      print F 
 "rmPath=$rmPath
 inputFilePath=$computeClusterDataDir/$seqsFile
 trimDangling=y
 rmOptions=$options
 dangleMax=$dangleMax
 ";
-	  close(F);
-      }
+      close(F);
   }
 
 }

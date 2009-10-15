@@ -3,21 +3,30 @@
     <param name="parentDataDir"/>
     <param name="chipNickName"/>
     <param name="genomicSeqsFile"/>
-    <param name="probeFile"/>
+    <param name="probeFileRelativeToManualDeliveryDir"/>
     <param name="chipExtDbRlsSpec"/>
     <param name="inputDir"/>
     <param name="mapProbesToNaSequences"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$chipNickName$$</constant>
+    <constant name="probeFile">$$parentDataDir$$/$$chipNickName$$/probes.fas</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
+    <step name="copyProbeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyManualDeliveryFile" includeIf="$$mapProbesToNaSequences$$">
+      <paramValue name="fromFile">$$probeFileRelativeToManualDeliveryDir$$</paramValue>
+      <paramValue name="toFile">$$probeFile$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+
     <step name="mapProbesToNaSequences" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MapSageTagsToNaSequences" includeIf="$$mapProbesToNaSequences$$">
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="sageTagFile">$$probeFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/mapProbesToNaSequences.out</paramValue>
+      <depends name="copyProbeFile"/>
       <depends name="makeDataDir"/>
     </step>
 
