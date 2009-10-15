@@ -23,7 +23,7 @@ sub run {
       
   my $args = "--inputDir $analysisWorkingDir --configFile $configFile --analysisResultView $analysisResultView  --naFeatureView $naFeatureView";
 
-  $args.=" --useSqlLdr" if($sqlLdr); 
+  $args.=" --useSqlLdr" if($useSqlLdr); 
 
   if ($test) {
     $self->testInputFile('analysisWorkingDir', "$analysisWorkingDir");
