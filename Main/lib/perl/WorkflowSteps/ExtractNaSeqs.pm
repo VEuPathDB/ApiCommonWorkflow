@@ -30,7 +30,7 @@ sub run {
 
   my $deflineSelect = $alternateDefline?
     $alternateDefline :
-      "regexp_replace(source_id, '\.' ,'*')source_id, description, 'length='||length";
+      "source_id, description, 'length='||length";
 
   my $sql = "SELECT $deflineSelect, sequence
              FROM dots.$table
