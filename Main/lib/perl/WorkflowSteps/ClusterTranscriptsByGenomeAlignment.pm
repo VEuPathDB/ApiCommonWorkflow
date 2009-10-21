@@ -11,7 +11,7 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $ncbiTaxonId = $self->getParamValue('parentNcbiTaxonId');
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
-  my $maxIntronSize = $self->getParamValue('maxIntronSize');
+  my $maxIntronSize = $self->getParamValue('distanceBetweenStartsForAlignmentsInSameCluster');
 
   my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$ncbiTaxonId);
   my $targetDbRlsId = $self->getExtDbRlsId($test, $genomeExtDbRlsSpec);
