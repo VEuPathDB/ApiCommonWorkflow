@@ -5,9 +5,11 @@
     <param name="sageTagExtDbRlsSpec"/>
     <param name="studyName"/>
     <param name="paramValue"/>
+    <param name="nickName"/>
+    <param name="calFreq"/>
 
 
-    <constant name="dataDir">$$parentDataDir$$/SageTags</constant>
+    <constant name="dataDir">$$parentDataDir$$/$$nickName$$</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -34,7 +36,7 @@
       <depends name="mapSageTagsToNaSequences"/>
     </step>
 
-    <step name="createSageTagNormFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSageTagNormFile" stepLoadTypes="plugin">
+    <step name="createSageTagNormFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSageTagNormFile" stepLoadTypes="plugin" includeIf="$$calFreq$$">
 
       <paramValue name="studyName">$$studyName$$</paramValue>
       <paramValue name="paramValue">$$paramValue$$</paramValue>
@@ -42,7 +44,7 @@
       <depends name="loadSageTagMap"/>
     </step>
 
-    <step name="insertNormSageTagFreqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNormSageTagFreqs" stepLoadTypes="plugin">
+    <step name="insertNormSageTagFreqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNormSageTagFreqs" stepLoadTypes="plugin" includeIf="$$calFreq$$">
       <paramValue name="inputDir">$$dataDir$$</paramValue>
       <paramValue name="studyName">$$studyName$$</paramValue>
       <depends name="createSageTagNormFile"/>
