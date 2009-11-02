@@ -10,14 +10,16 @@
   <param name="FV1EndsExtDbRlsSpec"/>
   <param name="PACEndsExtDbRlsSpec"/>
   <param name="repeatMaskSpecies"/>
-
+  <param name="mylerChipProbeFile"/>
+  <param name="mylerChipExtDbRlsSpec"/>
+  <param name="mylerChipRadAnalysisWorkingDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/$$organismName$$/SpecificAnalysis</constant>
   <constant name="genomicSeqsFile">$$parentDataDir$$/$$organismName$$/genome/genomicSeqs.fsa</constant>
-  <constant name="BACEndsDir">$$dataDir$$/makeBACEnds</constant>
-  <constant name="CosmidEndsDir">$$dataDir$$/makeCosmidEnds</constant>
-  <constant name="FV1EndsDir">$$dataDir$$/makeFV1Ends</constant>
-  <constant name="PACEndsDir">$$dataDir$$/makePACEnds</constant>
+  <constant name="BACEndsDir">$$dataDir$$/extractAndBlockBACEnds</constant>
+  <constant name="CosmidEndsDir">$$dataDir$$/extractAndBlockCosmidEnds</constant>
+  <constant name="FV1EndsDir">$$dataDir$$/extractAndBlockFV1Ends</constant>
+  <constant name="PACEndsDir">$$dataDir$$/extractAndBlockPACEnds</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -38,11 +40,12 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="assembliesDataDir">$$BACEndsDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$/genome/makeAssemblySeqs/genomicSeqs</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$/genome/mapAssemblySeqs/genomicSeqs</paramValue>
       <paramValue name="organismTwoLetterAbbrev"></paramValue>
       <paramValue name="nickName">mapBACEnds</paramValue>
       <paramValue name="queryTable">ExternalNASequence</paramValue>
       <paramValue name="updateAssemblySourceId">false</paramValue>
+      <paramValue name="queryExtDbRlsSpec">$$BACEndsExtDbRlsSpec$$</paramValue>
       <depends name="extractAndBlockBACEnds"/>
     </subgraph>
 
@@ -61,11 +64,12 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="assembliesDataDir">$$CosmidEndsDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$/genome/makeAssemblySeqs/genomicSeqs</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$/genome/mapAssemblySeqs/genomicSeqs</paramValue>
       <paramValue name="organismTwoLetterAbbrev"></paramValue>
       <paramValue name="nickName">mapCosmidEnds</paramValue>
       <paramValue name="queryTable">ExternalNASequence</paramValue>
       <paramValue name="updateAssemblySourceId">false</paramValue>
+      <paramValue name="queryExtDbRlsSpec">$$CosmidEndsExtDbRlsSpec$$</paramValue>
       <depends name="extractAndBlockCosmidEnds"/>
     </subgraph>
 
@@ -85,11 +89,12 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="assembliesDataDir">$$FV1EndsDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$/genome/makeAssemblySeqs/genomicSeqs</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$/genome/mapAssemblySeqs/genomicSeqs</paramValue>
       <paramValue name="organismTwoLetterAbbrev"></paramValue>
       <paramValue name="nickName">mapFV1Ends</paramValue>
       <paramValue name="queryTable">ExternalNASequence</paramValue>
       <paramValue name="updateAssemblySourceId">false</paramValue>
+      <paramValue name="queryExtDbRlsSpec">$$FV1EndsExtDbRlsSpec$$</paramValue>
       <depends name="extractAndBlockFV1Ends"/>
     </subgraph>
 
@@ -108,15 +113,25 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="assembliesDataDir">$$PACEndsDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$/genome/makeAssemblySeqs/genomicSeqs</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$/genome/mapAssemblySeqs/genomicSeqs</paramValue>
       <paramValue name="organismTwoLetterAbbrev"></paramValue>
       <paramValue name="nickName">mapPACEnds</paramValue>
       <paramValue name="queryTable">ExternalNASequence</paramValue>
       <paramValue name="updateAssemblySourceId">false</paramValue>
+      <paramValue name="queryExtDbRlsSpec">$$PACEndsExtDbRlsSpec$$</paramValue>
       <depends name="extractAndBlockPACEnds"/>
     </subgraph>
 
+  <subgraph name="mylerChIP" xmlFile="ChIP-chip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="chipNickName">mylerChIP-chip</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="probeFileRelativeToManualDeliveryDir">$$mylerChipProbeFile$$</paramValue>
+    <paramValue name="chipExtDbRlsSpec">$$mylerChipExtDbRlsSpec$$</paramValue>
+    <paramValue name="inputDir">$$mylerChipRadAnalysisWorkingDir$$</paramValue>
+    <paramValue name="mapProbesToNaSequences">true</paramValue>
+    <paramValue name="insertSimpleRadAnalysisFromConfig">true</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
 </workflowGraph>
-
-
-
