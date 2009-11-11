@@ -25,6 +25,13 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="extractAndBlockBACEnds"/>
+    </step>
+
+
     <subgraph name="mapBACEndsSeqsToGenome" xmlFile="mapAssembliesToGenome.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
