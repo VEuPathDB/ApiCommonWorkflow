@@ -2,6 +2,8 @@ package ApiCommonWorkflow::Main::DataSources;
 
 use strict;
 
+use ApiCommonWorkflow::Main::DataSource;
+
 use XML::Simple;
 use Data::Dumper;
 
@@ -14,28 +16,34 @@ sub new {
 
   bless($self,$class);
 
+  $self->{resourcesXmlFile} = $resourcesXmlFile;
+
   $self->_parseXmlFile($resourcesXmlFile, $properties);
 
   return $self;
 }
 
 sub getDataSource {
-    my ($dataSourceName) = @_;
+    my ($self, $dataSourceName) = @_;
 
-    
+    die "can't find resource '$dataSourceName' in xml file $self->{resourcesXmlFile}"
+      unless $self->{data}->{resource}->{$dataSourceName};
+
+    return ApiCommonWorkflow::Main::DataSource->new($dataSourceName, $self->{data}->{resource}->{$dataSourceName});
 }
 
 sub _parseXmlFile {
-  my ($resourcesXmlFile, $properties) = @_;
+  my ($self, $resourcesXmlFile, $properties) = @_;
 
   my $xmlString = $self->_substituteMacros($resourcesXmlFile, $properties);
-  my $xml = new XML::Simple(SuppressEmpty => undef);
-  $self->{data} = eval{ $xml->XMLin($xmlString) };
+  my $xml = new XML::Simple();
+  $self->{data} = eval{ $xml->XMLin($xmlString, SuppressEmpty => undef, KeyAttr => 'resource') };
+#  print STDERR Dumper $self->{data};
   die "$@\n$xmlString\n" if($@);
 }
 
 sub _substituteMacros {
-  my ($xmlFile, $props) = @_;
+  my ($self, $xmlFile, $props) = @_;
 
   my $xmlString;
   open(FILE, $xmlFile) || die "Cannot open resources XML file '$xmlFile'\n";
@@ -52,3 +60,4 @@ sub _substituteMacros {
   return $xmlString;
 }
 
+1;

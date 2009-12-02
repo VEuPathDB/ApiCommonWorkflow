@@ -1,11 +1,14 @@
 package ApiCommonWorkflow::Main::DataSource;
 
 use strict;
+use Data::Dumper;
 
 sub new {
-  my ($class, $parsedXml) = @_;
+  my ($class, $dataSourceName, $parsedXml) = @_;
 
-  my $self = {parsedXml => $parsedXml};
+  my $self = {};
+  $self->{parsedXml} = $parsedXml;
+  $self->{dataSourceName} = $dataSourceName;
 
   bless($self,$class);
 
@@ -13,74 +16,75 @@ sub new {
 }
 
 sub getName {
-    my ($self);
+    my ($self) = @_;
 
-    return $self->{parsedXml}->{};
+    return $self->{dataSourceName};
 }
 
 sub getVersion {
-    my ($self);
+    my ($self) = @_;
 
     return $self->{parsedXml}->{version};
 }
 
 sub getUrl {
-    my ($self);
+    my ($self) = @_;
 
     return $self->{parsedXml}->{url};
 }
 
 sub getDisplayName {
-    my ($self);
+    my ($self) = @_;
 
-    return $self->{parsedXml}->{};
+    return $self->{parsedXml}->{displayName};
 }
 
 sub getOrganisms {
-    my ($self);
+    my ($self) = @_;
 
-    return $self->{parsedXml}->{};
+    return $self->{parsedXml}->{organisms};
 }
 
 sub getCategory {
-    my ($self);
+    my ($self) = @_;
 
-    return $self->{parsedXml}->{};
+    return $self->{parsedXml}->{category};
 }
 
 sub getPlugin {
-    my ($self);
+    my ($self) = @_;
 
-    return $self->{parsedXml}->{};
+    return $self->{parsedXml}->{plugin};
 }
 
 sub getWgetArgs {
-    my ($self);
+    my ($self) = @_;
 
-    return $self->{parsedXml}->{};
+    return $self->{parsedXml}->{wgetArgs};
 }
 
 sub getUnpacks {
-    my ($self);
+    my ($self) = @_;
 
-    return $self->{parsedXml}->{};
+    return $self->{parsedXml}->{unpacks};
 }
 
 sub getUnpackOutput {
-    my ($self);
+    my ($self) = @_;
 
-    return $self->{parsedXml}->{};
+    return $self->{parsedXml}->{unpackOutput};
 }
 
 sub getPluginArgs {
-    my ($self);
+    my ($self) = @_;
 
-    return $self->{parsedXml}->{};
+    return $self->{parsedXml}->{pluginArgs};
 }
 
 sub getDescription {
-    my ($self);
+    my ($self) = @_;
 
-    return $self->{parsedXml}->{};
+    return $self->{parsedXml}->{description};
 }
 
+1;

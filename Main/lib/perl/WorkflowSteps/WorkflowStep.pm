@@ -10,6 +10,7 @@ use strict;
 use Carp;
 
 use GUS::Workflow::WorkflowStepInvoker;
+use ApiCommonWorkflow::Main::DataSources;
 
 sub getLocalDataDir {
     my ($self) = @_;
@@ -177,6 +178,17 @@ sub getInputFiles{
     $inputFiles[0] = $fileOrDir;
   }
   return @inputFiles;
+}
+
+sub getDataSource {
+  my ($self, $dataSourceName) = @_;
+
+  if (!$self->{dataSources}) {
+    my $dataSourcesXmlFile = $self->getGlobalConfig('dataSourcesXmlFile');
+    my $globalProperties = $self->getGlobalConfigProperties();
+    $self->{dataSources} =
+      ApiCommonWorkflow::Main::DataSources->new($dataSourcesXmlFile, $globalProperties);  }
+  return $self->{dataSources}->getDataSource($dataSourceName);
 }
 
 1;
