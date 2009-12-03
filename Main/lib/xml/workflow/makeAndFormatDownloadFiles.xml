@@ -17,6 +17,7 @@
     <param name="makeESTDownloadFile"/>
     <param name="makeProteomeDownloadFile"/>
     <param name="makeGenomicDownloadFile"/>
+    <param name="dbrefExtDbRlsSpec"/>
 
 
     <step name="makeDownloadSiteDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
@@ -156,6 +157,19 @@
       <paramValue name="inputFile">$$downloadSiteDataDir$$/$$organismName$$/$$organismName$$AnnotatedCDS_$$projectName$$-$$projectVersion$$.fasta</paramValue>    
       <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismName$$/$$organismName$$CondonUsage_$$projectName$$-$$projectVersion$$.txt</paramValue>
     <depends name="makeAnnotatedCDSDownloadFile"/>
+    </step>
+
+    <step name="makeGeneAliasFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasFile" includeIf="$$makeProteomeDownloadFile$$">
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismName$$/$$organismName$$GeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
+    <depends name="makeDownloadSiteDataDir"/>
+    </step>
+
+    <step name="makeEuPathUniProtLinkFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEuPathUniProtLinkFile">
+      <paramValue name="dbrefExtDbRlsSpec">$$dbrefExtDbRlsSpec$$</paramValue>
+      <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismName$$/$$organismName$$EuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="makeDownloadSiteDataDir"/>
     </step>
 
    <subgraph name="createFullRecordCacheAndFileForGene" xmlFile="createFullRecordCacheAndFile.xml">
