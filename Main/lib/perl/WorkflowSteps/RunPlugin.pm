@@ -8,11 +8,12 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $dataSourceName = $self->getParamValue('dataSourceName');
-    my $dataSource = $self->getDataSource($dataSourceName);
-    my $plugin=  $dataSource->getPlugin();
-    my $pluginArgs=  $dataSource->getPluginArgs();
+    $self->{dataSource} = $self->getDataSource($dataSourceName);
+    my $plugin=  $self->{dataSource}->getPlugin();
+    my $pluginArgs=  $self->{dataSource}->getPluginArgs();
 
     _formatForCLI($pluginArgs);
+
     $self->runPlugin($test, $undo, $plugin, $pluginArgs);
 }
 

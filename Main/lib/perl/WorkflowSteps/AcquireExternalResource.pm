@@ -11,10 +11,10 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $dataSourceName = $self->getParamValue('dataSourceName');
-    my $dataSource = $self->getDataSource($dataSourceName);
-    my $WgetArgs=  $dataSource->getWgetArgs();
-    my $manualArgs=  $dataSource->getManualArgs();
-    my $UrlArgs=  $dataSource->getUrl();
+    $self->{dataSource} = $self->getDataSource($dataSourceName);
+    my $WgetArgs=  $self->{dataSource}->getWgetArgs();
+    my $manualArgs=  $self->{dataSource}->getManualArgs();
+    my $UrlArgs=  $self->{dataSource}->getUrl();
 
     my $usingWget = $WgetArgs || $UrlArgs;
     die "Resource $dataSourceName must provide either an url and WgetArgs or ManualArgs, but not both\n " if ($usingWget && $manualArgs);

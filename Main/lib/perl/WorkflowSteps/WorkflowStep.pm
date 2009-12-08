@@ -197,7 +197,7 @@ sub acquireByWget {
   eval {
     chdir $targetDir || die "Could not cd to '$targetDir/'\n";
 
-    $self->{wget}->execute($wgetDir,
+    $self->{wget}->execute($targetDir,
 			   "$targetDir/wget.log",
 			   "$targetDir/wget.cmd");
   };
@@ -213,8 +213,6 @@ sub acquireByManualGet {
 
   eval {
     chdir $targetDir || die "Could not cd to '$targetDir/'\n";
-
-    $self->_writeManualGetArgs($targetDir);
 
     $self->{manualGet}->execute($targetDir);
 

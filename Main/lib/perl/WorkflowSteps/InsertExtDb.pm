@@ -8,8 +8,8 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $dataSourceName = $self->getParamValue('dataSourceName');
-    my $dataSource = $self->getDataSource($dataSourceName);
-    my $extDbName=  $dataSource->getName();
+    $self->{dataSource} = $self->getDataSource($dataSourceName);
+    my $extDbName=  $self->{dataSource}->getName();
 
     my $dbPluginArgs = "--name '$extDbName' ";
     

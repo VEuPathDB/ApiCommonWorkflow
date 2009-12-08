@@ -9,9 +9,10 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $dataSourceName = $self->getParamValue('dataSourceName');
-    my $dataSource = $self->getDataSource($dataSourceName);
-    my $unpacks =  $dataSource->getUnpacks();
-    my $unpackOutput =  $dataSource->getUnpackOutput();
+    $self->{dataSource} = $self->getDataSource($dataSourceName);
+    my $WgetArgs=  $self->{dataSource}->getWgetArgs();
+    my $unpacks =  $self->{dataSource}->getUnpacks();
+    my $unpackOutput =  $self->{dataSource}->getUnpackOutput();
 
     my $unpackers;
     if (ref($unpacks) eq 'ARRAY') {
@@ -30,7 +31,7 @@ sub run {
 	}else{
 	    foreach my $unpacker (@$unpackers) {
 		if ($unpacker){  
-		    GUS::Pipeline::ExternalResources::RepositoryEntry::runCmd($unpacker);
+		    $self->runCmd($test,$unpacker);
 		  }
 	    }
 	}
