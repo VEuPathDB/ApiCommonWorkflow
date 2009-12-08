@@ -63,6 +63,12 @@ sub getWgetArgs {
     return $self->{parsedXml}->{wgetArgs};
 }
 
+sub getManualArgs {
+    my ($self) = @_;
+
+    return $self->{parsedXml}->{manualGet};
+}
+
 sub getUnpacks {
     my ($self) = @_;
 
