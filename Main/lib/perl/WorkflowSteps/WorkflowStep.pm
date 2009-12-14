@@ -191,38 +191,6 @@ sub getDataSource {
   return $self->{dataSources}->getDataSource($dataSourceName);
 }
 
-sub acquireByWget {
-  my ($self, $targetDir) = @_;
-
-  eval {
-    chdir $targetDir || die "Could not cd to '$targetDir/'\n";
-
-    $self->{wget}->execute($targetDir,
-			   "$targetDir/wget.log",
-			   "$targetDir/wget.cmd");
-  };
-
-  my $err = $@;
-
-  die "$err\n" if $err;
-
-}
-
-sub acquireByManualGet {
-  my ($self, $targetDir) = @_;
-
-  eval {
-    chdir $targetDir || die "Could not cd to '$targetDir/'\n";
-
-    $self->{manualGet}->execute($targetDir);
-
-  };
-
-  my $err = $@;
-
-  die "$err\n" if $err;
-
-}
 
 
 1;
