@@ -15,6 +15,10 @@ sub run {
 
     my $localDataDir = $self->getLocalDataDir();
 
+    my $algInvResult=$self->getParamValue('algInvResult');
+
+    my $setPercent=$self->getParamValue('setPercent');
+
     my $algImpVer = "2.5";
     my $algInvStart = "2000-01-01";
     my $algInvEnd = "2000-01-01";
@@ -22,6 +26,12 @@ sub run {
     $algName =~ s/\///g;
 
     my $args = "--predAlgName $algName  --predAlgImpVersion $algImpVer --predAlgInvStart $algInvStart --predAlgInvEnd $algInvEnd --directory $localDataDir/$inputDir --setPercentages";
+
+    $algInvResult =~ s/\s/_/g;
+    
+    $args .= " --predAlgInvResult $algInvResult";
+
+    $args .= " --setPercentages" if ($setPercent);
 
     if ($test) {
       $self->testInputFile('inputDir', "$localDataDir/$inputDir");
