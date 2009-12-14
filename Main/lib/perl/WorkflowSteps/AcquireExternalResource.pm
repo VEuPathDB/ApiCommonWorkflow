@@ -3,21 +3,19 @@ package ApiCommonWorkflow::Main::WorkflowSteps::AcquireExternalResource;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
-use GUS::Pipeline::ExternalResources::Loader;
-use GUS::Pipeline::ExternalResources::RepositoryWget;
-use GUS::Pipeline::ExternalResources::RepositoryManualGet;
 
 sub run {
     my ($self, $test, $undo) = @_;
 
     my $dataSourceName = $self->getParamValue('dataSourceName');
-    $self->{dataSource} = $self->getDataSource($dataSourceName);
-    my $WgetArgs=  $self->{dataSource}->getWgetArgs();
-    my $manualArgs=  $self->{dataSource}->getManualArgs();
-    my $UrlArg=  $self->{dataSource}->getUrl();
+    $dataSource = $self->getDataSource($dataSourceName);
+    my $WgetArgs=  $dataSource->getWgetArgs();
+    my $manualArgs=  $dataSource->getManualArgs();
+    my $UrlArg=  $dataSource->getUrl();
 
 
     my $usingWget = $WgetArgs || $UrlArg;
+    die "Resource $dataSourceName must provide either an url and WgetArgs or ManualArgs\n " unless $usingWget;
     die "Resource $dataSourceName must provide either an url and WgetArgs or ManualArgs, but not both\n " if ($usingWget && $manualArgs);
     my $args;
 
@@ -38,9 +36,9 @@ sub run {
 	    my $cmd = "wget --directory-prefix=$targetDir --output-file=$logFile $WgetArgs \"$UrlArg\"";
 	    $self->runCmd($test, $cmd);
 	}else{
-	    $args = $manualArgs;
-	    $self->{manualGet} = GUS::Pipeline::ExternalResources::RepositoryManualGet->new($args);
-	    $self->acquireByManualGet($targetDir);
+	    $manualArgs=~/.*="(.*)"/;
+	    my $cmd='cp -r $manualArgs $targetDir';
+	    $self->runCmd($test, $cmd);
 	}
     }
 }
