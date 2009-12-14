@@ -8,9 +8,9 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $dataSourceName = $self->getParamValue('dataSourceName');
-    $self->{dataSource} = $self->getDataSource($dataSourceName);
-    my $extDbName=  $self->{dataSource}->getName();
-    my $extDbRlsVer=  $self->{dataSource}->getVersion();
+    $dataSource = $self->getDataSource($dataSourceName);
+    my $extDbName=  $dataSource->getName();
+    my $extDbRlsVer=  $dataSource->getVersion();
 
     my $releasePluginArgs = "--databaseName '$extDbName' --databaseVersion '$extDbRlsVer'";
 

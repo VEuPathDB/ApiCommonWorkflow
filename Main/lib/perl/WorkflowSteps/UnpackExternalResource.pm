@@ -9,10 +9,10 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $dataSourceName = $self->getParamValue('dataSourceName');
-    $self->{dataSource} = $self->getDataSource($dataSourceName);
-    my $WgetArgs=  $self->{dataSource}->getWgetArgs();
-    my $unpacks =  $self->{dataSource}->getUnpacks();
-    my $unpackOutput =  $self->{dataSource}->getUnpackOutput();
+    $dataSource = $self->getDataSource($dataSourceName);
+    my $WgetArgs=  $dataSource->getWgetArgs();
+    my $unpacks =  $dataSource->getUnpacks();
+    my $unpackOutput =  $dataSource->getUnpackOutput();
 
     my $unpackers;
     if (ref($unpacks) eq 'ARRAY') {
