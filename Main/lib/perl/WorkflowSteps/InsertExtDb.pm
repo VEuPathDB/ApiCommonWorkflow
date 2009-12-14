@@ -8,12 +8,13 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $dataSourceName = $self->getParamValue('dataSourceName');
-    $self->{dataSource} = $self->getDataSource($dataSourceName);
-    my $extDbName=  $self->{dataSource}->getName();
+    my $dataSource = $self->getDataSource($dataSourceName);
+    my $extDbName = $dataSource->getLegacyExtDbName();
+    $extDbName || $extDbName = $dataSource->getName();
 
     my $dbPluginArgs = "--name '$extDbName' ";
     
-    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
+    $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 
 }
 
