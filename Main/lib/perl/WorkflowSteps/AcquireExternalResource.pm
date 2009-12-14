@@ -14,11 +14,15 @@ sub run {
     $self->{dataSource} = $self->getDataSource($dataSourceName);
     my $WgetArgs=  $self->{dataSource}->getWgetArgs();
     my $manualArgs=  $self->{dataSource}->getManualArgs();
-    my $UrlArgs=  $self->{dataSource}->getUrl();
+    my $UrlArg=  $self->{dataSource}->getUrl();
 
-    my $usingWget = $WgetArgs || $UrlArgs;
+
+    my $usingWget = $WgetArgs || $UrlArg;
     die "Resource $dataSourceName must provide either an url and WgetArgs or ManualArgs, but not both\n " if ($usingWget && $manualArgs);
     my $args;
+
+    my $localDataDir = $self->getLocalDataDir();
+
     my $targetDir="$localDataDir/$dataSourceName";
 
     $self->runCmd(0,"mkdir -p $targetDir");
@@ -28,18 +32,15 @@ sub run {
     } else {
 	if ($test) {
 	    $self->runCmd(0,"echo hello > $targetDir/test.txt");
-	}else{
+	}
 
-	    if($usingWget){
-		$args = GUS::Pipeline::ExternalResources::Loader::_parseWgetArgs(substr($WgetArgs,0,length($WgetArgs)));
-		$args->{url} = $UrlArgs;
-		$self->{wget} = GUS::Pipeline::ExternalResources::RepositoryWget->new($args);
-		$self->acquireByWget($targetDir);
-	    }else{
-		$args = $manualArgs;
-		$self->{manualGet} = GUS::Pipeline::ExternalResources::RepositoryManualGet->new($args);
-		$self->acquireByManualGet($targetDir);
-	    }
+	if ($WgetArgs) {
+	    my $cmd = "wget --directory-prefix=$targetDir --output-file=$logFile $WgetArgs \"$UrlArg\"";
+	    $self->runCmd($test, $cmd);
+	}else{
+	    $args = $manualArgs;
+	    $self->{manualGet} = GUS::Pipeline::ExternalResources::RepositoryManualGet->new($args);
+	    $self->acquireByManualGet($targetDir);
 	}
     }
 }
