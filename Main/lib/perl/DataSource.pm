@@ -21,6 +21,12 @@ sub getName {
     return $self->{dataSourceName};
 }
 
+sub getLegacyExtDbName {
+    my ($self) = @_;
+
+    return $self->{legacyExtDbName};
+}
+
 sub getVersion {
     my ($self) = @_;
 
