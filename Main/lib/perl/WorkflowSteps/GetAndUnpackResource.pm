@@ -40,7 +40,7 @@ sub getResource {
     my ($self, $test, $dataSource, $targetDir) = @_;
 
     my $WgetArgs=  $dataSource->getWgetArgs();
-    my $manualArgs=  $dataSource->getManualArgs();
+    my $manualArgs=  $dataSource->getManualFileOrDir();
     my $UrlArg=  $dataSource->getUrl();
     
     die "Resource $dataSourceName must provide either an URL and WgetArgs or ManualArgs, but not both\n"
@@ -54,8 +54,9 @@ sub getResource {
 	my $cmd = "wget --directory-prefix=$targetDir --output-file=$logFile $WgetArgs \"$UrlArg\"";
 	$self->runCmd($test, $cmd);
     } else {
+	my $manualDeliveryDir = $self->getGlobalProperty('manualDeliveryDir');
 	$manualArgs=~/.*="(.*)"/;
-	my $cmd='cp -r $manualArgs $targetDir';
+	my $cmd='cp -r "$manualDeliveryDir/$manualFileOrDir" $targetDir';
 	$self->runCmd($test, $cmd);
     }
 }
