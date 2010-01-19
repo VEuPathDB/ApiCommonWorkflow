@@ -9,7 +9,7 @@ sub run {
 
     my $commonTargetDir =  $self->getParamValue('commonTargetDir');
     my $dataSourceName = $self->getParamValue('dataSourceName');
-    $dataSource = $self->getDataSource($dataSourceName);
+    my $dataSource = $self->getDataSource($dataSourceName);
 
     my $localDataDir = $self->getLocalDataDir();
     my $targetDir = "$localDataDir/$dataSourceName";
@@ -37,20 +37,21 @@ sub run {
 }
 
 sub getResource {
-    my ($self, $test, $dataSource, $targetDir) = @_;
+    my ($self, $test, $dataSource, $targetDir, $dataSourceName) = @_;
 
-    my $WgetArgs=  $dataSource->getWgetArgs();
-    my $manualArgs=  $dataSource->getManualFileOrDir();
-    my $UrlArg=  $dataSource->getUrl();
+    my $WgetArgs = $dataSource->getWgetArgs();
+    my $manualArgs = $dataSource->getManualFileOrDir();
+    my $UrlArg = $dataSource->getUrl();
     
     die "Resource $dataSourceName must provide either an URL and WgetArgs or ManualArgs, but not both\n"
-	unless 
+	unless
 	(($WgetArgs && $UrlArg && !$manualArgs)
 	 || ($manualArgs && !$WgetArgs && !$manualArgs));
 
     $self->runCmd(0,"mkdir -p $targetDir");
 
     if ($WgetArgs) {
+        my $logFile = $self->getStepDir() . "/wget.log";
 	my $cmd = "wget --directory-prefix=$targetDir --output-file=$logFile $WgetArgs \"$UrlArg\"";
 	$self->runCmd($test, $cmd);
     } else {
