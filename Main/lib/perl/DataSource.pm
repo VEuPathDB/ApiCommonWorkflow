@@ -69,22 +69,34 @@ sub getWgetArgs {
     return $self->{parsedXml}->{wgetArgs};
 }
 
-sub getManualArgs {
+sub getManualFileOrDir {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{manualGet};
+    return $self->{parsedXml}->{manualGet}->{fileOrDir};
+}
+
+sub getManualContact {
+    my ($self) = @_;
+
+    return $self->{parsedXml}->{manualGet}->{contact};
+}
+
+sub getManualEmail {
+    my ($self) = @_;
+
+    return $self->{parsedXml}->{manualGet}->{email};
+}
+
+sub getManualInstitution {
+    my ($self) = @_;
+
+    return $self->{parsedXml}->{manualGet}->{institution};
 }
 
 sub getUnpacks {
     my ($self) = @_;
 
     return $self->{parsedXml}->{unpacks};
-}
-
-sub getUnpackOutput {
-    my ($self) = @_;
-
-    return $self->{parsedXml}->{unpackOutput};
 }
 
 sub getPluginArgs {
