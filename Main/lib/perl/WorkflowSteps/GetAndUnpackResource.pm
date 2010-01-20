@@ -66,20 +66,11 @@ sub unpackResource {
     my ($self, $test, $dataSource) = @_;
 
     my $unpacks =  $dataSource->getUnpacks();
-
-    my $unpackers;
-    if (ref($unpacks) eq 'ARRAY') {
-	$unpackers = $unpacks;
-    } else {
-	$unpackers = [$unpacks];
-    }
   
-    map { _formatForCLI($_) } @$unpackers;
+    my @unpacks2 = map { _formatForCLI($_) } @$unpacks;
 
-    foreach my $unpacker (@$unpackers) {
-	if ($unpacker){  
-	    $self->runCmd($test,$unpacker);
-	}
+    foreach my $unpacker (@unpacks2) {
+	$self->runCmd($test,$unpacker);
     }
 }
 
