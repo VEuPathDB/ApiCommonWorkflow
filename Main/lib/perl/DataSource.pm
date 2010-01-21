@@ -96,7 +96,7 @@ sub getManualInstitution {
 sub getUnpacks {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{unpacks};
+    return $self->{parsedXml}->{unpack};
 }
 
 sub getPluginArgs {
@@ -110,5 +110,18 @@ sub getDescription {
 
     return $self->{parsedXml}->{description};
 }
+
+sub getPublications {
+    if (!$self->{publications}) {
+	$self->{publications} = [];
+	foreach my $pubmedId ($self->{parsedXml}->{publication}->{pmid}) {
+	    my $publication = {pubmedId => $pubmedId};
+	    $publication->{citation} = `pubmedIdToCitation $pubmedId`;
+	    die "failed calling 'pubmedIdToCitation $pubmedId'" if $? >> 8;
+	}
+    }
+    return $self->{publications};
+}
+
 
 1;
