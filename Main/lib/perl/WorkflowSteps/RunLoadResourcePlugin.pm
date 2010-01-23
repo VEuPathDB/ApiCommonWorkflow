@@ -8,17 +8,17 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $dataSourceName = $self->getParamValue('dataSourceName');
-    $self->{dataSource} = $self->getDataSource($dataSourceName);
+    $dataSource = $self->getDataSource($dataSourceName);
     my $idempotenceTable = $self->getParamValue('idempotenceTable');
-    if (!$undo
+    if (!$undo && !$test
 	&& $idempotenceTable
-	&& $dataSource->testIdempotenceTable($idempotenceTable)) {
+	&& $self->testIdempotenceTable($idempotenceTable, $dataSource)) {
 	$self->log("Data for this data source found in table '$idempotenceTable'.  Data source already loaded.  Doing nothing");
 	return;
     } 
 
-    my $plugin=  $self->{dataSource}->getPlugin();
-    my $pluginArgs=  $self->{dataSource}->getPluginArgs();
+    my $plugin =  $dataSourc->getPlugin();
+    my $pluginArgs =  $dataSource->getPluginArgs();
 
     _formatForCLI($pluginArgs);
 
@@ -30,10 +30,29 @@ sub _formatForCLI {
     $_[0] =~ s/[\n\r]+/ /gm;
 }
 
+sub testIdempotenceTable {
+    my ($idempotenceTable, $dataSource) = @_;
+
+    my $extDbName = $dataSource->getName();
+    my $extDbRls = $dataSource->getVersion();
+    my $extDbRlsId = $self->getExtDbRlsId(0, "$extDbName|$extDbRls");
+    my $sql = "
+select count(*) from $idempotenceTable
+where external_database_release_id = $extDbRlsId";
+
+    my $cmd = "getValueFromTable --idSQL \"$sql\"";
+
+    my $count = $self->runCmd($test, $cmd);
+    return $count;
+}
+
+
+
 sub getParamsDeclaration {
     return (
-            'dataSourceName'
-           );
+	'dataSourceName',
+	'idempotenceTable'
+	);
 }
 
 sub getConfigDeclaration {
