@@ -21,12 +21,6 @@ sub getName {
     return $self->{dataSourceName};
 }
 
-sub getLegacyExtDbName {
-    my ($self) = @_;
-
-    return $self->{legacyExtDbName};
-}
-
 sub getVersion {
     my ($self) = @_;
 
@@ -102,6 +96,9 @@ sub getUnpacks {
 sub getPluginArgs {
     my ($self) = @_;
 
+    my $pluginArgs = $self->{parsedXml}->{pluginArgs};
+    $pluginArgs =~ s/\%EXT_DB_NAME\%/$self->{dataSourceName}/g;
+    $pluginArgs =~ s/\%EXT_DB_RLS_VER\%/$self->{version}/g;
     return $self->{parsedXml}->{pluginArgs};
 }
 
