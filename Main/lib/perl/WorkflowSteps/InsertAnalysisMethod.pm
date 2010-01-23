@@ -10,7 +10,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $name = $self->getParamValue('name');
-  my $version = $self->getParamValue('tool');
+  my $tool = $self->getParamValue('tool');
   my $version = $self->getParamValue('version');
   my $input = $self->getParamValue('input');
   my $output = $self->getParamValue('output');

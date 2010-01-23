@@ -8,7 +8,7 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $dataSourceName = $self->getParamValue('dataSourceName');
-    $dataSource = $self->getDataSource($dataSourceName);
+    my $dataSource = $self->getDataSource($dataSourceName);
     my $idempotenceTable = $self->getParamValue('idempotenceTable');
     if (!$undo && !$test
 	&& $idempotenceTable
@@ -17,7 +17,7 @@ sub run {
 	return;
     } 
 
-    my $plugin =  $dataSourc->getPlugin();
+    my $plugin =  $dataSource->getPlugin();
     my $pluginArgs =  $dataSource->getPluginArgs();
 
     _formatForCLI($pluginArgs);
@@ -31,7 +31,7 @@ sub _formatForCLI {
 }
 
 sub testIdempotenceTable {
-    my ($idempotenceTable, $dataSource) = @_;
+    my ($self, $idempotenceTable, $dataSource) = @_;
 
     my $extDbName = $dataSource->getName();
     my $extDbRls = $dataSource->getVersion();
@@ -42,7 +42,7 @@ where external_database_release_id = $extDbRlsId";
 
     my $cmd = "getValueFromTable --idSQL \"$sql\"";
 
-    my $count = $self->runCmd($test, $cmd);
+    my $count = $self->runCmd(0, $cmd);
     return $count;
 }
 
