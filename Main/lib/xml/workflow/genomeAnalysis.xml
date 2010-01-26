@@ -29,6 +29,7 @@
   <constant name="assemblySeqsDataDir">$$dataDir$$/makeAssemblySeqs</constant>
   <constant name="mapAssemblySeqsDataDir">$$dataDir$$/mapAssemblySeqs</constant>
   <constant name="assembliesDataDir">$$dataDir$$/makeAssemblies</constant>
+  <constant name="blastxArgs">-cpus=4 -topcomboN=1 W=4 T=18 V=100 B=1000000 -hspmax=1000000 -gi E=1e-3 -wordmask=seg+xnu -hspsepQmax=4000 -span1 Y=$$genomeSize$$</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -59,7 +60,7 @@
       <paramValue name="subjectFile">$$nrdbShortDeflineFile$$</paramValue>
       <paramValue name="subjectTable">DoTS::ExternalAASequence</paramValue>
       <paramValue name="subjectExtDbRlsSpec">$$nrdbExtDbRlsSpec$$</paramValue>
-      <paramValue name="blastArgs">-cpus=4 -topcomboN=1 W=4 T=18 V=100 B=1000000 -hspmax=1000000 -gi E=1e-3 -wordmask=seg+xnu -hspsepQmax=4000 -span1 Y=$$genomeSize$$</paramValue>
+      <paramValue name="blastArgs">$$blastxArgs$$</paramValue>
       <paramValue name="idRegex">gi\\|(\\d+)\\|</paramValue>
       <paramValue name="blastType">blastx</paramValue>
       <paramValue name="vendor">wu</paramValue>
@@ -69,6 +70,22 @@
       <paramValue name="loadOptions"></paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
+
+
+    <step name="document-blastxGenomicSeqsNrdb"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
+      <paramValue name="name">WU-BLASTX (Genomic sequence vs. NRDB)</paramValue>
+      <paramValue name="tool">BLASTX</paramValue>
+      <paramValue name="version"></paramValue>
+      <paramValue name="input">Query: Genomic sequence; Subject: NRDB</paramValue>
+      <paramValue name="output">BLASTX alignments</paramValue>
+      <paramValue name="parameters">$$blastxArgs$$</paramValue>
+      <paramValue name="description">BLASTX genomic sequence against NCBI's non-redundant protein database (NRDB).  WU-BLASTX is used to identify statistically significant DNA-protein sequence similarities found between DNA sequence queries and protein sequence libraries</paramValue>
+      <paramValue name="pubmedId"></paramValue>
+      <paramValue name="url">http://blast.wustl.edu</paramValue>
+      <paramValue name="credits">Warren R. Gish, Washington University, Saint Louis, Missouri</paramValue>
+      <depends name="blastxGenomicSeqsNrdb"/>
+    </step>
 
     <subgraph name="tRNAScan" xmlFile="trnaScanWorkflow.xml" includeIf="$$runtRNAScan$$">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
