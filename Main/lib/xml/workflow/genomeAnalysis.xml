@@ -30,6 +30,7 @@
   <constant name="mapAssemblySeqsDataDir">$$dataDir$$/mapAssemblySeqs</constant>
   <constant name="assembliesDataDir">$$dataDir$$/makeAssemblies</constant>
   <constant name="blastxArgs">-cpus=4 -topcomboN=1 W=4 T=18 V=100 B=1000000 -hspmax=1000000 -gi E=1e-3 -wordmask=seg+xnu -hspsepQmax=4000 -span1 Y=$$genomeSize$$</constant>
+  <constant name="trfArgs">2 7 7 80 20 50 500</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -74,17 +75,34 @@
 
     <step name="document-blastxGenomicSeqsNrdb"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">WU-BLASTX (Genomic sequence vs. NRDB)</paramValue>
-      <paramValue name="tool">BLASTX</paramValue>
+      <paramValue name="name">BLASTX Genomic sequence vs. NRDB</paramValue>
+      <paramValue name="tool">WU-BLASTX</paramValue>
       <paramValue name="version"></paramValue>
+      <paramValue name="category">Genome</paramValue>
       <paramValue name="input">Query: Genomic sequence; Subject: NRDB</paramValue>
       <paramValue name="output">BLASTX alignments</paramValue>
       <paramValue name="parameters">$$blastxArgs$$</paramValue>
       <paramValue name="description">BLASTX genomic sequence against NCBI's non-redundant protein database (NRDB).  WU-BLASTX is used to identify statistically significant DNA-protein sequence similarities found between DNA sequence queries and protein sequence libraries</paramValue>
-      <paramValue name="pubmedId"></paramValue>
+      <paramValue name="pubmedId">2231712</paramValue>
       <paramValue name="url">http://blast.wustl.edu</paramValue>
-      <paramValue name="credits">Warren R. Gish, Washington University, Saint Louis, Missouri</paramValue>
+      <paramValue name="credits"></paramValue>
       <depends name="blastxGenomicSeqsNrdb"/>
+    </step>
+
+    <step name="document-"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
+      <paramValue name="name"></paramValue>
+      <paramValue name="tool"></paramValue>
+      <paramValue name="version"></paramValue>
+      <paramValue name="category"></paramValue>
+      <paramValue name="input"></paramValue>
+      <paramValue name="output"></paramValue>
+      <paramValue name="parameters"></paramValue>
+      <paramValue name="description"></paramValue>
+      <paramValue name="pubmedId"></paramValue>
+      <paramValue name="url"></paramValue>
+      <paramValue name="credits"></paramValue>
+      <depends name=""/>
     </step>
 
     <subgraph name="tRNAScan" xmlFile="trnaScanWorkflow.xml" includeIf="$$runtRNAScan$$">
@@ -96,6 +114,21 @@
       <depends name="mirrorToCluster"/>
     </subgraph>
 
+    <step name="document-tRNAScan"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
+      <paramValue name="name">Predict tRNAs in genomic sequence</paramValue>
+      <paramValue name="tool">tRNAScan-SE</paramValue>
+      <paramValue name="version"></paramValue>
+      <paramValue name="category">Genome</paramValue>
+      <paramValue name="input">Genomic sequences</paramValue>
+      <paramValue name="output">predicted tRNAs with anticodon and score</paramValue>
+      <paramValue name="parameters">trainingOption=C</paramValue>
+      <paramValue name="description">tRNAscan-SE identifies transfer RNA genes in genomic DNA or RNA sequences.</paramValue>
+      <paramValue name="pubmedId">9023104</paramValue>
+      <paramValue name="url"></paramValue>
+      <paramValue name="credits"></paramValue>
+      <depends name="tRNAScan"/>
+    </step>
 
     <step name="makeOrfFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfFile">
@@ -119,7 +152,7 @@
     <step name="findTandemRepeats"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindTandemRepeats">
       <paramValue name="seqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="repeatFinderArgs">2 7 7 80 20 50 500</paramValue>
+      <paramValue name="repeatFinderArgs">$$trfArgs$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/tandemRepeats.out</paramValue>
       <depends name="extractGenomicSeqs"/>
     </step>
@@ -128,6 +161,22 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTandemRepeats" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/tandemRepeats.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="findTandemRepeats"/>
+    </step>
+
+    <step name="document-findTandemRepeats"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
+      <paramValue name="name">Find tandem repeats in genomic sequence</paramValue>
+      <paramValue name="tool">Tandem Repeat Finder</paramValue>
+      <paramValue name="version"></paramValue>
+      <paramValue name="category">Genome</paramValue>
+      <paramValue name="input">Genomic sequences</paramValue>
+      <paramValue name="output">a repeat table file and an alignment file</paramValue>
+      <paramValue name="parameters">$$trfArgs$$</paramValue>
+      <paramValue name="description">The Tandem Repeats Finder program locates and displays tandem repeats in DNA sequences</paramValue>
+      <paramValue name="pubmedId">9862982</paramValue>
+      <paramValue name="url">http://tandem.bu.edu/trf/trf.html</paramValue>
+      <paramValue name="credits"></paramValue>
       <depends name="findTandemRepeats"/>
     </step>
 
@@ -148,6 +197,22 @@
       <paramValue name="seqType">dna</paramValue>
       <paramValue name="mask">N</paramValue> 
       <paramValue name="options">--LowComplexityName 'dust'</paramValue>
+      <depends name="runLowComplexityFilter"/>
+    </step>
+
+    <step name="document-runLowComplexityFilter"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
+      <paramValue name="name">Filter Low Complexity Genomic Sequences</paramValue>
+      <paramValue name="tool">dust</paramValue>
+      <paramValue name="version"></paramValue>
+      <paramValue name="category">Genome</paramValue>
+      <paramValue name="input">Genomic sequences</paramValue>
+      <paramValue name="output">Genomic sequences containing regions of low complexity masked with the character 'N'</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <paramValue name="description"></paramValue>
+      <paramValue name="pubmedId"></paramValue>
+      <paramValue name="url"></paramValue>
+      <paramValue name="credits">Tatusov and Lipman</paramValue>
       <depends name="runLowComplexityFilter"/>
     </step>
 

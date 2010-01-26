@@ -65,6 +65,7 @@
       <paramValue name="name">Predict transmembrane domains</paramValue>
       <paramValue name="tool">TMHMM</paramValue>
       <paramValue name="version"></paramValue>
+      <paramValue name="category">Proteome</paramValue>
       <paramValue name="input">Protein translations of annotated genes</paramValue>
       <paramValue name="output">Predicted transmembrane domain topology</paramValue>
       <paramValue name="parameters"></paramValue>
@@ -89,6 +90,23 @@
       <depends name="runExportPred"/>
     </step>
 
+    <step name="document-runExportPred"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
+      <paramValue name="name">Predict export to host</paramValue>
+      <paramValue name="tool">ExportPred</paramValue>
+      <paramValue name="version"></paramValue>
+      <paramValue name="category">Proteome</paramValue>
+      <paramValue name="input">Protein translations of annotated genes</paramValue>
+      <paramValue name="output">Predicted export proteins (and scores)</paramValue>
+      <paramValue name="parameters">default</paramValue>
+      <paramValue name="description">Program that predicts the exported proteins of Plasmodium.</paramValue>
+      <paramValue name="pubmedId">16507167</paramValue>
+      <paramValue name="url">http://bioinf.wehi.edu.au/exportpred</paramValue>
+      <paramValue name="credits"></paramValue>
+      <depends name="runExportPred"/>
+    </step>
+
+
     <step name="runSignalP"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunSignalP">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
@@ -106,9 +124,10 @@
 
     <step name="document-insertSignalP"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">SignalP</paramValue>
+      <paramValue name="name">Predict signal peptides</paramValue>
       <paramValue name="tool">SignalP</paramValue>
       <paramValue name="version"></paramValue>
+      <paramValue name="category">Proteome</paramValue>
       <paramValue name="input">Protein translations of annotated genes</paramValue>
       <paramValue name="output">Signal peptide predictions</paramValue>
       <paramValue name="parameters">$$signalpArgs$$</paramValue>
@@ -148,6 +167,23 @@
       <depends name="runLowComplexityFilter"/>
     </step>
 
+    <step name="document-runLowComplexityFilter"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
+      <paramValue name="name">Filter low complexity protein sequences</paramValue>
+      <paramValue name="tool">seg</paramValue>
+      <paramValue name="version"></paramValue>
+      <paramValue name="category">Proteome</paramValue>
+      <paramValue name="input">Protein translations of annotated genes</paramValue>
+      <paramValue name="output">Protein sequences containing regions of low complexity masked with the character 'x'</paramValue>
+      <paramValue name="parameters">-x</paramValue>
+      <paramValue name="description"></paramValue>
+      <paramValue name="pubmedId">7952898</paramValue>
+      <paramValue name="url"></paramValue>
+      <paramValue name="credits"></paramValue>
+      <depends name="runLowComplexityFilter"/>
+    </step>
+
+
     <step name="findNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindNrdbXrefs">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="nrdbFile">$$nrdbFile$$</paramValue>
@@ -182,6 +218,22 @@
       <depends name="mirrorProteinsToCluster"/>
     </subgraph>
 
+    <step name="document-psipred"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
+      <paramValue name="name">Predict secondary structure</paramValue>
+      <paramValue name="tool">psipred</paramValue>
+      <paramValue name="version"></paramValue>
+      <paramValue name="category">Proteome</paramValue>
+      <paramValue name="input">Protein translations of annotated genes (filtered with seg)</paramValue>
+      <paramValue name="output">file containing a residue by residue prediction of helix, strand, and coil accompanied by confidence level</paramValue>
+      <paramValue name="parameters">default</paramValue>
+      <paramValue name="description">Psipred predicts secondary structure using a neural network analysis of PSI-BLAST output</paramValue>
+      <paramValue name="pubmedId">10493868</paramValue>
+      <paramValue name="url">http://bioinf.cs.ucl.ac.uk/psipred</paramValue>
+      <paramValue name="credits"></paramValue>
+      <depends name="psipred"/>
+    </step>
+
     <subgraph name="blastpNrdb" xmlFile="blastWorkflow.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="nickName">blastpNrdb</paramValue>
@@ -204,16 +256,17 @@
 
    <step name="document-blastpNrdb"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">>WU-BLASTP (Annotated protein sequences vs. NRDB)</paramValue>
+      <paramValue name="name">BLASTP Annotated protein sequences vs. NRDB</paramValue>
       <paramValue name="tool">BLASTP</paramValue>
       <paramValue name="version"></paramValue>
+      <paramValue name="category">Proteome</paramValue>
       <paramValue name="input">Query: Protein translations of annotated genes and; Subject: NRDB</paramValue>
       <paramValue name="output">BLASTP alignments</paramValue>
       <paramValue name="parameters">$$blastpNrdbArgs$$</paramValue>
       <paramValue name="description">BLASTP translations of annotated genes against NCBI's non-redundant protein database (NRDB).  WU-BLASTP is used to identify statistically significant protein-protein sequence similarities</paramValue>
-      <paramValue name="pubmedId"></paramValue>
+      <paramValue name="pubmedId">2231712</paramValue>
       <paramValue name="url">http://blast.wustl.edu</paramValue>
-      <paramValue name="credits">Warren R. Gish, Washington University, Saint Louis, Missouri</paramValue>
+      <paramValue name="credits"></paramValue>
       <depends name="blastpNrdb"/>
     </step>
 
@@ -242,13 +295,14 @@
       <paramValue name="name">>WU-BLASTP (Annotated protein sequences vs. PDB)</paramValue>
       <paramValue name="tool">BLASTP</paramValue>
       <paramValue name="version"></paramValue>
+      <paramValue name="category">Proteome</paramValue>
       <paramValue name="input">Query: Protein translations of annotated genes and; Subject: PDB</paramValue>
       <paramValue name="output">BLASTP alignments</paramValue>
       <paramValue name="parameters">$$blastpNrdbArgs$$</paramValue>
       <paramValue name="description">BLASTP translations of annotated genes against the Protein Data Bank (PDB).  WU-BLASTP is used to identify statistically significant protein-protein sequence similarities</paramValue>
-      <paramValue name="pubmedId"></paramValue>
+      <paramValue name="pubmedId">2231712</paramValue>
       <paramValue name="url">http://blast.wustl.edu</paramValue>
-      <paramValue name="credits">Warren R. Gish, Washington University, Saint Louis, Missouri</paramValue>
+      <paramValue name="credits"></paramValue>
       <depends name="blastpPdb"/>
     </step>
 
