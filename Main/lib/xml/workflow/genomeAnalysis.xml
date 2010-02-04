@@ -77,7 +77,7 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
       <paramValue name="name">BLASTX Genomic sequence vs. NRDB</paramValue>
       <paramValue name="tool">WU-BLASTX</paramValue>
-      <paramValue name="version"></paramValue>
+      <paramValue name="version">2.0 [06-Apr-2005]</paramValue>
       <paramValue name="category">Genome</paramValue>
       <paramValue name="input">Query: Genomic sequence; Subject: NRDB</paramValue>
       <paramValue name="output">BLASTX alignments</paramValue>
@@ -87,22 +87,6 @@
       <paramValue name="url">http://blast.wustl.edu</paramValue>
       <paramValue name="credits"></paramValue>
       <depends name="blastxGenomicSeqsNrdb"/>
-    </step>
-
-    <step name="document-"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name"></paramValue>
-      <paramValue name="tool"></paramValue>
-      <paramValue name="version"></paramValue>
-      <paramValue name="category"></paramValue>
-      <paramValue name="input"></paramValue>
-      <paramValue name="output"></paramValue>
-      <paramValue name="parameters"></paramValue>
-      <paramValue name="description"></paramValue>
-      <paramValue name="pubmedId"></paramValue>
-      <paramValue name="url"></paramValue>
-      <paramValue name="credits"></paramValue>
-      <depends name=""/>
     </step>
 
     <subgraph name="tRNAScan" xmlFile="trnaScanWorkflow.xml" includeIf="$$runtRNAScan$$">
@@ -118,7 +102,7 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
       <paramValue name="name">Predict tRNAs in genomic sequence</paramValue>
       <paramValue name="tool">tRNAScan-SE</paramValue>
-      <paramValue name="version"></paramValue>
+      <paramValue name="version">1.4</paramValue>
       <paramValue name="category">Genome</paramValue>
       <paramValue name="input">Genomic sequences</paramValue>
       <paramValue name="output">predicted tRNAs with anticodon and score</paramValue>
@@ -149,6 +133,22 @@
       <depends name="makeOrfFile"/>
     </step>
 
+    <step name="document-makeOrfFile"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
+      <paramValue name="name">Locate Open Reading Frames (ORFs)</paramValue>
+      <paramValue name="tool">orfFinder</paramValue>
+      <paramValue name="version"></paramValue>
+      <paramValue name="category">Genome</paramValue>
+      <paramValue name="input">Genomic sequence</paramValue>
+      <paramValue name="output">gff file containing the 6 reading frame, 50 or more amino acid translations of the input nucleic acid</paramValue>
+      <paramValue name="parameters">--minPepLength 50</paramValue>
+      <paramValue name="description">The translations in all 6 reading frames do not necessarily begin with MET but always end at a stop codon. ORF names are in the form template-frame-start-end, e.g. AAEL01000396-5-5847-4366</paramValue>
+      <paramValue name="pubmedId"></paramValue>
+      <paramValue name="url"></paramValue>
+      <paramValue name="credits"></paramValue>
+      <depends name="makeOrfFile"/>
+    </step>
+
     <step name="findTandemRepeats"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindTandemRepeats">
       <paramValue name="seqsFile">$$genomicSeqsFile$$</paramValue>
@@ -168,7 +168,7 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
       <paramValue name="name">Find tandem repeats in genomic sequence</paramValue>
       <paramValue name="tool">Tandem Repeat Finder</paramValue>
-      <paramValue name="version"></paramValue>
+      <paramValue name="version">3.21</paramValue>
       <paramValue name="category">Genome</paramValue>
       <paramValue name="input">Genomic sequences</paramValue>
       <paramValue name="output">a repeat table file and an alignment file</paramValue>
