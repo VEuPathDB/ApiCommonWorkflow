@@ -1,0 +1,35 @@
+<workflow name="resourceWorkflow">
+    <param name="dataSourceName"/>
+
+    <constant name="dataDir">$$dataSourceName$$</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="acquire" stepClass="ApiCommonData::Steps::AcquireExternalResource">
+      <paramValue name="dataSourceName">$$dataSourceName$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="unpack" stepClass="ApiCommonData::Steps::UnpackExternalResource">
+      <paramValue name="dataSourceName">$$dataSourceName$$</paramValue>
+      <depends name="acquire"/>
+    </step>
+
+    <step name="insertExtDb" stepClass="ApiCommonData::Steps::InsertExtDb">
+      <paramValue name="dataSourceName">$$dataSourceName$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="insertExtDbRls" stepClass="ApiCommonData::Steps::InsertExtDbRls">
+      <paramValue name="dataSourceName">$$dataSourceName$$</paramValue>
+      <depends name="insertExtDb"/>
+    </step>
+
+    <step name="runPlugin" stepClass="ApiCommonData::Steps::RunPlugin">
+      <paramValue name="dataSourceName">$$dataSourceName$$</paramValue>
+      <depends name="unpack"/>
+      <depends name="insertExtDbRls"/>
+    </step>
+
