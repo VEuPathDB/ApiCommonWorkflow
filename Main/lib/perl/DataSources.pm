@@ -16,7 +16,7 @@ sub new {
 
   bless($self,$class);
 
-  $self->{resourcesXmlFile} = $resourcesXmlFile;
+  $self->{resourcesXmlFile} = "$ENV{GUS_HOME}/lib/xml/datasources/$resourcesXmlFile";
 
   $self->_parseXmlFile($resourcesXmlFile, $properties);
 

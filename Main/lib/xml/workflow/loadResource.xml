@@ -1,29 +1,39 @@
 <workflow name="resourceWorkflow">
-    <param name="dataSourceName"/>
+    <param name="resourceName"/>
+    <param name="resourceXmlFileName"/>
+    <param name="parentDataDir"/>
 
-    <constant name="dataDir">$$dataSourceName$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/$$resourceName$$</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
     <step name="getAndUnpack" stepClass="ApiCommonData::Steps::GetAndUnpackResource">
-      <paramValue name="dataSourceName">$$dataSourceName$$</paramValue>
+      <paramValue name="resourceName">$$resourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$resourceName$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
     <step name="insertExtDb" stepClass="ApiCommonData::Steps::InsertExtDb">
-      <paramValue name="dataSourceName">$$dataSourceName$$</paramValue>
+      <paramValue name="resourceName">$$resourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$resourceName$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
     <step name="insertExtDbRls" stepClass="ApiCommonData::Steps::InsertExtDbRls">
-      <paramValue name="dataSourceName">$$dataSourceName$$</paramValue>
+      <paramValue name="resourceName">$$resourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$resourceName$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
       <depends name="insertExtDb"/>
     </step>
 
     <step name="runPlugin" stepClass="ApiCommonData::Steps::RunPlugin">
-      <paramValue name="dataSourceName">$$dataSourceName$$</paramValue>
+      <paramValue name="resourceName">$$resourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$resourceName$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
       <depends name="getAndUnpack"/>
       <depends name="insertExtDbRls"/>
     </step>
