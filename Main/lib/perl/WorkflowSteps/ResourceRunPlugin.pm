@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::InsertExtDb;
+package ApiCommonWorkflow::Main::WorkflowSteps::ResourceRunPlugin;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
@@ -12,13 +12,17 @@ sub run {
     my $dataDirPath = $self->getParamValue('dataDir');
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
-    my $extDbName = $dataSource->getLegacyExtDbName();
-    $extDbName || $extDbName = $dataSource->getName();
+    my $plugin =  $dataSource->getPlugin();
+    my $pluginArgs =  $dataSource->getPluginArgs();
 
-    my $dbPluginArgs = "--name '$extDbName' ";
-    
-    $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
+    _formatForCLI($pluginArgs);
 
+    $self->runPlugin($test, $undo, $plugin, $pluginArgs);
+}
+
+sub _formatForCLI {
+    $_[0] =~ s/\\$//gm;
+    $_[0] =~ s/[\n\r]+/ /gm;
 }
 
 
@@ -27,7 +31,7 @@ sub getParamsDeclaration {
 	'resourceName',
 	'resourceXmlFileName',
         'dataDir'
-	);
+           );
 }
 
 sub getConfigDeclaration {

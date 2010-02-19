@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::GetAndUnpackResource;
+package ApiCommonWorkflow::Main::WorkflowSteps::ResourceGetAndUnpack;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;

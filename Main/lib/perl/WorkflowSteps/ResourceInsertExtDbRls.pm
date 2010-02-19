@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::RunLoadResourcePlugin;
+package ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertExtDbRls;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
@@ -12,17 +12,13 @@ sub run {
     my $dataDirPath = $self->getParamValue('dataDir');
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
-    my $plugin =  $dataSource->getPlugin();
-    my $pluginArgs =  $dataSource->getPluginArgs();
+    my $extDbName = $dataSource->getLegacyExtDbName();
+    $extDbName || $extDbName = $dataSource->getName();
+    my $extDbRlsVer =  $dataSource->getVersion();
 
-    _formatForCLI($pluginArgs);
+    my $releasePluginArgs = "--databaseName '$extDbName' --databaseVersion '$extDbRlsVer'";
 
-    $self->runPlugin($test, $undo, $plugin, $pluginArgs);
-}
-
-sub _formatForCLI {
-    $_[0] =~ s/\\$//gm;
-    $_[0] =~ s/[\n\r]+/ /gm;
+    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
 }
 
 
@@ -31,8 +27,9 @@ sub getParamsDeclaration {
 	'resourceName',
 	'resourceXmlFileName',
         'dataDir'
-           );
+	);
 }
+
 
 sub getConfigDeclaration {
     return (
