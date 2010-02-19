@@ -109,6 +109,8 @@ sub getDescription {
 }
 
 sub getPublications {
+    my ($self) = @_;
+
     if (!$self->{publications}) {
 	$self->{publications} = [];
 	foreach my $pubmedId ($self->{parsedXml}->{publication}->{pmid}) {
