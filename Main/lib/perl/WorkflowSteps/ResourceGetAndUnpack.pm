@@ -13,18 +13,13 @@ sub run {
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
     my $localDataDir = $self->getLocalDataDir();
-    my $targetDir = "$localDataDir/$dataDir";
+    my $targetDir = "$localDataDir/$dataDirPath";
 
     if ($undo) {
       $self->runCmd(0, "rm -fr $targetDir");
     } else {
 	$self->getResource($test, $dataSource, $targetDir);
 	$self->unpackResource($test, $dataSource, $targetDir);
-	if ($commonDoneFlag) {
-	    open(F, $commonDoneFlag) || die "Can't open common done flag '$commonDoneFlag'";
-	    print F "common resource acquired  by step " . $self->getName() ."\n";
-	    close(F);
-	}
     }
 }
 

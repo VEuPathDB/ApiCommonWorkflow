@@ -13,10 +13,10 @@ sub run {
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
     my $extDbName = $dataSource->getLegacyExtDbName();
-    $extDbName || $extDbName = $dataSource->getName();
+    $extDbName = $dataSource->getName() unless $extDbName;
 
     my $dbPluginArgs = "--name '$extDbName' ";
-    
+
     $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 
 }

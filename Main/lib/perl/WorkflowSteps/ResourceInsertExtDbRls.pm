@@ -13,7 +13,8 @@ sub run {
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
     my $extDbName = $dataSource->getLegacyExtDbName();
-    $extDbName || $extDbName = $dataSource->getName();
+    $extDbName = $dataSource->getName() unless $extDbName;
+
     my $extDbRlsVer =  $dataSource->getVersion();
 
     my $releasePluginArgs = "--databaseName '$extDbName' --databaseVersion '$extDbRlsVer'";
