@@ -1,26 +1,14 @@
-<workflowGraph name="commonAnalysis">
-      <param name="nrdbExtDbRlsSpec"/>
-      <param name="nrdbOutputFile"/>
-      <param name="nrdbShortDeflineOutputFile"/>
-      <param name="pdbOutputFile"/>
+<workflowGraph name="common">
       <param name="projectName"/>
       <param name="projectVersion"/>
-      <param name="genomeExtDbRlsSpecList"/>
-
+      <param name="comparativeGenomicsFastaDir"/>
 
     <constant name="dataDir">common</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
-      <paramValue name="dataDir">common</paramValue>
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="initClusterHomeDir"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitClusterHomeDir">
-    </step>
-
-    <step name="initUserGroupProject" 
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
-    </step>
 
     <step name="makeBlastWebServicesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
       <paramValue name="apiSiteFilesDir">webServices/$$projectName$$/release-$$projectVersion$$/blast</paramValue>
@@ -34,44 +22,9 @@
       <paramValue name="apiSiteFilesDir">webServices/$$projectName$$/release-$$projectVersion$$/motif</paramValue>
     </step>
 
-    <step name="makeMercatorDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
-      <paramValue name="dataDir">common/mercator</paramValue>
+    <step name="makeComparativeGenomicsFastaDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$comparativeGenomicsFastaDir$$</paramValue>
       <depends name="makeDataDir"/>
-    </step>
-
-    <step name="copyPdbFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyResourcesFile">
-      <paramValue name="resourcesFile">PDBProteinSequences/pdb.fsa</paramValue>
-      <paramValue name="toFile">$$pdbOutputFile$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-
-    <step name="copyNrdbFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyResourcesFile">
-      <paramValue name="resourcesFile">NRDB/nr</paramValue>
-      <paramValue name="toFile">$$nrdbOutputFile$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-
-    <step name="shortenNrdbDefline" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ShortenDefline">
-      <paramValue name="inputFile">$$nrdbOutputFile$$</paramValue>
-      <paramValue name="outputFile">$$nrdbShortDeflineOutputFile$$</paramValue>
-      <paramValue name="mappingFileRelativeToDownloadDir">taxonomy/gi_taxid_prot.dmp</paramValue>
-      <depends name="copyNrdbFile"/>
-    </step>
-
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">common</paramValue>
-      <depends name="initClusterHomeDir"/>
-      <depends name="shortenNrdbDefline"/>
-      <depends name="copyPdbFile"/>
-    </step>
-
-    <step name="InsertGusTableWithXml" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGusTableWithXml" stepLoadTypes="plugin">
-      <paramValue name="xmlFileRelativeToGusHomeDir">/lib/xml/blatalignmentquality.xml</paramValue>
-      <paramValue name="gusTable">DoTS.BLATAlignmentQuality</paramValue>
-    </step>
-
-    <step name="InsertGenegenomicsequenceWithSql" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadGenegenomicsequenceByQuery">
-      <paramValue name="genomeExtDbRlsSpecList">$$genomeExtDbRlsSpecList$$</paramValue>
     </step>
 
 </workflowGraph>
