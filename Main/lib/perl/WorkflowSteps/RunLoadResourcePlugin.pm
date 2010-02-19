@@ -7,15 +7,10 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $dataSourceName = $self->getParamValue('dataSourceName');
-    my $dataSource = $self->getDataSource($dataSourceName);
-    my $idempotenceTable = $self->getParamValue('idempotenceTable');
-    if (!$undo && !$test
-	&& $idempotenceTable
-	&& $self->testIdempotenceTable($idempotenceTable, $dataSource)) {
-	$self->log("Data for this data source found in table '$idempotenceTable'.  Data source already loaded.  Doing nothing");
-	return;
-    } 
+    my $dataSourceName = $self->getParamValue('resourceName');
+    my $dataSourceXmlFile = $self->getParamValue('resourceXmlFileName');
+    my $dataDirPath = $self->getParamValue('dataDir');
+    my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
     my $plugin =  $dataSource->getPlugin();
     my $pluginArgs =  $dataSource->getPluginArgs();
@@ -30,29 +25,13 @@ sub _formatForCLI {
     $_[0] =~ s/[\n\r]+/ /gm;
 }
 
-sub testIdempotenceTable {
-    my ($self, $idempotenceTable, $dataSource) = @_;
-
-    my $extDbName = $dataSource->getName();
-    my $extDbRls = $dataSource->getVersion();
-    my $extDbRlsId = $self->getExtDbRlsId(0, "$extDbName|$extDbRls");
-    my $sql = "
-select count(*) from $idempotenceTable
-where external_database_release_id = $extDbRlsId";
-
-    my $cmd = "getValueFromTable --idSQL \"$sql\"";
-
-    my $count = $self->runCmd(0, $cmd);
-    return $count;
-}
-
-
 
 sub getParamsDeclaration {
     return (
-	'dataSourceName',
-	'idempotenceTable'
-	);
+	'resourceName',
+	'resourceXmlFileName',
+        'dataDir'
+           );
 }
 
 sub getConfigDeclaration {

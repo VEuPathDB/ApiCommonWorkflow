@@ -181,11 +181,14 @@ sub getInputFiles{
 }
 
 sub getDataSource {
-  my ($self, $dataSourceName) = @_;
+  my ($self, $dataSourceName, $dataSourcesXmlFile, $dataDirPath) = @_;
 
   if (!$self->{dataSources}) {
-    my $dataSourcesXmlFile = $self->getGlobalConfig('dataSourcesXmlFile');
+    my $localDataDir = $self->getLocalDataDir();
+    my $dataDir = "$localDataDir/$dataDirPath";
+
     my $globalProperties = $self->getGlobalConfigProperties();
+    $globalProperties->addProperty("dataDir", $dataDir);
     $self->{dataSources} =
       ApiCommonWorkflow::Main::DataSources->new($dataSourcesXmlFile, $globalProperties);  }
   return $self->{dataSources}->getDataSource($dataSourceName);

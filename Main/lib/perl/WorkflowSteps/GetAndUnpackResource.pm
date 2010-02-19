@@ -7,31 +7,23 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $commonTargetDir =  $self->getParamValue('commonTargetDir');
-    my $dataSourceName = $self->getParamValue('dataSourceName');
-    my $dataSource = $self->getDataSource($dataSourceName);
+    my $dataSourceName = $self->getParamValue('resourceName');
+    my $dataSourceXmlFile = $self->getParamValue('resourceXmlFileName');
+    my $dataDirPath = $self->getParamValue('dataDir');
+    my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
     my $localDataDir = $self->getLocalDataDir();
-    my $targetDir = "$localDataDir/$dataSourceName";
+    my $targetDir = "$localDataDir/$dataDir";
 
     if ($undo) {
       $self->runCmd(0, "rm -fr $targetDir");
     } else {
-	my $commonDoneFlag;
-	if ($commonTargetDir) {
-	    $targetDir = $commonTargetDir;
-	    $commonDoneFlag = "$commonTargetDir/commonResourceAlreadyAcquired";
-	}
-	if ($commonDoneFlag && -e $commonDoneFlag) {
-	    $self->log("common resource already acquired");
-	} else {
-	    $self->getResource($test, $dataSource, $targetDir);
-	    $self->unpackResource($test, $dataSource, $targetDir);
-	    if ($commonDoneFlag) {
-		open(F, $commonDoneFlag) || die "Can't open common done flag '$commonDoneFlag'";
-		print F "common resource acquired  by step " . $self->getName() ."\n";
-		close(F);
-	    }
+	$self->getResource($test, $dataSource, $targetDir);
+	$self->unpackResource($test, $dataSource, $targetDir);
+	if ($commonDoneFlag) {
+	    open(F, $commonDoneFlag) || die "Can't open common done flag '$commonDoneFlag'";
+	    print F "common resource acquired  by step " . $self->getName() ."\n";
+	    close(F);
 	}
     }
 }
@@ -83,8 +75,9 @@ sub _formatForCLI {
 
 sub getParamsDeclaration {
     return (
-	'dataSourceName',
-	'commonTargetDir'
+	'resourceName',
+	'resourceXmlFileName',
+        'dataDir'
            );
 }
 

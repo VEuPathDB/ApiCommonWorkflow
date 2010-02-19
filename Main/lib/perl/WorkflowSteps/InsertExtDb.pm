@@ -7,8 +7,11 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $dataSourceName = $self->getParamValue('dataSourceName');
-    my $dataSource = $self->getDataSource($dataSourceName);
+    my $dataSourceName = $self->getParamValue('resourceName');
+    my $dataSourceXmlFile = $self->getParamValue('resourceXmlFileName');
+    my $dataDirPath = $self->getParamValue('dataDir');
+    my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
+
     my $extDbName = $dataSource->getLegacyExtDbName();
     $extDbName || $extDbName = $dataSource->getName();
 
@@ -21,8 +24,10 @@ sub run {
 
 sub getParamsDeclaration {
     return (
-            'dataSourceName'
-           );
+	'resourceName',
+	'resourceXmlFileName',
+        'dataDir'
+	);
 }
 
 sub getConfigDeclaration {
