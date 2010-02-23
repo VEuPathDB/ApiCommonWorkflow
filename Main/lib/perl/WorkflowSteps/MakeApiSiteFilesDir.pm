@@ -22,7 +22,7 @@ sub run {
 
       $self->runCmd(0, "mkdir -p $baseDir/$apiSiteFilesDir");
       # go to root of local path to avoid skipping intermediate dirs
-      my @path = split(/\//,$apiSiteFilesDir);
+      #my @path = split(/\//,$apiSiteFilesDir);
       #$self->runCmd(0, "chmod -R g+w $baseDir/$path[0]");
   }
 }
