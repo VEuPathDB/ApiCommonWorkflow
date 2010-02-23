@@ -15,9 +15,10 @@
   <param name="organismName"/>
   <param name="runExportPred"/>
   <param name="mapEpitope"/>
+  <param name="organismResourceXmlFile"/>
 
   <constant name="dataDir">$$parentDataDir$$/proteome</constant>
-  <constant name="proteinsFile">$$dataDir$$/AnnotatedProteins.fsa</constant>
+  <constant name="proteinsFile">../../$$organismName$$LoadGenome/AnnotatedProteins.fsa</constant>
   <constant name="blastpNrdbArgs">-cpus=2 -topcomboN=1 V=100 B=20 -hspmax=1000000 -gi E=1e-3 -wordmask=seg -hspsepQmax=4000 -span1 W=3 T=1000</constant>
   <constant name="blastpPdbArgs">-cpus=2 -topcomboN=1 V=100 B=20 -hspmax=1000000 -gi E=1e-3 -wordmask=seg -hspsepQmax=4000 -span1</constant>
   <constant name="signalpArgs">-t euk -f short -m nn+hmm -q -trunc 70</constant>
@@ -33,24 +34,11 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="extractProteins"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAnnotatedProteinsBySpecies">
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="outputFile">$$proteinsFile$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-
-    <step name="mirrorProteinsToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="extractProteins"/>
-    </step>
-
     <step name="runTmhmm"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTmhmm">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/tmhmm.out</paramValue>
-      <depends name="extractProteins"/>
+      <depends name="makeDataDir"/>
     </step>
 
     <step name="insertTmhmm"
@@ -80,7 +68,7 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunExportPred" includeIf="$$runExportPred$$">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/exportPred.out</paramValue>
-      <depends name="extractProteins"/>
+      <depends name="makeDataDir"/>
     </step>
 
     <step name="insertExportPred"
@@ -112,7 +100,7 @@
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/signalP.out</paramValue>
       <paramValue name="options">$$signalpArgs$$</paramValue>
-      <depends name="extractProteins"/>
+      <depends name="makeDataDir"/>
     </step>
 
     <step name="insertSignalP"
@@ -138,14 +126,28 @@
       <depends name="insertSignalP"/>
     </step>
 
+  <subgraph name="IEDBResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">IEDB_Epitopes</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="dataDir">$$dataDir$$/IEDB_Epitopes</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
     <subgraph name="mapEpitopesToProteins" xmlFile="epitopes.xml" includeIf="$$mapEpitope$$">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
       <paramValue name="iedbExtDbRlsSpec">Links to IEDB epitopes|$$iedbVersion$$</paramValue>
-      <depends name="extractProteins"/>
+      <depends name="IEDBResource"/>
     </subgraph>
+
+  <subgraph name="IEDBEpitopesDBxRefsResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">IEDB_Epitopes_DBxRefs</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="dataDir">$$dataDir$$/IEDB_Epitopes_DBxRefs</paramValue>
+    <depends name="IEDBResource"/>
+  </subgraph>
 
    <step name="runLowComplexityFilter"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunLowComplexityFilter"> 
@@ -154,7 +156,7 @@
       <paramValue name="outputFile">$$proteinsFile$$.seg</paramValue>
       <paramValue name="filterType">seg</paramValue>
       <paramValue name="options">-x</paramValue>
-      <depends name="extractProteins"/>
+      <depends name="makeDataDir"/>
     </step>
 
     <step name="loadLowComplexityFile"
@@ -190,7 +192,8 @@
       <paramValue name="proteinsFileRegex">^([\\w\\.]+)</paramValue>
       <paramValue name="nrdbFileRegex">^\\|\\d+\\|(?:emb|gb|dbj|ref|sp|pdb)\\|([\\w\\.]+)\\|</paramValue>
       <paramValue name="outputFile">$$dataDir$$/nrdbXrefs.txt</paramValue>
-       <depends name="extractProteins"/>
+       <depends name="makeDataDir"/>
+      <depends name="global.NRDBResource"/>
     </step>
 
     <step name="loadNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadNrdbXrefs" stepLoadTypes="plugin">
@@ -207,7 +210,8 @@
       <paramValue name="interproExtDbRlsSpec">INTERPRO|$$interproVersion$$</paramValue>
       <paramValue name="interproVersion">$$interproVersion$$</paramValue>
       <paramValue name="goVersion">$$goVersion$$</paramValue>
-      <depends name="mirrorProteinsToCluster"/>
+      <depends name="makeDataDir"/>
+      <depends name="global.interproscanDataResource"/>
     </subgraph>
 
     <step name="document-interpro"
@@ -267,7 +271,8 @@
       <paramValue name="filterByTaxon">false</paramValue>
       <paramValue name="taxonHierarchyForFilter"></paramValue>
       <paramValue name="loadOptions">--subjectsLimit 50</paramValue>
-      <depends name="mirrorProteinsToCluster"/>
+      <depends name="makeDataDir"/>
+      <depends name="global.NRDBResource"/>
     </subgraph>
 
    <step name="document-blastpNrdb"
@@ -303,7 +308,8 @@
       <paramValue name="filterByTaxon">false</paramValue>
       <paramValue name="taxonHierarchyForFilter"></paramValue>
       <paramValue name="loadOptions">--noHSPs --subjectPvalue 1e-05 --subjectPctIdent 30</paramValue>
-      <depends name="mirrorProteinsToCluster"/>
+      <depends name="makeDataDir"/>
+      <depends name="global.PDBResource"/>
     </subgraph>
 
    <step name="document-blastpPdb"

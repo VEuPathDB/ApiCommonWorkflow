@@ -1,13 +1,10 @@
 <workflowGraph name="global">
-      <param name="projectName"/>
-      <param name="projectVersion"/>
+      <param name="commonResourceXmlFile"/>
+      <param name="globalResourceXmlFile"/>
       <param name="isolatesResourceReference"/>
 
 
     <constant name="dataDir">global</constant>
-    <constant name="commonResourceXmlFile">plasmodb/$$projectName$$Common.xml</constant>
-    <constant name="globalResourceXmlFile">global.xml</constant>
-
 
     <step name="initClusterHomeDir"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitClusterHomeDir">
@@ -68,14 +65,10 @@
   </subgraph>
 
   <subgraph name="isolatesResource" xmlFile="$$isolatesResourceReference$$">
-    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="commonResourceXmlFile">$$commonResourceXmlFilee$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
     <depends name="initUserGroupProject"/>
-    <depends name="SOResource"/>
-    <depends name="taxonomyResource"/>
   </subgraph>
-
-
-
 
   <subgraph name="isolateVocabularyResource" xmlFile="loadResource.xml">
     <paramValue name="resourceName">isolateVocabulary</paramValue>
@@ -176,7 +169,6 @@
     <paramValue name="dataDir">$$dataDir$$/blatAlignmentQuality</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
-
 
     <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>

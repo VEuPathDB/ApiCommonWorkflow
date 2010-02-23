@@ -60,12 +60,36 @@
   </subgraph>
 
   <subgraph name="global" xmlFile="../global.xml">
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="isolatesResourceReference">plasmoIsolatesResource.xml</paramValue>
+    <paramValue name="commonResourceXmlFile">plasmodb/plasmodbCommon.xml</paramValue>
+    <paramValue name="globalResourceXmlFile">global.xml</paramValue>
   </subgraph>
 
-  <subgraph name="PfalciparumAnalysis" xmlFile="organism.xml">
+  <subgraph name="PfalciparumLoadGenome" xmlFile="../loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Pfalciparum</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$PfalciparumExtDbRlsSpec$$</paramValue>
+    <paramValue name="gorganismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">plasmodb/pfalciparumISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">36329</paramValue>
+    <depends name="common"/>
+    <depends name="global.taxonomyResource"/>
+    <depends name="global.SOResource"/>
+  </subgraph>
+
+  <subgraph name="PfalciparumMakeAndMaskTopLevelGenome" xmlFile="../makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Pfalciparum</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$PfalciparumExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Plasmodium</paramValue>
+    <depends name="PfalciparumLoadGenome"/>
+  </subgraph>
+
+
+  <subgraph name="PfalciparumPostLoadGenome" xmlFile="../postLoadGenome.xml">
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
@@ -101,12 +125,13 @@
     <paramValue name="makeAssemblySeqs">true</paramValue>
     <paramValue name="makeAssemblies">true</paramValue>
     <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">plasmodb/pfalciparumESTResource.xml</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">plasmodb/pfalciparumMassSpecResource.xml</paramValue>
+    <paramValue name="gorganismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
     <depends name="common"/>
   </subgraph>
 
-
-
-  <subgraph name="PfalciparumSpecificAnalysis" xmlFile="plasmodb/pfalciparumSpecific.xml">
+  <subgraph name="PfalciparumSpecificWorkflow" xmlFile="pfalciparumSpecific.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismName">Pfalciparum</paramValue>
     <paramValue name="organismFullName">Plasmodium falciparum</paramValue>

@@ -22,10 +22,12 @@
   <param name="makeAssemblySeqs"/>
   <param name="makeAssemblies"/>
   <param name="mapAssemblySeqsAndAssemblies"/>
-
+  <param name="organismSpecificESTResourcesReference"/>
+  <param name="organismSpecificMassSpecResourcesReference"/>
+  <param name="organismResourceXmlFile"/>
 
   <constant name="dataDir">$$parentDataDir$$/genome</constant>
-  <constant name="genomicSeqsFile">$$dataDir$$/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFile">../../$$organismName$$LoadGenome/genomicSeqs.fsa</constant>
   <constant name="assemblySeqsDataDir">$$dataDir$$/makeAssemblySeqs</constant>
   <constant name="mapAssemblySeqsDataDir">$$dataDir$$/mapAssemblySeqs</constant>
   <constant name="assembliesDataDir">$$dataDir$$/makeAssemblies</constant>
@@ -37,25 +39,21 @@
   </step>
 
     <step name="InsertGenegenomicsequenceWithSql" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadGenegenomicsequenceByQuery">
-      <paramValue name="genomeExtDbRlsSpecList">$$genomeExtDbRlsSpecList$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpecList">$$genomeExtDbRlsSpec$$</paramValue>
     </step>
 
+  <subgraph name="dbESTResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">SO</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="dataDir">$$dataDir$$/SO</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
 
-  <step name="extractGenomicSeqs"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
-      <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="table">ExternalNASequence</paramValue>
-      <paramValue name="alternateDefline"></paramValue>
-      <paramValue name="outputFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="separateFastaFiles">false</paramValue>
-      <paramValue name="outputDirForSeparateFiles"></paramValue>
-      <depends name="makeDataDir"/> 
-    </step>
-
-   <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="extractGenomicSeqs"/>
-    </step>
+  <subgraph name="organismSpecificESTResource" xmlFile="$$organismSpecificESTResourcesReference$$">
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
 
     <subgraph name="blastxGenomicSeqsNrdb" xmlFile="blast.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -74,7 +72,8 @@
       <paramValue name="filterByTaxon">true</paramValue>
       <paramValue name="taxonHierarchyForFilter">$$taxonHierarchyForBlastxFilter$$</paramValue>
       <paramValue name="loadOptions"></paramValue>
-      <depends name="mirrorToCluster"/>
+      <depends name="makeDataDir"/>
+      <depends name="global.NRDBResource"/>
     </subgraph>
 
 
@@ -100,7 +99,7 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="tRNAExtDbRlsSpec">$$organismName$$TRNAscan-SE|1.23</paramValue>
       <paramValue name="soVersion">$$soVersion$$</paramValue>
-      <depends name="mirrorToCluster"/>
+      <depends name="makeDataDir"/>
     </subgraph>
 
     <step name="document-tRNAScan"
@@ -124,7 +123,7 @@
       <paramValue name="seqFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="minPepLength">50</paramValue>
       <paramValue name="outputFile">$$dataDir$$/Orf50.gff</paramValue>
-      <depends name="extractGenomicSeqs"/>
+      <depends name="makeDataDir"/>
     </step>
 
     <step name="loadOrfFile"
@@ -137,6 +136,12 @@
       <paramValue name="soVersion">$$soVersion$$</paramValue>
       <depends name="makeOrfFile"/>
     </step>
+
+  <subgraph name="organismSpecificMassSpecResource" xmlFile="$$organismSpecificMassSpecResourcesReference$$">
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <depends name="loadOrfFile"/>
+  </subgraph>
 
     <step name="document-makeOrfFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
@@ -159,7 +164,7 @@
       <paramValue name="seqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="repeatFinderArgs">$$trfArgs$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/tandemRepeats.out</paramValue>
-      <depends name="extractGenomicSeqs"/>
+      <depends name="makeDataDir"/>
     </step>
 
     <step name="loadTandemRepeats"
@@ -192,7 +197,7 @@
       <paramValue name="outputFile">$$genomicSeqsFile$$.dust</paramValue>
       <paramValue name="filterType">dust</paramValue>
       <paramValue name="options"></paramValue>
-      <depends name="extractGenomicSeqs"/>
+      <depends name="makeDataDir"/>
     </step>
 
     <step name="loadLowComplexityFile"
@@ -230,7 +235,8 @@
       <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
       <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
       <paramValue name="makeAssemblySeqs">$$makeAssemblySeqs$$</paramValue>
-      <depends name="extractGenomicSeqs"/>
+      <depends name="dbESTResource"/>
+      <depends name="organismSpecificESTResource"/>
     </subgraph>
 
     <subgraph name="mapAssemblySeqsToGenome" xmlFile="mapAssemblySeqsToGenome.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
