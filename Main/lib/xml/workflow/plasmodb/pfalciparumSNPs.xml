@@ -1,0 +1,107 @@
+<workflowGraph name="pfalciparumSNPs">
+  <param name="parentDataDir"/>
+  <param name="organismName"/>
+  <param name="organismFullName"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="suSnpExtDbRlsSpec"/>
+  <param name="broadSnpExtDbRlsSpec"/>
+  <param name="winzelerSnpExtDbRlsSpec"/>
+  <param name="sangerItGhanaSnpExtDbRlsSpec"/>
+  <param name="sangerReichenowiSnpExtDbRlsSpec"/>
+  <param name="combinedSnpExtDbRlsSpec"/>
+  <param name="organismResourceXmlFile"/>
+
+  <constant name="dataDir">$$parentDataDir$$/SNPs</constant>
+  <constant name="genomicSeqsFile">../$$organismName$$LoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genbankIsolateSeqFile">$$dataDir$$/genbankIsolatesSeqs.fsa</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="SuSNPs" xmlFile="getAndAnalyzeSNPs.xml">
+    <paramValue name="snpExtDbRlsSpec">$$suSnpExtDbRlsSpec$$</paramValue>
+    <paramValue name="snpNickName">Su_SNPs</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="resourcesFile">Su_SNPs/Pf_snps_allChromosomes.gff</paramValue>
+    <paramValue name="strain">3D7</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="suSnps_Mummer" xmlFile="runMummer.xml">
+    <paramValue name="snpExtDbRlsSpec">$$suSnpExtDbRlsSpec$$</paramValue>
+    <paramValue name="snpNickName">Su_SNPs</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="resourcesFile">Su_SNPs/Pf_snps_allChromosomes.gff</paramValue>
+    <paramValue name="strain">3D7</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="broadSnps_Mummer" xmlFile="runMummer.xml">
+    <paramValue name="snpExtDbRlsSpec">$$broadSnpExtDbRlsSpec$$</paramValue>
+    <paramValue name="snpNickName">Broad_SNPs</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="resourcesFile">Broad_SNPs/broad_snps.gff</paramValue>
+    <paramValue name="strain">3D7</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="sangerItGhanaSnps_Mummer" xmlFile="runMummer.xml">
+    <paramValue name="snpExtDbRlsSpec">$$sangerItGhanaSnpExtDbRlsSpec$$</paramValue>
+    <paramValue name="snpNickName">sangerItGhanaSnps</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="resourcesFile">sangerItGhanaSnps/sangerPfalciparumSnps.gff</paramValue>
+    <paramValue name="strain">3D7</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="sangerReichenowiSnps_Mummer" xmlFile="runMummer.xml">
+    <paramValue name="snpExtDbRlsSpec">$$sangerReichenowiSnpExtDbRlsSpec$$</paramValue>
+    <paramValue name="snpNickName">sangerReichenowiSnps</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="resourcesFile">sangerReichenowiSnps/sangerPreichenowiSnps.gff</paramValue>
+    <paramValue name="strain">3D7</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="winzelerSnps_Mummer" xmlFile="runMummer.xml">
+    <paramValue name="snpExtDbRlsSpec">$$winzelerSnpExtDbRlsSpec$$</paramValue>
+    <paramValue name="snpNickName">WinzelerGeneticVariationArray</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="resourcesFile">WinzelerGeneticVariationArray/winzelerInput.gff</paramValue>
+    <paramValue name="strain">3D7</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="combinedSnps_Mummer" xmlFile="runMummer.xml">
+    <paramValue name="snpExtDbRlsSpec">$$combinedSnpExtDbRlsSpec$$</paramValue>
+    <paramValue name="snpNickName">plasmoDbCombinedSnps</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="resourcesFile">plasmoDbCombinedSnps/combinedSnps.gff</paramValue>
+    <paramValue name="strain">3D7</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+</workflowGraph>
