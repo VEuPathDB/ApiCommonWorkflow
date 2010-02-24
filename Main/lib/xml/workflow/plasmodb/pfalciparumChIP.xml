@@ -1,0 +1,48 @@
+<workflowGraph name="pfalciparumChIP">
+  <param name="parentDataDir"/>
+  <param name="organismName"/>
+  <param name="organismFullName"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="suSnpExtDbRlsSpec"/>
+  <param name="broadSnpExtDbRlsSpec"/>
+  <param name="winzelerSnpExtDbRlsSpec"/>
+  <param name="sangerItGhanaSnpExtDbRlsSpec"/>
+  <param name="sangerReichenowiSnpExtDbRlsSpec"/>
+  <param name="combinedSnpExtDbRlsSpec"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="genomicSeqsFile"/>
+
+  <constant name="dataDir">$$parentDataDir$$</constant>
+
+  <subgraph name="stunnenberChIP" xmlFile="getAndAnalyzeChIPs.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="chipResourceName">stunnenberChIP-chip</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="probeFile">$$stunnenberChipProbeFile$$</paramValue>
+    <paramValue name="chipExtDbRlsSpec">$$stunnenberChipExtDbRlsSpec$$</paramValue>
+    <paramValue name="inputDir">$$stunnenberChipInputDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="scherfChIP" xmlFile="ChIP-chip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="chipNickName">scherfChIP-chip</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="probeFile">$$scherfChipProbeFile$$</paramValue>
+    <paramValue name="chipExtDbRlsSpec">$$scherfChipExtDbRlsSpec$$</paramValue>
+    <paramValue name="inputDir">$$scherfChipInputDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="vossChIP" xmlFile="ChIP-chip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="chipNickName">vossChIP-chip</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="probeFile">$$vossChipProbeFile$$</paramValue>
+    <paramValue name="chipExtDbRlsSpec">$$vossChipExtDbRlsSpec$$</paramValue>
+    <paramValue name="inputDir">$$vossChipInputDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+
+</workflowGraph>
