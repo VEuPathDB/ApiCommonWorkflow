@@ -25,9 +25,8 @@
 
 
   <constant name="dataDir">$$parentDataDir$$/$$organismName$$Specific</constant>
-  <constant name="genomicSeqsFile">$$parentDataDir$$/$$organismName$$/genome/genomicSeqs.fsa</constant>
-  <constant name="genbankIsolateSeqFile">$$dataDir$$/genbankIsolatesSeqs.fsa</constant>
-    <constant name="organismResourceXmlFile">global</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/$$organismName$$LoadGenome/genomicSeqs.fsa</constant>
+  <constant name="organismResourceXmlFile">global</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -39,10 +38,12 @@
 
     <subgraph name="mapIsolatesToGenome" xmlFile="pfalciparumMapIsolatesToGenome.xml">
       <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="organismName"></paramValue>
-      <paramValue name="genomeExtDbRlsSpec"></paramValue>
-      <paramValue name="genbankIsolateExtDbRlsSpec"></paramValue>
-      <depends name="mirrorToCluster"/>
+      <paramValue name="organismName">$$organismName$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genbankIsolateExtDbRlsSpec">$$genbankIsolateExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <depends name="makeDataDir"/>
+      <dependsGlobal name="isolatesResource"/>
     </subgraph>
 
     <subgraph name="SNPs" xmlFile="pfalciparumSNPs.xml">
@@ -57,7 +58,25 @@
       <paramValue name="sangerReichenowiSnpExtDbRlsSpec"></paramValue>
       <paramValue name="combinedSnpExtDbRlsSpec"></paramValue>
       <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
-      <depends name="mirrorToCluster"/>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="ChIP-chips" xmlFile="pfalciparumChIP.xml">
+      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="genomeExtDbRlsSpec"></paramValue>
+      <paramValue name="stunnenberChipProbeFile"></paramValue
+      <paramValue name="stunnenberChipExtDbRlsSpec"></paramValue>
+      <paramValue name="stunnenberChipExtDbRlsSpec"></paramValue>
+      <paramValue name="scherfChipProbeFile"></paramValue>
+      <paramValue name="scherfChipExtDbRlsSpec"></paramValue>
+      <paramValue name="scherfChipInputDir"></paramValue>
+      <paramValue name="vossChipProbeFile"></paramValue>
+      <paramValue name="vossChipExtDbRlsSpec"></paramValue>
+      <paramValue name="vossChipInputDir"></paramValue>
+      <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <depends name="makeDataDir"/>
     </subgraph>
 
   <subgraph name="mapSageTags" xmlFile="mapSageTags.xml">
@@ -88,35 +107,5 @@
   </step>
 
 
-
-  <subgraph name="stunnenberChIP" xmlFile="ChIP-chip.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="chipNickName">stunnenberChIP-chip</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="probeFile">$$stunnenberChipProbeFile$$</paramValue>
-    <paramValue name="chipExtDbRlsSpec">$$stunnenberChipExtDbRlsSpec$$</paramValue>
-    <paramValue name="inputDir">$$stunnenberChipInputDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
-
-  <subgraph name="scherfChIP" xmlFile="ChIP-chip.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="chipNickName">scherfChIP-chip</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="probeFile">$$scherfChipProbeFile$$</paramValue>
-    <paramValue name="chipExtDbRlsSpec">$$scherfChipExtDbRlsSpec$$</paramValue>
-    <paramValue name="inputDir">$$scherfChipInputDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
-
-  <subgraph name="vossChIP" xmlFile="ChIP-chip.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="chipNickName">vossChIP-chip</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="probeFile">$$vossChipProbeFile$$</paramValue>
-    <paramValue name="chipExtDbRlsSpec">$$vossChipExtDbRlsSpec$$</paramValue>
-    <paramValue name="inputDir">$$vossChipInputDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
  
 </workflowGraph>

@@ -1,32 +1,32 @@
 <workflowGraph name="getAndAnalyzeSNPs.xml">
 
-    <param name="parentDataDir"/>
-    <param name="snpNickName"/>
+    <param name="snpExtDbRlsSpec"/>
+    <param name="snpResourceName"/>
     <param name="genomicSeqsFile"/>
+    <param name="parentDataDir"/>
     <param name="organismFullName"/>
     <param name="genomeExtDbRlsSpec"/>
-    <param name="snpExtDbRlsSpec"/>
-    <param name="resourcesFile"/>
     <param name="strain"/>
     <param name="organismResourceXmlFile"/>
 
-    <constant name="dataDir">$$parentDataDir$$/$$snpNickName$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/$$snpResourceName$$</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="copySnpGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyResourcesFile">
-      <paramValue name="resourcesFile">$$resourcesFile$$</paramValue>
-      <paramValue name="toFile">$$dataDir$$/SNPs.gff</paramValue>
+    <subgraph name="snpResource" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$snpResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$/$$snpResourceName$$</paramValue>
       <depends name="makeDataDir"/>
-    </step>
+    </subgraph>
 
     <step name="snpGffToFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpGffToFasta">
-      <paramValue name="inputFile">$$dataDir$$/SNPs.gff</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/$$snpResourceName$$/$$snpResourceName$$.gff</paramValue>
       <paramValue name="outputFile">$$dataDir$$/SNPs.fasta</paramValue>
       <paramValue name="strain">$$strain$$</paramValue>
-      <depends name="copySnpGffFile"/>
+      <depends name="snpResource"/>
     </step>
 
     <step name="runMummer" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMummer">
