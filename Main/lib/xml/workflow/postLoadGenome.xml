@@ -1,4 +1,6 @@
 <workflowGraph name="postLoadGenome">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
   <param name="parentDataDir"/>
   <param name="organismName"/>
   <param name="organismFullName"/>
@@ -8,15 +10,13 @@
   <param name="iedbVersion"/>
   <param name="soVersion"/>
   <param name="goVersion"/>
+  <param name="dbESTVersion"/>
   <param name="ncbiTaxonId"/>
   <param name="parentNcbiTaxonId"/>
   <param name="usePredictedTranscripts"/>
   <param name="predictedTranscriptsExtDbRlsSpec"/>
   <param name="runtRNAScan"/>
   <param name="runExportPred"/>
-  <param name="pdbFile"/>
-  <param name="nrdbFile"/>
-  <param name="nrdbShortDeflineFile"/>  
   <param name="maxIntronSize"/>
   <param name="taxonHierarchyForBlastxFilter"/>
   <param name="nrdbExtDbRlsSpec"/>  
@@ -35,14 +35,12 @@
   <param name="organismResourceXmlFile"/>
 
   <constant name="dataDir">$$parentDataDir$$/$$organismName$$PostLoadGenome</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/$$organismName$$LoadGenome/genomicSeqs.fsa</constant>
+  <constant name="proteinsFile">$$parentDataDir$$/$$organismName$$LoadGenome/AnnotatedProteins.fsa</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
-
-    <step name="makeDownloadSiteDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">$$projectName$$/release-$$projectVersion$$/$$organismName$$</paramValue>
-    </step>
 
   <subgraph name="genomeAnalysis" xmlFile="genome.xml" excludeIf="$$skipGenomeAnalysis$$">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -54,8 +52,6 @@
     <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
     <paramValue name="usePredictedTranscripts">$$usePredictedTranscripts$$</paramValue>
     <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
-    <paramValue name="nrdbFile">$$nrdbFile$$</paramValue>
-    <paramValue name="nrdbShortDeflineFile">$$nrdbShortDeflineFile$$</paramValue>
     <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
     <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">$$distanceBetweenStartsForAlignmentsInSameCluster$$</paramValue>
     <paramValue name="taxonHierarchyForBlastxFilter">$$taxonHierarchyForBlastxFilter$$</paramValue>
@@ -70,6 +66,7 @@
     <paramValue name="organismSpecificESTResourcesReference">$$organismSpecificESTResourcesReference$$</paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference">$$organismSpecificMassSpecResourcesReference$$</paramValue>
     <paramValue name="gorganismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
@@ -82,38 +79,20 @@
     <paramValue name="soVersion">$$soVersion$$</paramValue>
     <paramValue name="interproVersion">$$interproVersion$$</paramValue>
     <paramValue name="nrdbExtDbRlsSpec">$$nrdbExtDbRlsSpec$$</paramValue>
-    <paramValue name="nrdbFile">$$nrdbFile$$</paramValue>
-    <paramValue name="nrdbShortDeflineFile">$$nrdbShortDeflineFile$$</paramValue>
-    <paramValue name="pdbFile">$$pdbFile$$</paramValue>
     <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
     <paramValue name="pdbExtDbRlsSpec">$$pdbExtDbRlsSpec$$</paramValue>
     <paramValue name="goVersion">$$goVersion$$</paramValue>
     <paramValue name="runExportPred">$$runExportPred$$</paramValue>
     <paramValue name="mapEpitope">$$mapEpitope$$</paramValue>
-    <paramValue name="gorganismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
-<!--
-  <subgraph name="organismSpecificWorkflow" xmlFile="organismSpecific.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="organismName">$$organismName$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="iedbVersion">$$iedbVersion$$</paramValue>
-    <paramValue name="soVersion">$$soVersion$$</paramValue>
-    <paramValue name="interproVersion">$$interproVersion$$</paramValue>
-    <paramValue name="nrdbExtDbRlsSpec">$$nrdbExtDbRlsSpec$$</paramValue>
-    <paramValue name="nrdbFile">$$nrdbFile$$</paramValue>
-    <paramValue name="nrdbShortDeflineFile">$$nrdbShortDeflineFile$$</paramValue>
-    <paramValue name="pdbFile">$$pdbFile$$</paramValue>
-    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-    <paramValue name="pdbExtDbRlsSpec">$$pdbExtDbRlsSpec$$</paramValue>
-    <paramValue name="goVersion">$$goVersion$$</paramValue>
-    <paramValue name="runExportPred">$$runExportPred$$</paramValue>
-    <paramValue name="mapEpitope">$$mapEpitope$$</paramValue>
-    <depends name="mmakeDataDir"/>
-    <depends name="makeDownloadSiteDataDir"/>
-  </subgraph>
--->
+  <step name="runTuningManager"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager">
+      <depends name="genomeAnalysis"/> 
+      <depends name="proteomeAnalysis"/> 
+  </step>
 
 </workflowGraph>

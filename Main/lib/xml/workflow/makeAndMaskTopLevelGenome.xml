@@ -1,14 +1,15 @@
 <workflowGraph name="makeAndMaskTopLevelGenome">
       <param name="parentDataDir"/>
+      <param name="organismName"/>
       <param name="genomeExtDbRlsSpec"/>
       <param name="genomeVirtualSeqsExtDbRlsSpec"/>
-      <param name="organismResourceXmlFile"/>
       <param name="insertVirtualSeqFromAgpFile"/>
       <param name="insertVirtualSeqFromAgpFileResourceName"/>
       <param name="repeatMaskSpecies"/>
-      <param name="organismName"/>
+      <param name="organismResourceXmlFile"/>
+      <param name="comparativeGenomicsFastaDir"/>
 
-    <constant name="dataDir">$$parentDataDir$$/$$organismName$$MaskTopLevelGenome</constant>
+    <constant name="dataDir">$$parentDataDir$$/$$organismName$$MakeAndMaskTopLevelGenome</constant>
     <constant name="topLevelFastaFile">$$dataDir$$/topLevelGenomicSeqs.fsa</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
@@ -63,7 +64,7 @@
 
     <step name="copyMaskedTopLevelFastaFileToComparativeGenomicsFastaDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
       <paramValue name="fromFile">$$dataDir$$/master/mainresult/blocked.seq</paramValue>
-      <paramValue name="toFile">../common/comparativeGenomicsFasta/$$organismName$$TopLevelGenomicSeqs.fsa</paramValue>
+      <paramValue name="toFile">$$comparativeGenomicsFastaDir$$/$$organismName$$TopLevelGenomicSeqs.fsa</paramValue>
       <depends name="runClusterTask"/>
     </step>
 

@@ -2,21 +2,19 @@
 
   <param name="parentDataDir"/>
   <param name="organismName"/>
+  <param name="organismFullName"/>
   <param name="genomeExtDbRlsSpec"/>
   <param name="soVersion"/>
   <param name="ncbiTaxonId"/>
   <param name="parentNcbiTaxonId"/>
   <param name="usePredictedTranscripts"/>
   <param name="predictedTranscriptsExtDbRlsSpec"/>
-  <param name="nrdbFile"/>
-  <param name="nrdbShortDeflineFile"/>
   <param name="maxIntronSize"/>
   <param name="distanceBetweenStartsForAlignmentsInSameCluster"/>
   <param name="taxonHierarchyForBlastxFilter"/>
   <param name="nrdbExtDbRlsSpec"/>
   <param name="organismTwoLetterAbbrev"/>
   <param name="repeatMaskSpecies"/>
-  <param name="organismFullName"/>
   <param name="genomeSize"/>
   <param name="runtRNAScan"/>
   <param name="makeAssemblySeqs"/>
@@ -25,9 +23,9 @@
   <param name="organismSpecificESTResourcesReference"/>
   <param name="organismSpecificMassSpecResourcesReference"/>
   <param name="organismResourceXmlFile"/>
+  <param name="genomicSeqsFile"/>
 
   <constant name="dataDir">$$parentDataDir$$/genome</constant>
-  <constant name="genomicSeqsFile">../../$$organismName$$LoadGenome/genomicSeqs.fsa</constant>
   <constant name="assemblySeqsDataDir">$$dataDir$$/makeAssemblySeqs</constant>
   <constant name="mapAssemblySeqsDataDir">$$dataDir$$/mapAssemblySeqs</constant>
   <constant name="assembliesDataDir">$$dataDir$$/makeAssemblies</constant>
@@ -43,9 +41,9 @@
     </step>
 
   <subgraph name="dbESTResource" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">SO</paramValue>
+    <paramValue name="resourceName">dbEST</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="dataDir">$$dataDir$$/SO</paramValue>
+    <paramValue name="dataDir">$$dataDir$$/dbEST</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
@@ -61,7 +59,7 @@
       <paramValue name="queryFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="queryTable">DoTS::ExternalNASequence</paramValue>
       <paramValue name="queryExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="subjectFile">$$nrdbShortDeflineFile$$</paramValue>
+      <paramValue name="subjectFile">$$global_NRDBOutputFile_shortDefline$$</paramValue>
       <paramValue name="subjectTable">DoTS::ExternalAASequence</paramValue>
       <paramValue name="subjectExtDbRlsSpec">$$nrdbExtDbRlsSpec$$</paramValue>
       <paramValue name="blastArgs">$$blastxArgs$$</paramValue>
@@ -73,7 +71,7 @@
       <paramValue name="taxonHierarchyForFilter">$$taxonHierarchyForBlastxFilter$$</paramValue>
       <paramValue name="loadOptions"></paramValue>
       <depends name="makeDataDir"/>
-      <depends name="global.NRDBResource"/>
+      <dependsGlobal name="NRDBResource"/>
     </subgraph>
 
 

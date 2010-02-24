@@ -1,24 +1,20 @@
 <workflowGraph name="proteomeAnalysis">
   <param name="parentDataDir"/>
+  <param name="organismName"/>
   <param name="genomeExtDbRlsSpec"/>
-  <param name="interproVersion"/>
   <param name="iedbVersion"/>
+  <param name="soVersion"/>
+  <param name="interproVersion"/>
   <param name="nrdbExtDbRlsSpec"/>
   <param name="ncbiTaxonId"/>
-  <param name="nrdbFile"/>
-  <param name="nrdbShortDeflineFile"/>
-  <param name="nrdbExtDbRlsSpec"/>
-  <param name="pdbFile"/>
-  <param name="soVersion"/>
   <param name="pdbExtDbRlsSpec"/>
   <param name="goVersion"/>
-  <param name="organismName"/>
   <param name="runExportPred"/>
   <param name="mapEpitope"/>
   <param name="organismResourceXmlFile"/>
+  <param name="proteinsFile"/>
 
   <constant name="dataDir">$$parentDataDir$$/proteome</constant>
-  <constant name="proteinsFile">../../$$organismName$$LoadGenome/AnnotatedProteins.fsa</constant>
   <constant name="blastpNrdbArgs">-cpus=2 -topcomboN=1 V=100 B=20 -hspmax=1000000 -gi E=1e-3 -wordmask=seg -hspsepQmax=4000 -span1 W=3 T=1000</constant>
   <constant name="blastpPdbArgs">-cpus=2 -topcomboN=1 V=100 B=20 -hspmax=1000000 -gi E=1e-3 -wordmask=seg -hspsepQmax=4000 -span1</constant>
   <constant name="signalpArgs">-t euk -f short -m nn+hmm -q -trunc 70</constant>
@@ -142,7 +138,7 @@
       <depends name="IEDBResource"/>
     </subgraph>
 
-  <subgraph name="IEDBEpitopesDBxRefsResource" xmlFile="loadResource.xml">
+  <subgraph name="IEDBDBxRefResource" xmlFile="loadResource.xml">
     <paramValue name="resourceName">IEDB_Epitopes_DBxRefs</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$/IEDB_Epitopes_DBxRefs</paramValue>
@@ -188,12 +184,12 @@
 
     <step name="findNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindNrdbXrefs">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
-      <paramValue name="nrdbFile">$$nrdbFile$$</paramValue>
+      <paramValue name="nrdbFile">$$global_NRDBOutputFile$$</paramValue>
       <paramValue name="proteinsFileRegex">^([\\w\\.]+)</paramValue>
       <paramValue name="nrdbFileRegex">^\\|\\d+\\|(?:emb|gb|dbj|ref|sp|pdb)\\|([\\w\\.]+)\\|</paramValue>
       <paramValue name="outputFile">$$dataDir$$/nrdbXrefs.txt</paramValue>
        <depends name="makeDataDir"/>
-      <depends name="global.NRDBResource"/>
+      <dependsGlobal name="NRDBResource"/>
     </step>
 
     <step name="loadNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadNrdbXrefs" stepLoadTypes="plugin">
@@ -211,7 +207,7 @@
       <paramValue name="interproVersion">$$interproVersion$$</paramValue>
       <paramValue name="goVersion">$$goVersion$$</paramValue>
       <depends name="makeDataDir"/>
-      <depends name="global.interproscanDataResource"/>
+      <dependsGlobal name="interproscanDataResource"/>
     </subgraph>
 
     <step name="document-interpro"
@@ -231,11 +227,12 @@
     </step>
 
     <subgraph name="psipred" xmlFile="psipred.xml">
-      <paramValue name="nrdbFileShortDefline">$$nrdbShortDeflineFile$$</paramValue>
+      <paramValue name="nrdbFileShortDefline">$$global_NRDBOutputFile_shortDefline$$</paramValue>
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
-      <depends name="mirrorProteinsToCluster"/>
+      <depends name="makeDataDir"/>
+      <dependsGlobal name="NRDBResource"/>
     </subgraph>
 
     <step name="document-psipred"
@@ -260,7 +257,7 @@
       <paramValue name="queryFile">$$proteinsFile$$</paramValue>
       <paramValue name="queryTable">DoTS::TranslatedAASequence</paramValue>
       <paramValue name="queryExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="subjectFile">$$nrdbShortDeflineFile$$</paramValue>
+      <paramValue name="subjectFile">$$global_NRDBOutputFile_shortDefline$$</paramValue>
       <paramValue name="subjectTable">DoTS::ExternalAASequence</paramValue>
       <paramValue name="subjectExtDbRlsSpec">$$nrdbExtDbRlsSpec$$</paramValue>
       <paramValue name="blastArgs">$$blastpNrdbArgs$$</paramValue>
@@ -272,7 +269,7 @@
       <paramValue name="taxonHierarchyForFilter"></paramValue>
       <paramValue name="loadOptions">--subjectsLimit 50</paramValue>
       <depends name="makeDataDir"/>
-      <depends name="global.NRDBResource"/>
+      <dependsGlobal name="NRDBResource"/>
     </subgraph>
 
    <step name="document-blastpNrdb"
@@ -297,7 +294,7 @@
       <paramValue name="queryFile">$$proteinsFile$$</paramValue>
       <paramValue name="queryTable">DoTS::TranslatedAASequence</paramValue>
       <paramValue name="queryExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="subjectFile">$$pdbFile$$</paramValue>
+      <paramValue name="subjectFile">$$global_PDBOutputFile$$</paramValue>
       <paramValue name="subjectTable">DoTS::ExternalAASequence</paramValue>
       <paramValue name="subjectExtDbRlsSpec">$$pdbExtDbRlsSpec$$</paramValue>
       <paramValue name="blastArgs">$$blastpPdbArgs$$</paramValue>
@@ -309,7 +306,7 @@
       <paramValue name="taxonHierarchyForFilter"></paramValue>
       <paramValue name="loadOptions">--noHSPs --subjectPvalue 1e-05 --subjectPctIdent 30</paramValue>
       <depends name="makeDataDir"/>
-      <depends name="global.PDBResource"/>
+      <dependsGlobal name="PDBResource"/>
     </subgraph>
 
    <step name="document-blastpPdb"

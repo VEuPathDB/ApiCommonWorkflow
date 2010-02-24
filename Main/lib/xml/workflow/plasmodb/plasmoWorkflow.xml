@@ -48,9 +48,6 @@
   <param name="vossChipExtDbRlsSpec"/>
 
 
-  <constant name="pdbFile">common/pdb.fsa</constant>
-  <constant name="nrdbFile">common/nrdb.fsa</constant>
-  <constant name="nrdbShortDeflineFile">common/nrdb-short-defline.fsa</constant>
   <constant name="comparativeGenomicsFastaDir">common/comparativeGenomicsFasta/</constant>
 
   <subgraph name="common" xmlFile="../common.xml">
@@ -59,7 +56,7 @@
     <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
   </subgraph>
 
-  <subgraph name="global" xmlFile="../global.xml">
+  <globalSubgraph name="global" xmlFile="../global.xml">
     <paramValue name="isolatesResourceReference">plasmoIsolatesResource.xml</paramValue>
     <paramValue name="commonResourceXmlFile">plasmodb/plasmodbCommon.xml</paramValue>
     <paramValue name="globalResourceXmlFile">global.xml</paramValue>
@@ -69,12 +66,12 @@
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismName">Pfalciparum</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$PfalciparumExtDbRlsSpec$$</paramValue>
-    <paramValue name="gorganismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
     <paramValue name="organismSpecificISFReference">plasmodb/pfalciparumISFResource.xml</paramValue>
     <paramValue name="ncbiTaxonId">36329</paramValue>
     <depends name="common"/>
-    <depends name="global.taxonomyResource"/>
-    <depends name="global.SOResource"/>
+    <dependsGlobal name="taxonomyResource"/>
+    <dependsGlobal name="SOResource"/>
   </subgraph>
 
   <subgraph name="PfalciparumMakeAndMaskTopLevelGenome" xmlFile="../makeAndMaskTopLevelGenome.xml">
@@ -85,6 +82,8 @@
     <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
     <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
     <paramValue name="repeatMaskSpecies">-species Plasmodium</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
     <depends name="PfalciparumLoadGenome"/>
   </subgraph>
 
@@ -97,8 +96,6 @@
     <paramValue name="organismFullName">Plasmodium falciparum 3D7</paramValue>
     <paramValue name="organismTwoLetterAbbrev">Pf</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$PfalciparumExtDbRlsSpec$$</paramValue>
-    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
-    <paramValue name="genomeSource">$$PfalciparumGenomeSource$$</paramValue>
     <paramValue name="interproVersion">$$interproVersion$$</paramValue>
     <paramValue name="iedbVersion">$$iedbVersion$$</paramValue>
     <paramValue name="soVersion">$$soVersion$$</paramValue>
@@ -110,9 +107,6 @@
     <paramValue name="predictedTranscriptsExtDbRlsSpec">$$PfalciparumPredictedTranscriptsExtDbRlsSpec$$</paramValue>
     <paramValue name="runtRNAScan">false</paramValue>
     <paramValue name="runExportPred">true</paramValue>
-    <paramValue name="pdbFile">$$pdbFile$$</paramValue>
-    <paramValue name="nrdbFile">$$nrdbFile$$</paramValue>
-    <paramValue name="nrdbShortDeflineFile">$$nrdbShortDeflineFile$$</paramValue>
     <paramValue name="maxIntronSize">20000</paramValue>
     <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota Apicomplexa Plasmodium</paramValue>
     <paramValue name="nrdbExtDbRlsSpec">NRDB|$$nrdbVersion$$</paramValue>
@@ -125,11 +119,14 @@
     <paramValue name="makeAssemblySeqs">true</paramValue>
     <paramValue name="makeAssemblies">true</paramValue>
     <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
     <paramValue name="organismSpecificESTResourcesReference">plasmodb/pfalciparumESTResource.xml</paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference">plasmodb/pfalciparumMassSpecResource.xml</paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
     <depends name="common"/>
   </subgraph>
+
+
 
   <subgraph name="PfalciparumSpecificWorkflow" xmlFile="pfalciparumSpecific.xml">
     <paramValue name="parentDataDir"></paramValue>
