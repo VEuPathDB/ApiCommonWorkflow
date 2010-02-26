@@ -1,48 +1,67 @@
 <workflowGraph name="pfalciparumChIP">
   <param name="parentDataDir"/>
-  <param name="organismName"/>
-  <param name="organismFullName"/>
-  <param name="genomeExtDbRlsSpec"/>
-  <param name="suSnpExtDbRlsSpec"/>
-  <param name="broadSnpExtDbRlsSpec"/>
-  <param name="winzelerSnpExtDbRlsSpec"/>
-  <param name="sangerItGhanaSnpExtDbRlsSpec"/>
-  <param name="sangerReichenowiSnpExtDbRlsSpec"/>
-  <param name="combinedSnpExtDbRlsSpec"/>
-  <param name="organismResourceXmlFile"/>
   <param name="genomicSeqsFile"/>
+  <param name="stunnenberChipExtDbRlsSpec"/>
+  <param name="scherfChipExtDbRlsSpec"/>
+  <param name="vossChipExtDbRlsSpec"/>
+  <param name="organismResourceXmlFile"/>
 
   <constant name="dataDir">$$parentDataDir$$</constant>
 
   <subgraph name="stunnenberChIP" xmlFile="getAndAnalyzeChIPs.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="chipResourceName">stunnenberChIP-chip</paramValue>
+    <paramValue name="chipResourceName">ChIP_Chip_Henk_Stunnenberg</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="probeFile">$$stunnenberChipProbeFile$$</paramValue>
     <paramValue name="chipExtDbRlsSpec">$$stunnenberChipExtDbRlsSpec$$</paramValue>
-    <paramValue name="inputDir">$$stunnenberChipInputDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="mapProbesToNaSequences">true</paramValue>
+    <paramValue name="insertSimpleRadAnalysisFromConfig">true</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
-  <subgraph name="scherfChIP" xmlFile="ChIP-chip.xml">
+  <subgraph name="scherfChIP" xmlFile="getAndAnalyzeChIPs.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="chipNickName">scherfChIP-chip</paramValue>
+    <paramValue name="chipResourceName">ChIP_Chip_Artur_Scherf</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="probeFile">$$scherfChipProbeFile$$</paramValue>
     <paramValue name="chipExtDbRlsSpec">$$scherfChipExtDbRlsSpec$$</paramValue>
-    <paramValue name="inputDir">$$scherfChipInputDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="mapProbesToNaSequences">true</paramValue>
+    <paramValue name="insertSimpleRadAnalysisFromConfig">true</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
-  <subgraph name="vossChIP" xmlFile="ChIP-chip.xml">
+  <subgraph name="vossChIP" xmlFile="getAndAnalyzeChIPs.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="chipNickName">vossChIP-chip</paramValue>
+    <paramValue name="chipResourceName">ChIP_Chip_Till_Voss</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="probeFile">$$vossChipProbeFile$$</paramValue>
     <paramValue name="chipExtDbRlsSpec">$$vossChipExtDbRlsSpec$$</paramValue>
-    <paramValue name="inputDir">$$vossChipInputDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="mapProbesToNaSequences">true</paramValue>
+    <paramValue name="insertSimpleRadAnalysisFromConfig">true</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
+  <subgraph name="temp_called_peaksResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">temp_called_peaks</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="dataDir">$$dataDir$$/temp_called_peaks</paramValue>
+    <depends name="scherfChIP"/>
+    <depends name="vossChIP"/>
+  </subgraph>
+
+
+  <subgraph name="Pfalciparum_ChIP_PEAKs" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pfalciparum_ChIP_PEAKs</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="dataDir">$$dataDir$$/Pfalciparum_ChIP_PEAKs</paramValue>
+    <depends name="temp_called_peaks"/>
+  </subgraph>
+
+  <subgraph name="Pfalciparum_ChIP_SMOOTHED" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pfalciparum_ChIP_SMOOTHED</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="dataDir">$$dataDir$$/Pfalciparum_ChIP_SMOOTHED</paramValue>
+    <depends name="temp_called_peaks"/>
+  </subgraph>
 
 </workflowGraph>
