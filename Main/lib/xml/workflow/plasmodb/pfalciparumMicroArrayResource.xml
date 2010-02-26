@@ -1,0 +1,29 @@
+<workflowGraph name="pfalciparumMicroArrayResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="dataDir"/>
+      <param name="oligoExtDbRlsSpec"/>
+      <param name="genomeExtDbRlsSpec"/>
+      <param name="genomicSeqsFile"/>
+
+  <subgraph name="DeRisi_oligoResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">DeRisi_oligo</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="dataDir">$$dataDir$$/DeRisi_oligo</paramValue>
+  </subgraph>
+
+  <subgraph name="mapDeRisiOligosToGenomicSeqs" xmlFile="mapOligos.xml">
+    <paramValue name="parentDataDir">$$dataDir$$/DeRisi_oligo</paramValue>
+    <paramValue name="oligoExtDbRlsSpec">$$oligoExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="idRegex">(\\S+)\\s+length</paramValue>
+    <paramValue name="loadOptions">--hspMatchLength 64 --hspPctIdent 95 --hspsLimit 1</paramValue>
+    <depends name="DeRisi_oligoResource"/>
+  </subgraph>
+
+  <subgraph name="DeRisi_oligoResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">DeRisi_oligo</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="dataDir">$$dataDir$$/DeRisi_oligo</paramValue>
+  </subgraph>
+</workflowGraph>
