@@ -45,11 +45,13 @@
   <param name="vossChipExtDbRlsSpec"/>
 
   <constant name="comparativeGenomicsFastaDir">common/comparativeGenomicsFasta/</constant>
+  <constant name="webServicesDataDir">webServices/$$projectName$$/release-$$projectVersion$$/</constant>
 
   <subgraph name="common" xmlFile="../common.xml">
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
   </subgraph>
 
   <globalSubgraph name="global" xmlFile="../global.xml">
@@ -65,6 +67,7 @@
     <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
     <paramValue name="organismSpecificISFReference">plasmodb/pfalciparumISFResource.xml</paramValue>
     <paramValue name="ncbiTaxonId">36329</paramValue>
+    <paramValue name="downloadSiteDataDir">$$projectName$$/release-$$projectVersion$$/$$organismName$$</constant>
     <depends name="common"/>
     <dependsGlobal name="taxonomyResource"/>
     <dependsGlobal name="SOResource"/>
@@ -122,6 +125,8 @@
   </subgraph>
 
   <subgraph name="PfalciparumSpecificWorkflow" xmlFile="pfalciparumSpecific.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismName">Pfalciparum</paramValue>
     <paramValue name="organismFullName">Plasmodium falciparum</paramValue>
@@ -139,6 +144,31 @@
     <paramValue name="scherfChipExtDbRlsSpec">$$scherfChipExtDbRlsSpec$$</paramValue>
     <paramValue name="vossChipExtDbRlsSpec">$$vossChipExtDbRlsSpec$$</paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">$$projectName$$/release-$$projectVersion$$/$$organismName$$</paramValue>
     <depends name="PfalciparumLoadGenome"/>
   </subgraph>
+
+  <subgraph name="PfalciparumMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">$$projectName$$/release-$$projectVersion$$/$$organismName$$</paramValue>
+    <paramValue name="organismName">Pfalciparum</paramValue>
+    <paramValue name="organismFullName">Plasmodium falciparum 3D7</paramValue>
+    <paramValue name="ncbiTaxonId">36329</paramValue>
+    <paramValue name="parentNcbiTaxonId">5833</paramValue>
+    <paramValue name="interproVersion">$$interproVersion$$</paramValue>
+    <paramValue name="genomeSource">$$PfalciparumGenomeSource$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">dbEST:$$dbESTVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$PfalciparumExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <depends name="PfalciparumPostLoadGenome"/>
+    <depends name="PfalciparumMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
 </workflowGraph>
+

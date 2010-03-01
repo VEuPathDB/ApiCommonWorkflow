@@ -1,4 +1,6 @@
 <workflowGraph name="pfalciparumSpecificAnalysis">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
   <param name="parentDataDir"/>
   <param name="organismName"/>
   <param name="organismFullName"/>
@@ -16,7 +18,7 @@
   <param name="scherfChipExtDbRlsSpec"/>
   <param name="vossChipExtDbRlsSpec"/>
   <param name="organismResourceXmlFile"/>
-
+  <param name="downloadSiteDataDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/$$organismName$$Specific</constant>
   <constant name="genomicSeqsFile">$$parentDataDir$$/$$organismName$$LoadGenome/genomicSeqs.fsa</constant>
@@ -24,10 +26,6 @@
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
-
-    <step name="makeDownloadSiteDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">$$projectName$$/release-$$projectVersion$$/$$organismName$$</paramValue>
-    </step>
 
     <subgraph name="mapIsolatesToGenome" xmlFile="pfalciparumMapIsolatesToGenome.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -99,7 +97,7 @@
 
   <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-     <paramValue name="outputFile">$$projectName$$/release-$$projectVersion$$/$$organismName$$/$$organismName$$GeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
+     <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismName$$GeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
     <depends name="correctGeneAliasesResource"/>
     <depends name="makeDownloadSiteDataDir"/>
   </step>
@@ -107,6 +105,8 @@
   <subgraph name="dbxRefsResources" xmlFile="pfalciparumDbxRefsResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/$$organismName$$EuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
     <depends name="correctGeneAliasesResource"/>
   </subgraph>
 

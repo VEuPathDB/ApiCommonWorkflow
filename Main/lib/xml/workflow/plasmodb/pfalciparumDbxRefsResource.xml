@@ -1,6 +1,8 @@
 <workflowGraph name="pfalciparumDbxRefsResource">
       <param name="organismResourceXmlFile"/>
       <param name="dataDir"/>
+      <param name="euPathUniProtLinkDownloadFile"/>
+      <param name="projectName"/>
 
   <subgraph name="P.falciparum_chromosomes_xRefsResource" xmlFile="loadResource.xml">
     <paramValue name="resourceName">P.falciparum_chromosomes_xRefs</paramValue>
@@ -37,6 +39,13 @@
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$/Uniprot_Gene_dbxref</paramValue>
   </subgraph>
+
+    <step name="makeEuPathUniProtLinkFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEuPathUniProtLinkFile">
+      <paramValue name="dbrefExtDbRlsSpec">Links to Uniprot Genes</paramValue>
+      <paramValue name="outputFile">$$euPathUniProtLinkDownloadFile$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="Uniprot_Gene_dbxrefResource"/>
+    </step>
 
   <subgraph name="PlasmoMAP_DBRefsResource" xmlFile="loadResource.xml">
     <paramValue name="resourceName">PlasmoMAP_DBRefs</paramValue>
