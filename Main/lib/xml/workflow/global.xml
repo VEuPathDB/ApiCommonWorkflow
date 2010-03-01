@@ -2,6 +2,7 @@
       <param name="commonResourceXmlFile"/>
       <param name="globalResourceXmlFile"/>
       <param name="isolatesResourceReference"/>
+      <param name="loadIsolates"/>
 
     <globalConstant name="global_PDBOutputFile">$$dataDir$$/PDBProteinSequences/pdb.fsa</globalConstant>
     <globalConstant name="global_NRDBOutputFile_shortDefline">$$dataDir$$/NRDB/nrdb-short-defline.fsa</globalConstant>
@@ -9,12 +10,8 @@
 
     <constant name="dataDir">global</constant>
 
-    <step name="initClusterHomeDir"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitClusterHomeDir">
-    </step>
-
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
-      <paramValue name="dataDir">$$$dataDir$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
     <step name="initUserGroupProject" 
@@ -67,21 +64,23 @@
     <depends name="initUserGroupProject"/>
   </subgraph>
 
-  <subgraph name="isolatesResource" xmlFile="$$isolatesResourceReference$$">
+  <subgraph name="isolatesResource" xmlFile="$$isolatesResourceReference$$" includeIf="$$loadIsolates$$">
     <paramValue name="commonResourceXmlFile">$$commonResourceXmlFilee$$</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="initUserGroupProject"/>
+    <depends name="SOResource"/>
+    <depends name="taxonomyResource"/>
   </subgraph>
 
-  <subgraph name="isolateVocabularyResource" xmlFile="loadResource.xml">
+  <subgraph name="isolateVocabularyResource" xmlFile="loadResource.xml" includeIf="$$loadIsolates$$">
     <paramValue name="resourceName">isolateVocabulary</paramValue>
     <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$/isolateVocabulary</paramValue>
     <depends name="initUserGroupProject"/>
-    <depends name="plasmodiumIsolatesResource"/>
+    <depends name="isolatesResource"/>
   </subgraph>
 
-  <subgraph name="isolateVocabularyUpdateIsolationSourceResource" xmlFile="loadResource.xml">
+  <subgraph name="isolateVocabularyUpdateIsolationSourceResource" xmlFile="loadResource.xml" includeIf="$$loadIsolates$$">
     <paramValue name="resourceName">isolateVocabularyUpdate_isolation_source</paramValue>
     <paramValue name="resourceXmlFileName">$$commonResourceXmlFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$/isolateVocabularyUpdate_isolation_source</paramValue>
@@ -89,7 +88,7 @@
     <depends name="isolateVocabularyResource"/>
   </subgraph>
 
-  <subgraph name="isolateVocabularyUpdateSpecificHostResource" xmlFile="loadResource.xml">
+  <subgraph name="isolateVocabularyUpdateSpecificHostResource" xmlFile="loadResource.xml" includeIf="$$loadIsolates$$">
     <paramValue name="resourceName">isolateVocabularyUpdate_specific_host</paramValue>
     <paramValue name="resourceXmlFileName">$$commonResourceXmlFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$/isolateVocabularyUpdate_specific_host</paramValue>
@@ -97,7 +96,7 @@
     <depends name="isolateVocabularyResource"/>
   </subgraph>
 
-  <subgraph name="isolateVocabularyUpdateGeographicLocationResource" xmlFile="loadResource.xml">
+  <subgraph name="isolateVocabularyUpdateGeographicLocationResource" xmlFile="loadResource.xml" includeIf="$$loadIsolates$$">
     <paramValue name="resourceName">isolateVocabularyUpdate_geographic_location</paramValue>
     <paramValue name="resourceXmlFileName">$$commonResourceXmlFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$/isolateVocabularyUpdate_geographic_location</paramValue>
@@ -105,7 +104,7 @@
     <depends name="isolateVocabularyResource"/>
   </subgraph>
 
-  <subgraph name="isolateVocabularyUpdateProductResource" xmlFile="loadResource.xml">
+  <subgraph name="isolateVocabularyUpdateProductResource" xmlFile="loadResource.xml" includeIf="$$loadIsolates$$">
     <paramValue name="resourceName">isolateVocabularyUpdate_product</paramValue>
     <paramValue name="resourceXmlFileName">$$commonResourceXmlFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$/isolateVocabularyUpdate_product</paramValue>

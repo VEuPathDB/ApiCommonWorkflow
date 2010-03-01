@@ -11,19 +11,14 @@
 
     <constant name="dataDir">$$parentDataDir$$/$$snpResourceName$$</constant>
 
-    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-    </step>
-
     <subgraph name="snpResource" xmlFile="loadResource.xml">
       <paramValue name="resourceName">$$snpResourceName$$</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="dataDir">$$dataDir$$/$$snpResourceName$$</paramValue>
-      <depends name="makeDataDir"/>
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
     </subgraph>
 
     <step name="snpGffToFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpGffToFasta">
-      <paramValue name="inputFile">$$dataDir$$/$$snpResourceName$$/$$snpResourceName$$.gff</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/$$snpResourceName$$.gff</paramValue>
       <paramValue name="outputFile">$$dataDir$$/SNPs.fasta</paramValue>
       <paramValue name="strain">$$strain$$</paramValue>
       <depends name="snpResource"/>
