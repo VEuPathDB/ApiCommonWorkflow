@@ -13,7 +13,15 @@ sub run {
   my $projectName = $self->getParamValue('projectName');
   my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
 
+  my $cmd; 
+ if ($dbrefExtDbRlsSpec =~ /\|/)
+{
+
   my $cmd = "dumpEuPath-UniProtLinks --dbrefExtDbSpec '$dbrefExtDbRlsSpec' --outfile $outFile --projectName $projectName";
+
+}else{
+  my $cmd = "dumpEuPath-UniProtLinks --dbrefExtDbName '$dbrefExtDbRlsSpec' --outfile $outFile --projectName $projectName";
+}
 
   if ($undo) {
     $self->runCmd(0, "rm -f $apiSiteFilesDir/$outputFile");
