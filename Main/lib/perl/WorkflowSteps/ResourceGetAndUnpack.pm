@@ -27,7 +27,7 @@ sub getResource {
     my ($self, $test, $dataSource, $targetDir, $dataSourceName) = @_;
 
     my $WgetArgs = $dataSource->getWgetArgs();
-    my $manualArgs = $dataSource->getManualFileOrDir();
+    my $manualFileOrDir = $dataSource->getManualFileOrDir();
     my $UrlArg = $dataSource->getUrl();
     
     die "Resource $dataSourceName must provide either an URL and WgetArgs or ManualArgs, but not both\n"
@@ -43,9 +43,12 @@ sub getResource {
 	$self->runCmd($test, $cmd);
     } else {
 	my $manualDeliveryDir = $self->getGlobalProperty('manualDeliveryDir');
-	$manualArgs=~/.*="(.*)"/;
-	my $cmd='cp -r "$manualDeliveryDir/$manualFileOrDir" $targetDir';
-	$self->runCmd($test, $cmd);
+	if ($test) {
+	    -e "$manualDeliveryDir/$manualFileOrDir" || $self->error("Manual delivery file or dir '$manualDeliveryDir/$manualFileOrDir' does not exist");
+	} else {
+	    my $cmd="cp -r $manualDeliveryDir/$manualFileOrDir $targetDir";
+	    $self->runCmd($test, $cmd);
+	}
     }
 }
 
