@@ -99,7 +99,6 @@
      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
      <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismName$$GeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
     <depends name="correctGeneAliasesResource"/>
-    <depends name="makeDownloadSiteDataDir"/>
   </step>
 
   <subgraph name="dbxRefsResources" xmlFile="pfalciparumDbxRefsResource.xml">
@@ -116,13 +115,14 @@
     <depends name="makeDataDir"/>
   </subgraph>
 
-  <subgraph name="microArrayResources" xmlFile="pfalciparumMicroArrayResource.xml">
+  <subgraph name="geneExpressionResources" xmlFile="pfalciparumGeneExpressionResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="oligoExtDbRlsSpec">$$oligoExtDbRlsSpec$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="correctGeneAliasesResource"/>
+    <dependsGlobal name="MGEDOntologyEntryResource"/>
   </subgraph>
 
     <subgraph name="GOAssociations_PfalciparumResource" xmlFile="loadResource.xml">
@@ -142,9 +142,10 @@
       <dependsGlobal name="enzymeDBResource"/>
     </subgraph>
 
-  <step name="loadAnticodons" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadAnticodons">
-     <paramValue name="inputFileRelativeToManualDeliveryDir">anticodons/PfAntiCodons</paramValue>
-     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <depends name="makeDataDir"/>
-  </step>
+    <subgraph name="loadAnticodonsResource" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">loadAnticodons</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$/loadAnticodons</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
 </workflowGraph>
