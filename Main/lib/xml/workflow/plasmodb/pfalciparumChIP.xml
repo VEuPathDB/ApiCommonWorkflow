@@ -16,7 +16,6 @@
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="mapProbesToNaSequences">true</paramValue>
     <paramValue name="insertSimpleRadAnalysisFromConfig">true</paramValue>
-    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="scherfChIP" xmlFile="getAndAnalyzeChIPs.xml">
@@ -27,7 +26,6 @@
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="mapProbesToNaSequences">true</paramValue>
     <paramValue name="insertSimpleRadAnalysisFromConfig">true</paramValue>
-    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="vossChIP" xmlFile="getAndAnalyzeChIPs.xml">
@@ -38,13 +36,12 @@
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="mapProbesToNaSequences">true</paramValue>
     <paramValue name="insertSimpleRadAnalysisFromConfig">true</paramValue>
-    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="temp_called_peaksResource" xmlFile="loadResource.xml">
     <paramValue name="resourceName">temp_called_peaks</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="dataDir">$$dataDir$$/temp_called_peaks</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="scherfChIP"/>
     <depends name="vossChIP"/>
   </subgraph>
@@ -53,15 +50,15 @@
   <subgraph name="Pfalciparum_ChIP_PEAKs" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pfalciparum_ChIP_PEAKs</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="dataDir">$$dataDir$$/Pfalciparum_ChIP_PEAKs</paramValue>
-    <depends name="temp_called_peaks"/>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="temp_called_peaksResource"/>
   </subgraph>
 
   <subgraph name="Pfalciparum_ChIP_SMOOTHED" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pfalciparum_ChIP_SMOOTHED</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="dataDir">$$dataDir$$/Pfalciparum_ChIP_SMOOTHED</paramValue>
-    <depends name=""/>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="temp_called_peaksResource"/>
   </subgraph>
 
 </workflowGraph>

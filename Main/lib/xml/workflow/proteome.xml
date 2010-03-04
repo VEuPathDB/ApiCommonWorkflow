@@ -125,7 +125,7 @@
   <subgraph name="IEDBResource" xmlFile="loadResource.xml">
     <paramValue name="resourceName">IEDB_Epitopes</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="dataDir">$$dataDir$$/IEDB_Epitopes</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
@@ -141,7 +141,7 @@
   <subgraph name="IEDBDBxRefResource" xmlFile="loadResource.xml">
     <paramValue name="resourceName">IEDB_Epitopes_DBxRefs</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="dataDir">$$dataDir$$/IEDB_Epitopes_DBxRefs</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="IEDBResource"/>
   </subgraph>
 
@@ -189,7 +189,7 @@
       <paramValue name="nrdbFileRegex">^\\|\\d+\\|(?:emb|gb|dbj|ref|sp|pdb)\\|([\\w\\.]+)\\|</paramValue>
       <paramValue name="outputFile">$$dataDir$$/nrdbXrefs.txt</paramValue>
        <depends name="makeDataDir"/>
-      <dependsGlobal name="NRDBResource"/>
+      <!--dependsGlobal name="NRDBResource"/-->
     </step>
 
     <step name="loadNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadNrdbXrefs" stepLoadTypes="plugin">
@@ -207,7 +207,7 @@
       <paramValue name="interproVersion">$$interproVersion$$</paramValue>
       <paramValue name="goVersion">$$goVersion$$</paramValue>
       <depends name="makeDataDir"/>
-      <dependsGlobal name="interproscanDataResource"/>
+      <!--dependsGlobal name="interproscanDataResource"/-->
     </subgraph>
 
     <step name="document-interpro"
@@ -232,7 +232,7 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
       <depends name="makeDataDir"/>
-      <dependsGlobal name="NRDBResource"/>
+      <!--dependsGlobal name="NRDBResource"/-->
     </subgraph>
 
     <step name="document-psipred"
@@ -269,7 +269,7 @@
       <paramValue name="taxonHierarchyForFilter"></paramValue>
       <paramValue name="loadOptions">--subjectsLimit 50</paramValue>
       <depends name="makeDataDir"/>
-      <dependsGlobal name="NRDBResource"/>
+      <!--dependsGlobal name="NRDBResource"/-->
     </subgraph>
 
    <step name="document-blastpNrdb"
@@ -306,7 +306,7 @@
       <paramValue name="taxonHierarchyForFilter"></paramValue>
       <paramValue name="loadOptions">--noHSPs --subjectPvalue 1e-05 --subjectPctIdent 30</paramValue>
       <depends name="makeDataDir"/>
-      <dependsGlobal name="PDBResource"/>
+      <!--dependsGlobal name="PDBResource"/-->
     </subgraph>
 
    <step name="document-blastpPdb"
