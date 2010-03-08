@@ -66,6 +66,7 @@
     <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
   </subgraph>
 
+<!--Pfalciparum-->
   <subgraph name="PfalciparumLoadGenome" xmlFile="loadGenome.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismName">Pfalciparum</paramValue>
@@ -178,6 +179,111 @@
     <paramValue name="makeGenomicDownloadFile">true</paramValue>
     <depends name="PfalciparumPostLoadGenome"/>
     <depends name="PfalciparumMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--Pchabaudi-->
+
+  <subgraph name="PchabaudiLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Pchabaudi</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$PchabaudiExtDbRlsSpec$$</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pchabaudi.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">plasmodb/pchabaudiISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">31271</paramValue>
+    <paramValue name="downloadSiteDataDir">$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomyResource"/>
+    <dependsGlobal name="SOResource"/>
+  </subgraph>
+
+  <subgraph name="PchabaudiMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Pchabaudi</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$PchabaudiExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Plasmodium</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pchabaudi.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="PchabaudiLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="PchabaudiPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Pchabaudi</paramValue>
+    <paramValue name="organismFullName">Plasmodium chabaudi chabaudi</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">Pc</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$PchabaudiExtDbRlsSpec$$</paramValue>
+    <paramValue name="interproVersion">$$interproVersion$$</paramValue>
+    <paramValue name="iedbVersion">$$iedbVersion$$</paramValue>
+    <paramValue name="soVersion">$$soVersion$$</paramValue>
+    <paramValue name="goVersion">$$goVersion$$</paramValue>
+    <paramValue name="dbESTVersion">$$dbESTVersion$$</paramValue>
+    <paramValue name="ncbiTaxonId">31271</paramValue>
+    <paramValue name="parentNcbiTaxonId">5825</paramValue>
+    <paramValue name="usePredictedTranscripts">true</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">true</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota Apicomplexa Plasmodium</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB|$$nrdbVersion$$</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Plasmodium</paramValue>
+    <paramValue name="pdbExtDbRlsSpec">$$pdbExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeSize">23304547</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="mapEpitope">true</paramValue>
+    <paramValue name="makeAssemblySeqs">true</paramValue>
+    <paramValue name="makeAssemblies">true</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">plasmodb/pchabaudiESTResource.xml</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">plasmodb/pchabaudiMassSpecResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pchabaudi.xml</paramValue>
+    <depends name="PchabaudiLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="PchabaudiSpecificWorkflow" xmlFile="plasmodb/pchabaudiSpecific.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Pchabaudi</paramValue>
+    <paramValue name="organismFullName">Plasmodium chabaudi chabaudi</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$PchabaudiExtDbRlsSpec$$</paramValue>
+    <paramValue name="genbankIsolateExtDbRlsSpec">$$genbankIsolateExtDbRlsSpec$$</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pchabaudi.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="PchabaudiLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="PchabaudiMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Pchabaudi</paramValue>
+    <paramValue name="organismFullName">Plasmodium chabaudi chabaudi</paramValue>
+    <paramValue name="ncbiTaxonId">31271</paramValue>
+    <paramValue name="parentNcbiTaxonId">5825</paramValue>
+    <paramValue name="interproVersion">$$interproVersion$$</paramValue>
+    <paramValue name="genomeSource">$$PchabaudiGenomeSource$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">dbEST:$$dbESTVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$PchabaudiExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="PchabaudiPostLoadGenome"/>
+    <depends name="PchabaudiMakeAndMaskTopLevelGenome"/>
   </subgraph>
 
 </workflowGraph>
