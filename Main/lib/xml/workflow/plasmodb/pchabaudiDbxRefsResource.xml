@@ -1,0 +1,46 @@
+<workflowGraph name="pchabaudiDbxRefsResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+      <param name="euPathUniProtLinkDownloadFile"/>
+      <param name="projectName"/>
+
+  <constant name="dataDir">$$parentDataDir$$</constant>
+
+  <subgraph name="Entrez_DBRefsResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Entrez_DBRefs</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+  </subgraph>
+
+  <subgraph name="Phenotype_DBRefsResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Phenotype_DBRefs</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+  </subgraph>
+
+  <subgraph name="Pubmed_DBRefsResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pubmed_DBRefs</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+  </subgraph>
+
+  <subgraph name="Entrez_Gene_dbxrefResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Entrez_Gene_dbxref</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+  </subgraph>
+
+  <subgraph name="Uniprot_Gene_dbxrefResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Uniprot_Gene_dbxref</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+  </subgraph>
+
+    <step name="makeEuPathUniProtLinkFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEuPathUniProtLinkFile">
+      <paramValue name="dbrefExtDbRlsSpec">Links to Uniprot Genes</paramValue>
+      <paramValue name="outputFile">$$euPathUniProtLinkDownloadFile$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="Uniprot_Gene_dbxrefResource"/>
+    </step>
+
+</workflowGraph>
