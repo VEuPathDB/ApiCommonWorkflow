@@ -30,6 +30,7 @@
   <param name="PyoeliiExtDbRlsSpec"/>
   <param name="PyoeliiGenomeSource"/>
   <param name="PyoeliiPredictedTranscriptsExtDbRlsSpec"/>
+  <param name="PyoeliiProvisionalGenesExtDbRlsSpec"/>
   <param name="PreichenowiExtDbRlsSpec"/>
   <param name="PreichenowiGenomeSource"/>
   <param name="PgallinaceumExtDbRlsSpec"/>
@@ -1017,6 +1018,60 @@
     <paramValue name="makeGenomicDownloadFile">true</paramValue>
     <depends name="PyoeliiPostLoadGenome"/>
     <depends name="PyoeliiMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--PyoeliiProvisionalGenes-->
+  <subgraph name="PyoeliiProvisionalGenesLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">PyoeliiProvisionalGenes</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$PyoeliiProvisionalGenesExtDbRlsSpec$$</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pyoelii.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">plasmodb/pyoeliiProvisionalGenesISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">352914</paramValue>
+    <paramValue name="downloadSiteDataDir">$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomyResource"/> 
+    <dependsGlobal name="SOResource"/>
+  </subgraph>
+
+  <subgraph name="PyoeliiProvisionalGenesPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">PyoeliiProvisionalGenes</paramValue>
+    <paramValue name="organismFullName">Plasmodium yoelii yoelii str. 17XNL</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">PyProvisionalGenes</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$PyoeliiProvisionalGenesExtDbRlsSpec$$</paramValue>
+    <paramValue name="interproVersion">$$interproVersion$$</paramValue>
+    <paramValue name="iedbVersion">$$iedbVersion$$</paramValue>
+    <paramValue name="soVersion">$$soVersion$$</paramValue>
+    <paramValue name="goVersion">$$goVersion$$</paramValue>
+    <paramValue name="dbESTVersion">$$dbESTVersion$$</paramValue>
+    <paramValue name="ncbiTaxonId">352914</paramValue>
+    <paramValue name="parentNcbiTaxonId">5861</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">true</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota Apicomplexa Plasmodium</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB|$$nrdbVersion$$</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Plasmodium</paramValue>
+    <paramValue name="pdbExtDbRlsSpec">$$pdbExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeSize"></paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">true</paramValue>
+    <paramValue name="mapEpitope">true</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">plasmodb/pyoeliiESTResource.xml</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">plasmodb/pyoeliiMassSpecResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pyoelii.xml</paramValue>
+    <depends name="PyoeliiProvisionalGenesLoadGenome"/>
   </subgraph>
 
 </workflowGraph>
