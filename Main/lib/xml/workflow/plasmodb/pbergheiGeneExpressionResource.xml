@@ -1,6 +1,9 @@
 <workflowGraph name="pbergheiGeneExpressionResource">
       <param name="organismResourceXmlFile"/>
       <param name="parentDataDir"/>
+      <param name="oligoExtDbRlsSpec"/>
+      <param name="genomeExtDbRlsSpec"/>
+      <param name="genomicSeqsFile"/>
 
   <subgraph name="Pberghei_gss_oligosResource" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pberghei_gss_oligos</paramValue>
@@ -8,10 +11,35 @@
     <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
   </subgraph>
 
-  <subgraph name="Pberghei_gss_oligo_gene_mappingResource" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">Pberghei_gss_oligo_gene_mapping</paramValue>
+  <subgraph name="mapGssOligosToGenomicSeqs" xmlFile="mapOligos.xml">
+    <paramValue name="parentDataDir">$$parentDataDir$$/DeRisi_oligo</paramValue>
+    <paramValue name="oligoExtDbRlsSpec">$$oligoExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="idRegex">(\\S+)\\s+length</paramValue>
+    <paramValue name="loadOptions">--hspMatchLength 64 --hspPctIdent 95 --hspsLimit 1</paramValue>
+    <depends name="Pberghei_gss_oligosResource"/>
+  </subgraph>
+
+  <subgraph name="Pberghei_Protein_Expression_SurveyResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pberghei_Protein_Expression_Survey</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
   </subgraph>
+
+  <subgraph name="berghei_gss_time_seriesResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">berghei_gss_time_series</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <depends name="mapGssOligosToGenomicSeqs"/>
+  </subgraph>
+
+  <subgraph name="berghei_gss_time_seriesHPEResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">berghei_gss_time_seriesHPE</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <depends name="mapGssOligosToGenomicSeqs"/>
+  </subgraph>
+
 
 </workflowGraph>
