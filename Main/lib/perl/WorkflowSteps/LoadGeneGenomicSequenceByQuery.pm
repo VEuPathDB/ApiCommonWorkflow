@@ -24,7 +24,7 @@ sub run {
 
   $dbRlsIds =~ s/(,)$//g;
 
-  my $deleteSql ="delete apidb.genegenomicsequence";
+  my $deleteSql ="delete apidb.GENEGENOMICSEQUENCE_SPLIT";
 
   if ($undo) {
       $self->runCmd(0, "executeIdSQL.pl --idSql \"$deleteSql\"");
