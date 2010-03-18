@@ -24,16 +24,10 @@ sub run {
 
   $dbRlsIds =~ s/(,)$//g;
 
-  my $deleteSql ="delete apidb.GENEGENOMICSEQUENCE_SPLIT";
+  my $args = "--dbRlsIds $dbRlsIds";
 
-  if ($undo) {
-      $self->runCmd(0, "executeIdSQL.pl --idSql \"$deleteSql\"");
-    } else {
-        if ($test) {
-        }else{
-            $self->runCmd($test,"geneGenomicSequenceByQuery --dbRlsIds '$dbRlsIds'");
-        }
-    }
+  $self->runPlugin($test,$undo, "ApiCommonData::Load::Plugin::InsertGeneGenomicSequence", $args);
+
 }
 
 sub getParamsDeclaration {
