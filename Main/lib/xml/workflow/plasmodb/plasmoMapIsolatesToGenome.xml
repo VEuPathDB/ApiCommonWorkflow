@@ -1,8 +1,6 @@
 <workflowGraph name="plasmoMapIsolatesToGenome">
   <param name="parentDataDir"/>
   <param name="organismName"/>
-  <param name="genomeExtDbRlsSpec"/>
-  <param name="genbankIsolateExtDbRlsSpec"/>
   <param name="genomicSeqsFile"/>
 
   <constant name="dataDir">$$parentDataDir$$/mapIsolatesToGenome</constant>
@@ -14,7 +12,7 @@
 
   <step name="extractGenbankIsolateSeqs"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
-      <paramValue name="extDbRlsSpec">$$genbankIsolateExtDbRlsSpec$$</paramValue>
+      <paramValue name="extDbRlsSpec">PlasmodiumGenbankIsolates_RSRC|@PlasmodiumGenbankIsolates_VER@</paramValue>
       <paramValue name="table">ExternalNASequence</paramValue>
       <paramValue name="alternateDefline"></paramValue>
       <paramValue name="outputFile">$$genbankIsolateSeqFile$$</paramValue>
@@ -33,10 +31,10 @@
       <paramValue name="nickName">blastnGenbankIsolates</paramValue>
       <paramValue name="queryFile">$$genbankIsolateSeqFile$$</paramValue>
       <paramValue name="queryTable">DoTS::ExternalNASequence</paramValue>
-      <paramValue name="queryExtDbRlsSpec">$$genbankIsolateExtDbRlsSpec$$</paramValue>
+      <paramValue name="queryExtDbRlsSpec">PlasmodiumGenbankIsolates_RSRC|@PlasmodiumGenbankIsolates_VER@</paramValue>
       <paramValue name="subjectFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="subjectTable">DoTS::ExternalNASequence</paramValue>
-      <paramValue name="subjectExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="subjectExtDbRlsSpec">P.falciparum_chromosomes_RSRC|@P.falciparum_chromosomes_VER@</paramValue>
       <paramValue name="blastArgs">V=1 B=1 hspsepQmax=50000 hspsepSmax=50000 -span1 -topcomboN=1 E=0.1 -wordmask=seg</paramValue>
       <paramValue name="idRegex">(\\S+)</paramValue>
       <paramValue name="blastType">blastn</paramValue>

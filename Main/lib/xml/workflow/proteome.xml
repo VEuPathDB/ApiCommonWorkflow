@@ -2,13 +2,10 @@
   <param name="parentDataDir"/>
   <param name="organismName"/>
   <param name="genomeExtDbRlsSpec"/>
+  <param name="iedbResourceName"/>
   <param name="iedbVersion"/>
-  <param name="soVersion"/>
-  <param name="interproVersion"/>
-  <param name="nrdbExtDbRlsSpec"/>
+  <param name="iedbDbRefResourceName"/>
   <param name="ncbiTaxonId"/>
-  <param name="pdbExtDbRlsSpec"/>
-  <param name="goVersion"/>
   <param name="runExportPred"/>
   <param name="mapEpitope"/>
   <param name="organismResourceXmlFile"/>
@@ -123,7 +120,7 @@
     </step>
 
   <subgraph name="IEDBResource" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">IEDB_Epitopes</paramValue>
+    <paramValue name="resourceName">$$iedbResourceName$$</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
@@ -134,12 +131,12 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
-      <paramValue name="iedbExtDbRlsSpec">Links to IEDB epitopes|$$iedbVersion$$</paramValue>
+      <paramValue name="iedbExtDbRlsSpec">$$iedbResourceName$$|$$iedbVersion$$</paramValue>
       <depends name="IEDBResource"/>
     </subgraph>
 
   <subgraph name="IEDBDBxRefResource" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">IEDB_Epitopes_DBxRefs</paramValue>
+    <paramValue name="resourceName">$$iedbDbRefResourceName$$</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="IEDBResource"/>
@@ -203,9 +200,6 @@
     <subgraph name="interpro" xmlFile="interpro.xml">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="interproExtDbRlsSpec">INTERPRO|$$interproVersion$$</paramValue>
-      <paramValue name="interproVersion">$$interproVersion$$</paramValue>
-      <paramValue name="goVersion">$$goVersion$$</paramValue>
       <depends name="makeDataDir"/>
       <dependsGlobal name="interproscanDataResource"/>
     </subgraph>
@@ -259,7 +253,7 @@
       <paramValue name="queryExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="subjectFile">$$global_NRDBOutputFile_shortDefline$$</paramValue>
       <paramValue name="subjectTable">DoTS::ExternalAASequence</paramValue>
-      <paramValue name="subjectExtDbRlsSpec">$$nrdbExtDbRlsSpec$$</paramValue>
+      <paramValue name="subjectExtDbRlsSpec">NRDB_RSRC|@NRDB_VER@</paramValue>
       <paramValue name="blastArgs">$$blastpNrdbArgs$$</paramValue>
       <paramValue name="idRegex">gi\\|(\\d+)\\|</paramValue>
       <paramValue name="blastType">blastp</paramValue>
@@ -296,7 +290,7 @@
       <paramValue name="queryExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="subjectFile">$$global_PDBOutputFile$$</paramValue>
       <paramValue name="subjectTable">DoTS::ExternalAASequence</paramValue>
-      <paramValue name="subjectExtDbRlsSpec">$$pdbExtDbRlsSpec$$</paramValue>
+      <paramValue name="subjectExtDbRlsSpec">PDBProteinSequences_RSRC|@PDBProteinSequences_VER@</paramValue>
       <paramValue name="blastArgs">$$blastpPdbArgs$$</paramValue>
       <paramValue name="idRegex">(\\w+)\\s+mol:protein</paramValue>
       <paramValue name="blastType">blastp</paramValue>

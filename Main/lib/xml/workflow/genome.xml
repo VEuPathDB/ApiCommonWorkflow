@@ -4,7 +4,6 @@
   <param name="organismName"/>
   <param name="organismFullName"/>
   <param name="genomeExtDbRlsSpec"/>
-  <param name="soVersion"/>
   <param name="ncbiTaxonId"/>
   <param name="parentNcbiTaxonId"/>
   <param name="usePredictedTranscripts"/>
@@ -12,7 +11,6 @@
   <param name="maxIntronSize"/>
   <param name="distanceBetweenStartsForAlignmentsInSameCluster"/>
   <param name="taxonHierarchyForBlastxFilter"/>
-  <param name="nrdbExtDbRlsSpec"/>
   <param name="organismTwoLetterAbbrev"/>
   <param name="repeatMaskSpecies"/>
   <param name="genomeSize"/>
@@ -20,12 +18,13 @@
   <param name="makeAssemblySeqs"/>
   <param name="makeAssemblies"/>
   <param name="mapAssemblySeqsAndAssemblies"/>
+  <param name="loadOrganismSpecificESTResource"/>
+  <param name="loadOrganismSpecificMassSpecResource"/>
   <param name="organismSpecificESTResourcesReference"/>
   <param name="organismSpecificMassSpecResourcesReference"/>
   <param name="organismResourceXmlFile"/>
   <param name="genomicSeqsFile"/>
-  <param name="loadOrganismSpecificESTResource"/>
-  <param name="loadOrganismSpecificMassSpecResource"/>
+  <param name="dbESTResourceName"/>
 
   <constant name="dataDir">$$parentDataDir$$/genome</constant>
   <constant name="assemblySeqsDataDir">$$dataDir$$/makeAssemblySeqs</constant>
@@ -43,7 +42,7 @@
     </step>
 
   <subgraph name="dbESTResource" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">dbEST</paramValue>
+    <paramValue name="resourceName">$$dbESTResourceName$$</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
@@ -63,7 +62,7 @@
       <paramValue name="queryExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="subjectFile">$$global_NRDBOutputFile_shortDefline$$</paramValue>
       <paramValue name="subjectTable">DoTS::ExternalAASequence</paramValue>
-      <paramValue name="subjectExtDbRlsSpec">$$nrdbExtDbRlsSpec$$</paramValue>
+      <paramValue name="subjectExtDbRlsSpec">NRDB_RSRC|@NRDB_VER@</paramValue>
       <paramValue name="blastArgs">$$blastxArgs$$</paramValue>
       <paramValue name="idRegex">gi\\|(\\d+)\\|</paramValue>
       <paramValue name="blastType">blastx</paramValue>
@@ -98,7 +97,7 @@
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="tRNAExtDbRlsSpec">$$organismName$$TRNAscan-SE|1.23</paramValue>
-      <paramValue name="soVersion">$$soVersion$$</paramValue>
+      <paramValue name="soVersion">@SO_VER@</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
@@ -133,7 +132,7 @@
       <paramValue name="substepClass">ExternalNASequence</paramValue>
       <paramValue name="defaultOrg">$$organismFullName$$</paramValue>
       <paramValue name="isfMappingFileRelToGusHome">lib/xml/isf/orf2gus.xml</paramValue>
-      <paramValue name="soVersion">$$soVersion$$</paramValue>
+      <paramValue name="soVersion">@SO_VER@</paramValue>
       <depends name="makeOrfFile"/>
     </step>
 

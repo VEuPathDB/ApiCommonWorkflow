@@ -4,19 +4,6 @@
   <param name="parentDataDir"/>
   <param name="organismName"/>
   <param name="organismFullName"/>
-  <param name="genomeExtDbRlsSpec"/>
-  <param name="suSnpExtDbRlsSpec"/>
-  <param name="broadSnpExtDbRlsSpec"/>
-  <param name="winzelerSnpExtDbRlsSpec"/>
-  <param name="sangerItGhanaSnpExtDbRlsSpec"/>
-  <param name="sangerReichenowiSnpExtDbRlsSpec"/>
-  <param name="combinedSnpExtDbRlsSpec"/>
-  <param name="sageTagExtDbRlsSpec"/>
-  <param name="oligoExtDbRlsSpec"/>
-  <param name="genbankIsolateExtDbRlsSpec"/>
-  <param name="stunnenberChipExtDbRlsSpec"/>
-  <param name="scherfChipExtDbRlsSpec"/>
-  <param name="vossChipExtDbRlsSpec"/>
   <param name="organismResourceXmlFile"/>
   <param name="downloadSiteDataDir"/>
 
@@ -32,8 +19,6 @@
     <subgraph name="mapIsolatesToGenome" xmlFile="plasmodb/plasmoMapIsolatesToGenome.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genbankIsolateExtDbRlsSpec">$$genbankIsolateExtDbRlsSpec$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <depends name="makeDataDir"/>
       <dependsGlobal name="isolatesResource"/>
@@ -43,13 +28,6 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
       <paramValue name="organismFullName">$$organismFullName$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="suSnpExtDbRlsSpec">$$suSnpExtDbRlsSpec$$</paramValue>
-      <paramValue name="broadSnpExtDbRlsSpec">$$broadSnpExtDbRlsSpec$$</paramValue>
-      <paramValue name="winzelerSnpExtDbRlsSpec">$$winzelerSnpExtDbRlsSpec$$</paramValue>
-      <paramValue name="sangerItGhanaSnpExtDbRlsSpec">$$sangerItGhanaSnpExtDbRlsSpec$$</paramValue>
-      <paramValue name="sangerReichenowiSnpExtDbRlsSpec">$$sangerReichenowiSnpExtDbRlsSpec$$</paramValue>
-      <paramValue name="combinedSnpExtDbRlsSpec">$$combinedSnpExtDbRlsSpec$$</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <depends name="makeDataDir"/>
@@ -58,15 +36,12 @@
     <subgraph name="chIP-chips" xmlFile="plasmodb/pfalciparumChIP.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="stunnenberChipExtDbRlsSpec">$$stunnenberChipExtDbRlsSpec$$</paramValue>
-      <paramValue name="scherfChipExtDbRlsSpec">$$scherfChipExtDbRlsSpec$$</paramValue>
-      <paramValue name="vossChipExtDbRlsSpec">$$vossChipExtDbRlsSpec$$</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="sageTagDesignResource" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">WirthSageTagArrayDesign</paramValue>
+    <subgraph name="WirthSageTagArrayDesign_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">WirthSageTagArrayDesign_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -75,7 +50,7 @@
   <subgraph name="mapSageTags" xmlFile="mapSageTags.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="sageTagExtDbRlsSpec">$$sageTagExtDbRlsSpec$$</paramValue>
+    <paramValue name="sageTagExtDbRlsSpec">WirthSageTagArrayDesign_RSRC|@WirthSageTagArrayDesign_VER@</paramValue>
     <paramValue name="studyName">Transcriptional profile of P.falciparum by Serial analysis of gene expression</paramValue>
     <paramValue name="paramValue">25372</paramValue>  
     <paramValue name="nickName">mapSageTags</paramValue>   
@@ -83,22 +58,22 @@
     <depends name="sageTagDesignResource"/>
   </subgraph>
 
-    <subgraph name="sageTagFreqsResource" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">WirthSageTagFreqs</paramValue>
+    <subgraph name="WirthSageTagFreqs_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">WirthSageTagFreqs_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="sageTagDesignResource"/>
     </subgraph>
 
-    <subgraph name="correctGeneAliasesResource" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">CorrectGeneAliases</paramValue>
+    <subgraph name="Pf_CorrectGeneAliases_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pf_CorrectGeneAliases_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
   <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
-     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+     <paramValue name="genomeExtDbRlsSpec">P.falciparum_chromosomes_RSRC|@P.falciparum_chromosomes_VER@</paramValue>
      <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismName$$GeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
     <depends name="correctGeneAliasesResource"/>
   </step>
@@ -120,15 +95,13 @@
   <subgraph name="geneExpressionResources" xmlFile="plasmodb/pfalciparumGeneExpressionResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="oligoExtDbRlsSpec">$$oligoExtDbRlsSpec$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
     <depends name="correctGeneAliasesResource"/>
     <dependsGlobal name="MGEDOntologyEntryResource"/>
   </subgraph>
 
-    <subgraph name="GOAssociations_PfalciparumResource" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">GOAssociations_Pfalciparum</paramValue>
+    <subgraph name="GOAssociations_Pfalciparum_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">GOAssociations_Pfalciparum_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -136,16 +109,16 @@
       <dependsGlobal name="GOEvidenceCodesResource"/>
     </subgraph>
 
-    <subgraph name="ECAssociationsResource" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Pfalciparum_ECNumbers</paramValue>
+    <subgraph name="Pfalciparum_ECNumbers_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pfalciparum_ECNumbers_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
       <dependsGlobal name="enzymeDBResource"/>
     </subgraph>
 
-    <subgraph name="loadAnticodonsResource" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">P.falciparum_anticodons</paramValue>
+    <subgraph name="P.falciparum_anticodons_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">P.falciparum_anticodons_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
