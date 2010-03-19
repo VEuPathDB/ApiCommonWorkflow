@@ -4,11 +4,8 @@
   <param name="parentDataDir"/>
   <param name="organismName"/>
   <param name="organismFullName"/>
-  <param name="genomeExtDbRlsSpec"/>
-  <param name="genbankIsolateExtDbRlsSpec"/>
   <param name="organismResourceXmlFile"/>
   <param name="downloadSiteDataDir"/>
-  <param name="oligoExtDbRlsSpec"/>
 
   <constant name="dataDir">$$parentDataDir$$/$$organismName$$Specific</constant>
   <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/$$organismName$$</constant>
@@ -22,22 +19,21 @@
     <subgraph name="mapIsolatesToGenome" xmlFile="plasmodb/plasmoMapIsolatesToGenome.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genbankIsolateExtDbRlsSpec">$$genbankIsolateExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@Pberghei_chromosomes_VER@</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <depends name="makeDataDir"/>
       <dependsGlobal name="isolatesResource"/>
     </subgraph>
 
-    <subgraph name="correctGeneAliasesResource" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">CorrectGeneAliases</paramValue>
+    <subgraph name="Pb_CorrectGeneAliases_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pb_CorrectGeneAliases_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
   <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
-     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+     <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@Pberghei_chromosomes_VER@</paramValue>
      <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismName$$GeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
     <depends name="correctGeneAliasesResource"/>
   </step>
@@ -60,8 +56,8 @@
     <dependsGlobal name="MGEDOntologyEntryResource"/>
   </subgraph>
 
-    <subgraph name="GOAssociations_PbergheiResource" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">GOAssociations_Pberghei</paramValue>
+    <subgraph name="GOAssociations_Pberghei_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">GOAssociations_Pberghei_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -69,8 +65,8 @@
       <dependsGlobal name="GOEvidenceCodesResource"/>
     </subgraph>
 
-    <subgraph name="ECAssociationsResource" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Pberghei_ECNumbers</paramValue>
+    <subgraph name="Pberghei_ECNumbers_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pberghei_ECNumbers_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
