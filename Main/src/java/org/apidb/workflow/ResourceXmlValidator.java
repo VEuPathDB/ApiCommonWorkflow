@@ -1,32 +1,14 @@
-package org.gusdb.workflow;
+package org.apidb.workflow;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
+import java.io.IOException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.digester.Digester;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import org.gusdb.workflow.XmlParser;
-import org.gusdb.workflow.Name;
+import org.gusdb.workflow.Utilities;
 
 public class ResourceXmlValidator extends XmlParser {
 
@@ -35,11 +17,11 @@ public class ResourceXmlValidator extends XmlParser {
         super("lib/rng/resources.rng");
     }
 
-    public validateResourcesXml(String xmlFileName) throws IOException, Exception {
+    public void validateResourcesXml(String xmlFileName) throws IOException, Exception {
         configure();
         
         // construct urls to model file, prop file, and config file
-        URL modelURL = makeURL(gusHome, "lib/xml/datasources/" + xmlFileName);
+        URL modelURL = makeURL(xmlFileName);
 
         if (!validate(modelURL))
             throw new Exception("validation failed.");
@@ -69,6 +51,7 @@ public class ResourceXmlValidator extends XmlParser {
         return options;
     }
 
+    protected Digester configureDigester() { return null; }
 
 
 
