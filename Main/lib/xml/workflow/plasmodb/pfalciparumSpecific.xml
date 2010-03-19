@@ -2,14 +2,12 @@
   <param name="projectName"/>
   <param name="projectVersion"/>
   <param name="parentDataDir"/>
-  <param name="organismName"/>
-  <param name="organismFullName"/>
   <param name="organismResourceXmlFile"/>
   <param name="downloadSiteDataDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/$$organismName$$Specific</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/$$organismName$$</constant>
-  <constant name="genomicSeqsFile">$$parentDataDir$$/$$organismName$$LoadGenome/genomicSeqs.fsa</constant>
+  <constant name="dataDir">$$parentDataDir$$/@PfOrganismName@Specific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/@PfOrganismName@</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/@PfOrganismName@LoadGenome/genomicSeqs.fsa</constant>
 
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
@@ -18,7 +16,7 @@
 
     <subgraph name="mapIsolatesToGenome" xmlFile="plasmodb/plasmoMapIsolatesToGenome.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismName">$$organismName$$</paramValue>
+      <paramValue name="organismName">@PfOrganismName@</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
       <depends name="makeDataDir"/>
@@ -27,8 +25,6 @@
 
     <subgraph name="snps" xmlFile="plasmodb/pfalciparumSNPs.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismName">$$organismName$$</paramValue>
-      <paramValue name="organismFullName">$$organismFullName$$</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <depends name="makeDataDir"/>
@@ -75,14 +71,14 @@
 
   <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
      <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@P.falciparum_chromosomes_VER@</paramValue>
-     <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismName$$GeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
+     <paramValue name="outputFile">$$downloadSiteDataDir$$/@PfOrganismName@GeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
     <depends name="correctGeneAliasesResource"/>
   </step>
 
   <subgraph name="dbxRefsResources" xmlFile="plasmodb/pfalciparumDbxRefsResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/$$organismName$$EuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
+    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/@PfOrganismName@EuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <depends name="correctGeneAliasesResource"/>
   </subgraph>

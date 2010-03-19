@@ -2,14 +2,12 @@
   <param name="projectName"/>
   <param name="projectVersion"/>
   <param name="parentDataDir"/>
-  <param name="organismName"/>
-  <param name="organismFullName"/>
   <param name="organismResourceXmlFile"/>
   <param name="downloadSiteDataDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/$$organismName$$Specific</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/$$organismName$$</constant>
-  <constant name="genomicSeqsFile">$$parentDataDir$$/$$organismName$$LoadGenome/genomicSeqs.fsa</constant>
+  <constant name="dataDir">$$parentDataDir$$/@PgOrganismName@Specific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/@PgOrganismName@</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/@PgOrganismName@LoadGenome/genomicSeqs.fsa</constant>
 
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
@@ -18,7 +16,7 @@
 
     <subgraph name="mapIsolatesToGenome" xmlFile="plasmodb/plasmoMapIsolatesToGenome.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismName">$$organismName$$</paramValue>
+      <paramValue name="organismName">@PgOrganismName@$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">Pgallinaceum_Contigs_RSRC|@Pgallinaceum_Contigs_VER@</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <depends name="makeDataDir"/>
