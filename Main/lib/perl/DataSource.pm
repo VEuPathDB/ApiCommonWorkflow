@@ -4,11 +4,12 @@ use strict;
 use Data::Dumper;
 
 sub new {
-  my ($class, $dataSourceName, $parsedXml) = @_;
+  my ($class, $dataSourceName, $parsedXml, $dataSources) = @_;
 
   my $self = {};
   $self->{parsedXml} = $parsedXml;
   $self->{dataSourceName} = $dataSourceName;
+  $self->{dataSources} = $dataSources;
 
   bless($self,$class);
 
@@ -45,6 +46,18 @@ sub getOrganisms {
     return $self->{parsedXml}->{organisms};
 }
 
+sub getParentResource {
+    my ($self) = @_;
+
+    return $self->{parsedXml}->{parentResource};
+}
+
+sub getProject {
+    my ($self) = @_;
+
+    return $self->{parsedXml}->{project};
+}
+
 sub getCategory {
     my ($self) = @_;
 
@@ -66,7 +79,10 @@ sub getWgetArgs {
 sub getManualFileOrDir {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{manualGet}->{fileOrDir};
+    my $fileOrDir = $self->{parsedXml}->{manualGet}->{fileOrDir};
+    $fileOrDir =~ s/\%RESOURCE_NAME\%/$self->{dataSourceName}/g;
+    $fileOrDir =~ s/\%RESOURCE_VERSION\%/$self->{version}/g;
+    return $fileOrDir;
 }
 
 sub getManualContact {
@@ -96,10 +112,24 @@ sub getUnpacks {
 sub getPluginArgs {
     my ($self) = @_;
 
+    my $parent = "";
+    my $name = $self->{dataSourceName};
+    my $version = $self->{version};
+
+    if ($self->{parentResource}) {
+      if (pluginArgs =~ /\%(RESOURCE_\w+)\%/) {
+	my $macro = $1;
+	my $xmlFile = $self->{dataSources}->getXmlFile();
+	die "Resource $self->{dataSourceName} in file $xmlFile has a parentResource but is using the macro \%$macro\%.  It must use \%PARENT_$macro\% instead\n";
+      }
+      $parent = 'PARENT_';
+      $name = $self->getParentResource()->getName();
+      $version = $self->->getParentResource()->getVersion();
+    }
     my $pluginArgs = $self->{parsedXml}->{pluginArgs};
-    $pluginArgs =~ s/\%EXT_DB_NAME\%/$self->{dataSourceName}/g;
-    $pluginArgs =~ s/\%EXT_DB_RLS_VER\%/$self->{version}/g;
-    return $self->{parsedXml}->{pluginArgs};
+    $pluginArgs =~ s/\%$parentRESOURCE_NAME\%/$name/g;
+    $pluginArgs =~ s/\%$parentRESOURCE_VERSION\%/$version/g;
+    return $pluginArgs;
 }
 
 sub getDescription {

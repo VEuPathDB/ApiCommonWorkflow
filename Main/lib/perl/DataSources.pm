@@ -23,13 +23,18 @@ sub new {
   return $self;
 }
 
+sub getXmlFile {
+  my ($self) = @_;
+  return $self->{resourcesXmlFile};
+}
+
 sub getDataSource {
     my ($self, $dataSourceName) = @_;
 
     die "can't find resource '$dataSourceName' in xml file $self->{resourcesXmlFile}"
       unless $self->{data}->{resource}->{$dataSourceName};
 
-    return ApiCommonWorkflow::Main::DataSource->new($dataSourceName, $self->{data}->{resource}->{$dataSourceName});
+    return ApiCommonWorkflow::Main::DataSource->new($dataSourceName, $self->{data}->{resource}->{$dataSourceName}, $self);
 }
 
 sub _parseXmlFile {
