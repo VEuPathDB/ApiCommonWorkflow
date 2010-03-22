@@ -33,7 +33,7 @@
   <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
      <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@Pberghei_chromosomes_VER@</paramValue>
      <paramValue name="outputFile">$$downloadSiteDataDir$$/PbergheiGeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <depends name="correctGeneAliasesResource"/>
+    <depends name="Pb_CorrectGeneAliases_RSRC"/>
   </step>
 
   <subgraph name="dbxRefsResources" xmlFile="plasmodb/pbergheiDbxRefsResource.xml">
@@ -41,17 +41,17 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/PbergheiEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="correctGeneAliasesResource"/>
+    <depends name="Pb_CorrectGeneAliases_RSRC"/>
   </subgraph>
 
   <subgraph name="geneExpressionResources" xmlFile="plasmodb/pbergheiGeneExpressionResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="oligoExtDbRlsSpec">$$oligoExtDbRlsSpec$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="oligoExtDbRlsSpec">Pberghei_gss_oligos_RSRC|@Pberghei_gss_oligos_VER@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@Pberghei_chromosomes_VER@</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <depends name="correctGeneAliasesResource"/>
-    <dependsGlobal name="MGEDOntologyEntryResource"/>
+    <depends name="Pb_CorrectGeneAliases_RSRC"/>
+    <dependsGlobal name="Mged_Ontology_Entry_RSRC"/>
   </subgraph>
 
     <subgraph name="GOAssociations_Pberghei_RSRC" xmlFile="loadResource.xml">
@@ -59,8 +59,8 @@
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
-      <dependsGlobal name="GOResource"/>
-      <dependsGlobal name="GOEvidenceCodesResource"/>
+      <dependsGlobal name="GO_RSRC"/>
+      <dependsGlobal name="GO_evidence_codes_RSRC"/>
     </subgraph>
 
     <subgraph name="Pberghei_ECNumbers_RSRC" xmlFile="loadResource.xml">
@@ -68,6 +68,6 @@
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
-      <dependsGlobal name="enzymeDBResource"/>
+      <dependsGlobal name="enzymeDB_RSRC"/>
     </subgraph>
 </workflowGraph>

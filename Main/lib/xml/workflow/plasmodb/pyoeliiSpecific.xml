@@ -33,7 +33,7 @@
   <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
      <paramValue name="genomeExtDbRlsSpec">Pyoelii_Contigs_RSRC|@Pyoelii_Contigs_VER@</paramValue>
      <paramValue name="outputFile">$$downloadSiteDataDir$$/PyoeliiGeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <depends name="correctGeneAliasesResource"/>
+    <depends name="Py_CorrectGeneAliases_RSRC"/>
   </step>
 
   <subgraph name="dbxRefsResources" xmlFile="plasmodb/pyoeliiDbxRefsResource.xml">
@@ -41,7 +41,7 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/PyoeliiEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="correctGeneAliasesResource"/>
+    <depends name="Py_CorrectGeneAliases_RSRC"/>
   </subgraph>
 
   <subgraph name="miscResources" xmlFile="plasmodb/pyoeliiMiscResource.xml">
@@ -53,11 +53,11 @@
   <subgraph name="geneExpressionResources" xmlFile="plasmodb/pyoeliiGeneExpressionResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="oligoExtDbRlsSpec">$$oligoExtDbRlsSpec$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="oligoExtDbRlsSpec">Vaidya_Bergman_oligos_RSRC|@Vaidya_Bergman_oligos_VER@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pyoelii_Contigs_RSRC|@Pyoelii_Contigs_VER@</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <depends name="correctGeneAliasesResource"/>
-    <dependsGlobal name="MGEDOntologyEntryResource"/>
+    <depends name="Py_CorrectGeneAliases_RSRC"/>
+    <dependsGlobal name="Mged_Ontology_Entry_RSRC"/>
   </subgraph>
 
     <subgraph name="Pyoelii_EC_numbers_RSRC" xmlFile="loadResource.xml">
@@ -65,6 +65,6 @@
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
-      <dependsGlobal name="enzymeDBResource"/>
+      <dependsGlobal name="enzymeDB_RSRC"/>
     </subgraph>
 </workflowGraph>

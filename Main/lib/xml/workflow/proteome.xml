@@ -186,13 +186,13 @@
       <paramValue name="nrdbFileRegex">^\\|\\d+\\|(?:emb|gb|dbj|ref|sp|pdb)\\|([\\w\\.]+)\\|</paramValue>
       <paramValue name="outputFile">$$dataDir$$/nrdbXrefs.txt</paramValue>
        <depends name="makeDataDir"/>
-      <dependsGlobal name="NRDBResource"/>
+      <dependsGlobal name="NRDB_RSRC"/>
     </step>
 
     <step name="loadNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadNrdbXrefs" stepLoadTypes="plugin">
       <paramValue name="xrefsFile">$$dataDir$$/nrdbXrefs.txt</paramValue>
       <paramValue name="dbAbbrevList">emb,gb,dbj,ref,sp,pdb</paramValue>
-      <paramValue name="nrdbExtDbRlsSpec">$$nrdbExtDbRlsSpec$$</paramValue>
+      <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@NRDB_VER@</paramValue>
       <depends name="findNrdbXrefs"/>
  
     </step>
@@ -201,7 +201,7 @@
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
-      <dependsGlobal name="interproscanDataResource"/>
+      <dependsGlobal name="interproscanData_RSRC"/>
     </subgraph>
 
     <step name="document-interpro"
@@ -226,7 +226,7 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
       <depends name="makeDataDir"/>
-      <dependsGlobal name="NRDBResource"/>
+      <dependsGlobal name="NRDB_RSRC"/>
     </subgraph>
 
     <step name="document-psipred"
@@ -263,7 +263,7 @@
       <paramValue name="taxonHierarchyForFilter"></paramValue>
       <paramValue name="loadOptions">--subjectsLimit 50</paramValue>
       <depends name="makeDataDir"/>
-      <dependsGlobal name="NRDBResource"/>
+      <dependsGlobal name="NRDB_RSRC"/>
     </subgraph>
 
    <step name="document-blastpNrdb"
@@ -300,7 +300,7 @@
       <paramValue name="taxonHierarchyForFilter"></paramValue>
       <paramValue name="loadOptions">--noHSPs --subjectPvalue 1e-05 --subjectPctIdent 30</paramValue>
       <depends name="makeDataDir"/>
-      <dependsGlobal name="PDBProteinSequencesResource"/>
+      <dependsGlobal name="interproscanData_RSRC"/>
     </subgraph>
 
    <step name="document-blastpPdb"
