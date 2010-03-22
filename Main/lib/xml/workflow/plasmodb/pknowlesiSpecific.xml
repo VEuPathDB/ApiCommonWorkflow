@@ -5,9 +5,9 @@
   <param name="organismResourceXmlFile"/>
   <param name="downloadSiteDataDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/@PkOrganismName@Specific</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/@PkOrganismName@</constant>
-  <constant name="genomicSeqsFile">$$parentDataDir$$/@PkOrganismName@LoadGenome/genomicSeqs.fsa</constant>
+  <constant name="dataDir">$$parentDataDir$$/PknowlesiSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Pknowlesi</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/PknowlesiLoadGenome/genomicSeqs.fsa</constant>
 
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
@@ -16,7 +16,7 @@
 
     <subgraph name="mapIsolatesToGenome" xmlFile="plasmodb/plasmoMapIsolatesToGenome.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismName">@PkOrganismName@</paramValue>
+      <paramValue name="organismName">Pknowlesi</paramValue>
       <paramValue name="genomeExtDbRlsSpec">Pknowlesi_chromosomes_RSRC|@Pknowlesi_chromosomes_VER@</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <depends name="makeDataDir"/>
@@ -32,14 +32,14 @@
 
   <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
      <paramValue name="genomeExtDbRlsSpec">Pknowlesi_chromosomes_RSRC|@Pknowlesi_chromosomes_VER@</paramValue>
-     <paramValue name="outputFile">$$downloadSiteDataDir$$/@PkOrganismName@GeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
+     <paramValue name="outputFile">$$downloadSiteDataDir$$/PknowlesiGeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
     <depends name="correctGeneAliasesResource"/>
   </step>
 
   <subgraph name="dbxRefsResources" xmlFile="plasmodb/pknowlesiDbxRefsResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/@PkOrganismName@EuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
+    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/PknowlesiyEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <depends name="correctGeneAliasesResource"/>
   </subgraph>
