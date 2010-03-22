@@ -35,28 +35,30 @@ foreach my $r (@{$d->{resource}}) {
     <wgetArgs url="$r->{url}">$r->{wgetArgs}</wgetArgs>};
   } else {
     $get=qq{
-    <manualGet fileOrDir="$r->{manualGet}->{fileOrDir}"
-        contact="$r->{manualGet}->{contact}"
-        email="$r->{manualGet}->{email}"
-        institution="$r->{manualGet}->{institution}"/>};
+    <manualGet fileOrDir="$r->{manualGet}->{fileOrDir}"/>};
   }
   my $descrip = $r->{description};
   $descrip =~ s/^\s+//;
   $descrip =~ s/\s+$//;
   print qq{
   <resource resource="$r->{resource}" version="$r->{version}"$parentResource
-      project="$r->{project}"
-      organisms="$r->{organisms}"
-      plugin="$r->{plugin}"
-      displayName="$r->{displayName}"
-      category="$r->{category}"
-      publicUrl="$r->{publicUrl}">$get$unpacks
+      plugin="$r->{plugin}">$get$unpacks
     <pluginArgs>$r->{pluginArgs}</pluginArgs>
-    <description>
-      <![CDATA[
-       $descrip
-      ]]>
-    </description>$publications
+    <info
+        displayName="$r->{displayName}"
+        project="$r->{project}"
+        organisms="$r->{organisms}"
+        category="$r->{category}">
+        publicUrl="$r->{publicUrl}"
+        contact="$r->{manualGet}->{contact}"
+        email="$r->{manualGet}->{email}"
+        institution="$r->{manualGet}->{institution}"/>
+      <description>
+        <![CDATA[
+         $descrip
+        ]]>
+      </description>$publications
+    </info>
   </resource>
 }
 }
