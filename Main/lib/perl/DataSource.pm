@@ -116,19 +116,19 @@ sub getPluginArgs {
     my $name = $self->{dataSourceName};
     my $version = $self->{version};
 
+    my $pluginArgs = $self->{parsedXml}->{pluginArgs};
     if ($self->{parentResource}) {
-      if (pluginArgs =~ /\%(RESOURCE_\w+)\%/) {
+      if ($pluginArgs =~ /\%(RESOURCE_\w+)\%/) {
 	my $macro = $1;
 	my $xmlFile = $self->{dataSources}->getXmlFile();
 	die "Resource $self->{dataSourceName} in file $xmlFile has a parentResource but is using the macro \%$macro\%.  It must use \%PARENT_$macro\% instead\n";
       }
       $parent = 'PARENT_';
       $name = $self->getParentResource()->getName();
-      $version = $self->->getParentResource()->getVersion();
+      $version = $self->getParentResource()->getVersion();
     }
-    my $pluginArgs = $self->{parsedXml}->{pluginArgs};
-    $pluginArgs =~ s/\%$parentRESOURCE_NAME\%/$name/g;
-    $pluginArgs =~ s/\%$parentRESOURCE_VERSION\%/$version/g;
+    $pluginArgs =~ s/\%${parent}RESOURCE_NAME\%/$name/g;
+    $pluginArgs =~ s/\%${parent}RESOURCE_VERSION\%/$version/g;
     return $pluginArgs;
 }
 
