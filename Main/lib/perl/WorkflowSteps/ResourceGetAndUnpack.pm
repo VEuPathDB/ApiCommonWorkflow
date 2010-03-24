@@ -27,13 +27,12 @@ sub getResource {
     my ($self, $test, $dataSource, $targetDir, $dataSourceName) = @_;
 
     my $WgetArgs = $dataSource->getWgetArgs();
+    my $manualGet = $dataSource->getManualGet();
     my $manualFileOrDir = $dataSource->getManualFileOrDir();
-    my $UrlArg = $dataSource->getUrl();
+    my $UrlArg = $dataSource->getWgetUrl();
     
-    die "Resource $dataSourceName must provide either an URL and WgetArgs or ManualArgs, but not both\n"
-	unless
-	(($WgetArgs && $UrlArg && !$manualArgs)
-	 || ($manualArgs && !$WgetArgs && !$manualArgs));
+    die "Resource $dataSourceName must provide either <wgetArgs> or <manualGet>, but not both\n"
+	unless ($WgetArgs && !$manualGet) || ($manualGet && !$WgetArgs);
 
     $self->runCmd(0,"mkdir -p $targetDir");
 
