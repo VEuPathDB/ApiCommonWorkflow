@@ -28,12 +28,6 @@ sub getVersion {
     return $self->{parsedXml}->{version};
 }
 
-sub getUrl {
-    my ($self) = @_;
-
-    return $self->{parsedXml}->{url};
-}
-
 sub getDisplayName {
     my ($self) = @_;
 
@@ -74,6 +68,18 @@ sub getWgetArgs {
     my ($self) = @_;
 
     return $self->{parsedXml}->{wgetArgs};
+}
+
+sub getWgetArgsUrl {
+    my ($self) = @_;
+
+    return $self->{parsedXml}->{wgetArgs}->{url};
+}
+
+sub getManualGet {
+    my ($self) = @_;
+
+    return $self->{parsedXml}->{manualGet};
 }
 
 sub getManualFileOrDir {
