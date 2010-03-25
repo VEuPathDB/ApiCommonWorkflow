@@ -12,16 +12,28 @@ sub run {
     my $dataDirPath = $self->getParamValue('dataDir');
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
-    my $extDbName = $dataSource->getLegacyExtDbName();
-    $extDbName = $dataSource->getName() unless $extDbName;
+    my $dataSourceVersion =  $dataSource->getVersion();
+    my $parentRsrc = $dataSource->getParentResource();
 
-    my $extDbRlsVer =  $dataSource->getVersion();
+    # if has a parentResource, validate that the resource exists
+    # and, if not in test mode, that it is in the database
+    if ($parentRsrc) {
+      my $parentDatasource = $self->getDataSource($parentRsrc, $dataSourceXmlFile, $dataDirPath);
+      my $parentVersion = $parentDatasource->getVersion();
+      if (!$test) {
+	my $parentExtDbRlsId = $self->getExtDbRlsId($test, "$parentRsrc|$parentVersion");
+	$self->error("Resource $dataSourceName declares a parentResource=$parentRsrc.  But the parent is not found in the database (with version $parentVersion)") unless $parentExtDbRlsId;
+      }
+    }
 
-    my $releasePluginArgs = "--databaseName '$extDbName' --databaseVersion '$extDbRlsVer'";
+    # otherwise insert this ext db rls
+    else {
 
-    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
+      my $releasePluginArgs = "--databaseName '$dataSourceName' --databaseVersion '$dataSourceVersion'";
+
+      $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
+    }
 }
-
 
 sub getParamsDeclaration {
     return (

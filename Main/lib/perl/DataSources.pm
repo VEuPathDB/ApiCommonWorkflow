@@ -18,7 +18,7 @@ sub new {
 
   $self->{resourcesXmlFile} = "$ENV{GUS_HOME}/lib/xml/datasources/$resourcesXmlFile";
 
-  $self->_parseXmlFile($resourcesXmlFile, $properties);
+  $self->_parseXmlFile($self->{resourcesXmlFile}, $properties);
 
   return $self;
 }

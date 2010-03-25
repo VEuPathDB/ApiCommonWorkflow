@@ -12,10 +12,11 @@ sub run {
     my $dataDirPath = $self->getParamValue('dataDir');
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
-    my $extDbName = $dataSource->getLegacyExtDbName();
-    $extDbName = $dataSource->getName() unless $extDbName;
+    # if has a parent resource, then assume the ext db has already been inserted
+    # (this is validated in the ResourceInsertExtDbRls step)
+    return if $dataSource->getParentResource();
 
-    my $dbPluginArgs = "--name '$extDbName' ";
+    my $dbPluginArgs = "--name '$dataSourceName' ";
 
     $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 

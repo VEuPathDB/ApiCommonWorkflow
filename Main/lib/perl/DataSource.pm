@@ -70,7 +70,7 @@ sub getWgetArgs {
     return $self->{parsedXml}->{wgetArgs};
 }
 
-sub getWgetArgsUrl {
+sub getWgetUrl {
     my ($self) = @_;
 
     return $self->{parsedXml}->{wgetArgs}->{url};
