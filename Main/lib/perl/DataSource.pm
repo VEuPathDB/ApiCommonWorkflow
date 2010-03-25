@@ -87,7 +87,7 @@ sub getManualFileOrDir {
 
     my $fileOrDir = $self->{parsedXml}->{manualGet}->{fileOrDir};
     $fileOrDir =~ s/\%RESOURCE_NAME\%/$self->{dataSourceName}/g;
-    $fileOrDir =~ s/\%RESOURCE_VERSION\%/$self->{version}/g;
+    $fileOrDir =~ s/\%RESOURCE_VERSION\%/$self->{parsedXml}->{version}/g;
     return $fileOrDir;
 }
 
