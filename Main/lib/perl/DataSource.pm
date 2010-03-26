@@ -31,13 +31,13 @@ sub getVersion {
 sub getDisplayName {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{displayName};
+    return $self->{parsedXml}->{info}->{displayName};
 }
 
 sub getOrganisms {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{organisms};
+    return $self->{parsedXml}->{info}->{organisms};
 }
 
 sub getParentResource {
@@ -49,13 +49,13 @@ sub getParentResource {
 sub getProject {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{project};
+    return $self->{parsedXml}->{info}->{project};
 }
 
 sub getCategory {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{category};
+    return $self->{parsedXml}->{info}->{category};
 }
 
 sub getPlugin {
@@ -91,22 +91,22 @@ sub getManualFileOrDir {
     return $fileOrDir;
 }
 
-sub getManualContact {
+sub getContact {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{manualGet}->{contact};
+    return $self->{parsedXml}->{info}->{contact};
 }
 
-sub getManualEmail {
+sub getEmail {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{manualGet}->{email};
+    return $self->{parsedXml}->{info}->{email};
 }
 
-sub getManualInstitution {
+sub getInstitution {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{manualGet}->{institution};
+    return $self->{parsedXml}->{info}->{institution};
 }
 
 sub getUnpacks {
@@ -141,7 +141,7 @@ sub getPluginArgs {
 sub getDescription {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{description};
+    return $self->{parsedXml}->{info}->{description};
 }
 
 sub getPublications {
@@ -149,7 +149,7 @@ sub getPublications {
 
     if (!$self->{publications}) {
 	$self->{publications} = [];
-	foreach my $pubmedId ($self->{parsedXml}->{publication}->{pmid}) {
+	foreach my $pubmedId ($self->{parsedXml}->{info}->{publication}->{pmid}) {
 	    my $publication = {pubmedId => $pubmedId};
 	    $publication->{citation} = `pubmedIdToCitation $pubmedId`;
 	    die "failed calling 'pubmedIdToCitation $pubmedId'" if $? >> 8;
