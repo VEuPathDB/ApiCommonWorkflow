@@ -17,12 +17,12 @@ sub run {
 
   my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--seqFile $localDataDir/$inputFile --fileFormat 'fasta' --extDbName '$extDbName' --extDbVersion '$extDbRlsVer' --seqType $seqType --maskChar $mask $options";
+  my $args = "--seqFile $workflowDataDir/$inputFile --fileFormat 'fasta' --extDbName '$extDbName' --extDbVersion '$extDbRlsVer' --seqType $seqType --maskChar $mask $options";
 
   if ($test) {
-    $self->testInputFile('inputFile', "$localDataDir/$inputFile");
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
   }
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertLowComplexityFeature", $args);

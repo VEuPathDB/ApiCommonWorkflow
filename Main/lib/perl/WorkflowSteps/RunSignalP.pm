@@ -15,16 +15,16 @@ sub run {
 
   my $binPath = $self->getConfig('binPath');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "runSignalP --binPath $binPath  --options '$options' --seqFile $localDataDir/$proteinsFile --outFile $localDataDir/$outputFile";
+  my $cmd = "runSignalP --binPath $binPath  --options '$options' --seqFile $workflowDataDir/$proteinsFile --outFile $workflowDataDir/$outputFile";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('proteinsFile', "$localDataDir/$proteinsFile");
-	  $self->runCmd(0,"echo test > $localDataDir/$outputFile");
+	  $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }else{
 	  $self->runCmd($test,$cmd);
       }

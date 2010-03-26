@@ -12,22 +12,22 @@ sub run {
   my $sageTagFile = $self->getParamValue('sageTagFile');
   my $outputFile = $self->getParamValue('outputFile');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "tagToSeq.pl $localDataDir/$genomicSeqsFile $localDataDir/$sageTagFile 2> $localDataDir/$outputFile";
+  my $cmd = "tagToSeq.pl $workflowDataDir/$genomicSeqsFile $workflowDataDir/$sageTagFile 2> $workflowDataDir/$outputFile";
   if ($test) {
-    $self->testInputFile('genomicSeqsFile', "$localDataDir/$genomicSeqsFile");
-    $self->testInputFile('sageTagFile', "$localDataDir/$sageTagFile");
-    $self->runCmd(0, "echo test > $localDataDir/$outputFile");
+    $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
+    $self->testInputFile('sageTagFile', "$workflowDataDir/$sageTagFile");
+    $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
   }
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('genomicSeqsFile', "$localDataDir/$genomicSeqsFile");
-	  $self->testInputFile('sageTagFile', "$localDataDir/$sageTagFile");
-	  $self->runCmd(0, "echo test > $localDataDir/$outputFile");
+	  $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
+	  $self->testInputFile('sageTagFile', "$workflowDataDir/$sageTagFile");
+	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
       }else{
 	  $self->runCmd($test, $cmd);
       }

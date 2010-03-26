@@ -12,18 +12,18 @@ sub run {
     my $fsaFile = $self->getParamValue('fsaFile');
     my $outputFile = $self->getParamValue('outputFile');
 
-    my $localDataDir = $self->getLocalDataDir();
+    my $workflowDataDir = $self->getWorkflowDataDir();
 
 
-    my $args = "--f $localDataDir/$fsaFile --g $localDataDir/$inputFile --o $localDataDir/$outputFile";
+    my $args = "--f $workflowDataDir/$fsaFile --g $workflowDataDir/$inputFile --o $workflowDataDir/$outputFile";
 
     if ($test){
-    $self->testInputFile('fsaFile', "$localDataDir/$fsaFile");
-    $self->testInputFile('inputFile', "$localDataDir/$inputFile");
-        $self->runCmd(0,"echo test > $localDataDir/$outputFile");
+    $self->testInputFile('fsaFile', "$workflowDataDir/$fsaFile");
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+        $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
     }
     if ($undo) {
-      $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+      $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     } else {
       $self->runCmd($test,"fixMercatorOffsetsInGFF.pl $args");
     }

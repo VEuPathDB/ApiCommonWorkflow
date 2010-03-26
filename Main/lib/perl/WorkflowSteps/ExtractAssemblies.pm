@@ -15,15 +15,15 @@ sub run {
 
   my $sql = "select na_sequence_id,description,'('||number_of_contained_sequences||' sequences)','length='||length,sequence from dots.Assembly where taxon_id = $taxonId";
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "gusExtractSequences --outputFile $localDataDir/$outputFile --verbose --idSQL \"$sql\"";
+  my $cmd = "gusExtractSequences --outputFile $workflowDataDir/$outputFile --verbose --idSQL \"$sql\"";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test){
-	  $self->runCmd(0, "echo test > $localDataDir/$outputFile");
+	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
       }else{
 	  $self->runCmd($test, $cmd);
       }

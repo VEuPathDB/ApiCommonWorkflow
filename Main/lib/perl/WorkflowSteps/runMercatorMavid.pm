@@ -17,7 +17,7 @@ sub run {
   # get step properties
   my $ = $self->getConfig('');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($test) {
   } else {

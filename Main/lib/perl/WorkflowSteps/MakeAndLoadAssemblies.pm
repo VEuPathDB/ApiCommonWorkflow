@@ -20,21 +20,21 @@ sub run {
 
   my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$ncbiTaxonId);
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--clusterfile $localDataDir/$inputFile $reassemble --taxon_id $taxonId --cap4Dir $cap4Dir";
+  my $args = "--clusterfile $workflowDataDir/$inputFile $reassemble --taxon_id $taxonId --cap4Dir $cap4Dir";
 
   my $workflowStepId = $self->getId();
   
   my $pluginCmd = "ga DoTS::DotsBuild::Plugin::UpdateDotsAssembliesWithCap4 --commit $args --workflowstepid $workflowStepId --comment '$args'";
 
-  my $cmd = "runUpdateAssembliesPlugin --clusterFile $localDataDir/$inputFile --pluginCmd \"$pluginCmd\"";
+  my $cmd = "runUpdateAssembliesPlugin --clusterFile $workflowDataDir/$inputFile --pluginCmd \"$pluginCmd\"";
 
   if ($undo) {
     $self->runPlugin($test,$undo, "DoTS::DotsBuild::Plugin::UpdateDotsAssembliesWithCap4", '');
   }else {
       if ($test) {
-	  $self->testInputFile('inputFile', "$localDataDir/$inputFile");
+	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       }
       $self->runCmd($test, $cmd);
   }

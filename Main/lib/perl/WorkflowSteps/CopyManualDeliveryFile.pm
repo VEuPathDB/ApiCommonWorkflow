@@ -13,17 +13,17 @@ sub run {
 
   my $manualDeliveryDir = $self->getGlobalConfig('manualDeliveryDir');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "cp $manualDeliveryDir/$fromFile $localDataDir/$toFile";
+  my $cmd = "cp $manualDeliveryDir/$fromFile $workflowDataDir/$toFile";
 
   if ($test) {
     $self->testInputFile('fromFile', "$manualDeliveryDir/$fromFile");
-    $self->runCmd(0, "echo test > $localDataDir/$toFile");
+    $self->runCmd(0, "echo test > $workflowDataDir/$toFile");
   }
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$toFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$toFile");
   } else {
     $self->runCmd($test, $cmd);
   }

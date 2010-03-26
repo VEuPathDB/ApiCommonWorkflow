@@ -7,7 +7,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $clusterDataDir = $self->getComputeClusterDataDir();
+  my $clusterDataDir = $self->getClusterWorkflowDataDir();
   my $clusterTaskLogsDir = $self->getComputeClusterTaskLogsDir();
 
 

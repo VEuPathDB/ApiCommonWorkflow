@@ -15,24 +15,24 @@ sub run {
 
   my $trfPath = $self->getConfig('trfPath');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
   my $stepDir = $self->getStepDir();
 
-  my $cmd = "trfWrap --trfPath $trfPath --inputFile $localDataDir/$seqsFile --args '$repeatFinderArgs' 2>>command.log";
+  my $cmd = "trfWrap --trfPath $trfPath --inputFile $workflowDataDir/$seqsFile --args '$repeatFinderArgs' 2>>command.log";
 
   $repeatFinderArgs =~ s/\s+/\./g;
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
   if ($test) {
-    $self->testInputFile('seqsFile', "$localDataDir/$seqsFile");
+    $self->testInputFile('seqsFile', "$workflowDataDir/$seqsFile");
 
-    $self->runCmd(0,"echo test > $localDataDir/$outputFile");
+    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 
   }
     $self->runCmd($test, $cmd);
-    $self->runCmd($test, "mv $stepDir/genomicSeqs.fsa.$repeatFinderArgs.dat $localDataDir/$outputFile");
+    $self->runCmd($test, "mv $stepDir/genomicSeqs.fsa.$repeatFinderArgs.dat $workflowDataDir/$outputFile");
   }
 
 }

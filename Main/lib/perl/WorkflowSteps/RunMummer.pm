@@ -13,25 +13,25 @@ sub run {
     my $inputDir = $self->getParamValue('inputDir');
     my $outputFile = $self->getParamValue('outputFile');
 
-    my $localDataDir = $self->getLocalDataDir();
+    my $workflowDataDir = $self->getWorkflowDataDir();
     my $mummerPath = $self->getConfig('mummerPath');
 
-    my @inputFileNames = $self->getInputFiles($test,"$localDataDir/$inputDir",'','fasta');
+    my @inputFileNames = $self->getInputFiles($test,"$workflowDataDir/$inputDir",'','fasta');
 
     if (scalar @inputFileNames==0){
 	die "No input files. Please check inputDir: $inputDir\n";
     }
 
     if ($undo) {
-	$self->runCmd(0, "rm -f $localDataDir/$outputFile");
+	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     }else{
 	if ($test) {
-	    $self->testInputFile('inputDir', "$localDataDir/$inputDir");
-	    $self->testInputFile('genomicSeqsFile', "$localDataDir/$genomicSeqsFile");
-	    $self->runCmd(0,"echo test > $localDataDir/$outputFile");
+	    $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
+	    $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
+	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}else{
 	    foreach my $inputFile (@inputFileNames){
-		my $cmd = "callMUMmerForSnps --mummerDir $mummerPath --query_file $localDataDir/$genomicSeqsFile --output_file $localDataDir/$outputFile --snp_file $inputFile"; 
+		my $cmd = "callMUMmerForSnps --mummerDir $mummerPath --query_file $workflowDataDir/$genomicSeqsFile --output_file $workflowDataDir/$outputFile --snp_file $inputFile"; 
 		$self->runCmd($test,$cmd);
 	    }
 	}

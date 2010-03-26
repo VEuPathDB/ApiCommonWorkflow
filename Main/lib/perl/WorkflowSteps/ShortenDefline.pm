@@ -16,16 +16,16 @@ sub run {
 
   my $mappingFile = "$downloadDir/$mappingFileRelativeToDownloadDir";
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   }else {
       if ($test) {
-	  $self->testInputFile('inputFile', "$localDataDir/$inputFile");
-	  $self->runCmd(0, "echo test > $localDataDir/$outputFile");
+	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
       }else{
-	  $self->runCmd($test, "shortenDefLine --inputFile $localDataDir/$inputFile --outputFile $localDataDir/$outputFile --taxonIdMappingFile '$mappingFile'");
+	  $self->runCmd($test, "shortenDefLine --inputFile $workflowDataDir/$inputFile --outputFile $workflowDataDir/$outputFile --taxonIdMappingFile '$mappingFile'");
       }
   }
 }

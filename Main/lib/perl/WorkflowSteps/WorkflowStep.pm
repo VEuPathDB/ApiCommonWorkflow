@@ -12,7 +12,7 @@ use Carp;
 use GUS::Workflow::WorkflowStepInvoker;
 use ApiCommonWorkflow::Main::DataSources;
 
-sub getLocalDataDir {
+sub getWorkflowDataDir {
     my ($self) = @_;
     my $workflowHome = $self->getWorkflowHomeDir();
     return "$workflowHome/data";
@@ -26,7 +26,7 @@ sub getComputeClusterHomeDir {
     return "$clusterBase/$projectName/$projectVersion";
 }
 
-sub getComputeClusterDataDir {
+sub getClusterWorkflowDataDir {
     my ($self) = @_;
     my $home = $self->getComputeClusterHomeDir();
     return "$home/data";
@@ -54,16 +54,16 @@ sub makeClusterControllerPropFile {
   my $nodeClass = $self->getGlobalConfig('nodeClass');
 
   # construct dir paths
-  my $localDataDir = $self->getLocalDataDir();
-  my $computeClusterDataDir = $self->getComputeClusterDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
+  my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
 
   # print out the file
-  my $controllerPropFile = "$localDataDir/$taskInputDir/controller.prop";
+  my $controllerPropFile = "$workflowDataDir/$taskInputDir/controller.prop";
   open(F, ">$controllerPropFile")
       || $self->error("Can't open controller prop file '$controllerPropFile' for writing");
   print F 
-"masterdir=$computeClusterDataDir/$masterDir
-inputdir=$computeClusterDataDir/$taskInputDir
+"masterdir=$clusterWorkflowDataDir/$masterDir
+inputdir=$clusterWorkflowDataDir/$taskInputDir
 nodedir=$nodePath
 slotspernode=$slotsPerNode
 subtasksize=$taskSize
@@ -184,13 +184,15 @@ sub getDataSource {
   my ($self, $dataSourceName, $dataSourcesXmlFile, $dataDirPath) = @_;
 
   if (!$self->{dataSources}) {
-    my $localDataDir = $self->getLocalDataDir();
-    my $dataDir = "$localDataDir/$dataDirPath";
+    my $workflowDataDir = $self->getWorkflowDataDir();
+    my $dataDir = "$workflowDataDir/$dataDirPath";
 
     my $globalProperties = $self->getGlobalConfigProperties();
     $globalProperties->addProperty("dataDir", $dataDir);
+    print STDERR "Parsing resource file: $dataSourcesXmlFile\n";
     $self->{dataSources} =
       ApiCommonWorkflow::Main::DataSources->new($dataSourcesXmlFile, $globalProperties);  }
+    print STDERR "Done parsing resource file: $dataSourcesXmlFile\n";
   return $self->{dataSources}->getDataSource($dataSourceName);
 }
 

@@ -15,16 +15,16 @@ sub run {
   my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$parentNcbiTaxonId);
   my $taxonIdList = $self->getTaxonIdList($test, $taxonId, $useTaxonHierarchy);
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--taxon_id_list '$taxonIdList' --outputfile $localDataDir/$outputFile --extractonly";
+  my $args = "--taxon_id_list '$taxonIdList' --outputfile $workflowDataDir/$outputFile --extractonly";
 
   if ($test) {
-      $self->runCmd(0,"echo test > $localDataDir/$outputFile");
+      $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
   }
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
     $self->runPlugin($test, $undo, "DoTS::DotsBuild::Plugin::ExtractAndBlockAssemblySequences", $args);
   }

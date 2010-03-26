@@ -18,25 +18,25 @@ sub run {
   my $taskSize = $self->getConfig('taskSize');
   my $applications = $self->getConfig('applications');
 
-  my $computeClusterDataDir = $self->getComputeClusterDataDir();
-  my $localDataDir = $self->getLocalDataDir();
+  my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($undo) {
-    $self->runCmd(0,"rm -rf $localDataDir/$taskInputDir");
+    $self->runCmd(0,"rm -rf $workflowDataDir/$taskInputDir");
   }else {
       if ($test) {
-	  $self->testInputFile('proteinsFile', "$localDataDir/$proteinsFile");
+	  $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
       }
       
-      $self->runCmd(0,"mkdir -p $localDataDir/$taskInputDir");
+      $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
       # make controller.prop file
       $self->makeClusterControllerPropFile($taskInputDir, 2, $taskSize,
 				       "DJob::DistribJobTasks::IprscanTask");
       # make task.prop file
-      my $taskPropFile = "$localDataDir/$taskInputDir/task.prop";
+      my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
       print F
-"seqfile=$computeClusterDataDir/$proteinsFile
+"seqfile=$clusterWorkflowDataDir/$proteinsFile
 outputfile=iprscan_out.xml
 seqtype=p
 appl=$applications
@@ -44,7 +44,7 @@ email=$email
 crc=false
 ";
 
-       #&runCmd($test, "chmod -R g+w $localDataDir/similarity/$queryName-$subjectName");
+       #&runCmd($test, "chmod -R g+w $workflowDataDir/similarity/$queryName-$subjectName");
   }
 }
 

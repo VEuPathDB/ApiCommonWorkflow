@@ -12,14 +12,14 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
   my $outputFile = $self->getParamValue('outputFile');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "grep -P '\texon\t' ${localDataDir}/$inputFile |sed 's/apidb|//'  > ${localDataDir}/$outputFile; grep -P '\tCDS\t' ${localDataDir}/$inputFile |sed 's/apidb|//'  > ${localDataDir}/$outputFile";
+  my $cmd = "grep -P '\texon\t' ${workflowDataDir}/$inputFile |sed 's/apidb|//'  > ${workflowDataDir}/$outputFile; grep -P '\tCDS\t' ${workflowDataDir}/$inputFile |sed 's/apidb|//'  > ${workflowDataDir}/$outputFile";
 
   if ($test) {
-    $self->runCmd(0, "echo test > ${localDataDir}/$outputFile");
+    $self->runCmd(0, "echo test > ${workflowDataDir}/$outputFile");
   }elsif ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   }else {
     $self->runCmd($test, $cmd);
   }

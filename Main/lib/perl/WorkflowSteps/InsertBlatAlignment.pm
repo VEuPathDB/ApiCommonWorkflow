@@ -27,17 +27,17 @@ sub run {
   my $queryTableId = $self->getTableId($queryTable);
   my $queryExtDbRlsId = $self->getExtDbRlsId($test, $queryExtDbRlsSpec) if $queryExtDbRlsSpec;
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--blat_files '$localDataDir/$blatFile' --query_file $localDataDir/$queryFile --action '$action' --queryRegex '$regex' --query_table_id $queryTableId --query_taxon_id $queryTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId --max_query_gap 5 --min_pct_id 95 --max_end_mismatch 10 --end_gap_factor 10 --min_gap_pct 90  --ok_internal_gap 15 --ok_end_gap 50 --min_query_pct 10";
+  my $args = "--blat_files '$workflowDataDir/$blatFile' --query_file $workflowDataDir/$queryFile --action '$action' --queryRegex '$regex' --query_table_id $queryTableId --query_taxon_id $queryTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId --max_query_gap 5 --min_pct_id 95 --max_end_mismatch 10 --end_gap_factor 10 --min_gap_pct 90  --ok_internal_gap 15 --ok_end_gap 50 --min_query_pct 10";
 
   $args .= " --query_db_rel_id $queryExtDbRlsId" if $queryExtDbRlsId;
 
   $args .= " --percentTop $percentTop" if $percentTop;
 
   if ($test) {
-    $self->testInputFile('queryFile', "$localDataDir/$queryFile");
-    $self->testInputFile('blatFile', "$localDataDir/$blatFile");
+    $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
+    $self->testInputFile('blatFile', "$workflowDataDir/$blatFile");
   }
 
   $self->runPlugin($test, $undo,"GUS::Community::Plugin::LoadBLATAlignments", $args);

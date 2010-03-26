@@ -21,8 +21,12 @@ sub run {
   my $url = $self->getParamValue('url');
   my $credits = $self->getParamValue('credits');
 
-  my $citation = `pubmedIdToCitation $pubmedId`;
-  die "failed calling 'pubmedIdToCitation $pubmedId'" if $? >> 8;
+  my $citation = "";
+
+  if ($pubmedId) {
+    $citation = `pubmedIdToCitation $pubmedId`;
+    die "failed calling 'pubmedIdToCitation $pubmedId'" if $? >> 8;
+  }
 
   my $args = "--name '$name' --tool $tool --version '$version' --input '$input' --output '$output' --parameters '$parameters' --description '$description' --pubmedId '$pubmedId' --citation '$citation' --url '$url' --credits '$credits' --category '$category'";
 

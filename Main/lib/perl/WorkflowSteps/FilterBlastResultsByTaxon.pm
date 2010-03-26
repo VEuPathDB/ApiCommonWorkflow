@@ -22,22 +22,22 @@ sub run {
   my $gi2taxidFile = "$downloadDir/$gi2taxidFileRelativeToDownloadDir";
   $self->runCmd(0, "gunzip $gi2taxidFile.gz") if (-e "$gi2taxidFile.gz");
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  $self->runCmd(0, "gunzip $localDataDir/$inputFile.gz") if (-e "$localDataDir/$inputFile.gz");
+  $self->runCmd(0, "gunzip $workflowDataDir/$inputFile.gz") if (-e "$workflowDataDir/$inputFile.gz");
 
 
-  $self->runCmd(0,"cp $localDataDir/$inputFile $localDataDir/$unfilteredOutputFile");
+  $self->runCmd(0,"cp $workflowDataDir/$inputFile $workflowDataDir/$unfilteredOutputFile");
 
-  my $cmd = "splitAndFilterBLASTX --taxon \"$taxonList\" --gi2taxidFile $gi2taxidFile --inputFile $localDataDir/$unfilteredOutputFile --outputFile $localDataDir/$filteredOutputFile";
+  my $cmd = "splitAndFilterBLASTX --taxon \"$taxonList\" --gi2taxidFile $gi2taxidFile --inputFile $workflowDataDir/$unfilteredOutputFile --outputFile $workflowDataDir/$filteredOutputFile";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$unfilteredOutputFile");
-    $self->runCmd(0, "rm -f $localDataDir/$filteredOutputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$unfilteredOutputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$filteredOutputFile");
   } else {  
       if ($test) {
-	  $self->testInputFile('inputFile', "$localDataDir/$inputFile");
-	  $self->runCmd(0,"echo test > $localDataDir/$filteredOutputFile");
+	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$filteredOutputFile");
       }else{
 	  $self->runCmd($test,$cmd);
       }

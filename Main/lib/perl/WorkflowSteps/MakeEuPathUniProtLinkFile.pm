@@ -17,10 +17,10 @@ sub run {
  if ($dbrefExtDbRlsSpec =~ /\|/)
 {
 
-  my $cmd = "dumpEuPath-UniProtLinks --dbrefExtDbSpec '$dbrefExtDbRlsSpec' --outfile $outFile --projectName $projectName";
+  my $cmd = "dumpEuPath-UniProtLinks --dbrefExtDbSpec '$dbrefExtDbRlsSpec' --outfile $outputFile --projectName $projectName";
 
 }else{
-  my $cmd = "dumpEuPath-UniProtLinks --dbrefExtDbName '$dbrefExtDbRlsSpec' --outfile $outFile --projectName $projectName";
+  my $cmd = "dumpEuPath-UniProtLinks --dbrefExtDbName '$dbrefExtDbRlsSpec' --outfile $outputFile --projectName $projectName";
 }
 
   if ($undo) {

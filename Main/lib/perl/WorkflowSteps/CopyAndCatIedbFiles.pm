@@ -17,7 +17,7 @@ sub run {
     my $outputDir = $self->getParamValue('outputDir');
 
 
-    my $localDataDir = $self->getLocalDataDir();
+    my $workflowDataDir = $self->getWorkflowDataDir();
     my $downloadDir = $self->getGlobalConfig('downloadDir');
 
     my $inputDir="$downloadDir/$inputDirRelativeToDownloadsDir";
@@ -31,14 +31,14 @@ sub run {
 	$cmd .= join (" " ,@inputFileNames);
     }
 
-   $cmd .= " >$localDataDir/$outputDir/IEDBExport.txt";
+   $cmd .= " >$workflowDataDir/$outputDir/IEDBExport.txt";
 
     if ($undo) {
-      $self->runCmd(0, "rm -f $localDataDir/$outputDir/IEDBExport.txt");
+      $self->runCmd(0, "rm -f $workflowDataDir/$outputDir/IEDBExport.txt");
     } else {
     if ($test) {
       $self->testInputFile('inputDir', "$inputDir");
-      $self->testInputFile('outputDir', "$localDataDir/$outputDir");
+      $self->testInputFile('outputDir', "$workflowDataDir/$outputDir");
     }
       $self->runCmd($test, $cmd);
     }

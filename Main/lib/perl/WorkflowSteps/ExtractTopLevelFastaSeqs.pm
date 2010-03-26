@@ -12,7 +12,7 @@ sub run {
   my $genomeVirtualSeqsExtDbRlsSpec = $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');
   my $outputFile = $self->getParamValue('outputFile');
 
-  my @extDbRlsSpecList = split(/,/, $extDbRlsSpec);
+  my @extDbRlsSpecList = split(/,/, $genomeExtDbRlsSpec);
 
   my $dbRlsIds;
 
@@ -52,16 +52,16 @@ sub run {
                 where vs.na_sequence_id = sp.virtual_na_sequence_id AND vs.external_database_release_id = r.external_database_release_id AND r.external_database_id = e.external_database_id AND r.external_database_release_id in '$virtualDbRlsIds'
                 )";
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
     if ($undo) {
-      $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+      $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     } else {
 	if ($test) {
-	    $self->runCmd(0,"echo test > $localDataDir/$outputFile");
+	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}else{
-	    $self->runCmd($test,"dumpSequencesFromTable.pl --outputFile $localDataDir/$outputFile --idSQL \"$sql1\" --verbose");
-	    $self->runCmd($test,"dumpSequencesFromTable.pl --outputFile $localDataDir/$outputFile --idSQL \"$sql2\" --verbose");
+	    $self->runCmd($test,"dumpSequencesFromTable.pl --outputFile $workflowDataDir/$outputFile --idSQL \"$sql1\" --verbose");
+	    $self->runCmd($test,"dumpSequencesFromTable.pl --outputFile $workflowDataDir/$outputFile --idSQL \"$sql2\" --verbose");
 	}
     }
   }

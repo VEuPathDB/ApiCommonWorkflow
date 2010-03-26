@@ -25,34 +25,34 @@ sub run {
 
   my $dbType = ($blastType =~ m/blastn|tblastx/i) ? 'n' : 'p';
 
-  my $computeClusterDataDir = $self->getComputeClusterDataDir();
-  my $localDataDir = $self->getLocalDataDir();
+  my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($undo) {
-    $self->runCmd(0, "rm -rf $localDataDir/$taskInputDir/");
+    $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
   }else {
       if ($test) {
-	  $self->testInputFile('queryFile', "$localDataDir/$queryFile");
-	  $self->testInputFile('subjectFile', "$localDataDir/$subjectFile");
+	  $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
+	  $self->testInputFile('subjectFile', "$workflowDataDir/$subjectFile");
       }
 
-      $self->runCmd(0,"mkdir -p $localDataDir/$taskInputDir");
+      $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
       $self->makeClusterControllerPropFile($taskInputDir, 2, $taskSize,
 				       "DJob::DistribJobTasks::BlastSimilarityTask"); 
       # make task.prop file
       my $ccBlastParamsFile = "blastParams";
-      my $localBlastParamsFile = "$localDataDir/$taskInputDir/blastParams";
+      my $localBlastParamsFile = "$workflowDataDir/$taskInputDir/blastParams";
       my $vendorString = $vendor? "blastVendor=$vendor" : "";
 
-      my $taskPropFile = "$localDataDir/$taskInputDir/task.prop";
+      my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
 
       print F
 "blastBinDir=$blastBinPathCluster
-dbFilePath=$computeClusterDataDir/$subjectFile
-inputFilePath=$computeClusterDataDir/$queryFile
+dbFilePath=$clusterWorkflowDataDir/$subjectFile
+inputFilePath=$clusterWorkflowDataDir/$queryFile
 dbType=$dbType
 regex='$idRegex'
 blastProgram=$blastType
@@ -65,7 +65,7 @@ $vendorString
        open(F, ">$localBlastParamsFile") || die "Can't open blast params file '$localBlastParamsFile' for writing";;
        print F "$blastArgs\n";
        close(F);
-       #&runCmd($test, "chmod -R g+w $localDataDir/similarity/$queryName-$subjectName");
+       #&runCmd($test, "chmod -R g+w $workflowDataDir/similarity/$queryName-$subjectName");
       
   }
 }

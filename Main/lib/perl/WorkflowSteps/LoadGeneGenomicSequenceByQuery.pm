@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::LoadGenegenomicsequenceByQuery;
+package ApiCommonWorkflow::Main::WorkflowSteps::LoadGeneGenomicSequenceByQuery;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 

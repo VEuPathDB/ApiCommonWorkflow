@@ -15,12 +15,12 @@ sub run {
 
   my $featureType = $self->getParamValue('featureType');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
       
-  my $args = "--tagToSeqFile $localDataDir/$inputFile --extDbSpec '$extDbRlsSpec' --featureType $featureType";
+  my $args = "--tagToSeqFile $workflowDataDir/$inputFile --extDbSpec '$extDbRlsSpec' --featureType $featureType";
 
   if ($test) {
-    $self->testInputFile('inputFile', "$localDataDir/$inputFile");
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
   }
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadExpressionFeature", $args);

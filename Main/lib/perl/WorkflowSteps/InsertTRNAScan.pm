@@ -16,15 +16,15 @@ sub run {
 
   my $soVersion = $self->getParamValue('soVersion');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   my ($genomeExtDbName,$genomeExtDbVersion)=$self->getExtDbInfo($test,$genomeExtDbRlsSpec);
 
   my ($tRNAExtDbName,$tRNAExtDbVersion)=$self->getExtDbInfo($test,$tRNAExtDbRlsSpec);
 
-  my $args = "--data_file $localDataDir/$inputFile --scanDbName '$tRNAExtDbName' --scanDbVer '$tRNAExtDbVersion' --genomeDbName '$genomeExtDbName' --genomeDbVer '$genomeExtDbVersion' --soVersion '$soVersion'";
+  my $args = "--data_file $workflowDataDir/$inputFile --scanDbName '$tRNAExtDbName' --scanDbVer '$tRNAExtDbVersion' --genomeDbName '$genomeExtDbName' --genomeDbVer '$genomeExtDbVersion' --soVersion '$soVersion'";
     if ($test) {
-      $self->testInputFile('inputFile', "$localDataDir/$inputFile");
+      $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
     }
 
    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadTRNAScan", $args);

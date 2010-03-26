@@ -17,13 +17,13 @@ sub run {
   my $splignPath = $self->getConfig('splignPath');
   my $ncbiBlastPath = $self->getConfig('ncbiBlastPath');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($test) {
-    $self->testInputFile('queryFile', "$localDataDir/$queryFile");
-    $self->testInputFile('subjectFile', "$localDataDir/$subjectFile");
+    $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
+    $self->testInputFile('subjectFile', "$workflowDataDir/$subjectFile");
 
-    $self->runCmd(0,"echo test > $localDataDir/$outputFile");
+    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 
   }
 

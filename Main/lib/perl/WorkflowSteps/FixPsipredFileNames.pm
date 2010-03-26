@@ -11,23 +11,23 @@ sub run {
     my $inputDir = $self->getParamValue('inputDir');
     my $outputDir = $self->getParamValue('outputDir');
 
-    my $localDataDir = $self->getLocalDataDir();
+    my $workflowDataDir = $self->getWorkflowDataDir();
 
     if ($undo) {
-      $self->runCmd(0, "rm -rf $localDataDir/$outputDir");
+      $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir");
     } else {    
 	if ($test) {
-	    $self->runCmd(0,"mkdir -p  $localDataDir/$outputDir");
-	    $self->runCmd(0,"echo test > $localDataDir/$outputDir/testFile");
+	    $self->runCmd(0,"mkdir -p  $workflowDataDir/$outputDir");
+	    $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/testFile");
 	}else{
-	    $self->runCmd(0,"cp -r $localDataDir/$inputDir  $localDataDir/$outputDir");
-	    opendir(DIR, "$localDataDir/$outputDir") || die "Can't open directory '$localDataDir/$outputDir'";
+	    $self->runCmd(0,"cp -r $workflowDataDir/$inputDir  $workflowDataDir/$outputDir");
+	    opendir(DIR, "$workflowDataDir/$outputDir") || die "Can't open directory '$workflowDataDir/$outputDir'";
 	    my @files = readdir(DIR);
 	    foreach my $file (@files) {
 		next if $file=~ /^\.\.?$/;  # skip . and ..
 		my $original = $file;
 		$file =~ s/(\S+)_(\d)/$1-$2/g;
-		$self->runCmd($test, "mv $localDataDir/$outputDir/$original $localDataDir/$outputDir/$file");
+		$self->runCmd($test, "mv $workflowDataDir/$outputDir/$original $workflowDataDir/$outputDir/$file");
 	    }
 	}
     }

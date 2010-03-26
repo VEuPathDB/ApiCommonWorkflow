@@ -4,7 +4,6 @@ package ApiCommonWorkflow::Main::WorkflowSteps::InsertMercatorSyntenySpans;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
-TEMPLATE
 sub run {
   my ($self, $test) = @_;
 
@@ -19,7 +18,7 @@ sub run {
   # get step properties
   my $ = $self->getConfig('');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($test) {
   } else {

@@ -20,7 +20,7 @@ sub run {
 
   my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
   
   my $algInvIds = $self->getAlgInvIds();
 
@@ -28,7 +28,7 @@ sub run {
 --extDbName '$extDbName'  \\
 --extDbRlsVer '$extDbRlsVer' \\
 --mapFile $gusHome/$isfMappingFileRelToGusHome \\
---inputFileOrDir $localDataDir/$inputFile \\
+--inputFileOrDir $workflowDataDir/$inputFile \\
 --fileFormat gff3   \\
 --seqSoTerm ORF  \\
 --soCvsVersion $soVersion \\
@@ -44,7 +44,7 @@ EOF
       $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $gusHome/$isfMappingFileRelToGusHome --algInvocationId $algInvIds --workflowContext --commit");
   }else{
       if ($test) {
-	  $self->testInputFile('inputFile', "$localDataDir/$inputFile");
+	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       }else{
 	  $self->runPlugin($test, 0,"GUS::Supported::Plugin::InsertSequenceFeatures", $args);
       }

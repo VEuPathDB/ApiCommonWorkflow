@@ -15,13 +15,13 @@ sub run {
 
   my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$extDbRlsSpec);
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbRlsVer --sequenceFile $localDataDir/$fastaFile --sourceIdsFile  $localDataDir/$idsFile --regexSourceId  '>gi\\|(\\d+)\\|' --regexDesc '^>(gi\\|\\d+\\|\\w+\\|\\w+\\.?\\w+\\|)' --regexNcbiTaxId '\\|(\\d+)\\|\$' --tableName DoTS::ExternalAASequence";
+  my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbRlsVer --sequenceFile $workflowDataDir/$fastaFile --sourceIdsFile  $workflowDataDir/$idsFile --regexSourceId  '>gi\\|(\\d+)\\|' --regexDesc '^>(gi\\|\\d+\\|\\w+\\|\\w+\\.?\\w+\\|)' --regexNcbiTaxId '\\|(\\d+)\\|\$' --tableName DoTS::ExternalAASequence";
 
   if ($test) {
-    $self->testInputFile('fastaFile', "$localDataDir/$fastaFile");
-    $self->testInputFile('idsFile', "$localDataDir/$idsFile");
+    $self->testInputFile('fastaFile', "$workflowDataDir/$fastaFile");
+    $self->testInputFile('idsFile', "$workflowDataDir/$idsFile");
   }
 
   $self->runPlugin($test,$undo, "GUS::Supported::Plugin::LoadFastaSequences",$args);

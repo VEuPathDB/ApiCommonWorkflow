@@ -11,12 +11,12 @@ sub run {
 
   my $inputFile = $self->getParamValue('inputFile');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
       
-  my $args = "--tagToSeqFile $localDataDir/$inputFile --extDbSpec 'RAD.SAGETag|continuous' --featureType SAGETagFeature";
+  my $args = "--tagToSeqFile $workflowDataDir/$inputFile --extDbSpec 'RAD.SAGETag|continuous' --featureType SAGETagFeature";
 
   if ($test) {
-    $self->testInputFile('inputFile', "$localDataDir/$inputFile");
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
   }
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadExpressionFeature", $args);

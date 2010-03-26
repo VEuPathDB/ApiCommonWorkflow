@@ -15,16 +15,16 @@ sub run {
   # get step properties
   my $psipredPath = $self->getConfig('psipredPath');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('inputFile', "$localDataDir/$inputFile");
-	  $self->runCmd(0, "echo test > $localDataDir/$outputFile");
+	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
       }else{
-	  $self->runCmd($test, "$psipredPath/pfilt $localDataDir/$inputFile > $localDataDir/$outputFile");
+	  $self->runCmd($test, "$psipredPath/pfilt $workflowDataDir/$inputFile > $workflowDataDir/$outputFile");
       }
   }
 }

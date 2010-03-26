@@ -11,7 +11,7 @@ sub run {
 
   my $studyName = $self->getParamValue('studyName');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   $studyName =~ s/\s/_/g;
 
@@ -28,11 +28,11 @@ sub run {
   }else{
 
       if ($test) {
-	  $self->testInputFile('inputDir', "$localDataDir/$inputDir");
+	  $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
       }
-      opendir (DIR,"$localDataDir/$inputDir") || die "Can not open dir $localDataDir/$inputDir";
+      opendir (DIR,"$workflowDataDir/$inputDir") || die "Can not open dir $workflowDataDir/$inputDir";
 
-      my @files = grep { /\w*\.dat/ && -f "$localDataDir/$inputDir/$_" } readdir(DIR); 
+      my @files = grep { /\w*\.dat/ && -f "$workflowDataDir/$inputDir/$_" } readdir(DIR); 
 
       open(F,">$configFile");
 
@@ -42,7 +42,7 @@ sub run {
 
 	  $cfgFile =~ s/\.dat/\.cfg/;
     
-	  print F "$localDataDir/$inputDir/$cfgFile\t$localDataDir/$inputDir/$dataFile\n";
+	  print F "$workflowDataDir/$inputDir/$cfgFile\t$workflowDataDir/$inputDir/$dataFile\n";
       }
      
       close F;

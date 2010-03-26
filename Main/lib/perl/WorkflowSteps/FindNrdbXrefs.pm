@@ -14,17 +14,17 @@ sub run {
   my $nrdbFileRegex = $self->getParamValue('nrdbFileRegex');
   my $outputFile = $self->getParamValue('outputFile');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "dbXRefBySeqIdentity --proteinFile '$localDataDir/$proteinsFile' --nrFile '$localDataDir/$nrdbFile' --outputFile '$localDataDir/$outputFile' --sourceIdRegex \"$nrdbFileRegex\" --protDeflnRegex \"$proteinsFileRegex\" ";
+  my $cmd = "dbXRefBySeqIdentity --proteinFile '$workflowDataDir/$proteinsFile' --nrFile '$workflowDataDir/$nrdbFile' --outputFile '$workflowDataDir/$outputFile' --sourceIdRegex \"$nrdbFileRegex\" --protDeflnRegex \"$proteinsFileRegex\" ";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('proteinsFile', "$localDataDir/$proteinsFile");
-	  $self->testInputFile('nrdbFile', "$localDataDir/$nrdbFile");
-	  $self->runCmd(0, "echo test > $localDataDir/$outputFile");
+	  $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
+	  $self->testInputFile('nrdbFile', "$workflowDataDir/$nrdbFile");
+	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
       }else{
 	  $self->runCmd($test,$cmd);
       }

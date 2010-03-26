@@ -16,28 +16,28 @@ sub run {
   my $tRNAscanDir = $self->getConfig('tRNAscanDir');
 
 
-  my $computeClusterDataDir = $self->getComputeClusterDataDir();
-  my $localDataDir = $self->getLocalDataDir();
+  my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($undo) {
-    $self->runCmd(0, "rm -rf $localDataDir/$taskInputDir/");
+    $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
   }else {
       if ($test) {
-	  $self->testInputFile('genomicSeqsFile', "$localDataDir/$genomicSeqsFile");
+	  $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
       }
-      $self->runCmd(0,"mkdir -p $localDataDir/$taskInputDir");
+      $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
       $self->makeClusterControllerPropFile($taskInputDir, 2, $taskSize,
 				       "DJob::DistribJobTasks::tRNAscanTask"); 
 
       # make task.prop file
-      my $taskPropFile = "$localDataDir/$taskInputDir/task.prop";
+      my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
 
       print F
 "tRNAscanDir=$tRNAscanDir
-inputFilePath=$computeClusterDataDir/$genomicSeqsFile
+inputFilePath=$clusterWorkflowDataDir/$genomicSeqsFile
 trainingOption=C
 ";
       close(F);

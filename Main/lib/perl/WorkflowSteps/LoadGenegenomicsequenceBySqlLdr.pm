@@ -24,7 +24,7 @@ sub run {
 
   $dbRlsIds =~ s/(,)$//g;
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $instance = $self->getGlobalConfig('instance');
 
@@ -63,13 +63,13 @@ sub run {
 
   if ($undo) {
       $self->runCmd(0, "executeIdSQL.pl --idSql \"$deleteSql\"");
-      $self->runCmd(0, "rm -f $localDataDir/geneGenomicSeq*");
+      $self->runCmd(0, "rm -f $workflowDataDir/geneGenomicSeq*");
     } else {
         if ($test) {
         }else{
-            $self->runCmd($test,"gusExtractSequences --outputFile $localDataDir/geneGenomicSeq.fsa --verbose --idSQL \"$selectSql\"");
-            $self->runCmd($test,"geneGenomicSequence --inFile $localDataDir/geneGenomicSeq.fsa --outFile $localDataDir/geneGenomicSeqSqlLdr.txt");
-            $self->runCmd($test,"nohup sqlldr  apidb/$apidbPassword@$instance control=$localDataDir/geneGenomicSeqSqlLdr.txt");
+            $self->runCmd($test,"gusExtractSequences --outputFile $workflowDataDir/geneGenomicSeq.fsa --verbose --idSQL \"$selectSql\"");
+            $self->runCmd($test,"geneGenomicSequence --inFile $workflowDataDir/geneGenomicSeq.fsa --outFile $workflowDataDir/geneGenomicSeqSqlLdr.txt");
+            $self->runCmd($test,"nohup sqlldr  apidb/$apidbPassword@$instance control=$workflowDataDir/geneGenomicSeqSqlLdr.txt");
         }
     }
 }

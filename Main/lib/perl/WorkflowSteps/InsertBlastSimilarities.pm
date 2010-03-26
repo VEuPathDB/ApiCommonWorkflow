@@ -17,7 +17,7 @@ sub run {
   my $subjectExtDbRlsSpec = $self->getParamValue('subjectExtDbRlsSpec');
   my $options = $self->getParamValue('options');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $queryColArg = "--queryTableSrcIdCol $queryTableSrcIdCol" if $queryTableSrcIdCol;
 
@@ -35,13 +35,13 @@ sub run {
     $subjectExtDbArg = " --subjectExtDbName '$subjectDbName' --subjectExtDbRlsVer '$subjectDbRlsVer'";
   }
 
-  $self->runCmd(0, "gunzip $localDataDir/$inputFile.gz") if (-e "$localDataDir/$inputFile.gz");
+  $self->runCmd(0, "gunzip $workflowDataDir/$inputFile.gz") if (-e "$workflowDataDir/$inputFile.gz");
 
   if ($test) {
-    $self->testInputFile('inputFile', "$localDataDir/$inputFile");
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
   }
 
-  my $args = "--file $localDataDir/$inputFile --queryTable $queryTable $queryColArg $queryExtDbArg --subjectTable $subjectTable $subjectColArg $subjectExtDbArg $options";
+  my $args = "--file $workflowDataDir/$inputFile --queryTable $queryTable $queryColArg $queryExtDbArg --subjectTable $subjectTable $subjectColArg $subjectExtDbArg $options";
 
   $self->runPlugin($test,$undo, "GUS::Supported::Plugin::InsertBlastSimilarities", $args);
 }

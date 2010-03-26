@@ -12,16 +12,16 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $strain = $self->getParamValue('strain');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "snpFastaMUMmerGff --gff_file $localDataDir/$inputFile --reference_strain $strain --output_file $localDataDir/$outputFile --make_fasta_file_only --gff_format gff2";
+  my $cmd = "snpFastaMUMmerGff --gff_file $workflowDataDir/$inputFile --reference_strain $strain --output_file $workflowDataDir/$outputFile --make_fasta_file_only --gff_format gff2";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/*${outputFile}");
+    $self->runCmd(0, "rm -f $workflowDataDir/*${outputFile}");
   } else {
       if ($test) {
-	  $self->testInputFile('inputFile', "$localDataDir/$inputFile");
-	  $self->runCmd(0, "echo test > $localDataDir/$outputFile");
+	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
       }else{
 	  $self->runCmd($test, $cmd);
       }

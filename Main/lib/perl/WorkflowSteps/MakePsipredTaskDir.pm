@@ -17,31 +17,31 @@ sub run {
   my $psipredPath = $self->getConfig('clusterpath');
   my $ncbiBinPath = $self->getConfig('ncbiBinPath');
 
-  my $computeClusterDataDir = $self->getComputeClusterDataDir();
-  my $localDataDir = $self->getLocalDataDir();
+  my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($undo) {
-    $self->runCmd(0,"rm -rf $localDataDir/$taskInputDir");
+    $self->runCmd(0,"rm -rf $workflowDataDir/$taskInputDir");
   }else {
       if ($test) {
-	  $self->testInputFile('proteinsFile', "$localDataDir/$proteinsFile");
-	  $self->testInputFile('nrdbFile', "$localDataDir/$nrdbFile");
+	  $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
+	  $self->testInputFile('nrdbFile', "$workflowDataDir/$nrdbFile");
       }
       
-      $self->runCmd(0,"mkdir -p $localDataDir/$taskInputDir");
+      $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
       $self->makeClusterControllerPropFile($taskInputDir, 2, $taskSize,
 				       "DJob::DistribJobTasks::PsipredTask");
 
       # make task.prop file
-      my $taskPropFile = "$localDataDir/$taskInputDir/task.prop";
+      my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
 
       print F
 "psipredDir=$psipredPath
-dbFilePath=$computeClusterDataDir/$nrdbFile
-inputFilePath=$computeClusterDataDir/$proteinsFile
+dbFilePath=$clusterWorkflowDataDir/$nrdbFile
+inputFilePath=$clusterWorkflowDataDir/$proteinsFile
 ncbiBinDir=$ncbiBinPath
 ";
       close(F);

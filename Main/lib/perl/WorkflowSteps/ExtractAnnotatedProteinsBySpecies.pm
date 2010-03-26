@@ -31,17 +31,17 @@ sub run {
                 AND a.aa_sequence_id = t.aa_sequence_id
                 AND a.na_feature_id = tx.na_feature_id";
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "gusExtractSequences --outputFile $localDataDir/$outputFile --idSQL \"$sql\" --verbose";
+  my $cmd = "gusExtractSequences --outputFile $workflowDataDir/$outputFile --idSQL \"$sql\" --verbose";
 
 
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {  
       if ($test) {
-	  $self->runCmd(0,"echo test > $localDataDir/$outputFile");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }else{
 	  $self->runCmd($test,$cmd);
       }

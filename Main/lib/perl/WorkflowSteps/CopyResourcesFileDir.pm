@@ -14,7 +14,7 @@ sub run {
   # get global properties
   my $downloadDir = $self->getGlobalConfig('downloadDir');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   $self->runCmd(0,"mkdir -p $toDir") if $toDir;
   

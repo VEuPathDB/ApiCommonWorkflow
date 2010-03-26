@@ -12,15 +12,15 @@ sub run {
   # get parameters
   my $dataDir = $self->getParamValue('dataDir');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   if($undo){
 
-      $self->runCmd(0, "rm -fr $localDataDir/$dataDir");
+      $self->runCmd(0, "rm -fr $workflowDataDir/$dataDir");
 
   }else{
 
-      $self->runCmd(0, "mkdir -p $localDataDir/$dataDir");
+      $self->runCmd(0, "mkdir -p $workflowDataDir/$dataDir");
 
   }
 

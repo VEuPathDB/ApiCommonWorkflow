@@ -13,20 +13,20 @@ sub run {
   my $minPepLength = $self->getParamValue('minPepLength');
   my $outputFile = $self->getParamValue('outputFile');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cmd = <<"EOF";
-orfFinder --dataset  $localDataDir/$seqFile \\
+orfFinder --dataset  $workflowDataDir/$seqFile \\
 --minPepLength $minPepLength \\
---outFile $localDataDir/$outputFile
+--outFile $workflowDataDir/$outputFile
 EOF
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('seqFile', "$localDataDir/$seqFile");
-	  $self->runCmd(0,"echo test > $localDataDir/$outputFile");
+	  $self->testInputFile('seqFile', "$workflowDataDir/$seqFile");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }else{
 	  $self->runCmd($test,$cmd);
       }

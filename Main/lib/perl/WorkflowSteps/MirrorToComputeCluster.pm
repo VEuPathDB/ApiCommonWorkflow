@@ -12,18 +12,18 @@ sub run {
   # get param values
   my $fileOrDirToMirror = $self->getParamValue('fileOrDirToMirror');
 
-  my $localDataDir = $self->getLocalDataDir();
-  my $computeClusterDataDir = $self->getComputeClusterDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
+  my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
 
   my ($filename, $relativeDir) = fileparse($fileOrDirToMirror);
 
   if($undo){
-      $self->runCmdOnCluster(0, "rm -fr $computeClusterDataDir/$fileOrDirToMirror");
+      $self->runCmdOnCluster(0, "rm -fr $clusterWorkflowDataDir/$fileOrDirToMirror");
   }else{
 
-      $self->copyToCluster("$localDataDir/$relativeDir",
+      $self->copyToCluster("$workflowDataDir/$relativeDir",
 			   $filename,
-			   "$computeClusterDataDir/$relativeDir");
+			   "$clusterWorkflowDataDir/$relativeDir");
   }
 }
 

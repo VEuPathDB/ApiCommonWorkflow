@@ -36,31 +36,31 @@ sub run {
              FROM dots.$table
              WHERE external_database_release_id in ($dbRlsIds)";
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($separateFastaFiles eq 'true') {
 
-    $self ->runCmd(0,"mkdir -p $localDataDir/$outputDirForSeparateFiles");
+    $self ->runCmd(0,"mkdir -p $workflowDataDir/$outputDirForSeparateFiles");
 
     if ($undo) {
-      $self->runCmd(0, "rm -rf $localDataDir/$outputDirForSeparateFiles");
+      $self->runCmd(0, "rm -rf $workflowDataDir/$outputDirForSeparateFiles");
     } else {
 	if ($test) {
-	    $self->runCmd(0,"echo test > $localDataDir/$outputDirForSeparateFiles/IndividualSeqTest.out");
+	    $self->runCmd(0,"echo test > $workflowDataDir/$outputDirForSeparateFiles/IndividualSeqTest.out");
 	}else{
-	    $self->runCmd($test,"gusExtractIndividualSequences --outputDir $localDataDir/$outputDirForSeparateFiles --idSQL \"$sql\" --verbose");
+	    $self->runCmd($test,"gusExtractIndividualSequences --outputDir $workflowDataDir/$outputDirForSeparateFiles --idSQL \"$sql\" --verbose");
 	}
     }
 
   } else {
 
     if ($undo) {
-      $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+      $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     } else {
 	if ($test) {
-	    $self->runCmd(0,"echo test > $localDataDir/$outputFile");
+	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}else{
-	    $self->runCmd($test,"gusExtractSequences --outputFile $localDataDir/$outputFile --idSQL \"$sql\" --verbose");
+	    $self->runCmd($test,"gusExtractSequences --outputFile $workflowDataDir/$outputFile --idSQL \"$sql\" --verbose");
 	}
     }
   }

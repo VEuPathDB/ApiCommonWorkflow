@@ -12,18 +12,18 @@ sub run {
   my $outputSmallFile = $self->getParamValue('outputSmallFile');
   my $outputBigFile = $self->getParamValue('outputBigFile');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "splitClusterFile $localDataDir/$inputFile $localDataDir/$outputSmallFile $localDataDir/$outputBigFile";
+  my $cmd = "splitClusterFile $workflowDataDir/$inputFile $workflowDataDir/$outputSmallFile $workflowDataDir/$outputBigFile";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputSmallFile");
-    $self->runCmd(0, "rm -f $localDataDir/$outputBigFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputSmallFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputBigFile");
   } else {
       if ($test){
-	  $self->testInputFile('inputFile', "$localDataDir/$inputFile");
-	  $self->runCmd(0,"echo hello > $localDataDir/$outputSmallFile");
-	  $self->runCmd(0,"echo hello > $localDataDir/$outputBigFile");
+	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+	  $self->runCmd(0,"echo hello > $workflowDataDir/$outputSmallFile");
+	  $self->runCmd(0,"echo hello > $workflowDataDir/$outputBigFile");
       }else{
 	  $self->runCmd($test,$cmd);
       }

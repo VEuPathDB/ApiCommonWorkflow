@@ -18,17 +18,17 @@ sub run {
 
   my $filter = "$blastDir/filter/$filterType";
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('seqFile', "$localDataDir/$seqFile");
-	  $self->runCmd(0,"echo test > $localDataDir/$outputFile");
+	  $self->testInputFile('seqFile', "$workflowDataDir/$seqFile");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }else{
-	  $self->runCmd($test,"$filter $localDataDir/$seqFile $options > $localDataDir/$outputFile");
+	  $self->runCmd($test,"$filter $workflowDataDir/$seqFile $options > $workflowDataDir/$outputFile");
       }
   }
 }

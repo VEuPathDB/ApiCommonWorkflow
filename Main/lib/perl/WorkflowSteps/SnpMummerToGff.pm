@@ -13,18 +13,18 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $strain = $self->getParamValue('strain');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "snpFastaMUMmerGff --gff_file $localDataDir/$gffFile --mummer_file $localDataDir/$inputFile --output_file $localDataDir/$outputFile --reference_strain $strain --gff_format gff2 --skip_multiple_matches --error_log step.err";
+  my $cmd = "snpFastaMUMmerGff --gff_file $workflowDataDir/$gffFile --mummer_file $workflowDataDir/$inputFile --output_file $workflowDataDir/$outputFile --reference_strain $strain --gff_format gff2 --skip_multiple_matches --error_log step.err";
 
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('inputFile', "$localDataDir/$inputFile");
-	  $self->testInputFile('gffFile', "$localDataDir/$gffFile");
-	  $self->runCmd(0, "echo test > $localDataDir/$outputFile");
+	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+	  $self->testInputFile('gffFile', "$workflowDataDir/$gffFile");
+	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
       }else{
 	  $self->runCmd($test, $cmd);
       }

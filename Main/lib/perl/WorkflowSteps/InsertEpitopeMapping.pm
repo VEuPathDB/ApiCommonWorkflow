@@ -12,12 +12,12 @@ sub run {
   my $epiExtDbSpecs = $self->getParamValue('iedbExtDbRlsSpec');
   my $seqExtDbSpecs = $self->getParamValue('genomeExtDbRlsSpec');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args =" --inputFile $localDataDir/$inputFile --extDbRelSpec '$epiExtDbSpecs' --seqExtDbRelSpec '$seqExtDbSpecs'";
+  my $args =" --inputFile $workflowDataDir/$inputFile --extDbRelSpec '$epiExtDbSpecs' --seqExtDbRelSpec '$seqExtDbSpecs'";
 
     if ($test) {
-      $self->testInputFile('inputFile', "$localDataDir/$inputFile");
+      $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
     }
 
     $self->runPlugin ($test,$undo, "ApiCommonData::Load::Plugin::InsertEpitopeFeature","$args");

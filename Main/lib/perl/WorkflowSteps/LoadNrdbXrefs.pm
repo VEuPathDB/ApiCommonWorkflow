@@ -10,12 +10,12 @@ sub run {
   # get parameters
   my $xrefsFile = $self->getParamValue('xrefsFile');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--DbRefMappingFile '$localDataDir/$xrefsFile' --columnSpec \"secondary_identifier,primary_identifier\"";
+  my $args = "--DbRefMappingFile '$workflowDataDir/$xrefsFile' --columnSpec \"secondary_identifier,primary_identifier\"";
 
     if ($test) {
-      $self->testInputFile('xrefsFile', "$localDataDir/$xrefsFile");
+      $self->testInputFile('xrefsFile', "$workflowDataDir/$xrefsFile");
     }
 
    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertNrdbXrefs", $args);

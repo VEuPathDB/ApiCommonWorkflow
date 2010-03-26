@@ -13,17 +13,17 @@ sub run {
 
   my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "cp $apiSiteFilesDir/$fromFile $localDataDir/$toFile";
+  my $cmd = "cp $apiSiteFilesDir/$fromFile $workflowDataDir/$toFile";
 
   if ($test) {
     $self->testInputFile('fromFile', "$apiSiteFilesDir/$fromFile");
-    $self->runCmd(0, "cat test > $localDataDir/$toFile");
+    $self->runCmd(0, "cat test > $workflowDataDir/$toFile");
   }
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$toFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$toFile");
   } else {
     $self->runCmd($test, $cmd);
   }

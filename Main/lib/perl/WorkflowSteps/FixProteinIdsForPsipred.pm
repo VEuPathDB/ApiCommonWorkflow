@@ -13,16 +13,16 @@ sub run {
 
   my $fix = 's/^(\S+)-(\d)/$1_$2/g';
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "cat $localDataDir/$inputProteinsFile | perl -pe '$fix' > $localDataDir/$outputProteinsFile";
+  my $cmd = "cat $workflowDataDir/$inputProteinsFile | perl -pe '$fix' > $workflowDataDir/$outputProteinsFile";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputProteinsFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputProteinsFile");
   } else {
       if ($test){
-	  $self->testInputFile('inputProteinsFile', "$localDataDir/$inputProteinsFile");
-	  $self->runCmd(0,"echo test > $localDataDir/$outputProteinsFile");
+	  $self->testInputFile('inputProteinsFile', "$workflowDataDir/$inputProteinsFile");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$outputProteinsFile");
       }else{
 	  $self->runCmd($test,$cmd);
       }

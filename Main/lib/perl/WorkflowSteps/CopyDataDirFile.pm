@@ -11,15 +11,15 @@ sub run {
   my $fromFile = $self->getParamValue('fromFile');
   my $toFile = $self->getParamValue('toFile');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($undo) {
-      $self->runCmd(0, "rm -f $localDataDir/$toFile");
+      $self->runCmd(0, "rm -f $workflowDataDir/$toFile");
   } else {  
       if ($test) {
-	  $self->testInputFile('fromFile', "$localDataDir/$fromFile");
+	  $self->testInputFile('fromFile', "$workflowDataDir/$fromFile");
       }
-      $self->runCmd(0, "cp $localDataDir/$fromFile $localDataDir/$toFile");
+      $self->runCmd(0, "cp $workflowDataDir/$fromFile $workflowDataDir/$toFile");
   }
 }
 

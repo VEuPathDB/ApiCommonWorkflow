@@ -16,11 +16,11 @@ sub run {
     my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$interproExtDbRlsSpec);
     my $aaSeqTable = 'TranslatedAASequence';
 
-    my $localDataDir = $self->getLocalDataDir();
+    my $workflowDataDir = $self->getWorkflowDataDir();
     my $downloadDir = $self->getGlobalConfig('downloadDir');
   
     my $args = <<"EOF";
---resultFileDir=$localDataDir/$inputDir \\
+--resultFileDir=$workflowDataDir/$inputDir \\
 --confFile=$downloadDir/$configFileRelativeToDownloadDir \\
 --aaSeqTable=$aaSeqTable \\
 --extDbName='$extDbName' \\
@@ -29,7 +29,7 @@ sub run {
 EOF
 
   if ($test) {
-    $self->testInputFile('inputDir', "$localDataDir/$inputDir");
+    $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
   }
 
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertInterproscanResults", $args);

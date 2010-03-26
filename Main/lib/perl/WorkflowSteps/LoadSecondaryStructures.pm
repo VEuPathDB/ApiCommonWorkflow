@@ -13,7 +13,7 @@ sub run {
 
     my $inputDir = $self->getParamValue('inputDir');
 
-    my $localDataDir = $self->getLocalDataDir();
+    my $workflowDataDir = $self->getWorkflowDataDir();
 
     my $algInvResult=$self->getParamValue('algInvResult');
 
@@ -25,7 +25,7 @@ sub run {
     $algName =~ s/\s//g;
     $algName =~ s/\///g;
 
-    my $args = "--predAlgName $algName  --predAlgImpVersion $algImpVer --predAlgInvStart $algInvStart --predAlgInvEnd $algInvEnd --directory $localDataDir/$inputDir --setPercentages";
+    my $args = "--predAlgName $algName  --predAlgImpVersion $algImpVer --predAlgInvStart $algInvStart --predAlgInvEnd $algInvEnd --directory $workflowDataDir/$inputDir --setPercentages";
 
     $algInvResult =~ s/\s/_/g;
     
@@ -34,7 +34,7 @@ sub run {
     $args .= " --setPercentages" if ($setPercent);
 
     if ($test) {
-      $self->testInputFile('inputDir', "$localDataDir/$inputDir");
+      $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
     }
 
    $self->runPlugin($test,$undo, "GUS::Supported::Plugin::InsertSecondaryStructure", $args);

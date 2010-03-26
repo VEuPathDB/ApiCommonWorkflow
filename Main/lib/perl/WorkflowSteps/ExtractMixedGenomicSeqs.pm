@@ -27,17 +27,17 @@ sub run {
 
   my $sql2 =  "select source_id, sequence from Dots.EXTERNALNASEQUENCE es where external_database_release_id = '$genomDbRlsId' and es.na_sequence_id NOT IN (select sp.piece_na_sequence_id from dots.SEQUENCEPIECE sp, dots.VIRTUALSEQUENCE vs where vs.na_sequence_id = sp.virtual_na_sequence_id AND vs.external_database_release_id ='$virtualDbRlsId')";
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd1 = "dumpSequencesFromTable.pl --outputfile $localDataDir/$outputFile --idSQL \"$sql1\" --verbose";
+  my $cmd1 = "dumpSequencesFromTable.pl --outputfile $workflowDataDir/$outputFile --idSQL \"$sql1\" --verbose";
 
-  my $cmd2 = "dumpSequencesFromTable.pl --outputfile $localDataDir/$outputFile --idSQL \"$sql2\" --verbose";
+  my $cmd2 = "dumpSequencesFromTable.pl --outputfile $workflowDataDir/$outputFile --idSQL \"$sql2\" --verbose";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $localDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
-	  $self->runCmd(0,"echo test > $localDataDir/$outputFile");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }else{
 	  $self->runCmd($test,$cmd1);
 	  $self->runCmd($test,$cmd2);

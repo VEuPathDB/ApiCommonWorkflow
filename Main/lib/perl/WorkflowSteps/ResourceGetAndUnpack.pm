@@ -12,8 +12,8 @@ sub run {
     my $dataDirPath = $self->getParamValue('dataDir');
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
-    my $localDataDir = $self->getLocalDataDir();
-    my $targetDir = "$localDataDir/$dataDirPath";
+    my $workflowDataDir = $self->getWorkflowDataDir();
+    my $targetDir = "$workflowDataDir/$dataDirPath";
 
     if ($undo) {
       $self->runCmd(0, "rm -fr $targetDir");

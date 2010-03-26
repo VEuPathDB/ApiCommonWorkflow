@@ -18,7 +18,7 @@ sub run {
   my $clusterQueue = $self->getGlobalConfig('clusterQueue');
 
   my $clusterTaskLogsDir = $self->getComputeClusterTaskLogsDir();
-  my $clusterDataDir = $self->getComputeClusterDataDir();
+  my $clusterDataDir = $self->getClusterWorkflowDataDir();
 
   my $userName = $ENV{USER};  # perl trick to get user name
 

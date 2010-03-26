@@ -15,9 +15,9 @@ sub run {
 
   my $outputDir = $self->getParamValue('outputDir');
 
-  my $localDataDir = $self->getLocalDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
       
-  my $args = "--paramValue $paramValue --studyName '$studyName' --fileDir $localDataDir/$outputDir";
+  my $args = "--paramValue $paramValue --studyName '$studyName' --fileDir $workflowDataDir/$outputDir";
 
   my $normFileDir = $studyName; 
       
@@ -27,12 +27,12 @@ sub run {
 
   if($undo){
 
-      $self->runCmd(0,"rm -fr $localDataDir/$outputDir/$normFileDir");
+      $self->runCmd(0,"rm -fr $workflowDataDir/$outputDir/$normFileDir");
 
   }else{
       if ($test) {
-	  $self->runCmd(0,"mkdir -p $localDataDir/$outputDir/$normFileDir");
-	  $self->runCmd(0,"echo test > $localDataDir/$outputDir/$normFileDir/test.out");
+	  $self->runCmd(0,"mkdir -p $workflowDataDir/$outputDir/$normFileDir");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/$normFileDir/test.out");
       }else{
 	  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CreateSageTagNormalizationFiles", $args);
       }

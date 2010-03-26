@@ -10,6 +10,7 @@ sub run {
 
   # get parameters
   my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $downloadSiteDataDir = $self->getParamValue('downloadSiteDataDir');
 
   my $outputFile = $self->getParamValue('outputFile');
   my $organismName = $self->getParamValue('organismName');
