@@ -12,7 +12,7 @@ sub run {
   my $inputFileRelativeToManualDeliveryDir = $self->getParamValue('inputFileRelativeToManualDeliveryDir');
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
 
-  my $manualDeliveryDir = $self->getGlobalConfig('manualDeliveryDir');
+  my $manualDeliveryDir = $self->getSharedConfig('manualDeliveryDir');
 
   my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
 

@@ -26,7 +26,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $instance = $self->getGlobalConfig('instance');
+  my $instance = $self->getSharedConfig('instance');
 
   my $apidbPassword = $self->getConfig('apidbPassword');
 

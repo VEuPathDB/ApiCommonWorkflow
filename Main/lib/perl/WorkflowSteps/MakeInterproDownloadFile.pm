@@ -11,7 +11,7 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $genomeDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
   my $interproDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('interproExtDbRlsSpec'));
-  my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my $sql = <<"EOF";
   SELECT gf.source_id

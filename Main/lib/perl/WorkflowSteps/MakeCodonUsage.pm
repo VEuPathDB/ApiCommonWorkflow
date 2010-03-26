@@ -13,7 +13,7 @@ sub run {
     my $inputFile = $self->getParamValue('inputFile');
     my $outputFile = $self->getParamValue('outputFile');
 
-    my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+    my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
     my $cmd = <<"EOF";
       makeCodonUsage 

@@ -41,7 +41,7 @@ sub getResource {
 	my $cmd = "wget --directory-prefix=$targetDir --output-file=$logFile $WgetArgs \"$UrlArg\"";
 	$self->runCmd($test, $cmd);
     } else {
-	my $manualDeliveryDir = $self->getGlobalConfig('manualDeliveryDir');
+	my $manualDeliveryDir = $self->getSharedConfig('manualDeliveryDir');
 	if ($test) {
 	    -e "$manualDeliveryDir/$manualFileOrDir" || $self->error("Manual delivery file or dir '$manualDeliveryDir/$manualFileOrDir' does not exist");
 	} else {

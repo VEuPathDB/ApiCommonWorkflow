@@ -16,7 +16,7 @@ sub run {
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $tableName = $self->getParamValue('tableName');
  
-  my $downloadDir = $self->getGlobalConfig('downloadDir');
+  my $downloadDir = $self->getSharedConfig('downloadDir');
 
   my $mappingFile = "$downloadDir/$mappingFileRelativeToDownloadDir";
 

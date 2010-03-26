@@ -13,7 +13,7 @@ sub run {
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
 
   # get global properties
-  my $ = $self->getGlobalConfig('');
+  my $ = $self->getSharedConfig('');
 
   # get step properties
   my $ = $self->getConfig('');

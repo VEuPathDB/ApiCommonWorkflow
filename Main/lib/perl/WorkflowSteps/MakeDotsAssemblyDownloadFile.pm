@@ -11,7 +11,7 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
 
-  my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my $sql = "
       SELECT  a.source_id

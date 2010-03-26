@@ -9,9 +9,9 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $gusHome = $self->getGlobalConfig('gusHome');
-  my $email = $self->getGlobalConfig('email');
-  my $instance = $self->getGlobalConfig('instance');
+  my $gusHome = $self->getSharedConfig('gusHome');
+  my $email = $self->getSharedConfig('email');
+  my $instance = $self->getSharedConfig('instance');
 
   my $apidbPassword = $self->getConfig('apidbPassword');
   my $xmlConfigFileName="tmpConfigFile.xml";

@@ -12,7 +12,7 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $mappingFileRelativeToDownloadDir = $self->getParamValue('mappingFileRelativeToDownloadDir');
 
-  my $downloadDir = $self->getGlobalConfig('downloadDir');
+  my $downloadDir = $self->getSharedConfig('downloadDir');
 
   my $mappingFile = "$downloadDir/$mappingFileRelativeToDownloadDir";
 

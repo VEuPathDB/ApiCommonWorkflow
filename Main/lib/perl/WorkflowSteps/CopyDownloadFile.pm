@@ -11,7 +11,7 @@ sub run {
   my $fromFile = $self->getParamValue('fromFile');
   my $toFile = $self->getParamValue('toFile');
 
-  my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

@@ -15,7 +15,7 @@ sub run {
   my $filteredOutputFile = $self->getParamValue('filteredOutputFile');
   my $gi2taxidFileRelativeToDownloadDir = $self->getParamValue('gi2taxidFileRelativeToDownloadDir');
 
-  my $downloadDir = $self->getGlobalConfig('downloadDir');
+  my $downloadDir = $self->getSharedConfig('downloadDir');
 
   $taxonList =~ s/\"//g if $taxonList;
 

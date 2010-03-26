@@ -9,7 +9,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   # get parameters
-  my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
   my $downloadSiteDataDir = $self->getParamValue('downloadSiteDataDir');
 
   my $outputFile = $self->getParamValue('outputFile');

@@ -12,7 +12,7 @@ sub run {
   my $proteinsFile = $self->getParamValue('proteinsFile');
 
   # get global properties
-  my $email = $self->getGlobalConfig('email');
+  my $email = $self->getSharedConfig('email');
 
   # get properties
   my $taskSize = $self->getConfig('taskSize');

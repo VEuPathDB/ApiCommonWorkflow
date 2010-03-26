@@ -12,7 +12,7 @@ sub run {
   # get parameters
   my $apiSiteFilesDir = $self->getParamValue('apiSiteFilesDir');
 
-  my $baseDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $baseDir = $self->getSharedConfig('apiSiteFilesDir');
 
   if($undo){
 

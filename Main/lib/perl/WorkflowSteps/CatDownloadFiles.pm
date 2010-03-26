@@ -13,7 +13,7 @@ sub run {
     my $inputDirRelativeToDownloadsDir = $self->getParamValue('inputDirRelativeToDownloadsDir');
     my $inputFileNameRegex = $self->getParamValue('inputFileNameRegex');
     my $inputFileNameExtension = $self->getParamValue('inputFileNameExtension');
-    my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+    my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
     my $inputDir="$apiSiteFilesDir/$inputDirRelativeToDownloadsDir";
     my $outputFile="$apiSiteFilesDir/$outputFileRelativeToDownloadsDir";

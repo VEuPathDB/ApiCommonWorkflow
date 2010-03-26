@@ -10,7 +10,7 @@ sub run {
   # get parameters
   my @isolateExtDbSpecList = split(/,/,$self->getParamValue('isolateExtDbRlsSpec'));
   my $outputFile = $self->getParamValue('outputFile');
-  my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my (@extDbRlsVers,@extDbNames);
 

@@ -17,7 +17,7 @@ sub run {
     my $aaSeqTable = 'TranslatedAASequence';
 
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $downloadDir = $self->getGlobalConfig('downloadDir');
+    my $downloadDir = $self->getSharedConfig('downloadDir');
   
     my $args = <<"EOF";
 --resultFileDir=$workflowDataDir/$inputDir \\

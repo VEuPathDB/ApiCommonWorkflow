@@ -12,7 +12,7 @@ sub run {
   my $xmlFile = $self->getParamValue('xmlFileRelativeToGusHomeDir');
   my $gusTable = $self->getParamValue('gusTable');
 
-  my $gusHome = $self->getGlobalConfig('gusHome');
+  my $gusHome = $self->getSharedConfig('gusHome');
 
   my $undoArgs = "--undoTables $gusTable";
 

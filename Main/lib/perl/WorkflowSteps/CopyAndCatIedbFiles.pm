@@ -18,7 +18,7 @@ sub run {
 
 
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $downloadDir = $self->getGlobalConfig('downloadDir');
+    my $downloadDir = $self->getSharedConfig('downloadDir');
 
     my $inputDir="$downloadDir/$inputDirRelativeToDownloadsDir";
     my $cmd = "cat ";

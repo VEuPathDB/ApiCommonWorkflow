@@ -8,7 +8,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   # get global properties
-  my $projectVersion = $self->getGlobalConfig('projectVersion');
+  my $projectVersion = $self->getSharedConfig('projectVersion');
 
   if ($undo) {
   } else {

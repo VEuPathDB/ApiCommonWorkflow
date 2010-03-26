@@ -16,7 +16,7 @@ sub run {
   my $isfMappingFileRelToGusHome = $self->getParamValue('isfMappingFileRelToGusHome');
   my $soVersion = $self->getParamValue('soVersion');
 
-  my $gusHome = $self->getGlobalConfig('gusHome');
+  my $gusHome = $self->getSharedConfig('gusHome');
 
   my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
 

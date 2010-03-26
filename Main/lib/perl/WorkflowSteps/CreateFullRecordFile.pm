@@ -17,7 +17,7 @@ sub run {
   my $dumpFile = $self->getParamValue('dumpFile');
   my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
 
-  my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my $sqlFile="all_PKs.sql";
 

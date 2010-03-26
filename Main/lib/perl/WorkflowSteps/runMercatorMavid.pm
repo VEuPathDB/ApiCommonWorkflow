@@ -12,7 +12,7 @@ sub run {
   my $outputDir = $self->getParamValue('outputDir');
 
   # get global properties
-  my $ = $self->getGlobalConfig('');
+  my $ = $self->getSharedConfig('');
 
   # get step properties
   my $ = $self->getConfig('');

@@ -11,7 +11,7 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $dbrefExtDbRlsSpec = $self->getParamValue('dbrefExtDbRlsSpec');
   my $projectName = $self->getParamValue('projectName');
-  my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my $cmd; 
  if ($dbrefExtDbRlsSpec =~ /\|/)

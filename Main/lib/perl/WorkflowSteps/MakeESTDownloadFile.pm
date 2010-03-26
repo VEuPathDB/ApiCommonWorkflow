@@ -12,7 +12,7 @@ sub run {
   my $parentNcbiTaxonId = $self->getParamValue('parentNcbiTaxonId');
   my $useTaxonHierarchy = $self->getParamValue('useTaxonHierarchy');
 
-  my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$parentNcbiTaxonId);
   my $taxonIdList = $self->getTaxonIdList($test, $taxonId, $useTaxonHierarchy);

@@ -14,7 +14,7 @@ sub run {
 
   my $organismSource = $self->getParamValue('organismSource');
 
-  my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my (@extDbRlsVers,@extDbNames);
 

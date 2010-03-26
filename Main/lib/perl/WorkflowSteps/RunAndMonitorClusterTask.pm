@@ -15,7 +15,7 @@ sub run {
 
   # get global properties
   my $clusterServer = $self->getWorkflowConfig('clusterServer');
-  my $clusterQueue = $self->getGlobalConfig('clusterQueue');
+  my $clusterQueue = $self->getSharedConfig('clusterQueue');
 
   my $clusterTaskLogsDir = $self->getComputeClusterTaskLogsDir();
   my $clusterDataDir = $self->getClusterWorkflowDataDir();

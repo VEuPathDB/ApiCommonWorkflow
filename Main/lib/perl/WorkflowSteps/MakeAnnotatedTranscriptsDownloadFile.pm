@@ -23,7 +23,7 @@ sub run {
   my $names = join (",",map{"'$_'"} @dbnames);
   my $vers = join (",",map{"'$_'"} @dbvers);
 
-  my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my $sql = <<"EOF";
      SELECT '$organismSource'

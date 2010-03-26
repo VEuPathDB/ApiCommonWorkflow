@@ -20,7 +20,7 @@ sub getWorkflowDataDir {
 
 sub getComputeClusterHomeDir {
     my ($self) = @_;
-    my $clusterBase = $self->getGlobalConfig('clusterBaseDir');
+    my $clusterBase = $self->getSharedConfig('clusterBaseDir');
     my $projectName = $self->getWorkflowConfig('name');
     my $projectVersion = $self->getWorkflowConfig('version');
     return "$clusterBase/$projectName/$projectVersion";
@@ -41,8 +41,8 @@ sub getComputeClusterTaskLogsDir {
 sub makeClusterControllerPropFile {
   my ($self, $taskInputDir, $slotsPerNode, $taskSize, $taskClass) = @_;
 
-  my $nodePath = $self->getGlobalConfig('nodePath');
-  my $nodeClass = $self->getGlobalConfig('nodeClass');
+  my $nodePath = $self->getSharedConfig('nodePath');
+  my $nodeClass = $self->getSharedConfig('nodeClass');
 
   # tweak inputs
   my $masterDir = $taskInputDir;
@@ -50,8 +50,8 @@ sub makeClusterControllerPropFile {
   $nodeClass = 'DJob::DistribJob::BprocNode' unless $nodeClass;
 
   # get configuration values
-  my $nodePath = $self->getGlobalConfig('nodePath');
-  my $nodeClass = $self->getGlobalConfig('nodeClass');
+  my $nodePath = $self->getSharedConfig('nodePath');
+  my $nodeClass = $self->getSharedConfig('nodeClass');
 
   # construct dir paths
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -187,7 +187,7 @@ sub getDataSource {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $dataDir = "$workflowDataDir/$dataDirPath";
 
-    my $globalProperties = $self->getGlobalConfigProperties();
+    my $globalProperties = $self->getSharedConfigProperties();
     $globalProperties->addProperty("dataDir", $dataDir);
     print STDERR "Parsing resource file: $dataSourcesXmlFile\n";
     $self->{dataSources} =

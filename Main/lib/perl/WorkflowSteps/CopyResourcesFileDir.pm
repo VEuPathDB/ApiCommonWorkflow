@@ -12,7 +12,7 @@ sub run {
   my $toDir = $self->getParamValue('toDir');
 
   # get global properties
-  my $downloadDir = $self->getGlobalConfig('downloadDir');
+  my $downloadDir = $self->getSharedConfig('downloadDir');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

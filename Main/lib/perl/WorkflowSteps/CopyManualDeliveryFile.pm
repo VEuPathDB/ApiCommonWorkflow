@@ -11,7 +11,7 @@ sub run {
   my $fromFile = $self->getParamValue('fromFile');
   my $toFile = $self->getParamValue('toFile');
 
-  my $manualDeliveryDir = $self->getGlobalConfig('manualDeliveryDir');
+  my $manualDeliveryDir = $self->getSharedConfig('manualDeliveryDir');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

@@ -16,7 +16,7 @@ sub run {
   my $outputGeneFile = $self->getParamValue('outputGeneFile');
   my $outputSeqFile = $self->getParamValue('outputSeqFile');
 
-  my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my $cmd ="fullRecordDump  -model $projectDB  -organism \"$organismFullName\"  -type \"$recordType\"  -dir $apiSiteFilesDir/$downloadSiteDataDir";
 

@@ -15,7 +15,7 @@ sub run {
 
   my $length = $self->getParamValue('minOrfLength');
 
-  my $apiSiteFilesDir = $self->getGlobalConfig('apiSiteFilesDir');
+  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my $dbRlsIds = join(",", @extDbRlsIds);
 
