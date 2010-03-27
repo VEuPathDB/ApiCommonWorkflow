@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasFile;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasMappingFile;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
