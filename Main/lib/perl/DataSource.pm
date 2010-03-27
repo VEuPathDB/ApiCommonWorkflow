@@ -115,6 +115,12 @@ sub getUnpacks {
     return $self->{parsedXml}->{unpack};
 }
 
+sub getGetAndUnpackOutputs {
+    my ($self) = @_;
+
+    return $self->{parsedXml}->{getAndUnpackOutput};
+}
+
 sub getPluginArgs {
     my ($self) = @_;
 

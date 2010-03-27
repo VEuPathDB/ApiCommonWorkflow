@@ -20,6 +20,7 @@ sub run {
     } else {
 	$self->getResource($test, $dataSource, $targetDir);
 	$self->unpackResource($test, $dataSource, $targetDir);
+	$self->processDeclaredOutputs($test, $dataSource);
     }
 }
 
@@ -30,7 +31,7 @@ sub getResource {
     my $manualGet = $dataSource->getManualGet();
     my $manualFileOrDir = $dataSource->getManualFileOrDir();
     my $UrlArg = $dataSource->getWgetUrl();
-    
+
     die "Resource $dataSourceName must provide either <wgetArgs> or <manualGet>, but not both\n"
 	unless ($WgetArgs && !$manualGet) || ($manualGet && !$WgetArgs);
 
@@ -55,12 +56,33 @@ sub unpackResource {
     my ($self, $test, $dataSource) = @_;
 
     my $unpacks =  $dataSource->getUnpacks();
-  
+
     my @unpacks2 = map { _formatForCLI($_) } @$unpacks;
 
     foreach my $unpacker (@unpacks2) {
 	$self->runCmd($test,$unpacker);
     }
+}
+
+# the <getAndUnpackOutput> element in the resources xml file declares
+# outputs.  they have an absolute path
+sub processDeclaredOutputs {
+  my ($self, $test, $dataSource) = @_;
+
+  foreach my $declaredOutput (@{$dataSource->getGetAndUnpackOutputs()}) {
+    my $dir = $declaredOutput->{dir};
+    my $file = $declaredOutput->{file};
+    if ($test) {
+      $self->runCmd(0, "mkdir -p $dir") if $dir;
+      $self->runCmd(0, "echo test > $file") if $file;
+    } else {
+      if ($dir) {
+	$self->error("Declared output dir '$dir' was not created") unless -d $dir;
+      } else {
+	$self->error("Declared output file '$file' was not created") unless  -e $file;
+      }
+    }
+  }
 }
 
 # remove line wrappings for command line processing
