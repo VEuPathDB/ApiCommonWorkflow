@@ -19,7 +19,7 @@ sub run {
 
   if ($test) {
     $self->testInputFile('fromFile', "$apiSiteFilesDir/$fromFile");
-    $self->runCmd(0, "cat test > $workflowDataDir/$toFile");
+    $self->runCmd(0, "echo test > $workflowDataDir/$toFile");
   }
 
   if ($undo) {
