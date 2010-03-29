@@ -112,13 +112,13 @@ sub getInstitution {
 sub getUnpacks {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{unpack};
+    return $self->{parsedXml}->{unpack} || [];
 }
 
 sub getGetAndUnpackOutputs {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{getAndUnpackOutput};
+    return $self->{parsedXml}->{getAndUnpackOutput} || [];
 }
 
 sub getPluginArgs {
