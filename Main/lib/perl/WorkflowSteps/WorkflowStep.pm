@@ -196,6 +196,27 @@ sub getDataSource {
   return $self->{dataSources}->getDataSource($dataSourceName);
 }
 
+sub getSoIds {
+  my ($self, $soTermIdsOrNames) = @_;
+
+  my ($soTermIds,$soTerms);
+
+  if($soTermIdsOrNames =~ /SO:/){
+
+      $soTermIds =  join(",", map { "'$_'" } split(',', $soTermIds));
+  }else{
+
+      $soTerms =  join(",", map { "'$_'" } split(',', $soTerms));
+  }
+
+  my $sql = $soTermIds ? "select sequence_ontology_id from sres.sequenceontology where so_id IN (${soTermIds})" : "select sequence_ontology_id from sres.sequenceontology where term_name IN (${soTerms})";
+
+  my $cmd = "getValueFromTable --idSQL \"$sql\"";
+
+  my $soIds = $self->runCmd($cmd);
+
+  return $soIds;
+}
 
 
 1;

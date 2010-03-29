@@ -27,7 +27,7 @@ sub run {
 
   my $extDbNameList = join(",", map{"'$_'"} @extDbNames);
   my $extDbRlsVerList = join(",",map{"'$_'"} @extDbRlsVers);
-
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
 
   my $sql = "SELECT '$organismSource'
                 ||'|'||
@@ -54,8 +54,10 @@ sub run {
                 dots.transcript t,
                 dots.splicednasequence snas,
                 dots.translatedaafeature taaf,
-                dots.translatedaasequence taas
+                dots.translatedaasequence taas,
+                dots.nasequence ns
       WHERE gf.na_feature_id = t.parent_id
+        AND ns.na_sequence_id = fl.na_sequence_id
         AND t.na_sequence_id = snas.na_sequence_id
         AND gf.na_feature_id = fl.na_feature_id
         AND gf.so_term_name != 'repeat_region'
@@ -66,6 +68,8 @@ sub run {
         AND fl.is_top_level = 1
         AND gf.is_deprecated = $deprecated";
 
+
+  $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
   my $cmd = " gusExtractSequences --outputFile $apiSiteFilesDir/$outputFile  --idSQL \"$sql\"";
 
 
@@ -82,6 +86,9 @@ sub run {
 
 }
 
+
+
+
 sub getParamsDeclaration {
   return (
           'outputFile',
@@ -90,6 +97,7 @@ sub getParamsDeclaration {
           'deprecated',
           'apiSiteFilesDir',
 	  'organismSource',
+          'soTermIdsOrNames'
          );
 }
 

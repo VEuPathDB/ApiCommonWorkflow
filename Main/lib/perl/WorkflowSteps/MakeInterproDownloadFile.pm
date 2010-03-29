@@ -11,6 +11,7 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $genomeDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
   my $interproDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('interproExtDbRlsSpec'));
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
   my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my $sql = <<"EOF";
@@ -37,10 +38,14 @@ sub run {
     dots.translatedaafeature taf,
     dots.translatedaasequence tas,
     sres.externaldatabase xd1,
-    sres.externaldatabaserelease xdr1
+    sres.externaldatabaserelease xdr1,
+    dots.nasequence ns,
+    apidb.featurelocation fl
   WHERE
    gf.external_database_release_id = $genomeDbRlsId
      AND gf.na_feature_id = t.parent_id 
+     AND gf.na_feature_id = fl.na_feature_id
+     AND fl.na_sequence_id = ns.na_sequence_id
      AND t.na_feature_id = taf.na_feature_id 
      AND taf.aa_sequence_id = tas.aa_sequence_id 
      AND tas.aa_sequence_id = df.aa_sequence_id 
@@ -52,7 +57,7 @@ sub run {
      AND xdr1.external_database_release_id =  $interproDbRlsId
 EOF
 
-
+  $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
 my $cmd = " makeFileWithSql --outFile $apiSiteFilesDir/$outputFile --sql \"$sql\" ";
 
   if ($undo) {
@@ -66,11 +71,13 @@ my $cmd = " makeFileWithSql --outFile $apiSiteFilesDir/$outputFile --sql \"$sql\
   }
 }
 
+
 sub getParamsDeclaration {
   return (
           'outputFile',
           'genomeExtDbRlsSpec',
-          'interproExtDbRlsSpec'
+          'interproExtDbRlsSpec',
+          'soTermIdsOrNames'
          );
 }
 

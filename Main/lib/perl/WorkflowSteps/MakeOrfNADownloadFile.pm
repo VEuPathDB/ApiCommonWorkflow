@@ -12,6 +12,7 @@ sub run {
   my @extDbRlsIds;
   push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeExtDbRlsSpec'))) if $self->getParamValue('genomeExtDbRlsSpec');
   push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec'))) if $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
 
   my $length = $self->getParamValue('minOrfLength');
 
@@ -55,6 +56,8 @@ sub run {
         AND m.external_database_release_id in ($dbRlsIds)
 EOF
 
+
+  $sql .= " and enas.sequence_ontology_id in ($soIds)" if $soIds;
    my $cmd = <<"EOF";
       gusExtractSequences --outputFile $apiSiteFilesDir/$outputFile \\
       --idSQL \"$sql\" \\
@@ -76,7 +79,8 @@ sub getParamsDeclaration {
    my @properties =
      ('outputFile',
       'genomeExtDbRlsSpec',
-      'genomeVirtualSeqsExtDbRlsSpec'
+      'genomeVirtualSeqsExtDbRlsSpec',
+       'soTermIdsOrNames'
      );
      return @properties;
 }

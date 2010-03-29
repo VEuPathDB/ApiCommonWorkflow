@@ -22,6 +22,7 @@ sub run {
   push (@dbvers,$ver);
   my $names = join (",", map{"'$_'"} @dbnames);
   my $vers = join (",", map{"'$_'"} @dbvers);
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
 
   my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
@@ -54,8 +55,10 @@ sub run {
                 apidb.geneattributes gf,
                 dots.transcript t,
                 dots.splicednasequence snas,
-                dots.translatedaafeature taaf
+                dots.translatedaafeature taaf,
+                dots.nasequence ns
       WHERE gf.na_feature_id = t.parent_id
+        AND fl.na_sequence_id = ns.na_sequence_id
         AND t.na_sequence_id = snas.na_sequence_id
         AND gf.na_feature_id = fl.na_feature_id
         AND gf.so_term_name != 'repeat_region'
@@ -67,7 +70,7 @@ sub run {
         AND gf.is_deprecated = $deprecated
 EOF
 
-
+  $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
   my $cmd = "gusExtractSequences --outputFile $apiSiteFilesDir/$outputFile  --idSQL \"$sql\"  --verbose";
 
 
@@ -83,13 +86,15 @@ EOF
   }
 }
 
+
 sub getParamsDeclaration {
   return (
           'outputFile',
           'organismSource',
           'genomeExtDbRlsSpec',
           'genomeVirtualSeqsExtDbRlsSpec',
-	  'deprecated'
+	  'deprecated',
+          'soTermIdsOrNames'
          );
 }
 

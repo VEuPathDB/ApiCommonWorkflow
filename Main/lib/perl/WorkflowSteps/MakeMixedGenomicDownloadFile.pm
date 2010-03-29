@@ -24,7 +24,7 @@ sub run {
 
   my $extDbNameList = join(",", map{"'$_'"} @extDbNames);
   my $extDbRlsVerList = join(",",map{"'$_'"} @extDbRlsVers);
-
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
 
   my $sql = " SELECT '$organismSource'
                 ||'|'||
@@ -43,6 +43,7 @@ sub run {
             AND sa.database_name in ($extDbNameList) AND sa.database_version in ($extDbRlsVerList)
             AND sa.is_top_level = 1";
 
+  $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
   my $cmd = "gusExtractSequences --outputFile $apiSiteFilesDir/$outputFile  --idSQL \"$sql\" ";
 
 
@@ -65,6 +66,7 @@ sub getParamsDeclaration {
           'extDbName',
           'extDbRls',
 	  'organismSource',
+          'soTermIdsOrNames'
          );
 }
 
