@@ -27,6 +27,11 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <step name="runTmhmm"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTmhmm">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
@@ -200,7 +205,7 @@
     <subgraph name="interpro" xmlFile="interpro.xml">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
       <dependsGlobal name="interproscanData_RSRC"/>
     </subgraph>
 
@@ -225,7 +230,7 @@
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
       <dependsGlobal name="NRDB_RSRC"/>
     </subgraph>
 
@@ -262,7 +267,7 @@
       <paramValue name="filterByTaxon">false</paramValue>
       <paramValue name="taxonHierarchyForFilter"></paramValue>
       <paramValue name="loadOptions">--subjectsLimit 50</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
       <dependsGlobal name="NRDB_RSRC"/>
     </subgraph>
 
@@ -299,8 +304,8 @@
       <paramValue name="filterByTaxon">false</paramValue>
       <paramValue name="taxonHierarchyForFilter"></paramValue>
       <paramValue name="loadOptions">--noHSPs --subjectPvalue 1e-05 --subjectPctIdent 30</paramValue>
-      <depends name="makeDataDir"/>
-      <dependsGlobal name="interproscanData_RSRC"/>
+      <depends name="mirrorToCluster"/>
+      <dependsGlobal name="PDBProteinsSequences_RSRC"/>
     </subgraph>
 
    <step name="document-blastpPdb"

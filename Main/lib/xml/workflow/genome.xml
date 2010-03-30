@@ -37,6 +37,11 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <step name="InsertGeneGenomicSequenceWithSql" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadGeneGenomicSequenceByQuery">
       <paramValue name="genomeExtDbRlsSpecList">$$genomeExtDbRlsSpec$$</paramValue>
     </step>
@@ -71,7 +76,7 @@
       <paramValue name="filterByTaxon">true</paramValue>
       <paramValue name="taxonHierarchyForFilter">$$taxonHierarchyForBlastxFilter$$</paramValue>
       <paramValue name="loadOptions"></paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
       <dependsGlobal name="NRDB_RSRC"/>
     </subgraph>
 
@@ -98,7 +103,7 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="tRNAExtDbRlsSpec">$$organismName$$TRNAscan-SE|1.23</paramValue>
       <paramValue name="soVersion">@SO_VER@</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="document-tRNAScan"
@@ -234,6 +239,7 @@
       <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
       <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
       <paramValue name="makeAssemblySeqs">$$makeAssemblySeqs$$</paramValue>
+      <depends name="mirrorToCluster"/>
       <depends name="dbESTResource"/>
       <depends name="organismSpecificESTResource"/>
     </subgraph>
