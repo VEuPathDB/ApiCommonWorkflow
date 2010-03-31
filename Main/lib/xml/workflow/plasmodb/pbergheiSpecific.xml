@@ -14,12 +14,17 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <subgraph name="mapIsolatesToGenome" xmlFile="plasmodb/plasmoMapIsolatesToGenome.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">Pberghei</paramValue>
       <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@Pberghei_chromosomes_VER@</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
       <dependsGlobal name="isolatesResource"/>
     </subgraph>
 
@@ -44,7 +49,7 @@
     <depends name="Pb_CorrectGeneAliases_RSRC"/>
   </subgraph>
 
-  <subgraph name="geneExpressionResources" xmlFile="plasmodb/pbergheiGeneExpressionResource.xml">
+  <subgraph name="geneExpressionResources" xmlFile="plasmodb/pbergheiGeneExpressionResource.xml" excludeIf="true">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="oligoExtDbRlsSpec">Pberghei_gss_oligos_RSRC|@Pberghei_gss_oligos_VER@</paramValue>
