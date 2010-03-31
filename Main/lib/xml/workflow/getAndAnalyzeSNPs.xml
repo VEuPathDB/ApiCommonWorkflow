@@ -9,7 +9,8 @@
     <param name="strain"/>
     <param name="organismResourceXmlFile"/>
 
-    <constant name="dataDir">$$parentDataDir$$/$$snpResourceName$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/analyze_$$snpResourceName$$</constant>
+    <constant name="fastaOutPutDir">$$parentDataDir$$/analyze_$$snpResourceName$$/fasta</constant>
 
     <subgraph name="snpResource" xmlFile="loadResource.xml">
       <paramValue name="resourceName">$$snpResourceName$$</paramValue>
@@ -17,23 +18,28 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     </subgraph>
 
+  <step name="makefastaOutPutDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$fastaOutPutDir$$</paramValue>
+  </step>
+
     <step name="snpGffToFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpGffToFasta">
-      <paramValue name="inputFile">$$dataDir$$/$$snpResourceName$$.gff</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/SNPs.fasta</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/$$snpResourceName$$/$$snpResourceName$$.gff</paramValue>
+      <paramValue name="outputFile">$$fastaOutPutDir$$/SNPs.fasta</paramValue>
       <paramValue name="strain">$$strain$$</paramValue>
       <depends name="snpResource"/>
+      <depends name="makefastaOutPutDir"/>
     </step>
 
     <step name="runMummer" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMummer">
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="inputDir">$$fastaOutPutDir$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/SNPsMummer.out</paramValue>
       <depends name="snpGffToFasta"/>
     </step>
 
     <step name="snpMummerToGff" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpMummerToGff">
       <paramValue name="inputFile">$$dataDir$$/SNPsMummer.out</paramValue>
-      <paramValue name="gffFile">$$dataDir$$/SNPs.gff</paramValue>
+      <paramValue name="gffFile">$$dataDir$$/$$snpResourceName$$/$$snpResourceName$$.gff</paramValue>
       <paramValue name="outputFile">$$dataDir$$/SNPsMummer.gff</paramValue>
       <paramValue name="strain">$$strain$$</paramValue>
       <depends name="runMummer"/>
