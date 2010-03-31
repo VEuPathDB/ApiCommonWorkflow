@@ -14,13 +14,18 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <subgraph name="mapIsolatesToGenome" xmlFile="plasmodb/plasmoMapIsolatesToGenome.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">Pfalciparum</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
-      <depends name="makeDataDir"/>
       <dependsGlobal name="isolatesResource"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <subgraph name="snps" xmlFile="plasmodb/pfalciparumSNPs.xml">
@@ -88,7 +93,7 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
-
+<!--
   <subgraph name="geneExpressionResources" xmlFile="plasmodb/pfalciparumGeneExpressionResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -96,7 +101,7 @@
     <depends name="Pf_CorrectGeneAliases_RSRC"/>
     <dependsGlobal name="Mged_Ontology_Entry_RSRC"/>
   </subgraph>
-
+-->
     <subgraph name="GOAssociations_Pfalciparum_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">GOAssociations_Pfalciparum_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
