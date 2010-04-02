@@ -3,22 +3,37 @@
       <param name="globalResourceXmlFile"/>
       <param name="parentDir"/>
 
+  <constant name="dataDir">$$parentDataDir$$/plasmoIsolatesResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
   <subgraph name="PlasmodiumGenbankIsolates_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">PlasmodiumGenbankIsolates_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$commonResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDir$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="isolateVocabulary_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">isolateVocabulary_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDir$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="Continents_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Continents_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="isolateVocabularyMap_isolation_source_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">isolateVocabularyMap_isolation_source_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$commonResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDir$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="PlasmodiumGenbankIsolates_RSRC"/>
     <depends name="isolateVocabulary_RSRC"/>
   </subgraph>
@@ -26,7 +41,7 @@
   <subgraph name="isolateVocabularyMap_specific_host_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">isolateVocabularyMap_specific_host_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$commonResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDir$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="PlasmodiumGenbankIsolates_RSRC"/>
     <depends name="isolateVocabulary_RSRC"/>
   </subgraph>
@@ -34,7 +49,7 @@
   <subgraph name="isolateVocabularyMap_geographic_location_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">isolateVocabularyMap_geographic_location_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$commonResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDir$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="PlasmodiumGenbankIsolates_RSRC"/>
     <depends name="isolateVocabulary_RSRC"/>
   </subgraph>
@@ -42,7 +57,7 @@
   <subgraph name="isolateVocabularyMap_product_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">isolateVocabularyMap_product_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$commonResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDir$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="PlasmodiumGenbankIsolates_RSRC"/>
     <depends name="isolateVocabulary_RSRC"/>
   </subgraph>

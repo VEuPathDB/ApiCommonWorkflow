@@ -3,7 +3,11 @@
   <param name="organismResourceXmlFile"/>
   <param name="genomicSeqsFile"/>
 
-  <constant name="dataDir">$$parentDataDir$$</constant>
+  <constant name="dataDir">$$parentDataDir$$/SNPs</constant>
+
+   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
 
   <subgraph name="SuSnps" xmlFile="getAndAnalyzeSNPs.xml">
     <paramValue name="snpExtDbRlsSpec">Pf_Su_SNPs_RSRC|@Pf_Su_SNPs_VER@</paramValue>
@@ -14,6 +18,7 @@
     <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
     <paramValue name="strain">3D7</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="broadSnps" xmlFile="getAndAnalyzeSNPs.xml">
@@ -25,6 +30,7 @@
     <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
     <paramValue name="strain">3D7</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Broad_Isolate_Barcode_RSRC" xmlFile="loadResource.xml">
@@ -57,6 +63,7 @@
     <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
     <paramValue name="strain">3D7</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="sangerReichenowiSnps" xmlFile="getAndAnalyzeSNPs.xml">
@@ -68,6 +75,7 @@
     <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
     <paramValue name="strain">3D7</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="WinzelerGeneticVariationArray_RSRC" xmlFile="getAndAnalyzeSNPs.xml">
@@ -79,6 +87,7 @@
     <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
     <paramValue name="strain">3D7</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="combinedSnps" xmlFile="getAndAnalyzeSNPs.xml">
@@ -90,6 +99,7 @@
     <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
     <paramValue name="strain">3D7</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
 </workflowGraph>

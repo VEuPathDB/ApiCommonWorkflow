@@ -4,36 +4,45 @@
       <param name="euPathUniProtLinkDownloadFile"/>
       <param name="projectName"/>
 
-  <constant name="dataDir">$$parentDataDir$$</constant>
+  <constant name="dataDir">$$parentDataDir$$/pbergheiDbxRefsResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
 
   <subgraph name="Pb_Entrez_DBRefs_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pb_Entrez_DBRefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pb_RMgm_Phenotype_DBRefs_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pb_RMgm_Phenotype_DBRefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pb_Pubmed_DBRefs_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pb_Pubmed_DBRefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pb_Entrez_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pb_Entrez_Gene_dbxref_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pb_Uniprot_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pb_Uniprot_Gene_dbxref_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
     <step name="makeEuPathUniProtLinkFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEuPathUniProtLinkFile">

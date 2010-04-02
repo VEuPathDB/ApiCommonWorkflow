@@ -1,0 +1,31 @@
+<workflowGraph name="pfalciparumChipResources">
+  <param name="parentDataDir"/>
+  <param name="genomicSeqsFile"/>
+  <param name="organismResourceXmlFile"/>
+
+  <constant name="dataDir">$$parentDataDir$$/pfalciparumChipResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="scherfChIP" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="chipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="chipExtDbRlsSpec"></paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="vossChIP" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="chipResourceName">ChIP_Chip_Till_Voss_RSRC</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="chipExtDbRlsSpec"></paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+
+</workflowGraph>

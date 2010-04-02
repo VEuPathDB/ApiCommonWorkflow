@@ -9,18 +9,24 @@
     <param name="strain"/>
     <param name="organismResourceXmlFile"/>
 
-    <constant name="dataDir">$$parentDataDir$$/analyze_$$snpResourceName$$</constant>
-    <constant name="fastaOutPutDir">$$parentDataDir$$/analyze_$$snpResourceName$$/fasta</constant>
+    <constant name="dataDir">$$parentDataDir$$/getAndAnalyze_$$snpResourceName$$</constant>
+    <constant name="fastaOutPutDir">$$parentDataDir$$/getAndAnalyze_$$snpResourceName$$/fasta</constant>
+
+   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makefastaOutPutDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$fastaOutPutDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
 
     <subgraph name="snpResource" xmlFile="loadResource.xml">
       <paramValue name="resourceName">$$snpResourceName$$</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
     </subgraph>
-
-  <step name="makefastaOutPutDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
-    <paramValue name="dataDir">$$fastaOutPutDir$$</paramValue>
-  </step>
 
     <step name="snpGffToFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpGffToFasta">
       <paramValue name="inputFile">$$dataDir$$/$$snpResourceName$$/$$snpResourceName$$.gff</paramValue>

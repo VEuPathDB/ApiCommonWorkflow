@@ -4,24 +4,31 @@
       <param name="euPathUniProtLinkDownloadFile"/>
       <param name="projectName"/>
 
-  <constant name="dataDir">$$parentDataDir$$</constant>
+  <constant name="dataDir">$$parentDataDir$$/pchabaudiDbxRefsResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
 
   <subgraph name="Pc_Entrez_DBRefs_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pc_Entrez_DBRefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pc_Phenotype_DBRefs_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pc_Phenotype_DBRefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pc_Pubmed_DBRefs_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pc_Pubmed_DBRefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pc_Entrez_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
@@ -34,6 +41,7 @@
     <paramValue name="resourceName">Pc_Uniprot_Gene_dbxref_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
     <step name="makeEuPathUniProtLinkFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEuPathUniProtLinkFile">

@@ -2,10 +2,17 @@
       <param name="organismResourceXmlFile"/>
       <param name="parentDataDir"/>
 
+  <constant name="dataDir">$$parentDataDir$$/pyoeliiMassSpecResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
   <subgraph name="PhylogeneticProfiles_Pyoelii_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">PhylogeneticProfiles_Pyoelii_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
 </workflowGraph>

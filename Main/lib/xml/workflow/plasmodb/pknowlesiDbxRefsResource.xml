@@ -4,30 +4,38 @@
       <param name="euPathUniProtLinkDownloadFile"/>
       <param name="projectName"/>
 
-  <constant name="dataDir">$$parentDataDir$$</constant>
+  <constant name="dataDir">$$parentDataDir$$/pknowlesiDbxRefsResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
 
   <subgraph name="Pk_Entrez_DBRefs_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pk_Entrez_DBRefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pk_Pubmed_DBRefs_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pk_Pubmed_DBRefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pk_Entrez_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pk_Entrez_Gene_dbxref_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pk_Uniprot_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pk_Uniprot_Gene_dbxref_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
     <step name="makeEuPathUniProtLinkFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEuPathUniProtLinkFile">
