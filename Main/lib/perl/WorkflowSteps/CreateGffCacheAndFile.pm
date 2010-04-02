@@ -10,10 +10,11 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $organismFullName = $self->getParamValue('organismFullName');
+  my $outputFile = $self->getParamValue('outputFile');
   my $model = $self->getParamValue('model');
   my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
 
-  my $cmd = "gffDump -model $model -organism '$organismFullName'  >> GffCacheAndFileDetails.out 2>> GffCacheAndFileDetails.err &";
+  my $cmd = "gffDump -model $model -organism '$organismFullName'  --gffFile $outputFile>> GffCacheAndFileDetails.out 2>> GffCacheAndFileDetails.err &";
 
 
   if ($undo){
