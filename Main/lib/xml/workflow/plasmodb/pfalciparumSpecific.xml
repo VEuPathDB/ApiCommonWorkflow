@@ -1,4 +1,4 @@
-<workflowGraph name="pfalciparumSpecificAnalysis">
+<workflowGraph name="pfalciparumSpecific">
   <param name="projectName"/>
   <param name="projectVersion"/>
   <param name="parentDataDir"/>
@@ -125,4 +125,25 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
+
+    <subgraph name="Pf_PiggyBac_Clones_Adams_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pf_PiggyBac_Clones_Adams_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="blastxPfPiggyBacClonesGenomicSeqs" xmlFile="runBlastAndLoadFeatures.xml">
+      <paramValue name="parentDataDir">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC</paramValue>
+      <paramValue name="queryFile">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC/$$dataDir$$/</paramValue>
+      <paramValue name="queryTable"></paramValue>
+      <paramValue name="queryExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="subjectFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="subjectTable">DoTS::ExternalNASequence</paramValue>
+      <paramValue name="blastArgs"></paramValue>
+      <paramValue name="blastType">blastx</paramValue>
+      <paramValue name="vendor">wu</paramValue>
+      <depends name="Pf_PiggyBac_Clones_Adams_RSRC"/>
+    </subgraph>
+
 </workflowGraph>
