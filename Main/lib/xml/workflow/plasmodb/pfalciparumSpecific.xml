@@ -133,17 +133,17 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="blastxPfPiggyBacClonesGenomicSeqs" xmlFile="runBlastAndLoadFeatures.xml">
-      <paramValue name="parentDataDir">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC</paramValue>
-      <paramValue name="queryFile">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC/$$dataDir$$/</paramValue>
-      <paramValue name="queryTable"></paramValue>
-      <paramValue name="queryExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <subgraph name="PfMapPiggyBacClonesToGenomicSeqs" xmlFile="runBlastAndLoadFeatures.xml">
+      <paramValue name="dataDir">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC/PfMapPiggyBacClonesToGenomicSeqs</paramValue>
+      <paramValue name="queryFile">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC/PiggyBac_Clones_Adams.fsa</paramValue>
       <paramValue name="subjectFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="subjectTable">DoTS::ExternalNASequence</paramValue>
-      <paramValue name="blastArgs"></paramValue>
-      <paramValue name="blastType">blastx</paramValue>
+      <paramValue name="blastArgs">-nogaps V=1 E=1e-10 B=1 hspsepQmax=50000 hspsepSmax=50000 -span1 -topcomboN=1</paramValue>
+      <paramValue name="idRegex">(\\S+)</paramValue>
+      <paramValue name="blastType">blastn</paramValue>
       <paramValue name="vendor">wu</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@P.falciparum_chromosomes_VER@</paramValue>
+      <paramValue name="extDbRlsSpec">Pf_PiggyBac_Clones_Adams_RSRC|2010-03-23</paramValue>
+      <paramValue name="organismFullName">@PfOrganismFullName@</paramValue>
       <depends name="Pf_PiggyBac_Clones_Adams_RSRC"/>
     </subgraph>
-
 </workflowGraph>
