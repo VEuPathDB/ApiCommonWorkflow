@@ -1,0 +1,46 @@
+<workflowGraph name="getAndAnalyzeChipSeq">
+    <param name="parentDataDir"/>
+    <param name="chipSeqResourceName"/>
+    <param name="indexFileDirForShortSeqAligner"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="chipSeqExtDbRlsSpec"/>
+    <param name="genomeExtDbSpec"/>
+    <param name="generatePeakCalls"/>
+
+    <constant name="dataDir">$$parentDataDir$$/analyze_$$chipSeqResourceName$$</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <subgraph name="chipSeqResource" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$chipSeqResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="mapChipSeqToGenomesAndTranscripts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+      <paramValue name="indexFileDir">$$indexFileDirForShortSeqAligner$$</paramValue>
+      <paramValue name="inputFileDir">$$dataDir$$/$$chipSeqResourceName$$</paramValue>
+      <paramValue name="seqCovOutputFileDir">$$dataDir$$/seqCoverage</paramValue>
+      <paramValue name="intensityOutputFileDir"></paramValue>
+      <depends name="chipSeqResource"/>
+    </step>
+
+    <step name="loadChipSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin">
+      <paramValue name="inputFileDir">$$dataDir$$/seqCoverage</paramValue>
+      <paramValue name="extDbRlsSpec">$$chipSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <depends name="mapChipSeqToGenomesAndTranscripts"/>
+    </step>
+
+    <step name="computePeaks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" includeIf="$$generatePeakCalls$$">
+      <depends name="mapChipSeqToGenomesAndTranscripts"/>
+    </step>
+
+    <step name="loadPeaks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin" includeIf="$$generatePeakCalls$$">
+      <depends name="computePeaks"/>
+    </step>
+
+</workflowGraph>
