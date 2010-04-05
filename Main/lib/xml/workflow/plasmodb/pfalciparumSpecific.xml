@@ -140,6 +140,11 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
+    <step name="mirrorPf_PiggyBac_Clones_Adams_RSRCToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC</paramValue>
+      <depends name="Pf_PiggyBac_Clones_Adams_RSRC"/>
+    </step>
+
     <subgraph name="PfMapPiggyBacClonesToGenomicSeqs" xmlFile="runBlastAndLoadFeatures.xml">
       <paramValue name="dataDir">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC/PfMapPiggyBacClonesToGenomicSeqs</paramValue>
       <paramValue name="queryFile">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC/PiggyBac_Clones_Adams.fsa</paramValue>
@@ -151,6 +156,6 @@
       <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@P.falciparum_chromosomes_VER@</paramValue>
       <paramValue name="extDbRlsSpec">Pf_PiggyBac_Clones_Adams_RSRC|@Pf_PiggyBac_Clones_Adams_VER@</paramValue>
       <paramValue name="organismFullName">@PfOrganismFullName@</paramValue>
-      <depends name="Pf_PiggyBac_Clones_Adams_RSRC"/>
+      <depends name="mirrorPf_PiggyBac_Clones_Adams_RSRCToCluster"/>
     </subgraph>
 </workflowGraph>

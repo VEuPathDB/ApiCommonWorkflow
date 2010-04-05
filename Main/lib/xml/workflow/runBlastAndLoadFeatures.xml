@@ -49,7 +49,7 @@
     <step name="blastSimilaritiesToGff" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ConvertBlastSimilaritiesToGff">
       <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
       <paramValue name="gffOutputFile">$$dataDir$$/blastSimilarity.gff</paramValue>
-      <depends name="extractIdsFromBlastResult"/>
+      <depends name="mirrorFromCluster"/>
     </step>
 
     <step name="loadBlastGff"
@@ -61,7 +61,7 @@
       <paramValue name="defaultOrg">$$organismFullName$$</paramValue>
       <paramValue name="isfMappingFileRelToGusHome">lib/xml/isf/PlasmoDB/plasmoTransposableElementFeature2gus.xml</paramValue>
       <paramValue name="soVersion">@SO_VER@</paramValue>
-      <depends name="makeOrfFile"/>
+      <depends name="blastSimilaritiesToGff"/>
     </step>
 
 </workflowGraph>

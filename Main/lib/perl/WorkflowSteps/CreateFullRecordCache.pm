@@ -51,7 +51,7 @@ sub run {
 
       my $undoCmd = "executeIdSQL.pl  --idSQL \"$sql\"";
      
-      $self->runCmd(0, $undoCmd); 
+      $self->runCmd($test, $undoCmd); 
  
   }else{
       if ($test) {
