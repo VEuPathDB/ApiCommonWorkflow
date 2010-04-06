@@ -21,6 +21,8 @@ sub run {
 
   my $args = "--inputDir $workflowDataDir/$inputDir --configFile $workflowDataDir/$configFile --tolerateMissingIds --externalDatabase $externalDatabase --externalDatabaseRls $externalDatabaseRls";
 
+
+  
   if ($test) {
     $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
     $self->testInputFile('configFile', "$workflowDataDir/$configFile");
