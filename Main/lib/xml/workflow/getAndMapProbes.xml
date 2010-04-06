@@ -1,0 +1,36 @@
+<workflowGraph name="getAndMapProbes">
+
+    <param name="parentDataDir"/>
+    <param name="probeResourceName"/>
+    <param name="indexFileDirForShortSeqAligner"/>
+    <param name="chipProbeExtDbRlsSpec"/>
+    <param name="organismResourceXmlFile"/>
+
+    <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <subgraph name="probe_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$probeResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="mapProbeSeqToGenomes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+      <paramValue name="indexFileDir">$$indexFileDirForShortSeqAligner$$</paramValue>
+      <paramValue name="inputFileDir">$$dataDir$$/$$probeResourceName$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/probeMappingResult.out</paramValue>
+      <depends name="probe_RSRC"/>
+    </step>
+
+    <step name="loadProbeMappingResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/probeMappingResult.out</paramValue>
+      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <paramValue name="featureType">ArrayElementFeature</paramValue>
+      <depends name="mapProbeSeqToGenomesAndTranscripts"/>
+    </step>
+
+</workflowGraph>

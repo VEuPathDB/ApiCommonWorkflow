@@ -1,0 +1,41 @@
+<workflowGraph name="analyzeChIP-Chip">
+    <param name="parentDataDir"/>
+    <param name="ChIP-ChipResourceName"/>
+    <param name="chipProbeExtDbRlsSpec"/>
+    <param name="peakFinderArgs"/>
+    <param name="runPeakCalls"/>
+
+    <param name="inputDir"/>
+    <param name="mapProbesToNaSequences"/>
+    <param name="insertSimpleRadAnalysisFromConfig"/>
+
+    <constant name="dataDir">$$parentDataDir$$/analyze_$$ChIP-ChipResourceName$$</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="transformRawDataToGenomeCoordiantes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TransformRawDataToGenomeCoordiantes">
+      <paramValue name="inputFile">$$parentDataDir$$/$$ChIP-ChipResourceName$$/$$ChIP-ChipResourceName$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/$$ChIP-ChipResourceName$$.transformed</paramValue>
+      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="runChIP-ChipPeakFinder" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+      <paramValue name="inputFile">$$dataDir$$/$$ChIP-ChipResourceName$$.transforme/</paramValue>
+      <paramValue name="outPutFileDir">$$dataDir$$/smoothedDataAndPeaks</paramValue>
+      <paramValue name="peakFinderArgs">$$peakFinderArgs$$</paramValue>
+      <depends name="transformRawDataToGenomeCoordiantes"/>
+    </step>
+
+    <step name="loadChIP-ChipSmoothedProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin">
+      <paramValue name="analysisWorkingDir">$$dataDir$$/smoothedDataAndPeaks</paramValue>
+      <paramValue name="configFile">$$parentDataDir$$/$$ChIP-ChipResourceName$$/config.txt</paramValue>
+      <paramValue name="analysisResultView">DataTransformationResult</paramValue>
+      <paramValue name="naFeatureView">ArrayElementFeature</paramValue>
+      <paramValue name="useSqlLdr">true</paramValue>
+      <depends name="runChIP-ChipPeakFinder"/>
+    </step>
+
+</workflowGraph>

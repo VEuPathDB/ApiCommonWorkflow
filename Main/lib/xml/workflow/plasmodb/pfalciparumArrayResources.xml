@@ -1,0 +1,69 @@
+<workflowGraph name="pfalciparumArrayResources">
+  <param name="parentDataDir"/>
+  <param name="genomicSeqsFile"/>
+  <param name="organismResourceXmlFile"/>
+
+  <constant name="dataDir">$$parentDataDir$$/pfalciparumChipResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="scherfChIPGetAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pf_Probes_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="indexFileDirForShortSeqAligner"></paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_Probes_Artur_Scherf_RSRC|@ChIP_Chip_Artur_Scherf_VER@</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+    <subgraph name="ChIP_Chip_Artur_Scherf_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="scherfChIPGetAndMapProbes"/>
+    </subgraph>
+
+  <subgraph name="scherfAnalyzeChIP-Chip" xmlFile="analyzeChIP-Chip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChIP-ChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_Probes_Artur_Scherf_RSRC|@ChIP_Chip_Artur_Scherf_VER@</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200 true</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="vossChIPGetAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pf_Probes_Till_Voss_RSRC</paramValue>
+    <paramValue name="indexFileDirForShortSeqAligner"></paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_Probes_Till_Voss_RSRC|@ChIP_Chip_Till_Voss_VER@</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+    <subgraph name="ChIP_Chip_Till_Voss_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">ChIP_Chip_Till_Voss_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="vossChIPGetAndMapProbes"/>
+    </subgraph>
+
+  <subgraph name="winzeler_WestenbergerChIPGetAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pf_Probes_Winzeler_Westenberger_RSRC</paramValue>
+    <paramValue name="indexFileDirForShortSeqAligner"></paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_Probes_Winzeler_Westenberger_RSRC|@ChIP_Chip_Winzeler_Westenberger_VER@</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+    <subgraph name="ChIP_Chip_Winzeler_Westenberger_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">ChIP_Chip_Winzeler_Westenberger_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="winzeler_WestenbergerChIPGetAndMapProbes"/>
+    </subgraph>
+
+</workflowGraph>
