@@ -10,9 +10,9 @@ use File::Basename;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $inputFile = $self->getParamValue('inputFileDir');
+  my $inputFile = $self->getParamValue('inputFile');
 
-  my $outputFile =  $self->getParamValue('outputFileDir');
+  my $outputFile =  $self->getParamValue('outputFile');
 
   my $extDbRlsSpec = $self->getParamValue('chipProbeExtDbRlsSpec');
 

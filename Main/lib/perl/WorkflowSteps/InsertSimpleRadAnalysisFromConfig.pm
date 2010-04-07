@@ -19,14 +19,14 @@ sub run {
 
   my $useSqlLdr =  $self->getParamValue('useSqlLdr');
 
-
+  my $workflowDataDir = $self->getWorkflowDataDir();
       
-  my $args = "--inputDir $analysisWorkingDir --configFile $configFile --analysisResultView $analysisResultView  --naFeatureView $naFeatureView";
+  my $args = "--inputDir '$workflowDataDir/$analysisWorkingDir' --configFile '$workflowDataDir/$configFile' --analysisResultView $analysisResultView  --naFeatureView $naFeatureView";
 
   $args.=" --useSqlLdr" if($useSqlLdr); 
 
   if ($test) {
-    $self->testInputFile('analysisWorkingDir', "$analysisWorkingDir");
+    $self->testInputFile('analysisWorkingDir', "$workflowDataDir/$analysisWorkingDir");
   }
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertAnalysisResult", $args);
