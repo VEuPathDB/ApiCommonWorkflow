@@ -24,7 +24,6 @@ sub run {
       $self->runCmd(0, "rm -fr $localDataDir/$outputGffFile");
     } else {
 	if ($test) {
-	    $self->runCmd(0,"mkdir -p $localDataDir/$outputDir");
 	    $self->runCmd(0,"echo hello > $localDataDir/$outputGffFile");
 	}else{
 	    $self->runCmd($test, $cmd);
