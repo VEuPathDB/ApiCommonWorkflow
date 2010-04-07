@@ -1,6 +1,7 @@
 <workflowGraph name="makeAndMaskTopLevelGenome">
       <param name="parentDataDir"/>
       <param name="organismName"/>
+      <param name="organismFullName"/>
       <param name="genomeExtDbRlsSpec"/>
       <param name="genomeVirtualSeqsExtDbRlsSpec"/>
       <param name="insertVirtualSeqFromAgpFile"/>
@@ -65,8 +66,29 @@
 
     <step name="copyMaskedTopLevelFastaFileToComparativeGenomicsFastaDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
       <paramValue name="fromFile">$$dataDir$$/master/mainresult/blocked.seq</paramValue>
-      <paramValue name="toFile">$$comparativeGenomicsFastaDir$$/$$organismName$$TopLevelGenomicSeqs.fsa</paramValue>
+      <paramValue name="toFile">$$comparativeGenomicsFastaDir$$/$$organismName$$.fasta</paramValue>
       <depends name="mirrorFromCluster"/>
     </step>
 
+  <step name="makeMercatorGffFile"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMercatorGffFile">
+      <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+      <paramValue name="fileNamePrefix">$$organismName$$</paramValue>
+       <depends name="runTuningManager"/> 
+    </step>
+
+  <step name="correctReadingFrameInMercatorGffFile"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CorrectReadingFrameInMercatorGffFile">
+      <paramValue name="inputFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="inputGffFile">$$organismName$$.gff</paramValue>
+      <paramValue name="outputGffFile">$$organismName$$_corrected.gff</paramValue>
+      <depends name="makeMercatorGffFile"/> 
+    </step>
+
+  <step name="copyCorrectedGffFileToComparativeGenomicsGffDir"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$dataDir$$/$$organismName$$_corrected.gff</paramValue>
+      <paramValue name="toFile">$$comparativeGenomicsGffDir$$/$$organismName$$.gff</paramValue>
+      <depends name="correctReadingFrameInMercatorGffFile"/> 
+    </step>
 </workflowGraph>
