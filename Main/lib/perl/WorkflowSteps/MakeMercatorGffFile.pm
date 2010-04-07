@@ -9,8 +9,7 @@ sub run {
     my ($self, $test, $undo) = @_;
 
 
-    my $outputDir = $self->getParamValue('outputDir');
-    my $organism = $self->getParamValue('organism');
+    my $organism = $self->getParamValue('organismFullName');
     my $fileNamePrefix;
 
     if($self->getParamValue('fileNamePrefix')){
@@ -27,16 +26,15 @@ sub run {
     my $localDataDir = $self->getLocalDataDir();
  
   
-    my $cmd = "mercatorGffDump.pl  --outputDir $localDataDir/$outputDir --organism '$organism' --file_name_prefix '$fileNamePrefix' ";
+    my $cmd = "mercatorGffDump.pl  --outputDir $localDataDir --organism '$organism' --file_name_prefix '$fileNamePrefix' ";
 
 
 
     if ($undo) {
-      $self->runCmd(0, "rm -fr $localDataDir/$outputDir/$fileNamePrefix.gff");
+      $self->runCmd(0, "rm -fr $localDataDir/$fileNamePrefix.gff");
     } else {
 	if ($test) {
-	    $self->runCmd(0,"mkdir -p $localDataDir/$outputDir");
-	    $self->runCmd(0,"echo hello > $localDataDir/$outputDir/$fileNamePrefix.gff");
+	    $self->runCmd(0,"echo hello > $localDataDir/$fileNamePrefix.gff");
 	}else{
 	    $self->runCmd($test, $cmd);
 	}
@@ -45,7 +43,6 @@ sub run {
 
 sub getParamsDeclaration {
     return (
-            'outputDir',
             'organism',
             'fileNamePrefix'
            );
