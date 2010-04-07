@@ -44,11 +44,30 @@
       <depends name="createPairwiseMercatorDirs"/>
     </step>
 
+  <subgraph name="loadOrthoMCLPhyleticProfiles" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">$$loadOrthoMCLPhyleticProfilesResourceName$$</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/> 
+  </subgraph>
+
+  <subgraph name="loadOrthoMCLOrthologousGroups" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">$$loadOrthoMCLOrthologousGroupsResourceName$$</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/> 
+  </subgraph>
+
+  <step name="runTuningManager"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager">
+      <depends name="loadOrthoMCLOrthologousGroups"/> 
+  </step>
 
     <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin">
       <paramValue name="mercatorDir">$$dataDir$$</paramValue>
       <paramValue name="organism">$$projectName$$</paramValue>
       <depends name="runPairwiseMercatorMavid"/>
+      <depends name="runTuningManager"/>
     </step>
 
     <step name="copyPairwiseMercatorDirsToWebserviceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPairwiseMercatorDirsToWebserviceDir">
