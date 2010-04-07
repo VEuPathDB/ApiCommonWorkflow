@@ -1,0 +1,60 @@
+<workflowGraph name="comparativeGenomics">
+    <param name="parentDataDir"/>
+    <param name="mercatorDraftGenomes"/>
+    <param name="mercatorNonDraftGenomes"/>
+    <param name="mercatorReferenceGenome"/>
+    <param name="mercatorDraftExternalDbSpec"/>
+    <param name="mercatorNonDraftExternalDbSpec"/>
+    <param name="mercatorDraftSeqTables"/>
+    <param name="mercatorNonDraftSeqTables"/>
+    <param name="cndSrcBin"/>
+    <param name="mavidExe"/>
+    <param name="projectName"/>
+    <param name="mercatorFastaDir"/>
+    <param name="mercatorGffDir"/>
+    <param name="webServicesDataDir"/>
+
+    <constant name="dataDir">$$parentDataDir$$/mercator</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="createPairwiseMercatorDirs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreatePairwiseMercatorDirs">
+      <paramValue name="mercatorDir">$$dataDir$$</paramValue>
+      <paramValue name="mercatorFastaDir">$$mercatorFastaDir$$</paramValue>
+      <paramValue name="mercatorGffDir">$$mercatorGffDir$$</paramValue>
+      <paramValue name="mercatorDraftGenomes">$$mercatorDraftGenomes$$</paramValue>
+      <paramValue name="mercatorNonDraftGenomes">$$mercatorNonDraftGenomes$$</paramValue>
+      <paramValue name="mercatorDraftExternalDbSpec">$$mercatorDraftExternalDbSpec$$</paramValue>
+      <paramValue name="mercatorNonDraftExternalDbSpec">$$mercatorNonDraftExternalDbSpec$$</paramValue>
+      <paramValue name="mercatorDraftSeqTables">$$mercatorDraftSeqTables$$</paramValue>
+      <paramValue name="mercatorNonDraftSeqTables">$$mercatorNonDraftSeqTables$$</paramValue>
+      <paramValue name="mercatorReferenceGenome">$$mercatorReferenceGenome$$</paramValue>
+      <paramValue name="mercatorSyntenyVersion">$$mercatorSyntenyVersion$$</paramValue>    
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid">
+      <paramValue name="mercatorDir">$$dataDir$$</paramValue>
+      <paramValue name="mercatorDraftGenomes">$$mercatorDraftGenomes$$</paramValue>
+      <paramValue name="mercatorNonDraftGenomes">$$mercatorNonDraftGenomes$$</paramValue>
+      <paramValue name="cndSrcBin">$$cndSrcBin$$</paramValue>
+      <paramValue name="mavidExe">$$mavidExe$$</paramValue>
+      <depends name="createPairwiseMercatorDirs"/>
+    </step>
+
+
+    <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin">
+      <paramValue name="mercatorDir">$$dataDir$$</paramValue>
+      <paramValue name="organism">$$projectName$$</paramValue>
+      <depends name="runPairwiseMercatorMavid"/>
+    </step>
+
+    <step name="copyPairwiseMercatorDirsToWebserviceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPairwiseMercatorDirsToWebserviceDir">
+      <paramValue name="mercatorDir">$$dataDir$$/smoothedDataAndPeaks/$$ChIP-ChipResourceName$$_transformed_PEAKS</paramValue>
+      <paramValue name="apiSiteFilesDir">$$webServicesDataDir$$/mercator</paramValue>
+      <depends name="runPairwiseMercatorMavid"/>
+    </step>
+
+</workflowGraph>
