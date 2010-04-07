@@ -101,10 +101,15 @@ sub run {
 
 sub getParamsDeclaration {
     return ('mercatorDir',
+            'mercatorFastaDir',
+            'mercatorGffDir',
             'mercatorDraftGenomes',
             'mercatorNonDraftGenomes',
-	    'cndSrcBin',
-            'mavidExe',
+            'mercatorDraftExternalDbSpec',
+            'mercatorNonDraftExternalDbSpec',
+            'mercatorDraftSeqTables',
+            'mercatorNonDraftSeqTables',
+	    'mercatorSyntenyVersion',
            );
 }
 
