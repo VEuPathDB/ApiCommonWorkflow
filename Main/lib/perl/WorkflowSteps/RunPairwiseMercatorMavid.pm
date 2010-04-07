@@ -65,8 +65,18 @@ sub run {
 		$self->runCmd(0,"mkdir -p $dirName/mercator-output");
 		$self->runCmd(0,"mkdir -p $dirName/mercator-input");		    
 		    $self->runCmd(0,"echo hello > $dirName/$allGenomes[$i]-$allGenomes[$j]".".align");
+		    $self->runCmd(0,"echo hello > $dirName/$allGenomes[$i]-$allGenomes[$j]".".align-synteny");
 		}else{		
 		    $self->runCmd($test,$command);
+		    my $inputFile = "$dirName/$allGenomes[$i]-$allGenomes[$j]".".align";
+		    my $outputFile = "$dirName/$allGenomes[$i]-$allGenomes[$j]".".align-synteny";
+		    my $formatCmd = "formatPxSyntenyFile --inputFile $inputFile --outputFile $outputFile";
+		    if($j <= $draftIdx){
+			my $agpFile = "$dirName/mercator-output/$allGenomes[$j].agp";
+			$formatCmd .= " --agpFile $agpFile";
+		    }
+		    
+		    $self->runCmd($test,$formatCmd);
 		}
 	    }
 	}
