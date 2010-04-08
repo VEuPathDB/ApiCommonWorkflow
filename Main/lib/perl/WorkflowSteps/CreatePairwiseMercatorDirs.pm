@@ -76,10 +76,10 @@ sub run {
 		if ($test) {
 		$self->runCmd(0,"mkdir -p $dirName/fasta");
 		$self->runCmd(0,"mkdir -p $dirName/gff");
-		$self-runCmd($test,"cp -R $mercatorFastaDir/$allGenomes[$i].fasta $dirName/fasta");
-		$self->runCmd($test,"cp -R $mercatorFastaDir/$allGenomes[$j].fasta $dirName/fasta");
-		$self->runCmd($test,"cp -R $mercatorGffDir/$allGenomes[$i].gff $dirName/gff");
-		$self->runCmd($test,"cp -R $mercatorGffDir/$allGenomes[$j].gff $dirName/gff");		    
+		$self-runCmd(0,"cp -R $mercatorFastaDir/$allGenomes[$i].fasta $dirName/fasta");
+		$self->runCmd(0,"cp -R $mercatorFastaDir/$allGenomes[$j].fasta $dirName/fasta");
+		$self->runCmd(0,"cp -R $mercatorGffDir/$allGenomes[$i].gff $dirName/gff");
+		$self->runCmd(0,"cp -R $mercatorGffDir/$allGenomes[$j].gff $dirName/gff");		    
 		$self->runCmd(0,"echo hello > $dirName/config.txt");
 		}else{		
 		    $self->runCmd($test,"$dirName/fasta");
@@ -88,7 +88,7 @@ sub run {
 		    $self->runCmd($test,"cp -R $mercatorFastaDir/$allGenomes[$j].fasta $dirName/fasta");
 		    $self->runCmd($test,"cp -R $mercatorGffDir/$allGenomes[$i].gff $dirName/gff");
 		    $self->runCmd($test,"cp -R $mercatorGffDir/$allGenomes[$j].gff $dirName/gff");
-		    $self->createConfigFile("$dirName/$allGenomes[$i]-$allGenomes[$j].align-synteny",$seqTableA,$seqTableB,$specA,$specB,$syntenySpec,$agpFile);
+		    $self->createConfigFile("$dirName/$allGenomes[$i]-$allGenomes[$j]","$dirName/$allGenomes[$i]-$allGenomes[$j].align-synteny",$seqTableA,$seqTableB,$specA,$specB,$syntenySpec,$agpFile);
 		}
 	    }
 	}
@@ -134,7 +134,7 @@ sub createConfigFile {
     print CONFIG_FILE "syntenySpec=$syntenySpec\n";
     print CONFIG_FILE "agpFile=$agpFile\n";
 
-    close(IN);
+    close(CONFIG_FILE);
     return;
 
 }
