@@ -20,12 +20,12 @@ sub run {
     my $c;
     if ($transcriptOrGenome eq 'transcript') {$c = 'make_TU_and_TNU.pl'}
     elsif ($transcriptOrGenome eq 'genome') {$c = 'make_GU_and_GNU.pl'}
-    else {$self->error("Illegal value for parameter 'transcriptOrGenome'.  Valid values are 'transcript' and 'genome".)}
+    else {$self->error("Illegal value for parameter 'transcriptOrGenome'.  Valid values are 'transcript' and 'genome'.")}
 
     my $cmd = "$c $bowtieFile $uFile $nuFile";
 
     if ($undo) {
-	$self->runCmd(0, "rm -f $workflowDataDir/$gFile");
+	$self->runCmd(0, "rm -f $workflowDataDir/$uFile");
 	$self->runCmd(0, "rm -f $workflowDataDir/$nuFile");
     } else {
 	if ($test) {
