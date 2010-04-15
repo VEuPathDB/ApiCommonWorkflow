@@ -26,7 +26,7 @@ sub run {
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$buFile");
-	$self->runCmd(0, "rm -f $workflowDataDir/$bnuFile");
+	$self->runCmd(0, "rm -f $workflowDataDir/$cnuFile");
     } else {
 	if ($test) {
 	    $self->testInputFile('inputTrancriptUniqueFile', "$workflowDataDir/$tuFile");
