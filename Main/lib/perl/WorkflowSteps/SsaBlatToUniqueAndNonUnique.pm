@@ -9,7 +9,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $seqsFile = $self->getParamValue('inputReadSeqsFile');
+    my $seqsFile = $self->getParamValue('inputSeqsFile');
     my $blatFile = $self->getParamValue('inputBlatFile');
     my $mdustFile = $self->getParamValue('inputMdustFile');
     my $uFile = $self->getParamValue('outputUniqueFile');
@@ -47,7 +47,7 @@ sub run {
 
 sub getParamsDeclaration {
   return (
-    'inputReadSeqsFile',
+    'inputSeqsFile',
     'inputBlatFile',
     'inputMdustFile',
     'outputUniqueFile',
