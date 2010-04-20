@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeBowtieNonUnique;
+package ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeBowtieNonUnique;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 

@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::FindBowtieUnmappedSeqs;
+package ApiCommonWorkflow::Main::WorkflowSteps::SsaFindBowtieUnmappedSeqs;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 

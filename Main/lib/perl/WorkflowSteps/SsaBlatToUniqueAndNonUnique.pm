@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::BlatToUniqueAndNonUnique;
+package ApiCommonWorkflow::Main::WorkflowSteps::SsaBlatToUniqueAndNonUnique;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
