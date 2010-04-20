@@ -1,0 +1,45 @@
+<workflowGraph name="SsaBlat">
+  <param name="parentDataDir"/>
+  <param name="genomicSeqsFile"/>
+  <param name="readSeqsFile"/>
+  <param name="outputBlatFile"/>
+  <param name="outputUniqueFile"/>
+  <param name="outputNonUniqueFile"/>
+  <param name="readLength"/>
+  <param name="isChipSeq"/>
+
+  <constant name="dataDir">$$parentDataDir$$/ssaBlat</constant>
+  <constant name="mdustOutputFile">$$dataDir$$/mdust.out</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="blatAgainstGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunBlat">
+      <paramValue name="subjectSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="querySeqsFile">$$readSeqsFile$$</paramValue>
+      <paramValue name="outputFile">$$outputBlatFile$$</paramValue>
+
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="blatMDust" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMDust">
+      <paramValue name="subjectSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="querySeqsFile">$$readSeqsFile$$</paramValue>
+      <paramValue name="outputFile">$$mdustOutputFile$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="blatToUniqueAndNonUnique" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaBlatToUniqueAndNonUnique">
+     <paramValue name="inputReadSeqsFile">$$readSeqsFile$$</paramValue>
+     <paramValue name="inputBlatFile">$$outputBlatFile$$</paramValue>
+     <paramValue name="inputMdustFile">$$mdustOutputFile$$</paramValue>
+     <paramValue name="outputUniqueFile">$$outputUniqueFile$$</paramValue>
+     <paramValue name="outputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+     <paramValue name="readLength">$$readLength$$</paramValue>
+     <paramValue name="isChipSeq">$$isChipSeq$$</paramValue>
+     <depends name="blatAgainstGenome"/>
+     <depends name="blatMDust"/>
+  </step>
+
+</workflowGraph>

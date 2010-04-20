@@ -1,0 +1,58 @@
+<workflowGraph name="SsaBowtie">
+  <param name="parentDataDir"/>
+  <param name="readSeqsFile"/>
+  <param name="genomeSeqsFile"/>
+  <param name="transcriptsSeqsFile"/>
+  <param name="outputUniqueFile"/>
+  <param name="outputNonUniqueFile"/>
+  <param name="readType"/>
+
+  <constant name="dataDir">$$parentDataDir$$/ssaBowtie</constant>
+  <constant name="bowtieOutputFile">$$dataDir$$/bowtie.out</constant>
+  <constant name="combinedNonUniqueFile">$$dataDir$$/combinedNonUnique</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <subgraph name="bowtieGenome" xmlFile="ssaBowtie.xml">
+      <param name="parentDataDir">$$dataDir$$</paramValue>
+      <param name="readSeqsFile">$$readSeqsFile$$</paramValue>
+      <param name="subjectSeqsFile">$$genomeSeqsFile$$</paramValue>
+      <param name="transcriptOrGenome">genome</paramValue>
+      <param name="outputUniqueFile">$$genomeUniqueFile$$</paramValue>
+      <param name="outputNonUniqueFile">$$genomeNonUniqueFile$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="bowtieTranscripts" xmlFile="ssaBowtie.xml">
+      <param name="parentDataDir">$$dataDir$$</paramValue>
+      <param name="readSeqsFile">$$readSeqsFile$$</paramValue>
+      <param name="subjectSeqsFile">$$transcriptsSeqsFile$$</paramValue>
+      <param name="transcriptOrGenome">transcripts</paramValue>
+      <param name="outputUniqueFile">$$transcriptsUniqueFile$$</paramValue>
+      <param name="outputNonUniqueFile">$$transcriptsNonUniqueFile$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="makeBowtieUniqueFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeBowtieUnique">
+     <paramValue name="inputGenomeNonUniqueFile">$$genomeNonUniqueFile$$</paramValue>
+     <paramValue name="inputTranscriptNonUniqueFile">$$transcriptsNonUniqueFile$$</paramValue>
+     <paramValue name="inputGenomeUniqueFile">$$genomeUniqueFile$$</paramValue>
+     <paramValue name="inputTranscriptUniqueFile">$$transcriptsUniqueFile$$</paramValue>
+     <paramValue name="outputBowtieUniqueFile">$$outputUniqueFile$$</paramValue>
+     <paramValue name="outputCombinedNonUniqueFile">$$combinedNonUniqueFile$$</paramValue>
+     <paramValue name="readType">$$readType$$</paramValue>
+    <depends name="bowtieGenome"/>
+    <depends name="bowtieTranscripts"/>
+  </step>
+
+    <step name="makeBowtieUniqueFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeBowtieNonUnique">
+     <paramValue name="inputGenomeNonUniqueFile">$$genomeNonUniqueFile$$</paramValue>
+     <paramValue name="inputTranscriptNonUniqueFile">$$transcriptsNonUniqueFile$$</paramValue>
+     <paramValue name="inputCombinedNonUniqueFile">$$combinedNonUniqueFile$$</paramValue>
+     <paramValue name="outputBowtieNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+    <depends name="makeBowtieUniqueFile"/>
+  </step>
+
+</workflowGraph>
