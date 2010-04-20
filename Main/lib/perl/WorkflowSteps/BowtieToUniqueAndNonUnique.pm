@@ -11,7 +11,7 @@ sub run {
 
     my $bowtieFile = $self->getParamValue('inputBowtieFile');
     my $uFile = $self->getParamValue('outputUniqueFile');
-    my $nuFile = $self->getParamValue('outputNonuniqueFile');
+    my $nuFile = $self->getParamValue('outputNonUniqueFile');
     my $transcriptOrGenome = $self->getParamValue('transcriptOrGenome');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
