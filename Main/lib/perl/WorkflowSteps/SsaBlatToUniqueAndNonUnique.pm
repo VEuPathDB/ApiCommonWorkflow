@@ -9,7 +9,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $seqsFile = $self->getParamValue('inputSeqsFile');
+    my $shortSeqsFile = $self->getParamValue('inputShortSeqsFile');
     my $blatFile = $self->getParamValue('inputBlatFile');
     my $mdustFile = $self->getParamValue('inputMdustFile');
     my $uFile = $self->getParamValue('outputUniqueFile');
@@ -25,14 +25,14 @@ sub run {
     elsif ($isChipSeq eq 'false') {$chipseqFlag = ''}
     else { $self->error("Invalid value '$isChipSeq' for isChipSeq param. Must be 'true' or 'false'");}
 
-    my $cmd = "parse_blat_out.pl $seqsFile $blatFile $mdustFile $uFile $nuFile $readLength $chipseqFlag";
+    my $cmd = "parse_blat_out.pl $shortSeqsFile $blatFile $mdustFile $uFile $nuFile $readLength $chipseqFlag";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$uFile");
 	$self->runCmd(0, "rm -f $workflowDataDir/$nuFile");
     } else {
 	if ($test) {
-	    $self->testInputFile('inputSeqsFile', "$workflowDataDir/$seqsFile");
+	    $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$shortSeqsFile");
 	    $self->testInputFile('inputBlatFile', "$workflowDataDir/$blatFile");
 	    $self->testInputFile('inputMdustFile', "$workflowDataDir/$mdustFile");
 
@@ -47,7 +47,7 @@ sub run {
 
 sub getParamsDeclaration {
   return (
-    'inputSeqsFile',
+    'inputShortSeqsFile',
     'inputBlatFile',
     'inputMdustFile',
     'outputUniqueFile',

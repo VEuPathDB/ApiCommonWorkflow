@@ -2,9 +2,17 @@
 
     <param name="parentDataDir"/>
     <param name="probeResourceName"/>
-    <param name="indexFileDirForShortSeqAligner"/>
-    <param name="chipProbeExtDbRlsSpec"/>
     <param name="organismResourceXmlFile"/>
+    <param name="genomicSeqsFile"/>
+    <param name="transcriptsSeqsFile"/>
+    <param name="useTranscripts"/>
+    <param name="probeSeqsFile"/>
+    <param name="outputUniqueFile"/>
+    <param name="outputNonUniqueFile"/>
+    <param name="readLength"/>
+    <param name="readType"/>
+    <param name="chipProbeExtDbRlsSpec"/>
+    <param name="probeGeneMappingType"/>
 
     <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
 
@@ -19,15 +27,47 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <step name="mapProbeSeqToGenomes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
-      <paramValue name="indexFileDir">$$indexFileDirForShortSeqAligner$$</paramValue>
-      <paramValue name="inputFileDir">$$dataDir$$/$$probeResourceName$$</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/probeMappingResult.out</paramValue>
+    <subgraph name="alignProbesToGenome"  xmlFile="ssa.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="transcriptsSeqsFile">$$transcriptsSeqsFile$$</paramValue>
+      <paramValue name="useTranscripts">$$useTranscripts$$</paramValue>
+      <paramValue name="shortSeqsFile">$$probeSeqsFile$$</paramValue>
+      <paramValue name="outputUniqueFile">$$outputUniqueFile$$</paramValue>
+      <paramValue name="outputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <paramValue name="readLength">$$readLength$$</paramValue>
+      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="readType">$$readType$$</paramValue>
       <depends name="probe_RSRC"/>
     </step>
 
-    <step name="loadProbeMappingResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$dataDir$$/probeMappingResult.out</paramValue>
+    <step name="loadProbeGenomeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin">
+      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
+      <paramValue name="inputUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <paramValue name="featureType">ArrayElementFeature</paramValue>
+      <depends name="mapProbeSeqToGenomes"/>
+    </step>
+
+    <step name="makeOneChannelProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin">
+      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
+      <paramValue name="inputUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <paramValue name="featureType">ArrayElementFeature</paramValue>
+      <depends name="mapProbeSeqToGenomes"/>
+    </step>
+
+    <step name="makeTwoChannelProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin" includeIf="">
+      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
+      <paramValue name="inputUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <paramValue name="featureType">ArrayElementFeature</paramValue>
+      <depends name="mapProbeSeqToGenomes"/>
+    </step>
+
+    <step name="loadProbeGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin">
+      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
+      <paramValue name="inputUniqueFile">$$outputNonUniqueFile$$</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
       <paramValue name="featureType">ArrayElementFeature</paramValue>
       <depends name="mapProbeSeqToGenomes"/>

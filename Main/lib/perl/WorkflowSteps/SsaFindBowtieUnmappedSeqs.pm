@@ -9,7 +9,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $readsFile = $self->getParamValue('inputSeqReadsFile');
+    my $shortSeqsFile = $self->getParamValue('inputShortSeqsFile');
     my $buFile = $self->getParamValue('inputBowtieUniqueFile');
     my $bnuFile = $self->getParamValue('inputBowtieNonUniqueFile');
     my $outFile = $self->getParamValue('outputBowtieUnmappedSeqsFile');
@@ -18,7 +18,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "make_unmapped_file.pl $readsFile $buFile $bnuFile $outFile $readType";
+    my $cmd = "make_unmapped_file.pl $shortSeqsFile $buFile $bnuFile $outFile $readType";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outFile");
@@ -26,7 +26,7 @@ sub run {
 	if ($test) {
 	    $self->testInputFile('inputBowtieUniqueFile', "$workflowDataDir/$buFile");
 	    $self->testInputFile('inputBowtieNonUniqueFile', "$workflowDataDir/$bnuFile");
-	    $self->testInputFile('inputSeqReadsFile', "$workflowDataDir/$readsFile");
+	    $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$shortSeqsFile");
 
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outFile");
 
@@ -40,7 +40,7 @@ sub getParamsDeclaration {
   return (
       'inputBowtieNonUniqueFile',
       'inputBowtieUniqueFile',
-      'inputSeqReadsFile',
+      'inputShortSeqsFile',
       'readType',
       'outputBowtieUnmappedSeqsFile',
       );

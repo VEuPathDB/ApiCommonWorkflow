@@ -2,8 +2,8 @@
   <param name="parentDataDir"/>
   <param name="genomicSeqsFile"/>
   <param name="transcriptsSeqsFile"/>
-  <param name="readSeqsFile"/>
-  <param name="outputBlatFile"/>
+  <param name="useTranscripts"/>
+  <param name="shortSeqsFile"/>
   <param name="outputUniqueFile"/>
   <param name="outputNonUniqueFile"/>
   <param name="readLength"/>
@@ -22,9 +22,9 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <subgraph name="bowtieGenome" xmlFile="ssaBowtie.xml">
+  <subgraph name="bowtieGenome" xmlFile="ssaBowtie.xml" excludeIf="$$useTranscripts$$">
       <param name="parentDataDir">$$dataDir$$</paramValue>
-      <param name="readSeqsFile">$$readSeqsFile$$</paramValue>
+      <param name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
       <param name="subjectSeqsFile">$$genomicSeqsFile$$</paramValue>
       <param name="transcriptOrGenome">genome</paramValue>
       <param name="outputUniqueFile">$$bowtieUniqueFile$$</paramValue>
@@ -32,9 +32,9 @@
       <depends name="makeDataDir"/>
   </subgraph>
 
-  <subgraph name="bowtieGenomeAndTranscripts" xmlFile="ssaBowtieGenomeAndTranscripts.xml">
+  <subgraph name="bowtieGenomeAndTranscripts" xmlFile="ssaBowtieGenomeAndTranscripts.xml" includeIf="$$useTranscripts$$">
       <param name="parentDataDir">$$dataDir$$</paramValue>
-      <param name="readSeqsFile">$$readSeqsFile$$</paramValue>
+      <param name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
       <param name="genomeSeqsFile">$$genomicSeqsFile$$</paramValue>
       <param name="transcriptsSeqsFile">$$transcriptsSeqsFile$$</paramValue>
       <param name="outputUniqueFile">$$bowtieUniqueFile$$</paramValue>
@@ -44,7 +44,7 @@
   </subgraph>
 
     <step name="findUnmappedSeqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaFindBowtieUnmappedSeqs">
-      <param name="inputSeqReadsFile">$$readSeqsFile$$</paramValue>
+      <param name="inputShortSeqsFile">$$shortSeqsFile$$</paramValue>
       <param name="inputBowtieUniqueFile">$$bowtieUniqueFile$$</paramValue>
       <param name="inputBowtieNonUniqueFile">$$bowtieNonUniqueFile$$</paramValue>
       <param name="outputBowtieUnmappedSeqsFile">$$bowtieUnmappedFile$$</paramValue>
@@ -54,9 +54,8 @@
 
   <subgraph name="blatGenome" xmlFile="ssaBlat.xml">
       <param name="parentDataDir">$$dataDir$$</paramValue>
-      <param name="readSeqsFile">$$bowtieUnmappedFile$$</paramValue>
+      <param name="shortSeqsFile">$$bowtieUnmappedFile$$</paramValue>
       <param name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <param name="outputBlatFile">$$blatFile$$</paramValue>
       <param name="outputUniqueFile">$$blatUniqueFile$$</paramValue>
       <param name="outputNonUniqueFile">$$blatNonUniqueFile$$</paramValue>
       <param name="readLength">$$readLength$$</paramValue>
