@@ -1,24 +1,18 @@
-<workflowGraph name="getAndAnalyzeChipSeq">
+<workflowGraph name="analyzeChipSeqSample">
     <param name="parentDataDir"/>
+    <param name="sampleName"/>
     <param name="genomicSeqsFile"/>
-    <param name="transcriptsSeqsFile"/>
     <param name="shortSeqsFile"/>
-    <param name="outputUniqueFile"/>
-    <param name="outputNonUniqueFile"/>
     <param name="readLength"/>
     <param name="readType"/>
     <param name="chipProbeExtDbRlsSpec"/>
-    <param name="probeGeneMappingType"/>
-    <param name="isOneChannelMicroArrayStudy"/>
-
-
-    <param name="parentDataDir"/>
-    <param name="organismResourceXmlFile"/>
     <param name="chipSeqExtDbRlsSpec"/>
     <param name="genomeExtDbSpec"/>
     <param name="generatePeakCalls"/>
 
     <constant name="dataDir">$$parentDataDir$$/getAndAnalyze_$$chipSeqResourceName$$</constant>
+    <constant name="uniqueFile">uniqueMappings</constant>
+    <constant name="nonUniqueFile">nonUniqueMappings</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -28,23 +22,27 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="transcriptsSeqsFile">$$transcriptsSeqsFile$$</paramValue>
-      <paramValue name="useTranscripts">$$useTranscripts$$</paramValue>
+      <paramValue name="useTranscripts">false</paramValue>
       <paramValue name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
-      <paramValue name="outputUniqueFile">$$outputUniqueFile$$</paramValue>
-      <paramValue name="outputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <paramValue name="outputUniqueFile">$$uniqueFile$$</paramValue>
+      <paramValue name="outputNonUniqueFile">$$nonUniqueFile$$</paramValue>
       <paramValue name="readLength">$$readLength$$</paramValue>
-      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="isChipSeq">true</paramValue>
       <paramValue name="readType">$$readType$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
+
+    <step name="makeCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+      <depends name="alignReadsToGenome"/>
+    </step>
 
     <step name="reformatCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
       <paramValue name="inputFileDir">$$dataDir$$/seqCoverage</paramValue>
       <paramValue name="outputFile">$$dataDir$$/seqCoverage/chipSeqCov_allSamples.cov</paramValue>
       <paramValue name="extDbRlsSpec">$$chipSeqExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
-      <depends name="mapChipSeqToGenomesAndTranscripts"/>
+      <depends name="makeCoverageFile"/>
     </step>
 
     <step name="loadChipSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin">
@@ -53,7 +51,7 @@
     </step>
 
     <step name="computePeaks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" includeIf="$$generatePeakCalls$$">
-      <depends name="mapChipSeqToGenomesAndTranscripts"/>
+      <depends name="mapReadsToGenome"/>
     </step>
 
     <step name="loadPeaks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin" includeIf="$$generatePeakCalls$$">

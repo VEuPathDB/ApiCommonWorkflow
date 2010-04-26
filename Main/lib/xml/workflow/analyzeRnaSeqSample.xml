@@ -1,58 +1,43 @@
-<workflowGraph name="getAndAnalyzeRnaSeq">
+<workflowGraph name="analyzeRnaSeqSample">
     <param name="parentDataDir"/>
-    <param name="rnaSeqResourceName"/>
-    <param name="rnaSeqIntensityResourceName"/>
-    <param name="indexFileDirForShortSeqAligner"/>
-    <param name="organismResourceXmlFile"/>
-    <param name="rnaSeqExtDbRlsSpec"/>
-    <param name="rnaSeqIntensityExtDbRlsSpec"/>
-    <param name="genomeExtDbSpec"/>
+    <param name="sampleName"/>
+    <param name="genomicSeqsFile"/>
+    <param name="transcriptsSeqsFile"/>
+    <param name="shortSeqsFile"/>
+    <param name="outputCoverageFile"/>
+    <param name="outputIntensityFile"/>
+    <param name="readLength"/>
+    <param name="readType"/>
 
-    <constant name="dataDir">$$parentDataDir$$/getAndAnalyze_$$rnaSeqResourceName$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/analyze$$sampleName$$</constant>
+    <constant name="uniqueFile">uniqueMappings</constant>
+    <constant name="nonUniqueFile">nonUniqueMappings</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <subgraph name="rnaSeqResource" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$rnaSeqResourceName$$</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <subgraph name="alignReadsToGenome"  xmlFile="ssa.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="transcriptsSeqsFile">$$transcriptsSeqsFile$$</paramValue>
+      <paramValue name="useTranscripts">true</paramValue>
+      <paramValue name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
+      <paramValue name="outputUniqueFile">$$uniqueFile$$</paramValue>
+      <paramValue name="outputNonUniqueFile">$$nonUniqueFile$$</paramValue>
+      <paramValue name="readLength">$$readLength$$</paramValue>
+      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="readType">$$readType$$</paramValue>
       <depends name="makeDataDir"/>
-    </subgraph>
-
-    <step name="mapRnaSeqToGenomesAndTranscripts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
-      <paramValue name="indexFileDir">$$indexFileDirForShortSeqAligner$$</paramValue>
-      <paramValue name="inputFileDir">$$dataDir$$/$$rnaSeqResourceName$$</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
-      <depends name="rnaSeqResource"/>
     </step>
 
-    <step name="reformatCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
-      <paramValue name="inputFileDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/seqCoverageAndIntensity/rnaSeqCov_allSamples.cov</paramValue>
-      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
-      <depends name="mapRnaSeqToGenomesAndTranscripts"/>
+    <step name="makeCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+      <depends name="alignReadsToGenome"/>
     </step>
 
-    <step name="loadRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$dataDir$$/seqCoverageAndIntensity/rnaSeqCov_allSamples.cov</paramValue>
-      <depends name="reformatCoverageFile"/>
+    <step name="makeIntensityFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+      <depends name="makeCoverageFile"/>
     </step>
 
-    <step name="makeIntensityProfileAndConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
-      <paramValue name="inputFileDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/seqCoverageAndIntensity/config.txt</paramValue>
-      <depends name="mapRnaSeqToGenomesAndTranscripts"/>
-    </step>
-
-    <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$dataDir$$/seqCoverageAndIntensity/config.txt</paramValue>
-      <paramValue name="inputDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
-      <paramValue name="extDbRlsSpec">$$rnaSeqIntensityExtDbRlsSpec$$</paramValue>
-      <depends name="makeIntensityProfileAndConfigFile"/>
-    </step>
 
 </workflowGraph>
