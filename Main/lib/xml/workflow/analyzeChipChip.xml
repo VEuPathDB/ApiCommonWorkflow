@@ -1,41 +1,44 @@
-<workflowGraph name="analyzeChIP-Chip">
+<workflowGraph name="analyzeChipChip">
     <param name="parentDataDir"/>
-    <param name="ChIP-ChipResourceName"/>
+    <param name="ChipChipResourceName"/>
     <param name="chipProbeExtDbRlsSpec"/>
+    <param name="experimentExtDbRlsSpec"/>
+    <param name="inputSampleFile"/>
+    <param name="sampleName"/>
     <param name="peakFinderArgs"/>
     <param name="runPeakCalls"/>
     <param name="organismFullName"/>
     <param name="genomeExtDbRlsSpec"/>
 
-    <constant name="dataDir">$$parentDataDir$$/analyze_$$ChIP-ChipResourceName$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/analyze_ChIP_Chip_$$sampleName$$</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
     <step name="transformRawDataToGenomeCoordinates" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TransformRawDataToGenomeCoordinates">
-      <paramValue name="inputFile">$$parentDataDir$$/$$ChIP-ChipResourceName$$/$$ChIP-ChipResourceName$$</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/$$ChIP-ChipResourceName$$_transformed</paramValue>
+      <paramValue name="inputFile">$$parentDataDir$$/$$ChipChipResourceName$$/$$inputSampleFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/transformedAndAveragedRawData.tab</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
     <step name="runChIPChipPeakFinder" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
-      <paramValue name="inputFile">$$dataDir$$/$$ChIP-ChipResourceName$$_transformed</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/transformedAndAveragedRawData.tab</paramValue>
       <paramValue name="outputDir">$$dataDir$$/smoothedDataAndPeaks</paramValue>
       <paramValue name="peakFinderArgs">$$peakFinderArgs$$</paramValue>
       <depends name="transformRawDataToGenomeCoordinates"/>
     </step>
 
     <step name="reformatChIPChipSmoothedProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipSmoothedProfiles">
-      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/$$ChIP-ChipResourceName$$_transformed_SMOOTHED</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/$$ChIP-ChipResourceName$$_transformed_SMOOTHED_reformated</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_SMOOTHED</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_SMOOTHED_reformated</paramValue>
       <depends name="runChIPChipPeakFinder"/>
     </step>
 
     <step name="loadChIPChipSmoothedProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin">
       <paramValue name="analysisWorkingDir">$$dataDir$$/smoothedDataAndPeaks</paramValue>
-      <paramValue name="configFile">$$parentDataDir$$/$$ChIP-ChipResourceName$$/smoothe_config.txt</paramValue>
+      <paramValue name="configFile">$$parentDataDir$$/$$ChipChipResourceName$$/smoothe_config.txt</paramValue>
       <paramValue name="analysisResultView">DataTransformationResult</paramValue>
       <paramValue name="naFeatureView">ArrayElementFeature</paramValue>
       <paramValue name="useSqlLdr">true</paramValue>
@@ -43,14 +46,14 @@
     </step>
 
     <step name="generateChIPChipPeakFeatureGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateChIPChipPeakFeatureGff" includeIf="$$runPeakCalls$$">
-      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/$$ChIP-ChipResourceName$$_transformed_PEAKS</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/$$ChIP-ChipResourceName$$_transformed_PEAKS.gff</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_PEAKS</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_PEAKS.gff</paramValue>
       <depends name="runChIPChipPeakFinder"/>
     </step>
 
     <step name="loadChIPChipPeakFeature" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChIPChipPeakFeature" stepLoadTypes="plugin" includeIf="$$runPeakCalls$$">
 
-      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/$$ChIP-ChipResourceName$$_transformed_PEAKS.gff</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_PEAKS.gff</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
       <paramValue name="substepClass">ExternalNASequence</paramValue>
@@ -61,14 +64,14 @@
     </step>
 
     <step name="reformatChIPChipPeakScoreFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipPeakScoreFile" includeIf="$$runPeakCalls$$">
-      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/$$ChIP-ChipResourceName$$_transformed_PEAKS</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/$$ChIP-ChipResourceName$$_transformed_PEAKS_scores</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_PEAKS</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_PEAKS_scores</paramValue>
       <depends name="runChIPChipPeakFinder"/>
     </step>
 
     <step name="loadChIPChipPeakScoreFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin" includeIf="$$runPeakCalls$$">
       <paramValue name="analysisWorkingDir">$$dataDir$$/smoothedDataAndPeaks</paramValue>
-      <paramValue name="configFile">$$parentDataDir$$/$$ChIP-ChipResourceName$$/peak_config.txt</paramValue>
+      <paramValue name="configFile">$$parentDataDir$$/$$ChipChipResourceName$$/peak_config.txt</paramValue>
       <paramValue name="analysisResultView">DataTransformationResult</paramValue>
       <paramValue name="naFeatureView">ArrayElementFeature</paramValue>
       <paramValue name="useSqlLdr">false</paramValue>
