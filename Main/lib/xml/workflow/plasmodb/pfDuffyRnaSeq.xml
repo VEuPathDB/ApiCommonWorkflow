@@ -51,19 +51,6 @@
       <depends name="rnaSeqResource"/>
     </step>
 
-    <step name="reformatCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
-      <paramValue name="inputFileDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/seqCoverageAndIntensity/rnaSeqCov_allSamples.cov</paramValue>
-      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
-      <depends name="mapRnaSeqToGenomesAndTranscripts"/>
-    </step>
-
-    <step name="loadRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$dataDir$$/seqCoverageAndIntensity/rnaSeqCov_allSamples.cov</paramValue>
-      <depends name="reformatCoverageFile"/>
-    </step>
-
     <step name="makeIntensityProfileAndConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
       <paramValue name="inputFileDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
       <paramValue name="outputDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
