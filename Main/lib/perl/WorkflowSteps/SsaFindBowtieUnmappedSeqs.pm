@@ -18,7 +18,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "make_unmapped_file.pl $shortSeqsFile $buFile $bnuFile $outFile $readType";
+    my $cmd = "make_unmapped_file.pl $workflowDataDir/$shortSeqsFile $workflowDataDir/$buFile $workflowDataDir/$bnuFile $workflowDataDir/$outFile $readType";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outFile");

@@ -17,7 +17,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "merge_GNU_and_TNU_and_CNU.pl $gnuFile $tnuFile $cnuFile $bnuFile";
+    my $cmd = "merge_GNU_and_TNU_and_CNU.pl $workflowDataDir/$gnuFile $workflowDataDir/$tnuFile $workflowDataDir/$cnuFile $workflowDataDir/$bnuFile";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$bnuFile");

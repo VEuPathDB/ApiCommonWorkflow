@@ -27,7 +27,7 @@ sub run {
 	$self->error("Illegal value '$readType' for parameter 'readType'.  Valid values are 'single' and 'paired'."
     }
 
-    my $cmd = "$c $bowtieFile $uFile $nuFile $readType";
+    my $cmd = "$c $workflowDataDir/$bowtieFile $workflowDataDir/$uFile $workflowDataDir/$nuFile $readType";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$uFile");

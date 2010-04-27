@@ -21,7 +21,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "merge_Bowtie_and_Blat.pl $bowtieUFile $blatUFile $bowtieNuFile $blatNuFile $uFile $nuFile $readType";
+    my $cmd = "merge_Bowtie_and_Blat.pl $workflowDataDir/$bowtieUFile $workflowDataDir/$blatUFile $workflowDataDir/$bowtieNuFile $workflowDataDir/$blatNuFile $workflowDataDir/$uFile $workflowDataDir/$nuFile $readType";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$uFile");

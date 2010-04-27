@@ -22,7 +22,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "merge_GU_and_TU.pl $guFile $tuFile $gnuFile $tnuFile $buFile $cnuFile $readType";
+    my $cmd = "merge_GU_and_TU.pl $workflowDataDir/$guFile $workflowDataDir/$tuFile $workflowDataDir/$gnuFile $workflowDataDir/$tnuFile $workflowDataDir/$buFile $workflowDataDir/$cnuFile $readType";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$buFile");
