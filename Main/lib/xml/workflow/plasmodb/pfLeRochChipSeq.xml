@@ -1,0 +1,36 @@
+<workflowGraph name="pfLeRochChipSeq">
+    <param name="parentDataDir"/>
+    <param name="sampleName"/>
+    <param name="genomicSeqsFile"/>
+    <param name="chipSeqExtDbRlsSpec"/>
+    <param name="genomeExtDbSpec"/>
+    <param name="generatePeakCalls"/>
+
+
+    <constant name="dataDir">$$parentDataDir$$/getAndAnalyze_$$rnaSeqResourceName$$</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <subgraph name="leRochRnaSeqResource" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pf_ChipSeq_Le_Roch_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="analyzeLeRochChipSeqSample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName"></paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile"></paramValue>
+      <paramValue name="readType">single</paramValue>
+      <paramValue name="chipSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@Pf_ChipSeq_Le_Roch_VER@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="generatePeakCalls">false</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+
+</workflowGraph>

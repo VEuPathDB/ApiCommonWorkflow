@@ -1,0 +1,71 @@
+<workflowGraph name="getAndAnalyzeRnaSeq">
+    <param name="parentDataDir"/>
+    <param name="rnaSeqResourceName"/>
+    <param name="rnaSeqIntensityResourceName"/>
+    <param name="indexFileDirForShortSeqAligner"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="rnaSeqExtDbRlsSpec"/>
+    <param name="rnaSeqIntensityExtDbRlsSpec"/>
+    <param name="genomeExtDbSpec"/>
+
+    <constant name="dataDir">$$parentDataDir$$/getAndAnalyze_$$rnaSeqResourceName$$</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <subgraph name="duffyRnaSeqResource" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pf_RNASeq_Duffy_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+  <subgraph name="analyzeDuffyRnaSeqPL01Sample" xmlFile="analyzeRnaSeqSample.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="rnaSeqResourceName">Pf_RNASeq_Duffy_RSRC</paramValue>
+    <paramValue name="rnaSeqIntensityResourceName">Pf_RNASeq_Intensity_Profiles_Duffy_RSRC</paramValue>
+    <paramValue name="indexFileDirForShortSeqAligner"></paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Duffy_RSRC|@Pf_RNASeq_Duffy_VER@</paramValue>
+    <paramValue name="rnaSeqIntensityExtDbRlsSpec">Pf_RNASeq_Duffy_RSRC|@Pf_RNASeq_Duffy_VER@</paramValue>
+    <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@P.falciparum_chromosomes_VER@</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+
+    <step name="mapRnaSeqToGenomesAndTranscripts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+      <paramValue name="indexFileDir">$$indexFileDirForShortSeqAligner$$</paramValue>
+      <paramValue name="inputFileDir">$$dataDir$$/$$rnaSeqResourceName$$</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
+      <depends name="rnaSeqResource"/>
+    </step>
+
+    <step name="reformatCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
+      <paramValue name="inputFileDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/seqCoverageAndIntensity/rnaSeqCov_allSamples.cov</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <depends name="mapRnaSeqToGenomesAndTranscripts"/>
+    </step>
+
+    <step name="loadRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/seqCoverageAndIntensity/rnaSeqCov_allSamples.cov</paramValue>
+      <depends name="reformatCoverageFile"/>
+    </step>
+
+    <step name="makeIntensityProfileAndConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+      <paramValue name="inputFileDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/seqCoverageAndIntensity/config.txt</paramValue>
+      <depends name="mapRnaSeqToGenomesAndTranscripts"/>
+    </step>
+
+    <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/seqCoverageAndIntensity/config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqIntensityExtDbRlsSpec$$</paramValue>
+      <depends name="makeIntensityProfileAndConfigFile"/>
+    </step>
+
+</workflowGraph>
