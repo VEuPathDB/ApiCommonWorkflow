@@ -25,7 +25,7 @@ sub run {
     elsif ($isChipSeq eq 'false') {$chipseqFlag = ''}
     else { $self->error("Invalid value '$isChipSeq' for isChipSeq param. Must be 'true' or 'false'");}
 
-    my $cmd = "parse_blat_out.pl $shortSeqsFile $blatFile $mdustFile $uFile $nuFile $readLength $chipseqFlag";
+    my $cmd = "parse_blat_out.pl $shortSeqsFile $blatFile $mdustFile $uFile $nuFile $chipseqFlag";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$uFile");

@@ -13,6 +13,7 @@ sub run {
     my $uFile = $self->getParamValue('outputUniqueFile');
     my $nuFile = $self->getParamValue('outputNonUniqueFile');
     my $transcriptOrGenome = $self->getParamValue('transcriptOrGenome');
+    my $readType = $self->getParamValue('readType');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
@@ -20,9 +21,13 @@ sub run {
     my $c;
     if ($transcriptOrGenome eq 'transcript') {$c = 'make_TU_and_TNU.pl'}
     elsif ($transcriptOrGenome eq 'genome') {$c = 'make_GU_and_GNU.pl'}
-    else {$self->error("Illegal value for parameter 'transcriptOrGenome'.  Valid values are 'transcript' and 'genome'.")}
+    else {$self->error("Illegal value '$transcriptOrGenome' for parameter 'transcriptOrGenome'.  Valid values are 'transcript' and 'genome'.")}
 
-    my $cmd = "$c $bowtieFile $uFile $nuFile";
+    if ($readType ne 'single' && $readType ne 'paired') {
+	$self->error("Illegal value '$readType' for parameter 'readType'.  Valid values are 'single' and 'paired'."
+    }
+
+    my $cmd = "$c $bowtieFile $uFile $nuFile $readType";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$uFile");
@@ -46,6 +51,7 @@ sub getParamsDeclaration {
       'outputUniqueFile',
       'outputNonUniqueFile',
       'transcriptOrGenome',
+      'readType'
       );
 }
 
