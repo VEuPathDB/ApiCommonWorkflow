@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MergeBowtieAndBlat;
+package ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 

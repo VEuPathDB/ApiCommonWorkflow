@@ -8,7 +8,8 @@
     <param name="outputUniqueFile"/>
     <param name="outputNonUniqueFile"/>
     <param name="chipProbeExtDbRlsSpec"/>
-    <param name="isOneChannelMicroArrayStudy"/>
+    <param name="isOneChannel"/>
+    <param name="loadGeneProbeMapping"/>
 
     <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
 
@@ -44,7 +45,7 @@
       <depends name="mapProbeSeqToGenomes"/>
     </step>
 
-    <step name="makeOneChannelProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin">
+    <step name="makeOneChannelProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin" includeIf="isOneChannel">
       <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
       <paramValue name="inputUniqueFile">$$outputNonUniqueFile$$</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
@@ -52,7 +53,7 @@
       <depends name="mapProbeSeqToGenomes"/>
     </step>
 
-    <step name="makeTwoChannelProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin" includeIf="">
+    <step name="makeTwoChannelProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin" excludeIf="isOneChannel">
       <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
       <paramValue name="inputUniqueFile">$$outputNonUniqueFile$$</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
@@ -60,7 +61,7 @@
       <depends name="mapProbeSeqToGenomes"/>
     </step>
 
-    <step name="loadProbeGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin">
+    <step name="loadProbeGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin" includeIf="loadGeneProbeMapping">
       <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
       <paramValue name="inputUniqueFile">$$outputNonUniqueFile$$</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>

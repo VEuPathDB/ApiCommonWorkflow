@@ -1,17 +1,25 @@
 <workflowGraph name="getAndAnalyzeRnaSeq">
     <param name="parentDataDir"/>
     <param name="rnaSeqResourceName"/>
-    <param name="rnaSeqIntensityResourceName"/>
-    <param name="indexFileDirForShortSeqAligner"/>
     <param name="organismResourceXmlFile"/>
+    <param name="genomicSeqsFile"/>
+    <param name="transcriptsSeqsFile"/>
+    <param name="annotationFile"/>
+    <param name="readType"/>
     <param name="rnaSeqExtDbRlsSpec"/>
     <param name="rnaSeqIntensityExtDbRlsSpec"/>
     <param name="genomeExtDbSpec"/>
 
     <constant name="dataDir">$$parentDataDir$$/getAndAnalyze_$$rnaSeqResourceName$$</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
     </step>
 
     <subgraph name="duffyRnaSeqResource" xmlFile="loadResource.xml">
@@ -21,17 +29,19 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-  <subgraph name="analyzeDuffyRnaSeqPL01Sample" xmlFile="analyzeRnaSeqSample.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="rnaSeqResourceName">Pf_RNASeq_Duffy_RSRC</paramValue>
-    <paramValue name="rnaSeqIntensityResourceName">Pf_RNASeq_Intensity_Profiles_Duffy_RSRC</paramValue>
-    <paramValue name="indexFileDirForShortSeqAligner"></paramValue>
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Duffy_RSRC|@Pf_RNASeq_Duffy_VER@</paramValue>
-    <paramValue name="rnaSeqIntensityExtDbRlsSpec">Pf_RNASeq_Duffy_RSRC|@Pf_RNASeq_Duffy_VER@</paramValue>
-    <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@P.falciparum_chromosomes_VER@</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
+    <subgraph name="analyzeDuffyRnaSeqPL01Sample" xmlFile="analyzeRnaSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">PL01</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="transcriptsSeqsFile">$$transcriptsSeqsFile$$</paramValue>
+      <paramValue name="geneModelFile">$$geneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/duffyRnaSeqResource/PL01.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/PL01.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/PL01.int</paramValue>
+      <paramValue name="readType">$$readType$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="duffyRnaSeqResource"/>
+    </subgraph>
 
 
     <step name="mapRnaSeqToGenomesAndTranscripts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">

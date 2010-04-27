@@ -3,6 +3,7 @@
     <param name="sampleName"/>
     <param name="genomicSeqsFile"/>
     <param name="transcriptsSeqsFile"/>
+    <param name="geneModelFile"/>
     <param name="shortSeqsFile"/>
     <param name="outputCoverageFile"/>
     <param name="outputIntensityFile"/>
@@ -29,13 +30,18 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="makeCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+    <step name="makeAndNormalizeCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeAndNormalizeCoverageFile">
+      <paramValue name="inputUniqueFile">$$uniqueFile$$</paramValue>
+      <paramValue name="outputFile">$$outputCoverageFile$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
       <depends name="alignReadsToGenome"/>
     </step>
 
-    <step name="makeIntensityFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+    <step name="makeIntensityFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeIntensityFile">
+      <paramValue name="inputCoverageFile">$$outputCoverageFile$$</paramValue>
+      <paramValue name="inputGeneModelFile">$$geneModelFile$$</paramValue>
+      <paramValue name="outputIntensityFile">$$outputIntensityFile$$</paramValue>
       <depends name="makeCoverageFile"/>
     </step>
-
 
 </workflowGraph>
