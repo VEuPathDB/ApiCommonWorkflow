@@ -1,35 +1,323 @@
 <workflowGraph name="pfLeRochChipSeq">
     <param name="parentDataDir"/>
-    <param name="sampleName"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="blatGenomicIndexFile"/>
+    <param name="bowtieGenomicIndexFile"/>
+    <param name="bowtieTranscriptsIndexFile"/>
     <param name="genomicSeqsFile"/>
-    <param name="chipSeqExtDbRlsSpec"/>
-    <param name="genomeExtDbSpec"/>
-    <param name="generatePeakCalls"/>
+    <param name="ssaGeneModelFile"/>
 
-
-    <constant name="dataDir">$$parentDataDir$$/getAndAnalyze_$$rnaSeqResourceName$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/pfLeRochChipSeq</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <subgraph name="leRochRnaSeqResource" xmlFile="loadResource.xml">
+    <subgraph name="leRochChipSeqResource" xmlFile="loadResource.xml">
       <paramValue name="resourceName">Pf_ChipSeq_Le_Roch_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="analyzeLeRochChipSeqSample" xmlFile="analyzeChipSeqSample.xml">
+    <subgraph name="analyzeMAINE0Sample" xmlFile="analyzeChipSeqSample.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="sampleName"></paramValue>
+      <paramValue name="sampleName">MAINE0</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile"></paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/MAINE0.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/MAINE0.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE0.int</paramValue>
       <paramValue name="readType">single</paramValue>
-      <paramValue name="chipSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@Pf_ChipSeq_Le_Roch_VER@</paramValue>
-      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
-      <paramValue name="generatePeakCalls">false</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE6Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE6</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/MAINE6.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/MAINE6.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE6.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE12Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE12</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/MAINE12.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/MAINE12.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE12.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE18Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE18</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/MAINE18.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/MAINE18.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE18.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE24Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE24</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/MAINE24.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/MAINE24.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE24.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE30Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE30</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/MAINE30.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/MAINE30.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE30.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE36Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE36</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/MAINE36.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/MAINE36.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE36.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE6Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE6</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/MAINE6.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/MAINE6.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE6.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE12Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE12</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/MAINE12.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/MAINE12.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE12.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE18Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE18</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/MAINE18.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/MAINE18.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE18.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE24Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE24</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/MAINE24.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/MAINE24.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE24.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE30Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE30</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/MAINE30.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/MAINE30.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE30.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE36Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE36</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/MAINE36.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/MAINE36.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE36.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeFAIRE0Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE0</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/FAIRE0.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/FAIRE0.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE0.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeFAIRE6Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE6</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/FAIRE6.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/FAIRE6.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE6.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeFAIRE12Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE12</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/FAIRE12.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/FAIRE12.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE12.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeFAIRE18Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE18</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/FAIRE18.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/FAIRE18.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE18.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeFAIRE24Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE24</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/FAIRE24.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/FAIRE24.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE24.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeFAIRE30Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE30</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/FAIRE30.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/FAIRE30.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE30.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
+    </subgraph>
+
+    <subgraph name="analyzeFAIRE36Sample" xmlFile="analyzeChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE36</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/leRochChipSeqResource/FAIRE36.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/FAIRE36.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE36.int</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <depends name="leRochChipSeqResource"/>
     </subgraph>
 
 
