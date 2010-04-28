@@ -1,4 +1,4 @@
-<workflowGraph name="pfalciparumRnaSeqResources">
+<workflowGraph name="pfRnaSeqAndChipSeq">
   <param name="parentDataDir"/>
   <param name="organismResourceXmlFile"/>
   <param name="blatGenomicIndexFile"/>
@@ -7,7 +7,7 @@
   <param name="ssaGeneModelFile"/>
   <param name="genomicSeqsFile"/>
  
-  <constant name="dataDir">$$parentDataDir$$/pfalciparumRnaSeqResources</constant>
+  <constant name="dataDir">$$parentDataDir$$/pfRnaSeqAndChipSeq</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -30,4 +30,17 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
+
+  <subgraph name="getAndAnalyzeLeRochChipSeq" xmlFile="plasmodb/pfLeRochChipSeq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+    <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+    <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+
 </workflowGraph>
