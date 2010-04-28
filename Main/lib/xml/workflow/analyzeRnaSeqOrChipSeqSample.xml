@@ -1,4 +1,4 @@
-<workflowGraph name="analyzeRnaSeqSample">
+<workflowGraph name="analyzeRnaSeqOrChipSeqSample">
     <param name="parentDataDir"/>
     <param name="sampleName"/>
     <param name="blatGenomicIndexFile"/>
@@ -9,6 +9,8 @@
     <param name="genomicSeqsFile"/>
     <param name="outputCoverageFile"/>
     <param name="outputIntensityFile"/>
+    <param name="isChipSeq"/>
+    <param name="computePeaks"/>
     <param name="readType"/>
 
     <constant name="dataDir">$$parentDataDir$$/analyze$$sampleName$$</constant>
@@ -30,7 +32,7 @@
       <paramValue name="genomicSeqsFile">$$shortSeqsFile$$</paramValue>
       <paramValue name="outputUniqueFile">$$uniqueFile$$</paramValue>
       <paramValue name="outputNonUniqueFile">$$nonUniqueFile$$</paramValue>
-      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="isChipSeq">$$isChipSeq$$</paramValue>
       <paramValue name="readType">$$readType$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
@@ -55,7 +57,7 @@
       <depends name="reformatCoverageFile"/>
     </step>
 
-    <step name="makeIntensityFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeIntensityFile">
+    <step name="makeIntensityFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeIntensityFile" excludeIf="$$isChipSeq$$">
       <paramValue name="inputCoverageFile">$$outputCoverageFile$$</paramValue>
       <paramValue name="inputGeneModelFile">$$geneModelFile$$</paramValue>
       <paramValue name="outputIntensityFile">$$outputIntensityFile$$</paramValue>
