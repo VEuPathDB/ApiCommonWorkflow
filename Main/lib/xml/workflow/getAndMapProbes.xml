@@ -2,16 +2,18 @@
     <param name="parentDataDir"/>
     <param name="probeResourceName"/>
     <param name="organismResourceXmlFile"/>
+    <param name="blatGenomicIndexFile"/>
+    <param name="bowtieGenomicIndexFile"/>
+    <param name="bowtieTranscriptsIndexFile"/>
+    <param name="ssaGeneModelFile"/>
     <param name="genomicSeqsFile"/>
-    <param name="transcriptsSeqsFile"/>
-    <param name="probeSeqsFile"/>
-    <param name="outputUniqueFile"/>
-    <param name="outputNonUniqueFile"/>
     <param name="chipProbeExtDbRlsSpec"/>
     <param name="isOneChannel"/>
     <param name="loadGeneProbeMapping"/>
 
     <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
+    <constant name="uniqueFile">$$dataDir$$/uniqueMapping.txt</constant>
+    <constant name="nonUniqueFile">$$dataDir$$/nonUniqueMapping.txt</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -26,10 +28,13 @@
 
     <subgraph name="alignProbesToGenome"  xmlFile="ssa.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="transcriptsSeqsFile">$$transcriptsSeqsFile$$</paramValue>
+      <paramValue name="bowtieGenomicIndexFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexFile">$$bowtieTranscriptIndexFile$$</paramValue>
+      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
+      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="useTranscripts">true</paramValue>
-      <paramValue name="shortSeqsFile">$$probeSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="outputUniqueFile">$$outputUniqueFile$$</paramValue>
       <paramValue name="outputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
       <paramValue name="isChipSeq">false</paramValue>
