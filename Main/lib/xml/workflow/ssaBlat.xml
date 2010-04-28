@@ -1,7 +1,8 @@
 <workflowGraph name="SsaBlat">
   <param name="parentDataDir"/>
+  <param name="genomicIndexFile"/>
   <param name="genomicSeqsFile"/>
-  <param name="readSeqsFile"/>
+  <param name="shortSeqsFile"/>
   <param name="outputUniqueFile"/>
   <param name="outputNonUniqueFile"/>
   <param name="isChipSeq"/>
@@ -15,22 +16,21 @@
   </step>
 
     <step name="blatAgainstGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunBlat">
-      <paramValue name="subjectSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="querySeqsFile">$$readSeqsFile$$</paramValue>
+      <paramValue name="subjectIndexFile">$$genomicIndexFile$$</paramValue>
+      <paramValue name="querySeqsFile">$$shortSeqsFile$$</paramValue>
       <paramValue name="outputFile">$$blatOutputFile$$</paramValue>
 
       <depends name="makeDataDir"/>
     </step>
 
     <step name="blatMDust" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMDust">
-      <paramValue name="subjectSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="querySeqsFile">$$readSeqsFile$$</paramValue>
-      <paramValue name="outputFile">$$mdustOutputFile$$</paramValue>
+      <paramValue name="inputSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="outputSeqsFile">$$mdustOutputFile$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
     <step name="blatToUniqueAndNonUnique" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaBlatToUniqueAndNonUnique">
-     <paramValue name="inputReadSeqsFile">$$readSeqsFile$$</paramValue>
+     <paramValue name="inputReadSeqsFile">$$shortSeqsFile$$</paramValue>
      <paramValue name="inputBlatFile">$$blatOutputFile$$</paramValue>
      <paramValue name="inputMdustFile">$$mdustOutputFile$$</paramValue>
      <paramValue name="outputUniqueFile">$$outputUniqueFile$$</paramValue>

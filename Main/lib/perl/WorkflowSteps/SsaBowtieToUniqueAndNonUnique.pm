@@ -10,7 +10,7 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $bowtieFile = $self->getParamValue('inputBowtieFile');
-    my $geneModelFile = $self->getParamValue('geneModelInputFile');
+    my $geneModelFile = $self->getParamValue('inputGeneModelFile');
     my $uFile = $self->getParamValue('outputUniqueFile');
     my $nuFile = $self->getParamValue('outputNonUniqueFile');
     my $transcriptOrGenome = $self->getParamValue('transcriptOrGenome');
@@ -23,7 +23,7 @@ sub run {
     if ($transcriptOrGenome eq 'transcript') {
 	$c = 'make_TU_and_TNU.pl';
 	if ($test) {
-	    $self->testInputFile('geneModelFile', "$workflowDataDir/$geneModelFile");
+	    $self->testInputFile('inputGeneModelFile', "$workflowDataDir/$geneModelFile");
 	}
     }
     elsif ($transcriptOrGenome eq 'genome') {
@@ -57,7 +57,7 @@ sub run {
 sub getParamsDeclaration {
   return (
       'inputBowtieFile',
-      'geneModelInputFile',
+      'inputGeneModelFile',
       'outputUniqueFile',
       'outputNonUniqueFile',
       'transcriptOrGenome',

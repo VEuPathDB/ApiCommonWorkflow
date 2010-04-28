@@ -1,7 +1,8 @@
 <workflowGraph name="SsaBowtie">
   <param name="parentDataDir"/>
-  <param name="readSeqsFile"/>
-  <param name="subjectSeqsFile"/>
+  <param name="shortSeqsFile"/>
+  <param name="subjectIndexFile"/>
+  <param name="geneModelFile"/>
   <param name="transcriptOrGenome"/>
   <param name="outputUniqueFile"/>
   <param name="outputNonUniqueFile"/>
@@ -14,14 +15,15 @@
   </step>
 
     <step name="runBowtie" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunBowtie">
-      <paramValue name="subjectSeqsFile">$$subjectSeqsFile$$</paramValue>
-      <paramValue name="querySeqsFile">$$readSeqsFile$$</paramValue>
+      <paramValue name="subjectIndexFile">$$subjectIndexFile$$</paramValue>
+      <paramValue name="querySeqsFile">$$shortSeqsFile$$</paramValue>
       <paramValue name="outputFile">$$outputBowtieFile$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
     <step name="bowtieToUniqueAndNonUnique" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaBowtieToUniqueAndNonUnique">
      <paramValue name="inputBowtieFile">$$outputBowtieFile$$</paramValue>
+     <paramValue name="inputGeneModelFile">$$geneModelFile$$</paramValue>
      <paramValue name="outputUniqueFile">$$outputUniqueFile$$</paramValue>
      <paramValue name="outputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
      <paramValue name="transcriptOrGenome">$$transcriptOrGenome$$</paramValue>
