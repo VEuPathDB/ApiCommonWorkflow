@@ -18,32 +18,13 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDir">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+    <subgraph name="blatAgainstGenome" xmlFile="blatAgainstGenome.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="queryFile">$$assembliesDataDir$$/master/mainresult/blocked.seq</paramValue>
       <paramValue name="targetDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="queryFile">$$assembliesDataDir$$/master/mainresult/blocked.seq</paramValue>
       <depends name="makeDataDir"/>
-    </step>
-
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeClusterTaskInputDir"/>
-    </step>
-
-    <step name="runClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="numNodes">1</paramValue>
-      <paramValue name="processorsPerNode">1</paramValue>
-      <depends name="mirrorToCluster"/>
-    </step>
-
-    <step name="mirrorFromCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorFromComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
-      <paramValue name="outputFiles">out.psl</paramValue>
-      <depends name="runClusterTask"/>
-    </step>
+    </subgraph>
 
     <step name="insertBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
 
@@ -58,7 +39,7 @@
       <paramValue name="percentTop"></paramValue>
       <paramValue name="blatFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
       <paramValue name="queryFile">$$assembliesDataDir$$/master/mainresult/blocked.seq</paramValue>
-      <depends name="mirrorFromCluster"/>
+      <depends name="blatAgainstGenome"/>
     </step>
 
     <step name="setBestBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">

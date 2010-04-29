@@ -1,6 +1,6 @@
 <workflowGraph name="SsaBlat">
   <param name="parentDataDir"/>
-  <param name="genomicIndexFile"/>
+  <param name="genomicSeqsDir"/>
   <param name="genomicSeqsFile"/>
   <param name="shortSeqsFile"/>
   <param name="outputUniqueFile"/>
@@ -13,15 +13,16 @@
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </step>
 
-    <step name="blatAgainstGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunBlat">
-      <paramValue name="subjectIndexFile">$$genomicIndexFile$$</paramValue>
-      <paramValue name="querySeqsFile">$$shortSeqsFile$$</paramValue>
-      <paramValue name="outputFile">$$blatOutputFile$$</paramValue>
-
+    <subgraph name="blatAgainstGenome" xmlFile="blatAgainstGenome.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="maxIntronSize"></paramValue>
+      <paramValue name="targetDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="queryFile">$$shortSeqsFile$$</paramValue>
       <depends name="makeDataDir"/>
-    </step>
+    </subgraph>
 
     <step name="blatMDust" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMDust">
       <paramValue name="inputSeqsFile">$$genomicSeqsFile$$</paramValue>
