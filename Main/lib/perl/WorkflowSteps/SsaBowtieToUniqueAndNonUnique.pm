@@ -33,7 +33,7 @@ sub run {
     else {$self->error("Illegal value '$transcriptOrGenome' for parameter 'transcriptOrGenome'.  Valid values are 'transcript' and 'genome'.")}
 
     if ($readType ne 'single' && $readType ne 'paired') {
-	$self->error("Illegal value '$readType' for parameter 'readType'.  Valid values are 'single' and 'paired'."
+	$self->error("Illegal value '$readType' for parameter 'readType'.  Valid values are 'single' and 'paired'.");
     }
 
     my $cmd = "$c $geneModelFile $workflowDataDir/$bowtieFile $workflowDataDir/$uFile $workflowDataDir/$nuFile $readType";

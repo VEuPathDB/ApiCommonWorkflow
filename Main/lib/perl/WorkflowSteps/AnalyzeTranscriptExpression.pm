@@ -9,9 +9,9 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $gnuFile = $self->getParamValue('configXmlFile');
-    my $tnuFile = $self->getParamValue('resourceDataDir');
-    my $cnuFile = $self->getParamValue('outputDir');
+    my $configXmlFile = $self->getParamValue('configXmlFile');
+    my $resourceDataDir = $self->getParamValue('resourceDataDir');
+    my $outputDir = $self->getParamValue('outputDir');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();

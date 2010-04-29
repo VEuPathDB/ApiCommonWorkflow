@@ -15,7 +15,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "quantify_one_sample.pl $workflowDataDir/$inputCoverangeFile $workflowDataDir/$inputGeneModelFile > $workflowDataDir/$outputIntensityFile";
+    my $cmd = "quantify_one_sample.pl $workflowDataDir/$inputCoverageFile $workflowDataDir/$inputGeneModelFile > $workflowDataDir/$outputIntensityFile";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputIntensityFile");
