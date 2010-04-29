@@ -6,12 +6,14 @@
       <param name="organismSpecificISFReference"/>
       <param name="ncbiTaxonId"/>
       <param name="downloadSiteDataDir"/>
-      <param name="blatGenomicIndexFile"/>
       <param name="bowtieGenomicIndexFile"/>
       <param name="bowtieTranscriptsIndexFile"/>
       <param name="ssaGeneModelFile"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$organismName$$LoadGenome</constant>
+    <constant name="genomicSeqsFileForSsa">$$dataDir$$/genomicSeqsForSsa.fsa</constant>
+    <constant name="transcriptSeqsFileForSsa">$$dataDir$$/transcriptSeqsForSsa.fsa</constant>
+    <constant name="geneModelFileForSsa">$$dataDir$$/geneModelForSsa.txt</constant>
     <constant name="genomicSeqsFile">$$dataDir$$/genomicSeqs.fsa</constant>
     <constant name="genomicSeqsDir">$$dataDir$$/genomicSeqs</constant>
     <constant name="proteinsFile">$$dataDir$$/AnnotatedProteins.fsa</constant>
@@ -77,6 +79,54 @@
       <paramValue name="inputFile">$$dataDir$$/targetList</paramValue>
       <paramValue name="outputDir">$$genomicSeqsDir$$</paramValue>
       <depends name="mirrorToCluster"/>
+    </step>
+
+  <step name="extractGenomicSeqsForSsa"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqsForSsa">
+      <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="sequenceOntology"></paramValue>
+      <paramValue name="table">ExternalNASequence</paramValue>
+      <paramValue name="outputFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <depends name="organismSpecificISF"/> 
+    </step>
+
+  <step name="extractGenomicSeqsForSsa"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqsForSsa">
+      <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="sequenceOntology"></paramValue>
+      <paramValue name="table">ExternalNASequence</paramValue>
+      <paramValue name="outputFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <depends name="organismSpecificISF"/> 
+    </step>
+
+  <step name="indexGenomicSeqsForBowtie"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothing">
+      <paramValue name="inputFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="outputFile">$$bowtieGenomicIndexFile$$</paramValue>
+      <depends name="extractGenomicSeqsForSsa"/> 
+    </step>
+
+  <step name="extractTranscriptSeqsForSsa"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothing">
+      <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="sequenceOntology"></paramValue>
+      <paramValue name="table"></paramValue>
+      <paramValue name="outputFile">$$transcriptSeqsFileForSsa$$</paramValue>
+      <depends name="organismSpecificISF"/> 
+    </step>
+
+  <step name="indexGenomicSeqsForBowtie"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothing">
+      <paramValue name="inputFile">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="outputFile">$$bowtieTranscriptsIndexFile$$</paramValue>
+      <depends name="extractTranscriptSeqsForSsa"/> 
+    </step>
+
+  <step name="extractGeneModelForSsa"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa">
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="outputFile">$$ssaGeneModelFile$$</paramValue>
+      <depends name="organismSpecificISF"/> 
     </step>
 
 </workflowGraph>
