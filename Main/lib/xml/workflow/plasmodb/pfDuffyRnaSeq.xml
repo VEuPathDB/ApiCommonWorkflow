@@ -9,9 +9,15 @@
 
     <constant name="dataDir">$$parentDataDir$$/pfDuffyRnaSeq</constant>
     <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+    <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSeqCoverageAndIntensityDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
     </step>
 
     <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
@@ -77,20 +83,26 @@
       <depends name="duffyRnaSeqResource"/>
     </subgraph>
 
-    <step name="mergeIntensityFilesAndMakeProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+    <step name="mergeIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
       <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/seqCoverageAndIntensity/config.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt</paramValue>
+      <depends name="makeSeqCoverageAndIntensityDataDir"/>
       <depends name="analyzePL01Sample"/>
       <depends name="analyzePL02Sample"/>
       <depends name="analyze3D7Sample"/>
     </step>
 
+    <step name="makePercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/percents.txt</paramValue>
+      <depends name="mergeIntensityFile"/>
+    </step>
+
     <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$dataDir$$/seqCoverageAndIntensity/config.txt</paramValue>
-      <paramValue name="inputDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
+      <paramValue name="configFile">$$dataDir$$/duffyRnaSeqResource/config.txt</paramValue>
+      <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <paramValue name="extDbRlsSpec">Pf_RNASeq_Duffy_RSRC|@Pf_RNASeq_Duffy_VER@</paramValue>
-      <depends name="mergeIntensityFilesAndMakeProfile"/>
+      <depends name="makePercentileProfile"/>
     </step>
 
 </workflowGraph>
