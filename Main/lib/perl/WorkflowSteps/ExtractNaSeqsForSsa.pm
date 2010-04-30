@@ -8,10 +8,9 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $table = $self->getParamValue('table');
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $outputFile = $self->getParamValue('outputFile');
-  my $sequenceOntology = $self->getParamValue('sequenceOntology');
+  my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
 
 
   my @extDbRlsSpecList = split(/,/, $extDbRlsSpec);
@@ -26,12 +25,13 @@ sub run {
 
   $dbRlsIds =~ s/(,)$//g;
 
-  my $sql = "select x.na_sequence_id, x.description,
-            'length='||x.length,x.sequence
-             from dots.$table x, sres.sequenceontology s
-             where x.external_database_release_id in ($dbRlsIds)
-             and x.sequence_ontology_id = s.sequence_ontology_id
-             and lower(s.term_name) = '$sequenceOntology'";
+  my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$ncbiTaxonId);
+
+  my $sql = "select sa.source_id||':1-'||sa.length||'_strand=+', ens.sequence 
+             from apidb.sequenceattributes sa, dots.externalnasequence ens 
+             where ens.taxon_id=$taxonId 
+             and ens.na_sequence_id=sa.na_sequence_id";
+
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -47,10 +47,9 @@ sub run {
 
 sub getParamsDeclaration {
   return (
-	  'table',
 	  'extDbRlsSpec',
 	  'outputFile',
-	  'sequenceOntology'
+	  'ncbiTaxonId'
 	 );
 }
 

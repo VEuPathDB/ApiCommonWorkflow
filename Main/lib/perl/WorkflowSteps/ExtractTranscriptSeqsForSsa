@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa;
+package ApiCommonWorkflow::Main::WorkflowSteps::ExtractTranscriptSeqsForSsa;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -8,10 +8,9 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $outputFile = $self->getParamValue('outputFile');
-  my $sequenceOntology = $self->getParamValue('sequenceOntology');
+  my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
 
 
   my @extDbRlsSpecList = split(/,/, $extDbRlsSpec);
@@ -28,6 +27,12 @@ sub run {
 
   my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$ncbiTaxonId);
 
+  my $sql = "select ga.source_id||':'||ga.sequence_id||':'||ga.start_min||'-'||ga.end_max||'_'||(decode(ga.is_reversed, 1, '-', '+')), sns.sequence 
+             from apidb.geneattributes ga, dots.transcript t, dots.splicednasequence sns 
+             where ga.taxon_id = $taxonId 
+               and ga.na_feature_id=t.parent_id 
+               and t.na_sequence_id = sns.na_sequence_id";
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($undo) {
@@ -36,17 +41,15 @@ sub run {
       if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }else{
-	    $self->runCmd($test,"extractGeneModelForSsa --outputFile $workflowDataDir/$outputFile --taxonId $taxonId");
+	    $self->runCmd($test,"gusExtractSequences --outputFile $workflowDataDir/$outputFile --idSQL \"$sql\" --verbose");
       }
   }
 
-
 sub getParamsDeclaration {
   return (
-	  'table',
 	  'extDbRlsSpec',
 	  'outputFile',
-	  'sequenceOntology'
+	  'ncbiTaxonId'
 	 );
 }
 
