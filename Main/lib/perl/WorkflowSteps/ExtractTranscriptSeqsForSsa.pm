@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqsForSsa;
+package ApiCommonWorkflow::Main::WorkflowSteps::ExtractTranscriptSeqsForSsa;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -27,10 +27,20 @@ sub run {
 
   my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$ncbiTaxonId);
 
-  my $sql = "select enas.source_id||':1-'||enas.length||'_strand=+', enas.sequence 
-             from dots.externalnasequence enas 
-             where enas.taxon_id=$taxonId";
-
+  my $sql = "SELECT gf.source_id||':'||enas.source_id||':'||nl.start_min||'-'||nl.end_max||'_'||(decode(nl.is_reversed, 1, '-', '+')), snas.sequence 
+             FROM dots.genefeature gf, 
+                  dots.transcript t, 
+                  dots.splicednasequence snas,
+                  dots.ExternalNASequence enas, 
+                  sres.sequenceontology so,
+                  dots.nalocation nl
+            WHERE gf.na_feature_id = t.parent_id
+              AND t.na_sequence_id = snas.na_sequence_id
+              AND gf.na_sequence_id = enas.na_sequence_id
+              AND gf.sequence_ontology_id = so.sequence_ontology_id
+              AND so.term_name != 'repeat_region'
+              AND snas.taxon_id = $taxonId
+              AND gf.na_feature_id = nl.na_feature_id";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
