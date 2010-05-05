@@ -10,6 +10,8 @@
     <param name="chipProbeExtDbRlsSpec"/>
     <param name="isOneChannel"/>
     <param name="loadGeneProbeMapping"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="organismFullName"/>
 
     <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
     <constant name="uniqueFile">$$dataDir$$/uniqueMapping.txt</constant>
@@ -42,12 +44,22 @@
       <depends name="probe_RSRC"/>
     </step>
 
-    <step name="loadProbeGenomeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin">
+    <step name="makeProbeGenomeMappingGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateGenomeMappingGff">
       <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
-      <paramValue name="inputUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/genomeMapping.gff</paramValue
+      <depends name="alignProbesToGenome"/>
+    </step>
+
+    <step name="loadProbeGenomeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChIPChipPeakFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/genomeMapping.gff</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
-      <paramValue name="featureType">ArrayElementFeature</paramValue>
-      <depends name="mapProbeSeqToGenomes"/>
+      <paramValue name="substepClass">ExternalNASequence</paramValue>
+      <paramValue name="defaultOrg">$$organismFullName$$</paramValue>
+      <paramValue name="isfMappingFileRelToGusHome">lib/xml/isf/PlasmoDB/plasmoPeakFeature2gus.xml</paramValue>
+      <paramValue name="soVersion">@SO_VER@</paramValue>
+      <depends name="makeProbeGenomeMappingGffFile"/>
     </step>
 
     <step name="makeOneChannelProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin" includeIf="isOneChannel">
