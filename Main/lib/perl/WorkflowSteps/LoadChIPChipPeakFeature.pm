@@ -11,7 +11,7 @@ sub run {
 
   my $inputFile = $self->getParamValue('inputFile');
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
-  my $extDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
+  my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $substepClass = $self->getParamValue('substepClass');
   my $defaultOrg = $self->getParamValue('defaultOrg');
   my $isfMappingFileRelToGusHome = $self->getParamValue('isfMappingFileRelToGusHome');
@@ -30,8 +30,8 @@ sub run {
   my $args = <<"EOF";
 --extDbName '$extDbName'  \\
 --extDbRlsVer '$extDbRlsVer' \\
---seqExtDbName '$extDbName'  \\
---seqExtDbRlsVer '$extDbRlsVer' \\
+--seqExtDbName '$seqExtDbName'  \\
+--seqExtDbRlsVer '$seqExtDbRlsVer' \\
 --mapFile $gusHome/$isfMappingFileRelToGusHome \\
 --inputFileOrDir $workflowDataDir/$inputFile \\
 --fileFormat gff2   \\
