@@ -1,0 +1,85 @@
+<workflowGraph name="pyoeliiArrayStudies">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="bowtieGenomicIndexDir"/>
+  <param name="bowtieTranscriptsIndexDir"/>
+  <param name="ssaGeneModelFile"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomicSeqsDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/pyoeliiArrayResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="Pyoelii_Vaidya_Bergman_oligos_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pyoelii_Vaidya_Bergman_oligos_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pyoelii_Vaidya_Bergman_oligos_RSRC|@Pyoelii_Vaidya_Bergman_oligos_VER@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="loadGeneProbeMapping">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+    <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+    <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pyoelii_Contigs_RSRC|@Pyoelii_Contigs_VER@</paramValue>
+    <paramValue name="organismFullName">@PyOrganismFullName@</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="Kappe_array_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Kappe_array_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Pyoelii_Vaidya_Bergman_oligos_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Kappe_array_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Kappe_array_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pyoelii_Vaidya_Bergman_oligos_RSRC|@Pyoelii_Vaidya_Bergman_oligos_VER@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Kappe_array_RSRC|@Kappe_array_VER@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pyoelii_contigsGB_RSRC|@Pyoelii_contigsGB_VER@</paramValue>
+    <paramValue name="insertAnalysisResult"></paramValue>
+    <depends name="Kappe_array_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Affy-scrMalaria_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Py_array_Affy-scrMalaria_RSRC</paramValue>
+    <paramValue name="indexFileDirForShortSeqAligner"></paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Py_array_Affy-scrMalaria_RSRC|@Py_array_Affy-scrMalaria_VER@</paramValue>
+    <paramValue name="isOneChannel">true</paramValue>
+    <paramValue name="loadGeneProbeMapping">true</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+    <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+    <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pyoelii_Contigs_RSRC|@Pyoelii_Contigs_VER@</paramValue>
+    <paramValue name="organismFullName">@PyOrganismFullName@</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="winzeler_py_pf_comparison_array_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">winzeler_py_pf_comparison_array_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Affy-scrMalaria_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="winzeler_py_pf_comparison_array_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">winzeler_py_pf_comparison_array_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Py_array_Affy-scrMalaria_RSRC|@Py_array_Affy-scrMalaria_VER@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">winzeler_py_pf_comparison_array_RSRC|@winzeler_py_pf_comparison_array_VER@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pyoelii_contigsGB_RSRC|@Pyoelii_contigsGB_VER@</paramValue>
+    <paramValue name="insertAnalysisResult"></paramValue>
+    <depends name="winzeler_py_pf_comparison_array_RSRC"/>
+  </subgraph>
+
+</workflowGraph>
