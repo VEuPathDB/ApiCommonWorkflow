@@ -1,0 +1,84 @@
+<workflowGraph name="pvivaxArrayStudies">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="bowtieGenomicIndexDir"/>
+  <param name="bowtieTranscriptsIndexDir"/>
+  <param name="ssaGeneModelFile"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomicSeqsDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/pvivaxArrayResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="ZB_Oligos_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pvivax_ZB_oligos_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pvivax_ZB_oligos_RSRC|@Pvivax_ZB_oligos_VER@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="loadGeneProbeMapping">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+    <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+    <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pvivax_contigsGB_RSRC|@Pvivax_contigsGB_VER@</paramValue>
+    <paramValue name="organismFullName">@PvOrganismFullName@</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="ZB_time_series_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">ZB_time_series_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="ZB_Oligos_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="ZB_time_series_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">ZB_time_series_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pvivax_ZB_oligos_RSRC|@Pvivax_ZB_oligos_VER@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ZB_time_series_RSRC|@ZB_time_series_VER@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pvivax_contigsGB_RSRC|@Pvivax_contigsGB_VER@</paramValue>
+    <paramValue name="insertAnalysisResult"></paramValue>
+    <depends name="ZB_time_series_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Westenberger_Lib520507_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Westenberger_Lib520507_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Westenberger_Lib520507_RSRC|@Westenberger_Lib520507_VER@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="loadGeneProbeMapping">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+    <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+    <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pvivax_contigsGB_RSRC|@Pvivax_contigsGB_VER@</paramValue>
+    <paramValue name="organismFullName">@PvOrganismFullName@</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="Westenberger_array_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Westenberger_array_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Westenberger_Lib520507_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Westenberger_array_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Westenberger_array_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Westenberger_Lib520507_RSRC|@Westenberger_Lib520507_VER@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Westenberger_array_RSRC|@Westenberger_array_VER@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pvivax_contigsGB_RSRC|@Pvivax_contigsGB_VER@</paramValue>
+    <paramValue name="insertAnalysisResult"></paramValue>
+    <depends name="Westenberger_array_RSRC"/>
+  </subgraph>
+
+</workflowGraph>
