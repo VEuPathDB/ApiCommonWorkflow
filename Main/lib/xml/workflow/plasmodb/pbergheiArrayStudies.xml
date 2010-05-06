@@ -1,0 +1,88 @@
+<workflowGraph name="pbergheiArrayStudies">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="bowtieGenomicIndexDir"/>
+  <param name="bowtieTranscriptsIndexDir"/>
+  <param name="ssaGeneModelFile"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomicSeqsDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/pbergheiArrayResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="GSS_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pb_array_GSS_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pb_array_GSS_RSRC|@Pb_array_GSS_VER@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="loadGeneProbeMapping">true</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+    <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+    <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@Pberghei_chromosomes_VER@</paramValue>
+    <paramValue name="organismFullName">@PbOrganismFullName@</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+
+
+
+
+
+
+
+  <subgraph name="Pberghei_gss_oligosResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pberghei_gss_oligos</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+  <subgraph name="mapGssOligosToGenomicSeqs" xmlFile="mapOligos.xml">
+    <paramValue name="parentDataDir">$$parentDataDir$$/DeRisi_oligo</paramValue>
+    <paramValue name="oligoExtDbRlsSpec">$$oligoExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="idRegex">(\\S+)\\s+length</paramValue>
+    <paramValue name="loadOptions">--hspMatchLength 64 --hspPctIdent 95 --hspsLimit 1</paramValue>
+    <depends name="Pberghei_gss_oligosResource"/>
+  </subgraph>
+
+  <subgraph name="Pberghei_Protein_Expression_SurveyResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pberghei_Protein_Expression_Survey</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+  <subgraph name="berghei_gss_time_seriesResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">berghei_gss_time_series</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <depends name="mapGssOligosToGenomicSeqs"/>
+  </subgraph>
+
+  <subgraph name="berghei_gss_time_seriesHPEResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">berghei_gss_time_seriesHPE</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <depends name="mapGssOligosToGenomicSeqs"/>
+  </subgraph>
+
+  <subgraph name="DOZI_arrayResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">DOZI_array</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+  <subgraph name="DOZI_pageResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">DOZI_page</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+</workflowGraph>

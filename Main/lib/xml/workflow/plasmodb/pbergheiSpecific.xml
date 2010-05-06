@@ -8,7 +8,10 @@
   <constant name="dataDir">$$parentDataDir$$/PbergheiSpecific</constant>
   <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Pberghei</constant>
   <constant name="genomicSeqsFile">$$parentDataDir$$/PbergheiLoadGenome/genomicSeqs.fsa</constant>
-
+  <constant name="genomicSeqsDir">$$parentDataDir$$/PbergheiLoadGenome/genomicSeqs</constant>
+  <constant name="bowtieGenomicIndexDir">$$parentDataDir$$/PbergheiLoadGenome/genomicIndexes/</constant>
+  <constant name="bowtieTranscriptsIndexDir">$$parentDataDir$$/PbergheiLoadGenome/transcriptsIndexes/</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/PbergheiLoadGenome/geneModelForSsa.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -49,7 +52,19 @@
     <depends name="Pb_CorrectGeneAliases_RSRC"/>
   </subgraph>
 
-  <subgraph name="geneExpressionResources" xmlFile="plasmodb/pbergheiGeneExpressionResource.xml" excludeIf="true">
+
+    <subgraph name="arrayResources" xmlFile="plasmodb/pbergheiArrayStudies.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <depends name="Pb_CorrectGeneAliases_RSRC"/>
+    </subgraph>
+
+  <subgraph name="geneExpressionResources" xmlFile="plasmodb/pbergheiGeneExpressionResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="oligoExtDbRlsSpec">Pberghei_gss_oligos_RSRC|@Pberghei_gss_oligos_VER@</paramValue>
