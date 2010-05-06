@@ -13,12 +13,12 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <subgraph name="GSS_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+  <subgraph name="GSScDNAArray_getAndMapProbes" xmlFile="getAndMapProbes.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="probeResourceName">Pb_array_GSS_RSRC</paramValue>
-    <paramValue name="chipProbeExtDbRlsSpec">Pb_array_GSS_RSRC|@Pb_array_GSS_VER@</paramValue>
+    <paramValue name="probeResourceName">Pberghei_gss_oligos_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pberghei_gss_oligos_RSRC|@Pberghei_gss_oligos_VER@</paramValue>
     <paramValue name="isOneChannel">false</paramValue>
-    <paramValue name="loadGeneProbeMapping">true</paramValue>
+    <paramValue name="loadGeneProbeMapping">false</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
     <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
@@ -30,59 +30,72 @@
     <depends name="makeDataDir"/>
   </subgraph>
 
-
-
-
-
-
-
-
-  <subgraph name="Pberghei_gss_oligosResource" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">Pberghei_gss_oligos</paramValue>
+  <subgraph name="Waters_gss_time_series_HP_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Waters_gss_time_series_HP_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="GSScDNAArray_getAndMapProbes"/>
   </subgraph>
 
-  <subgraph name="mapGssOligosToGenomicSeqs" xmlFile="mapOligos.xml">
-    <paramValue name="parentDataDir">$$parentDataDir$$/DeRisi_oligo</paramValue>
-    <paramValue name="oligoExtDbRlsSpec">$$oligoExtDbRlsSpec$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+  <subgraph name="Waters_gss_time_series_HP_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Waters_gss_time_series_HP_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pberghei_gss_oligos_RSRC|@Pberghei_gss_oligos_VER@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Waters_gss_time_series_HP_RSRC|@Waters_gss_time_series_HP_VER@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@Pberghei_chromosomes_VER@</paramValue>
+    <paramValue name="insertAnalysisResult"></paramValue>
+    <depends name="Waters_gss_time_series_HP_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Waters_gss_time_series_HPE_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Waters_gss_time_series_HPE_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="GSScDNAArray_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Waters_gss_time_series_HPE_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Waters_gss_time_series_HPE_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pberghei_gss_oligos_RSRC|@Pberghei_gss_oligos_VER@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Waters_gss_time_series_HPE_RSRC|@Waters_gss_time_series_HPE_VER@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@Pberghei_chromosomes_VER@</paramValue>
+    <paramValue name="insertAnalysisResult"></paramValue>
+    <depends name="Waters_gss_time_series_HP_RSRC"/>
+  </subgraph>
+
+  <subgraph name="DOZILongOligoArray_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pberghei_DOZI_oligos_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pberghei_DOZI_oligos_RSRC|@Pberghei_DOZI_oligos_VER@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="loadGeneProbeMapping">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+    <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+    <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="idRegex">(\\S+)\\s+length</paramValue>
-    <paramValue name="loadOptions">--hspMatchLength 64 --hspPctIdent 95 --hspsLimit 1</paramValue>
-    <depends name="Pberghei_gss_oligosResource"/>
+    <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@Pberghei_chromosomes_VER@</paramValue>
+    <paramValue name="organismFullName">@PbOrganismFullName@</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
-  <subgraph name="Pberghei_Protein_Expression_SurveyResource" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">Pberghei_Protein_Expression_Survey</paramValue>
+  <subgraph name="Waters_DOZI_array_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Waters_DOZI_array_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="DOZILongOligoArray_getAndMapProbes"/>
   </subgraph>
 
-  <subgraph name="berghei_gss_time_seriesResource" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">berghei_gss_time_series</paramValue>
-    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
-    <depends name="mapGssOligosToGenomicSeqs"/>
-  </subgraph>
-
-  <subgraph name="berghei_gss_time_seriesHPEResource" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">berghei_gss_time_seriesHPE</paramValue>
-    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
-    <depends name="mapGssOligosToGenomicSeqs"/>
-  </subgraph>
-
-  <subgraph name="DOZI_arrayResource" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">DOZI_array</paramValue>
-    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
-  </subgraph>
-
-  <subgraph name="DOZI_pageResource" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">DOZI_page</paramValue>
-    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  <subgraph name="Waters_DOZI_array_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Pberghei_DOZI_oligos_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pberghei_DOZI_oligos_RSRC|@Pberghei_DOZI_oligos_VER@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Waters_DOZI_array_RSRC|@Waters_DOZI_array_VER@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@Pberghei_chromosomes_VER@</paramValue>
+    <paramValue name="insertAnalysisResult"></paramValue>
+    <depends name="Waters_DOZI_array_RSRC"/>
   </subgraph>
 
 </workflowGraph>
