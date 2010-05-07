@@ -14,8 +14,8 @@
     <param name="organismFullName"/>
 
     <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
-    <constant name="uniqueFile">$$dataDir$$/uniqueMapping.txt</constant>
-    <constant name="nonUniqueFile">$$dataDir$$/nonUniqueMapping.txt</constant>
+    <constant name="outputUniqueFile">$$dataDir$$/uniqueMapping.txt</constant>
+    <constant name="outputNonUniqueFile">$$dataDir$$/nonUniqueMapping.txt</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -42,12 +42,12 @@
       <paramValue name="isChipSeq">false</paramValue>
       <paramValue name="readType">single</paramValue>
       <depends name="probe_RSRC"/>
-    </step>
+    </subgraph>
 
     <step name="makeProbeGenomeMappingGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateGenomeMappingGff">
       <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
       <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/genomeMapping.gff</paramValue
+      <paramValue name="outputFile">$$dataDir$$/genomeMapping.gff</paramValue>
       <depends name="alignProbesToGenome"/>
     </step>
 
@@ -67,7 +67,7 @@
       <paramValue name="inputUniqueFile">$$outputNonUniqueFile$$</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
       <paramValue name="featureType">ArrayElementFeature</paramValue>
-      <depends name="mapProbeSeqToGenomes"/>
+      <depends name="alignProbesToGenome"/>
     </step>
 
     <step name="makeTwoChannelProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin" excludeIf="isOneChannel">
@@ -75,7 +75,7 @@
       <paramValue name="inputUniqueFile">$$outputNonUniqueFile$$</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
       <paramValue name="featureType">ArrayElementFeature</paramValue>
-      <depends name="mapProbeSeqToGenomes"/>
+      <depends name="alignProbesToGenome"/>
     </step>
 
     <step name="loadProbeGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" stepLoadTypes="plugin" includeIf="loadGeneProbeMapping">
@@ -83,7 +83,7 @@
       <paramValue name="inputUniqueFile">$$outputNonUniqueFile$$</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
       <paramValue name="featureType">ArrayElementFeature</paramValue>
-      <depends name="mapProbeSeqToGenomes"/>
+      <depends name="alignProbesToGenome"/>
     </step>
 
 </workflowGraph>
