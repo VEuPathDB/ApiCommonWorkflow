@@ -1,9 +1,9 @@
 <workflowGraph name="SsaBowtie">
   <param name="parentDataDir"/>
   <param name="shortSeqsFile"/>
-  <param name="genomeIndexFile"/>
+  <param name="genomeIndexDir"/>
   <param name="geneModelFile"/>
-  <param name="transcriptsIndexFile"/>
+  <param name="transcriptIndexDir"/>
   <param name="outputUniqueFile"/>
   <param name="outputNonUniqueFile"/>
   <param name="readType"/>
@@ -11,6 +11,10 @@
   <constant name="dataDir">$$parentDataDir$$/ssaBowtie</constant>
   <constant name="bowtieOutputFile">$$dataDir$$/bowtie.out</constant>
   <constant name="combinedNonUniqueFile">$$dataDir$$/combinedNonUnique</constant>
+  <constant name="genomeUniqueFile">$$dataDir$$/genomeUniqueFile</constant>
+  <constant name="genomeNonUniqueFile">$$dataDir$$/genomeNonUniqueFile</constant>
+  <constant name="transcriptUniqueFile">$$dataDir$$/transcriptUniqueFile</constant>
+  <constant name="transcriptNonUniqueFile">$$dataDir$$/transcriptNonUniqueFile</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -19,30 +23,30 @@
     <subgraph name="bowtieGenome" xmlFile="ssaBowtie.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
-      <paramValue name="subjectIndexFile">$$genomeIndexFile$$</paramValue>
+      <paramValue name="subjectIndexFile">$$genomeIndexDir$$</paramValue>
       <paramValue name="geneModelFile">$$geneModelFile$$</paramValue>
       <paramValue name="transcriptOrGenome">genome</paramValue>
-      <paramValue name="outputUniqueFile">$$outputUniqueFile$$</paramValue>
-      <paramValue name="outputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <paramValue name="outputUniqueFile">$$genomeUniqueFile$$</paramValue>
+      <paramValue name="outputNonUniqueFile">$$genomeNonUniqueFile$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
     <subgraph name="bowtieTranscript" xmlFile="ssaBowtie.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
-      <paramValue name="subjectIndexFile">$$transcriptsIndexFile$$</paramValue>
+      <paramValue name="subjectIndexFile">$$transcriptIndexDir$$</paramValue>
       <paramValue name="geneModelFile">$$geneModelFile$$</paramValue>
       <paramValue name="transcriptOrGenome">transcripts</paramValue>
-      <paramValue name="outputUniqueFile">$$transcriptsUniqueFile$$</paramValue>
-      <paramValue name="outputNonUniqueFile">$$transcriptsNonUniqueFile$$</paramValue>
+      <paramValue name="outputUniqueFile">$$transcriptUniqueFile$$</paramValue>
+      <paramValue name="outputNonUniqueFile">$$transcriptNonUniqueFile$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
     <step name="makeBowtieUniqueFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeBowtieUnique">
      <paramValue name="inputGenomeNonUniqueFile">$$genomeNonUniqueFile$$</paramValue>
-     <paramValue name="inputTranscriptNonUniqueFile">$$transcriptsNonUniqueFile$$</paramValue>
+     <paramValue name="inputTranscriptNonUniqueFile">$$transcriptNonUniqueFile$$</paramValue>
      <paramValue name="inputGenomeUniqueFile">$$genomeUniqueFile$$</paramValue>
-     <paramValue name="inputTranscriptUniqueFile">$$transcriptsUniqueFile$$</paramValue>
+     <paramValue name="inputTranscriptUniqueFile">$$transcriptUniqueFile$$</paramValue>
      <paramValue name="outputBowtieUniqueFile">$$outputUniqueFile$$</paramValue>
      <paramValue name="outputCombinedNonUniqueFile">$$combinedNonUniqueFile$$</paramValue>
      <paramValue name="readType">$$readType$$</paramValue>
@@ -52,7 +56,7 @@
 
     <step name="makeBowtieNonUniqueFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeBowtieNonUnique">
      <paramValue name="inputGenomeNonUniqueFile">$$genomeNonUniqueFile$$</paramValue>
-     <paramValue name="inputTranscriptNonUniqueFile">$$transcriptsNonUniqueFile$$</paramValue>
+     <paramValue name="inputTranscriptNonUniqueFile">$$transcriptNonUniqueFile$$</paramValue>
      <paramValue name="inputCombinedNonUniqueFile">$$combinedNonUniqueFile$$</paramValue>
      <paramValue name="outputBowtieNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
     <depends name="makeBowtieUniqueFile"/>

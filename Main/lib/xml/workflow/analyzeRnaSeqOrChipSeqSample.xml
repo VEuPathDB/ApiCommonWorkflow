@@ -1,7 +1,7 @@
 <workflowGraph name="analyzeRnaSeqOrChipSeqSample">
     <param name="parentDataDir"/>
     <param name="sampleName"/>
-    <param name="blatGenomicIndexFile"/>
+    <param name="genomicSeqsDir"/>
     <param name="bowtieGenomicIndexDir"/>
     <param name="bowtieTranscriptIndexDir"/>
     <param name="ssaGeneModelFile"/>
@@ -12,6 +12,8 @@
     <param name="isChipSeq"/>
     <param name="computePeaks"/>
     <param name="readType"/>
+    <param name="rnaSeqExtDbRlsSpec"/>
+    <param name="genomeExtDbSpec"/>
 
     <constant name="dataDir">$$parentDataDir$$/analyze$$sampleName$$</constant>
     <constant name="uniqueFile">uniqueMappings</constant>
@@ -25,17 +27,17 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
-      <paramValue name="blatGenomicIndexFile">$$blatGenomicIndexFile$$</paramValue>
       <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="useTranscripts">true</paramValue>
       <paramValue name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="outputUniqueFile">$$uniqueFile$$</paramValue>
       <paramValue name="outputNonUniqueFile">$$nonUniqueFile$$</paramValue>
       <paramValue name="isChipSeq">$$isChipSeq$$</paramValue>
       <paramValue name="readType">$$readType$$</paramValue>
       <depends name="makeDataDir"/>
-    </step>
+    </subgraph>
 
     <step name="makeNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
       <paramValue name="inputUniqueFile">$$uniqueFile$$</paramValue>
@@ -59,9 +61,9 @@
 
     <step name="makeIntensityFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeIntensityFile" excludeIf="$$isChipSeq$$">
       <paramValue name="inputCoverageFile">$$outputCoverageFile$$</paramValue>
-      <paramValue name="inputGeneModelFile">$$geneModelFile$$</paramValue>
+      <paramValue name="inputGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="outputIntensityFile">$$outputIntensityFile$$</paramValue>
-      <depends name="makeCoverageFile"/>
+      <depends name="makeNormalizedCoverageFile"/>
     </step>
 
 </workflowGraph>
