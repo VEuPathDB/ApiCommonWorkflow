@@ -3,6 +3,7 @@
   <param name="projectVersion"/>
 
 
+
   <constant name="comparativeGenomicsFastaDir">common/comparativeGenomics/Fasta/</constant>
   <constant name="comparativeGenomicsGffDir">common/comparativeGenomics/Gff/</constant>
   <constant name="webServicesDataDir">webServices/$$projectName$$/release-$$projectVersion$$/</constant>
@@ -31,8 +32,6 @@
     <paramValue name="organismSpecificISFReference">plasmodb/pfalciparumISFResource.xml</paramValue>
     <paramValue name="ncbiTaxonId">36329</paramValue>
     <paramValue name="downloadSiteDataDir">$$projectName$$/release-$$projectVersion$$</paramValue>
-    <paramValue name="excludeForDebugping"></paramValue>
-
     <depends name="common"/>
     <dependsGlobal name="taxonomy_RSRC"/> 
     <dependsGlobal name="SO_RSRC"/>
@@ -41,6 +40,7 @@
   <subgraph name="PfalciparumMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismName">Pfalciparum</paramValue>
+    <paramValue name="organismFullName">@PfOrganismFullName@</paramValue>
     <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
     <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
     <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
@@ -88,7 +88,6 @@
     <paramValue name="organismSpecificESTResourcesReference">plasmodb/pfalciparumESTResource.xml</paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference">plasmodb/pfalciparumMassSpecResource.xml</paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
-    <paramValue name="excludeForDebugping"></paramValue>
     <depends name="PfalciparumLoadGenome"/>
   </subgraph>
 
@@ -98,7 +97,6 @@
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
     <paramValue name="downloadSiteDataDir">$$projectName$$/release-$$projectVersion$$</paramValue>
-    <paramValue name="excludeForDebugping"></paramValue>
     <depends name="PfalciparumLoadGenome"/>
   </subgraph>
 
@@ -117,6 +115,7 @@
     <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
     <paramValue name="minOrfLength">50</paramValue>
     <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
     <paramValue name="makeESTDownloadFile">true</paramValue>
     <paramValue name="makeProteomeDownloadFile">true</paramValue>
     <paramValue name="makeGenomicDownloadFile">true</paramValue>
@@ -124,8 +123,51 @@
     <depends name="PfalciparumMakeAndMaskTopLevelGenome"/>
   </subgraph>
 
+  <subgraph name="PfalciparumMitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">PfalciparumMito</paramValue>
+    <paramValue name="organismFullName">@PfOrganismFullName@</paramValue>
+    <paramValue name="ncbiTaxonId">36329</paramValue>
+    <paramValue name="parentNcbiTaxonId">5833</paramValue>
+    <paramValue name="genomeSource">@PfalciparumGenomeSource@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Pf_dbEST_RSRC|@Pf_dbEST_VER@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+     <depends name="PfalciparumPostLoadGenome"/>
+    <depends name="PfalciparumMakeAndMaskTopLevelGenome"/>
+  </subgraph>
 
-
+  <subgraph name="PfalciparumPlastidMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">PfalciparumPlastid</paramValue>
+    <paramValue name="organismFullName">@PfOrganismFullName@</paramValue>
+    <paramValue name="ncbiTaxonId">36329</paramValue>
+    <paramValue name="parentNcbiTaxonId">5833</paramValue>
+    <paramValue name="genomeSource">@PfalciparumGenomeSource@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Pf_dbEST_RSRC|@Pf_dbEST_VER@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">plastid_sequence</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="PfalciparumPostLoadGenome"/>
+    <depends name="PfalciparumMakeAndMaskTopLevelGenome"/>
+  </subgraph>
 
 </workflowGraph>
 
