@@ -10,21 +10,22 @@ sub run {
 
   # get parameter values
   my $targetDir = $self->getParamValue("targetDir");
+  my $outputFile = $self->getParamValue("outputFile");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($undo) {
-    $self->runCmd(0,"rm -rf $workflowDataDir/targetList");
+    $self->runCmd(0,"rm -rf $workflowDataDir/$outputFile");
   }else {
 
    if ($test) {
         $self->testInputFile('targetDir', "$workflowDataDir/$targetDir");
-	$self->runCmd(0,"echo test > $workflowDataDir/targetList");
+	$self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
     }
 
     $self->makeGenomeTargetListFile("$workflowDataDir/$targetDir",
-				    "$workflowDataDir/targetList",
+				    "$workflowDataDir/$outputFile",
 				    "$clusterWorkflowDataDir/$targetDir");
   }
 }
