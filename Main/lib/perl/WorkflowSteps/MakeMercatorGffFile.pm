@@ -10,31 +10,33 @@ sub run {
 
 
     my $organism = $self->getParamValue('organismFullName');
-    my $fileNamePrefix;
+    my $outputFile;
 
-    if($self->getParamValue('fileNamePrefix')){
+    if($self->getParamValue('outputFile')){
 
-	$fileNamePrefix = $self->getParamValue('fileNamePrefix');
+	$outputFile = $self->getParamValue('outputFile');
     }else{
 
-	$fileNamePrefix = $organism;
+	$outputFile = $organism;
 
-	$fileNamePrefix =~ s/\s+/_/g;
+	$outputFile =~ s/\s+/_/g;
+
+	$outputFile = $outputFile.".gff";
     }
  
 
-    my $localDataDir = $self->getLocalDataDir();
+    my $workflowDataDir = $self->getWorkflowDataDir();
  
   
-    my $cmd = "mercatorGffDump.pl  --outputDir $localDataDir --organism '$organism' --file_name_prefix '$fileNamePrefix' ";
+    my $cmd = "mercatorGffDump.pl  --outputFile $workflowDataDir/$outputFile --organism '$organism'";
 
 
 
     if ($undo) {
-      $self->runCmd(0, "rm -fr $localDataDir/$fileNamePrefix.gff");
+      $self->runCmd(0, "rm -fr $workflowDataDir/$outputFile");
     } else {
 	if ($test) {
-	    $self->runCmd(0,"echo hello > $localDataDir/$fileNamePrefix.gff");
+	    $self->runCmd(0,"echo hello > $workflowDataDir/$outputFile");
 	}else{
 	    $self->runCmd($test, $cmd);
 	}
@@ -44,7 +46,7 @@ sub run {
 sub getParamsDeclaration {
     return (
             'organism',
-            'fileNamePrefix'
+            'outputFile'
            );
 }
 

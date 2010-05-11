@@ -13,18 +13,18 @@ sub run {
     my $inputGffFile = $self->getParamValue('inputGffFile');
     my $outputGffFile = $self->getParamValue('outputGffFile');
 
-    my $localDataDir = $self->getLocalDataDir();
+    my $workflowDataDir = $self->getWorkflowDataDir();
 
 
-    my $cmd = "fixMercatorOffsetsInGFF.pl --f $localDataDir/$inputFastaFile --g $localDataDir/$inputGffFile --o $localDataDir/$outputGffFile";
+    my $cmd = "fixMercatorOffsetsInGFF.pl --f $workflowDataDir/$inputFastaFile --g $workflowDataDir/$inputGffFile --o $workflowDataDir/$outputGffFile";
 
 
 
     if ($undo) {
-      $self->runCmd(0, "rm -fr $localDataDir/$outputGffFile");
+      $self->runCmd(0, "rm -fr $workflowDataDir/$outputGffFile");
     } else {
 	if ($test) {
-	    $self->runCmd(0,"echo hello > $localDataDir/$outputGffFile");
+	    $self->runCmd(0,"echo hello > $workflowDataDir/$outputGffFile");
 	}else{
 	    $self->runCmd($test, $cmd);
 	}
