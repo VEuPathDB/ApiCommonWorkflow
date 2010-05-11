@@ -43,6 +43,7 @@ sub run {
 	    $self->runCmd($test,"gusExtractSequences --outputFile $workflowDataDir/$outputFile --idSQL \"$sql\" --verbose");
       }
   }
+}
 
 sub getParamsDeclaration {
   return (

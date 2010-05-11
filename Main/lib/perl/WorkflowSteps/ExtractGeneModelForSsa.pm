@@ -39,7 +39,7 @@ sub run {
 	    $self->runCmd($test,"extractGeneModelForSsa --outputFile $workflowDataDir/$outputFile --taxonId $taxonId");
       }
   }
-
+}
 
 sub getParamsDeclaration {
   return (

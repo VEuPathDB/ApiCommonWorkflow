@@ -20,6 +20,7 @@ sub run {
 
    if ($test) {
         $self->testInputFile('targetDir', "$workflowDataDir/$targetDir");
+	$self->runCmd(0,"echo test > $workflowDataDir/targetList");
     }
 
     $self->makeGenomeTargetListFile("$workflowDataDir/$targetDir",
