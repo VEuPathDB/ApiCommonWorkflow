@@ -9,7 +9,7 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $inputIndexesDir = $self->getParamValue('inputIndexesDir');
-    my $inputGeneModelFile = $self->getParamValue('inputShortSeqsFile');
+    my $inputShortSeqsFile = $self->getParamValue('inputShortSeqsFile');
     my $outputFile = $self->getParamValue('outputFile');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
@@ -22,7 +22,7 @@ sub run {
     } else {
 	if ($test) {
 	    $self->testInputFile('inputCoverageFile', "$workflowDataDir/$inputIndexesDir");
-	    $self->testInputFile('inputGeneModelFile', "$workflowDataDir/$inputGeneShortSeqsFile");
+	    $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$inputShortSeqsFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}
 	$self->runCmd($test, $cmd);
