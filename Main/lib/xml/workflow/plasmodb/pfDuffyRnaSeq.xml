@@ -15,6 +15,11 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <step name="makeSeqCoverageAndIntensityDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -25,7 +30,7 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <subgraph name="duffyRnaSeqResource" xmlFile="loadResource.xml">
+    <subgraph name="Pf_RNASeq_Duffy_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">Pf_RNASeq_Duffy_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -33,15 +38,15 @@
     </subgraph>
 
     <subgraph name="analyzePL01Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">PL01</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/duffyRnaSeqResource/PL01.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/PL01.cov</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Duffy_RSRC/PL01.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzePL01/PL01.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/PL01.int</paramValue>
       <paramValue name="computePeaks">false</paramValue>
       <paramValue name="readType">single</paramValue>
@@ -49,19 +54,20 @@
       <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Duffy_RSRC|@Pf_RNASeq_Duffy_VER@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
       <depends name="makeSamplesDataDir"/>
-      <depends name="duffyRnaSeqResource"/>
+      <depends name="Pf_RNASeq_Duffy_RSRC"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <subgraph name="analyzePL02Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">PL02</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/duffyRnaSeqResource/PL02.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/PL02.cov</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Duffy_RSRC/PL02.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzePL02/PL02.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/PL02.int</paramValue>
       <paramValue name="computePeaks">false</paramValue>
       <paramValue name="readType">single</paramValue>
@@ -69,19 +75,20 @@
       <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Duffy_RSRC|@Pf_RNASeq_Duffy_VER@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
       <depends name="makeSamplesDataDir"/>
-      <depends name="duffyRnaSeqResource"/>
+      <depends name="Pf_RNASeq_Duffy_RSRC"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <subgraph name="analyze3D7Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">3D7</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/duffyRnaSeqResource/3D7.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/3D7.cov</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Duffy_RSRC/3D7.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyze3D7/3D7.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/3D7.int</paramValue>
       <paramValue name="computePeaks">false</paramValue>
       <paramValue name="readType">single</paramValue>
@@ -89,7 +96,8 @@
       <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Duffy_RSRC|@Pf_RNASeq_Duffy_VER@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@Pfalciparum_chromosomes_VER@</paramValue>
       <depends name="makeSamplesDataDir"/>
-      <depends name="duffyRnaSeqResource"/>
+      <depends name="Pf_RNASeq_Duffy_RSRC"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="mergeIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
@@ -108,7 +116,7 @@
     </step>
 
     <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$dataDir$$/duffyRnaSeqResource/config.txt</paramValue>
+      <paramValue name="configFile">$$dataDir$$/Pf_RNASeq_Duffy_RSRC/config.txt</paramValue>
       <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <paramValue name="extDbRlsSpec">Pf_RNASeq_Duffy_RSRC|@Pf_RNASeq_Duffy_VER@</paramValue>
       <depends name="makePercentileProfile"/>

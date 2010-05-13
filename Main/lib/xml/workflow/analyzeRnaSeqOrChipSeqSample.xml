@@ -23,6 +23,11 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <subgraph name="alignReadsToGenome"  xmlFile="ssa.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
@@ -36,7 +41,7 @@
       <paramValue name="outputNonUniqueFile">$$nonUniqueFile$$</paramValue>
       <paramValue name="isChipSeq">$$isChipSeq$$</paramValue>
       <paramValue name="readType">$$readType$$</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="makeNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
@@ -47,15 +52,15 @@
     </step>
 
     <step name="reformatCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
-      <paramValue name="inputFileDir">$$dataDir$$/seqCoverageAndIntensity</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/seqCoverageAndIntensity/rnaSeqCov_allSamples.cov</paramValue>
+      <paramValue name="inputFile">$$outputCoverageFile$$</paramValue>
+      <paramValue name="outputFile">$$outputCoverageFile$$.reformated</paramValue>
       <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
       <depends name="makeNormalizedCoverageFile"/>
     </step>
 
     <step name="loadRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$dataDir$$/seqCoverageAndIntensity/rnaSeqCov_allSamples.cov</paramValue>
+      <paramValue name="inputFile">$$outputCoverageFile$$.reformated</paramValue>
       <depends name="reformatCoverageFile"/>
     </step>
 

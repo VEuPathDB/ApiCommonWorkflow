@@ -13,6 +13,11 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
   <subgraph name="getAndAnalyzeDuffyRnaSeq" xmlFile="plasmodb/pfDuffyRnaSeq.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
@@ -21,7 +26,7 @@
     <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
     <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="mirrorToCluster"/>
   </subgraph>
 
     <subgraph name="Pfalciparum_Newbold_RNASeq_Intensity_Profiles_RSRC" xmlFile="loadResource.xml">
@@ -39,7 +44,7 @@
     <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
     <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="mirrorToCluster"/>
   </subgraph>
 
 

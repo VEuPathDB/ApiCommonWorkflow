@@ -9,7 +9,7 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $inputFile = $self->getParamValue('inputUniqueMappingFile');
-    my $outputFile = $self->getParamValue('outputNormalizedCovFile');
+    my $outputFile = $self->getParamValue('outputFile');
     my $sampleName = $self->getParamValue('sampleName');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
