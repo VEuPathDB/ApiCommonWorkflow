@@ -13,6 +13,11 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
   <subgraph name="ZB_Oligos_getAndMapProbes" xmlFile="getAndMapProbes.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="probeResourceName">Pvivax_ZB_oligos_RSRC</paramValue>
@@ -27,7 +32,7 @@
     <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">Pvivax_contigsGB_RSRC|@Pvivax_contigsGB_VER@</paramValue>
     <paramValue name="organismFullName">@PvOrganismFullName@</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="mirrorToCluster"/>
   </subgraph>
 
   <subgraph name="Pv_ZB_time_series_RSRC" xmlFile="loadResource.xml">
@@ -61,7 +66,7 @@
     <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">Pvivax_contigsGB_RSRC|@Pvivax_contigsGB_VER@</paramValue>
     <paramValue name="organismFullName">@PvOrganismFullName@</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="mirrorToCluster"/>
   </subgraph>
 
   <subgraph name="Pv_Westenberger_array_RSRC" xmlFile="loadResource.xml">

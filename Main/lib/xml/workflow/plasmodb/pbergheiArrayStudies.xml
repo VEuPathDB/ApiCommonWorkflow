@@ -13,6 +13,11 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
   <subgraph name="GSScDNAArray_getAndMapProbes" xmlFile="getAndMapProbes.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="probeResourceName">Pberghei_gss_oligos_RSRC</paramValue>
@@ -27,7 +32,7 @@
     <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@Pberghei_chromosomes_VER@</paramValue>
     <paramValue name="organismFullName">@PbOrganismFullName@</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="mirrorToCluster"/>
   </subgraph>
 
   <subgraph name="Pb_Waters_gss_time_series_HP_RSRC" xmlFile="loadResource.xml">
@@ -78,7 +83,7 @@
     <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@Pberghei_chromosomes_VER@</paramValue>
     <paramValue name="organismFullName">@PbOrganismFullName@</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="mirrorToCluster"/>
   </subgraph>
 
   <subgraph name="Pb_Waters_DOZI_array_RSRC" xmlFile="loadResource.xml">

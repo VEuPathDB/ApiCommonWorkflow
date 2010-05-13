@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MergeBowtieAndBlat;
+package ApiCommonWorkflow::Main::WorkflowSteps::SsaMergeBowtieAndBlat;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 

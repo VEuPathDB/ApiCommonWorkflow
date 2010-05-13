@@ -21,6 +21,11 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <subgraph name="probe_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">$$probeResourceName$$</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
@@ -42,6 +47,7 @@
       <paramValue name="isChipSeq">false</paramValue>
       <paramValue name="readType">single</paramValue>
       <depends name="probe_RSRC"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="makeProbeGenomeMappingGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateGenomeMappingGff">

@@ -23,6 +23,11 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
   <subgraph name="bowtieGenome" xmlFile="ssaBowtie.xml" excludeIf="$$useTranscripts$$">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
@@ -66,10 +71,11 @@
       <paramValue name="outputNonUniqueFile">$$blatNonUniqueFile$$</paramValue>
       <paramValue name="isChipSeq">$$isChipSeq$$</paramValue>
       <depends name="findUnmappedSeqs"/>
+      <depends name="mirrorToCluster"/>
   </subgraph>
 
 
-    <step name="mergeBowtieAndBlat" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMergBowtieAndBlat">
+    <step name="mergeBowtieAndBlat" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMergeBowtieAndBlat">
       <paramValue name="inputBlatUniqueFile">$$blatUniqueFile$$</paramValue>
       <paramValue name="inputBlatNonUniqueFile">$$blatNonUniqueFile$$</paramValue>
       <paramValue name="inputBowtieUniqueFile">$$bowtieUniqueFile$$</paramValue>

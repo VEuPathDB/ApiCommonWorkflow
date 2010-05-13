@@ -13,6 +13,11 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
   <subgraph name="Pyoelii_Vaidya_Bergman_oligos_getAndMapProbes" xmlFile="getAndMapProbes.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="probeResourceName">Pyoelii_Vaidya_Bergman_oligos_RSRC</paramValue>
@@ -27,7 +32,7 @@
     <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">Pyoelii_Contigs_RSRC|@Pyoelii_Contigs_VER@</paramValue>
     <paramValue name="organismFullName">@PyOrganismFullName@</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="mirrorToCluster"/>
   </subgraph>
 
   <subgraph name="Py_Kappe_array_RSRC" xmlFile="loadResource.xml">
@@ -62,7 +67,7 @@
     <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">Pyoelii_Contigs_RSRC|@Pyoelii_Contigs_VER@</paramValue>
     <paramValue name="organismFullName">@PyOrganismFullName@</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="mirrorToCluster"/>
   </subgraph>
 
   <subgraph name="winzeler_py_pf_comparison_array_RSRC" xmlFile="loadResource.xml">
