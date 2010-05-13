@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::TransformRawDataToGenomeCoordiantes;
+package ApiCommonWorkflow::Main::WorkflowSteps::TransformRawDataToGenomeCoordinates;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
