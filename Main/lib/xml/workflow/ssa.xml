@@ -18,6 +18,8 @@
   <constant name="bowtieUnmappedFile">$$dataDir$$/bowtieUnmapped</constant>
   <constant name="blatUniqueFile">$$dataDir$$/blatUnique</constant>
   <constant name="blatNonUniqueFile">$$dataDir$$/blatNonUnique</constant>
+  <constant name="tmpUniqueFile">$$dataDir$$/tmpUnique</constant>
+  <constant name="tmpNonUniqueFile">$$dataDir$$/tmpNonUnique</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -80,10 +82,19 @@
       <paramValue name="inputBlatNonUniqueFile">$$blatNonUniqueFile$$</paramValue>
       <paramValue name="inputBowtieUniqueFile">$$bowtieUniqueFile$$</paramValue>
       <paramValue name="inputBowtieNonUniqueFile">$$bowtieNonUniqueFile$$</paramValue>
-      <paramValue name="outputUniqueFile">$$outputUniqueFile$$</paramValue>
-      <paramValue name="outputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <paramValue name="outputUniqueFile">$$tmpUniqueFile$$</paramValue>
+      <paramValue name="outputNonUniqueFile">$$tmpNonUniqueFile$$</paramValue>
       <paramValue name="readType">$$readType$$</paramValue>
       <depends name="blatGenome"/>
+    </step>
+
+    <step name="cleanTrailingMismatches" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaCleanTrailingMismatches">
+      <paramValue name="inputUniqueFile">$$tmpUniqueFile$$</paramValue>
+      <paramValue name="inputUniqueFile">$$tmpNonUniqueFile$$</paramValue>
+      <paramValue name="outputUniqueFile">$$outputUniqueFile$$</paramValue>
+      <paramValue name="outputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <depends name="mergeBowtieAndBlat"/>
     </step>
 
 
