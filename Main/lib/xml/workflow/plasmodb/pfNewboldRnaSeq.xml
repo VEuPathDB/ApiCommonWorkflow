@@ -15,11 +15,6 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-
     <step name="makeSeqCoverageAndIntensityDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -30,6 +25,18 @@
       <depends name="makeDataDir"/>
     </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+    </step>
+
+    <subgraph name="Pf_RNASeq_Newbold_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pf_RNASeq_Newbold_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
     <subgraph name="analyzeHour0Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour0</paramValue>
@@ -38,7 +45,7 @@
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/Hour0.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/hour0.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour0/Hour0.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour0.int</paramValue>
       <paramValue name="computePeaks">false</paramValue>
@@ -59,7 +66,7 @@
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/Hour8.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/hour8.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour8/Hour8.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour8.int</paramValue>
       <paramValue name="computePeaks">false</paramValue>
@@ -80,7 +87,7 @@
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/Hour16.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/hour16.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour16/Hour16.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour16.int</paramValue>
       <paramValue name="computePeaks">false</paramValue>
@@ -101,7 +108,7 @@
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/Hour24.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/hour24.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour24/Hour24.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour24.int</paramValue>
       <paramValue name="computePeaks">false</paramValue>
@@ -122,7 +129,7 @@
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/Hour32.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/hour32.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour32/Hour32.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour32.int</paramValue>
       <paramValue name="computePeaks">false</paramValue>
@@ -143,7 +150,7 @@
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/Hour40.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/hour40.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour40/Hour40.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour40.int</paramValue>
       <paramValue name="computePeaks">false</paramValue>
@@ -164,7 +171,7 @@
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/Hour48.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/hour48.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour48/Hour48.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour48.int</paramValue>
       <paramValue name="computePeaks">false</paramValue>

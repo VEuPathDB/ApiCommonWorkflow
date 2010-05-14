@@ -15,7 +15,7 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my @inputFileNames = $self->getInputFiles($test,'$workflowDataDir/$inputFilesDir','','int');
+    my @inputFileNames = $self->getInputFiles($test,"$workflowDataDir/$inputFilesDir","","int");
 
     my $size=scalar @inputFileNames;
 
@@ -25,7 +25,7 @@ sub run {
 	die "No input files. Please check inputDir: $workflowDataDir/$inputFilesDir\n";
     }else {
 	foreach my $file (@inputFileNames){
-	    open(IN,"$file") || die "File not found\n";
+	    open(IN,"$file") || die "File $file not found\n";
 	    while (<IN>){
 		chomp;
 		my ($id, $value) = split(/\t/, $_);
