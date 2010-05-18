@@ -31,7 +31,7 @@ sub run {
 
       my $releasePluginArgs = "--databaseName '$dataSourceName' --databaseVersion '$dataSourceVersion'";
 
-      $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
+      $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
     }
 }
 
