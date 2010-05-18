@@ -67,7 +67,7 @@ sub getPlugin {
 sub getWgetArgs {
     my ($self) = @_;
 
-    return $self->{parsedXml}->{wgetArgs};
+    return $self->{parsedXml}->{wgetArgs}->{content};
 }
 
 sub getWgetUrl {
