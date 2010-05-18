@@ -126,8 +126,7 @@ sub getPluginArgs {
 
     my $parent = "";
     my $name = $self->{dataSourceName};
-    my $version = $self->{version};
-
+    my $version =  $self->{parsedXml}->{version};
     my $pluginArgs = $self->{parsedXml}->{pluginArgs};
     if ($self->{parentResource}) {
       if ($pluginArgs =~ /\%(RESOURCE_\w+)\%/) {
