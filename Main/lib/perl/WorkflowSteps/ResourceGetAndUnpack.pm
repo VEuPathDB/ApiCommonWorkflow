@@ -59,7 +59,8 @@ sub unpackResource {
 
     my @unpacks2 = map { _formatForCLI($_) } @$unpacks;
 
-    foreach my $unpacker (@unpacks2) {
+    foreach my $unpacker (@$unpacks) {
+	print STDERR "$unpacker\n";
 	$self->runCmd($test,$unpacker);
     }
 }

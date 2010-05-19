@@ -6,6 +6,7 @@
       <param name="organismSpecificISFReference"/>
       <param name="ncbiTaxonId"/>
       <param name="downloadSiteDataDir"/>
+      <param name="extractProteins"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$organismName$$LoadGenome</constant>
     <constant name="genomicSeqsFileForSsa">$$dataDir$$/genomicSeqsForSsa.fsa</constant>
@@ -43,7 +44,7 @@
     </step>
 
     <step name="extractProteins"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAnnotatedProteinsBySpecies">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAnnotatedProteinsBySpecies" includeIf="$$extractProteins$$">
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="outputFile">$$proteinsFile$$</paramValue>
@@ -98,7 +99,7 @@
     </step>
 
   <step name="extractTranscriptSeqsForSsa"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTranscriptSeqsForSsa">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTranscriptSeqsForSsa" includeIf="$$extractProteins$$">
       <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="outputFile">$$transcriptSeqsFileForSsa$$</paramValue>
@@ -106,14 +107,14 @@
     </step>
 
   <step name="indexTranscriptsSeqsForBowtie"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes" includeIf="$$extractProteins$$">
       <paramValue name="inputFile">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="outputIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <depends name="extractTranscriptSeqsForSsa"/> 
     </step>
 
   <step name="extractGeneModelForSsa"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa" includeIf="$$extractProteins$$">
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="outputFile">$$geneModelFileForSsa$$</paramValue>
       <depends name="organismSpecificISF"/> 
