@@ -58,14 +58,20 @@
       <paramValue name="outputFile"></paramValue>
       <paramValue name="alternateDefline"></paramValue>
       <paramValue name="separateFastaFiles">true</paramValue>
-      <paramValue name="outputDirForSeparateFiles">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="outputDirForSeparateFiles">$$genomicSeqsDir$$_ori</paramValue>
       <depends name="organismSpecificISF"/>
     </step>
+
+    <step name="fixFileNamesforGenomicSeqsSeparateFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixGenomicSeqsSeparateFastaFileNames">
+      <paramValue name="inputDir">$$genomicSeqsDir$$_ori</paramValue>
+      <paramValue name="outputDir">$$genomicSeqsDir$$</paramValue>
+      <depends name="extractGenomicSeqsIntoSeparateFastaFiles"/>
+     </step>
 
     <step name="makeGenomeTargetListFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomeTargetListFile">
       <paramValue name="targetDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/targetList</paramValue>
-      <depends name="extractGenomicSeqsIntoSeparateFastaFiles"/>
+      <depends name="fixFileNamesforGenomicSeqsSeparateFasta"/>
     </step>
 
     <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
