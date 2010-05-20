@@ -47,10 +47,13 @@ sub run {
   my $sql2 = "select source_id, sequence 
               from Dots.EXTERNALNASEQUENCE es, SRes.EXTERNALDATABASE e, SRes.EXTERNALDATABASERELEASE r  
               where e.external_database_id = r.external_database_id and es.external_database_release_id = r.external_database_release_id 
-                and r.external_database_release_id in '$dbRlsIds' and es.na_sequence_id NOT IN (
+                and r.external_database_release_id in '$dbRlsIds'";
+
+ $sql2 .= " and es.na_sequence_id NOT IN (
                 select sp.piece_na_sequence_id from dots.SEQUENCEPIECE sp, dots.VIRTUALSEQUENCE vs, Sres.EXTERNALDATABASE e, Sres.EXTERNALDATABASERELEASE r  
                 where vs.na_sequence_id = sp.virtual_na_sequence_id AND vs.external_database_release_id = r.external_database_release_id AND r.external_database_id = e.external_database_id AND r.external_database_release_id in '$virtualDbRlsIds'
-                )";
+                )" if ($genomeVirtualSeqsExtDbRlsSpec);
+
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -60,7 +63,7 @@ sub run {
 	if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}else{
-	    $self->runCmd($test,"dumpSequencesFromTable.pl --outputFile $workflowDataDir/$outputFile --idSQL \"$sql1\" --verbose");
+	    $self->runCmd($test,"dumpSequencesFromTable.pl --outputFile $workflowDataDir/$outputFile --idSQL \"$sql1\" --verbose")  if ($genomeVirtualSeqsExtDbRlsSpec);
 	    $self->runCmd($test,"dumpSequencesFromTable.pl --outputFile $workflowDataDir/$outputFile --idSQL \"$sql2\" --verbose");
 	}
     }

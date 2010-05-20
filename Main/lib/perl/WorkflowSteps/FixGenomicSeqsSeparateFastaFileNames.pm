@@ -26,7 +26,7 @@ sub run {
 	    foreach my $file (@files) {
 		next if $file=~ /^\.\.?$/;  # skip . and ..
 		my $original = $file;
-		$file =~ s/\./#/g;
+		$file =~ s/\./\#/g;
 		$self->runCmd($test, "mv $workflowDataDir/$outputDir/$original $workflowDataDir/$outputDir/$file");
 	    }
 	}
