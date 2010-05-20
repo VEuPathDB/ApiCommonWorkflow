@@ -25,7 +25,7 @@ sub run {
       if ($test) {
 	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       }else{
-	  $self->runCmd($test, "createBowtieIndexes --inputFile $workflowDataDir/$inputFile --outputIndexDir $workflowDataDir/$outputIndexDir");
+	  $self->runCmd($test, "createBowtieIndexes --inputFile $workflowDataDir/$inputFile --outputIndexDir $workflowDataDir/$outputIndexDir/genomicIndexes");
       }
   }
 }
