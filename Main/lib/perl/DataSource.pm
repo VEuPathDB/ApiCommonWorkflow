@@ -128,7 +128,8 @@ sub getPluginArgs {
     my $name = $self->{dataSourceName};
     my $version =  $self->{parsedXml}->{version};
     my $pluginArgs = $self->{parsedXml}->{pluginArgs};
-    if ($self->{parentResource}) {
+    if ($self->{parsedXml}->{parentResource}) {
+
       if ($pluginArgs =~ /\%(RESOURCE_\w+)\%/) {
 	my $macro = $1;
 	my $xmlFile = $self->{dataSources}->getXmlFile();
