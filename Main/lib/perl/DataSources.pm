@@ -54,11 +54,11 @@ sub _substituteMacros {
   open(FILE, $xmlFile) || die "Cannot open resources XML file '$xmlFile'\n";
   while (<FILE>) {
     my $line = $_;
-    my @macroKeys = /\@([\w.]+)\@/g;   # allow keys of the form nrdb.release
+    my @macroKeys = /\@\@([\w.]+)\@\@/g;   # allow keys of the form nrdb.release
     foreach my $macroKey (@macroKeys) {
       my $val = $props->getProp($macroKey);
-      die "Invalid macro '\@$macroKey\@' in xml file $xmlFile" unless defined $val;
-      $line =~ s/\@$macroKey\@/$val/g;
+      die "Invalid macro '\@\@$macroKey\@\@' in xml file $xmlFile" unless defined $val;
+      $line =~ s/\@\@$macroKey\@\@/$val/g;
     }
     $xmlString .= $line;
   }
