@@ -2,16 +2,24 @@
       <param name="organismResourceXmlFile"/>
       <param name="dataDir"/>
 
+    <constant name="dataDir">$$dataDir$$/pvivaxISFResource</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
   <subgraph name="Pvivax_contigsGB_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pvivax_contigsGB_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pvivax_mitochondrial_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pvivax_mitochondrial_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
   </subgraph>
 
 </workflowGraph>
