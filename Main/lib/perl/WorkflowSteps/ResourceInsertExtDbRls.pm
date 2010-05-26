@@ -13,16 +13,16 @@ sub run {
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
     my $dataSourceVersion =  $dataSource->getVersion();
-    my $parentRsrc = $dataSource->getParentResource();
+    my $parentDatasource = $dataSource->getParentResource();
 
     # if has a parentResource, validate that the resource exists
     # and, if not in test mode, that it is in the database
-    if ($parentRsrc) {
-      my $parentDatasource = $self->getDataSource($parentRsrc, $dataSourceXmlFile, $dataDirPath);
+    if ($parentDatasource) {
       my $parentVersion = $parentDatasource->getVersion();
+      my $parentName = $parentDatasource->getName();
       if (!$test) {
-	my $parentExtDbRlsId = $self->getExtDbRlsId($test, "$parentRsrc|$parentVersion");
-	$self->error("Resource $dataSourceName declares a parentResource=$parentRsrc.  But the parent is not found in the database (with version $parentVersion)") unless $parentExtDbRlsId;
+	my $parentExtDbRlsId = $self->getExtDbRlsId($test, "$parentName|$parentVersion");
+	$self->error("Resource $dataSourceName declares a parentResource=$parentName.  But the parent is not found in the database (with version $parentVersion)") unless $parentExtDbRlsId;
       }
     }
 
