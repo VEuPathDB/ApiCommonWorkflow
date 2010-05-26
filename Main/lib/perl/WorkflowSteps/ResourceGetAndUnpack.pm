@@ -41,15 +41,12 @@ sub getResource {
         my $logFile = $self->getStepDir() . "/wget.log";
 	my $cmd = "wget --directory-prefix=$targetDir --output-file=$logFile $WgetArgs \"$UrlArg\"";
 	$self->runCmd($test, $cmd);
-        while (1) {
-	  sleep(5);
-	  my $wgetLogTail = $self->runCmd($test, "tail $logFile|grep -i finished\|giving");
+	my $wgetLogTail = $self->runCmd($test, "tail -2 $logFile|grep -i finished\|giving");
 	  if ($wgetLogTail=~/FINISHED/){
 	      last;
 	  }elsif($wgetLogTail=~/Giving up/){
 	    $self->error ("Wget did not successfully run. Check log file: $logFile\n");
 	  };
-        }
     } else {
 	my $manualDeliveryDir = $self->getSharedConfig('manualDeliveryDir');
 	if ($test) {
