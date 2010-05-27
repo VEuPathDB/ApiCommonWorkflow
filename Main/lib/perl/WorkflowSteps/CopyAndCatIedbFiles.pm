@@ -9,18 +9,14 @@ sub run {
     my ($self, $test, $undo) = @_;
 
 
-    my $inputDirRelativeToDownloadsDir = $self->getParamValue('inputDirRelativeToDownloadsDir');
-
-    #Now we use one IEDB file for all species, test this for all organisms.
-    #my $organismName = $self->getParamValue('organismName');
+    my $inputDir = $self->getParamValue('inputDir');
 
     my $outputDir = $self->getParamValue('outputDir');
 
 
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $downloadDir = $self->getSharedConfig('downloadDir');
 
-    my $inputDir="$downloadDir/$inputDirRelativeToDownloadsDir";
+    my $inputDir="$workflowDataDir/$inputDir";
     my $cmd = "cat ";
     my @inputFileNames = $self->getInputFiles($test,$inputDir,'','txt');
     my $size=scalar @inputFileNames;
@@ -45,8 +41,7 @@ sub run {
 }
 
 sub getParamsDeclaration {
-    return ('inputDirRelativeToDownloadsDir',
-            'organismName',
+    return ('inputDir',
             'outputDir'
            );
 }

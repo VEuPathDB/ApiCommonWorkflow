@@ -4,7 +4,7 @@
     <param name="parentDataDir"/>
     <param name="iedbExtDbRlsSpec"/>
     <param name="genomeExtDbRlsSpec"/>
-    <param name="organismName"/>
+    <param name="iedbResourceName"/>
 
     <constant name="dataDir">$$parentDataDir$$/iedb</constant>
     <constant name="proteinsFileSimpleDefline">$$dataDir$$/blastDb/proteinsSimpleDefline.fsa</constant>
@@ -23,10 +23,9 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="copyAndCatIedbFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndCatIedbFiles">
-      <paramValue name="inputDirRelativeToDownloadsDir">IEDB_Epitopes_fixed</paramValue>
+    <step name="copyIedbFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndCatIedbFiles">
+      <paramValue name="inputDir">$$parentDataDir$$/$$iedbResourceName$$/IEDB_Epitopes_fixed</paramValue>
       <paramValue name="outputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="organismName">$$organismName$$</paramValue>
       <depends name="makeInputDir"/>
     </step>
 
