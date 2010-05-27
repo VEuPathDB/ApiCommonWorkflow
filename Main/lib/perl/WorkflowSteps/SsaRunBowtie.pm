@@ -15,7 +15,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "bowtie -a --best --strata -f $workflowDataDir/$inputIndexesDir $workflowDataDir/$inputShortSeqsFile -v 3 --suppress 6,7,8 -p 1 > $workflowDataDir/$outputFile";
+    my $cmd = "bowtie -a --best --strata -f $workflowDataDir/$inputIndexesDir/genomicIndexes $workflowDataDir/$inputShortSeqsFile -v 3 --suppress 6,7,8 -p 1 > $workflowDataDir/$outputFile";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
