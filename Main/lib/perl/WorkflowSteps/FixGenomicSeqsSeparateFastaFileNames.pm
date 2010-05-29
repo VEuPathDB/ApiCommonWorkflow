@@ -4,6 +4,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::FixGenomicSeqsSeparateFastaFileN
 
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use File::Basename;
 
 sub run {
     my ($self, $test, $undo) = @_;
@@ -26,7 +27,10 @@ sub run {
 	    foreach my $file (@files) {
 		next if $file=~ /^\.\.?$/;  # skip . and ..
 		my $original = $file;
-		$file =~ s/\./\#/g;
+		my @fileNameSplits = split(/\./,$original); 
+		my $extention = pop(@fileNameSplits); 
+		my $fileNameBase = join("#", @fileNameSplits);;
+		$file = $fileNameBase . ".$extention";
 		$self->runCmd($test, "mv $workflowDataDir/$outputDir/$original $workflowDataDir/$outputDir/$file");
 	    }
 	}
