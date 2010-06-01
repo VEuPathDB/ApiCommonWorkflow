@@ -20,6 +20,8 @@ sub run {
     my $stepDir = $self->getStepDir();
 
     my $c;
+
+    $geneModelFile = $workflowDataDir/$geneModelFile;
     if ($transcriptOrGenome eq 'transcript') {
 	$c = 'make_TU_and_TNU.pl';
 	if ($test) {
