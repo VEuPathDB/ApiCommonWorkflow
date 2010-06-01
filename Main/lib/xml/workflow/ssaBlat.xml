@@ -6,6 +6,7 @@
   <param name="outputUniqueFile"/>
   <param name="outputNonUniqueFile"/>
   <param name="isChipSeq"/>
+  <param name="readlength"/>
   <param name="maxIntronSize"/>
 
   <constant name="dataDir">$$parentDataDir$$/ssaBlat</constant>
@@ -25,18 +26,19 @@
     </subgraph>
 
     <step name="blatMDust" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMDust">
-      <paramValue name="inputSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="inputSeqsFile">$$shortSeqsFile$$</paramValue>
       <paramValue name="outputSeqsFile">$$mdustOutputFile$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
     <step name="blatToUniqueAndNonUnique" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaBlatToUniqueAndNonUnique">
-     <paramValue name="inputReadSeqsFile">$$shortSeqsFile$$</paramValue>
+     <paramValue name="inputShortSeqsFile">$$shortSeqsFile$$</paramValue>
      <paramValue name="inputBlatFile">$$blatOutputFile$$</paramValue>
      <paramValue name="inputMdustFile">$$mdustOutputFile$$</paramValue>
      <paramValue name="outputUniqueFile">$$outputUniqueFile$$</paramValue>
      <paramValue name="outputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
      <paramValue name="isChipSeq">$$isChipSeq$$</paramValue>
+      <paramValue name="readlength">$$readlength$$</paramValue>
      <depends name="blatAgainstGenome"/>
      <depends name="blatMDust"/>
   </step>
