@@ -31,7 +31,7 @@ sub run {
 		my $extention = pop(@fileNameSplits); 
 		my $fileNameBase = join("#", @fileNameSplits);;
 		$file = $fileNameBase . ".$extention";
-		$self->runCmd($test, "mv $workflowDataDir/$outputDir/$original $workflowDataDir/$outputDir/$file");
+		$self->runCmd($test, "mv $workflowDataDir/$outputDir/$original $workflowDataDir/$outputDir/$file") unless($original eq $file);
 	    }
 	}
     }
