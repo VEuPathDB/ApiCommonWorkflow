@@ -5,6 +5,7 @@
     <param name="experimentExtDbRlsSpec"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="insertAnalysisResult"/>
+    <param name="probeGenesMappingFile"/>
 
     <constant name="dataDir">$$parentDataDir$$/analyze_ChIP_Chip_$$experimentResourceName$$</constant>
 
@@ -12,9 +13,9 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="runTranscriptExpressionScript" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
-      <paramValue name="inputFile">$$dataDir$$</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/transcriptExpression</paramValue>
+    <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
+      <paramValue name="inputDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
+      <paramValue name="probeGenesMappingFile">$$probeGenesMappingFile$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
