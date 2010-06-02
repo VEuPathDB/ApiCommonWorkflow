@@ -11,15 +11,13 @@ sub run {
     my $inputFile = $self->getParamValue('inputFile');
     my $outputPeaksFile = $self->getParamValue('outputPeaksFile');
     my $outputSmoothedFile = $self->getParamValue('outputSmoothedFile');
-    my $sdMultCutoff = $self->getParamValue('sdMultCutoff');
-    my $numConsecProbes = $self->getParamValue('numConsecProbes');
-    my $featureMaxGap = $self->getParamValue('featureMaxGap');
-    my $smootherMaxGap = $self->getParamValue('smootherMaxGap');
+    #peakFinderArgs: sdMultCutoff numConsecProbes featureMaxGap smootherMaxGap
+    my $peakFinderArgs = $self->getParamValue('peakFinderArgs');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "java -Xmx2000m -classpath $ENV{GUS_HOME}/lib/java/GGTools-Array.jar org.apidb.ggtools.array.ChIP_Chip_Peak_Finder $inputFile  $outputPeaksFile $outputSmoothedFile $sdMultCutoff $numConsecProbes $featureMaxGap $smootherMaxGap";
+    my $cmd = "java -Xmx2000m -classpath $ENV{GUS_HOME}/lib/java/GGTools-Array.jar org.apidb.ggtools.array.ChIP_Chip_Peak_Finder $inputFile  $outputPeaksFile $outputSmoothedFile $peakFinderArgs";
 
 
     if ($undo) {

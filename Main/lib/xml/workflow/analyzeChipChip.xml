@@ -11,6 +11,8 @@
     <param name="genomeExtDbRlsSpec"/>
 
     <constant name="dataDir">$$parentDataDir$$/analyze_ChIP_Chip_$$sampleName$$</constant>
+    <constant name="peakFinderDataDir">$$dataDir$$/smoothedDataAndPeaks</constant>
+
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -23,16 +25,23 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="runChIPChipPeakFinder" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+    <step name="makePeakFinderDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$peakFinderDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="runChIPChipPeakFinder" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindChipChipPeaks">
       <paramValue name="inputFile">$$dataDir$$/transformedAndAveragedRawData.tab</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/smoothedDataAndPeaks</paramValue>
+      <paramValue name="outputPeaksFile">$$peakFinderDataDir$$/peaks.txt</paramValue>
+      <paramValue name="outputSmoothedFile">$$peakFinderDataDir$$/smoothedProfiles.txt</paramValue>
       <paramValue name="peakFinderArgs">$$peakFinderArgs$$</paramValue>
       <depends name="transformRawDataToGenomeCoordinates"/>
+      <depends name="makePeakFinderDataDir"/>
     </step>
 
     <step name="reformatChIPChipSmoothedProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipSmoothedProfiles">
-      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_SMOOTHED</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_SMOOTHED_reformated</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/smoothedProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/smoothedProfiles_reformated.txt</paramValue>
       <depends name="runChIPChipPeakFinder"/>
     </step>
 
@@ -46,14 +55,14 @@
     </step>
 
     <step name="generateChIPChipPeakFeatureGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateChIPChipPeakFeatureGff" includeIf="$$runPeakCalls$$">
-      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_PEAKS</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_PEAKS.gff</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.txt</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.gff</paramValue>
       <depends name="runChIPChipPeakFinder"/>
     </step>
 
     <step name="loadChIPChipPeakFeature" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChIPChipPeakFeature" stepLoadTypes="plugin" includeIf="$$runPeakCalls$$">
 
-      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_PEAKS.gff</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.gff</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
       <paramValue name="substepClass">ExternalNASequence</paramValue>
@@ -64,8 +73,8 @@
     </step>
 
     <step name="reformatChIPChipPeakScoreFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipPeakScoreFile" includeIf="$$runPeakCalls$$">
-      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_PEAKS</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/transformedAndAveragedRawData_PEAKS_scores</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.txt</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/peak_scores.txt</paramValue>
       <depends name="runChIPChipPeakFinder"/>
     </step>
 
