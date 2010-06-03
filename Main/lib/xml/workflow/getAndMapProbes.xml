@@ -14,6 +14,7 @@
     <param name="organismFullName"/>
     <param name="readlength"/>
     <param name="maxIntronSize"/>
+    <param name="runParse2fasta"/>
 
     <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
     <constant name="outputUniqueFile">$$dataDir$$/uniqueMapping.txt</constant>
@@ -35,6 +36,11 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
+    <step name="runParse2fasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunParse2fasta" includeIf="$$runParse2fasta$$">
+      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa</paramValue>
+      <depends name="probe_RSRC"/>
+    </step>
+
     <subgraph name="alignProbesToGenome"  xmlFile="ssa.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
@@ -50,7 +56,7 @@
       <paramValue name="readType">single</paramValue>
       <paramValue name="readlength">$$readlength$$</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <depends name="probe_RSRC"/>
+      <depends name="runParse2fasta"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
