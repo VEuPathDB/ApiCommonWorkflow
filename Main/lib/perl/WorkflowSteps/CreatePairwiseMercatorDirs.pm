@@ -62,8 +62,8 @@ sub run {
 	    my $dirName = "$mercatorDir/$allGenomes[$i]-$allGenomes[$j]";
 	    $specA = $allExternalDbs[$j];
 	    $specB = $allExternalDbs[$i];
-	    $specA =~ /\|\|/,/g;
-	    $specB =~ /\|\|/,/g;
+	    $specA =~ s/\|\|/,/g;
+	    $specB =~ s/\|\|/,/g;
 	    $seqTableA = $allSeqTables[$j];
 	    $seqTableB = $allSeqTables[$i];
 	    $syntenySpec = "$allGenomes[$i]-$allGenomes[$j] synteny from Mercator|$mercatorSyntenyVersion";
