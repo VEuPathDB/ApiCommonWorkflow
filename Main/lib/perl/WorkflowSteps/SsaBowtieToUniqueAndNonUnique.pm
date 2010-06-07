@@ -21,7 +21,7 @@ sub run {
 
     my $c;
 
-    $geneModelFile = $workflowDataDir/$geneModelFile;
+    $geneModelFile = "$workflowDataDir/$geneModelFile";
     if ($transcriptOrGenome eq 'transcript') {
 	$c = 'make_TU_and_TNU.pl';
 	if ($test) {
@@ -38,7 +38,7 @@ sub run {
 	$self->error("Illegal value '$readType' for parameter 'readType'.  Valid values are 'single' and 'paired'.");
     }
 
-    my $cmd = "$c $geneModelFile $workflowDataDir/$bowtieFile $workflowDataDir/$uFile $workflowDataDir/$nuFile $readType";
+    my $cmd = "$c $workflowDataDir/$bowtieFile $geneModelFile $workflowDataDir/$uFile $workflowDataDir/$nuFile $readType";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$uFile");

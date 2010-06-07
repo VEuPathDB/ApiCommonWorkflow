@@ -20,7 +20,7 @@ sub run {
       if ($test) {
 	  $self->testInputFile('seqFile', "$workflowDataDir/$shortSeqsFile");
       }else{
-	  $self->runCmd($test,"mv $workflowDataDir/$shortSeqsFil $workflowDataDir/$shortSeqsFile.org");
+	  $self->runCmd($test,"mv $workflowDataDir/$shortSeqsFile $workflowDataDir/$shortSeqsFile.org");
 	  $self->runCmd($test,"parse2fasta.pl $workflowDataDir/$shortSeqsFile.org > $workflowDataDir/$shortSeqsFile");
       }
   }
