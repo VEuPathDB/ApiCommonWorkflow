@@ -28,11 +28,6 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-
   <subgraph name="bowtieGenome" xmlFile="ssaBowtie.xml" excludeIf="$$useTranscripts$$">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
@@ -67,6 +62,11 @@
       <depends name="bowtieGenome"/>
     </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="findUnmappedSeqs"/>
+    </step>
+
   <subgraph name="blatGenome" xmlFile="ssaBlat.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="shortSeqsFile">$$bowtieUnmappedFile$$</paramValue>
@@ -77,7 +77,6 @@
       <paramValue name="isChipSeq">$$isChipSeq$$</paramValue>
       <paramValue name="readlength">$$readlength$$</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <depends name="findUnmappedSeqs"/>
       <depends name="mirrorToCluster"/>
   </subgraph>
 
