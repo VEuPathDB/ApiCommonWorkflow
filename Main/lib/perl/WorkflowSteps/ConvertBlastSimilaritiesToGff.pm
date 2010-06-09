@@ -14,7 +14,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "perl blastToGff.pl --blastInput $workflowDataDir/$inputFile --outputFile $workflowDataDir/$gffOutputFile";
+  my $cmd = "blastToGff.pl --blastInput $workflowDataDir/$inputFile --outputFile $workflowDataDir/$gffOutputFile";
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$gffOutputFile");
   } else {

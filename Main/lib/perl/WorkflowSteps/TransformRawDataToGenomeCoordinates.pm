@@ -18,7 +18,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "TransformRawDataToGenomeCoordiantes  --inputFile '$workflowDataDir/$inputFile' --outputFile '$workflowDataDir/$outputFile' --extDbSpec $extDbRlsSpec";
+  my $cmd = "TransformRawDataToGenomeCoordiantes  --inputFile '$workflowDataDir/$inputFile' --outputFile '$workflowDataDir/$outputFile' --extDbSpec '$extDbRlsSpec'";
     
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");

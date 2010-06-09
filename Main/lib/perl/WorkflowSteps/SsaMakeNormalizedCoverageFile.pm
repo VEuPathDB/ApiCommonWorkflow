@@ -8,7 +8,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $inputFile = $self->getParamValue('inputUniqueMappingFile');
+    my $inputFile = $self->getParamValue('inputUniqueFile');
     my $outputFile = $self->getParamValue('outputFile');
     my $sampleName = $self->getParamValue('sampleName');
 
