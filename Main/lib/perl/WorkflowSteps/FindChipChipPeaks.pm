@@ -17,7 +17,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "java -Xmx2000m -classpath $ENV{GUS_HOME}/lib/java/GGTools-Array.jar org.apidb.ggtools.array.ChIP_Chip_Peak_Finder $inputFile  $outputPeaksFile $outputSmoothedFile $peakFinderArgs";
+    my $cmd = "java -Xmx2000m -classpath $ENV{GUS_HOME}/lib/java/GGTools-Array.jar org.apidb.ggtools.array.ChIP_Chip_Peak_Finder $workflowDataDir/$inputFile  $workflowDataDir/$outputPeaksFile $workflowDataDir/$outputSmoothedFile $peakFinderArgs";
 
 
     if ($undo) {
