@@ -9,33 +9,20 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $inputFileDir = $self->getParamValue('inputFileDir');
+  my $inputFile = $self->getParamValue('inputFile');
 
   my $outputFile =  $self->getParamValue('outputFile');
 
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
 
   my $genomeExtDbSpec =  $self->getParamValue('genomeExtDbSpec');
+
+  my $sampleName =  $self->getParamValue('sampleName');
    
-  my $cmdCat = "cat ";
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
- my $workflowDataDir = $self->getWorkflowDataDir();
+  my $cmdReformat = "generateCoveragePlotInputFile.pl  --filename $workflowDataDir/$inputFile --RNASeqExtDbSpecs '$extDbRlsSpec' --genomeExtDbSpecs '$genomeExtDbSpec' --sample '$sampleName' > $workflowDataDir/$outputFile";
 
-  my @inputFileNames = $self->getInputFiles($test,'$workflowDataDir/$inputFileDir','','cov');
-    
-  my $size=scalar @inputFileNames;
-
-  if (scalar @inputFileNames==0){
-	die "No input files. Please check inputDir: $workflowDataDir/$inputFileDir\n";
-  }else {
-	$cmdCat .= join (" " ,@inputFileNames);
-    }
-
-  $cmdCat .= " >$workflowDataDir/$inputFileDir/TEMP.cov";
-
-  my $cmdReformat = "generateCoveragePlotInputFile.pl  --filename $workflowDataDir/$inputFileDir/TEMP.cov --RNASeqExtDbSpecs $extDbRlsSpec --genomeExtDbSpecs $genomeExtDbSpec > $workflowDataDir/$outputFile";
-
-  my $cmdRemoveTEMP = "rm -r $workflowDataDir/$inputFileDir/TEMP.cov";
   
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
@@ -43,9 +30,7 @@ sub run {
       if ($test){
 	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
       }else{
-	    $self->runCmd($test, $cmdCat);
 	    $self->runCmd($test, $cmdReformat);
-	    $self->runCmd($test, $cmdRemoveTEMP);
       }
   }
 
@@ -53,7 +38,7 @@ sub run {
 
 sub getParamDeclaration {
   return (
-	  'inputFileDir',
+	  'inputFile',
 	  'outputFile',
 	  'extDbRlsSpec',
 	  'genomeExtDbSpec',

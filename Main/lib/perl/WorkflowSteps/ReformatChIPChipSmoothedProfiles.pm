@@ -19,7 +19,7 @@ sub run {
    
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "generateCoveragePlotInputFile.pl  --filename $workflowDataDir/$inputFile --RNASeqExtDbSpecs $extDbRlsSpec --genomeExtDbSpecs $genomeExtDbSpec > $workflowDataDir/$outputFile";
+  my $cmd = "generateCoveragePlotInputFile.pl  --filename $workflowDataDir/$inputFile --RNASeqExtDbSpecs '$extDbRlsSpec' --genomeExtDbSpecs '$genomeExtDbSpec' > $workflowDataDir/$outputFile";
 
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");

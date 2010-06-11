@@ -17,7 +17,7 @@ sub run {
 
     my $make_bed_cmd = "make_bed.pl $workflowDataDir/$inputFile $stepDir/mapping.bed";
     my $m2c_cmd = "java -Xmx2000m -classpath $ENV{GUS_HOME}/lib/java/GGTools-SSA.jar org.apidb.ggtools.ssa.M2C $stepDir/mapping.bed $stepDir/output.cov -ucsc -name '$sampleName' -chunks 2 ";
-    my $normalize_cmd = "normalizeCov.pl $stepDir/output.cov $workflowDataDir/$outputFile";
+    my $normalize_cmd = "normalizeCov.pl $stepDir/output.cov > $workflowDataDir/$outputFile";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
