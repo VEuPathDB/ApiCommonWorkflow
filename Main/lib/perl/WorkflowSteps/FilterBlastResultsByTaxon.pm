@@ -13,13 +13,11 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
   my $unfilteredOutputFile = $self->getParamValue('unfilteredOutputFile');
   my $filteredOutputFile = $self->getParamValue('filteredOutputFile');
-  my $gi2taxidFileRelativeToDownloadDir = $self->getParamValue('gi2taxidFileRelativeToDownloadDir');
-
-  my $downloadDir = $self->getSharedConfig('downloadDir');
+  my $gi2taxidFile = $self->getParamValue('gi2taxidFile');
 
   $taxonList =~ s/\"//g if $taxonList;
 
-  my $gi2taxidFile = "$downloadDir/$gi2taxidFileRelativeToDownloadDir";
+  my $gi2taxidFile = "$workflowDataDir/$gi2taxidFile";
   $self->runCmd(0, "gunzip $gi2taxidFile.gz") if (-e "$gi2taxidFile.gz");
 
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -47,7 +45,7 @@ sub run {
 sub getParamsDeclaration {
   return (
 	  'taxonHierarchy',
-	  'gi2taxidFileRelativeToDownloadDir',
+	  'gi2taxidFile',
 	  'inputFile',
 	  'unfilteredOutputFile',
 	  'filteredOutputFile',
@@ -57,7 +55,6 @@ sub getParamsDeclaration {
 sub getConfigDeclaration {
   return (
 	  # [name, default, description]
-	  ['downloadDir', "", ""],
 	 );
 }
 

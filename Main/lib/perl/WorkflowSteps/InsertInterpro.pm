@@ -11,17 +11,16 @@ sub run {
 
     my $inputDir = $self->getParamValue('inputDir');
     my $interproExtDbRlsSpec = $self->getParamValue('interproExtDbRlsSpec');
-    my $configFileRelativeToDownloadDir = $self->getParamValue('configFileRelativeToDownloadDir');
+    my $configFile = $self->getParamValue('configFile');
     my $goVersion = $self->getParamValue('goVersion');
     my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$interproExtDbRlsSpec);
     my $aaSeqTable = 'TranslatedAASequence';
 
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $downloadDir = $self->getSharedConfig('downloadDir');
   
     my $args = <<"EOF";
 --resultFileDir=$workflowDataDir/$inputDir \\
---confFile=$downloadDir/$configFileRelativeToDownloadDir \\
+--confFile=$workflowDataDir/$configFile \\
 --aaSeqTable=$aaSeqTable \\
 --extDbName='$extDbName' \\
 --extDbRlsVer='$extDbRlsVer' \\
@@ -40,7 +39,7 @@ EOF
 sub getParamsDeclaration {
     return ('inputDir',
             'interproExtDbRlsSpec',
-            'configFileRelativeToDownloadDir'
+            'configFile'
            );
 }
 
