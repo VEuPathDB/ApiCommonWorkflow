@@ -14,7 +14,7 @@ sub run {
   my $processorsPerNode = $self->getParamValue('processorsPerNode');
 
   # get global properties
-  my $clusterServer = $self->getWorkflowConfig('clusterServer');
+  my $clusterServer = $self->getSharedConfig('clusterServer');
   my $clusterQueue = $self->getSharedConfig('clusterQueue');
 
   my $clusterTaskLogsDir = $self->getComputeClusterTaskLogsDir();
