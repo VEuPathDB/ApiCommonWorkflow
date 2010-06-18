@@ -10,6 +10,7 @@ use strict;
 use Carp;
 
 use ReFlow::Controller::WorkflowStepInvoker;
+use CBIL::Util::SshCluster;
 
 sub getComputeClusterHomeDir {
     my ($self) = @_;
