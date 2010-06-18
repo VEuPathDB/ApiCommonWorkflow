@@ -11,6 +11,13 @@
     </ant>
   </target>  
 
+  <target name="ReFlow-Installation">
+    <ant antfile="../ReFlow/build.xml" target="ReFlow-Installation">
+      <property name="project" value="ReFlow"/>
+      <property name="version" value="??"/>
+    </ant>
+  </target>  
+
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo    Checkout    oooooooooooooooooooooooooo -->
@@ -19,6 +26,14 @@
   <target name="ApiCommonData-Checkout" unless="ApiCommonData.present"> 
     <ant target="defaultProjectCheckout" inheritAll="false"> 
       <property name="svnurl" value="https://www.cbil.upenn.edu/svn/apidb/ApiCommonData" />
+      <property name="project" value="ApiCommonData"/>
+      <property name="version" value="??"/>
+    </ant>
+  </target>    
+
+  <target name="ReFlow-Checkout" unless="ReFlow.present"> 
+    <ant target="defaultProjectCheckout" inheritAll="false"> 
+      <property name="svnurl" value="https://www.cbil.upenn.edu/svn/apidb/ReFlow" />
       <property name="project" value="ApiCommonData"/>
       <property name="version" value="??"/>
     </ant>
@@ -47,6 +62,7 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <target name="ApiCommonWorkflow-Installation" depends="ApiCommonData-Installation,
+                                            ReFlow-Installation,
                                             ApiCommonWorkflow/Main-Installation">
 
     <ant target="defaultProjectInstall"/>
