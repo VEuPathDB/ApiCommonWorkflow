@@ -16,7 +16,7 @@ sub run {
   my $gi2taxidFile = $self->getParamValue('gi2taxidFile');
 
   $taxonList =~ s/\"//g if $taxonList;
-
+  my $workflowDataDir = $self->getWorkflowDataDir();
   my $gi2taxidFile = "$workflowDataDir/$gi2taxidFile";
   $self->runCmd(0, "gunzip $gi2taxidFile.gz") if (-e "$gi2taxidFile.gz");
 

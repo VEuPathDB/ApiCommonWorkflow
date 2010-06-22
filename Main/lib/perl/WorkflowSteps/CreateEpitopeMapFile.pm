@@ -17,7 +17,6 @@ sub run {
     my $idRegex = $self->getParamValue('idRegex');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $downloadDir = $self->getSharedConfig('downloadDir');
     my $ncbiBlastPath = $self->getConfig('ncbiBlastPath');
 
     my $cmd = "createEpitopeMappingFileWorkflow  --ncbiBlastPath $ncbiBlastPath --inputDir $workflowDataDir/$inputDir --queryDir $workflowDataDir/$queryDir --outputDir $workflowDataDir/$outputDir --blastDatabase $workflowDataDir/$blastDbDir/AnnotatedProteins.fsa --idRegex '$idRegex' --subjectFile $workflowDataDir/$proteinsFile";

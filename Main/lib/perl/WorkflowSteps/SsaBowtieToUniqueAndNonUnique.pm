@@ -25,7 +25,7 @@ sub run {
     if ($transcriptOrGenome eq 'transcript') {
 	$c = 'make_TU_and_TNU.pl';
 	if ($test) {
-	    $self->testInputFile('inputGeneModelFile', "$workflowDataDir/$geneModelFile");
+	    $self->testInputFile('inputGeneModelFile', "$geneModelFile");
 	}
     }
     elsif ($transcriptOrGenome eq 'genome') {
