@@ -12,7 +12,7 @@ sub run {
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
-  my $cmd = "getGeneAliases --extDbSpec '$genomeExtDbRlsSpec' --outfile $outputFile";
+  my $cmd = "getGeneAliases --extDbSpec '$genomeExtDbRlsSpec' --outfile $apiSiteFilesDir/$outputFile";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $apiSiteFilesDir/$outputFile");
