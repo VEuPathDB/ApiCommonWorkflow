@@ -13,25 +13,14 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $new_file = "";
+  my $cmd = "replace.pl --old '#' --new '.' $workflowDataDir/$inputFile";
 
   if ($undo) {
   } else {
       if ($test) {
 	  $self->testInputFile('seqFile', "$workflowDataDir/$inputFile");
       }else{
-	    open (F, "$workflowDataDir/$inputFile");
-	    while (<F>){
-		while (m/\#/g){
-		    $_ =~ s|\#|\.|;
-		    $new_file .= $_;
-		}
-		close F;
-	    }
-	    system ("cp $workflowDataDir/$inputFile $workflowDataDir/$inputFile.bak");
-	    open (OUT, ">$workflowDataDir/$inputFile");
-	    print OUT $new_file;
-	    close OUT;
+	  $self->runCmd($test,$cmd);
       }
   }
 }
