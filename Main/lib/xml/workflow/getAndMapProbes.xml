@@ -9,7 +9,6 @@
     <param name="genomicSeqsDir"/>
     <param name="chipProbeExtDbRlsSpec"/>
     <param name="isOneChannel"/>
-    <param name="loadGeneProbeMapping"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="organismFullName"/>
     <param name="readLength"/>
@@ -80,29 +79,19 @@
       <depends name="makeProbeGenomeMappingGffFile"/>
     </step>
 
-    <step name="makeOneChannelProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOneChannelProbesGenesMapping" stepLoadTypes="plugin" includeIf="$$isOneChannel$$">
-      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
-      <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+    <step name="makeProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOneChannelProbesGenesMapping" stepLoadTypes="plugin">
+      <paramValue name="outputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
       <paramValue name="featureType">ArrayElementFeature</paramValue>
-      <depends name="alignProbesToGenome"/>
+      <depends name="loadProbeGenomeMapping"/>
     </step>
 
-    <step name="makeTwoChannelProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTwoChannelProbesGenesMapping" stepLoadTypes="plugin" excludeIf="$$isOneChannel$$">
-      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
-      <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+    <step name="makeCdfFileForAffyArray" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" stepLoadTypes="plugin" includeIf="$$isOneChannel$$">
+      <paramValue name="inputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/$$probeResourceName$$.cdf</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
       <paramValue name="featureType">ArrayElementFeature</paramValue>
-      <depends name="alignProbesToGenome"/>
-    </step>
-
-    <step name="loadProbeGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadProbeGenesMapping" stepLoadTypes="plugin" includeIf="$$loadGeneProbeMapping$$">
-      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
-      <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
-      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
-      <paramValue name="featureType">ArrayElementFeature</paramValue>
-      <depends name="makeOneChannelProbesGenesMapping"/>
-      <depends name="makeTwoChannelProbesGenesMapping"/>
+      <depends name="makeProbesGenesMapping"/>
     </step>
 
 </workflowGraph>
