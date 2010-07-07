@@ -16,9 +16,11 @@ sub run {
 
   my $outputFile =  $self->getParamValue('outputFile');
 
+  my $allowedMismatches =  $self->getParamValue('allowedMismatches');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "generateProbeGenomeMappingGff  --inputFile '$workflowDataDir/$inputUniqueFile' --outputFile '$workflowDataDir/$outputFile'";
+  my $cmd = "generateProbeGenomeMappingGff  --inputFile '$workflowDataDir/$inputUniqueFile' --allowedMismatches $allowedMismatches  --outputFile '$workflowDataDir/$outputFile'";
     
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
