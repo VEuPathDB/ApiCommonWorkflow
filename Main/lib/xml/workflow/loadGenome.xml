@@ -7,6 +7,7 @@
       <param name="ncbiTaxonId"/>
       <param name="downloadSiteDataDir"/>
       <param name="extractProteins"/>
+      <param name="projectName"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$organismName$$LoadGenome</constant>
     <constant name="genomicSeqsFileForSsa">$$dataDir$$/genomicSeqsForSsa.fsa</constant>
@@ -24,6 +25,12 @@
 
     <step name="makeDownloadSiteDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
       <paramValue name="apiSiteFilesDir">$$downloadSiteDataDir$$/$$organismName$$</paramValue>
+    </step>
+
+  <step name="insertOrganismProject"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrganismProject">
+      <paramValue name="organism">$$organismName$$</paramValue>
+      <paramValue name="project">$$projectName$$</paramValue>
     </step>
 
   <subgraph name="organismSpecificISF" xmlFile="$$organismSpecificISFReference$$">

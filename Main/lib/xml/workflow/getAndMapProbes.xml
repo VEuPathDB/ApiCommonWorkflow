@@ -61,12 +61,20 @@
       <depends name="mirrorToCluster"/>
     </subgraph>
 
+    <step name="revertProbeSeqId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RevertProbeSeqId" includeIf="$$runParse2fasta$$">
+      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa</paramValue>
+      <paramValue name="originalShortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa.org</paramValue>
+      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
+      <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <depends name="alignProbesToGenome"/>
+    </step>
+
     <step name="makeProbeGenomeMappingGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateGenomeMappingGff">
       <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
       <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/genomeMapping.gff</paramValue>
       <paramValue name="allowedMismatches">1</paramValue>
-      <depends name="alignProbesToGenome"/>
+      <depends name="revertProbeSeqId"/>
     </step>
 
     <step name="loadProbeGenomeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChIPChipPeakFeature" stepLoadTypes="plugin">
