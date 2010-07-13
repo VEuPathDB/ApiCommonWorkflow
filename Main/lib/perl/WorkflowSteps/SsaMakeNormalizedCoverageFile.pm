@@ -8,21 +8,21 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $inputFile = $self->getParamValue('inputUniqueFile');
+    my $inputFile = $self->getParamValue('inputFile');
     my $outputFile = $self->getParamValue('outputFile');
     my $sampleName = $self->getParamValue('sampleName');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $make_bed_cmd = "make_bed.pl $workflowDataDir/$inputFile $stepDir/mapping.bed";
-    my $m2c_cmd = "java -Xmx2000m -classpath $ENV{GUS_HOME}/lib/java/GGTools-SSA.jar org.apidb.ggtools.ssa.M2C $stepDir/mapping.bed $stepDir/output.cov -ucsc -name '$sampleName' -chunks 2 ";
-    my $normalize_cmd = "normalizeCov.pl $stepDir/output.cov > $workflowDataDir/$outputFile";
+    my $make_bed_cmd = "make_bed.pl $workflowDataDir/$inputFile $stepDir/$inputFile.mapping.bed";
+    my $m2c_cmd = "java -Xmx2000m -classpath $ENV{GUS_HOME}/lib/java/GGTools-SSA.jar org.apidb.ggtools.ssa.M2C $stepDir/$inputFile.mapping.bed $stepDir/$inputFile.output.cov -ucsc -name '$sampleName' -chunks 2 ";
+    my $normalize_cmd = "normalizeCov.pl $stepDir/$inputFile.output.cov > $workflowDataDir/$outputFile";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
-	$self->runCmd(0, "rm -f $stepDir/mapping.bed");
-	$self->runCmd(0, "rm -f $stepDir/output.cov");
+	$self->runCmd(0, "rm -f $stepDir/$inputFile.mapping.bed");
+	$self->runCmd(0, "rm -f $stepDir/$inputFile.output.cov");
     } else {
 	if ($test) {
 	    $self->testInputFile('inputUniqueMappingFile', "$workflowDataDir/$inputFile");

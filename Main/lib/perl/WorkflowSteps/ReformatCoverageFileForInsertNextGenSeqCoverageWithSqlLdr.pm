@@ -18,10 +18,12 @@ sub run {
   my $genomeExtDbSpec =  $self->getParamValue('genomeExtDbSpec');
 
   my $sampleName =  $self->getParamValue('sampleName');
+
+  my $multiple =  $self->getParamValue('multiple');
    
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmdReformat = "generateCoveragePlotInputFile.pl  --filename $workflowDataDir/$inputFile --RNASeqExtDbSpecs '$extDbRlsSpec' --genomeExtDbSpecs '$genomeExtDbSpec' --sample '$sampleName' > $workflowDataDir/$outputFile";
+  my $cmdReformat = "generateCoveragePlotInputFile.pl  --filename $workflowDataDir/$inputFile --RNASeqExtDbSpecs '$extDbRlsSpec' --genomeExtDbSpecs '$genomeExtDbSpec' --sample '$sampleName' --multiple $multiple> $workflowDataDir/$outputFile";
 
   
   if ($undo) {
