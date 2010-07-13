@@ -37,7 +37,7 @@
     </subgraph>
 
     <step name="runParse2fasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunParse2fasta" includeIf="$$runParse2fasta$$">
-      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
       <depends name="probe_RSRC"/>
     </step>
 
@@ -47,7 +47,7 @@
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="useTranscripts">true</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="outputUniqueFile">$$outputUniqueFile$$</paramValue>
@@ -62,8 +62,8 @@
     </subgraph>
 
     <step name="revertProbeSeqId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RevertProbeSeqId" includeIf="$$runParse2fasta$$">
-      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa</paramValue>
-      <paramValue name="originalShortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa.org</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
+      <paramValue name="originalShortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa.org</paramValue>
       <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
       <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
       <depends name="alignProbesToGenome"/>
@@ -88,19 +88,18 @@
       <depends name="makeProbeGenomeMappingGffFile"/>
     </step>
 
-    <step name="makeProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOneChannelProbesGenesMapping" stepLoadTypes="plugin">
+    <step name="makeProbeGeneMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProbeGeneMappingFile">
       <paramValue name="outputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
       <paramValue name="featureType">ArrayElementFeature</paramValue>
       <depends name="loadProbeGenomeMapping"/>
     </step>
 
-    <step name="makeCdfFileForAffyArray" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" stepLoadTypes="plugin" includeIf="$$isOneChannel$$">
-      <paramValue name="inputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/$$probeResourceName$$.cdf</paramValue>
-      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
-      <paramValue name="featureType">ArrayElementFeature</paramValue>
-      <depends name="makeProbesGenesMapping"/>
+    <step name="makeCdfFileForAffyArray" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$isOneChannel$$">
+      <paramValue name="gene2probesInputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
+      <paramValue name="probename2sequenceInputFile">$$dataDir$$/$$probeResourceName$$/final/probename2sequence.tab</paramValue>
+      <paramValue name="cdfFile">$$dataDir$$/$$probeResourceName$$/final/affyArray.cdf</paramValue>
+      <depends name="makeProbeGeneMappingFile"/>
     </step>
 
 </workflowGraph>
