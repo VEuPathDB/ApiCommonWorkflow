@@ -15,17 +15,23 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "quantify_one_sample.pl $workflowDataDir/$inputCoverageFile $workflowDataDir/$inputGeneModelFile > $workflowDataDir/$outputIntensityFile";
+    my $tempOutputFile="$workflowDataDir/$outputIntensityFile"."ori";
+
+    my $cmd1 = "quantify_one_sample.pl $workflowDataDir/$inputCoverageFile $workflowDataDir/$inputGeneModelFile > $tempOutputFile";
+
+    my $cmd2 = "featurequant2geneprofiles.pl $workflowDataDir/$outputIntensityFile.ori -genes > $workflowDataDir/$outputIntensityFile";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputIntensityFile");
+	$self->runCmd(0, "rm -f $workflowDataDir/$outputIntensityFile.ori");
     } else {
 	if ($test) {
 	    $self->testInputFile('inputCoverageFile', "$workflowDataDir/$inputCoverageFile");
 	    $self->testInputFile('inputGeneModelFile', "$workflowDataDir/$inputGeneModelFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputIntensityFile");
 	}
-	$self->runCmd($test, $cmd);
+	$self->runCmd($test, $cmd1);
+	$self->runCmd($test, $cmd2);
     }
 }
 

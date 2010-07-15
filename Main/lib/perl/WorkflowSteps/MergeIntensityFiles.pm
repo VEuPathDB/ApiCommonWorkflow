@@ -26,23 +26,26 @@ sub run {
     }else {
 	foreach my $file (@inputFileNames){
 	    open(IN,"$file") || die "File $file not found\n";
+	    my $base = (split(/\//, $file))[-1];
+	    $base=~ s/\.int//;
+	    $intensityVals{header}.="$base\t";
 	    while (<IN>){
 		chomp;
 		my ($id, $value) = split(/\t/, $_);
-		if ($intensityVals{$id}){
-		    my $temp = $intensityVals{$id};
-		    $temp = "$temp\t$value";
-		    $intensityVals{$id}=$temp;
-		}else{
-		    $intensityVals{$id}=$value;
-		}
+		    $intensityVals{$id}.="$value\t";
 	    }
 	} 
     }
 
     open(OUT,">$workflowDataDir/$outputFile");
 
+    $intensityVals{header} =~ s/\t*$//g;
+
+    print OUT "id\t$intensityVals{header}\n";
+
     foreach my $source_id (keys %intensityVals) {
+
+	$intensityVals{$source_id} =~ s/\t*$//g;;
 	print OUT "$source_id\t$intensityVals{$source_id}\n";
     }
 
