@@ -16,6 +16,7 @@ sub run {
     my $nuFile = $self->getParamValue('outputNonUniqueFile');
     my $readLength = $self->getParamValue('readLength');
     my $isChipSeq = $self->getParamValue('isChipSeq');
+    my $nonUniqueMappingSuppressLimits = $self->getParamValue('nonUniqueMappingSuppressLimits');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
