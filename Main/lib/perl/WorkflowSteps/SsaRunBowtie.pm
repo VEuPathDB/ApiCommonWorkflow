@@ -11,18 +11,12 @@ sub run {
     my $inputIndexesDir = $self->getParamValue('inputIndexesDir');
     my $inputShortSeqsFile = $self->getParamValue('inputShortSeqsFile');
     my $outputFile = $self->getParamValue('outputFile');
-    my $nonUniqueMappingSuppressLimits = $self->getParamValue('nonUniqueMappingSuppressLimits');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "bowtie -a --best --strata -f $workflowDataDir/$inputIndexesDir/genomicIndexes $workflowDataDir/$inputShortSeqsFile -v 3 --suppress 6,7,8 -p 1";
+    my $cmd = "bowtie -a --best --strata -f $workflowDataDir/$inputIndexesDir/genomicIndexes $workflowDataDir/$inputShortSeqsFile -v 3 --suppress 6,7,8 -p 1 > $workflowDataDir/$outputFile";
 
-    if ($nonUniqueMappingSuppressLimits){
-	$cmd .=" -m $nonUniqueMappingSuppressLimits > $workflowDataDir/$outputFile";
-    }else{
-	$cmd .=" > $workflowDataDir/$outputFile";
-    }
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile");

@@ -20,7 +20,9 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "generateProbeGenomeMappingGff  --inputFile '$workflowDataDir/$inputUniqueFile' --allowedMismatches $allowedMismatches  --outputFile '$workflowDataDir/$outputFile'";
+  my $cmd1 = "cat  '$workflowDataDir/$inputUniqueFile' '$workflowDataDir/$inputNonUniqueFile' > '$workflowDataDir/$outputFile'";
+
+  my $cmd2 = "generateProbeGenomeMappingGff  --inputFile '$workflowDataDir/$inputUniqueFile' --allowedMismatches $allowedMismatches  --outputFile '$workflowDataDir/$outputFile'";
     
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");

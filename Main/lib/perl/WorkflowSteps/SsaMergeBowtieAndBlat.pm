@@ -15,17 +15,21 @@ sub run {
     my $uFile = $self->getParamValue('outputUniqueFile');
     my $nuFile = $self->getParamValue('outputNonUniqueFile');
     my $readType = $self->getParamValue('readType');
+    my $nonUniqueMappingSuppressLimits = $self->getParamValue('nonUniqueMappingSuppressLimits');
 
     $self->error() unless ($readType eq 'single' or $readType eq 'paired');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "merge_Bowtie_and_Blat.pl $workflowDataDir/$bowtieUFile $workflowDataDir/$blatUFile $workflowDataDir/$bowtieNuFile $workflowDataDir/$blatNuFile $workflowDataDir/$uFile $workflowDataDir/$nuFile $readType";
+    my $cmd1 = "merge_Bowtie_and_Blat.pl $workflowDataDir/$bowtieUFile $workflowDataDir/$blatUFile $workflowDataDir/$bowtieNuFile $workflowDataDir/$blatNuFile $workflowDataDir/$uFile $workflowDataDir/$nuFile $readType";
+    my $cmd2 = "mv $workflowDataDir/$nuFile $workflowDataDir/$nuFile.save";
+    my $cmd3 = "limit_NU.pl $workflowDataDir/$nuFile.save $nonUniqueMappingSuppressLimits > $workflowDataDir/$nuFile";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$uFile");
 	$self->runCmd(0, "rm -f $workflowDataDir/$nuFile");
+	$self->runCmd(0, "rm -f $workflowDataDir/$nuFile.save");
     } else {
 	if ($test) {
 	    $self->testInputFile('inputBowtieUniqueFile', "$workflowDataDir/$bowtieUFile");
@@ -37,7 +41,9 @@ sub run {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$nuFile");
 
 	}
-	$self->runCmd($test, $cmd);
+	$self->runCmd($test, $cmd1);
+	$self->runCmd($test, $cmd2);
+	$self->runCmd($test, $cmd3);
 
     }
 }
