@@ -15,6 +15,7 @@
     <param name="maxIntronSize"/>
     <param name="runParse2fasta"/>
     <param name="genomicSeqsFileForSsa"/>
+    <param name="dnaHybridazation"/>
 
     <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
     <constant name="outputUniqueFile">$$dataDir$$/uniqueMapping.txt</constant>
@@ -69,12 +70,19 @@
       <depends name="alignProbesToGenome"/>
     </step>
 
+    <step name="excludeMultiExonHits" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExcludeMultiExonHits" includeIf="$$dnaHybridazation$$">
+      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
+      <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <depends name="revertProbeSeqId"/>
+    </step>
+
     <step name="makeProbeGenomeMappingGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateGenomeMappingGff">
       <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
       <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/genomeMapping.gff</paramValue>
       <paramValue name="allowedMismatches">1</paramValue>
       <depends name="revertProbeSeqId"/>
+      <depends name="excludeMultiExonHits"/>
     </step>
 
     <step name="loadProbeGenomeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChIPChipPeakFeature" stepLoadTypes="plugin">
