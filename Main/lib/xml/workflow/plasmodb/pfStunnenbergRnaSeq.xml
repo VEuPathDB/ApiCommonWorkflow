@@ -1,0 +1,276 @@
+<workflowGraph name="pfStunnenbergRnaSeq">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="bowtieGenomicIndexDir"/>
+    <param name="bowtieTranscriptIndexDir"/>
+    <param name="genomicSeqsFile"/>
+    <param name="genomicSeqsDir"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="maxIntronSize"/>
+
+    <constant name="dataDir">$$parentDataDir$$/pfStunnenbergRnaSeq</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+    <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSeqCoverageAndIntensityDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+    </step>
+
+    <subgraph name="Pf_RNASeq_Stunnenberg_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pf_RNASeq_Stunnenberg_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+
+    <subgraph name="analyzeHour35Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Hour35</paramValue>
+      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Stunnenberg_RSRC/final/35h.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour35/35h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/35h.int</paramValue>
+      <paramValue name="computePeaks">false</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Stunnenberg_RSRC|@@Pf_RNASeq_Stunnenberg_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="readLength">76</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Pf_RNASeq_Stunnenberg_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+    <subgraph name="analyzeHour10Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Hour10</paramValue>
+      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Stunnenberg_RSRC/final/10h.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour10/10h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/10h.int</paramValue>
+      <paramValue name="computePeaks">false</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Stunnenberg_RSRC|@@Pf_RNASeq_Stunnenberg_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="readLength">76</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Pf_RNASeq_Stunnenberg_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+    <subgraph name="analyzeHour15Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Hour15</paramValue>
+      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Stunnenberg_RSRC/final/15h.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour15/15h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/15h.int</paramValue>
+      <paramValue name="computePeaks">false</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Stunnenberg_RSRC|@@Pf_RNASeq_Stunnenberg_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="readLength">76</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Pf_RNASeq_Stunnenberg_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+    <subgraph name="analyzeHour20Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Hour20</paramValue>
+      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Stunnenberg_RSRC/final/20h.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour20/20h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/20h.int</paramValue>
+      <paramValue name="computePeaks">false</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Stunnenberg_RSRC|@@Pf_RNASeq_Stunnenberg_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="readLength">76</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Pf_RNASeq_Stunnenberg_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeHour25Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Hour25</paramValue>
+      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Stunnenberg_RSRC/final/25h.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour25/25h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/25h.int</paramValue>
+      <paramValue name="computePeaks">false</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Stunnenberg_RSRC|@@Pf_RNASeq_Stunnenberg_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="readLength">76</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Pf_RNASeq_Stunnenberg_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeHour30Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Hour30</paramValue>
+      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Stunnenberg_RSRC/final/30h.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour30/30h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/30h.int</paramValue>
+      <paramValue name="computePeaks">false</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Stunnenberg_RSRC|@@Pf_RNASeq_Stunnenberg_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="readLength">76</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Pf_RNASeq_Stunnenberg_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeHour40Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Hour40</paramValue>
+      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Stunnenberg_RSRC/final/40h.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour40/40h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/40h.int</paramValue>
+      <paramValue name="computePeaks">false</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Stunnenberg_RSRC|@@Pf_RNASeq_Stunnenberg_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="readLength">76</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Pf_RNASeq_Stunnenberg_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeHour5Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Hour5</paramValue>
+      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Stunnenberg_RSRC/final/5h.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour5/5h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/5h.int</paramValue>
+      <paramValue name="computePeaks">false</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Stunnenberg_RSRC|@@Pf_RNASeq_Stunnenberg_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="readLength">76</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Pf_RNASeq_Stunnenberg_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="mergeIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt</paramValue>
+      <depends name="makeSeqCoverageAndIntensityDataDir"/>
+      <depends name="analyzeHour10Sample"/>
+      <depends name="analyzeHour15Sample"/>
+      <depends name="analyzeHour20Sample"/>
+      <depends name="analyzeHour25Sample"/>
+      <depends name="analyzeHour30Sample"/>
+      <depends name="analyzeHour35Sample"/>
+      <depends name="analyzeHour40Sample"/>
+      <depends name="analyzeHour5Sample"/>
+    </step>
+
+    <step name="makePercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/percents.txt</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">false</paramValue>
+      <depends name="mergeIntensityFiles"/>
+    </step>
+
+    <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/Pf_RNASeq_Stunnenberg_RSRC/final/config.txt</paramValue>
+      <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">Pf_RNASeq_Stunnenberg_RSRC|@@Pf_RNASeq_Stunnenberg_VER@@</paramValue>
+      <depends name="makePercentileProfile"/>
+    </step>
+
+
+</workflowGraph>
