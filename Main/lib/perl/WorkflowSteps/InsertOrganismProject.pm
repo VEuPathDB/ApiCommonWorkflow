@@ -12,7 +12,7 @@ sub run {
   my $organism = $self->getParamValue('organism');
   my $project = $self->getParamValue('project');
 
-  my $args = "--organism $organism --project $project'";
+  my $args = "--organism $organism --projectName $project";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertOrganismProjectFeature", $args);
 

@@ -33,8 +33,8 @@ sub run {
       }else{
 	  $self->runCmd($test,"mv $workflowDataDir/$inputUniqueFile $workflowDataDir/$inputUniqueFile.org");
 	  $self->runCmd($test,"mv $workflowDataDir/$inputNonUniqueFile $workflowDataDir/$inputNonUniqueFile.org");
-	  $self->runCmd($test,"RevertProbeSeqId.pm --$workflowDataDir/$originalShortSeqsFile --inputFile $workflowDataDir/$inputUniqueFile.org > $workflowDataDir/$inputUniqueFile");
-	  $self->runCmd($test,"RevertProbeSeqId.pm --$workflowDataDir/$originalShortSeqsFile --inputFile $workflowDataDir/$inputNonUniqueFile.org > $workflowDataDir/$inputNonUniqueFile");
+	  $self->runCmd($test,"RevertProbeSeqId --originalShortSeqsFile $workflowDataDir/$originalShortSeqsFile --inputFile $workflowDataDir/$inputUniqueFile.org  --outputFile $workflowDataDir/$inputUniqueFile");
+	  $self->runCmd($test,"RevertProbeSeqId --originalShortSeqsFile $workflowDataDir/$originalShortSeqsFile --inputFile $workflowDataDir/$inputNonUniqueFile.org --outputFile $workflowDataDir/$inputNonUniqueFile");
       }
   }
 }
