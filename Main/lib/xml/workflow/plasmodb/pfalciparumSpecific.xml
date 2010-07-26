@@ -5,6 +5,7 @@
   <param name="organismResourceXmlFile"/>
   <param name="downloadSiteDataDir"/>
   <param name="maxIntronSize"/>
+  <param name="webServicesDataDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/PfalciparumSpecific</constant>
   <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Pfalciparum</constant>
@@ -45,6 +46,19 @@
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="arrayResources" xmlFile="plasmodb/pfalciparumArrayStudies.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <depends name="Pf_CorrectGeneAliases_RSRC"/>
     </subgraph>
 
 
@@ -155,5 +169,15 @@
       <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
       <depends name="mirrorPf_PiggyBac_Clones_Adams_RSRCToCluster"/>
     </subgraph>
+
+  <subgraph name="PlasmoSpecificMakeAndFormatDownloadFiles" xmlFile="plasmodb/plasmoSpecificMakeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genbankIsolateExtDbRlsSpec">PlasmodiumGenbankIsolates_RSRC|@@PlasmodiumGenbankIsolates_VER@@</paramValue>
+    <paramValue name="barcodeIsolateExtDbRlsSpec">Broad_Isolate_Barcode_RSRC|@@Broad_Isolate_Barcode_VER@@</paramValue>
+    <depends name="snps"/>
+  </subgraph>
 
 </workflowGraph>
