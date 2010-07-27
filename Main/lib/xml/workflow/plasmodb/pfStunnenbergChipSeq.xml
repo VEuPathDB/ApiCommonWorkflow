@@ -1,4 +1,4 @@
-<workflowGraph name="pfLeRochChipSeq">
+<workflowGraph name="pfStunnenbergChipSeq">
     <param name="parentDataDir"/>
     <param name="organismResourceXmlFile"/>
     <param name="genomicSeqsDir"/>
@@ -9,7 +9,7 @@
     <param name="genomicSeqsFileForSsa"/>
     <param name="maxIntronSize"/>
 
-    <constant name="dataDir">$$parentDataDir$$/pfLeRochChipSeq</constant>
+    <constant name="dataDir">$$parentDataDir$$/pfStunnenbergChipSeq</constant>
     <constant name="samplesDataDir">$$dataDir$$/samples</constant>
     <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
 
@@ -27,362 +27,412 @@
       <depends name="makeSamplesDataDir"/>
     </step>
 
-    <subgraph name="Pf_ChipSeq_Le_Roch_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Pf_ChipSeq_Le_Roch_RSRC</paramValue>
+    <subgraph name="Pf_ChipSeq_Stunnenberg_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pf_ChipSeq_Stunnenberg_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="analyzeMAINE0Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH2AZ_10hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">MAINE0</paramValue>
+      <paramValue name="sampleName">H2AZ_10h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE0.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE0/MAINE0.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE0.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/H2AZ_10hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH2AZ_10h/H2AZ_10h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H2AZ_10h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeMAINE6Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH2AZ_20hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">MAINE6</paramValue>
+      <paramValue name="sampleName">H2AZ_20h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE6.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE6/MAINE6.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE6.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/H2AZ_20hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH2AZ_20h/H2AZ_20h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H2AZ_20h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeMAINE12Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH2AZ_30hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">MAINE12</paramValue>
+      <paramValue name="sampleName">H2AZ_30h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE12.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE12/MAINE12.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE12.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/H2AZ_30hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH2AZ_30h/H2AZ_30h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H2AZ_30h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeMAINE18Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH2AZ_40hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">MAINE18</paramValue>
+      <paramValue name="sampleName">H2AZ_40h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE18.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE18/MAINE18.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE18.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/H2AZ_40hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH2AZ_40h/H2AZ_40h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H2AZ_40h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeMAINE24Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH3K4me3_10hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">MAINE24</paramValue>
+      <paramValue name="sampleName">H3K4me3_10h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE24.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE24/MAINE24.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE24.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/H3K4me3_10hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH3K4me3_10h/H3K4me3_10h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H3K4me3_10h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeMAINE30Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH3K4me3_20hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">MAINE30</paramValue>
+      <paramValue name="sampleName">H3K4me3_20h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE30.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE30/MAINE30.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE30.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/H3K4me3_20hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH3K4me3_20h/H3K4me3_20h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H3K4me3_20h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeMAINE36Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH3K4me3_30hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">MAINE36</paramValue>
+      <paramValue name="sampleName">H3K4me3_30h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE36.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE36/MAINE36.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE36.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/H3K4me3_30hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH3K4me3_30h/H3K4me3_30h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H3K4me3_30h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeFAIRE0Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH3K4me3_40hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">FAIRE0</paramValue>
+      <paramValue name="sampleName">H3K4me3_40h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE0.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE0/FAIRE0.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE0.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/H3K4me3_40hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH3K4me3_40h/H3K4me3_40h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H3K4me3_40h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeFAIRE6Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+
+    <subgraph name="analyzeH3K9ac_10hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">FAIRE6</paramValue>
+      <paramValue name="sampleName">H3K9ac_10h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE6.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE6/FAIRE6.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE6.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/H3K9ac_10hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH3K9ac_10h/H3K9ac_10h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H3K9ac_10h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeFAIRE12Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH3K9ac_20hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">FAIRE12</paramValue>
+      <paramValue name="sampleName">H3K9ac_20h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE12.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE12/FAIRE12.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE12.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/H3K9ac_20hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH3K9ac_20h/H3K9ac_20h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H3K9ac_20h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeFAIRE18Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH3K9ac_30hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">FAIRE18</paramValue>
+      <paramValue name="sampleName">H3K9ac_30h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE18.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE18/FAIRE18.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE18.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/H3K9ac_30hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH3K9ac_30h/H3K9ac_30h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H3K9ac_30h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeFAIRE24Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH3K9ac_40hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">FAIRE24</paramValue>
+      <paramValue name="sampleName">H3K9ac_40h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE24.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE24/FAIRE24.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE24.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/H3K9ac_40hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH3K9ac_40h/H3K9ac_40h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H3K9ac_40h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeFAIRE30Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+
+    <subgraph name="analyzeInput_10hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">FAIRE30</paramValue>
+      <paramValue name="sampleName">Input_10h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE30.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE30/FAIRE30.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE30.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/Input_10hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeInput_10h/Input_10h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/Input_10h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeFAIRE36Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeInput_20hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">FAIRE36</paramValue>
+      <paramValue name="sampleName">Input_20h</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE36.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE36/FAIRE36.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE36.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/Input_20hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeInput_20h/Input_20h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/Input_20h.int</paramValue>
       <paramValue name="computePeaks">true</paramValue>
       <paramValue name="readType">single</paramValue>
       <paramValue name="isChipSeq">true</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">36</paramValue>
+      <paramValue name="readLength">76</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
       <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
+    <subgraph name="analyzeInput_30hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Input_30h</paramValue>
+      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/Input_30hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeInput_30h/Input_30h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/Input_30h.int</paramValue>
+      <paramValue name="computePeaks">true</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <paramValue name="isChipSeq">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="readLength">76</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
 
+    <subgraph name="analyzeInput_40hSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Input_40h</paramValue>
+      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_RSRC/final/Input_40hpi.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeInput_40h/Input_40h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/Input_40h.int</paramValue>
+      <paramValue name="computePeaks">true</paramValue>
+      <paramValue name="readType">single</paramValue>
+      <paramValue name="isChipSeq">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_RSRC|@@Pf_ChipSeq_Stunnenberg_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="readLength">76</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
+      <depends name="Pf_ChipSeq_Stunnenberg_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
 </workflowGraph>
