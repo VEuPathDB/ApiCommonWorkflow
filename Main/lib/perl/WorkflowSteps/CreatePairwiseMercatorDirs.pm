@@ -20,8 +20,7 @@ sub run {
     my $mercatorNonDraftSeqTables = $self->getParamValue('mercatorNonDraftSeqTables');
     my $mercatorSyntenyVersion = $self->getParamValue('mercatorSyntenyVersion');
 
-
-    my $localDataDir = $self->getLocalDataDir();
+    my $workflowDataDir = $self->getWorkflowDataDir();
 
     my ($seqTableA, $seqTableB, $specA, $specB, $syntenySpec, $agpFile);
     my @drafts = ();
@@ -59,7 +58,7 @@ sub run {
 
     for(my $i =0; $i <= ($#allGenomes-1); $i++){
 	for(my $j =$i+1 ; $j <= $#allGenomes; $j++){
-	    my $dirName = "$mercatorDir/$allGenomes[$i]-$allGenomes[$j]";
+	    my $dirName = "$workflowDataDir/$mercatorDir/$allGenomes[$i]-$allGenomes[$j]";
 	    $specA = $allExternalDbs[$j];
 	    $specB = $allExternalDbs[$i];
 	    $specA =~ s/\|\|/,/g;
@@ -78,18 +77,18 @@ sub run {
 		if ($test) {
 		$self->runCmd(0,"mkdir -p $dirName/fasta");
 		$self->runCmd(0,"mkdir -p $dirName/gff");
-		$self-runCmd(0,"cp -R $mercatorFastaDir/$allGenomes[$i].fasta $dirName/fasta");
-		$self->runCmd(0,"cp -R $mercatorFastaDir/$allGenomes[$j].fasta $dirName/fasta");
-		$self->runCmd(0,"cp -R $mercatorGffDir/$allGenomes[$i].gff $dirName/gff");
-		$self->runCmd(0,"cp -R $mercatorGffDir/$allGenomes[$j].gff $dirName/gff");		    
+		$self-runCmd(0,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$i].fasta $dirName/fasta");
+		$self->runCmd(0,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$j].fasta $dirName/fasta");
+		$self->runCmd(0,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$i].gff $dirName/gff");
+		$self->runCmd(0,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$j].gff $dirName/gff");		    
 		$self->runCmd(0,"echo hello > $dirName/config.txt");
 		}else{		
-		    $self->runCmd($test,"$dirName/fasta");
-		    $self->runCmd($test,"$dirName/gff");
-		    $self-runCmd($test,"cp -R $mercatorFastaDir/$allGenomes[$i].fasta $dirName/fasta");
-		    $self->runCmd($test,"cp -R $mercatorFastaDir/$allGenomes[$j].fasta $dirName/fasta");
-		    $self->runCmd($test,"cp -R $mercatorGffDir/$allGenomes[$i].gff $dirName/gff");
-		    $self->runCmd($test,"cp -R $mercatorGffDir/$allGenomes[$j].gff $dirName/gff");
+		    $self->runCmd($test,"mkdir -p $dirName/fasta");
+		    $self->runCmd($test,"mkdir -p $dirName/gff");
+		    $self->runCmd($test,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$i].fasta $dirName/fasta");
+		    $self->runCmd($test,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$j].fasta $dirName/fasta");
+		    $self->runCmd($test,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$i].gff $dirName/gff");
+		    $self->runCmd($test,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$j].gff $dirName/gff");
 		    $self->createConfigFile("$dirName/$allGenomes[$i]-$allGenomes[$j]","$dirName/$allGenomes[$i]-$allGenomes[$j].align-synteny",$seqTableA,$seqTableB,$specA,$specB,$syntenySpec,$agpFile);
 		}
 	    }
