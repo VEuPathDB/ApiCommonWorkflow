@@ -15,8 +15,8 @@ sub run {
     my $cndsrcBin = $self->getParamValue('cndSrcBin');
     my $mavid = $self->getParamValue('mavidExe');
 
+    my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $localDataDir = $self->getLocalDataDir();
     my @drafts = ();
     my @nonDrafts = ();
 
@@ -43,7 +43,7 @@ sub run {
 
     for(my $i =0; $i <= ($#allGenomes-1); $i++){
 	for(my $j =$i+1 ; $j <= $#allGenomes; $j++){
-	    my $dirName = "$mercatorDir/$allGenomes[$i]-$allGenomes[$j]";
+	    my $dirName = "$workflowDataDir/$mercatorDir/$allGenomes[$i]-$allGenomes[$j]";
 
 	    my $command = "runMercator  -t '($allGenomes[$i]:0.1,$allGenomes[$j]:0.1);' -p $dirName -c $cndsrcBin -m $mavid ";
 	    if($i <= $draftIdx){
