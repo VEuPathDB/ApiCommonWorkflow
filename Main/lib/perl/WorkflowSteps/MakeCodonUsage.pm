@@ -16,10 +16,7 @@ sub run {
     my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
     my $cmd = <<"EOF";
-      makeCodonUsage 
-        --outputFile $apiSiteFilesDir/$outputFile \\
-        --inputFile  $apiSiteFilesDir/$inputFile \\
-        --verbose
+      makeCodonUsage  --outFile $apiSiteFilesDir/$outputFile  --inFile  $apiSiteFilesDir/$inputFile  --verbose
 EOF
 
     if ($undo) {
