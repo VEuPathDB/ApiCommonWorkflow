@@ -27,7 +27,7 @@ sub run {
   close F;
   my $cmd;
 
-      $cmd = "tuningManager --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail '$email' --cleanupAge 0";
+      $cmd = "tuningManager --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail '$email' --cleanupAge 0 --forceUpdate";
 
 
   if ($undo){
