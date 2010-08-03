@@ -92,7 +92,7 @@ sub run {
 		    $self->runCmd($test,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$j].fasta $dirName/fasta");
 		    $self->runCmd($test,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$i].gff $dirName/gff");
 		    $self->runCmd($test,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$j].gff $dirName/gff");
-		    $self->createConfigFile("$dirName/$allGenomes[$i]-$allGenomes[$j]","$dirName/$allGenomes[$i]-$allGenomes[$j].align-synteny",$seqTableA,$seqTableB,$specA,$specB,$syntenySpec,$agpFile);
+		    $self->createConfigFile("$dirName","$dirName/$allGenomes[$i]-$allGenomes[$j].align-synteny",$seqTableA,$seqTableB,$specA,$specB,$syntenySpec,$agpFile);
 		}
 	    }
 	}
