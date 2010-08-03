@@ -55,6 +55,9 @@ sub run {
     }
 
     push(@allGenomes,@drafts,@nonDrafts);
+    push(@allExternalDbs,@draftExternalDbs,@nonDraftExternalDbs);
+    push(@allSeqTables,@draftSeqTables,@nonDraftSeqTables);
+
 
     for(my $i =0; $i <= ($#allGenomes-1); $i++){
 	for(my $j =$i+1 ; $j <= $#allGenomes; $j++){
