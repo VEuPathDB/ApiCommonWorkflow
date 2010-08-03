@@ -123,9 +123,9 @@ sub getConfigDeclaration {
 }
 
 sub createConfigFile {
-    my($inputDir,$inFile, $seqTableA, $seqTableB, $specA, $specB, $syntenySpec, $agpFile) = @_;
+    my($self,$inputDir,$inFile, $seqTableA, $seqTableB, $specA, $specB, $syntenySpec, $agpFile) = @_;
 
-    open(CONFIG_FILE,">$inputDir/config.txt");
+    open(CONFIG_FILE,">$inputDir/config.txt") or $self->error("Could not create $inputDir/config.txt\n") ;
 
     print CONFIG_FILE "inputFile=$inFile\n";
     print CONFIG_FILE "seqTableA=$seqTableA\n";
