@@ -11,8 +11,9 @@ sub run {
 
     my $mercatorDir = $self->getParamValue('mercatorDir');
     my $apiSiteFilesDir   = $self->getParamValue('apiSiteFilesDir');
+    my $workflowDataDir = $self->getWorkflowDataDir();
 
-    opendir(MERCATORDIR,"$mercatorDir");
+    opendir(MERCATORDIR,"$workflowDataDir/$mercatorDir") or $self->error("Could not open $workflowDataDir/$mercatorDir for reading.\n");
 
     
     foreach my $subDir (readdir MERCATORDIR){
@@ -22,12 +23,12 @@ sub run {
 	}else{
 	    if ($test) {
 		$self->runCmd(0,"mkdir -p $apiSiteFilesDir/$subDir");
-		$self->runCmd(0,"cp -R $mercatorDir/$subDir/mercator-output/alignments $apiSiteFilesDir/$subDir");
-		$self-runCmd(0,"cp -R $mercatorDir/$subDir/mercator-output/*.agp $apiSiteFilesDir/$subDir");
+		$self->runCmd(0,"cp -R $workflowDataDir/$mercatorDir/$subDir/mercator-output/alignments $apiSiteFilesDir/$subDir");
+		$self-runCmd(0,"cp -R $workflowDataDir/mercatorDir/$subDir/mercator-output/*.agp $apiSiteFilesDir/$subDir");
 	    }else{		
 		$self->runCmd($test,"mkdir -p $apiSiteFilesDir/$subDir");
-		$self->runCmd($test,"cp -R $mercatorDir/$subDir/mercator-output/alignments $apiSiteFilesDir/$subDir");
-		$self-runCmd($test,"cp -R $mercatorDir/$subDir/mercator-output/*.agp $apiSiteFilesDir/$subDir");		    
+		$self->runCmd($test,"cp -R $workflowDataDir/$mercatorDir/$subDir/mercator-output/alignments $apiSiteFilesDir/$subDir");
+		$self-runCmd($test,"cp -R $workflowDataDir/$mercatorDir/$subDir/mercator-output/*.agp $apiSiteFilesDir/$subDir");		    
 	    }
 	}
 	
@@ -39,6 +40,7 @@ sub run {
 sub getParamsDeclaration {
     return ('mercatorDir',
             'apiSiteFilesDir',
+	    'workflowDataDir',
            );
 }
 
