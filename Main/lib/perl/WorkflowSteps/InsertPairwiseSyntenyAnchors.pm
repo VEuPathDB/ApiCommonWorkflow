@@ -13,6 +13,7 @@ sub run {
     my $organism   = $self->getParamValue('organism');
     my $mercatorDraftGenomes = $self->getParamValue('mercatorDraftGenomes');
     my $mercatorNonDraftGenomes = $self->getParamValue('mercatorNonDraftGenomes');
+    my $mercatorSyntenyVersion = $self->getParamValue('mercatorSyntenyVersion');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -51,6 +52,17 @@ sub run {
 	    }
 	}
     }
+
+	for(my $i =0; $i <= ($#allGenomes-1); $i++){
+	    for(my $j =$i+1 ; $j <= $#allGenomes; $j++){
+		my $databaseName = "$allGenomes[$i]-$allGenomes[$j] synteny from Mercator";
+		my $dbPluginArgs = "--name '$databaseName' ";
+		$self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
+		my $releasePluginArgs = "--databaseName '$databaseName' --databaseVersion '$mercatorSyntenyVersion'";
+		$self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
+	    }
+	}
+
 
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $args);
 
