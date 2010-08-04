@@ -14,6 +14,8 @@ sub run {
     my $mercatorDraftGenomes = $self->getParamValue('mercatorDraftGenomes');
     my $mercatorNonDraftGenomes = $self->getParamValue('mercatorNonDraftGenomes');
 
+    my $workflowDataDir = $self->getWorkflowDataDir();
+
     my @drafts = ();
     my @nonDrafts = ();
 
@@ -39,7 +41,7 @@ sub run {
     push(@allGenomes,@drafts,@nonDrafts);
 
 
-    my $args = "--mercatorDir $mercatorDir --organism '$organism'";
+    my $args = "--mercatorDir $workflowDataDir/$mercatorDir --organism '$organism'";
     
     if ($test) {
 	for(my $i =0; $i <= ($#allGenomes-1); $i++){
