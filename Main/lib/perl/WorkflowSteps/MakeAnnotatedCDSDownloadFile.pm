@@ -12,6 +12,8 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $organismSource = $self->getParamValue('organismSource');
   my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
+  my $descripFile->getParamValue('descripFile');
+  my $descripString->getParamValue('descripString');
 
   my (@dbnames,@dbvers);
   my ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeExtDbRlsSpec')) if $self->getParamValue('genomeExtDbRlsSpec');
@@ -72,16 +74,19 @@ EOF
 
   $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
   my $cmd = "gusExtractSequences --outputFile $apiSiteFilesDir/$outputFile  --idSQL \"$sql\"  --verbose";
+  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $apiSiteFilesDir/$descripFile";
 
 
 
   if ($undo) {
     $self->runCmd(0, "rm -f $apiSiteFilesDir/$outputFile");
+    $self->runCmd(0, "rm -f $apiSiteFilesDir/$descripFile");
   } else {
       if ($test) {
 	  $self->runCmd(0,"echo test > $apiSiteFilesDir/$outputFile");
       }else{
 	  $self->runCmd($test,$cmd);
+	  $self->runCmd($test, $cmdDec);
       }
   }
 }

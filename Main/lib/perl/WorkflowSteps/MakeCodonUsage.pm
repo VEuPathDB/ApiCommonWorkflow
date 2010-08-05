@@ -12,21 +12,26 @@ sub run {
     # get parameters
     my $inputFile = $self->getParamValue('inputFile');
     my $outputFile = $self->getParamValue('outputFile');
+    my $descripFile->getParamValue('descripFile');
+    my $descripString->getParamValue('descripString');
 
     my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
     my $cmd = <<"EOF";
       makeCodonUsage  --outFile $apiSiteFilesDir/$outputFile  --inFile  $apiSiteFilesDir/$inputFile  --verbose
 EOF
+  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $apiSiteFilesDir/$descripFile";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $apiSiteFilesDir/$outputFile");
+        $self->runCmd(0, "rm -f $apiSiteFilesDir/$descripFile");
     } else {
 	if ($test) {
 	    $self->testInputFile('inputFile', "$apiSiteFilesDir/$inputFile");
 	    $self->runCmd(0,"echo test > $apiSiteFilesDir/$outputFile");
 	}else{
 	    $self->runCmd($test,$cmd);
+	    $self->runCmd($test, $cmdDec);
 	}
     }
 }

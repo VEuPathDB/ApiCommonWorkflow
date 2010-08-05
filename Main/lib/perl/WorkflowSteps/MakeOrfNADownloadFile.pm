@@ -8,6 +8,8 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $outputFile = $self->getParamValue('outputFile');
+  my $descripFile->getParamValue('descripFile');
+  my $descripString->getParamValue('descripString');
 
   my @extDbRlsIds;
   push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeExtDbRlsSpec'))) if $self->getParamValue('genomeExtDbRlsSpec');
@@ -63,14 +65,17 @@ EOF
       --idSQL \"$sql\" \\
       --verbose
 EOF
+  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $apiSiteFilesDir/$descripFile";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $apiSiteFilesDir/$outputFile");
+    $self->runCmd(0, "rm -f $apiSiteFilesDir/$descripFile");
   } else {
       if ($test) {
 	  $self->runCmd(0,"echo test > $apiSiteFilesDir/$outputFile");
       }else{
 	  $self->runCmd($test,$cmd);
+	  $self->runCmd($test, $cmdDec);
       }
   }
 }
