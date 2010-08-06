@@ -15,11 +15,9 @@ sub run {
 
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
 
-  my $genomeExtDbSpec =  $self->getParamValue('genomeExtDbSpec');
-   
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "generateCoveragePlotInputFile.pl  --filename $workflowDataDir/$inputFile --RNASeqExtDbSpecs '$extDbRlsSpec' --genomeExtDbSpecs '$genomeExtDbSpec' > $workflowDataDir/$outputFile";
+  my $cmd = "reformatChIP-ChipSmoothedProfiles.pl  --inputFile $workflowDataDir/$inputFile --aefExtDbSpec '$extDbRlsSpec'> $workflowDataDir/$outputFile";
 
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
@@ -38,7 +36,6 @@ sub getParamDeclaration {
 	  'inputFileDir',
 	  'outputFile',
 	  'extDbRlsSpec',
-	  'genomeExtDbSpec',
 	 );
 }
 

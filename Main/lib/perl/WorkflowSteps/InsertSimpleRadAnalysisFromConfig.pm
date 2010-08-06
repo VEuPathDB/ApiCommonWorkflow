@@ -11,7 +11,7 @@ sub run {
 
   my $analysisWorkingDir = $self->getParamValue('analysisWorkingDir');
 
-  my $configFile = "$analysisWorkingDir/config.txt";
+  my $configFile = $self->getParamValue('configFile');
 
   my $analysisResultView =  $self->getParamValue('analysisResultView');
 
