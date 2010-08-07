@@ -9,6 +9,7 @@
     <param name="runPeakCalls"/>
     <param name="organismFullName"/>
     <param name="genomeExtDbRlsSpec"/>
+    <param name="sampleOrder"/>
 
     <constant name="dataDir">$$parentDataDir$$/analyze_ChIP_Chip_$$sampleName$$</constant>
     <constant name="peakFinderDataDir">$$dataDir$$/smoothedDataAndPeaks</constant>
@@ -58,6 +59,7 @@
     <step name="generateChIPChipPeakFeatureGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateChIPChipPeakFeatureGff" includeIf="$$runPeakCalls$$">
       <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.txt</paramValue>
       <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.gff</paramValue>
+      <paramValue name="sampleOrder">$$sampleOrder$$</paramValue>
       <depends name="runChIPChipPeakFinder"/>
     </step>
 
@@ -76,6 +78,7 @@
     <step name="reformatChIPChipPeakScoreFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipPeakScoreFile" includeIf="$$runPeakCalls$$">
       <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.txt</paramValue>
       <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/peak_scores.txt</paramValue>
+      <paramValue name="sampleOrder">$$sampleOrder$$</paramValue>
       <depends name="runChIPChipPeakFinder"/>
     </step>
 
@@ -83,7 +86,7 @@
       <paramValue name="analysisWorkingDir">$$dataDir$$/smoothedDataAndPeaks</paramValue>
       <paramValue name="configFile">$$parentDataDir$$/$$ChipChipResourceName$$/raw_data/$$sampleName$$_peak_config.txt</paramValue>
       <paramValue name="analysisResultView">DataTransformationResult</paramValue>
-      <paramValue name="naFeatureView">ArrayElementFeature</paramValue>
+      <paramValue name="naFeatureView">BindingSiteFeature</paramValue>
       <paramValue name="useSqlLdr">false</paramValue>
       <depends name="reformatChIPChipPeakScoreFile"/>
       <depends name="loadChIPChipPeakFeature"/>

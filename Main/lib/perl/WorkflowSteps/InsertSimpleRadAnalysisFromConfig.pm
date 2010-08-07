@@ -23,7 +23,7 @@ sub run {
       
   my $args = "--inputDir '$workflowDataDir/$analysisWorkingDir' --configFile '$workflowDataDir/$configFile' --analysisResultView $analysisResultView  --naFeatureView $naFeatureView";
 
-  $args.=" --useSqlLdr" if($useSqlLdr); 
+  $args.=" --useSqlLdr" if($useSqlLdr eq "true"); 
 
   if ($test) {
     $self->testInputFile('analysisWorkingDir', "$workflowDataDir/$analysisWorkingDir");

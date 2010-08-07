@@ -14,9 +14,11 @@ sub run {
 
   my $outputFile =  $self->getParamValue('outputFile');
 
+  my $sampleOrder =  $self->getParamValue('sampleOrder');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "generateChIP-ChipPeakFeatureGff  --inputFile '$workflowDataDir/$inputFile' --outputFile '$workflowDataDir/$outputFile'";
+  my $cmd = "generateChIP-ChipPeakFeatureGff  --inputFile '$workflowDataDir/$inputFile' --outputFile '$workflowDataDir/$outputFile' --sampleName '$sampleOrder'";
     
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
