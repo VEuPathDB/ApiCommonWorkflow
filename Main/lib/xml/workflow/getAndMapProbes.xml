@@ -18,7 +18,6 @@
     <param name="nonUniqueMappingSuppressLimits"/>
     <param name="dnaHybridazation"/>
 
-
     <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
     <constant name="outputUniqueFile">$$dataDir$$/uniqueMapping.txt</constant>
     <constant name="outputNonUniqueFile">$$dataDir$$/nonUniqueMapping.txt</constant>
@@ -61,6 +60,7 @@
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="nonUniqueMappingSuppressLimits">$$nonUniqueMappingSuppressLimits$$</paramValue>
+      <paramValue name="reportMismatches">true</paramValue>
       <depends name="runParse2fasta"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
@@ -97,8 +97,9 @@
 
     <step name="makeProbeGeneMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProbeGeneMappingFile">
       <paramValue name="outputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
-      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
-      <paramValue name="featureType">ArrayElementFeature</paramValue>
+      <paramValue name="aefExtDbSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <paramValue name="geneExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="aefSense">sense</paramValue>
       <depends name="loadProbeGenomeMapping"/>
     </step>
 
