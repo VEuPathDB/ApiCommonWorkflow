@@ -13,9 +13,13 @@ sub run {
 
     my $outputFile = $self->getParamValue('outputFile');
 
+    my $profileElementOrder = $self->getParamValue('profileElementOrder');
+
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my @inputFileNames = $self->getInputFiles($test,"$workflowDataDir/$inputFilesDir","","int");
+    #my @inputFileNames = $self->getInputFiles($test,"$workflowDataDir/$inputFilesDir","","int");
+
+    my @inputFileNames = split (/,/,$profileElementOrder);
 
     my $size=scalar @inputFileNames;
 
