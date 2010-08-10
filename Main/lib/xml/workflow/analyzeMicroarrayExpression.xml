@@ -6,6 +6,11 @@
     <param name="genomeExtDbRlsSpec"/>
     <param name="insertAnalysisResult"/>
     <param name="probeGenesMappingFile"/>
+    <param name="profileSetNames"/>
+    <param name="percentProfileSet"/>
+    <param name="isLogged"/>
+    <param name="mappingFileForExpressionStats"/>
+    <param name="calculateExpressionStats"/>
 
     <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
       <paramValue name="inputDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
@@ -17,6 +22,15 @@
       <paramValue name="configFile">$$parentDataDir$$/$$experimentResourceName$$/final/expression_profile_config.txt</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentExtDbRlsSpec$$</paramValue>
       <depends name="doTranscriptExpression"/>
+    </step>
+
+    <step name="calculateExpressionStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateExpressionStatsForTimeSeries" stepLoadTypes="plugin" includeIf="$$calculateExpressionStats$$">
+      <paramValue name="profileSetNames">Profiles of P.falciparum Newbold mRNA Seq data</paramValue>
+      <paramValue name="percentProfileSet">Percents of P. falciparum Newbold mRNA Seq data</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentExtDbRlsSpec$$</paramValue>
+      <paramValue name="isLogged">$$isLogged$$</paramValue>
+      <paramValue name="mappingFile">$$mappingFileForExpressionStats$$</paramValue>
+      <depends name="loadExpressionProfilesFromConfig"/>
     </step>
 
     <step name="insertAnalysisResultFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin" includeIf="$$insertAnalysisResult$$">
