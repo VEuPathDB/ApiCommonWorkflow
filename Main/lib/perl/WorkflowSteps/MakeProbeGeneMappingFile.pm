@@ -12,15 +12,14 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $aefExtDbSpec = $self->getParamValue('aefExtDbSpec');
   my $geneExtDbSpec = $self->getParamValue('geneExtDbSpec');
-  my $aefSense = $self->getParamValue('aefSense');
-
+  my $aefSense = ($self->getParamValue('isOneChannel') eq 'true') ? 'sense':'either';
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cmd = "mapArrayElementsToGenes.pl --aefExtDbSpec '$aefExtDbSpec' --geneExtDbSpec  '$geneExtDbSpec' --aefSense '$aefSense' --outputFile $workflowDataDir/$outputFile";
 
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/tbase-pbase.out");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
       }else{
