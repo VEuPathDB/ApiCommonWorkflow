@@ -146,7 +146,7 @@ sub getTaxonIdList {
 
 
 sub getSoIds {
-  my ($self, $soTermIdsOrNames) = @_;
+  my ($self,  $test,$soTermIdsOrNames) = @_;
 
   my ($soTermIds,$soTerms);
 
@@ -162,7 +162,7 @@ sub getSoIds {
 
   my $cmd = "getValueFromTable --idSQL \"$sql\"";
 
-  my $soIds = $self->runCmd($cmd);
+  my $soIds = $self->runCmd( $test,$cmd);
 
   return $soIds;
 }

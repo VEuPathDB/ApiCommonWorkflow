@@ -9,13 +9,15 @@
     <param name="genomicSeqsDir"/>
     <param name="chipProbeExtDbRlsSpec"/>
     <param name="isOneChannel"/>
-    <param name="loadGeneProbeMapping"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="organismFullName"/>
     <param name="readLength"/>
     <param name="maxIntronSize"/>
     <param name="runParse2fasta"/>
     <param name="genomicSeqsFileForSsa"/>
+    <param name="nonUniqueMappingSuppressLimits"/>
+    <param name="dnaHybridazation"/>
+
 
     <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
     <constant name="outputUniqueFile">$$dataDir$$/uniqueMapping.txt</constant>
@@ -38,7 +40,7 @@
     </subgraph>
 
     <step name="runParse2fasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunParse2fasta" includeIf="$$runParse2fasta$$">
-      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
       <depends name="probe_RSRC"/>
     </step>
 
@@ -48,7 +50,7 @@
       <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
       <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="useTranscripts">true</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="outputUniqueFile">$$outputUniqueFile$$</paramValue>
@@ -58,18 +60,36 @@
       <paramValue name="readLength">$$readLength$$</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="nonUniqueMappingSuppressLimits">$$nonUniqueMappingSuppressLimits$$</paramValue>
       <depends name="runParse2fasta"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
+
+
+    <step name="revertProbeSeqId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RevertProbeSeqId" includeIf="$$runParse2fasta$$">
+      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
+      <paramValue name="originalShortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa.org</paramValue>
+      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
+      <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <depends name="alignProbesToGenome"/>
+    </step>
+
+    <step name="excludeMultiExonHits" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExcludeMultiExonHits" includeIf="$$dnaHybridazation$$">
+      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
+      <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <depends name="revertProbeSeqId"/>
+    </step>
 
     <step name="makeProbeGenomeMappingGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateGenomeMappingGff">
       <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
       <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/genomeMapping.gff</paramValue>
-      <depends name="alignProbesToGenome"/>
+      <paramValue name="allowedMismatches">1</paramValue>
+      <depends name="revertProbeSeqId"/>
+      <depends name="excludeMultiExonHits"/>
     </step>
 
-    <step name="loadProbeGenomeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChIPChipPeakFeature" stepLoadTypes="plugin">
+    <step name="loadProbeGenomeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadArrayElementFeature" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/genomeMapping.gff</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
@@ -80,29 +100,5 @@
       <depends name="makeProbeGenomeMappingGffFile"/>
     </step>
 
-    <step name="makeOneChannelProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOneChannelProbesGenesMapping" stepLoadTypes="plugin" includeIf="$$isOneChannel$$">
-      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
-      <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
-      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
-      <paramValue name="featureType">ArrayElementFeature</paramValue>
-      <depends name="alignProbesToGenome"/>
-    </step>
-
-    <step name="makeTwoChannelProbesGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTwoChannelProbesGenesMapping" stepLoadTypes="plugin" excludeIf="$$isOneChannel$$">
-      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
-      <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
-      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
-      <paramValue name="featureType">ArrayElementFeature</paramValue>
-      <depends name="alignProbesToGenome"/>
-    </step>
-
-    <step name="loadProbeGenesMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadProbeGenesMapping" stepLoadTypes="plugin" includeIf="$$loadGeneProbeMapping$$">
-      <paramValue name="inputUniqueFile">$$outputUniqueFile$$</paramValue>
-      <paramValue name="inputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
-      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
-      <paramValue name="featureType">ArrayElementFeature</paramValue>
-      <depends name="makeOneChannelProbesGenesMapping"/>
-      <depends name="makeTwoChannelProbesGenesMapping"/>
-    </step>
 
 </workflowGraph>
