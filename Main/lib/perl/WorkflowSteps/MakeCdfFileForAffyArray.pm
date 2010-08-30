@@ -12,12 +12,13 @@ sub run {
   my $gene2probesInputFile = $self->getParamValue('gene2probesInputFile');
   my $probename2sequenceInputFile = $self->getParamValue('probename2sequenceInputFile');
   my $cdfFile = $self->getParamValue('cdfFile');
+  my $tbasePbaseFile = $self->getParamValue('tbasePbaseFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd1 = "get_pbase-tbase.pl $workflowDataDir/$probename2sequenceInputFile 1 > $workflowDataDir/tbase-pbase.out"
+  my $cmd1 = "get_pbase-tbase.pl $workflowDataDir/$probename2sequenceInputFile 1 > $workflowDataDir/$tbasePbaseFile"
 
-  my $cmd2 = "create_cdf.pl $workflowDataDir/$cdfFile $workflowDataDir/$gene2probesInputFile $workflowDataDir/tbase-pbase.out"
+  my $cmd2 = "create_cdf.pl $workflowDataDir/$cdfFile $workflowDataDir/$gene2probesInputFile $workflowDataDir/$tbasePbaseFile"
 
 
 
