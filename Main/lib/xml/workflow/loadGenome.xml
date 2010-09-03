@@ -114,27 +114,12 @@
       <depends name="organismSpecificISF"/> 
     </step>
 
-
-  <step name="indexGenomicSeqsForBowtie"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
-      <paramValue name="inputFile">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="outputIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
-      <depends name="extractGenomicSeqsForSsa"/> 
-    </step>
-
   <step name="extractTranscriptSeqsForSsa"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTranscriptSeqsForSsa" includeIf="$$extractProteins$$">
       <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="outputFile">$$transcriptSeqsFileForSsa$$</paramValue>
       <depends name="organismSpecificISF"/> 
-    </step>
-
-  <step name="indexTranscriptsSeqsForBowtie"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes" includeIf="$$extractProteins$$">
-      <paramValue name="inputFile">$$transcriptSeqsFileForSsa$$</paramValue>
-      <paramValue name="outputIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
-      <depends name="extractTranscriptSeqsForSsa"/> 
     </step>
 
   <step name="extractGeneModelForSsa"
