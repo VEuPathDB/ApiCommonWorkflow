@@ -19,6 +19,9 @@
     <param name="genomicSeqsFileForSsa"/>
     <param name="nonUniqueMappingSuppressLimits"/>
     <param name="useTranscripts"/>
+    <param name="pairedReadFilePath"/>
+    <param name="numInsertions"/>
+    <param name="limitNU"/>
 
     <constant name="dataDir">$$parentDataDir$$/analyze$$sampleName$$</constant>
     <constant name="uniqueFile">$$dataDir$$/uniqueMappings</constant>
@@ -32,7 +35,7 @@
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
-
+<!--
     <subgraph name="alignReadsToGenome"  xmlFile="runRUMOnCluster.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
@@ -53,6 +56,22 @@
       <paramValue name="reportMismatches">false</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
+-->
+    <subgraph name="runRUMOnCluster"  xmlFile="runRUMOnCluster.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="readFilePath">$$shortSeqsFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="genomeBowtieIndex"></paramValue>
+      <paramValue name="transcriptBowtieIndex">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="transcriptFastaFile"></paramValue>
+      <paramValue name="pairedReadFilePath">$$pairedReadFilePath$$</paramValue>
+      <paramValue name="limitNU">$$limitNU$$</paramValue>
+      <paramValue name="numInsertions">$$numInsertions$$</paramValue>
+      <paramValue name="createSAMFile">false</paramValue>
+      <paramValue name="countMismatches">false</paramValue>
+    </subgraph>
+
 
     <step name="makeUniqueNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
       <paramValue name="inputFile">$$uniqueFile$$</paramValue>
