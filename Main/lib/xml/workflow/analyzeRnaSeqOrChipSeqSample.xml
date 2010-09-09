@@ -1,27 +1,24 @@
 <workflowGraph name="analyzeRnaSeqOrChipSeqSample">
     <param name="parentDataDir"/>
     <param name="sampleName"/>
-    <param name="genomicSeqsDir"/>
     <param name="ssaGeneModelFile"/>
-    <param name="shortSeqsFile"/>
     <param name="genomicSeqsFile"/>
+    <param name="shortSeqsFile"/>
     <param name="outputCoverageFile"/>
     <param name="outputIntensityFile"/>
-    <param name="isChipSeq"/>
-    <param name="computePeaks"/>
+    <param name="makeIntensityFile"/>
     <param name="rnaSeqExtDbRlsSpec"/>
     <param name="genomeExtDbSpec"/>
-    <param name="readLength"/>
     <param name="genomicSeqsFileForSsa"/>
-    <param name="nonUniqueMappingSuppressLimits"/>
-    <param name="useTranscripts"/>
+    <param name="transcriptSeqsFileForSsa"/>
     <param name="pairedReadFilePath"/>
     <param name="numInsertions"/>
     <param name="limitNU"/>
 
     <constant name="dataDir">$$parentDataDir$$/analyze$$sampleName$$</constant>
-    <constant name="uniqueFile">$$dataDir$$/uniqueMappings</constant>
-    <constant name="nonUniqueFile">$$dataDir$$/nonUniqueMappings</constant>
+    <constant name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.all</constant>
+    <constant name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.all</constant>
+
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -31,34 +28,13 @@
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
-<!--
-    <subgraph name="alignReadsToGenome"  xmlFile="runRUMOnCluster.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
-      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
-      <paramValue name="geneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="useTranscripts">$$useTranscripts$$</paramValue>
-      <paramValue name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
-      <paramValue name="outputUniqueFile">$$uniqueFile$$</paramValue>
-      <paramValue name="outputNonUniqueFile">$$nonUniqueFile$$</paramValue>
-      <paramValue name="isChipSeq">$$isChipSeq$$</paramValue>
-      <paramValue name="readType">$$readType$$</paramValue>
-      <paramValue name="readLength">$$readLength$$</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="nonUniqueMappingSuppressLimits">$$nonUniqueMappingSuppressLimits$$</paramValue>
-      <paramValue name="reportMismatches">false</paramValue>
-      <depends name="mirrorToCluster"/>
-    </subgraph>
--->
+ 
     <subgraph name="runRUMOnCluster"  xmlFile="runRUMOnCluster.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="readFilePath">$$shortSeqsFile$$</paramValue>
       <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="transcriptFastaFile"></paramValue>
+      <paramValue name="transcriptFastaFile">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="pairedReadFilePath">$$pairedReadFilePath$$</paramValue>
       <paramValue name="limitNU">$$limitNU$$</paramValue>
       <paramValue name="numInsertions">$$numInsertions$$</paramValue>
@@ -69,14 +45,33 @@
 
     <step name="makeUniqueNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
       <paramValue name="inputFile">$$uniqueFile$$</paramValue>
-      <paramValue name="outputFile">$$outputCoverageFile$$.unique</paramValue>
+      <paramValue name="outputUnNormFile">$$outputCoverageFile$$.Unique.UnNorm</paramValue>
+      <paramValue name="outputNormFile">$$outputCoverageFile$$.Unique.Norm</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
-      <depends name="alignReadsToGenome"/>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="makeNUNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
+      <paramValue name="inputFile">$$nonUniqueFile$$</paramValue>
+      <paramValue name="outputUnNormFile">$$outputCoverageFile$$.NU.UnNorm</paramValue>
+      <paramValue name="outputNormFile">$$outputCoverageFile$$.NU.Norm</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+   <step name="reformatNUCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
+      <paramValue name="inputFile">$$outputCoverageFile$$.NU.Norm</paramValue>
+      <paramValue name="outputFile">$$outputCoverageFile$$.NU.Norm.reformated</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="multiple">true</paramValue>
+      <depends name="makeNUNormalizedCoverageFile"/>
     </step>
 
     <step name="reformatUniqueCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
-      <paramValue name="inputFile">$$outputCoverageFile$$.unique</paramValue>
-      <paramValue name="outputFile">$$outputCoverageFile$$.unique.reformated</paramValue>
+      <paramValue name="inputFile">$$outputCoverageFile$$.Unique.Norm</paramValue>
+      <paramValue name="outputFile">$$outputCoverageFile$$.Unique.Norm.reformated</paramValue>
       <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
@@ -85,37 +80,21 @@
     </step>
 
     <step name="loadUniqueRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$outputCoverageFile$$.unique.reformated</paramValue>
+      <paramValue name="inputFile">$$outputCoverageFile$$.Unique.Norm.reformated</paramValue>
       <depends name="reformatUniqueCoverageFile"/>
     </step>
 
-    <step name="makeNonUniqueNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
-      <paramValue name="inputFile">$$nonUniqueFile$$</paramValue>
-      <paramValue name="outputFile">$$outputCoverageFile$$.nonunique</paramValue>
-      <paramValue name="sampleName">$$sampleName$$</paramValue>
-      <depends name="alignReadsToGenome"/>
+    <step name="loadNURnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$outputCoverageFile$$.NU.Norm.reformated</paramValue>
+      <depends name="reformatNUCoverageFile"/>
     </step>
 
-    <step name="reformatNonUniqueCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
-      <paramValue name="inputFile">$$outputCoverageFile$$.nonunique</paramValue>
-      <paramValue name="outputFile">$$outputCoverageFile$$.nonunique.reformated</paramValue>
-      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
-      <paramValue name="sampleName">$$sampleName$$</paramValue>
-      <paramValue name="multiple">true</paramValue>
-      <depends name="makeNonUniqueNormalizedCoverageFile"/>
-    </step>
-
-    <step name="loadNonUniqueRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$outputCoverageFile$$.nonunique.reformated</paramValue>
-      <depends name="reformatNonUniqueCoverageFile"/>
-    </step>
-
-    <step name="makeIntensityFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeIntensityFile" excludeIf="$$isChipSeq$$">
-      <paramValue name="inputCoverageFile">$$outputCoverageFile$$.unique</paramValue>
+    <step name="makeIntensityFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeIntensityFile" excludeIf="$$makeIntensityFile$$">
+      <paramValue name="inputCoverageFile">$$outputCoverageFile$$.Unique.UnNorm,$$outputCoverageFile$$.NU.UnNorm</paramValue>
       <paramValue name="inputGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="outputIntensityFile">$$outputIntensityFile$$</paramValue>
       <depends name="makeUniqueNormalizedCoverageFile"/>
+      <depends name="makeNUNormalizedCoverageFile"/>
     </step>
 
 </workflowGraph>

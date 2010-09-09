@@ -23,7 +23,7 @@ sub run {
    
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmdReformat = "generateCoveragePlotInputFile.pl  --filename $workflowDataDir/$inputFile --RNASeqExtDbSpecs '$extDbRlsSpec' --genomeExtDbSpecs '$genomeExtDbSpec' --sample '$sampleName' --multiple $multiple> $workflowDataDir/$outputFile";
+  my $cmdReformat = "generateCoveragePlotInputFile.pl  --filename $workflowDataDir/$inputFile --RNASeqExtDbSpecs '$extDbRlsSpec' --genomeExtDbSpecs '$genomeExtDbSpec' --sample '$sampleName' --multiple $multiple > $workflowDataDir/$outputFile";
 
   
   if ($undo) {

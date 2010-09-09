@@ -36,11 +36,13 @@ sub run {
 
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
+      $self->runCmd(0, "rm -f $workflowDataDir/$outputFile.multiLine");
   } else {
       if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }else{
-	    $self->runCmd($test,"gusExtractSequences --outputFile $workflowDataDir/$outputFile --idSQL \"$sql\" --verbose");
+	    $self->runCmd($test,"gusExtractSequences --outputFile $workflowDataDir/$outputFile.multiLine --idSQL \"$sql\" --verbose");
+	    $self->runCmd($test,"modify_fa_to_have_seq_on_one_line.pl $workflowDataDir/$outputFile.multiLine >$workflowDataDir/$outputFile");
       }
   }
 }

@@ -15,15 +15,20 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
+    my ($uniqueUnNorm,$nuUnNorm) = split(',',$inputCoverageFile);
+
+    my $cmd1 = "cat $workflowDataDir/$uniqueUnNorm $workflowDataDir/$nuUnNorm > $stepDir/unNormAll.cov";
+
     my $tempOutputFile="$workflowDataDir/$outputIntensityFile"."ori";
 
-    my $cmd1 = "quantify_one_sample.pl $workflowDataDir/$inputCoverageFile $workflowDataDir/$inputGeneModelFile > $tempOutputFile";
+    my $cmd2 = "quantify_one_sample.pl $stepDir/unNormAll.cov $workflowDataDir/$inputGeneModelFile > $tempOutputFile";
 
-    my $cmd2 = "featurequant2geneprofiles.pl $workflowDataDir/$outputIntensityFile.ori -genes > $workflowDataDir/$outputIntensityFile";
+    my $cmd3 = "featurequant2geneprofiles.pl $workflowDataDir/$outputIntensityFile.ori -genes > $workflowDataDir/$outputIntensityFile";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputIntensityFile");
-	$self->runCmd(0, "rm -f $workflowDataDir/$outputIntensityFile.ori");
+	$self->runCmd(0, "rm -f $workflowDataDir/$tempOutputFile");
+	$self->runCmd(0, "rm -f $workflowDataDir/unNormAll.cov");
     } else {
 	if ($test) {
 	    $self->testInputFile('inputCoverageFile', "$workflowDataDir/$inputCoverageFile");
@@ -32,6 +37,7 @@ sub run {
 	}
 	$self->runCmd($test, $cmd1);
 	$self->runCmd($test, $cmd2);
+	$self->runCmd($test, $cmd3);
     }
 }
 
