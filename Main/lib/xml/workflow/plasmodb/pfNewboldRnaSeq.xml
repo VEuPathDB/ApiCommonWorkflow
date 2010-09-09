@@ -1,17 +1,15 @@
 <workflowGraph name="pfNewboldRnaSeq">
     <param name="parentDataDir"/>
     <param name="organismResourceXmlFile"/>
-    <param name="bowtieGenomicIndexDir"/>
-    <param name="bowtieTranscriptIndexDir"/>
     <param name="genomicSeqsFile"/>
-    <param name="genomicSeqsDir"/>
     <param name="ssaGeneModelFile"/>
     <param name="genomicSeqsFileForSsa"/>
-    <param name="maxIntronSize"/>
+    <param name="transcriptSeqsFileForSsa"/>
 
-    <constant name="dataDir">$$parentDataDir$$/pfNewboldRnaSeq</constant>
+    <constant name="dataDir">$$parentDataDir$$/pfStunnenbergRnaSeq</constant>
     <constant name="samplesDataDir">$$dataDir$$/samples</constant>
     <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -42,24 +40,19 @@
     <subgraph name="analyzeHour0Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour0</paramValue>
-      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
-      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour0.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour0/Hour0.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour0.int</paramValue>
-      <paramValue name="computePeaks">false</paramValue>
-      <paramValue name="readType">single</paramValue>
-      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Newbold_RSRC|@@Pf_RNASeq_Newbold_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">64</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <paramValue name="useTranscripts">true</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">transcriptSeqsFileForSsa</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
       <depends name="makeSamplesDataDir"/>
       <depends name="Pf_RNASeq_Newbold_RSRC"/>
       <depends name="mirrorToCluster"/>
@@ -68,128 +61,107 @@
     <subgraph name="analyzeHour8Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour8</paramValue>
-      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
-      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour8.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour8/Hour8.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour8.int</paramValue>
-      <paramValue name="computePeaks">false</paramValue>
-      <paramValue name="readType">single</paramValue>
-      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Newbold_RSRC|@@Pf_RNASeq_Newbold_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">64</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <paramValue name="useTranscripts">true</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">transcriptSeqsFileForSsa</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
       <depends name="makeSamplesDataDir"/>
       <depends name="Pf_RNASeq_Newbold_RSRC"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
+
     <subgraph name="analyzeHour16Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour16</paramValue>
-      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
-      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour16.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour16/Hour16.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour16.int</paramValue>
-      <paramValue name="computePeaks">false</paramValue>
-      <paramValue name="readType">single</paramValue>
-      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Newbold_RSRC|@@Pf_RNASeq_Newbold_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">64</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <paramValue name="useTranscripts">true</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">transcriptSeqsFileForSsa</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
       <depends name="makeSamplesDataDir"/>
       <depends name="Pf_RNASeq_Newbold_RSRC"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
+
     <subgraph name="analyzeHour24Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour24</paramValue>
-      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
-      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour24.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour24/Hour24.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour24.int</paramValue>
-      <paramValue name="computePeaks">false</paramValue>
-      <paramValue name="readType">single</paramValue>
-      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Newbold_RSRC|@@Pf_RNASeq_Newbold_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">64</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue
-      <paramValue name="useTranscripts">true</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">transcriptSeqsFileForSsa</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
       <depends name="makeSamplesDataDir"/>
       <depends name="Pf_RNASeq_Newbold_RSRC"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
+
     <subgraph name="analyzeHour32Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour32</paramValue>
-      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
-      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour32.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour32/Hour32.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour32.int</paramValue>
-      <paramValue name="computePeaks">false</paramValue>
-      <paramValue name="readType">single</paramValue>
-      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Newbold_RSRC|@@Pf_RNASeq_Newbold_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">64</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <paramValue name="useTranscripts">true</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">transcriptSeqsFileForSsa</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
       <depends name="makeSamplesDataDir"/>
       <depends name="Pf_RNASeq_Newbold_RSRC"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
+
     <subgraph name="analyzeHour40Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour40</paramValue>
-      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
-      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour40.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour40/Hour40.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour40.int</paramValue>
-      <paramValue name="computePeaks">false</paramValue>
-      <paramValue name="readType">single</paramValue>
-      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Newbold_RSRC|@@Pf_RNASeq_Newbold_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">64</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <paramValue name="useTranscripts">true</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">transcriptSeqsFileForSsa</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
       <depends name="makeSamplesDataDir"/>
       <depends name="Pf_RNASeq_Newbold_RSRC"/>
       <depends name="mirrorToCluster"/>
@@ -198,28 +170,24 @@
     <subgraph name="analyzeHour48Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour48</paramValue>
-      <paramValue name="bowtieGenomicIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
-      <paramValue name="bowtieTranscriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour48.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour48/Hour48.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour48.int</paramValue>
-      <paramValue name="computePeaks">false</paramValue>
-      <paramValue name="readType">single</paramValue>
-      <paramValue name="isChipSeq">false</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Pf_RNASeq_Newbold_RSRC|@@Pf_RNASeq_Newbold_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="readLength">64</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="nonUniqueMappingSuppressLimits">30</paramValue>
-      <paramValue name="useTranscripts">true</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">transcriptSeqsFileForSsa</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
       <depends name="makeSamplesDataDir"/>
       <depends name="Pf_RNASeq_Newbold_RSRC"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
+
 
     <step name="mergeIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
       <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
