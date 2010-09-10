@@ -16,9 +16,9 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd1 = "get_pbase-tbase.pl $workflowDataDir/$probename2sequenceInputFile 1 > $workflowDataDir/$tbasePbaseFile"
+  my $cmd1 = "get_pbase-tbase.pl $workflowDataDir/$probename2sequenceInputFile 1 > $workflowDataDir/$tbasePbaseFile";
 
-  my $cmd2 = "create_cdf.pl $workflowDataDir/$cdfFile $workflowDataDir/$gene2probesInputFile $workflowDataDir/$tbasePbaseFile"
+  my $cmd2 = "create_cdf.pl $workflowDataDir/$cdfFile $workflowDataDir/$gene2probesInputFile $workflowDataDir/$tbasePbaseFile";
 
 
 
