@@ -16,7 +16,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $make_bed_cmd = "make_bed.pl $workflowDataDir/$inputFile $stepDir/mapping.bed";
+    my $make_bed_cmd = "sort_RUM_by_location.pl $workflowDataDir/$inputFile $stepDir/$inputFile.sorted";
     my $m2c_cmd = "java -Xmx2000m -classpath $ENV{GUS_HOME}/lib/java/GGTools-SSA.jar org.apidb.ggtools.ssa.M2C $stepDir/mapping.bed $workflowDataDir/$outputUnNormFile makeCoverage.log -name '$sampleName' -chunks 2 -ucsc";
     my $normalize_cmd = "normalizeCov.pl $workflowDataDir/$outputUnNormFile > $workflowDataDir/$outputNormFile";
 
