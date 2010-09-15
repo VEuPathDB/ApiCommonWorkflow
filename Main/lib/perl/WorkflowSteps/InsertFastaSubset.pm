@@ -17,7 +17,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbRlsVer --sequenceFile $workflowDataDir/$fastaFile --sourceIdsFile  $workflowDataDir/$idsFile --regexSourceId  '>gi\\|(\\d+)\\|' --regexDesc '^>(gi\\|\\d+\\|\\w+\\|\\w+\\.?\\w+\\|)' --regexNcbiTaxId '\\|(\\d+)\\|\$' --tableName DoTS::ExternalAASequence";
+  my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbRlsVer --sequenceFile $workflowDataDir/$fastaFile --sourceIdsFile  $workflowDataDir/$idsFile --regexSourceId  '>gi\\|\\d+\\|\\w+\\|(\\w+\\.?\\w+)\\|' --regexDesc '^>gi\\|\\d+\\|\\w+\\|\\w+\\.?\\w+\\|\\W+(\.+)' --regexSecondaryId '>gi\\|(\\d+)\\|' --tableName DoTS::ExternalAASequence";
 
   if ($test) {
     $self->testInputFile('fastaFile', "$workflowDataDir/$fastaFile");
