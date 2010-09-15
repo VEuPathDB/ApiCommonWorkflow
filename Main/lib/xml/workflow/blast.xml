@@ -75,6 +75,12 @@
       <depends name="extractIdsFromBlastResult"/>
     </step>
 
+    <step name="updateTaxonFieldForSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateTaxonFieldFromFile" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadNrdbSubjectSubset,plugin">
+      <paramValue name="extDbRlsSpec">$$subjectExtDbRlsSpec$$</paramValue>
+      <paramValue name="taxIdFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
+      <depends name="loadSubjectSubset"/>
+    </step>
+
     <step name="loadSimilarities" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlastSimilarities" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
       <paramValue name="queryTable">$$queryTable$$</paramValue>
