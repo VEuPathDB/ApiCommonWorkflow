@@ -211,36 +211,24 @@
     </step>
 
 
-<!--
-   <subgraph name="createFullRecordCacheAndFileForGene" xmlFile="createFullRecordCacheAndFile.xml">
-    <paramValue name="downloadSiteDataDir">$$downloadSiteOrganismDir$$</paramValue>
-    <paramValue name="outputFile">$$downloadSiteOrganismDir$$/$$organismName$$Gene_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <paramValue name="organismName">$$organismName$$</paramValue>
-    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-    <paramValue name="recordType">Gene</paramValue>
-    <paramValue name="deprecated">$$deprecated$$</paramValue>
-  </subgraph>
+    <step name="makeReadMeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeReadMeFile">
+      <paramValue name="baseDir">$$downloadSiteDataDir$$/$$organismName$$</paramValue>    
+      <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismName$$/README.htaccess</paramValue>    
+    <depends name="makeAnnotatedCDSDownloadFile"/>
+    <depends name="makeESTDownloadFile"/>
+    <depends name="makeDotsAssemblyDownloadFile"/>
+    <depends name="makeAnnotatedCDSDownloadFile"/>
+    <depends name="makeAnnotatedTranscriptsDownloadFile"/>
+    <depends name="makeAnnotatedProteinsDownloadFile"/>
+    <depends name="makeMixedGenomicDownloadFile"/>
+    <depends name="makeOrfDownloadFile"/>
+    <depends name="makeOrfNADownloadFile"/>
+    <depends name="makeInterproDownloadFile"/>
+    <depends name="makeCodonUsage"/>
+    <depends name="makeGeneAliasDescripFile"/>
+    <depends name="makeGeneDescripFile"/>
+    <depends name="makeSequenceDescripFile"/>
+    <depends name="makeGffDescripFile"/>
+    </step>
 
-   <subgraph name="createFullRecordCacheAndFileForSequence" xmlFile="createFullRecordCacheAndFile.xml" includeIf="$$makeGenomicDownloadFile$$">
-    <paramValue name="downloadSiteDataDir">$$downloadSiteOrganismDir$$</paramValue>
-    <paramValue name="outputFile">$$downloadSiteOrganismDir$$/$$organismName$$Sequence_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <paramValue name="organismName">$$organismName$$</paramValue>
-    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-    <paramValue name="recordType">Sequence</paramValue>
-    <paramValue name="deprecated">$$deprecated$$</paramValue>
-  </subgraph>
--->
-   <subgraph name="createGffCacheAndFile" xmlFile="createGffCacheAndFile.xml">
-    <paramValue name="downloadSiteDataDir">$$downloadSiteOrganismDir$$</paramValue>
-    <paramValue name="outputFile">$$downloadSiteOrganismDir$$/$$organismName$$_$$projectName$$-$$projectVersion$$.gff</paramValue>
-    <paramValue name="organismName">$$organismName$$</paramValue>
-    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-    <paramValue name="deprecated">$$deprecated$$</paramValue>
-  </subgraph>
 </workflowGraph>
