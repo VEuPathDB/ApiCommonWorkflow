@@ -34,7 +34,7 @@
       <paramValue name="mercatorDraftSeqTables">$$mercatorDraftSeqTables$$</paramValue>
       <paramValue name="mercatorNonDraftSeqTables">$$mercatorNonDraftSeqTables$$</paramValue>
       <paramValue name="mercatorSyntenyVersion">@@mercatorSyntenyVersion@@</paramValue>    
-      <depends name="makeDataDir"/>
+      <depends name="makeMercatorDataDir"/>
     </step>
 
     <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid">
@@ -49,21 +49,20 @@
   <subgraph name="RodentPlasmodiumChromosomes_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">RodentPlasmodiumChromosomes_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$commonResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$/common/comparativeGenomics</paramValue>
     <depends name="runPairwiseMercatorMavid"/> 
   </subgraph>
 
   <subgraph name="loadOrthoMCLPhyleticProfiles" xmlFile="loadResource.xml">
     <paramValue name="resourceName">$$orthoMCLPhyleticProfilesResourceName$$</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
-    <depends name="makeDataDir"/> 
+    <paramValue name="parentDataDir">$$parentDataDir$$/common/comparativeGenomics</paramValue>
   </subgraph>
 
   <subgraph name="loadOrthoMCLOrthologousGroups" xmlFile="loadResource.xml">
     <paramValue name="resourceName">$$orthoMCLOrthologousGroupsResourceName$$</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$/common/comparativeGenomics</paramValue>
     <depends name="loadOrthoMCLPhyleticProfiles"/> 
   </subgraph>
 
@@ -73,7 +72,7 @@
   </step>
 
     <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin">
-      <paramValue name="mercatorDir">$$mercatorDataDir</paramValue>
+      <paramValue name="mercatorDir">$$mercatorDataDir$$</paramValue>
       <paramValue name="organism">@@PlasmodiumFullName@@</paramValue>
       <paramValue name="mercatorDraftGenomes">$$mercatorDraftGenomes$$</paramValue>
       <paramValue name="mercatorNonDraftGenomes">$$mercatorNonDraftGenomes$$</paramValue>
