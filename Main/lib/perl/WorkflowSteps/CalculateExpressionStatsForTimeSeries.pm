@@ -9,9 +9,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $profileSetNames = $self->getParamValue('profileSetNames');
-
-  my $percentProfileSet = $self->getParamValue('percentProfileSet');
+  my $profileSetSpecs = $self->getParamValue('profileSetSpecs');
 
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
 
@@ -21,7 +19,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--externalDatabaseSpec '$extDbRlsSpec'  --profileSetNames '$profileSetNames' --percentProfileSet '$percentProfileSet'";
+  my $args = "--externalDatabaseSpec '$extDbRlsSpec'  --profileSetSpecs '$profileSetSpecs'";
 
   $args .= " --timePointsMappingFile '$workflowDataDir/$mappingFile'" if $mappingFile;
 
@@ -38,8 +36,7 @@ sub run {
 
 sub getParamDeclaration {
   return (
-	  'profileSetNames',
-	  'percentProfileSet',
+	  'profileSetSpecs',
 	  'extDbRlsSpec',
 	  'isLogged',
 	  'mappingFile',
