@@ -16,7 +16,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  $self->runCmdOnCluster(0, "mkdir -p $apiSiteFilesDir/$copyToDir");
+  $self->runCmd(0, "mkdir -p $apiSiteFilesDir/$copyToDir");
 
   my $cmd = "copyExpressionProfilesToDownloadDir --inputDir $workflowDataDir/$copyFromDir  --outputDir $apiSiteFilesDir/$copyToDir --configFile $workflowDataDir/$configFile";
 
