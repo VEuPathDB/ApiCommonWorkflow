@@ -18,7 +18,7 @@ sub run {
 
   $self->runCmdOnCluster(0, "mkdir -p $apiSiteFilesDir/$copyToDir");
 
-  my $cmd = "CopyExpressionProfilesToDownloadDir --inputDir $workflowDataDir/$copyFromDir  --outputDir $apiSiteFilesDir/$copyToDir --configFile $workflowDataDir/$configFile";
+  my $cmd = "copyExpressionProfilesToDownloadDir --inputDir $workflowDataDir/$copyFromDir  --outputDir $apiSiteFilesDir/$copyToDir --configFile $workflowDataDir/$configFile";
 
   if ($test) {
     $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");

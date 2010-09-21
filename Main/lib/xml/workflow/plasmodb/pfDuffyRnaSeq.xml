@@ -5,6 +5,7 @@
     <param name="ssaGeneModelFile"/>
     <param name="genomicSeqsFileForSsa"/>
     <param name="transcriptSeqsFileForSsa"/>
+    <param name="downloadSiteTranscriptExpressionDataDir"/>
 
     <constant name="dataDir">$$parentDataDir$$/pfDuffyRnaSeq</constant>
     <constant name="samplesDataDir">$$dataDir$$/samples</constant>
@@ -111,7 +112,7 @@
 
     <step name="makePercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
       <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt</paramValue>
-      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/percents.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt.pct</paramValue>
       <paramValue name="ties">min</paramValue>
       <paramValue name="hasHeader">false</paramValue>
       <depends name="mergeIntensityFiles"/>
@@ -122,6 +123,13 @@
       <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <paramValue name="extDbRlsSpec">Pf_RNASeq_Duffy_RSRC|@@Pf_RNASeq_Duffy_VER@@</paramValue>
       <depends name="makePercentileProfile"/>
+    </step>
+
+    <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
+      <paramValue name="copyFromDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="configFile">$$dataDir$$/Pf_RNASeq_Duffy_RSRC/final/config.txt</paramValue>
+      <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
+      <depends name="mergeIntensityFiles"/>
     </step>
 
 </workflowGraph>
