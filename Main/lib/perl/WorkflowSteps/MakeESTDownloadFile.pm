@@ -10,8 +10,8 @@ sub run {
   # get parameters
   my $outputFile = $self->getParamValue('outputFile');
   my $parentNcbiTaxonId = $self->getParamValue('parentNcbiTaxonId');
-  my $descripFile->getParamValue('descripFile');
-  my $descripString->getParamValue('descripString');
+  my $descripFile= $self->getParamValue('descripFile');
+  my $descripString= $self->getParamValue('descripString');
   my $useTaxonHierarchy = $self->getParamValue('useTaxonHierarchy');
 
   my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');

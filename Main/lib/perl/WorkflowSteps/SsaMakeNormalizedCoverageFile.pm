@@ -26,7 +26,6 @@ sub run {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputNormFile");
     } else {
 	if ($test) {
-	    $self->testInputFile('inputUniqueMappingFile', "$workflowDataDir/$inputFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputNormFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputUnNormFile");
 	}

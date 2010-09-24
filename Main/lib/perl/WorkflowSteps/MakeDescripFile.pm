@@ -10,8 +10,8 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     # get parameters
-    my $descripFile->getParamValue('descripFile');
-    my $descripString->getParamValue('descripString');
+    my $descripFile = $self->getParamValue('descripFile');
+    my $descripString = $self->getParamValue('descripString');
 
     my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 

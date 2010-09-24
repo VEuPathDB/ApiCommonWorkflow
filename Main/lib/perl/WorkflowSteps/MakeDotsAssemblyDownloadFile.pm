@@ -10,8 +10,8 @@ sub run {
   # get parameters
   my $outputFile = $self->getParamValue('outputFile');
   my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
-  my $descripFile->getParamValue('descripFile');
-  my $descripString->getParamValue('descripString');
+  my $descripFile = $self->getParamValue('descripFile');
+  my $descripString = $self->getParamValue('descripString');
 
   my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
@@ -33,7 +33,7 @@ sub run {
         AND t.taxon_id = a.taxon_id";
 
   my $cmd = " gusExtractSequences --outputFile $apiSiteFilesDir/$outputFile  --idSQL \"$sql\"";
-  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $apiSiteFilesDir/$descripFile";
+  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString \"$descripString\" --outputFile $apiSiteFilesDir/$descripFile";
 
   if($undo){
     $self->runCmd(0, "rm -f $apiSiteFilesDir/$outputFile");

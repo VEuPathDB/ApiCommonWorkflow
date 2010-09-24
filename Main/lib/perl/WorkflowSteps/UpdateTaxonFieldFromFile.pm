@@ -17,20 +17,14 @@ sub run {
 
   my $args = "--fileName $workflowDataDir/$taxIdFile  --sourceIdRegex  '^(\\d+)' --ncbiTaxIdRegex '^\\d+\\s(\\d+)' --idSql 'select source_id, aa_sequence_id from dots.externalaasequence where taxon_id is null' --extDbRelSpec 'NRDB|2010-06-14'  --tableName 'DoTS::ExternalAASequence'";
 
-  if ($test) {
-    $self->testInputFile('fastaFile', "$workflowDataDir/$fastaFile");
-    $self->testInputFile('idsFile', "$workflowDataDir/$idsFile");
-  }
-
   $self->runPlugin($test,$undo, "ApiCommonData::Load::Plugin::UpdateTaxonFieldFromFile",$args);
 
 }
 
 sub getParamDeclaration {
   return (
-	  'idsFile',
+	  'taxIdFile',
 	  'extDbRlsSpec',
-	  'fastaFile',
 	 );
 }
 
