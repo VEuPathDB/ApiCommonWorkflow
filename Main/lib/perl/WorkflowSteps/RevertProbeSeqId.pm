@@ -28,8 +28,6 @@ sub run {
       if ($test) {
 	  $self->testInputFile('seqFile', "$workflowDataDir/$shortSeqsFile");
 	  $self->testInputFile('seqFile', "$workflowDataDir/$originalShortSeqsFile");
-	  $self->testInputFile('seqFile', "$workflowDataDir/$inputUniqueFile");
-	  $self->testInputFile('seqFile', "$workflowDataDir/$inputNonUniqueFile");
       }else{
 	  $self->runCmd($test,"mv $workflowDataDir/$inputUniqueFile $workflowDataDir/$inputUniqueFile.org");
 	  $self->runCmd($test,"mv $workflowDataDir/$inputNonUniqueFile $workflowDataDir/$inputNonUniqueFile.org");

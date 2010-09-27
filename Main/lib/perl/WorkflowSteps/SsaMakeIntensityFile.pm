@@ -34,7 +34,7 @@ sub run {
 	    $self->testInputFile('inputUniqueUnNormCoverageFile', "$workflowDataDir/$uniqueUnNorm");
 	    $self->testInputFile('inputNUUnNormCoverageFile', "$workflowDataDir/$nuUnNorm");
 	    $self->testInputFile('inputGeneModelFile', "$workflowDataDir/$inputGeneModelFile");
-	    $self->runCmd($test,"echo test > $workflowDataDir/$outputIntensityFile");
+	    $self->runCmd(0,"echo test > $workflowDataDir/$outputIntensityFile");
 	}
 	$self->runCmd($test, $cmd1);
 	$self->runCmd($test, $cmd2);
