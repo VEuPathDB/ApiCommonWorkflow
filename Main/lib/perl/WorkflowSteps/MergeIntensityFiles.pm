@@ -29,7 +29,7 @@ sub run {
 	die "No input files. Please check inputDir: $workflowDataDir/$inputFilesDir\n";
     }else {
 	foreach my $file (@inputFileNames){
-	    open(IN,"$file") || die "File $file not found\n";
+	    open(IN,"$workflowDataDir/$inputFilesDir/$file") || die "File $file not found\n";
 	    my $base = (split(/\//, $file))[-1];
 	    $base=~ s/\.int//;
 	    $intensityVals{header}.="$base\t";
