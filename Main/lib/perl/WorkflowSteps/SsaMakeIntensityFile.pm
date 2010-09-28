@@ -31,7 +31,8 @@ sub run {
 	$self->runCmd(0, "rm -f $workflowDataDir/unNormAll.cov");
     } else {
 	if ($test) {
-	    $self->testInputFile('inputCoverageFile', "$workflowDataDir/$inputCoverageFile");
+	    $self->testInputFile('inputUniqueUnNormCoverageFile', "$workflowDataDir/$uniqueUnNorm");
+	    $self->testInputFile('inputNUUnNormCoverageFile', "$workflowDataDir/$nuUnNorm");
 	    $self->testInputFile('inputGeneModelFile', "$workflowDataDir/$inputGeneModelFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputIntensityFile");
 	}

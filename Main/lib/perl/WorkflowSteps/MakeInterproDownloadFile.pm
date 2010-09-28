@@ -9,8 +9,8 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $outputFile = $self->getParamValue('outputFile');
-  my $descripFile->getParamValue('descripFile');
-  my $descripString->getParamValue('descripString');
+  my $descripFile= $self->getParamValue('descripFile');
+  my $descripString= $self->getParamValue('descripString');
 
   my $genomeDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
   my $interproDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('interproExtDbRlsSpec'));

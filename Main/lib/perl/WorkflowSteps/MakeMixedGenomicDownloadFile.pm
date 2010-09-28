@@ -11,8 +11,8 @@ sub run {
   my @genomeExtDbSpecList = split (/,/,$self->getParamValue('genomeExtDbSpecList'));
   my $outputFile = $self->getParamValue('outputFile');
   my $organismSource = $self->getParamValue('organismSource');
-  my $descripFile->getParamValue('descripFile');
-  my $descripString->getParamValue('descripString');
+  my $descripFile= $self->getParamValue('descripFile');
+  my $descripString= $self->getParamValue('descripString');
 
   my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 

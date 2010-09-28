@@ -152,10 +152,10 @@ sub getSoIds {
 
   if($soTermIdsOrNames =~ /SO:/){
 
-      $soTermIds =  join(",", map { "'$_'" } split(',', $soTermIds));
+      $soTermIds =  join(",", map { "'$_'" } split(',', $soTermIdsOrNames));
   }else{
 
-      $soTerms =  join(",", map { "'$_'" } split(',', $soTerms));
+      $soTerms =  join(",", map { "'$_'" } split(',', $soTermIdsOrNames));
   }
 
   my $sql = $soTermIds ? "select sequence_ontology_id from sres.sequenceontology where so_id IN (${soTermIds})" : "select sequence_ontology_id from sres.sequenceontology where term_name IN (${soTerms})";

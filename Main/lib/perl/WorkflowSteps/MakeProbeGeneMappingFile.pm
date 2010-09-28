@@ -23,6 +23,7 @@ sub run {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
+	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }else{
 	  $self->runCmd($test,$cmd);
       }

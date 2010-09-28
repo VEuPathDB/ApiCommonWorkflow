@@ -22,8 +22,6 @@ sub run {
     $self->runCmd(0, "mv $workflowDataDir/$inputNonUniqueFile.save $workflowDataDir/$inputNonUniqueFile");
   } else {
       if ($test) {
-	  $self->testInputFile('seqFile', "$workflowDataDir/x$inputUniqueFile");
-	  $self->testInputFile('seqFile', "$workflowDataDir/$inputNonUniqueFile");
       }else{
 	  $self->runCmd($test,"mv $workflowDataDir/$inputUniqueFile $workflowDataDir/$inputUniqueFile.save");
 	  $self->runCmd($test,"mv $workflowDataDir/$inputNonUniqueFile $workflowDataDir/$inputNonUniqueFile.save");
