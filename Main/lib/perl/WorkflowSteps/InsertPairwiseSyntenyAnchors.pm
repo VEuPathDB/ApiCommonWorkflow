@@ -48,7 +48,7 @@ sub run {
 	for(my $i =0; $i <= ($#allGenomes-1); $i++){
 	    for(my $j =$i+1 ; $j <= $#allGenomes; $j++){
 		my $dirName = "$mercatorDir/$allGenomes[$i]-$allGenomes[$j]";
-		$self->testInputFile('inputFile', "$dirName/$allGenomes[$i]-$allGenomes[$j].align-synteny");
+		$self->testInputFile('inputFile', "$workflowDataDir/$dirName/$allGenomes[$i]-$allGenomes[$j].align-synteny");
 	    }
 	}
     }

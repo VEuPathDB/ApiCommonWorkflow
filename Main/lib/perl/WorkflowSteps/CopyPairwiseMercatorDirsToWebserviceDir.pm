@@ -23,8 +23,6 @@ sub run {
 	}else{
 	    if ($test) {
 		$self->runCmd(0,"mkdir -p $apiSiteFilesDir/$outputDir/$subDir");
-		$self->runCmd(0,"cp -R $workflowDataDir/$mercatorDir/$subDir/mercator-output/alignments $apiSiteFilesDir/$outputDir/$subDir");
-		$self-runCmd(0,"cp -R $workflowDataDir/mercatorDir/$subDir/mercator-output/*.agp $apiSiteFilesDir/$outputDir/$subDir");
 	    }else{		
 		$self->runCmd($test,"mkdir -p $apiSiteFilesDir/$outputDir/$subDir");
 		$self->runCmd($test,"cp -R $workflowDataDir/$mercatorDir/$subDir/mercator-output/alignments $apiSiteFilesDir/$outputDir/$subDir");
