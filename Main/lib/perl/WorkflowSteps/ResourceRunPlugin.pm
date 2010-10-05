@@ -19,7 +19,7 @@ sub run {
 
     if ($plugin =~ m/InsertSequenceFeatures/ && $undo){
 
-      my $mapFile = $pluginArgs =~ m/mapFile\s+(\S+)\s+/;
+      my $mapFile = $1 if ($pluginArgs =~ m/mapFile\s+(\S+)\s+/);
 
       my $algInvIds = $self->getAlgInvIds();
 	
