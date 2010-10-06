@@ -1,0 +1,46 @@
+<workflowGraph name="loadGenome">
+      <param name="parentDataDir"/>
+      <param name="organismName"/>
+      <param name="genomeExtDbRlsSpec"/>
+      <param name="ncbiTaxonId"/>
+      <param name="projectName"/>
+
+    <constant name="dataDir">$$parentDataDir$$/$$organismName$$LoadGenome</constant>
+    <constant name="genomicSeqsFileForSsa">$$dataDir$$/genomicSeqsForSsa.fsa</constant>
+    <constant name="transcriptSeqsFileForSsa">$$dataDir$$/transcriptSeqsForSsa.fsa</constant>
+    <constant name="geneModelFileForSsa">$$dataDir$$/geneModelForSsa.txt</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+  <step name="insertOrganismProject"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrganismProject">
+      <paramValue name="organism">$$organismName$$</paramValue>
+      <paramValue name="project">$$projectName$$</paramValue>
+    </step>
+
+  <step name="extractGenomicSeqsForSsa"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqsForSsa">
+      <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="outputFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <depends name="organismSpecificISF"/> 
+    </step>
+
+  <step name="extractTranscriptSeqsForSsa"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTranscriptSeqsForSsa" includeIf="$$extractProteins$$">
+      <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="outputFile">$$transcriptSeqsFileForSsa$$</paramValue>
+      <depends name="organismSpecificISF"/> 
+    </step>
+
+  <step name="extractGeneModelForSsa"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa" includeIf="$$extractProteins$$">
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="outputFile">$$geneModelFileForSsa$$</paramValue>
+      <depends name="organismSpecificISF"/> 
+    </step>
+
+</workflowGraph>
