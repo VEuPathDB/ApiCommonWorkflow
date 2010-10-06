@@ -1,0 +1,30 @@
+<workflowGraph name="tgVEGSpecific">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+  <param name="parentDataDir"/>
+
+
+  <constant name="dataDir">$$parentDataDir$$/tgVEGSpecific</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/tgVEGLoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/tgVEGLoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/tgVEGLoadGenome/geneModelForSsa.txt</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+
+  <subgraph name="rnaSeqAndChipSeq" xmlFile="toxodb/tgVEGRnaSeqAndChipSeq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+</workflowGraph>
