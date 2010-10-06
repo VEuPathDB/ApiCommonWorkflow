@@ -1,0 +1,60 @@
+<workflowGraph name="toxoRnaSeqWorkflow">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+
+  <subgraph name="miniGlobal" xmlFile="miniGlobal.xml">
+
+   <subgraph name="tgME49LoadGenome" xmlFile="miniLoadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TgondiiME49</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">T.gondii ME49 contigs from Genbank|@@T.gondii ME49 contigs from Genbank_VER@@</paramValue>
+    <paramValue name="ncbiTaxonId">508771</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="miniGlobal"/>
+  </subgraph>
+
+  <subgraph name="tgVEGLoadGenome" xmlFile="miniLoadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TgondiiVEG</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">T.gondii VEG contigs from Genbank|@@T.gondii VEG contigs from Genbank_VER@@</paramValue>
+    <paramValue name="ncbiTaxonId">432359</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="miniGlobal"/> 
+  </subgraph>
+
+  <subgraph name="ncLoadGenome" xmlFile="miniLoadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Ncaninum</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Sanger N. caninum chromosomes|@@Sanger N. caninum chromosomes_VER@@</paramValue>
+    <paramValue name="ncbiTaxonId">29176</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="miniGlobal"/>
+  </subgraph>
+
+  <subgraph name="TgME49Specific" xmlFile="tgME49Specific.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">toxodb/tgME49Resources.xml</paramValue>
+    <depends name="tgME49LoadGenome"/> 
+  </subgraph>
+
+  <subgraph name="TgVEGSpecific" xmlFile="tgVEGSpecific.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">toxodb/tgVEGResources.xml</paramValue>
+    <depends name="tgVEGLoadGenome"/> 
+  </subgraph>
+
+  <subgraph name="TgNcSpecific" xmlFile="ncSpecific.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">toxodb/ncResources.xml</paramValue>
+    <depends name="ncLoadGenome"/> 
+  </subgraph>
+
+
+</workflowGraph>
+
