@@ -1,0 +1,92 @@
+<workflowGraph name="analyzeRnaSeqOrChipSeqSample">
+    <param name="parentDataDir"/>
+    <param name="sampleName"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="genomicSeqsFile"/>
+    <param name="shortSeqsFile"/>
+    <param name="outputCoverageFile"/>
+    <param name="outputIntensityFile"/>
+    <param name="makeIntensityFile"/>
+    <param name="rnaSeqExtDbRlsSpec"/>
+    <param name="genomeExtDbSpec"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+    <param name="pairedReadFilePath"/>
+    <param name="numInsertions"/>
+    <param name="limitNU"/>
+
+    <constant name="dataDir">$$parentDataDir$$/analyze$$sampleName$$</constant>
+    <constant name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.all</constant>
+    <constant name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.all</constant>
+
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+ 
+    <subgraph name="runRUMOnCluster"  xmlFile="runRUMOnCluster.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="readFilePath">$$shortSeqsFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="transcriptFastaFile">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath">$$pairedReadFilePath$$</paramValue>
+      <paramValue name="limitNU">$$limitNU$$</paramValue>
+      <paramValue name="numInsertions">$$numInsertions$$</paramValue>
+      <paramValue name="createSAMFile">false</paramValue>
+      <paramValue name="countMismatches">false</paramValue>
+    </subgraph>
+
+
+    <step name="makeUniqueNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
+      <paramValue name="inputFile">$$uniqueFile$$</paramValue>
+      <paramValue name="outputUnNormFile">$$outputCoverageFile$$.Unique.UnNorm</paramValue>
+      <paramValue name="outputNormFile">$$outputCoverageFile$$.Unique.Norm</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="makeNUNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
+      <paramValue name="inputFile">$$nonUniqueFile$$</paramValue>
+      <paramValue name="outputUnNormFile">$$outputCoverageFile$$.NU.UnNorm</paramValue>
+      <paramValue name="outputNormFile">$$outputCoverageFile$$.NU.Norm</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+   <step name="reformatNUCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
+      <paramValue name="inputFile">$$outputCoverageFile$$.NU.Norm</paramValue>
+      <paramValue name="outputFile">$$outputCoverageFile$$.NU.Norm.reformated</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="multiple">true</paramValue>
+      <depends name="makeNUNormalizedCoverageFile"/>
+    </step>
+
+    <step name="reformatUniqueCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
+      <paramValue name="inputFile">$$outputCoverageFile$$.Unique.Norm</paramValue>
+      <paramValue name="outputFile">$$outputCoverageFile$$.Unique.Norm.reformated</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="multiple">false</paramValue>
+      <depends name="makeUniqueNormalizedCoverageFile"/>
+    </step>
+
+    <step name="loadUniqueRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqAlignmentWithSqlLdr" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$outputCoverageFile$$.Unique.Norm.reformated</paramValue>
+      <depends name="reformatUniqueCoverageFile"/>
+    </step>
+
+    <step name="loadNURnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqAlignmentWithSqlLdr" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$outputCoverageFile$$.NU.Norm.reformated</paramValue>
+      <depends name="reformatNUCoverageFile"/>
+    </step>
+
+</workflowGraph>
