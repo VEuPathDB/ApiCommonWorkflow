@@ -99,20 +99,6 @@
       <depends name="fixFileNamesforGenomicSeqsSeparateFasta"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="extractGenomicSeqs"/>
-      <depends name="extractProteins"/>
-      <depends name="makeGenomeTargetListFile"/>
-      <dependsGlobal name="initClusterHomeDir"/>
-    </step>
-
-    <step name="runNibOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNibOnCluster">
-      <paramValue name="inputFile">$$dataDir$$/targetList</paramValue>
-      <paramValue name="outputDir">$$genomicSeqsDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
-    </step>
-
   <step name="extractGenomicSeqsForSsa"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqsForSsa">
       <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -135,5 +121,23 @@
       <paramValue name="outputFile">$$geneModelFileForSsa$$</paramValue>
       <depends name="organismSpecificISF"/> 
     </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="extractGenomicSeqs"/>
+      <depends name="extractProteins"/>
+      <depends name="extractGenomicSeqsForSsa"/>
+      <depends name="extractTranscriptSeqsForSsa"/>
+      <depends name="extractGeneModelForSsa"/>
+      <depends name="makeGenomeTargetListFile"/>
+      <dependsGlobal name="initClusterHomeDir"/>
+    </step>
+
+    <step name="runNibOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNibOnCluster">
+      <paramValue name="inputFile">$$dataDir$$/targetList</paramValue>
+      <paramValue name="outputDir">$$genomicSeqsDir$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </step>
+
 
 </workflowGraph>
