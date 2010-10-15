@@ -50,7 +50,7 @@
     <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
     <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
     <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
-    <depends name="PfalciparumLoadGenome"/>
+    <depends name="Treu927LoadGenome"/>
   </subgraph>
 
   <subgraph name="Treu927PostLoadGenome" xmlFile="postLoadGenome.xml">
@@ -90,7 +90,7 @@
     <paramValue name="organismSpecificESTResourcesReference"></paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference">tritrypdb/tbruceiMassSpecResource.xml</paramValue>
     <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
-    <depends name="PfalciparumLoadGenome"/>
+    <depends name="Treu927LoadGenome"/>
   </subgraph>
 
   <subgraph name="Treu927SpecificWorkflow" xmlFile="tritrypdb/tbruceiSpecific.xml">
@@ -100,62 +100,31 @@
     <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
     <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
     <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
-    <depends name="PfalciparumLoadGenome"/>
+    <depends name="Treu927LoadGenome"/>
   </subgraph>
 
-  <subgraph name="Treu927SpecificWorkflow" xmlFile="tritrypdb/tbruceiSpecific.xml">
-    <paramValue name="parentDataDir"></paramValue>
+  <subgraph name="Treu927MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
     <paramValue name="organismName">Treu927</paramValue>
-    <paramValue name="organismFullName">Trypanosoma brucei TREU927</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$tbTreu927ExtDbRlsSpec$$</paramValue>
-    <paramValue name="maxIntronSize">100</paramValue>
-    <paramValue name="ncbiTaxonId">185431</paramValue>
-    <paramValue name="BACEndsExtDbRlsSpec">$$tbruceiBACEndsExtDbRlsSpec$$</paramValue>
-    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
-    <depends name="TbTreu927Analysis"/>
-  </subgraph>
-
-
-  <subgraph name="TbTreu927Analysis" xmlFile="organism.xml">
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="organismName">TbruceiTreu927</paramValue>
-    <paramValue name="organismFullName">Trypanosoma brucei TREU927</paramValue>
-    <paramValue name="organismTwoLetterAbbrev">Tb</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$tbTreu927ExtDbRlsSpec$$</paramValue>
-    <paramValue name="interproVersion">$$interproVersion$$</paramValue>
-    <paramValue name="iedbVersion">$$iedbVersion$$</paramValue>
-    <paramValue name="soVersion">$$soVersion$$</paramValue>
-    <paramValue name="goVersion">$$goVersion$$</paramValue>
+    <paramValue name="organismFullName">@@Treu927OrganismFullName@@</paramValue>
     <paramValue name="ncbiTaxonId">185431</paramValue>
     <paramValue name="parentNcbiTaxonId">5691</paramValue>
-    <paramValue name="usePredictedTranscripts">false</paramValue>
-    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
-    <paramValue name="runtRNAScan">false</paramValue>
-    <paramValue name="runExportPred">false</paramValue>
-    <paramValue name="pdbFile">$$pdbFile$$</paramValue>
-    <paramValue name="nrdbFile">$$nrdbFile$$</paramValue>
-    <paramValue name="nrdbShortDeflineFile">$$nrdbShortDeflineFile$$</paramValue>
-    <paramValue name="maxIntronSize">2000</paramValue>
-    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
-    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
-    <paramValue name="nrdbExtDbRlsSpec">NRDB|$$nrdbVersion$$</paramValue>
-    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
-    <paramValue name="pdbExtDbRlsSpec">$$pdbExtDbRlsSpec$$</paramValue>
-    <paramValue name="genomeSize">29273417</paramValue>
-    <paramValue name="skipProteomeAnalysis">false</paramValue>
-    <paramValue name="skipGenomeAnalysis">false</paramValue>
-    <paramValue name="mapEpitope">true</paramValue>
-    <paramValue name="makeAssemblySeqs">true</paramValue>
-    <paramValue name="makeAssemblies">true</paramValue>
-    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
-    <depends name="common"/>
+    <paramValue name="genomeSource">@@Treu927GenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Treu927_dbEST_RSRC|@@Pf_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">_chromosomes_RSRC|@@_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="Treu927PostLoadGenome"/>
+    <depends name="Treu927MakeAndMaskTopLevelGenome"/>
   </subgraph>
-
-
-
-
 
 
   <subgraph name="TbGambienseAnalysis" xmlFile="organism.xml">

@@ -18,7 +18,7 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-    <subgraph name="loadAndAnalyzeBACEnds" xmlFile="loadAndAnalyzeDnaSeq.xml">
+    <subgraph name="GenbankBACEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeDnaSeq.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
       <paramValue name="organismName">Treu927</paramValue>
@@ -33,6 +33,30 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
+  <subgraph name="miscResources" xmlFile="tritrypdb/tbruceiMiscResource.xml">
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="rnaSeqAndChipSeq" xmlFile="tritrypdb/tbruceiRnaSeqAndChipSeq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="dbxRefsResources" xmlFile="tritrypdb/tbruceiDbxRefsResource.xml">
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/TbruceiEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="tbrucei_CorrectGeneAliases_RSRC"/>
+  </subgraph>
 
 
 </workflowGraph>
