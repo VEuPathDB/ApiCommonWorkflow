@@ -1,0 +1,54 @@
+<workflowGraph name="tbRnaSeqAndChipSeq">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="ssaGeneModelFile"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="transcriptSeqsFileForSsa"/>
+  <param name="downloadSiteTranscriptExpressionDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/tbRnaSeqAndChipSeq</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+  <subgraph name="getAndAnalyzeCrossRnaSeq" xmlFile="tritrypdb/tbCrossRnaSeq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Tb_RNASeq_Cross</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="getAndAnalyzeClaytonRnaSeq" xmlFile="tritrypdb/tbClaytonRnaSeq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Tb_RNASeq_Clayton</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="getAndAnalyzeCrossChipSeq" xmlFile="tritrypdb/tbCrossChipSeq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+</workflowGraph>
+

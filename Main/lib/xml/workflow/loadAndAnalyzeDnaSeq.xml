@@ -1,0 +1,55 @@
+<workflowGraph name="loadAndAnalyzeDnaSeq">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="organismName"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="maxIntronSize"/>
+  <param name="ncbiTaxonId"/>
+  <param name="BACEndsExtDbRlsSpec"/>
+  <param name="BACEndsResourceName"/>
+  <param name="repeatMaskSpecies"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomicSeqsDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/$$BACEndsResourceName$$</constant>
+  <constant name="BACEndsDir">$$dataDir$$/extractAndBlockBACEnds</constant>
+
+
+    <subgraph name="BACEnds_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$BACEndsResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    </subgraph>
+
+    <subgraph name="extractAndBlockBACEnds" xmlFile="extractAndBlockBACEnds.xml">
+      <paramValue name="dataDir">$$BACEndsDir$$</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">$$BACEndsExtDbRlsSpec$$</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
+      <depends name="BACEnds_RSRC/>
+    </subgraph>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="extractAndBlockBACEnds"/>
+    </step>
+
+    <subgraph name="mapBACEndsSeqsToGenome" xmlFile="mapAssembliesToGenome.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="assembliesDataDir">$$BACEndsDir$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="organismTwoLetterAbbrev"></paramValue>
+      <paramValue name="nickName">mapBACEnds</paramValue>
+      <paramValue name="queryTable">ExternalNASequence</paramValue>
+      <paramValue name="updateAssemblySourceId">false</paramValue>
+      <paramValue name="queryExtDbRlsSpec">$$BACEndsExtDbRlsSpec$$</paramValue>
+      <depends name="extractAndBlockBACEnds"/>
+    </subgraph>
+
+</workflowGraph>
+
+
+
