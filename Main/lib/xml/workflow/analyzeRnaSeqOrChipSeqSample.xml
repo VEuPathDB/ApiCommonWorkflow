@@ -43,8 +43,20 @@
     </subgraph>
 
 
-    <step name="makeUniqueNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
+    <step name="SortRUMUniqueResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation">
       <paramValue name="inputFile">$$uniqueFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="SortRUMNUResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation">
+      <paramValue name="inputFile">$$nonUniqueFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="makeUniqueNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
+      <paramValue name="inputFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
       <paramValue name="outputUnNormFile">$$outputCoverageFile$$.Unique.UnNorm</paramValue>
       <paramValue name="outputNormFile">$$outputCoverageFile$$.Unique.Norm</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
@@ -52,7 +64,7 @@
     </step>
 
     <step name="makeNUNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
-      <paramValue name="inputFile">$$nonUniqueFile$$</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
       <paramValue name="outputUnNormFile">$$outputCoverageFile$$.NU.UnNorm</paramValue>
       <paramValue name="outputNormFile">$$outputCoverageFile$$.NU.Norm</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
