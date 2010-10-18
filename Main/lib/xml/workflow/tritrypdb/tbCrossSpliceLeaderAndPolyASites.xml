@@ -1,0 +1,78 @@
+<workflowGraph name="tbCrossSpliceLeaderAndPolyASites">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="genomicSeqsFile"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+    <param name="downloadSiteTranscriptExpressionDataDir"/>
+
+    <constant name="dataDir">$$parentDataDir$$/tbCrossSpliceLeaderAndPolyASites</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+    <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSeqCoverageAndIntensityDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+    </step>
+
+    <subgraph name="Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="analyzecurated_spliceSample" xmlFile="analyzeRnaSeqSpliceLeaderAndPolyASites.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">curated_splice</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC/final/sas_curated_basicinfo_for_ttdb_100115_unique.fa</paramValue>
+      <paramValue name="outputAlignmentFile">$$samplesDataDir$$/analyzecurated_splice/curated_splice.align</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC|@@Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Treu927_chromosomes_RSRC|@@Treu927_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzecurated_polyASample" xmlFile="analyzeRnaSeqSpliceLeaderAndPolyASites.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">curated_polyA</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC/final/pas_curated_basicinfo_for_ttdb_100115_unique.fa</paramValue>
+      <paramValue name="outputAlignmentFile">$$samplesDataDir$$/analyzecurated_polyA/curated_polyA.align</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC|@@Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Treu927_chromosomes_RSRC|@@Treu927_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+</workflowGraph>
