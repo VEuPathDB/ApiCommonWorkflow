@@ -10,12 +10,14 @@ sub run {
 
     my $inputFile = $self->getParamValue('inputFile');
     my $outputFile = $self->getParamValue('outputFile');
+    my $maxChunkSize = $self->getParamValue('maxChunk');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
     my $cmd = "sort_RUM_by_location.pl $workflowDataDir/$inputFile $workflowDataDir/$outputFile";
-
+    my $cmd .= " -maxchunksize $maxChunkSize" if $maxChunkSize;
+ 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     } else {
