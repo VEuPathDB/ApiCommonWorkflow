@@ -10,7 +10,7 @@ sub run {
 
     my $inputFile = $self->getParamValue('inputFile');
     my $outputFile = $self->getParamValue('outputFile');
-    my $maxChunkSize = $self->getParamValue('maxChunk');
+    my $maxChunkSize = $self->getParamValue('maxChunkRumSort');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
