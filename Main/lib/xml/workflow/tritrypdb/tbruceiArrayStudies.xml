@@ -1,0 +1,179 @@
+<workflowGraph name="tbruceiArrayResources">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="ssaGeneModelFile"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="transcriptSeqsFileForSsa"/>
+  <param name="downloadSiteTranscriptExpressionDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/tbruceiArrayResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+  <subgraph name="Tbrucei_array_GPL8834_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Tbrucei_array_GPL8834_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tbrucei_array_GPL8834_RSRC|@@Tbrucei_array_GPL8834_VER@@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Treu927_chromosomes_RSRC|@@Treu927_chromosomes_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="limitNU">14</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">false</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">true</paramValue>
+    <paramValue name="cdfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei_Matthews_differentiation_series_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Tbrucei_Matthews_differentiation_series_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Tbrucei_array_GPL8834_getAndMapProbe"/>
+  </subgraph>
+
+<!--need analysisConfig.xml-->
+  <subgraph name="Tbrucei_Matthews_differentiation_series_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Tbrucei_Matthews_differentiation_series_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tbrucei_array_GPL8834_RSRC|@@Tbrucei_array_GPL8834_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Tbrucei_Matthews_differentiation_series_RSRC|@@Tbrucei_Matthews_differentiation_series_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Treu927_chromosomes_RSRC|@@Treu927_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Tbrucei_array_GPL8834_RSRC/geneProbeMapping.txt</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Tbrucei_Matthews_differentiation_series</paramValue>
+    <depends name="Tbrucei_Matthews_differentiation_series_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei_array_GPL9285_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Tbrucei_array_GPL9285_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tbrucei_array_GPL9285_RSRC|@@Tbrucei_array_GPL9285_VER@@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Treu927_chromosomes_RSRC|@@Treu927_chromosomes_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="limitNU">14</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">false</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">true</paramValue>
+    <paramValue name="cdfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei_Parsons_Five_Life_Cycle_Stages_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Tbrucei_Parsons_Five_Life_Cycle_Stages_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Tbrucei_array_GPL9285_getAndMapProbe"/>
+  </subgraph>
+
+<!--need analysisConfig.xml-->
+  <subgraph name="Tbrucei_Parsons_Five_Life_Cycle_Stages_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Tbrucei_Parsons_Five_Life_Cycle_Stages_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tbrucei_array_GPL9285_RSRC|@@Tbrucei_array_GPL9285_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Tbrucei_Parsons_Five_Life_Cycle_Stages_RSRC|@@Tbrucei_Parsons_Five_Life_Cycle_Stages_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Treu927_chromosomes_RSRC|@@Treu927_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Tbrucei_array_GPL9285_RSRC/geneProbeMapping.txt</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Tbrucei_Parsons_Five_Life_Cycle_Stages</paramValue>
+    <depends name="Tbrucei_Parsons_Five_Life_Cycle_Stages_RSRC"/>
+  </subgraph>
+
+<!--not sequenced-->
+  <subgraph name="Tbrucei_array_GPL5721_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Tbrucei_array_GPL5721_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tbrucei_array_GPL5721_RSRC|@@Tbrucei_array_GPL5721_VER@@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Treu927_chromosomes_RSRC|@@Treu927_chromosomes_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="limitNU">14</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">false</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">true</paramValue>
+    <paramValue name="cdfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei_Procyclic_TbDRBD3_Depletion_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Tbrucei_Procyclic_TbDRBD3_Depletion_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Tbrucei_array_GPL5721_getAndMapProbe"/>
+  </subgraph>
+
+<!--need analysisConfig.xml-->
+  <subgraph name="Tbrucei_Procyclic_TbDRBD3_Depletion_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Tbrucei_Procyclic_TbDRBD3_Depletion_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tbrucei_array_GPL5721_RSRC|@@Tbrucei_array_GPL5721_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Tbrucei_Procyclic_TbDRBD3_Depletion_RSRC|@@Tbrucei_Procyclic_TbDRBD3_Depletion_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Treu927_chromosomes_RSRC|@@Treu927_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Tbrucei_array_GPL5721_RSRC/geneProbeMapping.txt</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Tbrucei_Procyclic_TbDRBD3_Depletion</paramValue>
+    <depends name="Tbrucei_Procyclic_TbDRBD3_Depletion_RSRC"/>
+  </subgraph>
+
+<!--no probes for Tbrucei_Christine_Clayton-->
+  <subgraph name="Tbrucei_Christine_Clayton_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Tbrucei_Christine_Clayton_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="_getAndMapProbe"/>
+  </subgraph>
+
+<!--no raw data-->
+  <subgraph name="Tbrucei_Christine_Clayton_RSRC_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Tbrucei_Christine_Clayton_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">|@@@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Tbrucei_Christine_Clayton_RSRC|@@Tbrucei_Christine_Clayton_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Treu927_chromosomes_RSRC|@@Treu927_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_/geneProbeMapping.txt</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Tbrucei_Christine_Clayton</paramValue>
+    <depends name="Tbrucei_Christine_Clayton_RSRC"/>
+  </subgraph>
+
+</workflowGraph>
