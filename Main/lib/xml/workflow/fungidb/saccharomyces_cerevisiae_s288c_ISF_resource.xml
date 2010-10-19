@@ -1,0 +1,53 @@
+<workflowGraph name="saccharomyces_cerevisiae_s288c_ISF_resource">
+      <param name="organismResourceXmlFile" />
+      <param name="dataDir" />
+
+      <constant name="dataDir">
+            $$dataDir$$/saccharomyces_cerevisiae_s288c_ISF_resource
+      </constant>
+
+      <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+          <paramValue name="dataDir">$$dataDir$$</paramValue>
+      </step>
+
+      <!-- ISF fasta sequence -->
+      <subgraph 
+            name="saccharomyces_cerevisiae_s288c_chromosomes_RSRC" 
+            xmlFile="loadResource.xml">
+
+            <paramValue name="resourceName">
+                saccharomyces_cerevisiae_s288c_chromosomes_RSRC
+            </paramValue>
+    
+            <paramValue name="resourceXmlFileName">
+                $$organismResourceXmlFile$$
+            </paramValue>
+
+            <paramValue name="parentDataDir">
+                $$dataDir$$
+            </paramValue>
+      
+            <depends name="makeDataDir"/>
+      </subgraph>
+
+      <!-- ISF genomic annotations -->
+      <subgraph
+            name="saccharomyces_cerevisiae_s288c_annotations_RSRC"
+            xmlFile="loadResource.xml">
+   
+            <paramValue name="resourceName">
+                 saccharomyces_cerevisiae_s288c_annotations_RSRC
+            </paramValue>
+
+            <paramValue name="resourceXmlFileName">
+                 $$organismResourceXmlFile$$
+            </paramValue>
+
+            <paramValue name="parentDataDir">
+                 $$dataDir$$
+            </paramValue>
+      
+            <depends name="saccharomyces_cerevisiae_s288c_chromosomes_RSRC"/>
+     </subgraph>
+
+</workflowGraph>

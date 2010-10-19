@@ -1,0 +1,45 @@
+<workflowGraph name="neurospora_crassa_or74a_ISF_resource">
+      <param name="organismResourceXmlFile"/>
+      <param name="dataDir"/>
+
+      <constant name="dataDir">
+            $$dataDir$$/neurospora_crassa_or74a_ISF_resource
+      </constant>
+
+      <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+           <paramValue name="dataDir">$$dataDir$$</paramValue>
+      </step>
+
+      <!-- ISF fasta sequence -->
+      <subgraph name="neurospora_crassa_or74a_chromosomes_RSRC" xmlFile="loadResource.xml">
+           <paramValue name="resourceName">
+               neurospora_crassa_or74a_chromosomes_RSRC
+           </paramValue>
+
+           <paramValue name="resourceXmlFileName">
+               $$organismResourceXmlFile$$
+           </paramValue>
+
+           <paramValue name="parentDataDir">
+               $$dataDir$$
+           </paramValue>
+
+           <depends name="makeDataDir"/>
+      </subgraph>
+
+      <subgraph name="neurospora_crassa_or74a_annotations_RSRC" xmlFile="loadResource.xml">
+           <paramValue name="resourceName">
+                 neurospora_crassa_or74a_annotations_RSRC
+           </paramValue>
+    
+           <paramValue name="resourceXmlFileName">
+                 $$organismResourceXmlFile$$
+           </paramValue>
+    
+           <paramValue name="parentDataDir">
+                 $$dataDir$$
+           </paramValue>
+      
+           <depends name="neurospora_crassa_or74a_chromosomes_RSRC"/>
+      </subgraph>
+</workflowGraph>

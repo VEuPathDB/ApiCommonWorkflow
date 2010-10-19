@@ -1,40 +1,191 @@
 <workflowGraph name="fungiDBWorkflow">
-  <param name="projectName"/>
-  <param name="projectVersion"/>
 
-  <constant name="comparativeGenomicsFastaDir">common/comparativeGenomics/Fasta/</constant>
-  <constant name="comparativeGenomicsGffDir">common/comparativeGenomics/Gff/</constant>
-  <constant name="webServicesDataDir">webServices/$$projectName$$/release-$$projectVersion$$/</constant>
+  <param name="projectName" />
+  <param name="projectVersion" />
 
+  <constant name="comparativeGenomicsFastaDir">
+       common/comparativeGenomics/Fasta/
+  </constant>
+  
+  <constant name="comparativeGenomicsGffDir">
+       common/comparativeGenomics/Gff/
+  </constant>
 
+  <constant name="webServicesDataDir">
+       webServices/$$projectName$$/release-$$projectVersion$$/
+  </constant>
+
+  <!-- Global elements -->
   <globalSubgraph name="global" xmlFile="globalGraph.xml">
-    <paramValue name="isolatesResourceReference"></paramValue>
-    <paramValue name="loadIsolates">false</paramValue>
-    <paramValue name="commonResourceXmlFile"></paramValue>
-    <paramValue name="globalResourceXmlFile">globalResources.xml</paramValue>
+      <paramValue name="isolatesResourceReference"></paramValue>
+      <paramValue name="loadIsolates">false</paramValue>
+      <paramValue name="commonResourceXmlFile"></paramValue>
+      <paramValue name="globalResourceXmlFile">globalResources.xml</paramValue>
   </globalSubgraph>
 
+  <!-- Common elements -->
   <subgraph name="common" xmlFile="common.xml">
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
-    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
-    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+      <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+      <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
   </subgraph>
 
+
+  <!-- ////////////////////////////////////////////////
+
+         Saccharomyces cerevisiae S288C, the canonical FungiDB species
+
+       ////////////////////////////////////////////////  -->
+
+  <subgraph name="saccharomyces_cerevisiae_s288c_LoadGenome" xmlFile="loadGenome.xml">
+
+      <paramValue name="parentDataDir"></paramValue>
+
+      <!-- The symbolic name of the organism -->      
+      <paramValue name="organismName">
+            saccharomyces_cerevisiae_s288c
+      </paramValue>
+
+      <!-- The current release of the data source -->
+      <paramValue name="genomeExtDbRlsSpec">
+            saccharomyces_cerevisiae_s288c_chromosomes_RSRC|@@saccharomyces_cerevisiae_s288c_chromosomes_VER@@
+      </paramValue>
+
+      <!-- location of the resource file (ApiCommonData/Load/lib/xml/datasources/fungidb/saccharomyces_cerevisiae_s288c.xml) -->
+      <paramValue name="organismResourceXmlFile">
+            fungidb/saccharomyces_cerevisiae_s288c.xml
+      </paramValue>
+
+      <paramValue name="organismSpecificISFReference">
+            fungidb/neurospora_crassa_or74a_ISF_resource.xml
+      </paramValue>
+
+      <!-- Taxonomy ID: This is the official ID, but not loaded in Core... -->
+      <paramValue name="ncbiTaxonId">
+            559292
+      </paramValue>
+
+      <!-- Location of the downloads directory -->
+      <paramValue name="downloadSiteDataDir">
+            downloadSite/$$projectName$$/release-$$projectVersion$$
+      </paramValue>
+
+      <paramValue name="extractProteins">
+            true
+      </paramValue>
+
+      <paramValue name="projectName">
+            $$projectName$$
+      </paramValue>
+
+      <depends name="common" />
+      <dependsGlobal name="taxonomy_RSRC" /> 
+      <dependsGlobal name="SO_RSRC" />
+
+  </subgraph>      
+
+  <subgraph name="saccharomyces_cerevisiae_s288c_PostLoadGenome" xmlFile="postLoadGenome.xml">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="organismName">saccharomyces_cerevisiae_s288c</paramValue>
+      <paramValue name="organismFullName">@@saccharomyces_cerevisiae_s288c_OrganismFullName@@</paramValue>
+      <paramValue name="organismTwoLetterAbbrev">ScereS288C</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">
+              saccharomyces_cerevisiae_s288c_chromosomes_RSRC|@@saccharomyces_cerevisiae_s288c_chromosomes_VER@@
+      </paramValue>
+      <paramValue name="iedbResourceName"></paramValue>
+      <paramValue name="iedbVersion"></paramValue>
+      <paramValue name="iedbDbRefResourceName"></paramValue>
+      <paramValue name="dbESTResourceName"></paramValue>
+      <paramValue name="dbESTVersion"></paramValue>
+
+      <!-- To be populated -->
+      <paramValue name="ncbiTaxonId">55929</paramValue>
+
+      <!-- What is the parent Tax ID? -->
+      <paramValue name="parentNcbiTaxonId">5207</paramValue>
+      <paramValue name="usePredictedTranscripts">false</paramValue>
+      <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+      <paramValue name="runtRNAScan">true</paramValue>
+      <paramValue name="runExportPred">false</paramValue>
+      <paramValue name="maxIntronSize">500</paramValue>
+
+      <!-- filter? -->
+      <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota Fungi Basidiomycota</paramValue>
+      <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+      <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+
+      <!-- to be set -->
+      <paramValue name="genomeSize">18874889</paramValue>
+      <paramValue name="skipProteomeAnalysis">false</paramValue>
+      <paramValue name="skipGenomeAnalysis">false</paramValue>
+      <paramValue name="mapEpitope">false</paramValue>
+      <paramValue name="makeAssemblySeqs">false</paramValue>
+      <paramValue name="makeAssemblies">false</paramValue>
+      <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+      <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+      <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+
+      <!-- emprically determined -->
+      <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+      <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+      <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+      <paramValue name="organismResourceXmlFile">fungidb/saccharomyces_cerevisiae_s288c.xml</paramValue>
+
+      <depends name=saccharomyces_cerevisiae_s288c_LoadGenome"/>
+  </subgraph>
+
+
+
+  <!-- ////////////////////////////////////////////////
+
+         Neurospora crassa OR74A
+
+       ////////////////////////////////////////////////  -->
+
   <subgraph name="neurospora_crassa_or74a_LoadGenome" xmlFile="loadGenome.xml">
-    <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="organismName">neurospora_crassa_or74a</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">neurospora_crassa_or74a_chromosomes_RSRC|@@neurospora_crassa_or74a_chromosomes_VER@@</paramValue>
-    <paramValue name="organismResourceXmlFile">fungidb/neurospora_crassa_or74a.xml</paramValue>
-    <paramValue name="organismSpecificISFReference">fungidb/neurospora_crassa_or74a_ISFResource.xml</paramValue>
-    <paramValue name="ncbiTaxonId">367110</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
-    <paramValue name="extractProteins">true</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="common"/>
-    <dependsGlobal name="taxonomy_RSRC"/> 
-    <dependsGlobal name="SO_RSRC"/>
+
+      <paramValue name="parentDataDir"></paramValue>
+      
+      <paramValue name="organismName">
+            neurospora_crassa_or74a
+      </paramValue>
+
+      <paramValue name="genomeExtDbRlsSpec">
+            neurospora_crassa_or74a_chromosomes_RSRC|@@neurospora_crassa_or74a_chromosomes_VER@@
+      </paramValue>
+
+      <paramValue name="organismResourceXmlFile">
+            fungidb/neurospora_crassa_or74a.xml
+      </paramValue>
+
+      <paramValue name="organismSpecificISFReference">
+            fungidb/neurospora_crassa_or74a_ISF_resource.xml
+      </paramValue>
+
+      <paramValue name="ncbiTaxonId">
+            367110
+      </paramValue>
+
+      <paramValue name="downloadSiteDataDir">
+            downloadSite/$$projectName$$/release-$$projectVersion$$
+      </paramValue>
+
+      <paramValue name="extractProteins">
+            true
+      </paramValue>
+
+      <paramValue name="projectName">
+            $$projectName$$
+      </paramValue>
+
+      <depends name="common" />
+      <dependsGlobal name="taxonomy_RSRC" /> 
+      <dependsGlobal name="SO_RSRC" />
+
   </subgraph>
 
   <subgraph name="neurospora_crassa_or74a_PostLoadGenome" xmlFile="postLoadGenome.xml">
@@ -77,12 +228,19 @@
   </subgraph>
 
 
+
+  <!-- ////////////////////////////////////////////////
+
+         Cryptococcus neoformans var. grubii H99
+
+       ////////////////////////////////////////////////  -->
+
   <subgraph name="cryptococcus_neuroformans_grubii_h99_LoadGenome" xmlFile="loadGenome.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismName">cryptococcus_neoformans_grubii_h99</paramValue>
     <paramValue name="genomeExtDbRlsSpec">cryptococcus_neoformans_grubii_h99_chromosomes_RSRC|@@cryptococcus_neoformans_grubii_h99_chromosomes_VER@@</paramValue>
     <paramValue name="organismResourceXmlFile">fungidb/cryptococcus_neoformans_grubii_h99.xml</paramValue>
-    <paramValue name="organismSpecificISFReference">fungidb/cryptococcus_neoformans_grubii_h99_ISFResource.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">fungidb/cryptococcus_neoformans_grubii_h99_ISF_resource.xml</paramValue>
     <paramValue name="ncbiTaxonId">235443</paramValue>
     <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
     <paramValue name="extractProteins">true</paramValue>

@@ -1,0 +1,47 @@
+<workflowGraph name="cryptococcus_neoformans_grubii_h99_ISF_resource">
+      <param name="organismResourceXmlFile"/>
+      <param name="dataDir"/>
+
+      <constant name="dataDir">
+            $$dataDir$$/cryptococcus_neoformans_grubii_h99_ISF_resource
+      </constant>
+
+      <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+           <paramValue name="dataDir">$$dataDir$$</paramValue>
+      </step>
+
+      <!-- ISF fasta sequence -->
+      <subgraph name="cryptococcus_neoformans_grubii_h99_chromosomes_RSRC" xmlFile="loadResource.xml">
+           <paramValue name="resourceName">
+                 cryptococcus_neoformans_grubii_h99_chromosomes_RSRC
+           </paramValue>
+           
+           <paramValue name="resourceXmlFileName">
+                 $$organismResourceXmlFile$$
+           </paramValue>
+           
+           <paramValue name="parentDataDir">
+                 $$dataDir$$
+           </paramValue>
+      
+           <depends name="makeDataDir"/>
+      </subgraph>
+
+      <!-- ISF genomic annotations -->
+      <subgraph name="cryptococcus_neoformans_grubii_h99_annotations_RSRC" xmlFile="loadResource.xml">
+          <paramValue name="resourceName">
+               cryptococcus_neoformans_grubii_h99_annotations_RSRC
+          </paramValue>
+
+          <paramValue name="resourceXmlFileName">
+               $$organismResourceXmlFile$$
+          </paramValue>
+    
+          <paramValue name="parentDataDir">
+               $$dataDir$$
+          </paramValue>
+      
+          <depends name="cryptococcus_neoformans_grubii_h99_chromosomes_RSRC"/>
+      </subgraph>
+
+</workflowGraph>
