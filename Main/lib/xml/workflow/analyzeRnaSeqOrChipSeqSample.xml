@@ -14,7 +14,7 @@
     <param name="pairedReadFilePath"/>
     <param name="numInsertions"/>
     <param name="limitNU"/>
-
+    <param name="maxChunkRumSort"/>
     <constant name="dataDir">$$parentDataDir$$/analyze$$sampleName$$</constant>
     <constant name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.all</constant>
     <constant name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.all</constant>
@@ -46,12 +46,14 @@
     <step name="SortRUMUniqueResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation" stepLoadTypes="rumSort">
       <paramValue name="inputFile">$$uniqueFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="maxChunkRumSort">$$maxChunkRumSort$$</paramValue>
       <depends name="runRUMOnCluster"/>
     </step>
 
     <step name="SortRUMNUResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation" stepLoadTypes="rumSort">
       <paramValue name="inputFile">$$nonUniqueFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
+      <paramValue name="maxChunkRumSort">$$maxChunkRumSort$$</paramValue>
       <depends name="runRUMOnCluster"/>
     </step>
 
