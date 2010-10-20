@@ -1,4 +1,4 @@
-<workflowGraph name="tcruziNonEsmeraldoSpecificAnalysis">
+<workflowGraph name="tcruziNonEsmeraldoLikeSpecificAnalysis">
   <param name="projectName"/>
   <param name="projectVersion"/>
   <param name="parentDataDir"/>
@@ -6,12 +6,12 @@
   <param name="downloadSiteDataDir"/>
   <param name="webServicesDataDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/TcNonEsmeraldoSpecific</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/TcNonEsmeraldo</constant>
-  <constant name="genomicSeqsFile">$$parentDataDir$$/TcNonEsmeraldoLoadGenome/genomicSeqs.fsa</constant>
-  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/TcNonEsmeraldoLoadGenome/genomicSeqsForSsa.fsa</constant>
-  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/TcNonEsmeraldoLoadGenome/transcriptSeqsForSsa.fsa</constant>
-  <constant name="ssaGeneModelFile">$$parentDataDir$$/TcNonEsmeraldoLoadGenome/geneModelForSsa.txt</constant>
+  <constant name="dataDir">$$parentDataDir$$/TcNonEsmeraldoLikeSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/TcNonEsmeraldoLike</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/TcNonEsmeraldoLikeLoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/TcNonEsmeraldoLikeLoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/TcNonEsmeraldoLikeLoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/TcNonEsmeraldoLikeLoadGenome/geneModelForSsa.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -20,8 +20,8 @@
     <subgraph name="Tcruzi_BACEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeDnaSeq.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
-      <paramValue name="organismName">TcNonEsmeraldo</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">TcNonEsmeraldo_chromosomes_RSRC|@@TcNonEsmeraldo_chromosomes_VER@@</paramValue>
+      <paramValue name="organismName">TcNonEsmeraldoLike</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">TcNonEsmeraldoLike_chromosomes_RSRC|@@TcNonEsmeraldoLike_chromosomes_VER@@</paramValue>
       <paramValue name="maxIntronSize">100</paramValue>
       <paramValue name="ncbiTaxonId"></paramValue>
       <paramValue name="BACEndsExtDbRlsSpec">Tcruzi_BACEnds_RSRC|@@Tcruzi_BACEnds_VER@@</paramValue>
@@ -32,10 +32,10 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-  <subgraph name="dbxRefsResources" xmlFile="tritrypdb/tcruziNonEsmeraldoDbxRefsResource.xml">
+  <subgraph name="dbxRefsResources" xmlFile="tritrypdb/tcruziNonEsmeraldoLikeDbxRefsResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/TcruziNonEsmeraldoEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
+    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/TcruziNonEsmeraldoLikeEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <depends name=""/>
   </subgraph>
