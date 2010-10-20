@@ -1,0 +1,31 @@
+<workflowGraph name="lbraziliensisSpecificAnalysis">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDataDir"/>
+  <param name="webServicesDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/lbraziliensisSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Lbraziliensis</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/LbraziliensisLoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/LbraziliensisLoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/LbraziliensisLoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/LbraziliensisLoadGenome/geneModelForSsa.txt</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="dbxRefsResources" xmlFile="tritrypdb/lbraziliensisDbxRefsResource.xml">
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/LbraziliensisEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name=""/>
+  </subgraph>
+
+</workflowGraph>
+
+
+

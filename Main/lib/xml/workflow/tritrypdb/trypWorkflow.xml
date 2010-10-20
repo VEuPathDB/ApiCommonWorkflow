@@ -648,42 +648,110 @@
     <depends name="TvivaxMakeAndMaskTopLevelGenome"/>
   </subgraph>
 
+<!--Lbraziliensis-->
 
-  <subgraph name="LbraziliensisAnalysis" xmlFile="organism.xml">
+  <subgraph name="LbraziliensisLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lbraziliensis</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lbraziliensis_chromosomes_RSRC|@@Lbraziliensis_chromosomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lbraziliensis.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/lbraziliensisISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">5660</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="LbraziliensisMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lbraziliensis</paramValue>
+    <paramValue name="organismFullName">@@LbraziliensisOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lbraziliensis_chromosomes_RSRC|@@Lbraziliensis_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lbraziliensis.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="LbraziliensisLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LbraziliensisPostLoadGenome" xmlFile="postLoadGenome.xml">
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismName">Lbraziliensis</paramValue>
-    <paramValue name="organismFullName">Leishmania braziliensis</paramValue>
-    <paramValue name="organismTwoLetterAbbrev">Lb</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$lbraziliensisExtDbRlsSpec$$</paramValue>
-    <paramValue name="interproVersion">$$interproVersion$$</paramValue>
-    <paramValue name="iedbVersion">$$iedbVersion$$</paramValue>
-    <paramValue name="soVersion">$$soVersion$$</paramValue>
-    <paramValue name="goVersion">$$goVersion$$</paramValue>
+    <paramValue name="organismFullName">@@LbraziliensisOrganismFullName@@</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">Lbraziliensis</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lbraziliensis_chromosomes_RSRC|@@Lbraziliensis_chromosomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName">Lbraziliensis_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@Lbraziliensis_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">Lbraziliensis_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">Lbraziliensis_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Lbraziliensis_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
     <paramValue name="ncbiTaxonId">5660</paramValue>
     <paramValue name="parentNcbiTaxonId">5660</paramValue>
-    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="usePredictedTranscripts"></paramValue>
     <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
     <paramValue name="runtRNAScan">false</paramValue>
     <paramValue name="runExportPred">false</paramValue>
-    <paramValue name="pdbFile">$$pdbFile$$</paramValue>
-    <paramValue name="nrdbFile">$$nrdbFile$$</paramValue>
-    <paramValue name="nrdbShortDeflineFile">$$nrdbShortDeflineFile$$</paramValue>
     <paramValue name="maxIntronSize">2000</paramValue>
-    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
-    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Leishmania</paramValue>
-    <paramValue name="nrdbExtDbRlsSpec">NRDB|$$nrdbVersion$$</paramValue>
-    <paramValue name="repeatMaskSpecies">species Leishmania</paramValue>
-    <paramValue name="pdbExtDbRlsSpec">$$pdbExtDbRlsSpec$$</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
     <paramValue name="genomeSize">32091314</paramValue>
     <paramValue name="skipProteomeAnalysis">false</paramValue>
     <paramValue name="skipGenomeAnalysis">false</paramValue>
     <paramValue name="mapEpitope">true</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
     <paramValue name="makeAssemblySeqs">true</paramValue>
     <paramValue name="makeAssemblies">true</paramValue>
     <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
-    <depends name="common"/>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">tritrypdb/lbraziliensisMassSpecResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lbraziliensis.xml</paramValue>
+    <depends name="LbraziliensisLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LbraziliensisSpecificWorkflow" xmlFile="tritrypdb/lbraziliensisSpecific.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lbraziliensis.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="LbraziliensisLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LbraziliensisMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Lbraziliensis</paramValue>
+    <paramValue name="organismFullName">@@LbraziliensisOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">5660</paramValue>
+    <paramValue name="parentNcbiTaxonId">5660</paramValue>
+    <paramValue name="genomeSource">@@LbraziliensisGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Lbraziliensis_dbEST_RSRC|@@Lbraziliensis_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lbraziliensis_chromosomes_RSRC|@@Lbraziliensis_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="LbraziliensisPostLoadGenome"/>
+    <depends name="LbraziliensisMakeAndMaskTopLevelGenome"/>
   </subgraph>
 
   <subgraph name="LinfantumAnalysis" xmlFile="organism.xml">
