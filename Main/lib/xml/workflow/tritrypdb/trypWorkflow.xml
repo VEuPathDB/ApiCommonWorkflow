@@ -860,44 +860,113 @@
     <depends name="LinfantumMakeAndMaskTopLevelGenome"/>
   </subgraph>
 
+<!--Lmajor-->
 
+  <subgraph name="LmajorLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lmajor</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lmajor_chromosomes_RSRC|@@Lmajor_chromosomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/lmajorISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">5664</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
 
-  <subgraph name="LmajorAnalysis" xmlFile="organism.xml">
+  <subgraph name="LmajorMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lmajor</paramValue>
+    <paramValue name="organismFullName">@@LmajorOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lmajor_chromosomes_RSRC|@@Lmajor_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="LmajorLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LmajorPostLoadGenome" xmlFile="postLoadGenome.xml">
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismName">Lmajor</paramValue>
-    <paramValue name="organismFullName">Leishmania major</paramValue>
-    <paramValue name="organismTwoLetterAbbrev">Lm</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$lmajorExtDbRlsSpec$$</paramValue>
-    <paramValue name="interproVersion">$$interproVersion$$</paramValue>
-    <paramValue name="iedbVersion">$$iedbVersion$$</paramValue>
-    <paramValue name="soVersion">$$soVersion$$</paramValue>
-    <paramValue name="goVersion">$$goVersion$$</paramValue>
+    <paramValue name="organismFullName">@@LmajorOrganismFullName@@</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">Lmajor</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lmajor_chromosomes_RSRC|@@Lmajor_chromosomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName">Lmajor_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@Lmajor_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">Lmajor_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">Lmajor_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Lmajor_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
     <paramValue name="ncbiTaxonId">5664</paramValue>
     <paramValue name="parentNcbiTaxonId">5664</paramValue>
-    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="usePredictedTranscripts"></paramValue>
     <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
     <paramValue name="runtRNAScan">false</paramValue>
     <paramValue name="runExportPred">false</paramValue>
-    <paramValue name="pdbFile">$$pdbFile$$</paramValue>
-    <paramValue name="nrdbFile">$$nrdbFile$$</paramValue>
-    <paramValue name="nrdbShortDeflineFile">$$nrdbShortDeflineFile$$</paramValue>
     <paramValue name="maxIntronSize">2000</paramValue>
-    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
-    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Leishmania</paramValue>
-    <paramValue name="nrdbExtDbRlsSpec">NRDB|$$nrdbVersion$$</paramValue>
-    <paramValue name="repeatMaskSpecies">-species Leishmania</paramValue>
-    <paramValue name="pdbExtDbRlsSpec">$$pdbExtDbRlsSpec$$</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
     <paramValue name="genomeSize">32855403</paramValue>
     <paramValue name="skipProteomeAnalysis">false</paramValue>
     <paramValue name="skipGenomeAnalysis">false</paramValue>
     <paramValue name="mapEpitope">true</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
     <paramValue name="makeAssemblySeqs">true</paramValue>
     <paramValue name="makeAssemblies">true</paramValue>
     <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
-    <depends name="common"/>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">tritrypdb/lmajorMassSpecResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+    <depends name="LmajorLoadGenome"/>
   </subgraph>
+
+  <subgraph name="LmajorSpecificWorkflow" xmlFile="tritrypdb/lmajorSpecific.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="LmajorLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LmajorMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Lmajor</paramValue>
+    <paramValue name="organismFullName">@@LmajorOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">5664</paramValue>
+    <paramValue name="parentNcbiTaxonId">5664</paramValue>
+    <paramValue name="genomeSource">@@LmajorGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">lmajor_dbEST_RSRC|@@lmajor_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lmajor_chromosomes_RSRC|@@Lmajor_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="LmajorPostLoadGenome"/>
+    <depends name="LmajorMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+
 
   <subgraph name="LtarentolaeAnalysis" xmlFile="organism.xml">
     <paramValue name="projectName">$$projectName$$</paramValue>

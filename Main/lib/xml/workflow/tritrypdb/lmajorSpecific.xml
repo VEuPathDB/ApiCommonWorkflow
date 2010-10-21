@@ -1,135 +1,92 @@
 <workflowGraph name="lmajorSpecificAnalysis">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
   <param name="parentDataDir"/>
-  <param name="organismName"/>
-  <param name="organismFullName"/>
-  <param name="genomeExtDbRlsSpec"/>
-  <param name="maxIntronSize"/>
-  <param name="ncbiTaxonId"/>
-  <param name="BACEndsExtDbRlsSpec"/>
-  <param name="CosmidEndsExtDbRlsSpec"/>
-  <param name="FV1EndsExtDbRlsSpec"/>
-  <param name="PACEndsExtDbRlsSpec"/>
-  <param name="repeatMaskSpecies"/>
-  <param name="mylerChipProbeFile"/>
-  <param name="mylerChipExtDbRlsSpec"/>
-  <param name="mylerChipRadAnalysisWorkingDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDataDir"/>
+  <param name="webServicesDataDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/$$organismName$$/SpecificAnalysis</constant>
-  <constant name="genomicSeqsFile">$$parentDataDir$$/$$organismName$$/genome/genomicSeqs.fsa</constant>
-  <constant name="BACEndsDir">$$dataDir$$/extractAndBlockBACEnds</constant>
-  <constant name="CosmidEndsDir">$$dataDir$$/extractAndBlockCosmidEnds</constant>
-  <constant name="FV1EndsDir">$$dataDir$$/extractAndBlockFV1Ends</constant>
-  <constant name="PACEndsDir">$$dataDir$$/extractAndBlockPACEnds</constant>
+  <constant name="dataDir">$$parentDataDir$$/LmajorSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Lmajor</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/LmajorLoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/LmajorLoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/LmajorLoadGenome/geneModelForSsa.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-    <subgraph name="extractAndBlockBACEnds" xmlFile="extractAndBlockBACEnds.xml">
-      <paramValue name="dataDir">$$BACEndsDir$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="BACEndsExtDbRlsSpec">$$BACEndsExtDbRlsSpec$$</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
+    <subgraph name="sangerCosmidEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeDnaSeq.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+      <paramValue name="organismName">Lmajor</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Lmajor_chromosomes_RSRC|@@Lmajor_chromosomes_VER@@</paramValue>
+      <paramValue name="maxIntronSize">100</paramValue>
+      <paramValue name="ncbiTaxonId">5664</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">Lmajor_sanger_CosmidEnds_RSRC|@@Lmajor_sanger_CosmidEnds_VER@@</paramValue>
+      <paramValue name="BACEndsResourceName">Lmajor_sanger_CosmidEnds_RSRC</paramValue>
+      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+      <paramValue name="genomicSeqsFile">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="mapBACEndsSeqsToGenome" xmlFile="mapAssembliesToGenome.xml">
+    <subgraph name="sangerFV1Ends_loadAndAnalyze" xmlFile="loadAndAnalyzeDnaSeq.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="assembliesDataDir">$$BACEndsDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$/genome/mapAssemblySeqs/genomicSeqs</paramValue>
-      <paramValue name="organismTwoLetterAbbrev"></paramValue>
-      <paramValue name="nickName">mapBACEnds</paramValue>
-      <paramValue name="queryTable">ExternalNASequence</paramValue>
-      <paramValue name="updateAssemblySourceId">false</paramValue>
-      <paramValue name="queryExtDbRlsSpec">$$BACEndsExtDbRlsSpec$$</paramValue>
-      <depends name="extractAndBlockBACEnds"/>
-    </subgraph>
-
-    <subgraph name="extractAndBlockCosmidEnds" xmlFile="extractAndBlockBACEnds.xml">
-      <paramValue name="dataDir">$$CosmidEndsDir$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="BACEndsExtDbRlsSpec">$$CosmidEndsExtDbRlsSpec$$</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
+      <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+      <paramValue name="organismName">Lmajor</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Lmajor_chromosomes_RSRC|@@Lmajor_chromosomes_VER@@</paramValue>
+      <paramValue name="maxIntronSize">100</paramValue>
+      <paramValue name="ncbiTaxonId">5664</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">Lmajor_sanger_FV1Ends_RSRC|@@Lmajor_sanger_FV1Ends_VER@@</paramValue>
+      <paramValue name="BACEndsResourceName">Lmajor_sanger_FV1Ends_RSRC</paramValue>
+      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+      <paramValue name="genomicSeqsFile">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="mapCosmidEndsSeqsToGenome" xmlFile="mapAssembliesToGenome.xml">
+    <subgraph name="sangerPACEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeDnaSeq.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="assembliesDataDir">$$CosmidEndsDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$/genome/mapAssemblySeqs/genomicSeqs</paramValue>
-      <paramValue name="organismTwoLetterAbbrev"></paramValue>
-      <paramValue name="nickName">mapCosmidEnds</paramValue>
-      <paramValue name="queryTable">ExternalNASequence</paramValue>
-      <paramValue name="updateAssemblySourceId">false</paramValue>
-      <paramValue name="queryExtDbRlsSpec">$$CosmidEndsExtDbRlsSpec$$</paramValue>
-      <depends name="extractAndBlockCosmidEnds"/>
-    </subgraph>
-
-
-    <subgraph name="extractAndBlockFV1Ends" xmlFile="extractAndBlockBACEnds.xml">
-      <paramValue name="dataDir">$$FV1EndsDir$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="BACEndsExtDbRlsSpec">$$FV1EndsExtDbRlsSpec$$</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
+      <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+      <paramValue name="organismName">Lmajor</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Lmajor_chromosomes_RSRC|@@Lmajor_chromosomes_VER@@</paramValue>
+      <paramValue name="maxIntronSize">100</paramValue>
+      <paramValue name="ncbiTaxonId">5664</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">Lmajor_sanger_PACEnds_RSRC|@@Lmajor_sanger_PACEnds_VER@@</paramValue>
+      <paramValue name="BACEndsResourceName">Lmajor_sanger_PACEnds_RSRC</paramValue>
+      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+      <paramValue name="genomicSeqsFile">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="mapFV1EndsSeqsToGenome" xmlFile="mapAssembliesToGenome.xml">
+    <subgraph name="sangerBACEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeDnaSeq.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="assembliesDataDir">$$FV1EndsDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$/genome/mapAssemblySeqs/genomicSeqs</paramValue>
-      <paramValue name="organismTwoLetterAbbrev"></paramValue>
-      <paramValue name="nickName">mapFV1Ends</paramValue>
-      <paramValue name="queryTable">ExternalNASequence</paramValue>
-      <paramValue name="updateAssemblySourceId">false</paramValue>
-      <paramValue name="queryExtDbRlsSpec">$$FV1EndsExtDbRlsSpec$$</paramValue>
-      <depends name="extractAndBlockFV1Ends"/>
-    </subgraph>
-
-    <subgraph name="extractAndBlockPACEnds" xmlFile="extractAndBlockBACEnds.xml">
-      <paramValue name="dataDir">$$PACEndsDir$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="BACEndsExtDbRlsSpec">$$PACEndsExtDbRlsSpec$$</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
+      <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+      <paramValue name="organismName">Lmajor</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Lmajor_chromosomes_RSRC|@@Lmajor_chromosomes_VER@@</paramValue>
+      <paramValue name="maxIntronSize">100</paramValue>
+      <paramValue name="ncbiTaxonId">5664</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">Lmajor_sanger_BACEnds_RSRC|@@Lmajor_sanger_BACEnds_VER@@</paramValue>
+      <paramValue name="BACEndsResourceName">Lmajor_sanger_BACEnds_RSRC</paramValue>
+      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+      <paramValue name="genomicSeqsFile">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="mapPACEndsSeqsToGenome" xmlFile="mapAssembliesToGenome.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="assembliesDataDir">$$PACEndsDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$/genome/mapAssemblySeqs/genomicSeqs</paramValue>
-      <paramValue name="organismTwoLetterAbbrev"></paramValue>
-      <paramValue name="nickName">mapPACEnds</paramValue>
-      <paramValue name="queryTable">ExternalNASequence</paramValue>
-      <paramValue name="updateAssemblySourceId">false</paramValue>
-      <paramValue name="queryExtDbRlsSpec">$$PACEndsExtDbRlsSpec$$</paramValue>
-      <depends name="extractAndBlockPACEnds"/>
-    </subgraph>
+
+  <subgraph name="dbxRefsResources" xmlFile="tritrypdb/lmajorDbxRefsResource.xml">
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/LmajorEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="lmajor_CorrectGeneAliases_RSRC"/>
+  </subgraph>
 
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="extractAndBlockBACEnds"/>
-      <depends name="extractAndBlockCosmidEnds"/>
-      <depends name="extractAndBlockFV1Ends"/>
-      <depends name="extractAndBlockPACEnds"/>
-    </step>
 
   <subgraph name="mylerChIP" xmlFile="ChIP-chip.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
