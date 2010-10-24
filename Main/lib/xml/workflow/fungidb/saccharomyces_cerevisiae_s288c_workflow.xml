@@ -20,111 +20,10 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-
-  <!-- I broke LoadGenome out into the species-specific workflow. Seems simpler to group together -->
-  <subgraph name="saccharomyces_cerevisiae_s288c_LoadGenome" xmlFile="loadGenome.xml">
-
-      <paramValue name="parentDataDir"></paramValue>
-
-      <!-- The symbolic name of the organism -->      
-      <paramValue name="organismName">
-            saccharomyces_cerevisiae_s288c
-      </paramValue>
-
-      <!-- The current release of the data source -->
-      <paramValue name="genomeExtDbRlsSpec">
-            saccharomyces_cerevisiae_s288c_chromosomes_RSRC|@@saccharomyces_cerevisiae_s288c_chromosomes_VER@@
-      </paramValue>
-
-      <!-- location of the ISF resource file (ApiCommonData/Load/lib/xml/datasources/fungidb/saccharomyces_cerevisiae_s288c.xml) -->
-      <paramValue name="organismResourceXmlFile">
-            fungidb/saccharomyces_cerevisiae_s288c.xml
-      </paramValue>
-
-     <!-- Species-specific ISF workflow graph -->
-      <paramValue name="organismSpecificISFReference">
-            fungidb/saccharomyces_cerevisiae_s288c_workflow_ISF.xml
-      </paramValue>
-
-      <!-- Taxonomy ID: This is the official ID, but not loaded in Core... -->
-      <paramValue name="ncbiTaxonId">
-            559292
-      </paramValue>
-
-      <!-- Location of the downloads directory -->
-      <paramValue name="downloadSiteDataDir">
-            downloadSite/$$projectName$$/release-$$projectVersion$$
-      </paramValue>
-
-      <paramValue name="extractProteins">
-            true
-      </paramValue>
-
-      <paramValue name="projectName">
-            $$projectName$$
-      </paramValue>
-
-      <depends name="common" />
-      <dependsGlobal name="taxonomy_RSRC" /> 
-      <dependsGlobal name="SO_RSRC" />
-
-  </subgraph>      
-
-  <!-- PostLoadGenome -->
-  <subgraph name="saccharomyces_cerevisiae_s288c_PostLoadGenome" xmlFile="postLoadGenome.xml">
-      <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="organismName">saccharomyces_cerevisiae_s288c</paramValue>
-      <paramValue name="organismFullName">@@saccharomyces_cerevisiae_s288c_OrganismFullName@@</paramValue>
-      <paramValue name="organismTwoLetterAbbrev">ScereS288C</paramValue>
-
-      <!-- customize: the rsource XML file --> 
-     <paramValue name="organismResourceXmlFile">fungidb/saccharomyces_cerevisiae_s288c.xml</paramValue>
-
-      <!-- customize -->
-      <paramValue name="genomeExtDbRlsSpec">
-              saccharomyces_cerevisiae_s288c_chromosomes_RSRC|@@saccharomyces_cerevisiae_s288c_chromosomes_VER@@
-      </paramValue>
-
-      <!-- customize: taxonomy -->
-      <paramValue name="ncbiTaxonId">559292</paramValue>
-      <paramValue name="parentNcbiTaxonId">4932</paramValue>
-
-      <!-- customize -->
-      <paramValue name="genomeSize">18874889</paramValue>
-
-      <paramValue name="iedbResourceName"></paramValue>
-      <paramValue name="iedbVersion"></paramValue>
-      <paramValue name="iedbDbRefResourceName"></paramValue>
-      <paramValue name="dbESTResourceName"></paramValue>
-      <paramValue name="dbESTVersion"></paramValue>
-
-      <paramValue name="usePredictedTranscripts">false</paramValue>
-      <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
-      <paramValue name="runtRNAScan">true</paramValue>
-      <paramValue name="runExportPred">false</paramValue>
-      <paramValue name="maxIntronSize">1000</paramValue>
-      <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota Fungi Ascomycota</paramValue>
-      <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
-      <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
-      <paramValue name="skipProteomeAnalysis">false</paramValue>
-      <paramValue name="skipGenomeAnalysis">false</paramValue>
-      <paramValue name="mapEpitope">false</paramValue>
-      <paramValue name="makeAssemblySeqs">false</paramValue>
-      <paramValue name="makeAssemblies">false</paramValue>
-      <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
-      <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
-      <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
-
-      <!-- customize -->
-      <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
-      <paramValue name="organismSpecificESTResourcesReference"></paramValue>
-      <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
-
-      <depends name=saccharomyces_cerevisiae_s288c_LoadGenome"/>
-  </subgraph>
-
+  <!-- Wanted to place these in species-specific files (species_workflow.xml), 
+       but they depend on common subgraphs not visible
+       in that context -->
+       
 
     <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
@@ -150,4 +49,4 @@
       <dependsGlobal name="enzymeDB_RSRC"/>
     </subgraph>
 
-</workflow>
+</workflowGraph>
