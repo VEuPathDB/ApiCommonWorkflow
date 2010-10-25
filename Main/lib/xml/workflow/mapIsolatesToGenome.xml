@@ -1,0 +1,52 @@
+<workflowGraph name="mapIsolatesToGenome">
+  <param name="dataDir"/>
+  <param name="organismName"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="isolateExtDbRlsSpec"/>
+  <param name="idRegex"/>
+
+  <constant name="isolateSeqFile">$$dataDir$$/isolatesSeqs.fsa</constant>
+  <constant name="blastArgs">V=1 B=1 hspsepQmax=50000 hspsepSmax=50000 -span1 -topcomboN=1 E=0.1 -wordmask=seg</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="extractIsolateSeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+      <paramValue name="extDbRlsSpec">$$isolateExtDbRlsSpec$$</paramValue>
+      <paramValue name="table">ExternalNASequence</paramValue>
+      <paramValue name="alternateDefline"></paramValue>
+      <paramValue name="outputFile">$$isolateSeqFile$$</paramValue>
+      <paramValue name="separateFastaFiles">false</paramValue>
+      <paramValue name="outputDirForSeparateFiles"></paramValue>
+      <depends name="makeDataDir"/> 
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="extractIsolateSeqs"/>
+    </step>
+
+    <subgraph name="blastnIsolateSeqGenomicSeqs" xmlFile="blast.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="nickName">blastnIsolates</paramValue>
+      <paramValue name="queryFile">$$isolateSeqFile$$</paramValue>
+      <paramValue name="queryTable">DoTS::ExternalNASequence</paramValue>
+      <paramValue name="queryExtDbRlsSpec">$$isolateExtDbRlsSpec$$</paramValue>
+      <paramValue name="subjectFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="subjectTable">DoTS::ExternalNASequence</paramValue>
+      <paramValue name="subjectExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="blastArgs">$$blastArgs$$</paramValue>
+      <paramValue name="idRegex">$$idRegex$$</paramValue>
+      <paramValue name="blastType">blastn</paramValue>
+      <paramValue name="vendor">wu</paramValue>
+      <paramValue name="loadSubjectSubset">false</paramValue>
+      <paramValue name="filterByTaxon">false</paramValue>
+      <paramValue name="taxonHierarchyForFilter"></paramValue>
+      <paramValue name="loadOptions"></paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+</workflowGraph>
