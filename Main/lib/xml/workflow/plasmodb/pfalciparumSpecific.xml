@@ -142,30 +142,11 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="Pf_PiggyBac_Clones_Adams_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Pf_PiggyBac_Clones_Adams_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <subgraph name="mapPiggyBacsToGenome" xmlFile="PfMapPiggyBacsToGenome.xml">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
       <depends name="makeDataDir"/>
-    </subgraph>
-
-    <step name="mirrorPf_PiggyBac_Clones_Adams_RSRCToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC</paramValue>
-      <depends name="Pf_PiggyBac_Clones_Adams_RSRC"/>
-    </step>
-
-    <subgraph name="PfMapPiggyBacClonesToGenomicSeqs" xmlFile="runBlastAndLoadFeatures.xml">
-      <paramValue name="dataDir">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC/PfMapPiggyBacClonesToGenomicSeqs</paramValue>
-      <paramValue name="queryFile">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC/PiggyBac_Clones_Adams.fsa</paramValue>
-      <paramValue name="subjectFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="blastArgs">-nogaps V=1 E=1e-10 B=1 hspsepQmax=50000 hspsepSmax=50000 -span1 -topcomboN=1</paramValue>
-      <paramValue name="idRegex">(\\S+)</paramValue>
-      <paramValue name="blastType">blastn</paramValue>
-      <paramValue name="vendor">wu</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="extDbRlsSpec">Pf_PiggyBac_Clones_Adams_RSRC|@@Pf_PiggyBac_Clones_Adams_VER@@</paramValue>
-      <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
-      <depends name="mirrorPf_PiggyBac_Clones_Adams_RSRCToCluster"/>
     </subgraph>
 
   <subgraph name="PlasmoSpecificMakeAndFormatDownloadFiles" xmlFile="plasmodb/plasmoSpecificMakeAndFormatDownloadFiles.xml">
