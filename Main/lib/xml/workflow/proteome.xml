@@ -17,13 +17,6 @@
   <constant name="blastpPdbArgs">-cpus=2 -topcomboN=1 V=100 B=20 -hspmax=1000000 -gi E=1e-3 -wordmask=seg -hspsepQmax=4000 -span1</constant>
   <constant name="signalpArgs">-t euk -f short -m nn+hmm -q -trunc 70</constant>
 
-    <step name="calcAASequenceAttributes"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateAASeqAttributes" stepLoadTypes="plugin">
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="table">DoTS.TranslatedAASequence</paramValue>
-      <paramValue name="idSql">select taas.aa_sequence_id, taas.sequence from DoTS.TranslatedAASequence taas, DoTs.AAFeature af, DOTS.NAFeature nf where taas.aa_sequence_id=af.aa_sequence_id and af.na_feature_id=nf.na_feature_id and nf.name not in ('ORF') and taas.external_database_release_id = ?</paramValue>
-    </step>
-
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
@@ -31,6 +24,29 @@
     <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
+    </step>
+
+    <step name="calcAASequenceAttributes"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateAASeqAttributes" stepLoadTypes="plugin">
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="table">DoTS.TranslatedAASequence</paramValue>
+      <paramValue name="idSql">select taas.aa_sequence_id, taas.sequence from DoTS.TranslatedAASequence taas, DoTs.AAFeature af, DOTS.NAFeature nf where taas.aa_sequence_id=af.aa_sequence_id and af.na_feature_id=nf.na_feature_id and nf.name not in ('ORF') and taas.external_database_release_id = ?</paramValue>
+    </step>
+
+    <step name="document-isoelectricPoint"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">isoelectric_point_MTHD</paramValue>
+      <paramValue name="version">FIX_VERSION</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="calcAASequenceAttributes"/>
+    </step>
+
+    <step name="document-molecularWeight"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">molecular_weight_MTHD</paramValue>
+      <paramValue name="version">FIX_VERSION</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="calcAASequenceAttributes"/>
     </step>
 
     <step name="InsertGeneGenomicSequenceWithSql" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadGeneGenomicSequenceByQuery" >
@@ -44,26 +60,18 @@
       <depends name="makeDataDir"/>
     </step>
 
+    <step name="document-runTmhmm"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">TMHMM_MTHD</paramValue>
+      <paramValue name="version">2.0a</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="runTmhmm"/>
+    </step>
+
     <step name="insertTmhmm"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTmhmm" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/tmhmm.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="runTmhmm"/>
-    </step>
-
-    <step name="document-runTmhmm"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">Predict transmembrane domains</paramValue>
-      <paramValue name="tool">TMHMM</paramValue>
-      <paramValue name="version">2.0a</paramValue>
-      <paramValue name="category">Proteome</paramValue>
-      <paramValue name="input">Protein translations of annotated genes</paramValue>
-      <paramValue name="output">Predicted transmembrane domain topology</paramValue>
-      <paramValue name="parameters"></paramValue>
-      <paramValue name="description">TMHMM is used to predict transmembrane domain presence and topology</paramValue>
-      <paramValue name="pubmedId">11152613</paramValue>
-      <paramValue name="url"></paramValue>
-      <paramValue name="credits"></paramValue>
       <depends name="runTmhmm"/>
     </step>
 
@@ -74,29 +82,20 @@
       <depends name="makeDataDir"/>
     </step>
 
+    <step name="document-runExportPred"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">ExportPred_MTHD</paramValue>
+      <paramValue name="version">1.0.1</paramValue>
+      <paramValue name="parameters">default</paramValue>
+      <depends name="runExportPred"/>
+    </step>
+
     <step name="insertExportPred"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExportPred" stepLoadTypes="plugin" includeIf="$$runExportPred$$">
       <paramValue name="inputFile">$$dataDir$$/exportPred.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="runExportPred"/>
     </step>
-
-    <step name="document-runExportPred"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">Predict export to host</paramValue>
-      <paramValue name="tool">ExportPred</paramValue>
-      <paramValue name="version">1.0.1</paramValue>
-      <paramValue name="category">Proteome</paramValue>
-      <paramValue name="input">Protein translations of annotated genes</paramValue>
-      <paramValue name="output">Predicted export proteins (and scores)</paramValue>
-      <paramValue name="parameters">default</paramValue>
-      <paramValue name="description">Program that predicts the exported proteins of Plasmodium.</paramValue>
-      <paramValue name="pubmedId">16507167</paramValue>
-      <paramValue name="url">http://bioinf.wehi.edu.au/exportpred</paramValue>
-      <paramValue name="credits"></paramValue>
-      <depends name="runExportPred"/>
-    </step>
-
 
     <step name="runSignalP"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunSignalP">
@@ -106,27 +105,19 @@
       <depends name="makeDataDir"/>
     </step>
 
+    <step name="document-insertSignalP"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">SignalP_MTHD</paramValue>
+      <paramValue name="version">3.0</paramValue>
+      <paramValue name="parameters">$$signalpArgs$$</paramValue>
+      <depends name="insertSignalP"/>
+    </step>
+
     <step name="insertSignalP"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSignalP" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/signalP.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="runSignalP"/>
-    </step>
-
-    <step name="document-insertSignalP"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">Predict signal peptides</paramValue>
-      <paramValue name="tool">SignalP</paramValue>
-      <paramValue name="version">3.0</paramValue>
-      <paramValue name="category">Proteome</paramValue>
-      <paramValue name="input">Protein translations of annotated genes</paramValue>
-      <paramValue name="output">Signal peptide predictions</paramValue>
-      <paramValue name="parameters">$$signalpArgs$$</paramValue>
-      <paramValue name="description">Identify signal peptides and their likely cleavage sites.</paramValue>
-      <paramValue name="pubmedId">15223320</paramValue>
-      <paramValue name="url">http://www.cbs.dtu.dk/services/SignalP/</paramValue>
-      <paramValue name="credits"></paramValue>
-      <depends name="insertSignalP"/>
     </step>
 
   <subgraph name="IEDBResource" xmlFile="loadResource.xml" includeIf="$$loadEpitope$$">
@@ -154,12 +145,19 @@
 
    <step name="runLowComplexityFilter"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunLowComplexityFilter"> 
-
       <paramValue name="seqFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputFile">$$proteinsFile$$.seg</paramValue>
       <paramValue name="filterType">seg</paramValue>
       <paramValue name="options">-x</paramValue>
       <depends name="makeDataDir"/>
+    </step>
+
+    <step name="document-runLowComplexityFilter"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">seg_translated_proteins_MTHD</paramValue>
+      <paramValue name="version">unknown</paramValue>
+      <paramValue name="parameters">-x</paramValue>
+      <depends name="runLowComplexityFilter"/>
     </step>
 
     <step name="loadLowComplexityFile"
@@ -171,23 +169,6 @@
       <paramValue name="options"></paramValue>
       <depends name="runLowComplexityFilter"/>
     </step>
-
-    <step name="document-runLowComplexityFilter"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">Filter low complexity protein sequences</paramValue>
-      <paramValue name="tool">seg</paramValue>
-      <paramValue name="version"></paramValue>
-      <paramValue name="category">Proteome</paramValue>
-      <paramValue name="input">Protein translations of annotated genes</paramValue>
-      <paramValue name="output">Protein sequences containing regions of low complexity masked with the character 'x'</paramValue>
-      <paramValue name="parameters">-x</paramValue>
-      <paramValue name="description"></paramValue>
-      <paramValue name="pubmedId">7952898</paramValue>
-      <paramValue name="url"></paramValue>
-      <paramValue name="credits"></paramValue>
-      <depends name="runLowComplexityFilter"/>
-    </step>
-
 
     <step name="findNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindNrdbXrefs">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
@@ -215,18 +196,10 @@
     </subgraph>
 
     <step name="document-interpro"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">Find InterPro Domains</paramValue>
-      <paramValue name="tool">InterProScan</paramValue>
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">interProScan_MTHD</paramValue>
       <paramValue name="version">most recent</paramValue>
-      <paramValue name="category">Proteome</paramValue>
-      <paramValue name="input">Protein translations of annotated genes and the InterPro Domains Database</paramValue>
-      <paramValue name="output">Domains matched, description of the InterPro entry, GO description of the Interpro entry and E-value of the match</paramValue>
       <paramValue name="parameters"></paramValue>
-      <paramValue name="description">InterProScan scans protein sequences against the protein signatures of the InterPro member databases including PROSITE, PRINTS, xPfam, ProDom,SMART, TIGRFAMs, PIR, SUPERFAMILY.</paramValue>
-      <paramValue name="pubmedId">11590104</paramValue>
-      <paramValue name="url">http://www.ebi.ac.uk/InterProScan</paramValue>
-      <paramValue name="credits"></paramValue>
       <depends name="interpro"/>
     </step>
 
@@ -240,18 +213,10 @@
     </subgraph>
 
     <step name="document-psipred"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">Predict secondary structure</paramValue>
-      <paramValue name="tool">psipred</paramValue>
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">psipred_MTHD</paramValue>
       <paramValue name="version">2.4</paramValue>
-      <paramValue name="category">Proteome</paramValue>
-      <paramValue name="input">Protein translations of annotated genes (filtered with seg)</paramValue>
-      <paramValue name="output">file containing a residue by residue prediction of helix, strand, and coil accompanied by confidence level</paramValue>
       <paramValue name="parameters">default</paramValue>
-      <paramValue name="description">Psipred predicts secondary structure using a neural network analysis of PSI-BLAST output</paramValue>
-      <paramValue name="pubmedId">10493868</paramValue>
-      <paramValue name="url">http://bioinf.cs.ucl.ac.uk/psipred</paramValue>
-      <paramValue name="credits"></paramValue>
       <depends name="psipred"/>
     </step>
 
@@ -277,18 +242,10 @@
     </subgraph>
 
    <step name="document-blastpNrdb"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">BLASTP Annotated protein sequences vs. NRDB</paramValue>
-      <paramValue name="tool">BLASTP</paramValue>
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">BLASTP_translated_proteins_NRDB_MTHD</paramValue>
       <paramValue name="version">2.0 [06-Apr-2005]</paramValue>
-      <paramValue name="category">Proteome</paramValue>
-      <paramValue name="input">Query: Protein translations of annotated genes and; Subject: NRDB</paramValue>
-      <paramValue name="output">BLASTP alignments</paramValue>
       <paramValue name="parameters">$$blastpNrdbArgs$$</paramValue>
-      <paramValue name="description">BLASTP translations of annotated genes against NCBI non-redundant protein database.  WU-BLASTP is used to identify statistically significant protein-protein sequence similarities</paramValue>
-      <paramValue name="pubmedId">2231712</paramValue>
-      <paramValue name="url">http://blast.wustl.edu</paramValue>
-      <paramValue name="credits"></paramValue>
       <depends name="blastpNrdb"/>
     </step>
 
@@ -314,18 +271,10 @@
     </subgraph>
 
    <step name="document-blastpPdb"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">>WU-BLASTP (Annotated protein sequences vs. PDB)</paramValue>
-      <paramValue name="tool">BLASTP</paramValue>
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="name">BLASTP_translated_proteins_PDB_MTHD</paramValue>
       <paramValue name="version">2.0 [06-Apr-2005]</paramValue>
-      <paramValue name="category">Proteome</paramValue>
-      <paramValue name="input">Query: Protein translations of annotated genes and; Subject: PDB</paramValue>
-      <paramValue name="output">BLASTP alignments</paramValue>
-      <paramValue name="parameters">$$blastpNrdbArgs$$</paramValue>
-      <paramValue name="description">BLASTP translations of annotated genes against the Protein Data Bank (PDB).  WU-BLASTP is used to identify statistically significant protein-protein sequence similarities</paramValue>
-      <paramValue name="pubmedId">2231712</paramValue>
-      <paramValue name="url">http://blast.wustl.edu</paramValue>
-      <paramValue name="credits"></paramValue>
+      <paramValue name="parameters">$$blastpPdbArgs$$</paramValue>
       <depends name="blastpPdb"/>
     </step>
 
