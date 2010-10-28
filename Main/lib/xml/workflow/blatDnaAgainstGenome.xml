@@ -1,5 +1,5 @@
 <workflowGraph name="blatDnaAgainstGenome">
-    <param name="parentDataDir"/>
+    <param name="dataDir"/>
     <param name="maxIntronSize"/>
     <param name="targetNcbiTaxonId"/>
     <param name="targetSeqsDir"/>
@@ -9,17 +9,17 @@
     <param name="queryTable"/>
     <param name="queryExtDbRlsSpec"/>
 
-    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
-      <paramValue name="dataDir">$$parentDataDir$$</paramValue>
-    </step>
-
     <constant name="blatOutputFile">$$dataDir$$/blat.out</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
 
     <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDir">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="queryFile">$$queryFile$$</paramValue>
-      <paramValue name="targetDir">$$targetDir$$</paramValue>
+      <paramValue name="targetDir">$$targetSeqsDir$$</paramValue>
     </step>
 
     <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
@@ -59,7 +59,7 @@
       <paramValue name="percentTop"></paramValue>
       <paramValue name="blatFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
       <paramValue name="queryFile">$$queryFile$$</paramValue>
-      <depends name="blatDnaAgainstGenome"/>
+      <depends name="fixGenomeSourceIdsInBlatResultFile"/>
     </step>
 
     <step name="setBestBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">

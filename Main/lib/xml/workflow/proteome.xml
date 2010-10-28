@@ -105,19 +105,19 @@
       <depends name="makeDataDir"/>
     </step>
 
+    <step name="insertSignalP"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSignalP" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/signalP.out</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="runSignalP"/>
+    </step>
+
     <step name="document-insertSignalP"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
       <paramValue name="method">SignalP_MTHD</paramValue>
       <paramValue name="version">3.0</paramValue>
       <paramValue name="parameters">$$signalpArgs$$</paramValue>
       <depends name="insertSignalP"/>
-    </step>
-
-    <step name="insertSignalP"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSignalP" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$dataDir$$/signalP.out</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="runSignalP"/>
     </step>
 
   <subgraph name="IEDBResource" xmlFile="loadResource.xml" includeIf="$$loadEpitope$$">
