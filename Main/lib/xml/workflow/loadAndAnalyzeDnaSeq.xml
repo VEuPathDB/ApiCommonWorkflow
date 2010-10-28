@@ -1,4 +1,4 @@
-<workflowGraph name="loadAndAnalyzeDnaSeq">
+<workflowGraph name="loadDnaSeqAndAlignToGenome">
   <param name="parentDataDir"/>
   <param name="organismResourceXmlFile"/>
   <param name="organismName"/>
@@ -12,7 +12,7 @@
   <param name="genomicSeqsDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/$$BACEndsResourceName$$</constant>
-  <constant name="BACEndsDir">$$dataDir$$/extractAndBlockBACEnds</constant>
+  <constant name="BACEndsDir">$$dataDir$$/extractAndBlockDnaSeq</constant>
 
 
     <subgraph name="BACEnds_RSRC" xmlFile="loadResource.xml">
@@ -21,7 +21,7 @@
       <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
     </subgraph>
 
-    <subgraph name="extractAndBlockBACEnds" xmlFile="extractAndBlockBACEnds.xml">
+    <subgraph name="extractAndBlockDnaSeq" xmlFile="extractAndBlockDnaSeq.xml">
       <paramValue name="dataDir">$$BACEndsDir$$</paramValue>
       <paramValue name="BACEndsExtDbRlsSpec">$$BACEndsExtDbRlsSpec$$</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
@@ -31,7 +31,7 @@
 
     <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="extractAndBlockBACEnds"/>
+      <depends name="extractAndBlockDnaSeq"/>
     </step>
 
     <subgraph name="mapBACEndsSeqsToGenome" xmlFile="mapAssembliesToGenome.xml">
@@ -46,7 +46,7 @@
       <paramValue name="queryTable">ExternalNASequence</paramValue>
       <paramValue name="updateAssemblySourceId">false</paramValue>
       <paramValue name="queryExtDbRlsSpec">$$BACEndsExtDbRlsSpec$$</paramValue>
-      <depends name="extractAndBlockBACEnds"/>
+      <depends name="extractAndBlockDnaSeq"/>
     </subgraph>
 
 </workflowGraph>
