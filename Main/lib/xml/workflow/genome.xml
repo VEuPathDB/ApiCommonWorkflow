@@ -189,67 +189,27 @@
       <depends name="runLowComplexityFilter"/>
     </step>
 
-    <subgraph name="makeAndBlockAssemblySeqs" xmlFile="makeAndBlockAssemblySeqs.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="usePredictedTranscripts">$$usePredictedTranscripts$$</paramValue>
-      <paramValue name="dataDir">$$assemblySeqsDataDir$$</paramValue>
-      <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
-      <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
-      <paramValue name="makeAssemblySeqs">$$makeAssemblySeqs$$</paramValue>
-      <depends name="mirrorToCluster"/>
-      <depends name="dbESTResource"/>
-      <depends name="organismSpecificESTResource"/>
-    </subgraph>
-
-    <subgraph name="mapAssemblySeqsToGenome" xmlFile="mapAssemblySeqsToGenome.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="assemblySeqsDataDir">$$assemblySeqsDataDir$$</paramValue>
-      <paramValue name="dataDir">$$mapAssemblySeqsDataDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
-      <depends name="makeAndBlockAssemblySeqs"/>
-    </subgraph>
-
-    <subgraph name="makeAndBlockAssemblies" xmlFile="makeAndBlockAssemblies.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">$$distanceBetweenStartsForAlignmentsInSameCluster$$</paramValue>
-      <paramValue name="dataDir">$$assembliesDataDir$$</paramValue>
-      <paramValue name="assemblySeqsDataDir">$$assemblySeqsDataDir$$</paramValue>
-      <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
-      <paramValue name="makeAssemblies">$$makeAssemblies$$</paramValue>
-      <depends name="mapAssemblySeqsToGenome"/>
-    </subgraph>
-
-    <subgraph name="mapAssembliesToGenome" xmlFile="mapAssembliesToGenome.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="assembliesDataDir">$$assembliesDataDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
-      <paramValue name="organismTwoLetterAbbrev">$$organismTwoLetterAbbrev$$</paramValue>
-      <paramValue name="nickName">mapAssemblies</paramValue>
-      <paramValue name="queryTable">Assembly</paramValue>
-      <paramValue name="updateAssemblySourceId">$$makeAssemblies$$</paramValue>
-      <paramValue name="queryExtDbRlsSpec"></paramValue>
-      <depends name="makeAndBlockAssemblies"/>
-    </subgraph>
-
-    <step name="document-transcriptAssembliesOverview"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">transcript_assemblies_overview_MTHD</paramValue>
-      <paramValue name="version">1.0</paramValue>
-      <paramValue name="parameters"></paramValue>
-      <depends name="makeAndBlockAssemblies"/>
-    </step>
+  <subgraph name="organismSpecificMassSpecResource" xmlFile="$$organismSpecificMassSpecResourcesReference$$" includeIf="$$loadOrganismSpecificMassSpecResource$$">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismName">$$organismName$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+    <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+    <paramValue name="usePredictedTranscripts">$$usePredictedTranscripts$$</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
+    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">$$distanceBetweenStartsForAlignmentsInSameCluster$$</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">$$organismTwoLetterAbbrev$$</paramValue>
+    <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
+    <paramValue name="makeAssemblySeqs">$$makeAssemblySeqs$$</paramValue>
+    <paramValue name="makeAssemblies">$$makeAssemblies$$</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">$$mapAssemblySeqsAndAssemblies$$</paramValue>
+    <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+    <depends name="mirrorToCluster"/>
+    <depends name="dbESTResource"/>
+    <depends name="organismSpecificESTResource"/>
+  </subgraph>
 
 </workflowGraph>
 
