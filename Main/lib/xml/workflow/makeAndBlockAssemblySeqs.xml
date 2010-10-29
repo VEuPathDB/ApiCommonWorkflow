@@ -24,6 +24,14 @@
       <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
     </step>
 
+    <step name="document-crossmatch"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">crossmatch_MTHD</paramValue>
+      <paramValue name="version">FIX</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeAssemblySeqs"/>
+    </step>
+
    <step name="extractAssemblySeqs"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAssemblySeqs">
       <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
@@ -58,6 +66,14 @@
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blocked.err,blocked.seq</paramValue>
       <depends name="runClusterTask"/>
+    </step>
+
+    <step name="document-maskAssemblySeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">repeatmask_assemblyseqs_MTHD</paramValue>
+      <paramValue name="version">FIX</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="mirrorFromCluster"/>
     </step>
 
 

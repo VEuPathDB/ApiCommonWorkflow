@@ -23,6 +23,14 @@
       <depends name="makeDataDir"/>
     </step>
 
+    <step name="document-clusterAssemblySeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">cluster_assembly_seqs_MTHD</paramValue>
+      <paramValue name="version">FIX</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="clusterTranscriptsByGenomeAlignment"/>
+    </step>
+
    <step name="putUnalignedTranscriptsIntoOneCluster"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PutUnalignedTranscriptsIntoOneCluster" includeIf="$$makeAssemblies$$">
       <paramValue name="alignedClustersFile">$$dataDir$$/alignedClusters.out</paramValue>
@@ -57,6 +65,14 @@
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="reassemble"></paramValue>
       <depends name="splitClusterFile"/>
+    </step>
+
+    <step name="document-makeAssemblies"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">clustal_on_assembly_clusters_MTHD</paramValue>
+      <paramValue name="version">FIX</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeAndLoadAssembliesFromBigClusters"/>
     </step>
 
    <step name="extractAssemblies"
@@ -95,5 +111,14 @@
       <paramValue name="outputFiles">blocked.seq</paramValue>
       <depends name="runClusterTask"/>
     </step>
+
+    <step name="document-maskAssemblies"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">repeat_mask_assemblies_MTHD</paramValue>
+      <paramValue name="version">FIX</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="clusterTranscriptsByGenomeAlignment"/>
+    </step>
+
 
 </workflowGraph>
