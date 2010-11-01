@@ -54,6 +54,14 @@
       <depends name="makeAndBlockAssemblySeqs"/>
     </subgraph>
 
+    <step name="document-mapAssemblySeqsToGenome"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">blat_assembly_seqs_MTHD</paramValue>
+      <paramValue name="version">FIX</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="mapAssemblySeqsToGenome"/>
+    </step>
+
     <subgraph name="makeAndBlockAssemblies" xmlFile="makeAndBlockAssemblies.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -83,6 +91,14 @@
       <paramValue name="nickName">mapAssemblies</paramValue>
       <depends name="makeAndBlockAssemblies"/>
     </subgraph>
+
+    <step name="document-mapAssembliesToGenome"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">blat_assemblies_MTHD</paramValue>
+      <paramValue name="version">FIX</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="mapAssemblySeqsToGenome"/>
+    </step>
 
    <step name="updateAssemblySourceId"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateAssemblySourceId" stepLoadTypes="plugin" includeIf="$$makeAssemblies$$">
