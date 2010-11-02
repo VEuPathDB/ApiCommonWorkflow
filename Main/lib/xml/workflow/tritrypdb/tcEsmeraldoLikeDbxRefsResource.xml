@@ -1,12 +1,12 @@
-<workflowGraph name="tcruziEsmeraldoLikeDbxRefsResource">
+<workflowGraph name="tcEsmeraldoLikeDbxRefsResource">
       <param name="organismResourceXmlFile"/>
       <param name="parentDataDir"/>
       <param name="projectVersion"/>
       <param name="projectName"/>
 
-  <constant name="dataDir">$$parentDataDir$$/tcruziEsmeraldoLikeDbxRefsResources</constant>
-  <constant name="euPathUniProtLinkDownloadFile">downloadSite/$$projectName$$/release-$$projectVersion$$/TcruziEsmeraldoLikeEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</constant>
-  <constant name="geneAliasesMappingDownloadFile">downloadSite/$$projectName$$/release-$$projectVersion$$/tabular/TcruziEsmeraldoLikeGeneAlias_$$projectName$$-$$projectVersion$$.txt</constant>
+  <constant name="dataDir">$$parentDataDir$$/tcEsmeraldoLikeDbxRefsResources</constant>
+  <constant name="euPathUniProtLinkDownloadFile">downloadSite/$$projectName$$/release-$$projectVersion$$/TcEsmeraldoLikeEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</constant>
+  <constant name="geneAliasesMappingDownloadFile">downloadSite/$$projectName$$/release-$$projectVersion$$/tabular/TcEsmeraldoLikeGeneAlias_$$projectName$$-$$projectVersion$$.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -39,10 +39,17 @@
   </subgraph>
 
   <subgraph name="Tcruzi_Uniprot_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">Tcruzi_Entrez_Gene_dbxref_RSRC</paramValue>
+    <paramValue name="resourceName">Tcruzi_Uniprot_Gene_dbxref_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
+
+    <step name="makeEuPathUniProtLinkFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEuPathUniProtLinkFile">
+      <paramValue name="dbrefExtDbRlsSpec">Tcruzi_Uniprot_Gene_dbxref_RSRC|@@Tcruzi_Uniprot_Gene_dbxref_VER@@</paramValue>
+      <paramValue name="outputFile">$$euPathUniProtLinkDownloadFile$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="Tcruzi_Uniprot_Gene_dbxref_RSRC"/>
+    </step>
 
 </workflowGraph>

@@ -1,13 +1,20 @@
 <workflowGraph name="treu927DbxRefsResource">
       <param name="organismResourceXmlFile"/>
       <param name="parentDataDir"/>
-      <param name="euPathUniProtLinkDownloadFile"/>
+      <param name="projectVersion"/>
       <param name="projectName"/>
 
   <constant name="dataDir">$$parentDataDir$$/treu927DbxRefsResources</constant>
+  <constant name="euPathUniProtLinkDownloadFile">downloadSite/$$projectName$$/release-$$projectVersion$$/Treu927EuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</constant>
+  <constant name="geneAliasesMappingDownloadFile">downloadSite/$$projectName$$/release-$$projectVersion$$/tabular/Treu927GeneAlias_$$projectName$$-$$projectVersion$$.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
+     <paramValue name="genomeExtDbRlsSpec">Treu927_chromosomes_RSRC|@@Treu927_chromosomes_VER@@</paramValue>
+     <paramValue name="outputFile">$$geneAliasesMappingDownloadFile$$</paramValue>
   </step>
 
   <subgraph name="Tbrucei_Entrez_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
@@ -23,5 +30,12 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
+
+    <step name="makeEuPathUniProtLinkFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEuPathUniProtLinkFile">
+      <paramValue name="dbrefExtDbRlsSpec">Tbrucei_Uniprot_Gene_dbxref_RSRC|@@Tbrucei_Uniprot_Gene_dbxref_VER@@</paramValue>
+      <paramValue name="outputFile">$$euPathUniProtLinkDownloadFile$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="Tbrucei_Uniprot_Gene_dbxref_RSRC"/>
+    </step>
 
 </workflowGraph>
