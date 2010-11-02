@@ -1,13 +1,20 @@
 <workflowGraph name="pknowlesiDbxRefsResource">
       <param name="organismResourceXmlFile"/>
       <param name="parentDataDir"/>
-      <param name="euPathUniProtLinkDownloadFile"/>
+      <param name="projectVersion"/>
       <param name="projectName"/>
 
   <constant name="dataDir">$$parentDataDir$$/pknowlesiDbxRefsResources</constant>
+  <constant name="euPathUniProtLinkDownloadFile">downloadSite/$$projectName$$/release-$$projectVersion$$/PknowlesiEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</constant>
+  <constant name="geneAliasesMappingDownloadFile">downloadSite/$$projectName$$/release-$$projectVersion$$/tabular/PknowlesiGeneAlias_$$projectName$$-$$projectVersion$$.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
+     <paramValue name="genomeExtDbRlsSpec">Pknowlesi_chromosomes_RSRC|@@Pknowlesi_chromosomes_VER@@</paramValue>
+     <paramValue name="outputFile">$$geneAliasesMappingDownloadFile$$</paramValue>
   </step>
 
   <subgraph name="Pk_Pubmed_DBRefs_RSRC" xmlFile="loadResource.xml">
