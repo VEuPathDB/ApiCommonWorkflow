@@ -1,13 +1,21 @@
 <workflowGraph name="tcongolenseDbxRefsResource">
       <param name="organismResourceXmlFile"/>
       <param name="parentDataDir"/>
-      <param name="euPathUniProtLinkDownloadFile"/>
+      <param name="projectVersion"/>
       <param name="projectName"/>
 
+
   <constant name="dataDir">$$parentDataDir$$/tcongolenseDbxRefsResources</constant>
+  <constant name="euPathUniProtLinkDownloadFile">downloadSite/$$projectName$$/release-$$projectVersion$$/TcongolenseEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</constant>
+  <constant name="geneAliasesMappingDownloadFile">downloadSite/$$projectName$$/release-$$projectVersion$$/tabular/TcongolenseGeneAlias_$$projectName$$-$$projectVersion$$.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
+     <paramValue name="genomeExtDbRlsSpec">Tcongolense_chromosomes_RSRC|@@Tcongolense_chromosomes_VER@@</paramValue>
+     <paramValue name="outputFile">$$geneAliasesMappingDownloadFile$$</paramValue>
   </step>
 
   <subgraph name="Tcongolense_Entrez_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
@@ -23,5 +31,12 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
+
+    <step name="makeEuPathUniProtLinkFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEuPathUniProtLinkFile">
+      <paramValue name="dbrefExtDbRlsSpec">Tcongolense_Uniprot_Gene_dbxref_RSRC|@@Tcongolense_Uniprot_Gene_dbxref_VER@@</paramValue>
+      <paramValue name="outputFile">$$euPathUniProtLinkDownloadFile$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="Tcongolense_Uniprot_Gene_dbxref_RSRC"/>
+    </step>
 
 </workflowGraph>
