@@ -40,14 +40,22 @@
       <paramValue name="countMismatches">false</paramValue>
     </subgraph>
 
+    <step name="makeExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeExonJunctionCall">
+      <paramValue name="uniqueFile">$$uniqueFile$$</paramValue>
+      <paramValue name="nonUniqueFile">$$nonUniqueFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/exonJunctionOutput</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
 
-    <step name="SortRUMUniqueResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation" stepLoadTypes="rumSort">
+    <step name="sortRUMUniqueResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation" stepLoadTypes="rumSort">
       <paramValue name="inputFile">$$uniqueFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
       <depends name="runRUMOnCluster"/>
     </step>
 
-    <step name="SortRUMNUResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation" stepLoadTypes="rumSort">
+    <step name="sortRUMNUResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation" stepLoadTypes="rumSort">
       <paramValue name="inputFile">$$nonUniqueFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
       <depends name="runRUMOnCluster"/>
@@ -58,7 +66,7 @@
       <paramValue name="outputUnNormFile">$$outputCoverageFile$$.Unique.UnNorm</paramValue>
       <paramValue name="outputNormFile">$$outputCoverageFile$$.Unique.Norm</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
-      <depends name="SortRUMUniqueResultByLocation"/>
+      <depends name="sortRUMUniqueResultByLocation"/>
     </step>
 
     <step name="makeNUNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
@@ -66,7 +74,7 @@
       <paramValue name="outputUnNormFile">$$outputCoverageFile$$.NU.UnNorm</paramValue>
       <paramValue name="outputNormFile">$$outputCoverageFile$$.NU.Norm</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
-      <depends name="SortRUMNUResultByLocation"/>
+      <depends name="sortRUMNUResultByLocation"/>
     </step>
 
    <step name="reformatNUCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
@@ -103,8 +111,8 @@
       <paramValue name="inputSortedFile">$$dataDir$$/RUM_Unique.all.sorted,$$dataDir$$/RUM_NU.all.sorted</paramValue>
       <paramValue name="inputGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="outputIntensityFile">$$outputIntensityFile$$</paramValue>
-      <depends name="SortRUMUniqueResultByLocation"/>
-      <depends name="SortRUMNUResultByLocation"/>
+      <depends name="sortRUMUniqueResultByLocation"/>
+      <depends name="sortRUMNUResultByLocation"/>
     </step>
 
 </workflowGraph>
