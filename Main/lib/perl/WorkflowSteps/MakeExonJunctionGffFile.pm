@@ -12,11 +12,13 @@ sub run {
 
   my $inputFile = $self->getParamValue('inputFile');
 
+  my $sampleName = $self->getParamValue('sampleName');
+
   my $outputFile =  $self->getParamValue('outputFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "makeExonJunctionGffFile  --inputFile '$workflowDataDir/$inputFile' --outputFile '$workflowDataDir/$outputFile'";
+  my $cmd = "makeExonJunctionGffFile  --inputFile '$workflowDataDir/$inputFile' --sampleName '$sampleName' --outputFile '$workflowDataDir/$outputFile'";
     
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");

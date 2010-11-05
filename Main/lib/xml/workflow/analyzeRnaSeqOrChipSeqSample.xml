@@ -40,25 +40,6 @@
       <paramValue name="countMismatches">false</paramValue>
     </subgraph>
 
-    <step name="makeExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeExonJunctionCall">
-      <paramValue name="uniqueFile">$$uniqueFile$$</paramValue>
-      <paramValue name="nonUniqueFile">$$nonUniqueFile$$</paramValue>
-      <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/exonJunctionOutput</paramValue>
-      <depends name="runRUMOnCluster"/>
-    </step>
-
-    <step name="makeExonJunctionGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeExonJunctionGffFile">
-      <paramValue name="inputFile">$$dataDir$$/exonJunctionOutput.rum</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/exonJunctionOutput.gff</paramValue>
-      <depends name="makeExonJunctionCall"/>
-    </step>
-
-    <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadIntronFeature" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$dataDir$$/exonJunctionOutput.gff</paramValue>
-      <depends name="makeExonJunctionGffFile"/>
-    </step>
 
      <step name="sortRUMUniqueResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation" stepLoadTypes="rumSort">
       <paramValue name="inputFile">$$uniqueFile$$</paramValue>
@@ -70,6 +51,28 @@
       <paramValue name="inputFile">$$nonUniqueFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
       <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="makeExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeExonJunctionCall">
+      <paramValue name="uniqueFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
+      <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/exonJunctionOutput</paramValue>
+      <depends name="sortRUMUniqueResultByLocation"/>
+      <depends name="sortRUMNUResultByLocation"/>
+    </step>
+
+    <step name="makeExonJunctionGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeExonJunctionGffFile">
+      <paramValue name="inputFile">$$dataDir$$/exonJunctionOutput.rum</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/exonJunctionOutput.gff</paramValue>
+      <depends name="makeExonJunctionCall"/>
+    </step>
+
+    <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/exonJunctionOutput.gff</paramValue>
+      <depends name="makeExonJunctionGffFile"/>
     </step>
 
     <step name="makeUniqueNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">

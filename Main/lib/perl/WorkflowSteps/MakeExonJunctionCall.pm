@@ -17,7 +17,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "make_RUM_junctions_file.pl $workflowDataDir/$uniqueFile $workflowDataDir/$nonUniqueFile $workflowDataDir/$genomeFastaFile $workflowDataDir/$geneAnnotationFile $workflowDataDir/$outputFile.rum $workflowDataDir/outputFile.bed $workflowDataDir/outputFile.highQuality.bed";
+    my $cmd = "make_RUM_junctions_file.pl $workflowDataDir/$uniqueFile $workflowDataDir/$nonUniqueFile $workflowDataDir/$genomeFastaFile $workflowDataDir/$geneAnnotationFile $workflowDataDir/$outputFile.rum $workflowDataDir/outputFile.bed $workflowDataDir/outputFile.highQuality.bed -faok";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile.rum");
