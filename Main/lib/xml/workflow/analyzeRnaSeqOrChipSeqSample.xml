@@ -49,7 +49,18 @@
       <depends name="runRUMOnCluster"/>
     </step>
 
-    <step name="sortRUMUniqueResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation" stepLoadTypes="rumSort">
+    <step name="makeExonJunctionGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeExonJunctionGffFile">
+      <paramValue name="inputFile">$$dataDir$$/exonJunctionOutput.rum</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/exonJunctionOutput.gff</paramValue>
+      <depends name="makeExonJunctionCall"/>
+    </step>
+
+    <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/exonJunctionOutput.gff</paramValue>
+      <depends name="makeExonJunctionGffFile"/>
+    </step>
+
+     <step name="sortRUMUniqueResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation" stepLoadTypes="rumSort">
       <paramValue name="inputFile">$$uniqueFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
       <depends name="runRUMOnCluster"/>
