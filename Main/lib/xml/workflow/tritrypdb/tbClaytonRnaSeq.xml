@@ -1,7 +1,6 @@
 <workflowGraph name="tbClaytonRnaSeq">
     <param name="parentDataDir"/>
     <param name="organismResourceXmlFile"/>
-    <param name="genomicSeqsFile"/>
     <param name="ssaGeneModelFile"/>
     <param name="genomicSeqsFileForSsa"/>
     <param name="transcriptSeqsFileForSsa"/>
@@ -41,7 +40,6 @@
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Paired_sequences</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Clayton_RSRC/final/Clayton_RNA_seq_trimed.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzePaired_sequences/Paired_sequences.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Paired_sequences.int</paramValue>
@@ -59,34 +57,72 @@
     </subgraph>
 
  
-    <step name="mergeIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
+    <step name="mergeMinIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
       <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt</paramValue>
-      <paramValue name="profileElementOrder">Paired_sequences.int</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">Paired_sequences.int.min</paramValue>
       <depends name="makeSeqCoverageAndIntensityDataDir"/>
       <depends name="analyzePaired_sequencesSample"/>
     </step>
 
-    <step name="makePercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
-      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt</paramValue>
-      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt.pct</paramValue>
+    <step name="mergeMaxIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">Paired_sequences.int.max</paramValue>
+      <depends name="makeSeqCoverageAndIntensityDataDir"/>
+      <depends name="analyzePaired_sequencesSample"/>
+    </step>
+
+    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt.pct</paramValue>
       <paramValue name="ties">min</paramValue>
-      <paramValue name="hasHeader">false</paramValue>
-      <depends name="mergeIntensityFiles"/>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+    </step>
+
+    <step name="makeMaxPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt.pct</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+    </step>
+
+    <step name="makeDiffProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff">
+      <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="minInputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>     
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/diffProfiles.txt</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
+    </step>
+
+    <step name="makeDiffPercentile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff">
+      <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxPercents.txt</paramValue>
+      <paramValue name="minInputFile">$$seqCoverageAndIntensityDataDir$$/minPercents.txt</paramValue>      
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/diffPercents.txt</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="makeMinPercentileProfile"/>
+      <depends name="makeMaxPercentileProfile"/>
     </step>
 
     <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
       <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Clayton_RSRC/final/config.txt</paramValue>
       <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <paramValue name="extDbRlsSpec">Tbrucei_RNASeq_Clayton_RSRC|@@Tbrucei_RNASeq_Clayton_VER@@</paramValue>
-      <depends name="makePercentileProfile"/>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="makeMinPercentileProfile"/>
+      <depends name="makeDiffProfile"/>
+      <depends name="makeDiffPercentile"/>
     </step>
 
     <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
       <paramValue name="copyFromDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Clayton_RSRC/final/config.txt</paramValue>
       <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
-      <depends name="mergeIntensityFiles"/>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
     </step>
 
 </workflowGraph>
