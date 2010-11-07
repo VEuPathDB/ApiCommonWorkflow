@@ -1,0 +1,46 @@
+<workflowGraph name="phanerochaete_chrysosporium_unknownstrain_ISF">
+      <param name="organismResourceXmlFile"/>
+      <param name="dataDir"/>
+      <param name="organismName" />
+
+      <constant name="dataDir">
+            $$dataDir$$/ISF
+      </constant>
+
+      <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+           <paramValue name="dataDir">$$dataDir$$</paramValue>
+      </step>
+
+      <!-- ISF fasta sequence -->
+      <subgraph name="$$organismName$$_RSRC" xmlFile="loadResource.xml">
+           <paramValue name="resourceName">
+              $$organismName$$_genomic_sequence_RSRC
+           </paramValue>
+
+           <paramValue name="resourceXmlFileName">
+               $$organismResourceXmlFile$$
+           </paramValue>
+
+           <paramValue name="parentDataDir">
+               $$dataDir$$
+           </paramValue>
+
+           <depends name="makeDataDir"/>
+      </subgraph>
+
+      <subgraph name="$$organismName$$_genomic_annotations_RSRC" xmlFile="loadResource.xml">
+           <paramValue name="resourceName">
+                 $$organismName$$_genomic_annotations_RSRC
+           </paramValue>
+    
+           <paramValue name="resourceXmlFileName">
+                 $$organismResourceXmlFile$$
+           </paramValue>
+    
+           <paramValue name="parentDataDir">
+                 $$dataDir$$
+           </paramValue>
+      
+           <depends name="$$organismName$$_genomic_sequence_RSRC"/>
+      </subgraph>
+</workflowGraph>
