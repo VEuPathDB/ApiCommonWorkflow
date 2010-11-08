@@ -1,0 +1,45 @@
+<workflowGraph name="aspergillus_nidulans_a4_ISF">
+      <param name="organismResourceXmlFile"/>
+      <param name="dataDir"/>
+
+      <constant name="dataDir">
+            $$dataDir$$/ISF
+      </constant>
+
+      <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+           <paramValue name="dataDir">$$dataDir$$</paramValue>
+      </step>
+
+      <!-- ISF fasta sequence -->
+      <subgraph name="aspergillus_nidulans_a4_genomic_sequence_RSRC" xmlFile="loadResource.xml">
+           <paramValue name="resourceName">
+               aspergillus_nidulans_a4_genomic_sequence_RSRC
+           </paramValue>
+
+           <paramValue name="resourceXmlFileName">
+               $$organismResourceXmlFile$$
+           </paramValue>
+
+           <paramValue name="parentDataDir">
+               $$dataDir$$
+           </paramValue>
+
+           <depends name="makeDataDir"/>
+      </subgraph>
+
+      <subgraph name="aspergillus_nidulans_a4_genomic_annotations_RSRC" xmlFile="loadResource.xml">
+           <paramValue name="resourceName">
+                 aspergillus_nidulans_a4_genomic_annotations_RSRC
+           </paramValue>
+    
+           <paramValue name="resourceXmlFileName">
+                 $$organismResourceXmlFile$$
+           </paramValue>
+    
+           <paramValue name="parentDataDir">
+                 $$dataDir$$
+           </paramValue>
+      
+           <depends name="aspergillus_nidulans_a4_genomic_sequence_RSRC"/>
+      </subgraph>
+</workflowGraph>

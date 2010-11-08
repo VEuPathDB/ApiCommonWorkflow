@@ -1,0 +1,96 @@
+<!-- ////////////////////////////////////////////////
+
+         Coccidiodes immitis (RS) workflow
+
+       ////////////////////////////////////////////////  -->
+
+<workflowGraph name="coccidiodes_immitis_rs_workflow">
+
+     <param name="projectName" />
+     <param name="projectVersion" />
+     <param name="parentDataDir" />
+     <param name="downloadSiteDataDir"/>
+
+     <param name="organismName" />
+     <param name="organismFullName" />
+     <param name="organismVersion" />
+     <param name="ncbiTaxonId" />
+     <param name="parentNcbiTaxonId" />
+
+     <!-- This isn't handled yet!! -->
+     <param name="webServicesDataDir"/>
+
+     <!-- Set up some constants -->
+     <constant name="dataDir">$$parentDataDir$$/workflow</constant>
+     <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/coccidiodes_immitis_rs</constant>
+ 
+     <!-- Location of the resource.xml file -->   
+     <constant name="organismResourceXmlFile">fungidb/coccidiodes_immitis_rs.xml</constant>
+           <!--  Constructing instead of passing
+              <param name="organismResourceXmlFile"/>
+           -->
+
+       <!-- Create the data dir -->
+       <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+             <paramValue name="dataDir">$$dataDir$$</paramValue>
+       </step>
+
+      <!-- LoadGenome -->
+      <subgraph name="coccidiodes_immitis_rs_LoadGenome" xmlFile="loadGenome.xml">
+
+            <paramValue name="parentDataDir"></paramValue>    
+            <paramValue name="organismName">coccidiodes_immitis_rs</paramValue>
+            <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genomic_sequence_RSRC|$$organismVersion$$</paramValue>
+            <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+            <paramValue name="organismSpecificISFReference">fungidb/coccidiodes_immitis_rs_workflow_ISF.xml</paramValue>
+            <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+            <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$</paramValue>
+            <paramValue name="extractProteins">true</paramValue>
+            <paramValue name="projectName">$$projectName$$</paramValue>
+     </subgraph>
+
+     <!-- Post Load Genome -->
+  <subgraph name="coccidiodes_immitis_rs_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="maxIntronSize">500</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota Fungi Basidiomycota</paramValue>
+    <paramValue name="genomeSize">18874889</paramValue>
+
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">coccidiodes_immitis_rs</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">$$organismTwoLetterAbbrev$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genomic_sequence_RSRC|$$organismVersion$$</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName"></paramValue>
+    <paramValue name="dbESTVersion"></paramValue>
+    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+    <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <depends name="coccidiodes_immitis_rs_LoadGenome"/>
+  </subgraph>
+
+
+</workflowGraph>
+
+
