@@ -17,7 +17,12 @@ sub run {
 
   my $args = "--fileName $workflowDataDir/$taxIdFile  --sourceIdRegex  '^(\\d+)' --ncbiTaxIdRegex '^\\d+\\s(\\d+)' --idSql 'select source_id, aa_sequence_id from dots.externalaasequence where taxon_id is null' --extDbRelSpec '$extDbRlsSpec'  --tableName 'DoTS::ExternalAASequence'";
 
-  $self->runPlugin($test,$undo, "ApiCommonData::Load::Plugin::UpdateTaxonFieldFromFile",$args);
+
+  if($undo){
+  }else{
+      $self->runPlugin($test,$undo, "ApiCommonData::Load::Plugin::UpdateTaxonFieldFromFile",$args);
+  }
+
 
 }
 
