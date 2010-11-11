@@ -31,9 +31,9 @@ sub _parseXmlFile {
   my ($self, $methodsXmlFile) = @_;
 
   my $xml = new XML::Simple();
-  $self->{methods} = eval{ $xml->XMLin($xmlString, SuppressEmpty => undef, KeyAttr => 'method', ForceArray=>['method']) };
+  $self->{methods} = eval{ $xml->XMLin($methodsXmlFile, SuppressEmpty => undef, KeyAttr => 'method', ForceArray=>['method']) };
 #  print STDERR Dumper $self->{data};
-  $self->error("$@\n$xmlString\n") if($@);
+  $self->error("Error parsing '$methodsXmlFile': \n$@\n") if($@);
 }
 
 
