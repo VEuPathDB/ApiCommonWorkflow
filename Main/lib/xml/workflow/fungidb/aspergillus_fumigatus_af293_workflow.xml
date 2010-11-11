@@ -1,10 +1,10 @@
 <!-- ////////////////////////////////////////////////
 
-         Saccharomyces cerevisiae (S288C)
+         Aspergillus fumigatus (AF293)
 
        ////////////////////////////////////////////////  -->
 
-<workflowGraph name="saccharomyces_cerevisiae_s288c_workflow">
+<workflowGraph name="aspergillus_nidulans_af293_workflow">
 
      <param name="projectName" />
      <param name="projectVersion" />
@@ -17,8 +17,8 @@
      <param name="ncbiTaxonId" />
      <param name="parentNcbiTaxonId" />
 
-     <!-- This isn't handled yet!! -->
-     <param name="webServicesDataDir"/>
+      <!-- This isn't handled yet!! -->
+      <param name="webServicesDataDir"/>
 
 
      <!-- Set up some constants -->
@@ -38,7 +38,7 @@
 
       <!-- LoadGenome -->
       <!-- CHECK: Can I use vars in subgraph names? -->
-<!--      <subgraph name="saccharomyces_cerevisiae_s288c_LoadGenome" xmlFile="loadGenome.xml"> -->
+<!--      <subgraph name="aspergillus_fumigatus_af293_LoadGenome" xmlFile="loadGenome.xml"> -->
       <subgraph name="$$organismName$$_LoadGenome" xmlFile="loadGenome.xml">
 
             <paramValue name="parentDataDir"></paramValue>    
@@ -54,10 +54,10 @@
 
      <!-- Post Load Genome -->
       <!-- CHECK: Can I use vars in subgraph names? -->
-<!--  <subgraph name="saccharomyces_cerevisiae_s288c_PostLoadGenome" xmlFile="postLoadGenome.xml"> -->
+<!--  <subgraph name="aspergillus_fumigatus_af293_PostLoadGenome" xmlFile="postLoadGenome.xml"> -->
   <subgraph name="$$organismName$$_PostLoadGenome" xmlFile="postLoadGenome.xml">
     <paramValue name="maxIntronSize">500</paramValue>
-    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota Fungi Ascomycota</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota Fungi Basidiomycota</paramValue>
     <paramValue name="genomeSize">18874889</paramValue>
 
     <paramValue name="projectName">$$projectName$$</paramValue>
@@ -92,35 +92,9 @@
     <paramValue name="organismSpecificESTResourcesReference"></paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-<!--    <depends name="saccharomyces_cerevisiae_s288c_LoadGenome"/> -->
+<!--    <depends name="aspergillus_fumigatus_af293_LoadGenome"/> -->
     <depends name="$$organismName$$_LoadGenome"/>
   </subgraph>
 
-       
-<!--
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
--->
- 
-    <!-- GO -->
-    <subgraph name="$$organismName$$_go_associations_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismName$$_go_associations_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-      <dependsGlobal name="GO_RSRC"/>
-      <dependsGlobal name="GO_evidence_codes_RSRC"/>
-    </subgraph>
-
-    <!-- EC Numbers -->
-    <subgraph name="$$organismName$$_ec_ids_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismName$$_ec_ids_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-      <dependsGlobal name="enzymeDB_RSRC"/>
-    </subgraph>
 
 </workflowGraph>

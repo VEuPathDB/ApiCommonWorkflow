@@ -1,6 +1,7 @@
-<workflowGraph name="neurospora_crassa_or74a_ISF">
+<workflowGraph name="candida_albicans_sc5314_ISF">
       <param name="organismResourceXmlFile"/>
       <param name="dataDir"/>
+      <param name="organismName" />
 
       <constant name="dataDir">
             $$dataDir$$/ISF
@@ -11,10 +12,9 @@
       </step>
 
       <!-- ISF fasta sequence -->
-      <subgraph name="neurospora_crassa_or74a_genomic_sequence_RSRC" xmlFile="loadResource.xml">
-
+      <subgraph name="$$organismName$$_genomic_sequence_RSRC" xmlFile="loadResource.xml">
            <paramValue name="resourceName">
-                   neurospora_crassa_or74a_genomic_sequence_RSRC
+               $$organismName$$_genomic_sequence_RSRC
            </paramValue>
 
            <paramValue name="resourceXmlFileName">
@@ -28,9 +28,10 @@
            <depends name="makeDataDir"/>
       </subgraph>
 
-      <subgraph name="neurospora_crassa_or74a_genomic_annotations_RSRC" xmlFile="loadResource.xml">
-
-           <paramValue name="resourceName">neurospora_crassa_or74a_genomic_annotations_RSRC</paramValue>
+      <subgraph name="$$organismName$$_genomic_annotations_RSRC" xmlFile="loadResource.xml">
+           <paramValue name="resourceName">
+                 $$organismName$$_genomic_annotations_RSRC
+           </paramValue>
     
            <paramValue name="resourceXmlFileName">
                  $$organismResourceXmlFile$$
@@ -40,6 +41,6 @@
                  $$dataDir$$
            </paramValue>
       
-           <depends name="neurospora_crassa_or74a_genomic_sequence_RSRC"/>
+           <depends name="$$organismName$$_genomic_sequence_RSRC"/>
       </subgraph>
 </workflowGraph>
