@@ -18,6 +18,8 @@ sub run {
 
       $self->runCmd(0, "echo Doing nothing for undo");
 
+      # why don't we delete the dir on undo?  -steve
+
   }else{
 
       $self->runCmd(0, "mkdir -p $baseDir/$apiSiteFilesDir");
