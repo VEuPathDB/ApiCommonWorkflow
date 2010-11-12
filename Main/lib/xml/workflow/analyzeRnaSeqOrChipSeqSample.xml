@@ -40,6 +40,14 @@
       <paramValue name="countMismatches">false</paramValue>
     </subgraph>
 
+    <step name="document-RnaSeqOrChipSeqRum"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">rum_rna_or_chip_seq_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
 
      <step name="sortRUMUniqueResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation" stepLoadTypes="rumSort">
       <paramValue name="inputFile">$$uniqueFile$$</paramValue>
@@ -61,6 +69,14 @@
       <paramValue name="outputFile">$$dataDir$$/exonJunctionOutput</paramValue>
       <depends name="sortRUMUniqueResultByLocation"/>
       <depends name="sortRUMNUResultByLocation"/>
+    </step>
+
+    <step name="document-RnaSeqOrChipExonJunctionCall"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">exon_junction_rna_or_chip_seq_MTHD</paramValue>
+      <paramValue name="version"></paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeExonJunctionCall"/>
     </step>
 
     <step name="makeExonJunctionGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeExonJunctionGffFile">
@@ -87,12 +103,28 @@
       <depends name="sortRUMUniqueResultByLocation"/>
     </step>
 
+    <step name="document-makeUniqueNormalizedCoverageFile"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">make_unique_norm_cov_file_MTHD</paramValue>
+      <paramValue name="version"></paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeUniqueNormalizedCoverageFile"/>
+    </step>
+
     <step name="makeNUNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
       <paramValue name="inputFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
       <paramValue name="outputUnNormFile">$$outputCoverageFile$$.NU.UnNorm</paramValue>
       <paramValue name="outputNormFile">$$outputCoverageFile$$.NU.Norm</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
       <depends name="sortRUMNUResultByLocation"/>
+    </step>
+
+    <step name="document-makeNUNormalizedCoverageFile"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">make_non_unique_norm_cov_file_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeNUNormalizedCoverageFile"/>
     </step>
 
    <step name="reformatNUCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
@@ -131,6 +163,14 @@
       <paramValue name="outputIntensityFile">$$outputIntensityFile$$</paramValue>
       <depends name="sortRUMUniqueResultByLocation"/>
       <depends name="sortRUMNUResultByLocation"/>
+    </step>
+
+    <step name="document-makeIntensityFile"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">make_rna_or_chip_seq_intensity_file_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeIntensityFile"/>
     </step>
 
 </workflowGraph>
