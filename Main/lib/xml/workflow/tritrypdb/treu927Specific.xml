@@ -1,4 +1,4 @@
-<workflowGraph name="treu927SpecificAnalysis">
+<workflowGraph name="tbrucei927SpecificAnalysis">
   <param name="projectName"/>
   <param name="projectVersion"/>
   <param name="parentDataDir"/>
@@ -6,12 +6,12 @@
   <param name="downloadSiteDataDir"/>
   <param name="webServicesDataDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/Treu927Specific</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Treu927</constant>
-  <constant name="genomicSeqsFile">$$parentDataDir$$/Treu927LoadGenome/genomicSeqs.fsa</constant>
-  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/Treu927LoadGenome/genomicSeqsForSsa.fsa</constant>
-  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/Treu927LoadGenome/transcriptSeqsForSsa.fsa</constant>
-  <constant name="ssaGeneModelFile">$$parentDataDir$$/Treu927LoadGenome/geneModelForSsa.txt</constant>
+  <constant name="dataDir">$$parentDataDir$$/Tbrucei927Specific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Tbrucei927</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/Tbrucei927LoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/Tbrucei927LoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/Tbrucei927LoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/Tbrucei927LoadGenome/geneModelForSsa.txt</constant>
 
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
@@ -21,25 +21,25 @@
     <subgraph name="GenbankBACEnds_loadAndAnalyze" xmlFile="loadDnaSeqAndAlignToGenome.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
-      <paramValue name="organismName">Treu927</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">Treu927_chromosomes_RSRC|@@Treu927_chromosomes_VER@@</paramValue>
+      <paramValue name="organismName">Tbrucei927</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Tbrucei927_chromosomes_RSRC|@@Tbrucei927_chromosomes_VER@@</paramValue>
       <paramValue name="maxIntronSize">100</paramValue>
       <paramValue name="ncbiTaxonId">185431</paramValue>
       <paramValue name="BACEndsExtDbRlsSpec">Tbrucei_Genbank_BACEnds_RSRC|@@Tbrucei_Genbank_BACEnds_VER@@</paramValue>
       <paramValue name="BACEndsResourceName">Tbrucei_Genbank_BACEnds_RSRC</paramValue>
       <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
-      <paramValue name="genomicSeqsFile">$$parentDataDir$$/Treu927LoadGenome/genomicSeqs.fsa</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/Treu927LoadGenome/genomicSeqs</paramValue>
+      <paramValue name="genomicSeqsFile">$$parentDataDir$$/Tbrucei927LoadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/Tbrucei927LoadGenome/genomicSeqs</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-  <subgraph name="miscResources" xmlFile="tritrypdb/treu927MiscResource.xml">
+  <subgraph name="miscResources" xmlFile="tritrypdb/tbrucei927MiscResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
-  <subgraph name="rnaSeqAndChipSeq" xmlFile="tritrypdb/treu927RnaSeqAndChipSeq.xml">
+  <subgraph name="rnaSeqAndChipSeq" xmlFile="tritrypdb/tbrucei927RnaSeqAndChipSeq.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
@@ -50,7 +50,7 @@
     <depends name="makeDataDir"/>
   </subgraph>
 
-  <subgraph name="dbxRefsResources" xmlFile="tritrypdb/treu927DbxRefsResource.xml">
+  <subgraph name="dbxRefsResources" xmlFile="tritrypdb/tbrucei927DbxRefsResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/TbruceiEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
@@ -58,7 +58,7 @@
     <depends name="tbrucei_CorrectGeneAliases_RSRC"/>
   </subgraph>
 
-    <subgraph name="arrayResources" xmlFile="tritrypdb/treu927ArrayStudies.xml">
+    <subgraph name="arrayResources" xmlFile="tritrypdb/tbrucei927ArrayStudies.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
@@ -93,8 +93,8 @@
       <depends name="SageTagArrayDesign_RSRC"/>
     </subgraph>
 
-    <subgraph name="GOAssociations_Treu927_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">GOAssociations_Treu927_RSRC</paramValue>
+    <subgraph name="GOAssociations_Tbrucei927_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">GOAssociations_Tbrucei927_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -102,22 +102,22 @@
       <dependsGlobal name="GO_evidence_codes_RSRC"/>
     </subgraph>
 
-    <subgraph name="Treu927_Comments_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Treu927_Comments_RSRC</paramValue>
+    <subgraph name="Tbrucei927_Comments_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei927_Comments_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="Treu927_GeneName_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Treu927_GeneName_RSRC</paramValue>
+    <subgraph name="Tbrucei927_GeneName_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei927_GeneName_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="Treu927_ECNumbers_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Treu927_ECNumbers_RSRC</paramValue>
+    <subgraph name="Tbrucei927_ECNumbers_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei927_ECNumbers_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
