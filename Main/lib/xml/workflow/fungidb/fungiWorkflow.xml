@@ -27,195 +27,1322 @@
 
 
 
-
-
-
-
-
-
-
-
-
   <!-- ////////////////////////////////////////////////
 
          Aspergillus fumigatus (AF293)
 
        ////////////////////////////////////////////////  -->
 
+  <subgraph name="aspergillus_fumigatus_af293_LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/aspergillus_fumigatus_af293.xml</paramValue>
+    <paramValue name="organismName">aspergillus_fumigatus_af293</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_fumigatus_af293_genome_sequence_RSRC|@@aspergillus_fumigatus_af293_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="organismSpecificISFReference">fungidb/aspergillus_fumigatus_af293_workflow_ISF.xml</paramValue>
+    <paramValue name="ncbiTaxonId">@@aspergillus_fumigatus_af293_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="aspergillus_fumigatus_af293_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">aspergillus_fumigatus_af293</paramValue>
+    <paramValue name="organismFullName">@@aspergillus_fumigatus_af293_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/aspergillus_fumigatus_af293.xml</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_fumigatus_af293_genome_sequence_RSRC|@@aspergillus_fumigatus_af293_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="aspergillus_fumigatus_af293_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="aspergillus_fumigatus_af293_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">aspergillus_fumigatus_af293</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/aspergillus_fumigatus_af293.xml</paramValue>
+    <paramValue name="organismFullName">@@aspergillus_fumigatus_af293_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">@@aspergillus_fumigatus_af293_ORGANISM_ABBREVIATION</paramValue>
+    <paramValue name="ncbiTaxonId">@@aspergillus_fumigatus_af293_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@aspergillus_fumigatus_af293_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_fumigatus_af293_genome_sequence_RSRC|@@aspergillus_fumigatus_af293_GENOME_SEQUENCE_VER@@</paramValue>
+   
+    <!-- FungiDB: skip ieDB -->
+    <paramValue name="loadEiptope">false</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+
+    <!-- dbEST -->
+    <paramValue name="dbESTResourceName">aspergillus_fumigatus_af293_dbest_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@aspergillus_fumigatus_af293_DBEST_VER@@</paramValue>
+
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">@@aspergillus_fumigatus_af293_TAXON_HIERARCHY_FOR_BLASTX@@</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="genomeSize">@@aspergillus_fumigatus_af293_GENOME_SIZE@@</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+
+    <!-- Organism-specific EST -->
+    <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">fungidb/aspergillus_fumigatus_af293_ESTResource.xml</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+
+    <!-- Mass Spec -->
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">fungidb/aspergillus_fumigatus_af293_MassSpecResource.xml</paramValue>
+
+    <depends name="aspergillus_fumigatus_af293_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="aspergillus_fumigatus_af293_workflow" xmlFile="fungidb/aspergillus_fumigatus_af293_workflow.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/aspergillus_fumigatus_af293.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="aspergillus_fumigatus_af293_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="aspergillus_fumigatus_af293_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">aspergillus_fumigatus_af293</paramValue>
+    <paramValue name="organismFullName">@@aspergillus_fumigatus_af293_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@aspergillus_fumigatus_af293_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@aspergillus_fumigatus_af293_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@aspergillus_fumigatus_af293_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">aspergillus_fumigatus_af293_dbest_RSRC|@@aspergillus_fumigatus_af293_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_fumigatus_af293_genome_sequence_RSRC|@@aspergillus_fumigatus_af293_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="aspergillus_fumigatus_af293_PostLoadGenome"/>
+    <depends name="aspergillus_fumigatus_af293_MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+    <step name="aspergillus_fumigatus_af293_MitoMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_fumigatus_af293_Mito/fasta</paramValue>
+    </step>
+
+    <step name="aspergillus_fumigatus_af293_MitoMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_fumigatus_af293_Mito/tabular</paramValue>
+    </step>
+
+    <step name="aspergillus_fumigatus_af293_MitoMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_fumigatus_af293_Mito/gff</paramValue>
+    </step>
+
+    <step name="aspergillus_fumigatus_af293_MitoMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_fumigatus_af293_Mito/transcriptExpression</paramValue>
+    </step>
+
+  <subgraph name="aspergillus_fumigatus_af293_MitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">aspergillus_fumigatus_af293_Mito</paramValue>
+    <paramValue name="organismFullName">@@aspergillus_fumigatus_af293_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@aspergillus_fumigatus_af293_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@aspergillus_fumigatus_af293_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@aspergillus_fumigatus_af293_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">aspergillus_fumigatus_af293_dbest_RSRC|@@aspergillus_fumigatus_af293_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_fumigatus_af293_genome_sequence_RSRC|@@aspergillus_fumigatus_af293_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="aspergillus_fumigatus_af293_PostLoadGenome"/>
+    <depends name="aspergillus_fumigatus_af293_MakeAndMaskTopLevelGenome"/>
+    <depends name="aspergillus_fumigatus_af293_MitoMakeDownloadSiteFastaDataDir"/>
+    <depends name="aspergillus_fumigatus_af293_MitoMakeDownloadSiteTabularDataDir"/>
+    <depends name="aspergillus_fumigatus_af293_MitoMakeDownloadSiteGffDataDir"/>
+    <depends name="aspergillus_fumigatus_af293_MitoMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
 
 
 
 
-<!-- ////////////////////////////////////////////////
+  <!-- ////////////////////////////////////////////////
 
          Aspergillus nidulans (A4)
-READY
+
        ////////////////////////////////////////////////  -->
+
+  <subgraph name="aspergillus_nidulans_a4_LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/aspergillus_nidulans_a4.xml</paramValue>
+    <paramValue name="organismName">aspergillus_nidulans_a4</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_nidulans_a4_genome_sequence_RSRC|@@aspergillus_nidulans_a4_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="organismSpecificISFReference">fungidb/aspergillus_nidulans_a4_workflow_ISF.xml</paramValue>
+    <paramValue name="ncbiTaxonId">@@aspergillus_nidulans_a4_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="aspergillus_nidulans_a4_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">aspergillus_nidulans_a4</paramValue>
+    <paramValue name="organismFullName">@@aspergillus_nidulans_a4_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/aspergillus_nidulans_a4.xml</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_nidulans_a4_genome_sequence_RSRC|@@aspergillus_nidulans_a4_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="aspergillus_nidulans_a4_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="aspergillus_nidulans_a4_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">aspergillus_nidulans_a4</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/aspergillus_nidulans_a4.xml</paramValue>
+    <paramValue name="organismFullName">@@aspergillus_nidulans_a4_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">@@aspergillus_nidulans_a4_ORGANISM_ABBREVIATION</paramValue>
+    <paramValue name="ncbiTaxonId">@@aspergillus_nidulans_a4_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@aspergillus_nidulans_a4_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_nidulans_a4_genome_sequence_RSRC|@@aspergillus_nidulans_a4_GENOME_SEQUENCE_VER@@</paramValue>
+   
+    <!-- FungiDB: skip ieDB -->
+    <paramValue name="loadEiptope">false</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+
+    <!-- dbEST -->
+    <paramValue name="dbESTResourceName">aspergillus_nidulans_a4_dbest_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@aspergillus_nidulans_a4_DBEST_VER@@</paramValue>
+
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">@@aspergillus_nidulans_a4_TAXON_HIERARCHY_FOR_BLASTX@@</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="genomeSize">@@aspergillus_nidulans_a4_GENOME_SIZE@@</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+
+    <!-- Organism-specific EST -->
+    <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">fungidb/aspergillus_nidulans_a4_ESTResource.xml</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+
+    <!-- Mass Spec -->
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">fungidb/aspergillus_nidulans_a4_MassSpecResource.xml</paramValue>
+
+    <depends name="aspergillus_nidulans_a4_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="aspergillus_nidulans_a4_workflow" xmlFile="fungidb/aspergillus_nidulans_a4_workflow.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/aspergillus_nidulans_a4.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="aspergillus_nidulans_a4_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="aspergillus_nidulans_a4_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">aspergillus_nidulans_a4</paramValue>
+    <paramValue name="organismFullName">@@aspergillus_nidulans_a4_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@aspergillus_nidulans_a4_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@aspergillus_nidulans_a4_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@aspergillus_nidulans_a4_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">aspergillus_nidulans_a4_dbest_RSRC|@@aspergillus_nidulans_a4_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_nidulans_a4_genome_sequence_RSRC|@@aspergillus_nidulans_a4_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="aspergillus_nidulans_a4_PostLoadGenome"/>
+    <depends name="aspergillus_nidulans_a4_MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+    <step name="aspergillus_nidulans_a4_MitoMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_nidulans_a4_Mito/fasta</paramValue>
+    </step>
+
+    <step name="aspergillus_nidulans_a4_MitoMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_nidulans_a4_Mito/tabular</paramValue>
+    </step>
+
+    <step name="aspergillus_nidulans_a4_MitoMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_nidulans_a4_Mito/gff</paramValue>
+    </step>
+
+    <step name="aspergillus_nidulans_a4_MitoMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_nidulans_a4_Mito/transcriptExpression</paramValue>
+    </step>
+
+  <subgraph name="aspergillus_nidulans_a4_MitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">aspergillus_nidulans_a4_Mito</paramValue>
+    <paramValue name="organismFullName">@@aspergillus_nidulans_a4_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@aspergillus_nidulans_a4_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@aspergillus_nidulans_a4_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@aspergillus_nidulans_a4_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">aspergillus_nidulans_a4_dbest_RSRC|@@aspergillus_nidulans_a4_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_nidulans_a4_genome_sequence_RSRC|@@aspergillus_nidulans_a4_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="aspergillus_nidulans_a4_PostLoadGenome"/>
+    <depends name="aspergillus_nidulans_a4_MakeAndMaskTopLevelGenome"/>
+    <depends name="aspergillus_nidulans_a4_MitoMakeDownloadSiteFastaDataDir"/>
+    <depends name="aspergillus_nidulans_a4_MitoMakeDownloadSiteTabularDataDir"/>
+    <depends name="aspergillus_nidulans_a4_MitoMakeDownloadSiteGffDataDir"/>
+    <depends name="aspergillus_nidulans_a4_MitoMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
+
 
 
 
   <!-- ////////////////////////////////////////////////
 
          Candida albicans (SC5314)
-CLOSE
+
        ////////////////////////////////////////////////  -->
-<!--
-   <subgraph name="candida_albicans_sc5314_workflow" xmlFile="fungidb/candida_albicans_sc5314_workflow.xml">
 
-        <paramValue name="organismName">candida_albicans_sc5314</paramValue>
-        <paramValue name="organismFullName">@@candida_albicans_sc5314_OrganismFullName@@</paramValue>
-        <paramValue name="organismVersion">@@candida_albicans_sc5314_VER@@</paramValue>
-        <paramValue name="ncbiTaxonId">@@candida_albicans_sc5314_NCBI_TAXON_ID@@</paramValue>
-        <paramValue name="parentNcbiTaxonId">@@candida_albicans_sc5314_PARENT_NCBI_TAXON_ID@@</paramValue>
-        <paramValue name="organismTwoLetterAbbrev">@@candida_albicans_sc5314_OrganismAbbreviation@@</paramValue>
-
-        <paramValue name="projectName">$$projectName$$</paramValue>
-        <paramValue name="webServicesDataDir">$$projectName$$</paramValue>
-        <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-        <paramValue name="parentDataDir"></paramValue>
-        <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
-
-        <depends name="common" />
-        <dependsGlobal name="taxonomy_RSRC" /> 
-        <dependsGlobal name="SO_RSRC" />
+  <subgraph name="candida_albicans_sc5314_LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/candida_albicans_sc5314.xml</paramValue>
+    <paramValue name="organismName">candida_albicans_sc5314</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="genomeExtDbRlsSpec">candida_albicans_sc5314_genome_sequence_RSRC|@@candida_albicans_sc5314_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="organismSpecificISFReference">fungidb/candida_albicans_sc5314_workflow_ISF.xml</paramValue>
+    <paramValue name="ncbiTaxonId">@@candida_albicans_sc5314_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
   </subgraph>
--->
+
+  <subgraph name="candida_albicans_sc5314_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">candida_albicans_sc5314</paramValue>
+    <paramValue name="organismFullName">@@candida_albicans_sc5314_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/candida_albicans_sc5314.xml</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">candida_albicans_sc5314_genome_sequence_RSRC|@@candida_albicans_sc5314_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="candida_albicans_sc5314_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="candida_albicans_sc5314_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">candida_albicans_sc5314</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/candida_albicans_sc5314.xml</paramValue>
+    <paramValue name="organismFullName">@@candida_albicans_sc5314_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">@@candida_albicans_sc5314_ORGANISM_ABBREVIATION</paramValue>
+    <paramValue name="ncbiTaxonId">@@candida_albicans_sc5314_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@candida_albicans_sc5314_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">candida_albicans_sc5314_genome_sequence_RSRC|@@candida_albicans_sc5314_GENOME_SEQUENCE_VER@@</paramValue>
+   
+    <!-- FungiDB: skip ieDB -->
+    <paramValue name="loadEiptope">false</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+
+    <!-- dbEST -->
+    <paramValue name="dbESTResourceName">candida_albicans_sc5314_dbest_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@candida_albicans_sc5314_DBEST_VER@@</paramValue>
+
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">@@candida_albicans_sc5314_TAXON_HIERARCHY_FOR_BLASTX@@</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="genomeSize">@@candida_albicans_sc5314_GENOME_SIZE@@</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+
+    <!-- Organism-specific EST -->
+    <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">fungidb/candida_albicans_sc5314_ESTResource.xml</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+
+    <!-- Mass Spec -->
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">fungidb/candida_albicans_sc5314_MassSpecResource.xml</paramValue>
+
+    <depends name="candida_albicans_sc5314_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="candida_albicans_sc5314_workflow" xmlFile="fungidb/candida_albicans_sc5314_workflow.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/candida_albicans_sc5314.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="candida_albicans_sc5314_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="candida_albicans_sc5314_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">candida_albicans_sc5314</paramValue>
+    <paramValue name="organismFullName">@@candida_albicans_sc5314_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@candida_albicans_sc5314_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@candida_albicans_sc5314_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@candida_albicans_sc5314_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">candida_albicans_sc5314_dbest_RSRC|@@candida_albicans_sc5314_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">candida_albicans_sc5314_genome_sequence_RSRC|@@candida_albicans_sc5314_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="candida_albicans_sc5314_PostLoadGenome"/>
+    <depends name="candida_albicans_sc5314_MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+    <step name="candida_albicans_sc5314_MitoMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/candida_albicans_sc5314_Mito/fasta</paramValue>
+    </step>
+
+    <step name="candida_albicans_sc5314_MitoMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/candida_albicans_sc5314_Mito/tabular</paramValue>
+    </step>
+
+    <step name="candida_albicans_sc5314_MitoMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/candida_albicans_sc5314_Mito/gff</paramValue>
+    </step>
+
+    <step name="candida_albicans_sc5314_MitoMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/candida_albicans_sc5314_Mito/transcriptExpression</paramValue>
+    </step>
+
+  <subgraph name="candida_albicans_sc5314_MitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">candida_albicans_sc5314_Mito</paramValue>
+    <paramValue name="organismFullName">@@candida_albicans_sc5314_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@candida_albicans_sc5314_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@candida_albicans_sc5314_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@candida_albicans_sc5314_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">candida_albicans_sc5314_dbest_RSRC|@@candida_albicans_sc5314_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">candida_albicans_sc5314_genome_sequence_RSRC|@@candida_albicans_sc5314_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="candida_albicans_sc5314_PostLoadGenome"/>
+    <depends name="candida_albicans_sc5314_MakeAndMaskTopLevelGenome"/>
+    <depends name="candida_albicans_sc5314_MitoMakeDownloadSiteFastaDataDir"/>
+    <depends name="candida_albicans_sc5314_MitoMakeDownloadSiteTabularDataDir"/>
+    <depends name="candida_albicans_sc5314_MitoMakeDownloadSiteGffDataDir"/>
+    <depends name="candida_albicans_sc5314_MitoMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
+
+
+
 
   <!-- ////////////////////////////////////////////////
 
          Coccidiodes immitis (RS)
-READY
+
        ////////////////////////////////////////////////  -->
 
-   <subgraph name="coccidiodes_immitis_rs_workflow" xmlFile="fungidb/coccidiodes_immitis_rs_workflow.xml">
-
-        <paramValue name="organismName">coccidiodes_immitis_rs</paramValue>
-        <paramValue name="organismFullName">@@coccidiodes_immitis_rs_OrganismFullName@@</paramValue>
-        <paramValue name="organismVersion">@@coccidiodes_immitis_rs_VER@@</paramValue>
-        <paramValue name="ncbiTaxonId">@@coccidiodes_immitis_rs_NCBI_TAXON_ID@@</paramValue>
-        <paramValue name="parentNcbiTaxonId">@@coccidiodes_immitis_rs_PARENT_NCBI_TAXON_ID@@</paramValue>
-        <paramValue name="organismTwoLetterAbbrev">@@coccidiodes_immitis_rs_OrganismAbbreviation@@</paramValue>
-
-        <paramValue name="projectName">$$projectName$$</paramValue>
-        <paramValue name="webServicesDataDir">$$projectName$$</paramValue>
-        <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-        <paramValue name="parentDataDir"></paramValue>
-        <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
-
-        <depends name="common" />
-        <dependsGlobal name="taxonomy_RSRC" /> 
-        <dependsGlobal name="SO_RSRC" />
+  <subgraph name="coccidiodes_immitis_rs_LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/coccidiodes_immitis_rs.xml</paramValue>
+    <paramValue name="organismName">coccidiodes_immitis_rs</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genome_sequence_RSRC|@@coccidiodes_immitis_rs_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="organismSpecificISFReference">fungidb/coccidiodes_immitis_rs_workflow_ISF.xml</paramValue>
+    <paramValue name="ncbiTaxonId">@@coccidiodes_immitis_rs_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
   </subgraph>
+
+  <subgraph name="coccidiodes_immitis_rs_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">coccidiodes_immitis_rs</paramValue>
+    <paramValue name="organismFullName">@@coccidiodes_immitis_rs_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/coccidiodes_immitis_rs.xml</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genome_sequence_RSRC|@@coccidiodes_immitis_rs_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="coccidiodes_immitis_rs_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="coccidiodes_immitis_rs_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">coccidiodes_immitis_rs</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/coccidiodes_immitis_rs.xml</paramValue>
+    <paramValue name="organismFullName">@@coccidiodes_immitis_rs_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">@@coccidiodes_immitis_rs_ORGANISM_ABBREVIATION</paramValue>
+    <paramValue name="ncbiTaxonId">@@coccidiodes_immitis_rs_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@coccidiodes_immitis_rs_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genome_sequence_RSRC|@@coccidiodes_immitis_rs_GENOME_SEQUENCE_VER@@</paramValue>
+   
+    <!-- FungiDB: skip ieDB -->
+    <paramValue name="loadEiptope">false</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+
+    <!-- dbEST -->
+    <paramValue name="dbESTResourceName">coccidiodes_immitis_rs_dbest_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@coccidiodes_immitis_rs_DBEST_VER@@</paramValue>
+
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">@@coccidiodes_immitis_rs_TAXON_HIERARCHY_FOR_BLASTX@@</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="genomeSize">@@coccidiodes_immitis_rs_GENOME_SIZE@@</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+
+    <!-- Organism-specific EST -->
+    <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">fungidb/coccidiodes_immitis_rs_ESTResource.xml</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+
+    <!-- Mass Spec -->
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">fungidb/coccidiodes_immitis_rs_MassSpecResource.xml</paramValue>
+
+    <depends name="coccidiodes_immitis_rs_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="coccidiodes_immitis_rs_workflow" xmlFile="fungidb/coccidiodes_immitis_rs_workflow.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/coccidiodes_immitis_rs.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="coccidiodes_immitis_rs_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="coccidiodes_immitis_rs_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">coccidiodes_immitis_rs</paramValue>
+    <paramValue name="organismFullName">@@coccidiodes_immitis_rs_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@coccidiodes_immitis_rs_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@coccidiodes_immitis_rs_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@coccidiodes_immitis_rs_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">coccidiodes_immitis_rs_dbest_RSRC|@@coccidiodes_immitis_rs_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genome_sequence_RSRC|@@coccidiodes_immitis_rs_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="coccidiodes_immitis_rs_PostLoadGenome"/>
+    <depends name="coccidiodes_immitis_rs_MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+    <step name="coccidiodes_immitis_rs_MitoMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/coccidiodes_immitis_rs_Mito/fasta</paramValue>
+    </step>
+
+    <step name="coccidiodes_immitis_rs_MitoMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/coccidiodes_immitis_rs_Mito/tabular</paramValue>
+    </step>
+
+    <step name="coccidiodes_immitis_rs_MitoMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/coccidiodes_immitis_rs_Mito/gff</paramValue>
+    </step>
+
+    <step name="coccidiodes_immitis_rs_MitoMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/coccidiodes_immitis_rs_Mito/transcriptExpression</paramValue>
+    </step>
+
+  <subgraph name="coccidiodes_immitis_rs_MitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">coccidiodes_immitis_rs_Mito</paramValue>
+    <paramValue name="organismFullName">@@coccidiodes_immitis_rs_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@coccidiodes_immitis_rs_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@coccidiodes_immitis_rs_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@coccidiodes_immitis_rs_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">coccidiodes_immitis_rs_dbest_RSRC|@@coccidiodes_immitis_rs_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genome_sequence_RSRC|@@coccidiodes_immitis_rs_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="coccidiodes_immitis_rs_PostLoadGenome"/>
+    <depends name="coccidiodes_immitis_rs_MakeAndMaskTopLevelGenome"/>
+    <depends name="coccidiodes_immitis_rs_MitoMakeDownloadSiteFastaDataDir"/>
+    <depends name="coccidiodes_immitis_rs_MitoMakeDownloadSiteTabularDataDir"/>
+    <depends name="coccidiodes_immitis_rs_MitoMakeDownloadSiteGffDataDir"/>
+    <depends name="coccidiodes_immitis_rs_MitoMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
+
+
 
 
   <!-- ////////////////////////////////////////////////
 
-         Cryptococcus neoformans var. grubii H99
-READY
+         Cryptococcus neoformans var. grubii (H99)
+
        ////////////////////////////////////////////////  -->
 
-   <subgraph name="cryptococcus_neoformans_grubii_h99_workflow" xmlFile="fungidb/cryptococcus_neoformans_grubii_h99_workflow.xml">
-
-        <paramValue name="organismName">cryptococcus_neoformans_grubii_h99</paramValue>
-        <paramValue name="organismFullName">@@cryptococcus_neoformans_grubii_h99_OrganismFullName@@</paramValue>
-        <paramValue name="organismVersion">@@cryptococcus_neoformans_grubii_h99_VER@@</paramValue>
-        <paramValue name="ncbiTaxonId">@@cryptococcus_neoformans_grubii_h99_NCBI_TAXON_ID@@</paramValue>
-        <paramValue name="parentNcbiTaxonId">@@cryptococcus_neoformans_grubii_h99_PARENT_NCBI_TAXON_ID@@</paramValue>
-        <paramValue name="organismTwoLetterAbbrev">@@cryptococcus_neoformans_grubii_h99_OrganismAbbreviation@@</paramValue>
-
-        <paramValue name="projectName">$$projectName$$</paramValue>
-        <paramValue name="webServicesDataDir">$$projectName$$</paramValue>
-        <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-        <paramValue name="parentDataDir"></paramValue>
-        <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
-
-        <depends name="common" />
-        <dependsGlobal name="taxonomy_RSRC" /> 
-        <dependsGlobal name="SO_RSRC" />
+  <subgraph name="cryptococcus_neoformans_grubii_h99_LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/cryptococcus_neoformans_grubii_h99.xml</paramValue>
+    <paramValue name="organismName">cryptococcus_neoformans_grubii_h99</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="genomeExtDbRlsSpec">cryptococcus_neoformans_grubii_h99_genome_sequence_RSRC|@@cryptococcus_neoformans_grubii_h99_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="organismSpecificISFReference">fungidb/cryptococcus_neoformans_grubii_h99_workflow_ISF.xml</paramValue>
+    <paramValue name="ncbiTaxonId">@@cryptococcus_neoformans_grubii_h99_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
   </subgraph>
+
+  <subgraph name="cryptococcus_neoformans_grubii_h99_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">cryptococcus_neoformans_grubii_h99</paramValue>
+    <paramValue name="organismFullName">@@cryptococcus_neoformans_grubii_h99_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/cryptococcus_neoformans_grubii_h99.xml</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">cryptococcus_neoformans_grubii_h99_genome_sequence_RSRC|@@cryptococcus_neoformans_grubii_h99_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="cryptococcus_neoformans_grubii_h99_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="cryptococcus_neoformans_grubii_h99_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">cryptococcus_neoformans_grubii_h99</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/cryptococcus_neoformans_grubii_h99.xml</paramValue>
+    <paramValue name="organismFullName">@@cryptococcus_neoformans_grubii_h99_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">@@cryptococcus_neoformans_grubii_h99_ORGANISM_ABBREVIATION</paramValue>
+    <paramValue name="ncbiTaxonId">@@cryptococcus_neoformans_grubii_h99_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@cryptococcus_neoformans_grubii_h99_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">cryptococcus_neoformans_grubii_h99_genome_sequence_RSRC|@@cryptococcus_neoformans_grubii_h99_GENOME_SEQUENCE_VER@@</paramValue>
+   
+    <!-- FungiDB: skip ieDB -->
+    <paramValue name="loadEiptope">false</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+
+    <!-- dbEST -->
+    <paramValue name="dbESTResourceName">cryptococcus_neoformans_grubii_h99_dbest_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@cryptococcus_neoformans_grubii_h99_DBEST_VER@@</paramValue>
+
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">@@cryptococcus_neoformans_grubii_h99_TAXON_HIERARCHY_FOR_BLASTX@@</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="genomeSize">@@cryptococcus_neoformans_grubii_h99_GENOME_SIZE@@</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+
+    <!-- Organism-specific EST -->
+    <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">fungidb/cryptococcus_neoformans_grubii_h99_ESTResource.xml</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+
+    <!-- Mass Spec -->
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">fungidb/cryptococcus_neoformans_grubii_h99_MassSpecResource.xml</paramValue>
+
+    <depends name="cryptococcus_neoformans_grubii_h99_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="cryptococcus_neoformans_grubii_h99_workflow" xmlFile="fungidb/cryptococcus_neoformans_grubii_h99_workflow.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/cryptococcus_neoformans_grubii_h99.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="cryptococcus_neoformans_grubii_h99_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="cryptococcus_neoformans_grubii_h99_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">cryptococcus_neoformans_grubii_h99</paramValue>
+    <paramValue name="organismFullName">@@cryptococcus_neoformans_grubii_h99_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@cryptococcus_neoformans_grubii_h99_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@cryptococcus_neoformans_grubii_h99_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@cryptococcus_neoformans_grubii_h99_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">cryptococcus_neoformans_grubii_h99_dbest_RSRC|@@cryptococcus_neoformans_grubii_h99_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">cryptococcus_neoformans_grubii_h99_genome_sequence_RSRC|@@cryptococcus_neoformans_grubii_h99_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="cryptococcus_neoformans_grubii_h99_PostLoadGenome"/>
+    <depends name="cryptococcus_neoformans_grubii_h99_MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+    <step name="cryptococcus_neoformans_grubii_h99_MitoMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/cryptococcus_neoformans_grubii_h99_Mito/fasta</paramValue>
+    </step>
+
+    <step name="cryptococcus_neoformans_grubii_h99_MitoMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/cryptococcus_neoformans_grubii_h99_Mito/tabular</paramValue>
+    </step>
+
+    <step name="cryptococcus_neoformans_grubii_h99_MitoMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/cryptococcus_neoformans_grubii_h99_Mito/gff</paramValue>
+    </step>
+
+    <step name="cryptococcus_neoformans_grubii_h99_MitoMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/cryptococcus_neoformans_grubii_h99_Mito/transcriptExpression</paramValue>
+    </step>
+
+  <subgraph name="cryptococcus_neoformans_grubii_h99_MitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">cryptococcus_neoformans_grubii_h99_Mito</paramValue>
+    <paramValue name="organismFullName">@@cryptococcus_neoformans_grubii_h99_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@cryptococcus_neoformans_grubii_h99_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@cryptococcus_neoformans_grubii_h99_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@cryptococcus_neoformans_grubii_h99_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">cryptococcus_neoformans_grubii_h99_dbest_RSRC|@@cryptococcus_neoformans_grubii_h99_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">cryptococcus_neoformans_grubii_h99_genome_sequence_RSRC|@@cryptococcus_neoformans_grubii_h99_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="cryptococcus_neoformans_grubii_h99_PostLoadGenome"/>
+    <depends name="cryptococcus_neoformans_grubii_h99_MakeAndMaskTopLevelGenome"/>
+    <depends name="cryptococcus_neoformans_grubii_h99_MitoMakeDownloadSiteFastaDataDir"/>
+    <depends name="cryptococcus_neoformans_grubii_h99_MitoMakeDownloadSiteTabularDataDir"/>
+    <depends name="cryptococcus_neoformans_grubii_h99_MitoMakeDownloadSiteGffDataDir"/>
+    <depends name="cryptococcus_neoformans_grubii_h99_MitoMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
+
+
 
 
   <!-- ////////////////////////////////////////////////
 
-         Neurospora crassa OR74A
-READY
+         Neurospora crassa (OR74A)
+
        ////////////////////////////////////////////////  -->
 
-   <subgraph name="neurospora_crassa_or74a_workflow" xmlFile="fungidb/neurospora_crassa_or74a_workflow.xml">
-
-        <paramValue name="organismName">neurospora_crassa_or74a</paramValue>
-        <paramValue name="organismFullName">@@neurospora_crassa_or74a_OrganismFullName@@</paramValue>
-        <paramValue name="organismVersion">@@neurospora_crassa_or74a_VER@@</paramValue>
-        <paramValue name="ncbiTaxonId">@@neurospora_crassa_or74a_NCBI_TAXON_ID@@</paramValue>
-        <paramValue name="parentNcbiTaxonId">@@neurospora_crassa_or74a_PARENT_NCBI_TAXON_ID@@</paramValue>
-        <paramValue name="organismTwoLetterAbbrev">@@neurospora_crassa_or74a_OrganismAbbreviation@@</paramValue>
-
-        <paramValue name="projectName">$$projectName$$</paramValue>
-        <paramValue name="webServicesDataDir">$$projectName$$</paramValue>
-        <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-        <paramValue name="parentDataDir"></paramValue>
-        <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
-
-        <depends name="common" />
-        <dependsGlobal name="taxonomy_RSRC" /> 
-        <dependsGlobal name="SO_RSRC" />
+  <subgraph name="neurospora_crassa_or74a_LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/neurospora_crassa_or74a.xml</paramValue>
+    <paramValue name="organismName">neurospora_crassa_or74a</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="genomeExtDbRlsSpec">neurospora_crassa_or74a_genome_sequence_RSRC|@@neurospora_crassa_or74a_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="organismSpecificISFReference">fungidb/neurospora_crassa_or74a_workflow_ISF.xml</paramValue>
+    <paramValue name="ncbiTaxonId">@@neurospora_crassa_or74a_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
   </subgraph>
+
+  <subgraph name="neurospora_crassa_or74a_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">neurospora_crassa_or74a</paramValue>
+    <paramValue name="organismFullName">@@neurospora_crassa_or74a_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/neurospora_crassa_or74a.xml</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">neurospora_crassa_or74a_genome_sequence_RSRC|@@neurospora_crassa_or74a_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="neurospora_crassa_or74a_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="neurospora_crassa_or74a_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">neurospora_crassa_or74a</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/neurospora_crassa_or74a.xml</paramValue>
+    <paramValue name="organismFullName">@@neurospora_crassa_or74a_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">@@neurospora_crassa_or74a_ORGANISM_ABBREVIATION</paramValue>
+    <paramValue name="ncbiTaxonId">@@neurospora_crassa_or74a_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@neurospora_crassa_or74a_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">neurospora_crassa_or74a_genome_sequence_RSRC|@@neurospora_crassa_or74a_GENOME_SEQUENCE_VER@@</paramValue>
+   
+    <!-- FungiDB: skip ieDB -->
+    <paramValue name="loadEiptope">false</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+
+    <!-- dbEST -->
+    <paramValue name="dbESTResourceName">neurospora_crassa_or74a_dbest_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@neurospora_crassa_or74a_DBEST_VER@@</paramValue>
+
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">@@neurospora_crassa_or74a_TAXON_HIERARCHY_FOR_BLASTX@@</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="genomeSize">@@neurospora_crassa_or74a_GENOME_SIZE@@</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+
+    <!-- Organism-specific EST -->
+    <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">fungidb/neurospora_crassa_or74a_ESTResource.xml</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+
+    <!-- Mass Spec -->
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">fungidb/neurospora_crassa_or74a_MassSpecResource.xml</paramValue>
+
+    <depends name="neurospora_crassa_or74a_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="neurospora_crassa_or74a_workflow" xmlFile="fungidb/neurospora_crassa_or74a_workflow.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/neurospora_crassa_or74a.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="neurospora_crassa_or74a_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="neurospora_crassa_or74a_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">neurospora_crassa_or74a</paramValue>
+    <paramValue name="organismFullName">@@neurospora_crassa_or74a_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@neurospora_crassa_or74a_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@neurospora_crassa_or74a_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@neurospora_crassa_or74a_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">neurospora_crassa_or74a_dbest_RSRC|@@neurospora_crassa_or74a_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">neurospora_crassa_or74a_genome_sequence_RSRC|@@neurospora_crassa_or74a_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="neurospora_crassa_or74a_PostLoadGenome"/>
+    <depends name="neurospora_crassa_or74a_MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+    <step name="neurospora_crassa_or74a_MitoMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/neurospora_crassa_or74a_Mito/fasta</paramValue>
+    </step>
+
+    <step name="neurospora_crassa_or74a_MitoMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/neurospora_crassa_or74a_Mito/tabular</paramValue>
+    </step>
+
+    <step name="neurospora_crassa_or74a_MitoMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/neurospora_crassa_or74a_Mito/gff</paramValue>
+    </step>
+
+    <step name="neurospora_crassa_or74a_MitoMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/neurospora_crassa_or74a_Mito/transcriptExpression</paramValue>
+    </step>
+
+  <subgraph name="neurospora_crassa_or74a_MitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">neurospora_crassa_or74a_Mito</paramValue>
+    <paramValue name="organismFullName">@@neurospora_crassa_or74a_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@neurospora_crassa_or74a_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@neurospora_crassa_or74a_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@neurospora_crassa_or74a_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">neurospora_crassa_or74a_dbest_RSRC|@@neurospora_crassa_or74a_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">neurospora_crassa_or74a_genome_sequence_RSRC|@@neurospora_crassa_or74a_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="neurospora_crassa_or74a_PostLoadGenome"/>
+    <depends name="neurospora_crassa_or74a_MakeAndMaskTopLevelGenome"/>
+    <depends name="neurospora_crassa_or74a_MitoMakeDownloadSiteFastaDataDir"/>
+    <depends name="neurospora_crassa_or74a_MitoMakeDownloadSiteTabularDataDir"/>
+    <depends name="neurospora_crassa_or74a_MitoMakeDownloadSiteGffDataDir"/>
+    <depends name="neurospora_crassa_or74a_MitoMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
+
 
 
   <!-- ////////////////////////////////////////////////
 
-         Phanerochaete chrysosporium, unknown strain
-CLOSE
+         Phanerochaete chrysosporium (RP-78)
+
        ////////////////////////////////////////////////  -->
 
-<!--
-   <subgraph name="phanerochaete_chrysosporium_unknownstrain_workflow" xmlFile="fungidb/phanerochaete_chrysosporium_unknownstrain_workflow.xml">
-
-        <paramValue name="organismName">phanerochaete_chrysosporium_unknownstrain</paramValue>
-        <paramValue name="organismFullName">@@phanerochaete_chrysosporium_unknownstrain_OrganismFullName@@</paramValue>
-        <paramValue name="organismVersion">@@phanerochaete_chrysosporium_unknownstrain_VER@@</paramValue>
-        <paramValue name="ncbiTaxonId">@@phanerochaete_chrysosporium_unknownstrain_NCBI_TAXON_ID@@</paramValue>
-        <paramValue name="parentNcbiTaxonId">@@phanerochaete_chrysosporium_unknownstrain_PARENT_NCBI_TAXON_ID@@</paramValue>
-        <paramValue name="organismTwoLetterAbbrev">@@phanerochaete_chrysosporium_unknownstrain_OrganismAbbreviation@@</paramValue>
-
-        <paramValue name="projectName">$$projectName$$</paramValue>
-        <paramValue name="webServicesDataDir">$$projectName$$</paramValue>
-        <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-        <paramValue name="parentDataDir"></paramValue>
-        <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
-
-        <depends name="common" />
-        <dependsGlobal name="taxonomy_RSRC" /> 
-        <dependsGlobal name="SO_RSRC" />
+  <subgraph name="phanerochaete_chrysosporium_rp-78_LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/phanerochaete_chrysosporium_rp-78.xml</paramValue>
+    <paramValue name="organismName">phanerochaete_chrysosporium_rp-78</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="genomeExtDbRlsSpec">phanerochaete_chrysosporium_rp-78_genome_sequence_RSRC|@@phanerochaete_chrysosporium_rp-78_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="organismSpecificISFReference">fungidb/phanerochaete_chrysosporium_rp-78_workflow_ISF.xml</paramValue>
+    <paramValue name="ncbiTaxonId">@@phanerochaete_chrysosporium_rp-78_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
   </subgraph>
--->
+
+  <subgraph name="phanerochaete_chrysosporium_rp-78_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">phanerochaete_chrysosporium_rp-78</paramValue>
+    <paramValue name="organismFullName">@@phanerochaete_chrysosporium_rp-78_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/phanerochaete_chrysosporium_rp-78.xml</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">phanerochaete_chrysosporium_rp-78_genome_sequence_RSRC|@@phanerochaete_chrysosporium_rp-78_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="phanerochaete_chrysosporium_rp-78_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="phanerochaete_chrysosporium_rp-78_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">phanerochaete_chrysosporium_rp-78</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/phanerochaete_chrysosporium_rp-78.xml</paramValue>
+    <paramValue name="organismFullName">@@phanerochaete_chrysosporium_rp-78_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">@@phanerochaete_chrysosporium_rp-78_ORGANISM_ABBREVIATION</paramValue>
+    <paramValue name="ncbiTaxonId">@@phanerochaete_chrysosporium_rp-78_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@phanerochaete_chrysosporium_rp-78_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">phanerochaete_chrysosporium_rp-78_genome_sequence_RSRC|@@phanerochaete_chrysosporium_rp-78_GENOME_SEQUENCE_VER@@</paramValue>
+   
+    <!-- FungiDB: skip ieDB -->
+    <paramValue name="loadEiptope">false</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+
+    <!-- dbEST -->
+    <paramValue name="dbESTResourceName">phanerochaete_chrysosporium_rp-78_dbest_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@phanerochaete_chrysosporium_rp-78_DBEST_VER@@</paramValue>
+
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">@@phanerochaete_chrysosporium_rp-78_TAXON_HIERARCHY_FOR_BLASTX@@</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="genomeSize">@@phanerochaete_chrysosporium_rp-78_GENOME_SIZE@@</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+
+    <!-- Organism-specific EST -->
+    <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">fungidb/phanerochaete_chrysosporium_rp-78_ESTResource.xml</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+
+    <!-- Mass Spec -->
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">fungidb/phanerochaete_chrysosporium_rp-78_MassSpecResource.xml</paramValue>
+
+    <depends name="phanerochaete_chrysosporium_rp-78_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="phanerochaete_chrysosporium_rp-78_workflow" xmlFile="fungidb/phanerochaete_chrysosporium_rp-78_workflow.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/phanerochaete_chrysosporium_rp-78.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="phanerochaete_chrysosporium_rp-78_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="phanerochaete_chrysosporium_rp-78_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">phanerochaete_chrysosporium_rp-78</paramValue>
+    <paramValue name="organismFullName">@@phanerochaete_chrysosporium_rp-78_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@phanerochaete_chrysosporium_rp-78_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@phanerochaete_chrysosporium_rp-78_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@phanerochaete_chrysosporium_rp-78_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">phanerochaete_chrysosporium_rp-78_dbest_RSRC|@@phanerochaete_chrysosporium_rp-78_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">phanerochaete_chrysosporium_rp-78_genome_sequence_RSRC|@@phanerochaete_chrysosporium_rp-78_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="phanerochaete_chrysosporium_rp-78_PostLoadGenome"/>
+    <depends name="phanerochaete_chrysosporium_rp-78_MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+    <step name="phanerochaete_chrysosporium_rp-78_MitoMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/phanerochaete_chrysosporium_rp-78_Mito/fasta</paramValue>
+    </step>
+
+    <step name="phanerochaete_chrysosporium_rp-78_MitoMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/phanerochaete_chrysosporium_rp-78_Mito/tabular</paramValue>
+    </step>
+
+    <step name="phanerochaete_chrysosporium_rp-78_MitoMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/phanerochaete_chrysosporium_rp-78_Mito/gff</paramValue>
+    </step>
+
+    <step name="phanerochaete_chrysosporium_rp-78_MitoMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/phanerochaete_chrysosporium_rp-78_Mito/transcriptExpression</paramValue>
+    </step>
+
+  <subgraph name="phanerochaete_chrysosporium_rp-78_MitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">phanerochaete_chrysosporium_rp-78_Mito</paramValue>
+    <paramValue name="organismFullName">@@phanerochaete_chrysosporium_rp-78_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@phanerochaete_chrysosporium_rp-78_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@phanerochaete_chrysosporium_rp-78_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@phanerochaete_chrysosporium_rp-78_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">phanerochaete_chrysosporium_rp-78_dbest_RSRC|@@phanerochaete_chrysosporium_rp-78_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">phanerochaete_chrysosporium_rp-78_genome_sequence_RSRC|@@phanerochaete_chrysosporium_rp-78_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="phanerochaete_chrysosporium_rp-78_PostLoadGenome"/>
+    <depends name="phanerochaete_chrysosporium_rp-78_MakeAndMaskTopLevelGenome"/>
+    <depends name="phanerochaete_chrysosporium_rp-78_MitoMakeDownloadSiteFastaDataDir"/>
+    <depends name="phanerochaete_chrysosporium_rp-78_MitoMakeDownloadSiteTabularDataDir"/>
+    <depends name="phanerochaete_chrysosporium_rp-78_MitoMakeDownloadSiteGffDataDir"/>
+    <depends name="phanerochaete_chrysosporium_rp-78_MitoMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
+
+
 
 
   <!-- ////////////////////////////////////////////////
 
-         Saccharomyces cerevisiae S288C, the canonical FungiDB species
+         Saccharomyces cerevisiae (S288C)
 
        ////////////////////////////////////////////////  -->
-<!--
-   <subgraph name="saccharomyces_cerevisiae_s288c_workflow" xmlFile="fungidb/saccharomyces_cerevisiae_s288c_workflow.xml">
 
-        <paramValue name="organismName">saccharomyces_cerevisiae_s288c</paramValue>
-        <paramValue name="organismFullName">@@saccharomyces_cerevisiae_s288c_OrganismFullName@@</paramValue>
-        <paramValue name="organismVersion">@@saccharomyces_cerevisiae_s288c_VER@@</paramValue>
-        <paramValue name="ncbiTaxonId">@@saccharomyces_cerevisiae_s288c_NCBI_TAXON_ID@@</paramValue>
-        <paramValue name="parentNcbiTaxonId">@@saccharomyces_cerevisiae_s288c_PARENT_NCBI_TAXON_ID@@</paramValue>
-        <paramValue name="organismTwoLetterAbbrev">@@saccharomyces_cerevisiae_s288c_OrganismAbbreviation@@</paramValue>
+  <subgraph name="saccharomyces_cerevisiae_s288c_LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/saccharomyces_cerevisiae_s288c.xml</paramValue>
+    <paramValue name="organismName">saccharomyces_cerevisiae_s288c</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="genomeExtDbRlsSpec">saccharomyces_cerevisiae_s288c_genome_sequence_RSRC|@@saccharomyces_cerevisiae_s288c_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="organismSpecificISFReference">fungidb/saccharomyces_cerevisiae_s288c_workflow_ISF.xml</paramValue>
+    <paramValue name="ncbiTaxonId">@@saccharomyces_cerevisiae_s288c_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
 
-        <paramValue name="projectName">$$projectName$$</paramValue> 
-        <paramValue name="webServicesDataDir">$$projectName$$</paramValue>
-        <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-        <paramValue name="parentDataDir"></paramValue>
-        <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+  <subgraph name="saccharomyces_cerevisiae_s288c_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">saccharomyces_cerevisiae_s288c</paramValue>
+    <paramValue name="organismFullName">@@saccharomyces_cerevisiae_s288c_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/saccharomyces_cerevisiae_s288c.xml</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">saccharomyces_cerevisiae_s288c_genome_sequence_RSRC|@@saccharomyces_cerevisiae_s288c_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="saccharomyces_cerevisiae_s288c_LoadGenome"/>
+  </subgraph>
 
-        <depends name="common" />
-        <dependsGlobal name="taxonomy_RSRC" /> 
-        <dependsGlobal name="SO_RSRC" />
-    </subgraph>
--->
+  <subgraph name="saccharomyces_cerevisiae_s288c_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">saccharomyces_cerevisiae_s288c</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/saccharomyces_cerevisiae_s288c.xml</paramValue>
+    <paramValue name="organismFullName">@@saccharomyces_cerevisiae_s288c_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">@@saccharomyces_cerevisiae_s288c_ORGANISM_ABBREVIATION</paramValue>
+    <paramValue name="ncbiTaxonId">@@saccharomyces_cerevisiae_s288c_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@saccharomyces_cerevisiae_s288c_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">saccharomyces_cerevisiae_s288c_genome_sequence_RSRC|@@saccharomyces_cerevisiae_s288c_GENOME_SEQUENCE_VER@@</paramValue>
+   
+    <!-- FungiDB: skip ieDB -->
+    <paramValue name="loadEiptope">false</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+
+    <!-- dbEST -->
+    <paramValue name="dbESTResourceName">saccharomyces_cerevisiae_s288c_dbest_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@saccharomyces_cerevisiae_s288c_DBEST_VER@@</paramValue>
+
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">@@saccharomyces_cerevisiae_s288c_TAXON_HIERARCHY_FOR_BLASTX@@</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="genomeSize">@@saccharomyces_cerevisiae_s288c_GENOME_SIZE@@</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+
+    <!-- Organism-specific EST -->
+    <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">fungidb/saccharomyces_cerevisiae_s288c_ESTResource.xml</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+
+    <!-- Mass Spec -->
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">fungidb/saccharomyces_cerevisiae_s288c_MassSpecResource.xml</paramValue>
+
+    <depends name="saccharomyces_cerevisiae_s288c_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="saccharomyces_cerevisiae_s288c_workflow" xmlFile="fungidb/saccharomyces_cerevisiae_s288c_workflow.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/saccharomyces_cerevisiae_s288c.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="saccharomyces_cerevisiae_s288c_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="saccharomyces_cerevisiae_s288c_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">saccharomyces_cerevisiae_s288c</paramValue>
+    <paramValue name="organismFullName">@@saccharomyces_cerevisiae_s288c_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@saccharomyces_cerevisiae_s288c_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@saccharomyces_cerevisiae_s288c_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@saccharomyces_cerevisiae_s288c_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">saccharomyces_cerevisiae_s288c_dbest_RSRC|@@saccharomyces_cerevisiae_s288c_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">saccharomyces_cerevisiae_s288c_genome_sequence_RSRC|@@saccharomyces_cerevisiae_s288c_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="saccharomyces_cerevisiae_s288c_PostLoadGenome"/>
+    <depends name="saccharomyces_cerevisiae_s288c_MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+    <step name="saccharomyces_cerevisiae_s288c_MitoMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/saccharomyces_cerevisiae_s288c_Mito/fasta</paramValue>
+    </step>
+
+    <step name="saccharomyces_cerevisiae_s288c_MitoMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/saccharomyces_cerevisiae_s288c_Mito/tabular</paramValue>
+    </step>
+
+    <step name="saccharomyces_cerevisiae_s288c_MitoMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/saccharomyces_cerevisiae_s288c_Mito/gff</paramValue>
+    </step>
+
+    <step name="saccharomyces_cerevisiae_s288c_MitoMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/saccharomyces_cerevisiae_s288c_Mito/transcriptExpression</paramValue>
+    </step>
+
+  <subgraph name="saccharomyces_cerevisiae_s288c_MitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">saccharomyces_cerevisiae_s288c_Mito</paramValue>
+    <paramValue name="organismFullName">@@saccharomyces_cerevisiae_s288c_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@saccharomyces_cerevisiae_s288c_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@saccharomyces_cerevisiae_s288c_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@saccharomyces_cerevisiae_s288c_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">saccharomyces_cerevisiae_s288c_dbest_RSRC|@@saccharomyces_cerevisiae_s288c_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">saccharomyces_cerevisiae_s288c_genome_sequence_RSRC|@@saccharomyces_cerevisiae_s288c_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="saccharomyces_cerevisiae_s288c_PostLoadGenome"/>
+    <depends name="saccharomyces_cerevisiae_s288c_MakeAndMaskTopLevelGenome"/>
+    <depends name="saccharomyces_cerevisiae_s288c_MitoMakeDownloadSiteFastaDataDir"/>
+    <depends name="saccharomyces_cerevisiae_s288c_MitoMakeDownloadSiteTabularDataDir"/>
+    <depends name="saccharomyces_cerevisiae_s288c_MitoMakeDownloadSiteGffDataDir"/>
+    <depends name="saccharomyces_cerevisiae_s288c_MitoMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
+
+
 </workflowGraph>
 
