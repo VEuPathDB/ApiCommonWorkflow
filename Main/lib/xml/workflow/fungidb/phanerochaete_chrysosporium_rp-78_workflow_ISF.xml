@@ -1,46 +1,52 @@
-<workflowGraph name="phanerochaete_chrysosporium_rp-78_ISF">
+<!-- ////////////////////////////////////////////////
+
+       Phanerochaete chrysosporium (RP-78): ISF workflow
+
+    ////////////////////////////////////////////////  -->
+
+<workflowGraph name="phanerochaete_chrysosporium_rp-78_workflow_ISF">
       <param name="organismResourceXmlFile"/>
       <param name="dataDir"/>
-      <param name="organismName" />
 
-      <constant name="dataDir">
-            $$dataDir$$/ISF
-      </constant>
+    <constant name="dataDir">$$dataDir$$/phanerochaete_chrysosporium_rp-78_ISF</constant>
 
-      <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
-           <paramValue name="dataDir">$$dataDir$$</paramValue>
-      </step>
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
 
-      <!-- ISF fasta sequence -->
-      <subgraph name="$$organismName$$_RSRC" xmlFile="loadResource.xml">
-           <paramValue name="resourceName">
-              $$organismName$$_genomic_sequence_RSRC
-           </paramValue>
+  <!-- genome sequence -->
+  <subgraph name="phanerochaete_chrysosporium_rp-78_genome_sequence_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">phanerochaete_chrysosporium_rp-78_genome_sequence_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
 
-           <paramValue name="resourceXmlFileName">
-               $$organismResourceXmlFile$$
-           </paramValue>
+  <!-- genome annotations -->
+  <subgraph name="phanerochaete_chrysosporium_rp-78_genome_annotations_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">phanerochaete_chrysosporium_rp-78_genome_annotations_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="phanerochaete_chrysosporium_rp-78_genome_sequence_RSRC"/>
+  </subgraph>
 
-           <paramValue name="parentDataDir">
-               $$dataDir$$
-           </paramValue>
+  <!-- Mito: skip
+  <subgraph name="phanerochaete_chrysosporium_rp-78_mito_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">phanerochaete_chrysosporium_rp-78_mito_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="phanerochaete_chrysosporium_rp-78_genome_sequence_RSRC"/>
+  </subgraph>
+  -->
 
-           <depends name="makeDataDir"/>
-      </subgraph>
+  <!-- Previous aliases: skip
+  <subgraph name="phanerochaete_chrysosporium_rp-78_previous_aliases_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">phanerochaete_chrysosporium_rp-78_previous_aliases_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="phanerochaete_chrysosporium_rp-78_genome_annotations_RSRC"/>
+      <depends name="phanerochaete_chrysosporium_rp-78_mito_RSRC"/>
+  </subgraph>
+  -->
 
-      <subgraph name="$$organismName$$_genomic_annotations_RSRC" xmlFile="loadResource.xml">
-           <paramValue name="resourceName">
-                 $$organismName$$_genomic_annotations_RSRC
-           </paramValue>
-    
-           <paramValue name="resourceXmlFileName">
-                 $$organismResourceXmlFile$$
-           </paramValue>
-    
-           <paramValue name="parentDataDir">
-                 $$dataDir$$
-           </paramValue>
-      
-           <depends name="$$organismName$$_genomic_sequence_RSRC"/>
-      </subgraph>
 </workflowGraph>

@@ -1,0 +1,221 @@
+<!-- 
+
+INSERT INTO the root graph fungidbWorkflow.xml -->
+
+-->
+
+  <!-- ////////////////////////////////////////////////
+
+         Candida albicans (SC5314)
+
+       ////////////////////////////////////////////////  -->
+
+  <subgraph name="candida_albicans_sc5314_LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/candida_albicans_sc5314.xml</paramValue>
+    <paramValue name="organismName">candida_albicans_sc5314</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="genomeExtDbRlsSpec">candida_albicans_sc5314_genome_sequence_RSRC|@@candida_albicans_sc5314_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="organismSpecificISFReference">fungidb/candida_albicans_sc5314_workflow_ISF.xml</paramValue>
+    <paramValue name="ncbiTaxonId">@@candida_albicans_sc5314_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="candida_albicans_sc5314_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">candida_albicans_sc5314</paramValue>
+    <paramValue name="organismFullName">@@candida_albicans_sc5314_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/candida_albicans_sc5314.xml</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">candida_albicans_sc5314_genome_sequence_RSRC|@@candida_albicans_sc5314_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="candida_albicans_sc5314_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="candida_albicans_sc5314_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">candida_albicans_sc5314</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/candida_albicans_sc5314.xml</paramValue>
+    <paramValue name="organismFullName">@@candida_albicans_sc5314_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">@@candida_albicans_sc5314_ORGANISM_ABBREVIATION@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@candida_albicans_sc5314_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@candida_albicans_sc5314_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">candida_albicans_sc5314_genome_sequence_RSRC|@@candida_albicans_sc5314_GENOME_SEQUENCE_VER@@</paramValue>
+   
+    <!-- FungiDB: skip ieDB -->
+    <paramValue name="loadEiptope">false</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+
+    <!-- dbEST -->
+    <paramValue name="dbESTResourceName">candida_albicans_sc5314_dbest_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@candida_albicans_sc5314_DBEST_VER@@</paramValue>
+
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">@@candida_albicans_sc5314_TAXON_HIERARCHY_FOR_BLASTX@@</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="genomeSize">@@candida_albicans_sc5314_GENOME_SIZE@@</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+
+    <!-- Organism-specific EST -->
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+
+    <!-- skip
+    <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">fungidb/candida_albicans_sc5314_workflow_EST.xml</paramValue>
+    -->
+
+    <!-- Mass Spec -->
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">fungidb/candida_albicans_sc5314_MassSpecResource.xml</paramValue>
+
+    <depends name="candida_albicans_sc5314_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="candida_albicans_sc5314_workflow" xmlFile="fungidb/candida_albicans_sc5314_workflow.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/candida_albicans_sc5314.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="candida_albicans_sc5314_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="candida_albicans_sc5314_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">candida_albicans_sc5314</paramValue>
+    <paramValue name="organismFullName">@@candida_albicans_sc5314_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@candida_albicans_sc5314_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@candida_albicans_sc5314_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@candida_albicans_sc5314_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">candida_albicans_sc5314_dbest_RSRC|@@candida_albicans_sc5314_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">candida_albicans_sc5314_genome_sequence_RSRC|@@candida_albicans_sc5314_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="candida_albicans_sc5314_PostLoadGenome"/>
+    <depends name="candida_albicans_sc5314_MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+    <step name="candida_albicans_sc5314_MitoMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/candida_albicans_sc5314_Mito/fasta</paramValue>
+    </step>
+
+    <step name="candida_albicans_sc5314_MitoMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/candida_albicans_sc5314_Mito/tabular</paramValue>
+    </step>
+
+    <step name="candida_albicans_sc5314_MitoMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/candida_albicans_sc5314_Mito/gff</paramValue>
+    </step>
+
+    <step name="candida_albicans_sc5314_MitoMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/candida_albicans_sc5314_Mito/transcriptExpression</paramValue>
+    </step>
+
+  <subgraph name="candida_albicans_sc5314_MitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">candida_albicans_sc5314_Mito</paramValue>
+    <paramValue name="organismFullName">@@candida_albicans_sc5314_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@candida_albicans_sc5314_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@candida_albicans_sc5314_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@candida_albicans_sc5314_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">candida_albicans_sc5314_dbest_RSRC|@@candida_albicans_sc5314_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">candida_albicans_sc5314_genome_sequence_RSRC|@@candida_albicans_sc5314_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="candida_albicans_sc5314_PostLoadGenome"/>
+    <depends name="candida_albicans_sc5314_MakeAndMaskTopLevelGenome"/>
+    <depends name="candida_albicans_sc5314_MitoMakeDownloadSiteFastaDataDir"/>
+    <depends name="candida_albicans_sc5314_MitoMakeDownloadSiteTabularDataDir"/>
+    <depends name="candida_albicans_sc5314_MitoMakeDownloadSiteGffDataDir"/>
+    <depends name="candida_albicans_sc5314_MitoMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
+
+
+    <!--
+    <step name="candida_albicans_sc5314_PlastidMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/candida_albicans_sc5314_Plastid/fasta</paramValue>
+    </step>
+
+    <step name="candida_albicans_sc5314_PlastidMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/candida_albicans_sc5314_Plastid/tabular</paramValue>
+    </step>
+
+    <step name="candida_albicans_sc5314_PlastidMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/candida_albicans_sc5314_Plastid/gff</paramValue>
+    </step>
+
+    <step name="candida_albicans_sc5314_PlastidMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/candida_albicans_sc5314_Plastid/transcriptExpression</paramValue>
+    </step>
+    -->
+
+  <!--
+  <subgraph name="candida_albicans_sc5314_PlastidMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">candida_albicans_sc5314_Plastid</paramValue>
+    <paramValue name="organismFullName">@@candida_albicans_sc5314_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@candida_albicans_sc5314_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@candida_albicans_sc5314_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@candida_albicans_sc5314_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">candida_albicans_sc5314_dbest_RSRC|@@candida_albicans_sc5314_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">candida_albicans_sc5314_genome_sequence_RSRC|@@candida_albicans_sc5314_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">plastid_sequence</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="candida_albicans_sc5314_PostLoadGenome"/>
+    <depends name="candida_albicans_sc5314_MakeAndMaskTopLevelGenome"/>
+    <depends name="candida_albicans_sc5314_PlastidMakeDownloadSiteFastaDataDir"/>
+    <depends name="candida_albicans_sc5314_PlastidMakeDownloadSiteTabularDataDir"/>
+    <depends name="candida_albicans_sc5314_PlastidMakeDownloadSiteGffDataDir"/>
+    <depends name="candida_albicans_sc5314_PlastidMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
+  -->
+

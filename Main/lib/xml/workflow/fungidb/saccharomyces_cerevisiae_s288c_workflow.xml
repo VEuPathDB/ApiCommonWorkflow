@@ -1,135 +1,181 @@
 <!-- ////////////////////////////////////////////////
 
-         Saccharomyces cerevisiae (S288C)
+    Saccharomyces cerevisiae (S288C): organism specific workflow
 
-       ////////////////////////////////////////////////  -->
+     ////////////////////////////////////////////////  -->
 
 <workflowGraph name="saccharomyces_cerevisiae_s288c_workflow">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDataDir"/>
+  <param name="webServicesDataDir"/>
 
-     <param name="projectName" />
-     <param name="projectVersion" />
-     <param name="parentDataDir" />
-     <param name="downloadSiteDataDir"/>
+  <constant name="dataDir">$$parentDataDir$$/saccharomyces_cerevisiae_s288c_workflow</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/saccharomyces_cerevisiae_s288c</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/saccharomyces_cerevisiae_s288c_LoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/saccharomyces_cerevisiae_s288c_LoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/saccharomyces_cerevisiae_s288c_LoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/saccharomyces_cerevisiae_s288c_LoadGenome/geneModelForSsa.txt</constant>
 
-     <param name="organismName" />
-     <param name="organismFullName" />
-     <param name="organismVersion" />
-     <param name="ncbiTaxonId" />
-     <param name="parentNcbiTaxonId" />
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
 
-     <!-- This isn't handled yet!! -->
-     <param name="webServicesDataDir"/>
-
-
-     <!-- Set up some constants -->
-     <constant name="dataDir">$$parentDataDir$$/workflow</constant>
-     <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/$$organismName$$</constant>
- 
-     <!-- Location of the resource.xml file -->   
-     <constant name="organismResourceXmlFile">fungidb/$$organismName$$.xml</constant>
-           <!--  Constructing instead of passing
-              <param name="organismResourceXmlFile"/>
-           -->
-
-       <!-- Create the data dir -->
-       <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
-             <paramValue name="dataDir">$$dataDir$$</paramValue>
-       </step>
-
-      <!-- LoadGenome -->
-      <!-- CHECK: Can I use vars in subgraph names? -->
-<!--      <subgraph name="saccharomyces_cerevisiae_s288c_LoadGenome" xmlFile="loadGenome.xml"> -->
-      <subgraph name="$$organismName$$_LoadGenome" xmlFile="loadGenome.xml">
-
-            <paramValue name="parentDataDir"></paramValue>    
-            <paramValue name="organismName">$$organismName$$</paramValue>
-            <paramValue name="genomeExtDbRlsSpec">$$organismName$$_genomic_sequence_RSRC|$$organismVersion$$</paramValue>
-            <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-            <paramValue name="organismSpecificISFReference">fungidb/$$organismName$$_workflow_ISF.xml</paramValue>
-            <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-            <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$</paramValue>
-            <paramValue name="extractProteins">true</paramValue>
-            <paramValue name="projectName">$$projectName$$</paramValue>
-     </subgraph>
-
-     <!-- Post Load Genome -->
-      <!-- CHECK: Can I use vars in subgraph names? -->
-<!--  <subgraph name="saccharomyces_cerevisiae_s288c_PostLoadGenome" xmlFile="postLoadGenome.xml"> -->
-  <subgraph name="$$organismName$$_PostLoadGenome" xmlFile="postLoadGenome.xml">
-    <paramValue name="maxIntronSize">500</paramValue>
-    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota Fungi Ascomycota</paramValue>
-    <paramValue name="genomeSize">18874889</paramValue>
-
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="organismName">$$organismName$$</paramValue>
-    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
-    <paramValue name="organismTwoLetterAbbrev">$$organismTwoLetterAbbrev$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$organismName$$_genomic_sequence_RSRC|$$organismVersion$$</paramValue>
-
-    <!-- Skip ieDB -->
-    <paramValue name="loadEiptope">false</paramValue>
-<!--
-    <paramValue name="iedbResourceName"></paramValue>
-    <paramValue name="iedbVersion"></paramValue>
-    <paramValue name="iedbDbRefResourceName"></paramValue>
--->
-
-    <!-- dbEST -->
-    <!--    <paramValue name="loadDbest">false</paramValue> -->
-    <paramValue name="dbESTResourceName">saccharomyces_cerevisiae_s288c_dbEST_RSRC</paramValue>
-    <paramValue name="dbESTVersion">@@saccharomyces_cerevisiae_s288c_dbEST_VER@@</paramValue>
-
-    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-    <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
-    <paramValue name="usePredictedTranscripts">false</paramValue>
-    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
-    <paramValue name="runtRNAScan">true</paramValue>
-    <paramValue name="runExportPred">false</paramValue>
-    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
-    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
-    <paramValue name="skipProteomeAnalysis">false</paramValue>
-    <paramValue name="skipGenomeAnalysis">false</paramValue>
-    <paramValue name="mapEpitope">false</paramValue>
-    <paramValue name="makeAssemblySeqs">false</paramValue>
-    <paramValue name="makeAssemblies">false</paramValue>
-    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
-    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
-    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
-    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
-    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
-    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-<!--    <depends name="saccharomyces_cerevisiae_s288c_LoadGenome"/> -->
-    <depends name="$$organismName$$_LoadGenome"/>
-  </subgraph>
-
-       
-<!--
     <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
--->
- 
-    <!-- GO -->
-    <subgraph name="$$organismName$$_go_associations_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismName$$_go_associations_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-      <dependsGlobal name="GO_RSRC"/>
-      <dependsGlobal name="GO_evidence_codes_RSRC"/>
-    </subgraph>
 
-    <!-- EC Numbers -->
-    <subgraph name="$$organismName$$_ec_ids_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismName$$_ec_ids_RSRC</paramValue>
+
+  <!-- //////////////////////
+             ALIASES
+       ////////////////////// -->
+
+       <!-- Primary Aliases -->
+       <!--
+       <subgraph name="saccharomyces_cerevisiae_s288c_primary_gene_aliases_RSRC" xmlFile="loadResource.xml">
+            <paramValue name="resourceName">saccharomyces_cerevisiae_s288c_primary_gene_aliases_RSRC</paramValue>
+            <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <depends name="makeDataDir"/>
+       </subgraph>
+        -->
+
+
+  <!-- //////////////////////
+             DBXREFS
+       ////////////////////// -->
+
+       <!-- EC IDs -->
+       <subgraph name="saccharomyces_cerevisiae_s288c_ec_ids_RSRC" xmlFile="loadResource.xml">
+          <paramValue name="resourceName">saccharomyces_cerevisiae_s288c_ec_ids_RSRC</paramValue>
+          <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+          <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+          <depends name="makeDataDir"/>
+          <dependsGlobal name="enzymeDB_RSRC"/>
+      </subgraph>
+
+      <!-- Uniprot -->
+      <subgraph name="saccharomyces_cerevisiae_s288c_uniprot_dbxrefs_RSRC" xmlFile="loadResource.xml">
+          <paramValue name="resourceName">saccharomyces_cerevisiae_s288c_uniprot_dbxrefs_RSRC</paramValue>
+          <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+          <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+          <depends name="makeDataDir"/>
+      </subgraph>
+
+      <!-- Candida -->
+      <subgraph name="saccharomyces_cerevisiae_s288c_candida_dbxrefs_RSRC" xmlFile="loadResource.xml">
+          <paramValue name="resourceName">saccharomyces_cerevisiae_s288c_candida_dbxrefs_RSRC</paramValue>
+          <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+          <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+          <depends name="makeDataDir"/>
+      </subgraph>
+
+      <!-- Refseq: Protein IDs: resources.xml probably needs to be updated to attach these to protein IDs -->
+      <subgraph name="saccharomyces_cerevisiae_s288c_refseq_dbxrefs_RSRC" xmlFile="loadResource.xml">
+          <paramValue name="resourceName">saccharomyces_cerevisiae_s288c_refseq_dbxrefs_RSRC</paramValue>
+          <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+          <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+          <depends name="makeDataDir"/>
+      </subgraph>
+
+      <!-- Refseq -->
+      <subgraph name="saccharomyces_cerevisiae_s288c_refseq_na_dbxrefs_RSRC" xmlFile="loadResource.xml">
+          <paramValue name="resourceName">saccharomyces_cerevisiae_s288c_refseq_na_dbxrefs_RSRC</paramValue>
+          <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+          <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+          <depends name="makeDataDir"/>
+      </subgraph>
+
+      <!-- Refseq Gene -->
+      <subgraph name="saccharomyces_cerevisiae_s288c_refseq_gene_dbxrefs_RSRC" xmlFile="loadResource.xml">
+          <paramValue name="resourceName">saccharomyces_cerevisiae_s288c_refseq_gene_dbxrefs_RSRC</paramValue>
+          <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+          <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+          <depends name="makeDataDir"/>
+      </subgraph>
+
+      <!-- Metacyc -->
+      <subgraph name="saccharomyces_cerevisiae_s288c_metacyc_dbxrefs_RSRC" xmlFile="loadResource.xml">
+          <paramValue name="resourceName">saccharomyces_cerevisiae_s288c_metacyc_dbxrefs_RSRC</paramValue>
+          <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+          <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+          <depends name="makeDataDir"/>
+      </subgraph>
+
+
+<!-- SNPs: skip
+    <subgraph name="snps" xmlFile="fungidb/saccharomyces_cerevisiae_s288c_SNPs.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+-->
+
+<!-- Correct gene aliases: skip
+    <subgraph name="saccharomyces_cerevisiae_s288c_correct_gene_aliases_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">saccharomyces_cerevisiae_s288c_correct_gene_aliases_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-      <dependsGlobal name="enzymeDB_RSRC"/>
+      <depends name="saccharomyces_cerevisiae_s288c_genedb_ids_RSRC"/>
     </subgraph>
+-->
+
+<!-- Microarray: skip
+    <subgraph name="arrayResources" xmlFile="fungidb/saccharomyces_cerevisiae_s288c_array_studies.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
+      <depends name="saccharomyces_cerevisiae_s288c_correct_gene_aliases_RSRC"/>
+    </subgraph>
+-->
+
+<!-- RNASeq/ChipSeq: skip for now
+  <subgraph name="saccharomyces_cerevisiae_s288c_rna_seq_and_chip_seq" xmlFile="fungidb/saccharomyces_cerevisiae_s288c_rna_seq_and_chip_seq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+-->
+
+
+  <!-- Gene Ontology -->
+  <subgraph name="saccharomyces_cerevisiae_s288c_go_associations_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">saccharomyces_cerevisiae_s288c_go_associations_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+    <dependsGlobal name="GO_RSRC"/>
+    <dependsGlobal name="GO_evidence_codes_RSRC"/>
+  </subgraph>
+
+
+<!--
+  <subgraph name="saccharomyces_cerevisiae_s288c_make_and_format_download_files" xmlFile="fungidb/fungidb_make_and_format_download_files_workflow.xml">
+    <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genbankIsolateExtDbRlsSpec">PlasmodiumGenbankIsolates_RSRC|@@PlasmodiumGenbankIsolates_VER@@</paramValue>
+    <paramValue name="barcodeIsolateExtDbRlsSpec">Broad_Isolate_Barcode_RSRC|@@Broad_Isolate_Barcode_VER@@</paramValue>
+    <depends name="snps"/>
+  </subgraph>
+-->
 
 </workflowGraph>
+
+
+
+
+

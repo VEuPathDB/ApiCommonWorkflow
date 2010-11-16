@@ -1,46 +1,52 @@
-<workflowGraph name="candida_albicans_sc5314_ISF">
+<!-- ////////////////////////////////////////////////
+
+       Candida albicans (SC5314): ISF workflow
+
+    ////////////////////////////////////////////////  -->
+
+<workflowGraph name="candida_albicans_sc5314_workflow_ISF">
       <param name="organismResourceXmlFile"/>
       <param name="dataDir"/>
-      <param name="organismName" />
 
-      <constant name="dataDir">
-            $$dataDir$$/ISF
-      </constant>
+    <constant name="dataDir">$$dataDir$$/candida_albicans_sc5314_ISF</constant>
 
-      <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
-           <paramValue name="dataDir">$$dataDir$$</paramValue>
-      </step>
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
 
-      <!-- ISF fasta sequence -->
-      <subgraph name="$$organismName$$_genomic_sequence_RSRC" xmlFile="loadResource.xml">
-           <paramValue name="resourceName">
-               $$organismName$$_genomic_sequence_RSRC
-           </paramValue>
+  <!-- genome sequence -->
+  <subgraph name="candida_albicans_sc5314_genome_sequence_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">candida_albicans_sc5314_genome_sequence_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
 
-           <paramValue name="resourceXmlFileName">
-               $$organismResourceXmlFile$$
-           </paramValue>
+  <!-- genome annotations -->
+  <subgraph name="candida_albicans_sc5314_genome_annotations_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">candida_albicans_sc5314_genome_annotations_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="candida_albicans_sc5314_genome_sequence_RSRC"/>
+  </subgraph>
 
-           <paramValue name="parentDataDir">
-               $$dataDir$$
-           </paramValue>
+  <!-- Mito: skip
+  <subgraph name="candida_albicans_sc5314_mito_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">candida_albicans_sc5314_mito_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="candida_albicans_sc5314_genome_sequence_RSRC"/>
+  </subgraph>
+  -->
 
-           <depends name="makeDataDir"/>
-      </subgraph>
+  <!-- Previous aliases: skip
+  <subgraph name="candida_albicans_sc5314_previous_aliases_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">candida_albicans_sc5314_previous_aliases_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="candida_albicans_sc5314_genome_annotations_RSRC"/>
+      <depends name="candida_albicans_sc5314_mito_RSRC"/>
+  </subgraph>
+  -->
 
-      <subgraph name="$$organismName$$_genomic_annotations_RSRC" xmlFile="loadResource.xml">
-           <paramValue name="resourceName">
-                 $$organismName$$_genomic_annotations_RSRC
-           </paramValue>
-    
-           <paramValue name="resourceXmlFileName">
-                 $$organismResourceXmlFile$$
-           </paramValue>
-    
-           <paramValue name="parentDataDir">
-                 $$dataDir$$
-           </paramValue>
-      
-           <depends name="$$organismName$$_genomic_sequence_RSRC"/>
-      </subgraph>
 </workflowGraph>

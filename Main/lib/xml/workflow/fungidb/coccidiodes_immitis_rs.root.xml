@@ -1,0 +1,221 @@
+<!-- 
+
+INSERT INTO the root graph fungidbWorkflow.xml -->
+
+-->
+
+  <!-- ////////////////////////////////////////////////
+
+         Coccidiodes immitis (RS)
+
+       ////////////////////////////////////////////////  -->
+
+  <subgraph name="coccidiodes_immitis_rs_LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/coccidiodes_immitis_rs.xml</paramValue>
+    <paramValue name="organismName">coccidiodes_immitis_rs</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genome_sequence_RSRC|@@coccidiodes_immitis_rs_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="organismSpecificISFReference">fungidb/coccidiodes_immitis_rs_workflow_ISF.xml</paramValue>
+    <paramValue name="ncbiTaxonId">@@coccidiodes_immitis_rs_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="coccidiodes_immitis_rs_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">coccidiodes_immitis_rs</paramValue>
+    <paramValue name="organismFullName">@@coccidiodes_immitis_rs_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/coccidiodes_immitis_rs.xml</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genome_sequence_RSRC|@@coccidiodes_immitis_rs_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="coccidiodes_immitis_rs_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="coccidiodes_immitis_rs_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">coccidiodes_immitis_rs</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/coccidiodes_immitis_rs.xml</paramValue>
+    <paramValue name="organismFullName">@@coccidiodes_immitis_rs_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">@@coccidiodes_immitis_rs_ORGANISM_ABBREVIATION@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@coccidiodes_immitis_rs_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@coccidiodes_immitis_rs_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genome_sequence_RSRC|@@coccidiodes_immitis_rs_GENOME_SEQUENCE_VER@@</paramValue>
+   
+    <!-- FungiDB: skip ieDB -->
+    <paramValue name="loadEiptope">false</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+
+    <!-- dbEST -->
+    <paramValue name="dbESTResourceName">coccidiodes_immitis_rs_dbest_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@coccidiodes_immitis_rs_DBEST_VER@@</paramValue>
+
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">@@coccidiodes_immitis_rs_TAXON_HIERARCHY_FOR_BLASTX@@</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="genomeSize">@@coccidiodes_immitis_rs_GENOME_SIZE@@</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+
+    <!-- Organism-specific EST -->
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+
+    <!-- skip
+    <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">fungidb/coccidiodes_immitis_rs_workflow_EST.xml</paramValue>
+    -->
+
+    <!-- Mass Spec -->
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">fungidb/coccidiodes_immitis_rs_MassSpecResource.xml</paramValue>
+
+    <depends name="coccidiodes_immitis_rs_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="coccidiodes_immitis_rs_workflow" xmlFile="fungidb/coccidiodes_immitis_rs_workflow.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/coccidiodes_immitis_rs.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="coccidiodes_immitis_rs_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="coccidiodes_immitis_rs_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">coccidiodes_immitis_rs</paramValue>
+    <paramValue name="organismFullName">@@coccidiodes_immitis_rs_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@coccidiodes_immitis_rs_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@coccidiodes_immitis_rs_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@coccidiodes_immitis_rs_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">coccidiodes_immitis_rs_dbest_RSRC|@@coccidiodes_immitis_rs_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genome_sequence_RSRC|@@coccidiodes_immitis_rs_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="coccidiodes_immitis_rs_PostLoadGenome"/>
+    <depends name="coccidiodes_immitis_rs_MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+    <step name="coccidiodes_immitis_rs_MitoMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/coccidiodes_immitis_rs_Mito/fasta</paramValue>
+    </step>
+
+    <step name="coccidiodes_immitis_rs_MitoMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/coccidiodes_immitis_rs_Mito/tabular</paramValue>
+    </step>
+
+    <step name="coccidiodes_immitis_rs_MitoMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/coccidiodes_immitis_rs_Mito/gff</paramValue>
+    </step>
+
+    <step name="coccidiodes_immitis_rs_MitoMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/coccidiodes_immitis_rs_Mito/transcriptExpression</paramValue>
+    </step>
+
+  <subgraph name="coccidiodes_immitis_rs_MitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">coccidiodes_immitis_rs_Mito</paramValue>
+    <paramValue name="organismFullName">@@coccidiodes_immitis_rs_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@coccidiodes_immitis_rs_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@coccidiodes_immitis_rs_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@coccidiodes_immitis_rs_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">coccidiodes_immitis_rs_dbest_RSRC|@@coccidiodes_immitis_rs_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genome_sequence_RSRC|@@coccidiodes_immitis_rs_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="coccidiodes_immitis_rs_PostLoadGenome"/>
+    <depends name="coccidiodes_immitis_rs_MakeAndMaskTopLevelGenome"/>
+    <depends name="coccidiodes_immitis_rs_MitoMakeDownloadSiteFastaDataDir"/>
+    <depends name="coccidiodes_immitis_rs_MitoMakeDownloadSiteTabularDataDir"/>
+    <depends name="coccidiodes_immitis_rs_MitoMakeDownloadSiteGffDataDir"/>
+    <depends name="coccidiodes_immitis_rs_MitoMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
+
+
+    <!--
+    <step name="coccidiodes_immitis_rs_PlastidMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/coccidiodes_immitis_rs_Plastid/fasta</paramValue>
+    </step>
+
+    <step name="coccidiodes_immitis_rs_PlastidMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/coccidiodes_immitis_rs_Plastid/tabular</paramValue>
+    </step>
+
+    <step name="coccidiodes_immitis_rs_PlastidMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/coccidiodes_immitis_rs_Plastid/gff</paramValue>
+    </step>
+
+    <step name="coccidiodes_immitis_rs_PlastidMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/coccidiodes_immitis_rs_Plastid/transcriptExpression</paramValue>
+    </step>
+    -->
+
+  <!--
+  <subgraph name="coccidiodes_immitis_rs_PlastidMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">coccidiodes_immitis_rs_Plastid</paramValue>
+    <paramValue name="organismFullName">@@coccidiodes_immitis_rs_ORGANISM_FULL_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@coccidiodes_immitis_rs_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@coccidiodes_immitis_rs_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@coccidiodes_immitis_rs_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">coccidiodes_immitis_rs_dbest_RSRC|@@coccidiodes_immitis_rs_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genome_sequence_RSRC|@@coccidiodes_immitis_rs_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">plastid_sequence</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="coccidiodes_immitis_rs_PostLoadGenome"/>
+    <depends name="coccidiodes_immitis_rs_MakeAndMaskTopLevelGenome"/>
+    <depends name="coccidiodes_immitis_rs_PlastidMakeDownloadSiteFastaDataDir"/>
+    <depends name="coccidiodes_immitis_rs_PlastidMakeDownloadSiteTabularDataDir"/>
+    <depends name="coccidiodes_immitis_rs_PlastidMakeDownloadSiteGffDataDir"/>
+    <depends name="coccidiodes_immitis_rs_PlastidMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
+  -->
+

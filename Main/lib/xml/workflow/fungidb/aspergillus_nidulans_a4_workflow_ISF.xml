@@ -1,45 +1,52 @@
-<workflowGraph name="aspergillus_nidulans_a4_ISF">
+<!-- ////////////////////////////////////////////////
+
+       Aspergillus nidulans (A4): ISF workflow
+
+    ////////////////////////////////////////////////  -->
+
+<workflowGraph name="aspergillus_nidulans_a4_workflow_ISF">
       <param name="organismResourceXmlFile"/>
       <param name="dataDir"/>
 
-      <constant name="dataDir">
-            $$dataDir$$/ISF
-      </constant>
+    <constant name="dataDir">$$dataDir$$/aspergillus_nidulans_a4_ISF</constant>
 
-      <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
-           <paramValue name="dataDir">$$dataDir$$</paramValue>
-      </step>
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
 
-      <!-- ISF fasta sequence -->
-      <subgraph name="aspergillus_nidulans_a4_genomic_sequence_RSRC" xmlFile="loadResource.xml">
-           <paramValue name="resourceName">
-               aspergillus_nidulans_a4_genomic_sequence_RSRC
-           </paramValue>
+  <!-- genome sequence -->
+  <subgraph name="aspergillus_nidulans_a4_genome_sequence_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">aspergillus_nidulans_a4_genome_sequence_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
 
-           <paramValue name="resourceXmlFileName">
-               $$organismResourceXmlFile$$
-           </paramValue>
+  <!-- genome annotations -->
+  <subgraph name="aspergillus_nidulans_a4_genome_annotations_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">aspergillus_nidulans_a4_genome_annotations_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="aspergillus_nidulans_a4_genome_sequence_RSRC"/>
+  </subgraph>
 
-           <paramValue name="parentDataDir">
-               $$dataDir$$
-           </paramValue>
+  <!-- Mito: skip
+  <subgraph name="aspergillus_nidulans_a4_mito_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">aspergillus_nidulans_a4_mito_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="aspergillus_nidulans_a4_genome_sequence_RSRC"/>
+  </subgraph>
+  -->
 
-           <depends name="makeDataDir"/>
-      </subgraph>
+  <!-- Previous aliases: skip
+  <subgraph name="aspergillus_nidulans_a4_previous_aliases_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">aspergillus_nidulans_a4_previous_aliases_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="aspergillus_nidulans_a4_genome_annotations_RSRC"/>
+      <depends name="aspergillus_nidulans_a4_mito_RSRC"/>
+  </subgraph>
+  -->
 
-      <subgraph name="aspergillus_nidulans_a4_genomic_annotations_RSRC" xmlFile="loadResource.xml">
-           <paramValue name="resourceName">
-                 aspergillus_nidulans_a4_genomic_annotations_RSRC
-           </paramValue>
-    
-           <paramValue name="resourceXmlFileName">
-                 $$organismResourceXmlFile$$
-           </paramValue>
-    
-           <paramValue name="parentDataDir">
-                 $$dataDir$$
-           </paramValue>
-      
-           <depends name="aspergillus_nidulans_a4_genomic_sequence_RSRC"/>
-      </subgraph>
 </workflowGraph>
