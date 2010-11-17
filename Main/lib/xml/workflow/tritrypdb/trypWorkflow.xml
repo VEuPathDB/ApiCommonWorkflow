@@ -227,6 +227,34 @@
     <depends name="Tbrucei427LoadGenome"/>
   </subgraph>
 
+  <subgraph name="Tbrucei427SpecificWorkflow" xmlFile="tritrypdb/tbrucei427Specific.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="Tbrucei427LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei427LoadAndCorrectGeneAliases" xmlFile="loadAndCorrectGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbrucei427</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">tritrypdb/tbrucei427GeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <depends name="Tbrucei427LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei427LoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbrucei427</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">tritrypdb/tbrucei427DbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <depends name="Tbrucei427LoadAndCorrectGeneAliases"/>
+  </subgraph>
+
   <subgraph name="Tbrucei427MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
     <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
     <paramValue name="organismName">Tbrucei427</paramValue>
