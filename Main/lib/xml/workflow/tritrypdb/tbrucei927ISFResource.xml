@@ -1,0 +1,39 @@
+<workflowGraph name="tbrucei927ISFResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="dataDir"/>
+
+    <constant name="dataDir">$$dataDir$$/tbrucei927ISFResource</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+  <subgraph name="Tbrucei927_genome_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Tbrucei927_genome_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei927_annotations_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Tbrucei927_annotations_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="Tbrucei927_genome_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei927_contigs_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pfalciparum_mito_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="Tbrucei927_genome_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei927_contig_annotations_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pfalciparum_apicoplast_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="Tbrucei927_contigs_RSRC"/>
+  </subgraph>
+
+</workflowGraph>
