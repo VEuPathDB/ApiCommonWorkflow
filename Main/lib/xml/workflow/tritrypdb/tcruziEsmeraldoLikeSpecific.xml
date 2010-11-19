@@ -1,49 +1,46 @@
-<workflowGraph name="tcEsmeraldoLikeSpecificAnalysis">
-  <param name="projectName"/>
-  <param name="projectVersion"/>
+<workflowGraph name="tcruziEsmeraldoLikeSpecificAnalysis">
   <param name="parentDataDir"/>
   <param name="organismResourceXmlFile"/>
   <param name="downloadSiteDir"/>
-  <param name="webServicesDataDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/TcEsmeraldoLikeSpecific</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDir$$/TcEsmeraldoLike</constant>
-  <constant name="genomicSeqsFile">$$parentDataDir$$/TcEsmeraldoLikeLoadGenome/genomicSeqs.fsa</constant>
-  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/TcEsmeraldoLikeLoadGenome/genomicSeqsForSsa.fsa</constant>
-  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/TcEsmeraldoLikeLoadGenome/transcriptSeqsForSsa.fsa</constant>
-  <constant name="ssaGeneModelFile">$$parentDataDir$$/TcEsmeraldoLikeLoadGenome/geneModelForSsa.txt</constant>
+  <constant name="dataDir">$$parentDataDir$$/TcruziEsmeraldoLikeSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDir$$/TcruziEsmeraldoLike</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/TcruziEsmeraldoLikeLoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/TcruziEsmeraldoLikeLoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/TcruziEsmeraldoLikeLoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/TcruziEsmeraldoLikeLoadGenome/geneModelForSsa.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-    <subgraph name="Tcruzi_BACEnds_loadAndAnalyze" xmlFile="loadDnaSeqAndAlignToGenome.xml">
+    <subgraph name="Tcruzi_BACEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="BACEndsResourceName">Tcruzi_BACEnds_RSRC</paramValue>
       <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
-      <paramValue name="organismName">TcEsmeraldoLike</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">TcEsmeraldoLike_chromosomes_RSRC|@@TcEsmeraldoLike_chromosomes_VER@@</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">Tcruzi_BACEnds_RSRC|@@Tcruzi_BACEnds_VER@@</paramValue>
       <paramValue name="maxIntronSize">100</paramValue>
       <paramValue name="ncbiTaxonId">366581</paramValue>
-      <paramValue name="BACEndsExtDbRlsSpec">Tcruzi_BACEnds_RSRC|@@Tcruzi_BACEnds_VER@@</paramValue>
-      <paramValue name="BACEndsResourceName">Tcruzi_BACEnds_RSRC</paramValue>
-      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
       <paramValue name="genomicSeqsFile">$$parentDataDir$$/$$organismName$$LoadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">TcruziEsmeraldoLike_chromosomes_RSRC|@@TcruziEsmeraldoLike_chromosomes_VER@@</paramValue>
+      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
       <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$LoadGenome/genomicSeqs</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="arrayResources" xmlFile="tritrypdb/tcEsmeraldoLikeArrayStudies.xml">
+    <subgraph name="arrayResources" xmlFile="tritrypdb/tcruziArrayStudies.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">TcruziEsmeraldoLike_chromosomes_RSRC|@@TcruziEsmeraldoLike_chromosomes_VER@@</paramValue>
       <depends name=""/>
     </subgraph>
 
-    <subgraph name="GOAssociations_TcEsmeraldoLike_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">GOAssociations_TcEsmeraldoLike_RSRC</paramValue>
+    <subgraph name="GOAssociations_TcruziEsmeraldoLike_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">GOAssociations_TcruziEsmeraldoLike_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -51,22 +48,22 @@
       <dependsGlobal name="GO_evidence_codes_RSRC"/>
     </subgraph>
 
-    <subgraph name="TcEsmeraldoLike_Comments_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">TcEsmeraldoLike_Comments_RSRC</paramValue>
+    <subgraph name="TcruziEsmeraldoLike_Comments_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TcruziEsmeraldoLike_Comments_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="TcEsmeraldoLike_GeneName_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">TcEsmeraldoLike_GeneName_RSRC</paramValue>
+    <subgraph name="TcruziEsmeraldoLike_GeneName_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TcruziEsmeraldoLike_GeneName_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="TcEsmeraldoLike_ECNumbers_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">TcEsmeraldoLike_ECNumbers_RSRC</paramValue>
+    <subgraph name="TcruziEsmeraldoLike_ECNumbers_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TcruziEsmeraldoLike_ECNumbers_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
