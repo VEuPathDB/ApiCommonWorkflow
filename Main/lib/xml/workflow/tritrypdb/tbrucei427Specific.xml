@@ -1,0 +1,56 @@
+<workflowGraph name="tbrucei427SpecificAnalysis">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDataDir"/>
+  <param name="webServicesDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/Tbrucei427Specific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Tbrucei427</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/Tbrucei427LoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/Tbrucei427LoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/Tbrucei427LoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/Tbrucei427LoadGenome/geneModelForSsa.txt</constant>
+
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+
+    <subgraph name="GOAssociations_Tbrucei427_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">GOAssociations_Tbrucei427_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+      <dependsGlobal name="GO_RSRC"/>
+      <dependsGlobal name="GO_evidence_codes_RSRC"/>
+    </subgraph>
+
+    <subgraph name="Tbrucei427_Comments_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei427_Comments_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Tbrucei427_GeneName_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei427_GeneName_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Tbrucei427_ECNumbers_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei427_ECNumbers_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+      <dependsGlobal name="enzymeDB_RSRC"/>
+    </subgraph>
+
+</workflowGraph>
+
+
+
