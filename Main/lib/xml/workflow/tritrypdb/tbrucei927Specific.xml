@@ -1,10 +1,7 @@
 <workflowGraph name="tbrucei927SpecificAnalysis">
-  <param name="projectName"/>
-  <param name="projectVersion"/>
   <param name="parentDataDir"/>
   <param name="organismResourceXmlFile"/>
   <param name="downloadSiteDir"/>
-  <param name="webServicesDataDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/Tbrucei927Specific</constant>
   <constant name="downloadSiteDataDir">$$downloadSiteDir$$/Tbrucei927</constant>
@@ -18,17 +15,16 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-    <subgraph name="GenbankBACEnds_loadAndAnalyze" xmlFile="loadDnaSeqAndAlignToGenome.xml">
+    <subgraph name="GenbankBACEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
-      <paramValue name="organismName">Tbrucei927</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">Tbrucei927_chromosomes_RSRC|@@Tbrucei927_chromosomes_VER@@</paramValue>
+      <paramValue name="BACEndsResourceName">Tbrucei_Genbank_BACEnds_RSRC</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">Tbrucei_Genbank_BACEnds_RSRC|@@Tbrucei_Genbank_BACEnds_VER@@</paramValue>
       <paramValue name="maxIntronSize">100</paramValue>
       <paramValue name="ncbiTaxonId">185431</paramValue>
-      <paramValue name="BACEndsExtDbRlsSpec">Tbrucei_Genbank_BACEnds_RSRC|@@Tbrucei_Genbank_BACEnds_VER@@</paramValue>
-      <paramValue name="BACEndsResourceName">Tbrucei_Genbank_BACEnds_RSRC</paramValue>
-      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
       <paramValue name="genomicSeqsFile">$$parentDataDir$$/Tbrucei927LoadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Tbrucei927_chromosomes_RSRC|@@Tbrucei927_chromosomes_VER@@</paramValue>
+      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
       <paramValue name="genomicSeqsDir">$$parentDataDir$$/Tbrucei927LoadGenome/genomicSeqs</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
@@ -39,7 +35,7 @@
     <depends name="makeDataDir"/>
   </subgraph>
 
-  <subgraph name="rnaSeqAndChipSeq" xmlFile="tritrypdb/tbrucei927RnaSeqAndChipSeq.xml">
+  <subgraph name="rnaSeqAndChipSeq" xmlFile="tritrypdb/tbruceiRnaSeqAndChipSeq.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
