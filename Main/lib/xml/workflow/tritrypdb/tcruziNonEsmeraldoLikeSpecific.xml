@@ -1,0 +1,116 @@
+<workflowGraph name="tcruziNonEsmeraldoLikeSpecificAnalysis">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/TcruziNonEsmeraldoLikeSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDir$$/TcruziNonEsmeraldoLike</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/TcruziNonEsmeraldoLikeLoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/TcruziNonEsmeraldoLikeLoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/TcruziNonEsmeraldoLikeLoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/TcruziNonEsmeraldoLikeLoadGenome/geneModelForSsa.txt</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <subgraph name="Tcruzi_BACEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="BACEndsResourceName">Tcruzi_BACEnds_RSRC</paramValue>
+      <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">Tcruzi_BACEnds_RSRC|@@Tcruzi_BACEnds_VER@@</paramValue>
+      <paramValue name="maxIntronSize">100</paramValue>
+      <paramValue name="ncbiTaxonId">366581</paramValue>
+      <paramValue name="genomicSeqsFile">$$parentDataDir$$/$$organismName$$LoadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">TcruziNonEsmeraldoLike_genome_RSRC|@@TcruziNonEsmeraldoLike_genome_VER@@</paramValue>
+      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismName$$LoadGenome/genomicSeqs</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="arrayResources" xmlFile="tritrypdb/tcruziArrayStudies.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">TcruziNonEsmeraldoLike_genome_RSRC|@@TcruziNonEsmeraldoLike_genome_VER@@</paramValue>
+      <depends name=""/>
+    </subgraph>
+
+    <subgraph name="TcruziNonEsmeraldoLike_Comment_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TcruziNonEsmeraldoLike_Comment_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="TcruziNonEsmeraldoLike_GeneName_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TcruziNonEsmeraldoLike_GeneName_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="TcruziNonEsmeraldoLike_ECNumbers_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TcruziNonEsmeraldoLike_ECNumbers_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+      <dependsGlobal name="enzymeDB_RSRC"/>
+    </subgraph>
+
+    <subgraph name="TcruziNonEsmeraldoLike_pmid_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TcruziNonEsmeraldoLike_pmid_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="TcruziNonEsmeraldoLike_ctp_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TcruziNonEsmeraldoLike_ctp_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="TcruziNonEsmeraldoLike_uniprot_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TcruziNonEsmeraldoLike_uniprot_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="TcruziNonEsmeraldoLike_prosite_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TcruziNonEsmeraldoLike_prosite_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+   <subgraph name="TcruziNonEsmeraldoLike_pfam_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TcruziNonEsmeraldoLike_pfam_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+   <subgraph name="TcruziNonEsmeraldoLike_interpro_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TcruziNonEsmeraldoLike_interpro_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+   <subgraph name="TcruziNonEsmeraldoLike_pdb_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TcruziNonEsmeraldoLike_pdb_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+</workflowGraph>
+
+
+
