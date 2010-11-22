@@ -1,29 +1,13 @@
 <workflowGraph name="tvivaxSpecificAnalysis">
-  <param name="projectName"/>
-  <param name="projectVersion"/>
   <param name="parentDataDir"/>
   <param name="organismResourceXmlFile"/>
-  <param name="downloadSiteDir"/>
-  <param name="webServicesDataDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/TvivaxSpecific</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDir$$/Tvivax</constant>
-  <constant name="genomicSeqsFile">$$parentDataDir$$/TvivaxLoadGenome/genomicSeqs.fsa</constant>
-  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/TvivaxLoadGenome/genomicSeqsForSsa.fsa</constant>
-  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/TvivaxLoadGenome/transcriptSeqsForSsa.fsa</constant>
-  <constant name="ssaGeneModelFile">$$parentDataDir$$/TvivaxLoadGenome/geneModelForSsa.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <subgraph name="dbxRefsResources" xmlFile="tritrypdb/tvivaxDbxRefsResource.xml">
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/TcongolenseEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name=""/>
-  </subgraph>
 
     <subgraph name="GOAssociations_Tvivax_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">GOAssociations_Tvivax_RSRC</paramValue>
@@ -56,7 +40,19 @@
       <dependsGlobal name="enzymeDB_RSRC"/>
     </subgraph>
 
+    <subgraph name="Tvivax_pmid_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tvivax_pmid_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
 
+    <subgraph name="Tvivax_interpro_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tvivax_interpro_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
 </workflowGraph>
 
 
