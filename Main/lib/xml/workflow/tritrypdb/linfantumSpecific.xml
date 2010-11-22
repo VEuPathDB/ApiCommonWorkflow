@@ -1,10 +1,7 @@
 <workflowGraph name="linfantumSpecificAnalysis">
-  <param name="projectName"/>
-  <param name="projectVersion"/>
   <param name="parentDataDir"/>
   <param name="organismResourceXmlFile"/>
   <param name="downloadSiteDir"/>
-  <param name="webServicesDataDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/LinfantumSpecific</constant>
   <constant name="downloadSiteDataDir">$$downloadSiteDir$$/Linfantum</constant>
@@ -18,14 +15,6 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <subgraph name="dbxRefsResources" xmlFile="tritrypdb/linfantumDbxRefsResource.xml">
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/LinfantumEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name=""/>
-  </subgraph>
-
     <subgraph name="arrayResources" xmlFile="tritrypdb/linfantumArrayStudies.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
@@ -33,6 +22,7 @@
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Linfantum_chromosomes_RSRC|@@Linfantum_chromosomes_VER@@</paramValue>
       <depends name=""/>
     </subgraph>
 
@@ -67,6 +57,40 @@
       <dependsGlobal name="enzymeDB_RSRC"/>
     </subgraph>
 
+    <subgraph name="Linfantum_pmid_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Linfantum_pmid_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Linfantum_ctp_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Linfantum_ctp_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Linfantum_uniprot_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Linfantum_uniprot_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Linfantum_pdb_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Linfantum_pdb_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Linfantum_interpro_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Linfantum_interpro_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
 
 </workflowGraph>
 
