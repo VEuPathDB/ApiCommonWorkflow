@@ -6,7 +6,6 @@
       <param name="downloadSiteDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/tvivaxDbxRefsResources</constant>
-  <constant name="euPathUniProtLinkDownloadFile">$$downloadSiteDir$$/TvivaxEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</constant>
   <constant name="geneAliasesMappingDownloadFile">$$downloadSiteDir$$/txt/TvivaxGeneAlias_$$projectName$$-$$projectVersion$$.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
@@ -17,6 +16,7 @@
      <paramValue name="genomeExtDbRlsSpec">Tvivax_chromosomes_RSRC|@@Tvivax_chromosomes_VER@@</paramValue>
      <paramValue name="outputFile">$$geneAliasesMappingDownloadFile$$</paramValue>
   </step>
+
 
   <subgraph name="Tvivax_Entrez_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Tvivax_Entrez_Gene_dbxref_RSRC</paramValue>
@@ -32,11 +32,6 @@
     <depends name="makeDataDir"/>
   </subgraph>
 
-    <step name="makeEuPathUniProtLinkFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEuPathUniProtLinkFile">
-      <paramValue name="dbrefExtDbRlsSpec">Tvivax_Uniprot_Gene_dbxref_RSRC|@@Tvivax_Uniprot_Gene_dbxref_VER@@</paramValue>
-      <paramValue name="outputFile">$$euPathUniProtLinkDownloadFile$$</paramValue>
-      <paramValue name="projectName">$$projectName$$</paramValue>
-      <depends name="Tvivax_Uniprot_Gene_dbxref_RSRC"/>
-    </step>
+
 
 </workflowGraph>
