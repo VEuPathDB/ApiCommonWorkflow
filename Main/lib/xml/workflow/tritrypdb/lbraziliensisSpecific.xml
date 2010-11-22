@@ -1,29 +1,12 @@
 <workflowGraph name="lbraziliensisSpecificAnalysis">
-  <param name="projectName"/>
-  <param name="projectVersion"/>
   <param name="parentDataDir"/>
   <param name="organismResourceXmlFile"/>
-  <param name="downloadSiteDir"/>
-  <param name="webServicesDataDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/lbraziliensisSpecific</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDir$$/Lbraziliensis</constant>
-  <constant name="genomicSeqsFile">$$parentDataDir$$/LbraziliensisLoadGenome/genomicSeqs.fsa</constant>
-  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/LbraziliensisLoadGenome/genomicSeqsForSsa.fsa</constant>
-  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/LbraziliensisLoadGenome/transcriptSeqsForSsa.fsa</constant>
-  <constant name="ssaGeneModelFile">$$parentDataDir$$/LbraziliensisLoadGenome/geneModelForSsa.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
-
-  <subgraph name="dbxRefsResources" xmlFile="tritrypdb/lbraziliensisDbxRefsResource.xml">
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/LbraziliensisEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name=""/>
-  </subgraph>
 
     <subgraph name="GOAssociations_Lbraziliensis_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">GOAssociations_Lbraziliensis_RSRC</paramValue>
@@ -56,6 +39,54 @@
       <dependsGlobal name="enzymeDB_RSRC"/>
     </subgraph>
 
+    <subgraph name="Lbraziliensis_pmid_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Lbraziliensis_pmid_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Lbraziliensis_interpro_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Lbraziliensis_interpro_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Lbraziliensis_ctp_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Lbraziliensis_ctp_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Lbraziliensis_uniprot_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Lbraziliensis_uniprot_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Lbraziliensis_pdb_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Lbraziliensis_pdb_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Lbraziliensis_prosite_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Lbraziliensis_prosite_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Lbraziliensis_pfam_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Lbraziliensis_pfam_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
 
 </workflowGraph>
 
