@@ -1,90 +1,77 @@
-<workflowGraph name="lmajorSpecificAnalysis">
-  <param name="projectName"/>
-  <param name="projectVersion"/>
+<workflowGraph name="lmajorFriedlinSpecificAnalysis">
   <param name="parentDataDir"/>
   <param name="organismResourceXmlFile"/>
   <param name="downloadSiteDir"/>
-  <param name="webServicesDataDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/LmajorSpecific</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDir$$/Lmajor</constant>
-  <constant name="genomicSeqsFile">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs.fsa</constant>
-  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/LmajorLoadGenome/genomicSeqsForSsa.fsa</constant>
-  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/LmajorLoadGenome/transcriptSeqsForSsa.fsa</constant>
-  <constant name="ssaGeneModelFile">$$parentDataDir$$/LmajorLoadGenome/geneModelForSsa.txt</constant>
+  <constant name="dataDir">$$parentDataDir$$/LmajorFriedlinSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDir$$/LmajorFriedlin</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/LmajorFriedlinLoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/LmajorFriedlinLoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/LmajorFriedlinLoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/LmajorFriedlinLoadGenome/geneModelForSsa.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-    <subgraph name="sangerCosmidEnds_loadAndAnalyze" xmlFile="loadDnaSeqAndAlignToGenome.xml">
+    <subgraph name="sangerCosmidEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
-      <paramValue name="organismName">Lmajor</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">Lmajor_chromosomes_RSRC|@@Lmajor_chromosomes_VER@@</paramValue>
-      <paramValue name="maxIntronSize">100</paramValue>
-      <paramValue name="ncbiTaxonId">5664</paramValue>
-      <paramValue name="BACEndsExtDbRlsSpec">Lmajor_sanger_CosmidEnds_RSRC|@@Lmajor_sanger_CosmidEnds_VER@@</paramValue>
       <paramValue name="BACEndsResourceName">Lmajor_sanger_CosmidEnds_RSRC</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">Lmajor_sanger_CosmidEnds_RSRC|@@Lmajor_sanger_CosmidEnds_VER@@</paramValue>
+      <paramValue name="maxIntronSize">100</paramValue>
+      <paramValue name="ncbiTaxonId">5664</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
       <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
-      <paramValue name="genomicSeqsFile">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs.fsa</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorFriedlinLoadGenome/genomicSeqs</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="sangerFV1Ends_loadAndAnalyze" xmlFile="loadDnaSeqAndAlignToGenome.xml">
+
+    <subgraph name="sangerFV1Ends_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
-      <paramValue name="organismName">Lmajor</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">Lmajor_chromosomes_RSRC|@@Lmajor_chromosomes_VER@@</paramValue>
-      <paramValue name="maxIntronSize">100</paramValue>
-      <paramValue name="ncbiTaxonId">5664</paramValue>
-      <paramValue name="BACEndsExtDbRlsSpec">Lmajor_sanger_FV1Ends_RSRC|@@Lmajor_sanger_FV1Ends_VER@@</paramValue>
       <paramValue name="BACEndsResourceName">Lmajor_sanger_FV1Ends_RSRC</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">Lmajor_sanger_FV1Ends_RSRC|@@Lmajor_sanger_FV1Ends_VER@@</paramValue>
+      <paramValue name="maxIntronSize">100</paramValue>
+      <paramValue name="ncbiTaxonId">5664</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
       <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
-      <paramValue name="genomicSeqsFile">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs.fsa</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorFriedlinLoadGenome/genomicSeqs</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="sangerPACEnds_loadAndAnalyze" xmlFile="loadDnaSeqAndAlignToGenome.xml">
+
+    <subgraph name="sangerPACEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
-      <paramValue name="organismName">Lmajor</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">Lmajor_chromosomes_RSRC|@@Lmajor_chromosomes_VER@@</paramValue>
-      <paramValue name="maxIntronSize">100</paramValue>
-      <paramValue name="ncbiTaxonId">5664</paramValue>
-      <paramValue name="BACEndsExtDbRlsSpec">Lmajor_sanger_PACEnds_RSRC|@@Lmajor_sanger_PACEnds_VER@@</paramValue>
       <paramValue name="BACEndsResourceName">Lmajor_sanger_PACEnds_RSRC</paramValue>
-      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
-      <paramValue name="genomicSeqsFile">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs.fsa</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
-
-    <subgraph name="sangerBACEnds_loadAndAnalyze" xmlFile="loadDnaSeqAndAlignToGenome.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
-      <paramValue name="organismName">Lmajor</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">Lmajor_chromosomes_RSRC|@@Lmajor_chromosomes_VER@@</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">Lmajor_sanger_PACEnds_RSRC|@@Lmajor_sanger_PACEnds_VER@@</paramValue>
       <paramValue name="maxIntronSize">100</paramValue>
       <paramValue name="ncbiTaxonId">5664</paramValue>
-      <paramValue name="BACEndsExtDbRlsSpec">Lmajor_sanger_BACEnds_RSRC|@@Lmajor_sanger_BACEnds_VER@@</paramValue>
-      <paramValue name="BACEndsResourceName">Lmajor_sanger_BACEnds_RSRC</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
       <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
-      <paramValue name="genomicSeqsFile">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs.fsa</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorLoadGenome/genomicSeqs</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorFriedlinLoadGenome/genomicSeqs</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
+    <subgraph name="sangerBACEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="BACEndsResourceName">Lmajor_sanger_BACEnds_RSRC</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">Lmajor_sanger_BACEnds_RSRC|@@Lmajor_sanger_BACEnds_VER@@</paramValue>
+      <paramValue name="maxIntronSize">100</paramValue>
+      <paramValue name="ncbiTaxonId">5664</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
+      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorFriedlinLoadGenome/genomicSeqs</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
 
-  <subgraph name="dbxRefsResources" xmlFile="tritrypdb/lmajorDbxRefsResource.xml">
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/LmajorEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="lmajor_CorrectGeneAliases_RSRC"/>
-  </subgraph>
 
     <subgraph name="arrayResources" xmlFile="tritrypdb/lmajorArrayStudies.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -93,11 +80,12 @@
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
-      <depends name=""/>
+      <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
+      <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="GOAssociations_Lmajor_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">GOAssociations_Lmajor_RSRC</paramValue>
+    <subgraph name="GOAssociations_LmajorFriedlin_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">GOAssociations_LmajorFriedlin_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -105,27 +93,75 @@
       <dependsGlobal name="GO_evidence_codes_RSRC"/>
     </subgraph>
 
-    <subgraph name="Lmajor_Comment_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Lmajor_Comment_RSRC</paramValue>
+    <subgraph name="LmajorFriedlin_Comment_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">LmajorFriedlin_Comment_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="Lmajor_GeneName_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Lmajor_GeneName_RSRC</paramValue>
+    <subgraph name="LmajorFriedlin_GeneName_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">LmajorFriedlin_GeneName_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="Lmajor_ECNumbers_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Lmajor_ECNumbers_RSRC</paramValue>
+    <subgraph name="LmajorFriedlin_ECNumbers_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">LmajorFriedlin_ECNumbers_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
       <dependsGlobal name="enzymeDB_RSRC"/>
     </subgraph>
 
+    <subgraph name="LmajorFriedlin_pmid_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">LmajorFriedlin_pmid_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="LmajorFriedlin_ctp_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">LmajorFriedlin_ctp_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="LmajorFriedlin_uniprot_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">LmajorFriedlin_uniprot_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="LmajorFriedlin_prosite_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">LmajorFriedlin_prosite_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="LmajorFriedlin_pdb_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">LmajorFriedlin_pdb_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="LmajorFriedlin_gi_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">LmajorFriedlin_gi_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="LmajorFriedlin_pfam_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">LmajorFriedlin_pfam_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
 
 </workflowGraph>
