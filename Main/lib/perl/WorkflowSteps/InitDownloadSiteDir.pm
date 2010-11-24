@@ -39,8 +39,8 @@ sub run {
       # find organism in restrictions xml file
       my $xmlFile = "$ENV{GUS_HOME}/lib/xml/organismDataRestrictions.xml";
       $self->_parseXmlFile($xmlFile);
-      if (!exists($self->{organisms}->{$name})) {
-	  $self->error("Can't find organism '$name' in xml file '$xmlFile'");
+      if (!exists($self->{organisms}->{name})) {
+	  $self->error("Can't find organism 'name' in xml file '$xmlFile'");
       }
       
       my $fullPathRestricted = "$apiSiteFilesDir/$downloadSiteDataDir/$projectName/release-$projectVersion/$organismName";
@@ -50,7 +50,7 @@ sub run {
 	  $self->runCmd(0, "rm -rf $fullPathRestricted");
       } else {
 	  $self->runCmd(0, "mkdir -p $fullPathRestricted");
-	  my $restrictionText = $self->{organisms}->{$name};
+	  my $restrictionText = $self->{organisms}->{name};
 	  if ($restrictionText) {
 	      $self->runCmd(0, "mkdir -p $fullPathPublic");
 	      writeIndexFile($fullPathPublic, $restrictionText);

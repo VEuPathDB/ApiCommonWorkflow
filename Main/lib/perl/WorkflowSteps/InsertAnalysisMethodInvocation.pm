@@ -9,7 +9,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $name = $self->getParamValue('name');
+  my $name = $self->getParamValue('method');
   my $version = $self->getParamValue('version');
   my $parameters = $self->getParamValue('parameters');
 
