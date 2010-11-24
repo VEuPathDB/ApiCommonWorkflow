@@ -119,6 +119,11 @@
       <depends name="fixFileNamesforGenomicSeqsSeparateFasta"/>
     </step>
 
+  <step name="runTuningManager"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager">
+      <depends name="organismSpecificISF"/> 
+  </step>
+
   <step name="extractGenomicSeqsForSsa"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqsForSsa">
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
@@ -130,14 +135,14 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTranscriptSeqsForSsa" includeIf="$$extractProteins$$">
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="outputFile">$$transcriptSeqsFileForSsa$$</paramValue>
-      <depends name="organismSpecificISF"/> 
+      <depends name="runTuningManager"/> 
     </step>
 
   <step name="extractGeneModelForSsa"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa" includeIf="$$extractProteins$$">
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="outputFile">$$geneModelFileForSsa$$</paramValue>
-      <depends name="organismSpecificISF"/> 
+      <depends name="runTuningManager"/> 
     </step>
 
     <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
