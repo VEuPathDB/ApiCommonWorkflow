@@ -4,6 +4,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation;
 
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use Data::Dumper;
 
 
 sub run {
@@ -17,8 +18,8 @@ sub run {
 
   $self->_parseXmlFile($xmlFile);
 
-  if (!$self->{methods}->{$name} || !$self->{methods}->{$name}->{version} eq $version) {
-      $self->error("Can't resource '$name' with version '$version' in xml file '$xmlFile'");
+  if (!$self->{methods}->{method}->{$name} || !$self->{methods}->{method}->{$name}->{version} eq $version) {
+      $self->error("Can't find resource '$name' with version '$version' in xml file '$xmlFile'");
   }
 
   my $args = "--name '$name' --version '$version'  --parameters '$parameters' ";
@@ -32,7 +33,7 @@ sub _parseXmlFile {
 
   my $xml = new XML::Simple();
   $self->{methods} = eval{ $xml->XMLin($methodsXmlFile, SuppressEmpty => undef, KeyAttr => 'method', ForceArray=>['method']) };
-#  print STDERR Dumper $self->{data};
+#  print STDERR Dumper $self->{methods};
   $self->error("Error parsing '$methodsXmlFile': \n$@\n") if($@);
 }
 
