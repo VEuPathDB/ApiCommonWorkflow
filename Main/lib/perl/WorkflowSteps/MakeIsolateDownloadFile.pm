@@ -10,7 +10,6 @@ sub run {
   # get parameters
   my @isolateExtDbSpecList = split(/,/,$self->getParamValue('isolateExtDbRlsSpec'));
   my $outputFile = $self->getParamValue('outputFile');
-  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my (@extDbRlsVers,@extDbNames);
 
@@ -46,15 +45,15 @@ sub run {
             AND ed.name in ($extDbNameList) AND edr.version in ($extDbRlsVerList)
             AND enas.na_sequence_id = i.na_sequence_id";
 
-  my $cmd = " gusExtractSequences --outputFile $apiSiteFilesDir/$outputFile  --idSQL \"$sql\"";
+  my $cmd = " gusExtractSequences --outputFile $outputFile  --idSQL \"$sql\"";
 
 
   
   if ($undo) {
-    $self->runCmd(0, "rm -f $apiSiteFilesDir/$outputFile");
+    $self->runCmd(0, "rm -f $outputFile");
   }else{
       if ($test) {
-	  $self->runCmd(0, "echo test > $apiSiteFilesDir/$outputFile");
+	  $self->runCmd(0, "echo test > $outputFile");
       }else{
 	  $self->runCmd($test, $cmd);
       }
@@ -66,7 +65,6 @@ sub getParamsDeclaration {
   return (
           'outputFile',
           'isolateExtDbRlsSpec',
-          'apiSiteFilesDir',
          );
 }
 

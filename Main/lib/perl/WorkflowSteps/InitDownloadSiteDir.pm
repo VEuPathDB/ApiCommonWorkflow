@@ -21,12 +21,11 @@ sub run {
   my $projectVersion = $self->getParamValue('projectVersion');
   my $organismName = $self->getParamValue('organismName');
 
-  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
   my $downloadSiteDataDir = $self->getSharedConfig('downloadSiteDir');  # where we actually write the data
 
   # not using restricted access.  set up dir the old way
   if ($downloadSiteDataDir !~ /Restricted/) {
-      my $fullPath = "$apiSiteFilesDir/$downloadSiteDataDir/$projectName/release-$projectVersion/$organismName";
+      my $fullPath = "$downloadSiteDataDir/$projectName/release-$projectVersion/$organismName";
       if ($undo) {
 	  $self->runCmd(0, "rm -rf $fullPath");
       } else {
@@ -43,8 +42,8 @@ sub run {
 	  $self->error("Can't find organism 'name' in xml file '$xmlFile'");
       }
       
-      my $fullPathRestricted = "$apiSiteFilesDir/$downloadSiteDataDir/$projectName/release-$projectVersion/$organismName";
-      my $fullPathPublic = "$apiSiteFilesDir/downloadSite/$projectName/release-$projectVersion/$organismName";
+      my $fullPathRestricted = "$downloadSiteDataDir/$projectName/release-$projectVersion/$organismName";
+      my $fullPathPublic = "downloadSite/$projectName/release-$projectVersion/$organismName";
       if ($undo) {
 	  $self->runCmd(0, "rm -rf $fullPathPublic");
 	  $self->runCmd(0, "rm -rf $fullPathRestricted");

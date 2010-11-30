@@ -18,8 +18,6 @@ sub run {
 
   my $length = $self->getParamValue('minOrfLength');
 
-  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
-
   my $dbRlsIds = join(",", @extDbRlsIds);
 
   my $sql = <<"EOF";
@@ -61,18 +59,18 @@ EOF
 
   $sql .= " and enas.sequence_ontology_id in ($soIds)" if $soIds;
    my $cmd = <<"EOF";
-      gusExtractSequences --outputFile $apiSiteFilesDir/$outputFile \\
+      gusExtractSequences --outputFile $outputFile \\
       --idSQL \"$sql\" \\
       --verbose
 EOF
-  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $apiSiteFilesDir/$descripFile";
+  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $apiSiteFilesDir/$outputFile");
-    $self->runCmd(0, "rm -f $apiSiteFilesDir/$descripFile");
+    $self->runCmd(0, "rm -f $outputFile");
+    $self->runCmd(0, "rm -f $descripFile");
   } else {
       if ($test) {
-	  $self->runCmd(0,"echo test > $apiSiteFilesDir/$outputFile");
+	  $self->runCmd(0,"echo test > $outputFile");
       }else{
 	  $self->runCmd($test,$cmd);
 	  $self->runCmd($test, $cmdDec);

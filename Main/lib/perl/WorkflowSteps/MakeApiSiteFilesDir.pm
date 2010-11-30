@@ -12,8 +12,6 @@ sub run {
   # get parameters
   my $apiSiteFilesDir = $self->getParamValue('apiSiteFilesDir');
 
-  my $baseDir = $self->getSharedConfig('apiSiteFilesDir');
-
   if($undo){
 
       $self->runCmd(0, "echo Doing nothing for undo");
@@ -22,7 +20,7 @@ sub run {
 
   }else{
 
-      $self->runCmd(0, "mkdir -p $baseDir/$apiSiteFilesDir");
+      $self->runCmd(0, "mkdir -p $apiSiteFilesDir");
       # go to root of local path to avoid skipping intermediate dirs
       #my @path = split(/\//,$apiSiteFilesDir);
       #$self->runCmd(0, "chmod -R g+w $baseDir/$path[0]");
@@ -37,7 +35,6 @@ sub getParamsDeclaration {
 sub getConfigDeclaration {
   return (
          # [name, default, description]
-           ['baseDir', '', ''],
          );
 }
 

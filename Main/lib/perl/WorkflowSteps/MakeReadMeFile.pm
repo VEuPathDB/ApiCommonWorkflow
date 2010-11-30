@@ -11,15 +11,13 @@ sub run {
   my $baseDir = $self->getParamValue('baseDir');
   my $outputFile = $self->getParamValue('outputFile');
 
-  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
-
-  my $cmd = "createReadMeFile.pl --baseDir $apiSiteFilesDir/$baseDir --outputFile $apiSiteFilesDir/$outputFile";
+  my $cmd = "createReadMeFile.pl --baseDir $baseDir --outputFile $outputFile";
 
   if($undo){
-    $self->runCmd(0, "rm -f $apiSiteFilesDir/$outputFile");
+    $self->runCmd(0, "rm -f $outputFile");
   }else{  
       if ($test) {
-	  $self->runCmd(0, "echo test > $apiSiteFilesDir/$outputFile");
+	  $self->runCmd(0, "echo test > $outputFile");
       }else {
 	  $self->runCmd($test, $cmd);
       }
