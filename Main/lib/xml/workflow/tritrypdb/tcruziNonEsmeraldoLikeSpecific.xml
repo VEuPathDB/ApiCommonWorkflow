@@ -14,6 +14,11 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <subgraph name="Tcruzi_BACEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="BACEndsResourceName">Tcruzi_BACEnds_RSRC</paramValue>
@@ -25,7 +30,7 @@
       <paramValue name="genomeExtDbRlsSpec">TcruziNonEsmeraldoLike_genome_RSRC|@@TcruziNonEsmeraldoLike_genome_VER@@</paramValue>
       <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
       <paramValue name="genomicSeqsDir">$$parentDataDir$$/TcruziNonEsmeraldoLikeLoadGenome/genomicSeqs</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <subgraph name="arrayResources" xmlFile="tritrypdb/tcruziArrayStudies.xml">
@@ -36,7 +41,7 @@
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
       <paramValue name="genomeExtDbRlsSpec">TcruziNonEsmeraldoLike_genome_RSRC|@@TcruziNonEsmeraldoLike_genome_VER@@</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <subgraph name="TcruziNonEsmeraldoLike_Comment_RSRC" xmlFile="loadResource.xml">
@@ -112,7 +117,7 @@
 
 
    <subgraph name="TcruziNonEsmeraldoLike_genome_id_mappings_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">TcruziEsmeraldoLike_genome_id_mappings_RSRC</paramValue>
+      <paramValue name="resourceName">TcruziNonEsmeraldoLike_genome_id_mappings_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
