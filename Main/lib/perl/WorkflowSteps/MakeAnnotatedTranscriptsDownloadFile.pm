@@ -22,7 +22,7 @@ sub run {
   push (@dbvers,$ver);
   my $names = join (",",map{"'$_'"} @dbnames);
   my $vers = join (",",map{"'$_'"} @dbvers);
-  my $soIds =  $self->getSoIds(0, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
   my $descripFile= $self->getParamValue('descripFile');
   my $descripString= $self->getParamValue('descripString');
 

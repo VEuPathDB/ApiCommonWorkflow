@@ -15,6 +15,11 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <subgraph name="arrayResources" xmlFile="tritrypdb/linfantumArrayStudies.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
@@ -23,7 +28,7 @@
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
       <paramValue name="genomeExtDbRlsSpec">Linfantum_chromosomes_RSRC|@@Linfantum_chromosomes_VER@@</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <subgraph name="GOAssociations_Linfantum_RSRC" xmlFile="loadResource.xml">
