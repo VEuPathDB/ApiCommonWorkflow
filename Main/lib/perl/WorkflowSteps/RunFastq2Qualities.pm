@@ -23,8 +23,8 @@ sub run {
   } else {
       if ($test) {
 	  $self->testInputFile('seqFile', "$workflowDataDir/$shortSeqsFile");
-
           $self->testInputFile('seqFile', "$workflowDataDir/$pairedEndFile") if $pairedEndFile;
+	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
       }else{
           my $cmd = "fastq2qualities.pl $workflowDataDir/$shortSeqsFile";
 	  $cmd .= " $workflowDataDir/$pairedEndFile" if $pairedEndFile;
