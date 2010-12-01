@@ -14,6 +14,11 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <subgraph name="sangerCosmidEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="BACEndsResourceName">Lmajor_sanger_CosmidEnds_RSRC</paramValue>
@@ -25,7 +30,7 @@
       <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
       <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
       <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorFriedlinLoadGenome/genomicSeqs</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
 
@@ -40,7 +45,7 @@
       <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
       <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
       <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorFriedlinLoadGenome/genomicSeqs</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
 
@@ -55,7 +60,7 @@
       <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
       <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
       <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorFriedlinLoadGenome/genomicSeqs</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <subgraph name="sangerBACEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
@@ -69,7 +74,7 @@
       <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
       <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
       <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorFriedlinLoadGenome/genomicSeqs</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
 
@@ -81,7 +86,7 @@
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
       <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <subgraph name="GOAssociations_LmajorFriedlin_RSRC" xmlFile="loadResource.xml">
