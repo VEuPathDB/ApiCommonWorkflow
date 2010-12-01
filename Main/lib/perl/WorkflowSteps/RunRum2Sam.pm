@@ -30,6 +30,7 @@ sub run {
           $self->testInputFile('seqFile', "$workflowDataDir/$nuFile");
           $self->testInputFile('seqFile', "$workflowDataDir/$fastaFile");
           $self->testInputFile('seqFile', "$workflowDataDir/$qualFile");
+	  $self->runCmd(0, "echo test > $workflowDataDir/$samFile");
       }else{
           my $cmd = "rum2sam.pl $workflowDataDir/$uniqueFile $workflowDataDir/$nuFile $workflowDataDir/$fastaFile $workflowDataDir/$qualFile $workflowDataDir/$samFile";
 	  $self->runCmd($test,$cmd);
