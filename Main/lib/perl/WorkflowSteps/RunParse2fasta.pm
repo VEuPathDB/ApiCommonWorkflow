@@ -27,6 +27,7 @@ sub run {
 	  $self->testInputFile('seqFile', "$workflowDataDir/$shortSeqsFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$shortSeqsFile.org");
           $self->testInputFile('seqFile', "$workflowDataDir/$pairedEndFile") if $pairedEndFile;
+          $self->runCmd(0,"echo test > $workflowDataDir/$outputFile") if $pairedEndFile;
       }else{
 	  $self->runCmd($test,"mv $workflowDataDir/$shortSeqsFile $workflowDataDir/$shortSeqsFile.org");
           my $cmd = "parse2fasta.pl $workflowDataDir/$shortSeqsFile.org";
