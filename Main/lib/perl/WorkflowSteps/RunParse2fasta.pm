@@ -21,7 +21,7 @@ sub run {
 
     if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
-    $self->runCmd(0, "mv $workflowDataDir/$shortSeqsFile.org $workflowDataDir/$shortSeqsFile");
+    $self->runCmd(0, "mv $workflowDataDir/$shortSeqsFile.org $workflowDataDir/$shortSeqsFile") unless $pairedEndFile;
   } else {
       if ($test) {
 	  $self->testInputFile('seqFile', "$workflowDataDir/$shortSeqsFile");
