@@ -40,6 +40,7 @@ sub run {
 inputFilePath=$clusterWorkflowDataDir/$seqsFile
 trimDangling=n
 rmOptions=$options
+dangleMax=0
 ";
       close(F);
   }
