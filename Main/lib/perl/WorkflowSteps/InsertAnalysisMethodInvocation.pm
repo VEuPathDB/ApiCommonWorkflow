@@ -24,7 +24,7 @@ sub run {
 
   my $args = "--name '$name' --version '$version'  --parameters '$parameters' ";
 
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertAnalysisMethod",$args);
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertAnalysisMethodInvocation",$args);
 
 }
 
