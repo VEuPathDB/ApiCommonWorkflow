@@ -1,6 +1,6 @@
 <workflowGraph name="loadAndAnalyzeBACEnds">
   <param name="parentDataDir"/>
-  <param name="BACEndsResourceName"/>
+  <param name="BACEndsResourcesReference"/>
   <param name="organismResourceXmlFile"/>
   <param name="BACEndsExtDbRlsSpec"/>
   <param name="maxIntronSize"/>
@@ -17,12 +17,11 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-    <subgraph name="loadResource" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$BACEndsResourceName$$</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
+  <subgraph name="loadBACEndsResource" xmlFile="$$BACEndsResourcesReference$$">
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
 
   <step name="extractBACEndsSeqs"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
@@ -32,7 +31,7 @@
       <paramValue name="outputFile">$$BACEndsSeqFile$$</paramValue>
       <paramValue name="separateFastaFiles">false</paramValue>
       <paramValue name="outputDirForSeparateFiles"></paramValue>
-      <depends name="loadResource"/> 
+      <depends name="loadBACEndsResource"/> 
     </step>
 
     <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskTaskInputDir">
