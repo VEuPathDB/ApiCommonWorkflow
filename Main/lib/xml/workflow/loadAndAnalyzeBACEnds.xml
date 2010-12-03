@@ -10,6 +10,8 @@
   <param name="repeatMaskSpecies"/>
   <param name="genomicSeqsDir"/>
 
+  <constant name="BACEndsSeqFile">$$dataDir$$/BACEndsSeqs.fsa</constant>
+
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
@@ -25,7 +27,7 @@
       <paramValue name="extDbRlsSpec">$$BACEndsExtDbRlsSpec$$</paramValue>
       <paramValue name="table">ExternalNASequence</paramValue>
       <paramValue name="alternateDefline">na_sequence_id, description, 'length='||length</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/BACEndsSeqs.fsa</paramValue>
+      <paramValue name="outputFile">$$BACEndsSeqFile$$</paramValue>
       <paramValue name="separateFastaFiles">false</paramValue>
       <paramValue name="outputDirForSeparateFiles"></paramValue>
       <depends name="loadBACEndsResource"/> 
@@ -33,7 +35,7 @@
 
     <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskTaskInputDir">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="seqsFile">$$dataDir$$/BACEndsSeqs.fsa</paramValue>
+      <paramValue name="seqsFile">$$BACEndsSeqFile$$</paramValue>
       <paramValue name="dangleMax">30</paramValue>
       <paramValue name="options">$$repeatMaskSpecies$$</paramValue>
       <depends name="extractBACEndsSeqs"/>
