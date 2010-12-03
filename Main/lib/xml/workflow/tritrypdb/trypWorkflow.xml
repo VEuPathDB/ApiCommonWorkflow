@@ -95,29 +95,6 @@
     <depends name="CfasciLoadGenome"/>
   </subgraph>
 
-  <subgraph name="CfasciMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
-    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
-    <paramValue name="organismName">Cfasci</paramValue>
-    <paramValue name="organismFullName">@@CfasciOrganismFullName@@</paramValue>
-    <paramValue name="ncbiTaxonId">5656</paramValue>
-    <paramValue name="parentNcbiTaxonId">5656</paramValue>
-    <paramValue name="genomeSource">@@CfasciGenomeSource@@</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-    <paramValue name="dbESTExtDbRlsSpec"></paramValue>
-    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">Cfasci_contigs_RSRC|@@Cfasci_contigs_VER@@</paramValue>
-    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
-    <paramValue name="minOrfLength">50</paramValue>
-    <paramValue name="deprecated">false</paramValue>
-    <paramValue name="soTermIdsOrNames">contig</paramValue>
-    <paramValue name="makeESTDownloadFile">false</paramValue>
-    <paramValue name="makeProteomeDownloadFile">false</paramValue>
-    <paramValue name="makeGenomicDownloadFile">true</paramValue>
-    <depends name="CfasciPostLoadGenome"/>
-    <depends name="CfasciMakeAndMaskTopLevelGenome"/>
-  </subgraph>
-
 <!--Ltarentolae-->
 
   <subgraph name="LtarentolaeLoadGenome" xmlFile="loadGenome.xml">
@@ -193,40 +170,105 @@
     <depends name="LtarentolaeLoadGenome"/>
   </subgraph>
 
-  <subgraph name="LtarentolaeMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+<!--Lmexicana-->
+
+  <subgraph name="LmexicanaLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lmexicana</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lmexicana_chromosomes_RSRC|@@Lmexicana_chromosomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmexicana.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/lmexicanaISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">5665</paramValue>
     <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
-    <paramValue name="organismName">Ltarentolae</paramValue>
-    <paramValue name="organismFullName">@@LtarentolaeOrganismFullName@@</paramValue>
-    <paramValue name="ncbiTaxonId">5689</paramValue>
-    <paramValue name="parentNcbiTaxonId">5689</paramValue>
-    <paramValue name="genomeSource">@@LtarentolaeGenomeSource@@</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-    <paramValue name="dbESTExtDbRlsSpec"></paramValue>
-    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">Ltarentolae_contigs_RSRC|@@Ltarentolae_contigs_VER@@</paramValue>
-    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
-    <paramValue name="minOrfLength">50</paramValue>
-    <paramValue name="deprecated">false</paramValue>
-    <paramValue name="soTermIdsOrNames">contig</paramValue>
-    <paramValue name="makeESTDownloadFile">false</paramValue>
-    <paramValue name="makeProteomeDownloadFile">false</paramValue>
-    <paramValue name="makeGenomicDownloadFile">true</paramValue>
-    <depends name="LtarentolaePostLoadGenome"/>
-    <depends name="LtarentolaeMakeAndMaskTopLevelGenome"/>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
   </subgraph>
 
+  <subgraph name="LmexicanaMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lmexicana</paramValue>
+    <paramValue name="organismFullName">@@LmexicanaOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lmexicana_chromosomes_RSRC|@@Lmexicana_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmexicana.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="LmexicanaLoadGenome"/>
+  </subgraph>
 
+  <subgraph name="LmexicanaPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lmexicana</paramValue>
+    <paramValue name="organismFullName">@@LmexicanaOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">Lmexicana</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lmexicana_chromosomes_RSRC|@@Lmexicana_chromosomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName">Lmexicana_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Lmexicana_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
+    <paramValue name="ncbiTaxonId">5665</paramValue>
+    <paramValue name="parentNcbiTaxonId">5665</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">32108741</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">true</paramValue>
+    <paramValue name="makeAssemblies">true</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">tritrypdb/lmexicanaProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmexicana.xml</paramValue>
+    <depends name="LmexicanaLoadGenome"/>
+  </subgraph>
 
+  <subgraph name="LmexicanaSpecificWorkflow" xmlFile="tritrypdb/lmexicanaSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmexicana.xml</paramValue>
+    <depends name="LmexicanaLoadGenome"/>
+  </subgraph>
 
+  <subgraph name="LmexicanaLoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lmexicana</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">tritrypdb/lmexicanaGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmexicana.xml</paramValue>
+    <depends name="LmexicanaLoadGenome"/>
+  </subgraph>
 
-
-
-
-
-
-
-
+  <subgraph name="LmexicanaLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Lmexicana</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">tritrypdb/lmexicanaDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmexicana.xml</paramValue>
+    <depends name="LmexicanaLoadGeneAliases"/>
+  </subgraph>
 
 
 
