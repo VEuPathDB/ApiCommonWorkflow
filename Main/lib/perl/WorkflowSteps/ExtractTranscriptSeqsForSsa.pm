@@ -14,7 +14,7 @@ sub run {
 
 
   my $sql = "SELECT ga.source_id||':'||ga.sequence_id||':'||ga.start_min||'-'||ga.end_max||'_'||(decode(ga.is_reversed, 1, '-', '+')), snas.sequence
-             FROM dots.dots.transcript t,
+             FROM dots.transcript t,
                   dots.splicednasequence snas,
                   apidb.geneattributes ga
              WHERE ga.na_feature_id = t.parent_id
