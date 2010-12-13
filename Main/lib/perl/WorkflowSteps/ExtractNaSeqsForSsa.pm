@@ -18,7 +18,7 @@ sub run {
   my $dbRlsIds;
 
   foreach my $db (@extDbRlsSpecList){
-        
+
      $dbRlsIds .= $self->getExtDbRlsId($test, $db).",";
 
   }
@@ -27,9 +27,10 @@ sub run {
 
   my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$ncbiTaxonId);
 
-  my $sql = "select enas.source_id||':1-'||enas.length||'_strand=+', enas.sequence 
-             from dots.externalnasequence enas 
-             where enas.taxon_id=$taxonId";
+  my $sql = "select sa.source_id||':1-'||sa.length||'_strand=+',ns.sequence 
+             from apidb.sequenceattributes sa, dots.nasequence ns 
+             where sa.na_sequence_id = ns.na_sequence_id
+             and sa.NCBI_TAX_ID = $ncbiTaxonId and is_top_level = 1";
 
 
   my $workflowDataDir = $self->getWorkflowDataDir();
