@@ -15,7 +15,7 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $m2c_cmd = "rum2cov.pl $workflowDataDir/$inputFile.sorted $workflowDataDir/$outputUnNormFile";
+    my $m2c_cmd = "rum2cov.pl $workflowDataDir/$inputFile $workflowDataDir/$outputUnNormFile";
     my $normalize_cmd = "normalizeCov.pl $workflowDataDir/$outputUnNormFile > $workflowDataDir/$outputNormFile";
 
     if ($undo) {

@@ -13,7 +13,7 @@ sub run {
   my $rnaSeqExtDbRlsSpec = $self->getParamValue('rnaSeqExtDbRlsSpec');
   my $isfMappingFileRelToGusHome = $self->getParamValue('isfMappingFileRelToGusHome');
   my $soVersion = $self->getParamValue('soVersion');
-  my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
+  my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbSpec');
 
   my $gusHome = $self->getSharedConfig('gusHome');
 
