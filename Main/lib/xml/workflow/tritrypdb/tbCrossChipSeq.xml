@@ -19,11 +19,6 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeSamplesDataDir"/>
-    </step>
-
     <subgraph name="Tbrucei_ChIPSeq_George_Cross_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">Tbrucei_ChIPSeq_George_Cross_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
@@ -31,11 +26,17 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Tbrucei_ChIPSeq_George_Cross_RSRC"/>
+    </step>
+
     <subgraph name="analyzeH3K4me3Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">H3K4me3</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/H3K4me3.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/H3K4me3.fsq</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH3K4me3/H3K4me3.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/H3K4me3.int</paramValue>
       <paramValue name="makeIntensityFile">false</paramValue>
@@ -47,7 +48,6 @@
       <paramValue name="numInsertions">1</paramValue>
       <paramValue name="limitNU">14</paramValue>
       <depends name="Tbrucei_ChIPSeq_George_Cross_RSRC"/>
-      <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
@@ -55,7 +55,7 @@
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">H4K10ac</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/H4K10ac.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/H4K10ac.fsq</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH4K10ac/H4K10ac.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/H4K10ac.int</paramValue>
       <paramValue name="makeIntensityFile">false</paramValue>
@@ -67,7 +67,6 @@
       <paramValue name="numInsertions">1</paramValue>
       <paramValue name="limitNU">14</paramValue>
       <depends name="Tbrucei_ChIPSeq_George_Cross_RSRC"/>
-      <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
@@ -75,7 +74,7 @@
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">BDF3</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/BDF3.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/BDF3.fsq</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeBDF3/BDF3.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/BDF3.int</paramValue>
       <paramValue name="makeIntensityFile">false</paramValue>
@@ -87,17 +86,16 @@
       <paramValue name="numInsertions">1</paramValue>
       <paramValue name="limitNU">14</paramValue>
       <depends name="Tbrucei_ChIPSeq_George_Cross_RSRC"/>
-      <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeH2AZSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH2AzSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">H2AZ</paramValue>
+      <paramValue name="sampleName">H2Az</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/H2AZ.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH2AZ/H2AZ.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H2AZ.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/H2Az.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH2Az/H2Az.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H2Az.int</paramValue>
       <paramValue name="makeIntensityFile">false</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_ChIPSeq_George_Cross_RSRC|@@Tbrucei_ChIPSeq_George_Cross_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -107,17 +105,16 @@
       <paramValue name="numInsertions">1</paramValue>
       <paramValue name="limitNU">14</paramValue>
       <depends name="Tbrucei_ChIPSeq_George_Cross_RSRC"/>
-      <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeH2BVSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH2BvSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">H2BV</paramValue>
+      <paramValue name="sampleName">H2Bv</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/H2BV.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH2BV/H2BV.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H2BV.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/H2Bv.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH2Bv/H2Bv.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H2Bv.int</paramValue>
       <paramValue name="makeIntensityFile">false</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_ChIPSeq_George_Cross_RSRC|@@Tbrucei_ChIPSeq_George_Cross_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -127,17 +124,16 @@
       <paramValue name="numInsertions">1</paramValue>
       <paramValue name="limitNU">14</paramValue>
       <depends name="Tbrucei_ChIPSeq_George_Cross_RSRC"/>
-      <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeH4VSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH4vSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">H4V</paramValue>
+      <paramValue name="sampleName">H4v</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/H4V.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH4V/H4V.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H4V.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/H4v.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH4v/H4v.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H4v.int</paramValue>
       <paramValue name="makeIntensityFile">false</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_ChIPSeq_George_Cross_RSRC|@@Tbrucei_ChIPSeq_George_Cross_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -147,17 +143,16 @@
       <paramValue name="numInsertions">1</paramValue>
       <paramValue name="limitNU">14</paramValue>
       <depends name="Tbrucei_ChIPSeq_George_Cross_RSRC"/>
-      <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="analyzeH3VSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeH3vSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">H3V</paramValue>
+      <paramValue name="sampleName">H3v</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/H3V.fsa</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH3V/H3V.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H3V.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/H3v.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH3v/H3v.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H3v.int</paramValue>
       <paramValue name="makeIntensityFile">false</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_ChIPSeq_George_Cross_RSRC|@@Tbrucei_ChIPSeq_George_Cross_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -167,15 +162,14 @@
       <paramValue name="numInsertions">1</paramValue>
       <paramValue name="limitNU">14</paramValue>
       <depends name="Tbrucei_ChIPSeq_George_Cross_RSRC"/>
-      <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
     <subgraph name="analyzeBDF3-HASample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">BDF3-HA</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/BDF3-HA.fsq</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_ChIPSeq_George_Cross_RSRC/final/BDF3-HA.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeBDF3-HA/BDF3-HA.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/BDF3-HA.int</paramValue>
       <paramValue name="makeIntensityFile">false</paramValue>
@@ -187,7 +181,6 @@
       <paramValue name="numInsertions">1</paramValue>
       <paramValue name="limitNU">14</paramValue>
       <depends name="Tbrucei_ChIPSeq_George_Cross_RSRC"/>
-      <depends name="makeSamplesDataDir"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
 

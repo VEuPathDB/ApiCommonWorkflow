@@ -1,10 +1,10 @@
 <workflowGraph name="getAndMapProbes">
     <param name="parentDataDir"/>
     <param name="probeResourceName"/>
-    <param name="organismResourceXmlFile"/>
-    <param name="ssaGeneModelFile"/>
     <param name="chipProbeExtDbRlsSpec"/>
     <param name="isOneChannel"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="ssaGeneModelFile"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="genomicSeqsFileForSsa"/>
     <param name="transcriptSeqsFileForSsa"/>
@@ -24,11 +24,6 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-
     <subgraph name="probe_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">$$probeResourceName$$</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
@@ -39,6 +34,11 @@
     <step name="runParse2fasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunParse2fasta">
       <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
       <depends name="probe_RSRC"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="runParse2fasta"/>
     </step>
 
     <subgraph name="runRUMOnCluster"  xmlFile="runRUMOnCluster.xml">

@@ -25,11 +25,6 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeSamplesDataDir"/>
-    </step>
-
     <subgraph name="Tbrucei_RNASeq_Clayton_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">Tbrucei_RNASeq_Clayton_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
@@ -37,11 +32,17 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Tbrucei_RNASeq_Clayton_RSRC"/>
+    </step>
+
     <subgraph name="analyzePaired_sequencesSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Paired_sequences</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Clayton_RSRC/final/Clayton_RNA_seq_trimed.fsa</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Clayton_RSRC/final/Clayton_RNA_seq_trimed.fsq</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzePaired_sequences/Paired_sequences.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Paired_sequences.int</paramValue>
       <paramValue name="makeIntensityFile">true</paramValue>
@@ -52,7 +53,6 @@
       <paramValue name="pairedReadFilePath"></paramValue>
       <paramValue name="numInsertions">1</paramValue>
       <paramValue name="limitNU">14</paramValue>
-      <depends name="makeSamplesDataDir"/>
       <depends name="Tbrucei_RNASeq_Clayton_RSRC"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
