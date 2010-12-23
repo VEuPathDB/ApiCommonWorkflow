@@ -14,6 +14,8 @@
     <param name="webServicesDataDir"/>
     <param name="organismResourceXmlFile"/>
     <param name="commonResourceXmlFile"/>
+    <param name="organismSpecificCreateGenesForGeneFeatures"/>
+    <param name="createGenesForGeneFeatures"/>
 
     <constant name="orthoMCLPhyleticProfilesResourceName">OrthoMCL_Phyletic_RSRC</constant>
     <constant name="orthoMCLOrthologousGroupsResourceName">OrthoMCL_RSRC</constant>
@@ -86,5 +88,12 @@
       <paramValue name="outputDir">$$webServicesDataDir$$/mercator</paramValue>
       <depends name="runPairwiseMercatorMavid"/>
     </step>
+
+  <subgraph name="organismSpecificCreateGenesForGeneFeatures" xmlFile="$$organismSpecificCreateGenesForGeneFeatures$$" includeIf="$$createGenesForGeneFeatures$$">
+    <paramValue name="mercatorDataDir">$$mercatorDataDir$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+     <paramValue name="cndSrcBin">$$cndSrcBin$$</paramValue>
+    <depends name="copyPairwiseMercatorDirsToWebserviceDir"/>
+  </subgraph>
 
 </workflowGraph>

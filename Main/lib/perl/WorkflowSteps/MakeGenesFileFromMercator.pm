@@ -7,37 +7,34 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
     my ($self, $test, $undo) = @_;
-    my $mercatorOutputDir = $self->getParamValue('mercatorOutputDir');
+    my $mercatorDataDir = $self->getParamValue('mercatorDataDir');
     my $cndSrcBin = $self->getParamValue('cndSrcBin');
-    my $outputDir = $self->getParamValue('outputDir');
+    my $outputFile = $self->getParamValue('outputFile');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
     my $cmd = '';
     if ($undo) {
-	$self->runCmd(0, "rm -fr $workflowDataDir/$outputDir");
+	$self->runCmd(0, "rm -fr $workflowDataDir/$outputFile");
 
     }else{
 	if ($test) {
-	    $self->runCmd(0,"mkdir -p $workflowDataDir/$outputDir");
-	    $self->runCmd(0,"echo hello > $workflowDataDir/$outputDir/allGenes.txt");
+	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}else{
-	    $cmd = "makeGenesFromMercator --mercatorOutputDir $mercatorOutputDir --t 'protein_coding' --cndSrcBin $cndSrcBin --uga --to --verbose > allGeneClusters.txt";
+	    $cmd = "makeGenesFromMercator --mercatorOutputDir $mercatorDataDir --t 'protein_coding' --cndSrcBin $cndSrcBin --uga --to --verbose > $workflowDataDir/$outputFile.Clusters";
 	    $self->runCmd($test, $cmd);
-	    $cmd = "makeGenesFromMercator --mercatorOutputDir $mercatorOutputDir --t 'rna_coding' --uga --to --verbose >> allGeneClusters.txt";
+	    $cmd = "makeGenesFromMercator --mercatorOutputDir $mercatorDataDir --t 'rna_coding' --uga --to --verbose >> $workflowDataDir/$outputFile.Clusters";
 	    $self->runCmd($test, $cmd);
-
-	    $cmd = "grep ^cluster_ allGeneClusters.txt > allGenes.txt";
-
+	    $cmd = "grep ^cluster_ $workflowDataDir/$outputFile.Clusters >$workflowDataDir/$outputFile";
 	    $self->runCmd($test,$cmd);
 	}
     }
 }
 
 sub getParamsDeclaration {
-    return ('mercatorOutputDir',
+    return ('mercatorDataDir',
             'outputDir',
-            'cndSrcBin',
+            'outputFile',
            );
 }
 
@@ -45,7 +42,6 @@ sub getParamsDeclaration {
 sub getConfigDeclaration {
     return (
             # [name, default, description]
-              ['ncbiBlastPath', "", ""]
            );
 }
 
