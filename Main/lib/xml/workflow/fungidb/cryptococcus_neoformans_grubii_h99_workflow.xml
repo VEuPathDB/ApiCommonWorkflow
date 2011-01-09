@@ -28,7 +28,20 @@
       <depends name="makeDataDir"/>
     </step>
 
-<!-- Isloates: skip
+  <!-- //////////////////////
+             ALIASES
+       ////////////////////// -->
+
+       <!-- Primary Aliases (FungiDB IDs to Original IDs) -->
+       <subgraph name="cryptococcus_neoformans_grubii_h99_primary_gene_aliases_RSRC" xmlFile="loadResource.xml">
+            <paramValue name="resourceName">cryptococcus_neoformans_grubii_h99_primary_gene_aliases_RSRC</paramValue>
+            <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <depends name="makeDataDir"/>
+       </subgraph>
+
+
+<!-- Isolates: skip
     <subgraph name="mapIsolatesToGenome" xmlFile="fungidb/plasmoMapIsolatesToGenome.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">cryptococcus_neoformans_grubii_h99</paramValue>
@@ -48,100 +61,14 @@
     </subgraph>
 -->
 
-<!--
+<!-- Deprecated but I don't know how to undo... -->
     <subgraph name="cryptococcus_neoformans_grubii_h99_genedb_ids_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">cryptococcus_neoformans_grubii_h99_genedb_ids_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
--->
 
-<!-- Correct gene aliases: skip
-    <subgraph name="cryptococcus_neoformans_grubii_h99_correct_gene_aliases_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">cryptococcus_neoformans_grubii_h99_correct_gene_aliases_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="cryptococcus_neoformans_grubii_h99_genedb_ids_RSRC"/>
-    </subgraph>
--->
-
-<!-- Microarray: skip
-    <subgraph name="arrayResources" xmlFile="fungidb/cryptococcus_neoformans_grubii_h99_array_studies.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
-      <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
-      <depends name="cryptococcus_neoformans_grubii_h99_correct_gene_aliases_RSRC"/>
-    </subgraph>
--->
-
-<!-- RNASeq/ChipSeq: skip for now
-  <subgraph name="cryptococcus_neoformans_grubii_h99_rna_seq_and_chip_seq" xmlFile="fungidb/cryptococcus_neoformans_grubii_h99_rna_seq_and_chip_seq.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
-    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
--->
-
-
-<!-- Sage tags: skip
-  <subgraph name="WirthSageTagArrayDesign_RSRC" xmlFile="loadResource.xml">
-     <paramValue name="resourceName">WirthSageTagArrayDesign_RSRC</paramValue>
-     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-     <depends name="makeDataDir"/>
-  </subgraph>
-
-  <subgraph name="cryptococcus_neoformans_grubii_h99_map_sage_tags" xmlFile="mapSageTags.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="sageTagExtDbRlsSpec">WirthSageTagArrayDesign_RSRC|@@WirthSageTagArrayDesign_VER@@</paramValue>
-    <paramValue name="studyName">Transcriptional profile of P.falciparum by Serial analysis of gene expression</paramValue>
-    <paramValue name="paramValue">25372</paramValue>  
-    <paramValue name="nickName">mapSageTags</paramValue>   
-    <paramValue name="calFreq">true</paramValue>
-    <depends name="WirthSageTagArrayDesign_RSRC"/>
-  </subgraph>
-
-    <subgraph name="WirthSageTagFreqs_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">WirthSageTagFreqs_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="WirthSageTagArrayDesign_RSRC"/>
-    </subgraph>
--->
-
-<!--
-  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
-     <paramValue name="genomeExtDbRlsSpec">cryptococcus_neoformans_grubii_h99_genome_sequence_RSRC|@@cryptococcus_neoformans_grubii_h99_GENOME_SEQUENCE_VER@@</paramValue>
-     <paramValue name="outputFile">$$downloadSiteDataDir$$/tabular/cryptococcus_neoformans_grubii_h99_GeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <depends name="cryptococcus_neoformans_grubii_h99_correct_gene_aliases_RSRC"/>
-  </step>
-
-  <subgraph name="dbxRefsResources" xmlFile="fungidb/cryptococcus_neoformans_grubii_h99_dbxrefs_workflow.xml">
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/cryptococcus_neoformans_grubii_h99_EuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="cryptococcus_neoformans_grubii_h99_correct_gene_aliases_RSRC"/>
-  </subgraph>
--->
-
-<!--
-  <subgraph name="cryptococcus_neoformans_grubii_h99_misc_resources" xmlFile="fungidb/cryptococcus_neoformans_grubii_h99_misc_workflow.xml">
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
--->
 
   <!-- Gene Ontology -->
 <!--
@@ -174,16 +101,6 @@
     <depends name="makeDataDir"/>
     <dependsGlobal name="enzymeDB_RSRC"/>
   </subgraph>
--->
-
-    <!-- Aliases -->
-<!--
-    <subgraph name="cryptococcus_neoformans_grubii_h99_gene_aliases_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">cryptococcus_neoformans_grubii_h99_gene_aliases_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
 -->
 
     <!-- XREFs -->
