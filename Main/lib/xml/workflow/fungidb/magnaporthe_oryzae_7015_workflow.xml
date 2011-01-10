@@ -1,10 +1,10 @@
 <!-- ////////////////////////////////////////////////
 
-    Coccidiodes immitis (RS): organism specific workflow
+    Magnaporthe oryzae (70-15): organism specific workflow
 
      ////////////////////////////////////////////////  -->
 
-<workflowGraph name="coccidiodes_immitis_rs_workflow">
+<workflowGraph name="magnaporthe_oryzae_7015_workflow">
   <param name="projectName"/>
   <param name="projectVersion"/>
   <param name="parentDataDir"/>
@@ -12,12 +12,12 @@
   <param name="downloadSiteDataDir"/>
   <param name="webServicesDataDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/coccidiodes_immitis_rs_workflow</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/coccidiodes_immitis_rs</constant>
-  <constant name="genomicSeqsFile">$$parentDataDir$$/coccidiodes_immitis_rs_LoadGenome/genomicSeqs.fsa</constant>
-  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/coccidiodes_immitis_rs_LoadGenome/genomicSeqsForSsa.fsa</constant>
-  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/coccidiodes_immitis_rs_LoadGenome/transcriptSeqsForSsa.fsa</constant>
-  <constant name="ssaGeneModelFile">$$parentDataDir$$/coccidiodes_immitis_rs_LoadGenome/geneModelForSsa.txt</constant>
+  <constant name="dataDir">$$parentDataDir$$/magnaporthe_oryzae_7015_workflow</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/magnaporthe_oryzae_7015</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/magnaporthe_oryzae_7015_LoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/magnaporthe_oryzae_7015_LoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/magnaporthe_oryzae_7015_LoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/magnaporthe_oryzae_7015_LoadGenome/geneModelForSsa.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -28,19 +28,70 @@
       <depends name="makeDataDir"/>
     </step>
 
+  <!-- //////////////////////
+             ALIASES
+       ////////////////////// -->
+
+       <!-- Primary Aliases -->
+       <subgraph name="magnaporthe_oryzae_7015_primary_gene_aliases_RSRC" xmlFile="loadResource.xml">
+            <paramValue name="resourceName">magnaporthe_oryzae_7015_primary_gene_aliases_RSRC</paramValue>
+            <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <depends name="makeDataDir"/>
+       </subgraph>
+
+       <!-- Other Aliases -->
+       <subgraph name="magnaporthe_oryzae_7015_gene_aliases_RSRC" xmlFile="loadResource.xml">
+            <paramValue name="resourceName">magnaporthe_oryzae_7015_gene_aliases_RSRC</paramValue>
+            <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <depends name="makeDataDir"/>
+       </subgraph>
+
+  <!-- //////////////////////
+             DBXREFS
+       ////////////////////// -->
+
+       <!-- Uniprot -->
+       <subgraph name="magnaporthe_oryzae_7015_uniprot_dbxrefs_RSRC" xmlFile="loadResource.xml">
+            <paramValue name="resourceName">magnaporthe_oryzae_7015_uniprot_dbxrefs_RSRC</paramValue>
+            <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <depends name="makeDataDir"/>
+       </subgraph>
+
+       <!-- EC IDs -->
+       <subgraph name="magnaporthe_oryzae_7015_ec_ids_RSRC" xmlFile="loadResource.xml">
+            <paramValue name="resourceName">magnaporthe_oryzae_7015_ec_ids_RSRC</paramValue>
+            <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <depends name="makeDataDir"/>
+            <dependsGlobal name="enzymeDB_RSRC"/>
+        </subgraph>
+
+        <!-- REFSEQ -->
+        <subgraph name="magnaporthe_oryzae_7015_refseq_dbxrefs_RSRC" xmlFile="loadResource.xml">
+            <paramValue name="resourceName">magnaporthe_oryzae_7015_refseq_dbxrefs_RSRC</paramValue>
+            <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <depends name="makeDataDir"/>
+        </subgraph>
+
+
+
 <!-- Isloates: skip
     <subgraph name="mapIsolatesToGenome" xmlFile="fungidb/plasmoMapIsolatesToGenome.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismName">coccidiodes_immitis_rs</paramValue>
+      <paramValue name="organismName">magnaporthe_oryzae_7015</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genome_sequence_RSRC|@@coccidiodes_immitis_rs_GENOME_SEQUENCE_VER@@</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">magnaporthe_oryzae_7015_genome_sequence_RSRC|@@magnaporthe_oryzae_7015_GENOME_SEQUENCE_VER@@</paramValue>
       <depends name="mirrorToCluster"/>
       <dependsGlobal name="isolatesResource"/>
     </subgraph>
 -->
 
 <!-- SNPs: skip
-    <subgraph name="snps" xmlFile="fungidb/coccidiodes_immitis_rs_SNPs.xml">
+    <subgraph name="snps" xmlFile="fungidb/magnaporthe_oryzae_7015_SNPs.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
@@ -48,36 +99,38 @@
     </subgraph>
 -->
 
-    <subgraph name="coccidiodes_immitis_rs_genedb_ids_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">coccidiodes_immitis_rs_genedb_ids_RSRC</paramValue>
+<!--
+    <subgraph name="magnaporthe_oryzae_7015_genedb_ids_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">magnaporthe_oryzae_7015_genedb_ids_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
+-->
 
 <!-- Correct gene aliases: skip
-    <subgraph name="coccidiodes_immitis_rs_correct_gene_aliases_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">coccidiodes_immitis_rs_correct_gene_aliases_RSRC</paramValue>
+    <subgraph name="magnaporthe_oryzae_7015_correct_gene_aliases_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">magnaporthe_oryzae_7015_correct_gene_aliases_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="coccidiodes_immitis_rs_genedb_ids_RSRC"/>
+      <depends name="magnaporthe_oryzae_7015_genedb_ids_RSRC"/>
     </subgraph>
 -->
 
 <!-- Microarray: skip
-    <subgraph name="arrayResources" xmlFile="fungidb/coccidiodes_immitis_rs_array_studies.xml">
+    <subgraph name="arrayResources" xmlFile="fungidb/magnaporthe_oryzae_7015_array_studies.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
-      <depends name="coccidiodes_immitis_rs_correct_gene_aliases_RSRC"/>
+      <depends name="magnaporthe_oryzae_7015_correct_gene_aliases_RSRC"/>
     </subgraph>
 -->
 
 <!-- RNASeq/ChipSeq: skip for now
-  <subgraph name="coccidiodes_immitis_rs_rna_seq_and_chip_seq" xmlFile="fungidb/coccidiodes_immitis_rs_rna_seq_and_chip_seq.xml">
+  <subgraph name="magnaporthe_oryzae_7015_rna_seq_and_chip_seq" xmlFile="fungidb/magnaporthe_oryzae_7015_rna_seq_and_chip_seq.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
@@ -98,7 +151,7 @@
      <depends name="makeDataDir"/>
   </subgraph>
 
-  <subgraph name="coccidiodes_immitis_rs_map_sage_tags" xmlFile="mapSageTags.xml">
+  <subgraph name="magnaporthe_oryzae_7015_map_sage_tags" xmlFile="mapSageTags.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
     <paramValue name="sageTagExtDbRlsSpec">WirthSageTagArrayDesign_RSRC|@@WirthSageTagArrayDesign_VER@@</paramValue>
@@ -119,22 +172,22 @@
 
 <!--
   <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
-     <paramValue name="genomeExtDbRlsSpec">coccidiodes_immitis_rs_genome_sequence_RSRC|@@coccidiodes_immitis_rs_GENOME_SEQUENCE_VER@@</paramValue>
-     <paramValue name="outputFile">$$downloadSiteDataDir$$/tabular/coccidiodes_immitis_rs_GeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <depends name="coccidiodes_immitis_rs_correct_gene_aliases_RSRC"/>
+     <paramValue name="genomeExtDbRlsSpec">magnaporthe_oryzae_7015_genome_sequence_RSRC|@@magnaporthe_oryzae_7015_GENOME_SEQUENCE_VER@@</paramValue>
+     <paramValue name="outputFile">$$downloadSiteDataDir$$/tabular/magnaporthe_oryzae_7015_GeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
+    <depends name="magnaporthe_oryzae_7015_correct_gene_aliases_RSRC"/>
   </step>
 
-  <subgraph name="dbxRefsResources" xmlFile="fungidb/coccidiodes_immitis_rs_dbxrefs_workflow.xml">
+  <subgraph name="dbxRefsResources" xmlFile="fungidb/magnaporthe_oryzae_7015_dbxrefs_workflow.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/coccidiodes_immitis_rs_EuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
+    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/magnaporthe_oryzae_7015_EuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="coccidiodes_immitis_rs_correct_gene_aliases_RSRC"/>
+    <depends name="magnaporthe_oryzae_7015_correct_gene_aliases_RSRC"/>
   </subgraph>
 -->
 
 <!--
-  <subgraph name="coccidiodes_immitis_rs_misc_resources" xmlFile="fungidb/coccidiodes_immitis_rs_misc_workflow.xml">
+  <subgraph name="magnaporthe_oryzae_7015_misc_resources" xmlFile="fungidb/magnaporthe_oryzae_7015_misc_workflow.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
@@ -142,8 +195,8 @@
 -->
 
   <!-- Gene Ontology -->
-  <subgraph name="coccidiodes_immitis_rs_go_associations_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">coccidiodes_immitis_rs_go_associations_RSRC</paramValue>
+  <subgraph name="magnaporthe_oryzae_7015_go_associations_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">magnaporthe_oryzae_7015_go_associations_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
@@ -151,43 +204,14 @@
     <dependsGlobal name="GO_evidence_codes_RSRC"/>
   </subgraph>
 
-  <!-- Uniprot -->
-  <subgraph name="coccidiodes_immitis_rs_uniprot_dbxrefs_RSRC" xmlFile="loadResource.xml">
-     <paramValue name="resourceName">coccidiodes_immitis_rs_uniprot_dbxrefs_RSRC</paramValue>
-     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-     <depends name="makeDataDir"/>
-  </subgraph>
 
-  <!-- EC IDs -->
-  <subgraph name="coccidiodes_immitis_rs_ec_ids_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">coccidiodes_immitis_rs_ec_ids_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
-    <dependsGlobal name="enzymeDB_RSRC"/>
-  </subgraph>
 
-    <!-- Aliases -->
-    <subgraph name="coccidiodes_immitis_rs_gene_aliases_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">coccidiodes_immitis_rs_gene_aliases_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
 
-    <!-- XREFs -->
-    <subgraph name="coccidiodes_immitis_rs_refseq_dbxrefs_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">coccidiodes_immitis_rs_refseq_dbxrefs_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
 
 
 <!-- Anticodons: skip
-  <subgraph name="coccidiodes_immitis_rs_anticodons_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">coccidiodes_immitis_rs_anticodons_RSRC</paramValue>
+  <subgraph name="magnaporthe_oryzae_7015_anticodons_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">magnaporthe_oryzae_7015_anticodons_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
@@ -195,7 +219,7 @@
 -->
 
 <!--
-  <subgraph name="coccidiodes_immitis_rs_make_and_format_download_files" xmlFile="fungidb/fungidb_make_and_format_download_files_workflow.xml">
+  <subgraph name="magnaporthe_oryzae_7015_make_and_format_download_files" xmlFile="fungidb/fungidb_make_and_format_download_files_workflow.xml">
     <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
@@ -206,9 +230,4 @@
   </subgraph>
 -->
 
-</workflowGraph>
-
-
-
-
-
+</workflowGraph

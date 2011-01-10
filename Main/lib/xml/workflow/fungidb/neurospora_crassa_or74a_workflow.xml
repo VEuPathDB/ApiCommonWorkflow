@@ -32,13 +32,52 @@
              ALIASES
        ////////////////////// -->
 
-       <!-- Primary Aliases (FungiDB IDs to Original IDs) -->
+       <!-- Primary Aliases -->
        <subgraph name="neurospora_crassa_or74a_primary_gene_aliases_RSRC" xmlFile="loadResource.xml">
             <paramValue name="resourceName">neurospora_crassa_or74a_primary_gene_aliases_RSRC</paramValue>
             <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
             <paramValue name="parentDataDir">$$dataDir$$</paramValue>
             <depends name="makeDataDir"/>
        </subgraph>
+
+       <!-- Other Aliases -->
+       <subgraph name="neurospora_crassa_or74a_gene_aliases_RSRC" xmlFile="loadResource.xml">
+            <paramValue name="resourceName">neurospora_crassa_or74a_gene_aliases_RSRC</paramValue>
+            <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <depends name="makeDataDir"/>
+       </subgraph>
+
+  <!-- //////////////////////
+             DBXREFS
+       ////////////////////// -->
+
+       <!-- Uniprot -->
+       <subgraph name="neurospora_crassa_or74a_uniprot_dbxrefs_RSRC" xmlFile="loadResource.xml">
+            <paramValue name="resourceName">neurospora_crassa_or74a_uniprot_dbxrefs_RSRC</paramValue>
+            <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <depends name="makeDataDir"/>
+       </subgraph>
+
+       <!-- EC IDs -->
+       <subgraph name="neurospora_crassa_or74a_ec_ids_RSRC" xmlFile="loadResource.xml">
+            <paramValue name="resourceName">neurospora_crassa_or74a_ec_ids_RSRC</paramValue>
+            <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <depends name="makeDataDir"/>
+            <dependsGlobal name="enzymeDB_RSRC"/>
+        </subgraph>
+
+        <!-- REFSEQ -->
+        <subgraph name="neurospora_crassa_or74a_refseq_dbxrefs_RSRC" xmlFile="loadResource.xml">
+            <paramValue name="resourceName">neurospora_crassa_or74a_refseq_dbxrefs_RSRC</paramValue>
+            <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <depends name="makeDataDir"/>
+        </subgraph>
+
+
 
 <!-- Isloates: skip
     <subgraph name="mapIsolatesToGenome" xmlFile="fungidb/plasmoMapIsolatesToGenome.xml">
@@ -60,12 +99,92 @@
     </subgraph>
 -->
 
+<!--
     <subgraph name="neurospora_crassa_or74a_genedb_ids_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">neurospora_crassa_or74a_genedb_ids_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
+-->
+
+<!-- Correct gene aliases: skip
+    <subgraph name="neurospora_crassa_or74a_correct_gene_aliases_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">neurospora_crassa_or74a_correct_gene_aliases_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="neurospora_crassa_or74a_genedb_ids_RSRC"/>
+    </subgraph>
+-->
+
+<!-- Microarray: skip
+    <subgraph name="arrayResources" xmlFile="fungidb/neurospora_crassa_or74a_array_studies.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
+      <depends name="neurospora_crassa_or74a_correct_gene_aliases_RSRC"/>
+    </subgraph>
+-->
+
+<!-- RNASeq/ChipSeq: skip for now
+  <subgraph name="neurospora_crassa_or74a_rna_seq_and_chip_seq" xmlFile="fungidb/neurospora_crassa_or74a_rna_seq_and_chip_seq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+-->
+
+
+<!-- Sage tags: skip
+  <subgraph name="WirthSageTagArrayDesign_RSRC" xmlFile="loadResource.xml">
+     <paramValue name="resourceName">WirthSageTagArrayDesign_RSRC</paramValue>
+     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+     <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="neurospora_crassa_or74a_map_sage_tags" xmlFile="mapSageTags.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="sageTagExtDbRlsSpec">WirthSageTagArrayDesign_RSRC|@@WirthSageTagArrayDesign_VER@@</paramValue>
+    <paramValue name="studyName">Transcriptional profile of P.falciparum by Serial analysis of gene expression</paramValue>
+    <paramValue name="paramValue">25372</paramValue>  
+    <paramValue name="nickName">mapSageTags</paramValue>   
+    <paramValue name="calFreq">true</paramValue>
+    <depends name="WirthSageTagArrayDesign_RSRC"/>
+  </subgraph>
+
+    <subgraph name="WirthSageTagFreqs_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">WirthSageTagFreqs_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="WirthSageTagArrayDesign_RSRC"/>
+    </subgraph>
+-->
+
+<!--
+  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
+     <paramValue name="genomeExtDbRlsSpec">neurospora_crassa_or74a_genome_sequence_RSRC|@@neurospora_crassa_or74a_GENOME_SEQUENCE_VER@@</paramValue>
+     <paramValue name="outputFile">$$downloadSiteDataDir$$/tabular/neurospora_crassa_or74a_GeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
+    <depends name="neurospora_crassa_or74a_correct_gene_aliases_RSRC"/>
+  </step>
+
+  <subgraph name="dbxRefsResources" xmlFile="fungidb/neurospora_crassa_or74a_dbxrefs_workflow.xml">
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/neurospora_crassa_or74a_EuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="neurospora_crassa_or74a_correct_gene_aliases_RSRC"/>
+  </subgraph>
+-->
 
 <!--
   <subgraph name="neurospora_crassa_or74a_misc_resources" xmlFile="fungidb/neurospora_crassa_or74a_misc_workflow.xml">
@@ -76,7 +195,6 @@
 -->
 
   <!-- Gene Ontology -->
-<!--
   <subgraph name="neurospora_crassa_or74a_go_associations_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">neurospora_crassa_or74a_go_associations_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
@@ -85,39 +203,11 @@
     <dependsGlobal name="GO_RSRC"/>
     <dependsGlobal name="GO_evidence_codes_RSRC"/>
   </subgraph>
--->
-
-  <!-- Uniprot -->
-<!--
-  <subgraph name="neurospora_crassa_or74a_uniprot_dbxrefs_RSRC" xmlFile="loadResource.xml">
-     <paramValue name="resourceName">neurospora_crassa_or74a_uniprot_dbxrefs_RSRC</paramValue>
-     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-     <depends name="makeDataDir"/>
-  </subgraph>
--->
-
-  <!-- EC IDs -->
-<!--
-  <subgraph name="neurospora_crassa_or74a_ec_ids_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">neurospora_crassa_or74a_ec_ids_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
-    <dependsGlobal name="enzymeDB_RSRC"/>
-  </subgraph>
--->
 
 
-    <!-- XREFs -->
-<!--
-    <subgraph name="neurospora_crassa_or74a_refseq_dbxrefs_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">neurospora_crassa_or74a_refseq_dbxrefs_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
--->
+
+
+
 
 <!-- Anticodons: skip
   <subgraph name="neurospora_crassa_or74a_anticodons_RSRC" xmlFile="loadResource.xml">
@@ -140,9 +230,4 @@
   </subgraph>
 -->
 
-</workflowGraph>
-
-
-
-
-
+</workflowGraph

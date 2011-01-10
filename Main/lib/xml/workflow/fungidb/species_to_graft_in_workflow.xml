@@ -661,3 +661,224 @@ INSERT INTO the root graph fungidbWorkflow.xml -->
   </subgraph>
   -->
 
+<!-- 
+
+INSERT INTO the root graph fungidbWorkflow.xml -->
+
+-->
+
+  <!-- ////////////////////////////////////////////////
+
+         Aspergillus fumigatus (A1163)
+
+       ////////////////////////////////////////////////  -->
+
+  <subgraph name="aspergillus_fumigatus_a1163_LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/aspergillus_fumigatus_a1163.xml</paramValue>
+    <paramValue name="organismName">aspergillus_fumigatus_a1163</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_fumigatus_a1163_genome_sequence_RSRC|@@aspergillus_fumigatus_a1163_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="organismSpecificISFReference">fungidb/aspergillus_fumigatus_a1163_workflow_ISF.xml</paramValue>
+    <paramValue name="ncbiTaxonId">@@aspergillus_fumigatus_a1163_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="aspergillus_fumigatus_a1163_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">aspergillus_fumigatus_a1163</paramValue>
+    <paramValue name="organismFullName">@@aspergillus_fumigatus_a1163_NCBI_DISPLAY_NAME@@</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/aspergillus_fumigatus_a1163.xml</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_fumigatus_a1163_genome_sequence_RSRC|@@aspergillus_fumigatus_a1163_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="aspergillus_fumigatus_a1163_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="aspergillus_fumigatus_a1163_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">aspergillus_fumigatus_a1163</paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/aspergillus_fumigatus_a1163.xml</paramValue>
+    <paramValue name="organismFullName">@@aspergillus_fumigatus_a1163_NCBI_DISPLAY_NAME@@</paramValue>
+    <paramValue name="organismTwoLetterAbbrev">@@aspergillus_fumigatus_a1163_FUNGIDB_ABBREVIATION@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@aspergillus_fumigatus_a1163_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@aspergillus_fumigatus_a1163_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_fumigatus_a1163_genome_sequence_RSRC|@@aspergillus_fumigatus_a1163_GENOME_SEQUENCE_VER@@</paramValue>
+   
+    <!-- FungiDB: skip ieDB -->
+    <paramValue name="loadEiptope">false</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+
+    <!-- dbEST -->
+    <paramValue name="dbESTResourceName">aspergillus_fumigatus_a1163_dbest_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@aspergillus_fumigatus_a1163_DBEST_VER@@</paramValue>
+
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">@@aspergillus_fumigatus_a1163_TAXON_HIERARCHY_FOR_BLASTX@@</paramValue>
+    <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Fungi</paramValue>
+    <paramValue name="genomeSize">@@aspergillus_fumigatus_a1163_GENOME_SIZE@@</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+
+    <!-- Organism-specific EST -->
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
+
+    <!-- skip
+    <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">fungidb/aspergillus_fumigatus_a1163_workflow_EST.xml</paramValue>
+    -->
+
+    <!-- Mass Spec -->
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">fungidb/aspergillus_fumigatus_a1163_MassSpecResource.xml</paramValue>
+
+    <depends name="aspergillus_fumigatus_a1163_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="aspergillus_fumigatus_a1163_workflow" xmlFile="fungidb/aspergillus_fumigatus_a1163_workflow.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">fungidb/aspergillus_fumigatus_a1163.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <depends name="aspergillus_fumigatus_a1163_LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="aspergillus_fumigatus_a1163_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">aspergillus_fumigatus_a1163</paramValue>
+    <paramValue name="organismFullName">@@aspergillus_fumigatus_a1163_NCBI_DISPLAY_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@aspergillus_fumigatus_a1163_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@aspergillus_fumigatus_a1163_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@aspergillus_fumigatus_a1163_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">aspergillus_fumigatus_a1163_dbest_RSRC|@@aspergillus_fumigatus_a1163_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_fumigatus_a1163_genome_sequence_RSRC|@@aspergillus_fumigatus_a1163_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="aspergillus_fumigatus_a1163_PostLoadGenome"/>
+    <depends name="aspergillus_fumigatus_a1163_MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+    <step name="aspergillus_fumigatus_a1163_MitoMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_fumigatus_a1163_Mito/fasta</paramValue>
+    </step>
+
+    <step name="aspergillus_fumigatus_a1163_MitoMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_fumigatus_a1163_Mito/tabular</paramValue>
+    </step>
+
+    <step name="aspergillus_fumigatus_a1163_MitoMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_fumigatus_a1163_Mito/gff</paramValue>
+    </step>
+
+    <step name="aspergillus_fumigatus_a1163_MitoMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_fumigatus_a1163_Mito/transcriptExpression</paramValue>
+    </step>
+
+  <subgraph name="aspergillus_fumigatus_a1163_MitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">aspergillus_fumigatus_a1163_Mito</paramValue>
+    <paramValue name="organismFullName">@@aspergillus_fumigatus_a1163_NCBI_DISPLAY_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@aspergillus_fumigatus_a1163_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@aspergillus_fumigatus_a1163_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@aspergillus_fumigatus_a1163_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">aspergillus_fumigatus_a1163_dbest_RSRC|@@aspergillus_fumigatus_a1163_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_fumigatus_a1163_genome_sequence_RSRC|@@aspergillus_fumigatus_a1163_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="aspergillus_fumigatus_a1163_PostLoadGenome"/>
+    <depends name="aspergillus_fumigatus_a1163_MakeAndMaskTopLevelGenome"/>
+    <depends name="aspergillus_fumigatus_a1163_MitoMakeDownloadSiteFastaDataDir"/>
+    <depends name="aspergillus_fumigatus_a1163_MitoMakeDownloadSiteTabularDataDir"/>
+    <depends name="aspergillus_fumigatus_a1163_MitoMakeDownloadSiteGffDataDir"/>
+    <depends name="aspergillus_fumigatus_a1163_MitoMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
+
+
+    <!--
+    <step name="aspergillus_fumigatus_a1163_PlastidMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_fumigatus_a1163_Plastid/fasta</paramValue>
+    </step>
+
+    <step name="aspergillus_fumigatus_a1163_PlastidMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_fumigatus_a1163_Plastid/tabular</paramValue>
+    </step>
+
+    <step name="aspergillus_fumigatus_a1163_PlastidMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_fumigatus_a1163_Plastid/gff</paramValue>
+    </step>
+
+    <step name="aspergillus_fumigatus_a1163_PlastidMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/aspergillus_fumigatus_a1163_Plastid/transcriptExpression</paramValue>
+    </step>
+    -->
+
+  <!--
+  <subgraph name="aspergillus_fumigatus_a1163_PlastidMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">aspergillus_fumigatus_a1163_Plastid</paramValue>
+    <paramValue name="organismFullName">@@aspergillus_fumigatus_a1163_NCBI_DISPLAY_NAME@@</paramValue>
+    <paramValue name="ncbiTaxonId">@@aspergillus_fumigatus_a1163_NCBI_TAXONOMY_ID@@</paramValue>
+    <paramValue name="parentNcbiTaxonId">@@aspergillus_fumigatus_a1163_NCBI_PARENT_TAXONOMY_ID@@</paramValue>
+    <paramValue name="genomeSource">@@aspergillus_fumigatus_a1163_GENOME_SOURCE@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">aspergillus_fumigatus_a1163_dbest_RSRC|@@aspergillus_fumigatus_a1163_DBEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">aspergillus_fumigatus_a1163_genome_sequence_RSRC|@@aspergillus_fumigatus_a1163_GENOME_SEQUENCE_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">plastid_sequence</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="aspergillus_fumigatus_a1163_PostLoadGenome"/>
+    <depends name="aspergillus_fumigatus_a1163_MakeAndMaskTopLevelGenome"/>
+    <depends name="aspergillus_fumigatus_a1163_PlastidMakeDownloadSiteFastaDataDir"/>
+    <depends name="aspergillus_fumigatus_a1163_PlastidMakeDownloadSiteTabularDataDir"/>
+    <depends name="aspergillus_fumigatus_a1163_PlastidMakeDownloadSiteGffDataDir"/>
+    <depends name="aspergillus_fumigatus_a1163_PlastidMakeDownloadSiteTranscriptExpressionDataDir"/>
+  </subgraph>
+  -->
+
