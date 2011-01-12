@@ -5,13 +5,13 @@
     <param name="shortSeqsFile"/>
     <param name="outputAlignmentFile"/>
     <param name="rnaSeqExtDbRlsSpec"/>
-    <param name="genomeExtDbSpec"/>
     <param name="genomicSeqsFileForSsa"/>
     <param name="transcriptSeqsFileForSsa"/>
     <param name="pairedReadFilePath"/>
     <param name="numInsertions"/>
     <param name="limitNU"/>
-    <constant name="dataDir">$$parentDataDir$$/analyze$$sampleName$$</constant>
+
+    <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
     <constant name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.all</constant>
     <constant name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.all</constant>
 
@@ -20,11 +20,16 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <step name="runParse2fasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunParse2fasta">
+      <paramValue name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
- 
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="runParse2fasta"/>
+    </step>
+
     <subgraph name="runRUMOnCluster"  xmlFile="runRUMOnCluster.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="readFilePath">$$shortSeqsFile$$</paramValue>
@@ -36,16 +41,28 @@
       <paramValue name="numInsertions">$$numInsertions$$</paramValue>
       <paramValue name="createSAMFile">false</paramValue>
       <paramValue name="countMismatches">false</paramValue>
+     <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <step name="document-RnaSeqOrChipSeqRum"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">rum_rna_or_chip_seq_MTHD</paramValue>
-      <paramValue name="version">1.0</paramValue>
-      <paramValue name="parameters"></paramValue>
+    <step name="revertProbeSeqId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RevertProbeSeqId">
+      <paramValue name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
+      <paramValue name="originalShortSeqsFile">$$shortSeqsFile$$.org</paramValue>
+      <paramValue name="inputUniqueFile">$$uniqueFile$$</paramValue>
+      <paramValue name="inputNonUniqueFile">$$nonUniqueFile$$</paramValue>
       <depends name="runRUMOnCluster"/>
     </step>
 
+    <step name="reformatAlignmentFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatAlignmentFileForInsertNextGenSeqAlignWithSqlLdr">
+      <paramValue name="inputUniqueFile">$$uniqueFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/uniqueAlign.out</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <depends name="revertProbeSeqId"/>
+    </step>
+
+    <step name="loadRnaSeqAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqAlignmentWithSqlLdr" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/uniqueAlign.out</paramValue>
+      <depends name="reformatAlignmentFile"/>
+    </step>
+
 </workflowGraph>
-
-
