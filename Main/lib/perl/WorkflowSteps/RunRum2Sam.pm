@@ -19,6 +19,8 @@ sub run {
 
   my $samFile = $self->getParamValue('samFile');
 
+  my $samHeaderFile = $self->getParamValue('samHeaderFile');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
 
@@ -32,8 +34,9 @@ sub run {
           $self->testInputFile('seqFile', "$workflowDataDir/$qualFile");
 	  $self->runCmd(0, "echo test > $workflowDataDir/$samFile");
       }else{
-          my $cmd = "rum2sam.pl $workflowDataDir/$uniqueFile $workflowDataDir/$nuFile $workflowDataDir/$fastaFile $workflowDataDir/$qualFile $workflowDataDir/$samFile";
+          my $cmd = "rum2sam.pl $workflowDataDir/$uniqueFile $workflowDataDir/$nuFile $workflowDataDir/$fastaFile $workflowDataDir/$qualFile $workflowDataDir/$samFile.noHeader";
 	  $self->runCmd($test,$cmd);
+	  $cmd = "cat $workflowDataDir/$samHeaderFile $workflowDataDir/$samFile.noHeader > $workflowDataDir/$samFile";
       }
   }
 }
