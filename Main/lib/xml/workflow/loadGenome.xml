@@ -19,6 +19,7 @@
     <constant name="genomicSeqsFile">$$dataDir$$/genomicSeqs.fsa</constant>
     <constant name="genomicSeqsDir">$$dataDir$$/genomicSeqs</constant>
     <constant name="proteinsFile">$$dataDir$$/AnnotatedProteins.fsa</constant>
+    <constant name="samHeaderFile">$$dataDir$$/samHeader</constant>
     <constant name="bowtieGenomicIndexDir">$$dataDir$$/genomicIndexes</constant>
     <constant name="bowtieTranscriptIndexDir">$$dataDir$$/transcriptsIndexes</constant>
     <constant name="downloadSiteFastaDataDir">$$downloadSiteDataDir$$/$$organismName$$/fasta</constant>
@@ -143,6 +144,13 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa" includeIf="$$extractProteins$$">
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="outputFile">$$geneModelFileForSsa$$</paramValue>
+      <depends name="runTuningManager"/> 
+    </step>
+
+  <step name="makeSamHeader"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSamHeader">
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="outputFile">$$samHeaderFile$$</paramValue>
       <depends name="runTuningManager"/> 
     </step>
 
