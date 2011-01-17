@@ -20,7 +20,7 @@ sub run {
       if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }else{
-	    $self->runCmd($test,"createSamHeader --outputFile $workflowDataDir/$outputFile --ncbiTaxonId $ncbiTaxonId");
+	    $self->runCmd($test,"createSamHeader --outFile $workflowDataDir/$outputFile --ncbiTaxonId $ncbiTaxonId");
       }
   }
 }
