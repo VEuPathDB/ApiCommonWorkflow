@@ -33,8 +33,8 @@ sub run {
 --fileFormat gff2   \\
 --gff2GroupTag ID  \\
 --seqIdColumn source_id \\
---seqExtDbName $seqExtDbName \\
---seqExtDbRlsVer $seqExtDbRlsVer \\
+--seqExtDbName '$seqExtDbName' \\
+--seqExtDbRlsVer '$seqExtDbRlsVer' \\
 --soCvsVersion $soVersion \\
 --naSequenceSubclass ExternalNASequence \\
 EOF
