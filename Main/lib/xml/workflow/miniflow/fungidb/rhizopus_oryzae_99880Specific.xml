@@ -1,0 +1,40 @@
+<workflowGraph name="rhizopus_oryzae_99880SpecificAnalysis">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/rhizopus_oryzae_99880Specific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/rhizopus_oryzae_99880</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/rhizopus_oryzae_99880LoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/rhizopus_oryzae_99880LoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/rhizopus_oryzae_99880LoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/rhizopus_oryzae_99880LoadGenome/geneModelForSsa.txt</constant>
+  <constant name="samHeaderFile">$$parentDataDir$$/rhizopus_oryzae_99880LoadGenome/samHeader</constant>
+
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+  <subgraph name="rnaSeqAndChipSeq" xmlFile="tritrypdb/rhizopus_oryzae_99880RnaSeqAndChipSeq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="samHeaderFile">$$samHeaderFile$$</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">rhizopus_oryzae_99880_genome_sequence_RSRC|@@rhizopus_oryzae_99880_GENOME_SEQUENCE_VER@@</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+</workflowGraph>
+
+
+
