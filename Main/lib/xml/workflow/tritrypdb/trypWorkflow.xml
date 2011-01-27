@@ -636,6 +636,29 @@
     <depends name="TcruziNonEsmeraldoLikeMakeAndMaskTopLevelGenome"/>
   </subgraph>
 
+  <subgraph name="TcruziUnassignedContigsMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TcruziUnassignedContigs</paramValue>
+    <paramValue name="organismFullName">@@TcruziNonEsmeraldoLikeOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">36658100</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="genomeSource">@@TcruziNonEsmeraldoLikeGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Tcruzi_dbEST_RSRC|@@Tcruzi_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziNonEsmeraldoLike_genome_RSRC|@@TcruziNonEsmeraldoLike_genome_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">contig</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TcruziNonEsmeraldoLikePostLoadGenome"/>
+    <depends name="TcruziNonEsmeraldoLikeMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
 
 
 <!--TcruziEsmeraldo-->
@@ -1773,6 +1796,104 @@
     <paramValue name="makeGenomicDownloadFile">true</paramValue>
     <depends name="CfasciPostLoadGenome"/>
     <depends name="CfasciMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--TcruziTC1-->
+
+  <subgraph name="TcruziTC1LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziTC1</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziTC1_contigs_RSRC|@@TcruziTC1_contigs_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruziTC1.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/tcruziTC1ISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">5693000</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">false</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="TcruziTC1MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziTC1</paramValue>
+    <paramValue name="organismFullName">@@TcruziTC1OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziTC1_contigs_RSRC|@@TcruziTC1_contigs_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruziTC1.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="TcruziTC1LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziTC1PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziTC1</paramValue>
+    <paramValue name="organismFullName">@@TcruziTC1OrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">TcruziTC1</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziTC1_contigs_RSRC|@@TcruziTC1_contigs_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName"></paramValue>
+    <paramValue name="dbESTVersion"></paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">5693000</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">35386209</paramValue>
+    <paramValue name="skipProteomeAnalysis">true</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruziTC1.xml</paramValue>
+    <depends name="TcruziTC1LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziTC1MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TcruziTC1</paramValue>
+    <paramValue name="organismFullName">@@TcruziTC1OrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">5693000</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="genomeSource">@@TcruziTC1GenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec"></paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziTC1_contigs_RSRC|@@TcruziTC1_contigs_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">contig</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">false</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TcruziTC1PostLoadGenome"/>
+    <depends name="TcruziTC1MakeAndMaskTopLevelGenome"/>
   </subgraph>
 
   <subgraph name="ComparativeGenomics" xmlFile="comparativeGenomics.xml">
