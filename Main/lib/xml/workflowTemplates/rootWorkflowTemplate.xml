@@ -17,4 +17,107 @@
     <dependsGlobal name="taxonomy_RSRC"/> 
     <dependsGlobal name="SO_RSRC"/>
   </subgraph>
+
+  <subgraph name="MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">**NAME**</paramValue>
+    <paramValue name="organismFullName">**organismFullName**</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">**NAME**_chromosomes_RSRC|@@**NAME**_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile"></paramValue>
+    <paramValue name="repeatMaskSpecies">-species **repeatMaskSpecies**</paramValue>
+    <paramValue name="organismResourceXmlFile">**projectLower**/**nameLower**.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="**NAME**LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">**NAME**</paramValue>
+    <paramValue name="organismFullName">**organismFullName**</paramValue>
+    <paramValue name="organismAbbrev">**NAME**</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">**NAME**_chromosomes_RSRC|@@**NAME**_chromosomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName">**NAME**_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@**NAME**_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">**NAME**_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">**NAME**_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@**NAME**_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest"></paramValue>
+    <paramValue name="ncbiTaxonId">**ncbiTaxonId**</paramValue>
+    <paramValue name="parentNcbiTaxonId">**parentNcbiTaxonId**</paramValue>
+    <paramValue name="usePredictedTranscripts"></paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan"></paramValue>
+    <paramValue name="runExportPred"></paramValue>
+    <paramValue name="maxIntronSize">**maxIntronSize**</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">**taxonHierarchyForBlastxFilter**</paramValue>
+    <paramValue name="repeatMaskSpecies">-species **repeatMaskSpecies**</paramValue>
+    <paramValue name="genomeSize">**genomeSize**</paramValue>
+    <paramValue name="skipProteomeAnalysis"></paramValue>
+    <paramValue name="skipGenomeAnalysis"></paramValue>
+    <paramValue name="loadEpitope"></paramValue>
+    <paramValue name="makeAssemblySeqs"></paramValue>
+    <paramValue name="makeAssemblies"></paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies"></paramValue>
+    <paramValue name="loadOrganismSpecificESTResource"></paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource"></paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">**distanceBetweenStartsForAlignmentsInSameCluster**</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
+    <paramValue name="organismResourceXmlFile">**projectLower**/**nameLower**.xml</paramValue>
+    <depends name="**NAME**LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="SpecificWorkflow" xmlFile="**projectLower**/**nameLower**Specific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">**projectLower**/**nameLower**.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="**NAME**LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">**NAME**</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">**projectLower**/**nameLower**GeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">**projectLower**/**nameLower**.xml</paramValue>
+    <depends name="**NAME**LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">**NAME**</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">**projectLower**/**nameLower**DbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">**projectLower**/**nameLower**.xml</paramValue>
+    <depends name="**NAME**LoadGeneAliases"/>
+  </subgraph>
+
+  <subgraph name="MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">**NAME**</paramValue>
+    <paramValue name="organismFullName">**organismFullName**</paramValue>
+    <paramValue name="ncbiTaxonId">**ncbiTaxonId**</paramValue>
+    <paramValue name="parentNcbiTaxonId">**parentNcbiTaxonId**</paramValue>
+    <paramValue name="genomeSource">@@**NAME**GenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">**NAME**_dbEST_RSRC|@@**NAME**_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">**NAME**_genome_RSRC|@@**NAME**_genome_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated"></paramValue>
+    <paramValue name="soTermIdsOrNames">**soTermIdsOrNames**</paramValue>
+    <paramValue name="makeESTDownloadFile"></paramValue>
+    <paramValue name="makeProteomeDownloadFile"></paramValue>
+    <paramValue name="makeGenomicDownloadFile"></paramValue>
+    <depends name="**NAME**PostLoadGenome"/>
+    <depends name="**NAME**MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
 </workflowGraph>
