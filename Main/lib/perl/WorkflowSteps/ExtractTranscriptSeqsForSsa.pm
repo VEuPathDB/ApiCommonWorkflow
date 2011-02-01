@@ -13,7 +13,7 @@ sub run {
 
 
 
-  my $sql = "SELECT ga.source_id||':'||ga.sequence_id||':'||ga.start_min||'-'||ga.end_max||'_'||(decode(ga.is_reversed, 1, '-', '+')), snas.sequence
+  my $sql = "SELECT ga.source_id||':'||ga.sequence_id||':'||(ga.start_min - 1)||'-'||ga.end_max||'_'||(decode(ga.is_reversed, 1, '-', '+')), snas.sequence
              FROM dots.transcript t,
                   dots.splicednasequence snas,
                   apidb.geneattributes ga
