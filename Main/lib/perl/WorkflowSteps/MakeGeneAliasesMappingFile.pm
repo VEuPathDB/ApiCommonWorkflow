@@ -10,8 +10,9 @@ sub run {
 
   my $outputFile = $self->getParamValue('outputFile');
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
+  my $dbRefNAFeatureExtDbSpec = $self->getParamValue('dbRefNAFeatureExtDbSpec');
 
-  my $cmd = "getGeneAliases --extDbSpec '$genomeExtDbRlsSpec' --outfile $outputFile";
+  my $cmd = "getGeneAliases --extDbSpec '$genomeExtDbRlsSpec' --outfile $outputFile --dbRefNAFeatureExtDbSpec '$dbRefNAFeatureExtDbSpec'";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $outputFile");
