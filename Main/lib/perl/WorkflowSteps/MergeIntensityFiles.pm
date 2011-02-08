@@ -33,6 +33,8 @@ sub run {
 	    open(IN,"$workflowDataDir/$inputFilesDir/$file") || die "File $file not found\n";
 	    my $base = (split(/\//, $file))[-1];
 	    $base=~ s/\.int//;
+	    $base=~ s/\.max//;
+	    $base=~ s/\.min//;
 	    $headerVals{header}.="$base\t";
 	    while (<IN>){
 		chomp;
