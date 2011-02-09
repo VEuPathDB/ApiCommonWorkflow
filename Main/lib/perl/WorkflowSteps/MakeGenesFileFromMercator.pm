@@ -33,9 +33,9 @@ sub run {
 	if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}else{
-	    $cmd = "makeGenesFromMercator --mercatorOutputDir $mercatorDataDir --t 'protein_coding' --cndSrcBin $cndSrcBin --uga --verbose --$dbRlsIds > $workflowDataDir/$outputFile.Clusters";
+	    $cmd = "makeGenesFromMercator --mercatorOutputDir $workflowDataDir/$mercatorDataDir --t 'protein_coding' --cndSrcBin $cndSrcBin --uga --verbose --extDbRelIds $dbRlsIds > $workflowDataDir/$outputFile.Clusters";
 	    $self->runCmd($test, $cmd);
-	    $cmd = "makeGenesFromMercator --mercatorOutputDir $mercatorDataDir --t 'rna_coding'  --cndSrcBin $cndSrcBin --uga --verbose --$dbRlsIds >> $workflowDataDir/$outputFile.Clusters";
+	    $cmd = "makeGenesFromMercator --mercatorOutputDir $workflowDataDir/$mercatorDataDir --t 'rna_coding'  --cndSrcBin $cndSrcBin --uga --verbose --extDbRelIds $dbRlsIds >> $workflowDataDir/$outputFile.Clusters";
 	    $self->runCmd($test, $cmd);
 	    $cmd = "grep ^cluster_ $workflowDataDir/$outputFile.Clusters >$workflowDataDir/$outputFile";
 	    $self->runCmd($test,$cmd);
