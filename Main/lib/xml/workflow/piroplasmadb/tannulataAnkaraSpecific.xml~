@@ -1,0 +1,179 @@
+<workflowGraph name="tbrucei927SpecificAnalysis">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/Tbrucei927Specific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Tbrucei927</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/Tbrucei927LoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/Tbrucei927LoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/Tbrucei927LoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/Tbrucei927LoadGenome/geneModelForSsa.txt</constant>
+  <constant name="samHeaderFile">$$parentDataDir$$/Tbrucei927LoadGenome/samHeader</constant>
+
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="GenbankBACEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
+      <paramValue name="dataDir">$$dataDir$$/GenbankBACEnds_loadAndAnalyze</paramValue>
+      <paramValue name="BACEndsResourcesReference">tritrypdb/tbrucei_Genbank_BACEnds.xml</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">Tbrucei_Genbank_BACEnds_RSRC|@@Tbrucei_Genbank_BACEnds_VER@@</paramValue>
+      <paramValue name="maxIntronSize">100</paramValue>
+      <paramValue name="ncbiTaxonId">185431</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Tbrucei927_genome_RSRC|@@Tbrucei927_genome_VER@@</paramValue>
+      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/Tbrucei927LoadGenome/genomicSeqs</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+  <subgraph name="miscResources" xmlFile="tritrypdb/tbrucei927MiscResource.xml">
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="rnaSeqAndChipSeq" xmlFile="tritrypdb/tbruceiRnaSeqAndChipSeq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="samHeaderFile">$$samHeaderFile$$</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Tbrucei927_genome_RSRC|@@Tbrucei927_genome_VER@@</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+    <subgraph name="arrayResources" xmlFile="tritrypdb/tbruceiArrayStudies.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Tbrucei927_genome_RSRC|@@Tbrucei927_genome_VER@@</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="SageTagArrayDesign_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">SageTagArrayDesign_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+  <subgraph name="mapSageTags" xmlFile="mapSageTags.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="sageTagExtDbRlsSpec">T.brucei gambiense SAGE Tags|@@SageTagArrayDesign_VER@@</paramValue>
+    <paramValue name="studyName">Transcriptome analysis of two life stages of Trypanosoma brucei gambiense</paramValue>
+    <paramValue name="paramValue">3952450</paramValue>  
+    <paramValue name="nickName">mapSageTags</paramValue>   
+    <paramValue name="calFreq">true</paramValue>
+    <paramValue name="prependSeq">CATG</paramValue>
+    <paramValue name="useBowtie">true</paramValue>
+    <paramValue name="bowtieParam">-v 0 -m 20</paramValue>
+    <depends name="SageTagArrayDesign_RSRC"/>
+  </subgraph>
+
+    <subgraph name="SageTagFreqs_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">SageTagFreqs_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="SageTagArrayDesign_RSRC"/>
+    </subgraph>
+
+    <subgraph name="GOAssociations_Tbrucei927_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">GOAssociations_Tbrucei927_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+      <dependsGlobal name="GO_RSRC"/>
+      <dependsGlobal name="GO_evidence_codes_RSRC"/>
+    </subgraph>
+
+    <subgraph name="Tbrucei927_Comment_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei927_Comment_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Tbrucei927_GeneName_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei927_GeneName_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Tbrucei927_ECNumbers_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei927_ECNumbers_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+      <dependsGlobal name="enzymeDB_RSRC"/>
+    </subgraph>
+
+    <subgraph name="Tbrucei927_pmid_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei927_pmid_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Tbrucei927_uniprot_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei927_uniprot_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Tbrucei927_vsgdb_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei927_vsgdb_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Tbrucei927_embl_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei927_embl_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Tbrucei927_ctp_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei927_ctp_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Tbrucei927_pdb_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei927_pdb_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Tbrucei927_interpro_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei927_interpro_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+</workflowGraph>
+
+
+

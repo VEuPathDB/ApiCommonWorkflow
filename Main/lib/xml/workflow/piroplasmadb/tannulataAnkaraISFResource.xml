@@ -1,0 +1,39 @@
+<workflowGraph name="tannulataAnkaraISFResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="dataDir"/>
+
+    <constant name="dataDir">$$dataDir$$/tannulataAnkaraISFResource</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+  <subgraph name="TannulataAnkara_chromosomes_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">TannulataAnkara_chromosomes_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="TannulataAnkara_annotations_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">TannulataAnkara_annotations_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="TannulataAnkara_chromosomes_RSRC"/>
+  </subgraph>
+
+  <subgraph name="TannulataAnkara_mito_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">TannulataAnkara_mito_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="TannulataAnkara_chromosomes_RSRC"/>
+  </subgraph>
+
+  <subgraph name="TannulataAnkara_apicoplast_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">TannulataAnkara_apicoplast_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="TannulataAnkara_chromosomes_RSRC"/>
+  </subgraph>
+
+</workflowGraph>
