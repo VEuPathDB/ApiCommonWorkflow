@@ -1,0 +1,39 @@
+<workflowGraph name="bbovisT2BoISFResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="dataDir"/>
+
+    <constant name="dataDir">$$dataDir$$/bbovisT2BoISFResource</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+  <subgraph name="BbovisT2Bo_chromosomes_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">BbovisT2Bo_chromosomes_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="BbovisT2Bo_annotations_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">BbovisT2Bo_annotations_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="BbovisT2Bo_chromosomes_RSRC"/>
+  </subgraph>
+
+  <subgraph name="BbovisT2Bo_mito_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">BbovisT2Bo_mito_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="BbovisT2Bo_chromosomes_RSRC"/>
+  </subgraph>
+
+  <subgraph name="BbovisT2Bo_apicoplast_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">BbovisT2Bo_apicoplast_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="BbovisT2Bo_chromosomes_RSRC"/>
+  </subgraph>
+
+</workflowGraph>
