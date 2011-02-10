@@ -24,17 +24,18 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeSamplesDataDir"/>
-    </step>
-
     <subgraph name="TgME49_RNASeq_Tachyzoite_Reid_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">TgME49_RNASeq_Tachyzoite_Reid_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$resourceXmlFileName$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
      </subgraph>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="TgME49_RNASeq_Tachyzoite_Reid_RSRC"/>
+    </step>
  
     <subgraph name="analyzeDay3" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
