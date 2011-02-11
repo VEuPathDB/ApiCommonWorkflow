@@ -23,7 +23,7 @@
     <step name="makeMercatorDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$mercatorDataDir$$</paramValue>
     </step>
-
+<!--
     <step name="createPairwiseMercatorDirs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreatePairwiseMercatorDirs">
       <paramValue name="mercatorDir">$$mercatorDataDir$$</paramValue>
       <paramValue name="mercatorFastaDir">$$mercatorFastaDir$$</paramValue>
@@ -46,11 +46,10 @@
       <paramValue name="mavidExe">$$mavidExe$$</paramValue>
       <depends name="createPairwiseMercatorDirs"/>
     </step>
-
+-->
     <step name="copyPairwiseMercatorDirsToWebserviceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPairwiseMercatorDirsToWebserviceDir">
       <paramValue name="mercatorDir">$$mercatorDataDir$$</paramValue>
       <paramValue name="outputDir">$$webServicesDataDir$$/mercator_pairwise</paramValue>
-      <depends name="runPairwiseMercatorMavid"/>
     </step>
 
   <subgraph name="OrthoMCL_Phyletic_RSRC" xmlFile="loadResource.xml">
@@ -83,8 +82,14 @@
       <paramValue name="mercatorDraftGenomes">$$mercatorDraftGenomes$$</paramValue>
       <paramValue name="mercatorNonDraftGenomes">$$mercatorNonDraftGenomes$$</paramValue>
       <paramValue name="mercatorSyntenyVersion">@@mercatorSyntenyVersion@@</paramValue>   
-      <depends name="runPairwiseMercatorMavid"/>
       <depends name="runTuningManager"/>
     </step>
+
+  <subgraph name="organismSpecificCreateGenesForGeneFeatures" xmlFile="$$organismSpecificCreateGenesForGeneFeatures$$" includeIf="$$createGenesForGeneFeatures$$">
+    <paramValue name="mercatorDataDir">$$mercatorDataDir$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+     <paramValue name="cndSrcBin">$$cndSrcBin$$</paramValue>
+    <depends name="copyPairwiseMercatorDirsToWebserviceDir"/>
+  </subgraph>
 
 </workflowGraph>
