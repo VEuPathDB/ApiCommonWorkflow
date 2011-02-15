@@ -272,16 +272,6 @@
       <depends name="mergeMaxIntensityFiles"/>
     </step>
 
-    <step name="makeDiffPercentile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff">
-      <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxPercents.txt</paramValue>
-      <paramValue name="minInputFile">$$seqCoverageAndIntensityDataDir$$/minPercents.txt</paramValue>      
-      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/diffPercents.txt</paramValue>
-      <paramValue name="hasHeader">true</paramValue>
-      <depends name="makeMinPercentileProfile"/>
-      <depends name="makeMaxPercentileProfile"/>
-    </step>
-
-
     <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
       <paramValue name="configFile">$$dataDir$$/Pf_RNASeq_Stunnenberg_RSRC/final/config.txt</paramValue>
       <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
@@ -289,7 +279,6 @@
       <depends name="mergeMinIntensityFiles"/>
       <depends name="makeMinPercentileProfile"/>
       <depends name="makeDiffProfile"/>
-      <depends name="makeDiffPercentile"/>
     </step>
 
     <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">

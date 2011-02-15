@@ -123,23 +123,13 @@
       <depends name="mergeMaxIntensityFiles"/>
     </step>
 
-    <step name="makeDiffPercentile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff">
-      <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt.pct</paramValue>
-      <paramValue name="minInputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt.pct</paramValue>      
-      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/diffProfiles.txt.pct</paramValue>
-      <paramValue name="hasHeader">true</paramValue>
-      <depends name="makeMinPercentileProfile"/>
-      <depends name="makeMaxPercentileProfile"/>
-    </step>
-
-    <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
+     <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
       <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_George_Cross_RSRC/final/config.txt</paramValue>
       <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <paramValue name="extDbRlsSpec">Tbrucei_RNASeq_George_Cross_RSRC|@@Tbrucei_RNASeq_George_Cross_VER@@</paramValue>
       <depends name="mergeMinIntensityFiles"/>
       <depends name="makeMinPercentileProfile"/>
       <depends name="makeDiffProfile"/>
-      <depends name="makeDiffPercentile"/>
     </step>
 
     <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
