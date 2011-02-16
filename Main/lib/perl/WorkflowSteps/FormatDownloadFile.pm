@@ -18,7 +18,7 @@ sub run {
   my $cmd = "$blastPath/xdformat $args -o $outputDir/$formattedFileName $inputFile";
 
   if($undo) {
-    $self->runCmd(0, "rm -f $outputDir/${formattedFileName}.x*");
+    #$self->runCmd(0, "rm -f $outputDir/${formattedFileName}.x*");
   } else{
       if($test){
 	  $self->testInputFile('inputFile', "$inputFile");
