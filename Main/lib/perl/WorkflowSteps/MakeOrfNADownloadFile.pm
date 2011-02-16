@@ -66,8 +66,8 @@ EOF
   my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $outputFile");
-    $self->runCmd(0, "rm -f $descripFile");
+   # $self->runCmd(0, "rm -f $outputFile");
+   # $self->runCmd(0, "rm -f $descripFile");
   } else {
       if ($test) {
 	  $self->runCmd(0,"echo test > $outputFile");
