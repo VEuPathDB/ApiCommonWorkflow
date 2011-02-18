@@ -27,7 +27,7 @@ sub run {
   close F;
   my $cmd;
 
-      $cmd = "tuningManager --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail '$email' --cleanupAge 0";
+      $cmd = "tuningManager --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail '$email' --tables 'apidb.GeneId,apidb.GeneAttributes,apidb.FeatureLocation' --cleanupAge 0";
 
 
   if ($undo){
