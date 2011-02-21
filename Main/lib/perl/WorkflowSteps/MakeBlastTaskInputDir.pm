@@ -39,7 +39,7 @@ sub run {
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
-      $self->makeClusterControllerPropFile($taskInputDir, 2, $taskSize,
+      $self->makeClusterControllerPropFile($taskInputDir, 1, $taskSize,
 				       "DJob::DistribJobTasks::BlastSimilarityTask"); 
       # make task.prop file
       my $ccBlastParamsFile = "blastParams";
