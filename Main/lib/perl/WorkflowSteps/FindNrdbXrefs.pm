@@ -16,6 +16,8 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  $self->error("Proteins file '$proteinsFile' does not exist or is empty") unless -s $proteinsFile;
+
   my $cmd = "dbXRefBySeqIdentity --proteinFile '$workflowDataDir/$proteinsFile' --nrFile '$workflowDataDir/$nrdbFile' --outputFile '$workflowDataDir/$outputFile' --sourceIdRegex \"$nrdbFileRegex\" --protDeflnRegex \"$proteinsFileRegex\" ";
 
   if ($undo) {
