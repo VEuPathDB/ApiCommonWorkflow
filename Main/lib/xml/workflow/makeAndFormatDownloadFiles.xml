@@ -143,6 +143,22 @@
     <depends name="makeMixedGenomicDownloadFile"/>
     </step>
 
+    <step name="makeDoubleStrandGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomicDoubleStrandFile" includeIf="$$makeGenomicDownloadFile$$">
+      <paramValue name="outputFile">$$downloadSiteFastaDataDir$$/$$organismName$$Genomic_doubleStrand_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="descripFile">$$downloadSiteFastaDataDir$$/.$$organismName$$Genomic_doubleStrand_$$projectName$$-$$projectVersion$$.fasta.desc</paramValue>
+      <paramValue name="descripString">$$mixedGenomicDescripString$$</paramValue>
+      <paramValue name="organismSource">$$genomeSource$$</paramValue>
+      <paramValue name="genomeExtDbSpecList">$$genomeExtDbRlsSpec$$,$$genomeVirtualSeqsExtDbRlsSpec$$</paramValue>
+      <paramValue name="soTermIdsOrNames">$$soTermIdsOrNames$$</paramValue>
+    </step>
+
+    <step name="formatDoubleStrandGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeGenomicDownloadFile$$">
+      <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismName$$Genomic_doubleStrand_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
+      <paramValue name="formattedFileName">$$organismName$$GenomicsDoubleStrand</paramValue>
+      <paramValue name="args">-n -t release-$$projectVersion$$/$$organismName$$GenomicsDoubleStrand</paramValue>
+    <depends name="makeMixedGenomicDownloadFile"/>
+    </step>
 
     <step name="makeOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfDownloadFile" includeIf="$$makeGenomicDownloadFile$$">
       <paramValue name="outputFile">$$downloadSiteFastaDataDir$$/$$organismName$$ORFs_$$projectName$$-$$projectVersion$$.fasta</paramValue>
