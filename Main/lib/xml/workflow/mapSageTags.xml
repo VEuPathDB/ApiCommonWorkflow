@@ -7,7 +7,9 @@
     <param name="paramValue"/>
     <param name="nickName"/>
     <param name="calFreq"/>
-
+    <param name="prependSeq"/>
+    <param name="useBowtie"/>
+    <param name="bowtieParam"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$nickName$$</constant>
 
@@ -17,17 +19,26 @@
 
     <step name="extractSageTags" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSageTags">
       <paramValue name="sageTagExtDbRlsSpec">$$sageTagExtDbRlsSpec$$</paramValue>
-      <paramValue name="prependSeq"></paramValue>
+      <paramValue name="prependSeq">$$prependSeq$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/sageTags.fsa</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="mapSageTagsToNaSequences" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MapSageTagsToNaSequences">
+    <step name="mapSageTagsToNaSequences" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MapSageTagsToNaSequences" excludeIf="$$useBowtie$$">
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="sageTagFile">$$dataDir$$/sageTags.fsa</paramValue>
       <paramValue name="outputFile">$$dataDir$$/mapSageTagsToNaSequences.out</paramValue>
       <depends name="extractSageTags"/>
     </step>
+
+    <subgraph name="mapSageTagsToNaSequencesByBowtie" xmlFile="mapSageTagsToNaSequencesByBowtie.xml" includeIf="$$useBowtie$$">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="sageTagFile">$$dataDir$$/sageTags.fsa</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/mapSageTagsToNaSequences.out</paramValue>
+      <paramValue name="bowtieParam">$$bowtieParam$$</paramValue>
+      <depends name="extractSageTags"/>
+    </subgraph>
 
     <step name="loadSageTagMap" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadExpressionFeature" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/mapSageTagsToNaSequences.out</paramValue>
