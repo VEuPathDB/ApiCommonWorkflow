@@ -11,15 +11,6 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="initClusterHomeDir"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitClusterHomeDir">
-    </step>
-
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="initClusterHomeDir"/>
-    </step>
-
   <subgraph name="taxonomy_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">taxonomy_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
@@ -33,5 +24,17 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
+
+    <step name="initClusterHomeDir"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitClusterHomeDir">
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="initClusterHomeDir"/>
+      <depends name="NRDB_RSRC"/>
+    </step>
+
+
 
 </workflowGraph>
