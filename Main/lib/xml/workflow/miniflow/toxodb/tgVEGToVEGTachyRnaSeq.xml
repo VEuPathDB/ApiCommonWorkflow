@@ -103,13 +103,6 @@
       <depends name="mergeMinIntensityFiles"/>
     </step>
 
-    <step name="makeMaxPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
-      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
-      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxPercents.txt</paramValue>
-      <paramValue name="ties">min</paramValue>
-      <paramValue name="hasHeader">true</paramValue>
-      <depends name="mergeMaxIntensityFiles"/>
-    </step>
 
     <step name="makeDiffProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff">
       <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
@@ -120,21 +113,13 @@
       <depends name="mergeMaxIntensityFiles"/>
     </step>
 
-<step name="makeDiffPercentile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff">
-      <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxPercents.txt</paramValue>
-      <paramValue name="minInputFile">$$seqCoverageAndIntensityDataDir$$/minPercents.txt</paramValue>      
-      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/diffPercents.txt</paramValue>
-      <paramValue name="hasHeader">true</paramValue>
-      <depends name="makeMinPercentileProfile"/>
-      <depends name="makeMaxPercentileProfile"/>
-    </step>
 
     <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
       <paramValue name="configFile">$$dataDir$$/TgVEG_RNASeq_Tachyzoite_Reid_RSRC/final/tgVEGconfig.txt</paramValue>
       <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <paramValue name="extDbRlsSpec">TgVEG_RNASeq_Tachyzoite_Reid_RSRC|@@TgVEG_RNASeq_Tachyzoite_Reid_VER@@</paramValue>
       <depends name="makeDiffProfile"/>
-      <depends name="makeDiffPercentile"/>
+      <depends name="makeMinPercentileProfile"/>
     </step>
 
 <!--
