@@ -11,11 +11,13 @@ sub run {
     my $inputIndexesDir = $self->getParamValue('inputIndexesDir');
     my $inputShortSeqsFile = $self->getParamValue('inputShortSeqsFile');
     my $outputFile = $self->getParamValue('outputFile');
+    my $bowtieParam = $self->getParamValue('bowtieParam');
+    my $inputShortSeqsFileType = $self->getParamValue('inputShortSeqsFileType');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "bowtie -a --best --strata -f $workflowDataDir/$inputIndexesDir/genomicIndexes $workflowDataDir/$inputShortSeqsFile -v 0 -m 20 > $workflowDataDir/$outputFile";
+    my $cmd = "bowtie $bowtieParam $workflowDataDir/$inputIndexesDir/genomicIndexes $inputShortSeqsFileType $workflowDataDir/$inputShortSeqsFile > $workflowDataDir/$outputFile";
 
 
     if ($undo) {
