@@ -14,8 +14,12 @@
     <param name="webServicesDataDir"/>
     <param name="organismResourceXmlFile"/>
     <param name="commonResourceXmlFile"/>
-    <param name="orthoMCLPhyleticProfilesResourceName"/>
-    <param name="orthoMCLOrthologousGroupsResourceName"/>
+    <param name="organismSpecificCreateGenesForGeneFeatures"/>
+    <param name="createGenesForGeneFeatures"/>
+    <param name="organism"/>
+
+    <constant name="orthoMCLPhyleticProfilesResourceName">OrthoMCL_Phyletic_RSRC</constant>
+    <constant name="orthoMCLOrthologousGroupsResourceName">OrthoMCL_RSRC</constant>
 
     <constant name="mercatorDataDir">$$parentDataDir$$/mercator_pairwise</constant>
 
@@ -46,34 +50,33 @@
       <depends name="createPairwiseMercatorDirs"/>
     </step>
 
-  <subgraph name="RodentPlasmodiumChromosomes_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">RodentPlasmodiumChromosomes_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$commonResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$parentDataDir$$/common/comparativeGenomics</paramValue>
-    <depends name="runPairwiseMercatorMavid"/> 
-  </subgraph>
-
-  <subgraph name="loadOrthoMCLPhyleticProfiles" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">$$orthoMCLPhyleticProfilesResourceName$$</paramValue>
+  <subgraph name="OrthoMCL_Phyletic_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">OrthoMCL_Phyletic_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$parentDataDir$$/common/comparativeGenomics</paramValue>
   </subgraph>
 
-  <subgraph name="loadOrthoMCLOrthologousGroups" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">$$orthoMCLOrthologousGroupsResourceName$$</paramValue>
+  <subgraph name="OrthoMCL_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">OrthoMCL_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$parentDataDir$$/common/comparativeGenomics</paramValue>
-    <depends name="loadOrthoMCLPhyleticProfiles"/> 
+    <depends name="OrthoMCL_Phyletic_RSRC"/> 
+  </subgraph>
+
+  <subgraph name="OrthoMCLTree_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">OrthoMCLTree_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$/common/comparativeGenomics</paramValue>
   </subgraph>
 
   <step name="runTuningManager"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager">
-      <depends name="loadOrthoMCLOrthologousGroups"/> 
+      <depends name="OrthoMCL_RSRC"/> 
   </step>
 
     <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin">
       <paramValue name="mercatorDir">$$mercatorDataDir$$</paramValue>
-      <paramValue name="organism">@@PlasmodiumFullName@@</paramValue>
+      <paramValue name="organism">$$organism$$</paramValue>
       <paramValue name="mercatorDraftGenomes">$$mercatorDraftGenomes$$</paramValue>
       <paramValue name="mercatorNonDraftGenomes">$$mercatorNonDraftGenomes$$</paramValue>
       <paramValue name="mercatorSyntenyVersion">@@mercatorSyntenyVersion@@</paramValue>   
@@ -83,8 +86,15 @@
 
     <step name="copyPairwiseMercatorDirsToWebserviceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPairwiseMercatorDirsToWebserviceDir">
       <paramValue name="mercatorDir">$$mercatorDataDir$$</paramValue>
-      <paramValue name="apiSiteFilesDir">$$webServicesDataDir$$/mercator</paramValue>
+      <paramValue name="outputDir">$$webServicesDataDir$$/mercator</paramValue>
       <depends name="runPairwiseMercatorMavid"/>
     </step>
+
+  <subgraph name="organismSpecificCreateGenesForGeneFeatures" xmlFile="$$organismSpecificCreateGenesForGeneFeatures$$" includeIf="$$createGenesForGeneFeatures$$">
+    <paramValue name="mercatorDataDir">$$mercatorDataDir$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+     <paramValue name="cndSrcBin">$$cndSrcBin$$</paramValue>
+    <depends name="runPairwiseMercatorMavid"/>
+  </subgraph>
 
 </workflowGraph>

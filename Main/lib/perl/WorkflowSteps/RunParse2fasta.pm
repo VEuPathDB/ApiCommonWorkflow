@@ -11,29 +11,47 @@ sub run {
 
   my $shortSeqsFile = $self->getParamValue('shortSeqsFile');
 
+  my $pairedEndFile = $self->getParamValue('pairedEndFile');
+
+  my $outputFile = $self->getParamValue('outputFile');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  $outputFile = $pairedEndFile ? $outputFile : $shortSeqsFile;
+
     if ($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/$shortSeqsFile");
-    $self->runCmd(0, "mv $workflowDataDir/$shortSeqsFile.org $workflowDataDir/$shortSeqsFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
+    $self->runCmd(0, "mv $workflowDataDir/$shortSeqsFile.org $workflowDataDir/$shortSeqsFile") unless $pairedEndFile;
   } else {
       if ($test) {
 	  $self->testInputFile('seqFile', "$workflowDataDir/$shortSeqsFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$shortSeqsFile.org");
+          $self->testInputFile('seqFile', "$workflowDataDir/$pairedEndFile") if $pairedEndFile;
+          $self->runCmd(0,"echo test > $workflowDataDir/$outputFile") if $pairedEndFile;
       }else{
 	  $self->runCmd($test,"mv $workflowDataDir/$shortSeqsFile $workflowDataDir/$shortSeqsFile.org");
-	  $self->runCmd($test,"parse2fasta.pl $workflowDataDir/$shortSeqsFile.org > $workflowDataDir/$shortSeqsFile");
+          my $cmd = "parse2fasta.pl $workflowDataDir/$shortSeqsFile.org";
+	  $cmd .= " $workflowDataDir/$pairedEndFile" if $pairedEndFile;
+	  $cmd .= " > $workflowDataDir/$outputFile";
+	  $self->runCmd($test,$cmd);
       }
   }
 }
 
+
 sub getParamDeclaration {
-  return (
-	  'inputFile',
-	  'minPepLength',
-	  'outputFile',
-	 );
+  my @properties = 
+    (
+     ['shortSeqsFile'],
+     ['pairedEndFile'],
+     ['outputFile'],
+    );
+  return @properties;
 }
+
+sub getDocumentation {
+}
+
 
 sub getConfigDeclaration {
   return (

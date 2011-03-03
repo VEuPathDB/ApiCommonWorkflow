@@ -28,7 +28,7 @@ sub run {
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
-      $self->makeClusterControllerPropFile($taskInputDir, 2, $taskSize,
+      $self->makeClusterControllerPropFile($taskInputDir, 1, $taskSize,
       			       "DJob::DistribJobTasks::RepeatMaskerTask");
       
       # make task.prop file
@@ -40,6 +40,7 @@ sub run {
 inputFilePath=$clusterWorkflowDataDir/$seqsFile
 trimDangling=n
 rmOptions=$options
+dangleMax=0
 ";
       close(F);
   }

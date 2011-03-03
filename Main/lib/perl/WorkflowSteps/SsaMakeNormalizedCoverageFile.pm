@@ -14,14 +14,11 @@ sub run {
     my $sampleName = $self->getParamValue('sampleName');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $stepDir = $self->getStepDir();
 
-    my $make_bed_cmd = "sort_RUM_by_location.pl $workflowDataDir/$inputFile $workflowDataDir/$inputFile.sorted";
-    my $m2c_cmd = "rum2cov.pl $workflowDataDir/$inputFile.sorted $workflowDataDir/$outputUnNormFile";
+    my $m2c_cmd = "rum2cov.pl $workflowDataDir/$inputFile $workflowDataDir/$outputUnNormFile";
     my $normalize_cmd = "normalizeCov.pl $workflowDataDir/$outputUnNormFile > $workflowDataDir/$outputNormFile";
 
     if ($undo) {
-	$self->runCmd(0, "rm -f $stepDir/mapping.bed");
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputUnNormFile");
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputNormFile");
     } else {
@@ -29,7 +26,6 @@ sub run {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputNormFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputUnNormFile");
 	}
-	$self->runCmd($test, $make_bed_cmd);
 	$self->runCmd($test, $m2c_cmd);
 	$self->runCmd($test, $normalize_cmd);
     }
@@ -37,8 +33,9 @@ sub run {
 
 sub getParamsDeclaration {
   return (
-      'inputUniqueMappingFile',
-      'outputNormalizedCovFile',
+      'inputFile',
+      'outputUnNormFile',
+      'outputNormFile',
       'sampleName',
       );
 }

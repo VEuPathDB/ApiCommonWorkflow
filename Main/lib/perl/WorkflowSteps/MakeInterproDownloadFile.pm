@@ -15,7 +15,6 @@ sub run {
   my $genomeDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
   my $interproDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('interproExtDbRlsSpec'));
   my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
-  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my $sql = <<"EOF";
   SELECT gf.source_id
@@ -61,15 +60,15 @@ sub run {
 EOF
 
   $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
-my $cmd = " makeFileWithSql --outFile $apiSiteFilesDir/$outputFile --sql \"$sql\" ";
-my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $apiSiteFilesDir/$descripFile";
+my $cmd = " makeFileWithSql --outFile $outputFile --sql \"$sql\" ";
+my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $apiSiteFilesDir/$outputFile");
-    $self->runCmd(0, "rm -f $apiSiteFilesDir/$descripFile");
+    #$self->runCmd(0, "rm -f $outputFile");
+    #$self->runCmd(0, "rm -f $descripFile");
   } else {
       if ($test) {
-	  $self->runCmd(0,"echo test > $apiSiteFilesDir/$outputFile");
+	  $self->runCmd(0,"echo test > $outputFile");
       }else{
 	  $self->runCmd($test,$cmd);
 	  $self->runCmd($test, $cmdDec);

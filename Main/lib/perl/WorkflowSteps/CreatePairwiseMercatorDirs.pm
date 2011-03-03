@@ -80,7 +80,7 @@ sub run {
 		if ($test) {
 		$self->runCmd(0,"mkdir -p $dirName/fasta");
 		$self->runCmd(0,"mkdir -p $dirName/gff");
-		$self-runCmd(0,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$i].fasta $dirName/fasta");
+		$self->runCmd(0,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$i].fasta $dirName/fasta");
 		$self->runCmd(0,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$j].fasta $dirName/fasta");
 		$self->runCmd(0,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$i].gff $dirName/gff");
 		$self->runCmd(0,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$j].gff $dirName/gff");		    

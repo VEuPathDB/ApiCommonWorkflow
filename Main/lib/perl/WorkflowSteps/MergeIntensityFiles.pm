@@ -24,15 +24,18 @@ sub run {
     my $size=scalar @inputFileNames;
 
     my %intensityVals;
+    my %headerVals;
 
     if (scalar @inputFileNames==0){
 	die "No input files. Please check inputDir: $workflowDataDir/$inputFilesDir\n";
     }else {
 	foreach my $file (@inputFileNames){
-	    open(IN,"$file") || die "File $file not found\n";
+	    open(IN,"$workflowDataDir/$inputFilesDir/$file") || die "File $file not found\n";
 	    my $base = (split(/\//, $file))[-1];
 	    $base=~ s/\.int//;
-	    $intensityVals{header}.="$base\t";
+	    $base=~ s/\.max//;
+	    $base=~ s/\.min//;
+	    $headerVals{header}.="$base\t";
 	    while (<IN>){
 		chomp;
 		my ($id, $value) = split(/\t/, $_);
@@ -43,12 +46,11 @@ sub run {
 
     open(OUT,">$workflowDataDir/$outputFile");
 
-    $intensityVals{header} =~ s/\t*$//g;
+    $headerVals{header} =~ s/\t*$//g;
 
-    print OUT "id\t$intensityVals{header}\n";
+    print OUT "id\t$headerVals{header}\n";
 
     foreach my $source_id (keys %intensityVals) {
-
 	$intensityVals{$source_id} =~ s/\t*$//g;;
 	print OUT "$source_id\t$intensityVals{$source_id}\n";
     }

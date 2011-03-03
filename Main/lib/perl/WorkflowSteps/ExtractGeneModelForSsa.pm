@@ -9,22 +9,8 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
-  my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $outputFile = $self->getParamValue('outputFile');
-  my $sequenceOntology = $self->getParamValue('sequenceOntology');
 
-
-  my @extDbRlsSpecList = split(/,/, $extDbRlsSpec);
-
-  my $dbRlsIds;
-
-  foreach my $db (@extDbRlsSpecList){
-        
-     $dbRlsIds .= $self->getExtDbRlsId($test, $db).",";
-
-  }
-
-  $dbRlsIds =~ s/(,)$//g;
 
   my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$ncbiTaxonId);
 
@@ -44,9 +30,7 @@ sub run {
 sub getParamsDeclaration {
   return (
 	  'table',
-	  'extDbRlsSpec',
 	  'outputFile',
-	  'sequenceOntology'
 	 );
 }
 

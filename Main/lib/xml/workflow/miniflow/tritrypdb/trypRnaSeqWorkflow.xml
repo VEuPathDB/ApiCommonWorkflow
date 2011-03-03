@@ -1,0 +1,25 @@
+<workflowGraph name="trypRnaSeqWorkflow">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+
+  <subgraph name="miniGlobal" xmlFile="miniflow/miniGlobal.xml" > </subgraph>
+
+  <subgraph name="lmajorLoadGenome" xmlFile="miniflow/miniLoadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">lmajor</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Sanger L. major chromosomes|@@L.major_chromosomes_from_Sanger_VER@@</paramValue>
+    <paramValue name="ncbiTaxonId">5664</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="miniGlobal"/>
+  </subgraph>
+
+  <subgraph name="LmajorSpecific" xmlFile="miniflow/tritrypdb/lmajorSpecific.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="resourceXmlFileName">tritrypdb/lmajorFriedlinResources.xml</paramValue>
+    <depends name="lmajorLoadGenome"/> 
+  </subgraph>
+
+</workflowGraph>
+

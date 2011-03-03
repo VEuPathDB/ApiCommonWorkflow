@@ -1,11 +1,10 @@
 <workflowGraph name="makeAndBlockAssemblySeqs">
 
-    <param name="parentDataDir"/>
+    <param name="dataDir"/>
     <param name="parentNcbiTaxonId"/>
     <param name="ncbiTaxonId"/>
     <param name="usePredictedTranscripts"/>
     <param name="predictedTranscriptsExtDbRlsSpec"/>
-    <param name="dataDir"/>
     <param name="repeatMaskSpecies"/>
     <param name="makeAssemblySeqs"/>
 
@@ -23,6 +22,14 @@
       <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
       <paramValue name="useTaxonHierarchy">true</paramValue>
       <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
+    </step>
+
+    <step name="document-crossmatch"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">crossmatch_MTHD</paramValue>
+      <paramValue name="version">0.990319</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeAssemblySeqs"/>
     </step>
 
    <step name="extractAssemblySeqs"
@@ -59,6 +66,14 @@
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blocked.err,blocked.seq</paramValue>
       <depends name="runClusterTask"/>
+    </step>
+
+    <step name="document-maskAssemblySeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">repeatmask_assemblyseqs_MTHD</paramValue>
+      <paramValue name="version">1.214</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="mirrorFromCluster"/>
     </step>
 
 

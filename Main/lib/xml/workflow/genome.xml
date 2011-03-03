@@ -1,5 +1,4 @@
 <workflowGraph name="genomeAnalysis">
-
   <param name="parentDataDir"/>
   <param name="organismName"/>
   <param name="organismFullName"/>
@@ -11,7 +10,7 @@
   <param name="maxIntronSize"/>
   <param name="distanceBetweenStartsForAlignmentsInSameCluster"/>
   <param name="taxonHierarchyForBlastxFilter"/>
-  <param name="organismTwoLetterAbbrev"/>
+  <param name="organismAbbrev"/>
   <param name="repeatMaskSpecies"/>
   <param name="genomeSize"/>
   <param name="runtRNAScan"/>
@@ -26,12 +25,10 @@
   <param name="genomicSeqsFile"/>
   <param name="genomicSeqsDir"/>
   <param name="dbESTResourceName"/>
+  <param name="loadDbest"/>
 
   <constant name="dataDir">$$parentDataDir$$/genome</constant>
-  <constant name="assemblySeqsDataDir">$$dataDir$$/makeAssemblySeqs</constant>
-  <constant name="mapAssemblySeqsDataDir">$$dataDir$$/mapAssemblySeqs</constant>
-  <constant name="assembliesDataDir">$$dataDir$$/makeAssemblies</constant>
-  <constant name="blastxArgs">-cpus=4 -topcomboN=1 W=4 T=18 V=100 B=1000000 -hspmax=1000000 -gi E=1e-3 -wordmask=seg+xnu -hspsepQmax=4000 -span1 Y=$$genomeSize$$</constant>
+  <constant name="blastxArgs">-cpus=4 -topcomboN=1 W=4 T=18 V=100 B=1000000 -hspmax=1000000 -gi E=1e-3 -wordmask=seg+xnu -hspsepQmax=4000 -span1</constant>
   <constant name="trfArgs">2 7 7 80 20 50 500</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
@@ -43,7 +40,7 @@
       <depends name="makeDataDir"/>
     </step>
 
-  <subgraph name="dbESTResource" xmlFile="loadResource.xml">
+  <subgraph name="dbESTResource" xmlFile="loadResource.xml" includeIf="$$loadDbest$$">
     <paramValue name="resourceName">$$dbESTResourceName$$</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -66,7 +63,7 @@
       <paramValue name="subjectFile">$$global_NRDBOutputFile_shortDefline$$</paramValue>
       <paramValue name="subjectTable">DoTS::ExternalAASequence</paramValue>
       <paramValue name="subjectExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
-      <paramValue name="blastArgs">$$blastxArgs$$</paramValue>
+      <paramValue name="blastArgs">$$blastxArgs$$ Y=$$genomeSize$$</paramValue>
       <paramValue name="idRegex">gi\\|(\\d+)\\|</paramValue>
       <paramValue name="blastType">blastx</paramValue>
       <paramValue name="vendor">wu</paramValue>
@@ -80,18 +77,10 @@
 
 
     <step name="document-blastxGenomicSeqsNrdb"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">BLASTX Genomic sequence vs. NRDB</paramValue>
-      <paramValue name="tool">WU-BLASTX</paramValue>
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">BLASTX_genome_NRDB_MTHD</paramValue>
       <paramValue name="version">2.0 [06-Apr-2005]</paramValue>
-      <paramValue name="category">Genome</paramValue>
-      <paramValue name="input">Query: Genomic sequence; Subject: NRDB</paramValue>
-      <paramValue name="output">BLASTX alignments</paramValue>
       <paramValue name="parameters">$$blastxArgs$$</paramValue>
-      <paramValue name="description">BLASTX genomic sequence against NCBI non-redundant protein database (NRDB).  WU-BLASTX is used to identify statistically significant DNA-protein sequence similarities found between DNA sequence queries and protein sequence libraries</paramValue>
-      <paramValue name="pubmedId">2231712</paramValue>
-      <paramValue name="url">http://blast.wustl.edu</paramValue>
-      <paramValue name="credits"></paramValue>
       <depends name="blastxGenomicSeqsNrdb"/>
     </step>
 
@@ -105,18 +94,10 @@
     </subgraph>
 
     <step name="document-tRNAScan"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod" includeIf="$$runtRNAScan$$">
-      <paramValue name="name">Predict tRNAs in genomic sequence</paramValue>
-      <paramValue name="tool">tRNAScan-SE</paramValue>
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="$$runtRNAScan$$">
+      <paramValue name="method">tRNAscan_MTHD</paramValue>
       <paramValue name="version">1.4</paramValue>
-      <paramValue name="category">Genome</paramValue>
-      <paramValue name="input">Genomic sequences</paramValue>
-      <paramValue name="output">predicted tRNAs with anticodon and score</paramValue>
       <paramValue name="parameters">trainingOption=C</paramValue>
-      <paramValue name="description">tRNAscan-SE identifies transfer RNA genes in genomic DNA or RNA sequences.</paramValue>
-      <paramValue name="pubmedId">9023104</paramValue>
-      <paramValue name="url"></paramValue>
-      <paramValue name="credits"></paramValue>
       <depends name="tRNAScan"/>
     </step>
 
@@ -126,6 +107,14 @@
       <paramValue name="minPepLength">50</paramValue>
       <paramValue name="outputFile">$$dataDir$$/Orf50.gff</paramValue>
       <depends name="makeDataDir"/>
+    </step>
+
+    <step name="document-makeOrfFile"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">orfFinder_MTHD</paramValue>
+      <paramValue name="version">unknown</paramValue>
+      <paramValue name="parameters">--minPepLength 50</paramValue>
+      <depends name="makeOrfFile"/>
     </step>
 
     <step name="loadOrfFile"
@@ -145,22 +134,6 @@
     <depends name="loadOrfFile"/>
   </subgraph>
 
-    <step name="document-makeOrfFile"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">Locate Open Reading Frames (ORFs)</paramValue>
-      <paramValue name="tool">orfFinder</paramValue>
-      <paramValue name="version"></paramValue>
-      <paramValue name="category">Genome</paramValue>
-      <paramValue name="input">Genomic sequence</paramValue>
-      <paramValue name="output">gff file containing the 6 reading frame, 50 or more amino acid translations of the input nucleic acid</paramValue>
-      <paramValue name="parameters">--minPepLength 50</paramValue>
-      <paramValue name="description">The translations in all 6 reading frames do not necessarily begin with MET but always end at a stop codon. ORF names are in the form template-frame-start-end, e.g. AAEL01000396-5-5847-4366</paramValue>
-      <paramValue name="pubmedId"></paramValue>
-      <paramValue name="url"></paramValue>
-      <paramValue name="credits"></paramValue>
-      <depends name="makeOrfFile"/>
-    </step>
-
     <step name="findTandemRepeats"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindTandemRepeats">
       <paramValue name="seqsFile">$$genomicSeqsFile$$</paramValue>
@@ -169,26 +142,18 @@
       <depends name="makeDataDir"/>
     </step>
 
+    <step name="document-findTandemRepeats"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">TRF_MTHD</paramValue>
+      <paramValue name="version">3.21</paramValue>
+      <paramValue name="parameters">$$trfArgs$$</paramValue>
+      <depends name="findTandemRepeats"/>
+    </step>
+
     <step name="loadTandemRepeats"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTandemRepeats" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/tandemRepeats.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="findTandemRepeats"/>
-    </step>
-
-    <step name="document-findTandemRepeats"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">Find tandem repeats in genomic sequence</paramValue>
-      <paramValue name="tool">Tandem Repeat Finder</paramValue>
-      <paramValue name="version">3.21</paramValue>
-      <paramValue name="category">Genome</paramValue>
-      <paramValue name="input">Genomic sequences</paramValue>
-      <paramValue name="output">a repeat table file and an alignment file</paramValue>
-      <paramValue name="parameters">$$trfArgs$$</paramValue>
-      <paramValue name="description">The Tandem Repeats Finder program locates and displays tandem repeats in DNA sequences</paramValue>
-      <paramValue name="pubmedId">9862982</paramValue>
-      <paramValue name="url">http://tandem.bu.edu/trf/trf.html</paramValue>
-      <paramValue name="credits"></paramValue>
       <depends name="findTandemRepeats"/>
     </step>
 
@@ -202,6 +167,14 @@
       <depends name="makeDataDir"/>
     </step>
 
+    <step name="document-runLowComplexityFilter"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">dust_genome_MTHD</paramValue>
+      <paramValue name="version">2.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="runLowComplexityFilter"/>
+    </step>
+
     <step name="loadLowComplexityFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertLowComplexitySequences" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$genomicSeqsFile$$.dust</paramValue>
@@ -212,75 +185,27 @@
       <depends name="runLowComplexityFilter"/>
     </step>
 
-    <step name="document-runLowComplexityFilter"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethod">
-      <paramValue name="name">Filter Low Complexity Genomic Sequences</paramValue>
-      <paramValue name="tool">dust</paramValue>
-      <paramValue name="version"></paramValue>
-      <paramValue name="category">Genome</paramValue>
-      <paramValue name="input">Genomic sequences</paramValue>
-      <paramValue name="output">Genomic sequences containing regions of low complexity masked with the character 'N'</paramValue>
-      <paramValue name="parameters"></paramValue>
-      <paramValue name="description"></paramValue>
-      <paramValue name="pubmedId"></paramValue>
-      <paramValue name="url"></paramValue>
-      <paramValue name="credits">Tatusov and Lipman</paramValue>
-      <depends name="runLowComplexityFilter"/>
-    </step>
-
-    <subgraph name="makeAndBlockAssemblySeqs" xmlFile="makeAndBlockAssemblySeqs.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="usePredictedTranscripts">$$usePredictedTranscripts$$</paramValue>
-      <paramValue name="dataDir">$$assemblySeqsDataDir$$</paramValue>
-      <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
-      <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
-      <paramValue name="makeAssemblySeqs">$$makeAssemblySeqs$$</paramValue>
-      <depends name="mirrorToCluster"/>
-      <depends name="dbESTResource"/>
-      <depends name="organismSpecificESTResource"/>
-    </subgraph>
-
-    <subgraph name="mapAssemblySeqsToGenome" xmlFile="mapAssemblySeqsToGenome.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="assemblySeqsDataDir">$$assemblySeqsDataDir$$</paramValue>
-      <paramValue name="dataDir">$$mapAssemblySeqsDataDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
-      <depends name="makeAndBlockAssemblySeqs"/>
-    </subgraph>
-
-    <subgraph name="makeAndBlockAssemblies" xmlFile="makeAndBlockAssemblies.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">$$distanceBetweenStartsForAlignmentsInSameCluster$$</paramValue>
-      <paramValue name="dataDir">$$assembliesDataDir$$</paramValue>
-      <paramValue name="assemblySeqsDataDir">$$assemblySeqsDataDir$$</paramValue>
-      <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
-      <paramValue name="makeAssemblies">$$makeAssemblies$$</paramValue>
-      <depends name="mapAssemblySeqsToGenome"/>
-    </subgraph>
-
-    <subgraph name="mapAssembliesToGenome" xmlFile="mapAssembliesToGenome.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="assembliesDataDir">$$assembliesDataDir$$</paramValue>
-      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
-      <paramValue name="organismTwoLetterAbbrev">$$organismTwoLetterAbbrev$$</paramValue>
-      <paramValue name="nickName">mapAssemblies</paramValue>
-      <paramValue name="queryTable">Assembly</paramValue>
-      <paramValue name="updateAssemblySourceId">$$makeAssemblies$$</paramValue>
-      <paramValue name="queryExtDbRlsSpec"></paramValue>
-      <depends name="makeAndBlockAssemblies"/>
-    </subgraph>
+  <subgraph name="makeAndMapTranscriptAssemblies" xmlFile="makeAndMapTranscriptAssemblies.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismName">$$organismName$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+    <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+    <paramValue name="usePredictedTranscripts">$$usePredictedTranscripts$$</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
+    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">$$distanceBetweenStartsForAlignmentsInSameCluster$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
+    <paramValue name="makeAssemblySeqs">$$makeAssemblySeqs$$</paramValue>
+    <paramValue name="makeAssemblies">$$makeAssemblies$$</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">$$mapAssemblySeqsAndAssemblies$$</paramValue>
+    <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+    <depends name="mirrorToCluster"/>
+    <depends name="dbESTResource"/>
+    <depends name="organismSpecificESTResource"/>
+  </subgraph>
 
 </workflowGraph>
 

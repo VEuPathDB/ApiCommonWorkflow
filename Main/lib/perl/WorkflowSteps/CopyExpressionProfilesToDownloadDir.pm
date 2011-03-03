@@ -12,20 +12,19 @@ sub run {
   my $copyToDir = $self->getParamValue('copyToDir');
   my $configFile = $self->getParamValue('configFile');
 
-  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  $self->runCmd(0, "mkdir -p $apiSiteFilesDir/$copyToDir");
+  $self->runCmd(0, "mkdir -p $copyToDir");
 
-  my $cmd = "copyExpressionProfilesToDownloadDir --inputDir $workflowDataDir/$copyFromDir  --outputDir $apiSiteFilesDir/$copyToDir --configFile $workflowDataDir/$configFile";
+  my $cmd = "copyExpressionProfilesToDownloadDir --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir --configFile $workflowDataDir/$configFile";
 
   if ($test) {
     $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");
   }
 
   if ($undo) {
-    $self->runCmd(0, "rm -fr $apiSiteFilesDir/$copyToDir");
+    $self->runCmd(0, "rm -fr $copyToDir");
   } else {
     $self->runCmd($test, $cmd);
   }

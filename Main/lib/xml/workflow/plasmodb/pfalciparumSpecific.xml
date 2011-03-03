@@ -3,11 +3,11 @@
   <param name="projectVersion"/>
   <param name="parentDataDir"/>
   <param name="organismResourceXmlFile"/>
-  <param name="downloadSiteDataDir"/>
+  <param name="downloadSiteDir"/>
   <param name="webServicesDataDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/PfalciparumSpecific</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Pfalciparum</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDir$$/Pfalciparum</constant>
   <constant name="genomicSeqsFile">$$parentDataDir$$/PfalciparumLoadGenome/genomicSeqs.fsa</constant>
   <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/PfalciparumLoadGenome/genomicSeqsForSsa.fsa</constant>
   <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/PfalciparumLoadGenome/transcriptSeqsForSsa.fsa</constant>
@@ -22,11 +22,13 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <subgraph name="mapIsolatesToGenome" xmlFile="plasmodb/plasmoMapIsolatesToGenome.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <subgraph name="plasmodiumGenbankIsolates_mapToGenome" xmlFile="mapIsolatesToGenome.xml">
+      <paramValue name="dataDir">$$dataDir$$/plasmodiumGenbankIsolates_mapToGenome</paramValue>
       <paramValue name="organismName">Pfalciparum</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="isolateExtDbRlsSpec">PlasmodiumGenbankIsolates_RSRC|@@PlasmodiumGenbankIsolates_VER@@</paramValue>
+      <paramValue name="idRegex">(\\S+)</paramValue>
       <depends name="mirrorToCluster"/>
       <dependsGlobal name="isolatesResource"/>
     </subgraph>
@@ -38,20 +40,6 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="Pfalciparum_geneDB_Ids_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Pfalciparum_geneDB_Ids_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
-
-    <subgraph name="Pf_CorrectGeneAliases_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Pf_CorrectGeneAliases_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="Pfalciparum_geneDB_Ids_RSRC"/>
-    </subgraph>
-
     <subgraph name="arrayResources" xmlFile="plasmodb/pfalciparumArrayStudies.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
@@ -59,14 +47,13 @@
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
-      <depends name="Pf_CorrectGeneAliases_RSRC"/>
+      <depends name="makeDataDir"/>
     </subgraph>
 
   <subgraph name="rnaSeqAndChipSeq" xmlFile="plasmodb/pfalciparumRnaSeqAndChipSeq.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
     <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
     <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
     <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
@@ -98,20 +85,6 @@
       <depends name="WirthSageTagArrayDesign_RSRC"/>
     </subgraph>
 
-  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
-     <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-     <paramValue name="outputFile">$$downloadSiteDataDir$$/tabular/PfalciparumGeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <depends name="Pf_CorrectGeneAliases_RSRC"/>
-  </step>
-
-  <subgraph name="dbxRefsResources" xmlFile="plasmodb/pfalciparumDbxRefsResource.xml">
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/PfalciparumEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="Pf_CorrectGeneAliases_RSRC"/>
-  </subgraph>
-
   <subgraph name="miscResources" xmlFile="plasmodb/pfalciparumMiscResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -125,6 +98,20 @@
       <depends name="makeDataDir"/>
       <dependsGlobal name="GO_RSRC"/>
       <dependsGlobal name="GO_evidence_codes_RSRC"/>
+    </subgraph>
+
+    <subgraph name="Pfalciparum_Comments_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pfalciparum_Comments_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Pfalciparum_GeneName_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pfalciparum_GeneName_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
     </subgraph>
 
     <subgraph name="Pfalciparum_ECNumbers_RSRC" xmlFile="loadResource.xml">
@@ -142,30 +129,16 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="Pf_PiggyBac_Clones_Adams_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Pf_PiggyBac_Clones_Adams_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
-
-    <step name="mirrorPf_PiggyBac_Clones_Adams_RSRCToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC</paramValue>
-      <depends name="Pf_PiggyBac_Clones_Adams_RSRC"/>
-    </step>
-
-    <subgraph name="PfMapPiggyBacClonesToGenomicSeqs" xmlFile="runBlastAndLoadFeatures.xml">
-      <paramValue name="dataDir">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC/PfMapPiggyBacClonesToGenomicSeqs</paramValue>
-      <paramValue name="queryFile">$$dataDir$$/Pf_PiggyBac_Clones_Adams_RSRC/PiggyBac_Clones_Adams.fsa</paramValue>
-      <paramValue name="subjectFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="blastArgs">-nogaps V=1 E=1e-10 B=1 hspsepQmax=50000 hspsepSmax=50000 -span1 -topcomboN=1</paramValue>
-      <paramValue name="idRegex">(\\S+)</paramValue>
-      <paramValue name="blastType">blastn</paramValue>
-      <paramValue name="vendor">wu</paramValue>
+    <subgraph name="mapPiggyBacsToGenome" xmlFile="mapPiggyBacsToGenome.xml">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="piggyBacResourceName">Pf_PiggyBac_Clones_Adams_RSRC</paramValue>
+      <paramValue name="piggyBacExtDbRlsSpec">Pf_PiggyBac_Clones_Adams_RSRC|@@Pf_PiggyBac_Clones_Adams_VER@@</paramValue>
       <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
-      <paramValue name="extDbRlsSpec">Pf_PiggyBac_Clones_Adams_RSRC|@@Pf_PiggyBac_Clones_Adams_VER@@</paramValue>
       <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
-      <depends name="mirrorPf_PiggyBac_Clones_Adams_RSRCToCluster"/>
+      <paramValue name="idRegex">(\\S+)</paramValue>
+      <depends name="makeDataDir"/>
     </subgraph>
 
   <subgraph name="PlasmoSpecificMakeAndFormatDownloadFiles" xmlFile="plasmodb/plasmoSpecificMakeAndFormatDownloadFiles.xml">

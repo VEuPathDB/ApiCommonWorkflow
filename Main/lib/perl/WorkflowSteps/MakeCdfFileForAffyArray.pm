@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray;
+package ApiCommonWorkflow::Main::WorkflowSteps::ReCreateNdfFile;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -10,28 +10,21 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $gene2probesInputFile = $self->getParamValue('gene2probesInputFile');
-  my $probename2sequenceInputFile = $self->getParamValue('probename2sequenceInputFile');
-  my $cdfFile = $self->getParamValue('cdfFile');
-  my $tbasePbaseFile = $self->getParamValue('tbasePbaseFile');
+  my $ndfFile = $self->getParamValue('ndfFile');
+  my $outputFile = $self->getParamValue('outputFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd1 = "get_pbase-tbase.pl $workflowDataDir/$probename2sequenceInputFile 1 > $workflowDataDir/$tbasePbaseFile";
-
-  my $cmd2 = "create_cdf.pl $workflowDataDir/$cdfFile $workflowDataDir/$gene2probesInputFile $workflowDataDir/$tbasePbaseFile";
-
-
+  my $cmd = "recreate_ndf.pl --original_ndf_file $workflowDataDir/$ndfFile --gene_to_oligo_file $workflowDataDir/$gene2probesInputFile --output_file $workflowDataDir/$outputFile";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/tbase-pbase.out");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('gene2probesInputFile', "$workflowDataDir/$gene2probesInputFile");
-	  $self->testInputFile('probename2sequenceInputFile', "$workflowDataDir/$probename2sequenceInputFile");
+	  $self->testInputFile('ndfFile', "$workflowDataDir/$ndfFile");
 	  $self->testInputFile('gene2probesInputFile', "$workflowDataDir/$gene2probesInputFile");
       }else{
-	  $self->runCmd($test,$cmd1);
-	  $self->runCmd($test,$cmd2);
+	  $self->runCmd($test,$cmd);
       }
   }
 }
@@ -39,8 +32,7 @@ sub run {
 sub getParamDeclaration {
   return (
 	  'gene2probesInputFile',
-	  'probename2sequenceInputFile',
-	  'gene2probesInputFile',
+	  'ndfFile',
 	 );
 }
 

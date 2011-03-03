@@ -1,24 +1,26 @@
 <workflowGraph name="pfalciparumDbxRefsResource">
       <param name="organismResourceXmlFile"/>
       <param name="parentDataDir"/>
-      <param name="euPathUniProtLinkDownloadFile"/>
+      <param name="projectVersion"/>
       <param name="projectName"/>
+      <param name="downloadSiteDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/pfalciparumDbxRefsResources</constant>
+  <constant name="euPathUniProtLinkDownloadFile">$$downloadSiteDir$$/PfalciparumEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</constant>
+  <constant name="geneAliasesMappingDownloadFile">$$downloadSiteDir$$/txt/PfalciparumGeneAlias_$$projectName$$-$$projectVersion$$.txt</constant>
+
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
+     <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+     <paramValue name="outputFile">$$geneAliasesMappingDownloadFile$$</paramValue>
+  </step>
+
   <subgraph name="Pfalciparum_chromosomes_xRefs_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Pfalciparum_chromosomes_xRefs_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
-
-  <subgraph name="Pf_Entrez_DBRefs_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">Pf_Entrez_DBRefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
@@ -35,6 +37,7 @@
     <paramValue name="resourceName">Pf_Pubmed_DBRefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pf_Entrez_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
@@ -69,6 +72,7 @@
     <paramValue name="resourceName">Pf_PASA_DBRefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pf_PathwayMappings_Hagai_RSRC" xmlFile="loadResource.xml">
@@ -82,6 +86,7 @@
     <paramValue name="resourceName">Pf_Winzeler_Westenberger_Dbrefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pf_Winzeler_Literature_References_RSRC" xmlFile="loadResource.xml">
@@ -130,6 +135,7 @@
     <paramValue name="resourceName">Pf_ChrsGenBankDbRefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Pf_EcMappings_Hagai_RSRC" xmlFile="loadResource.xml">
@@ -143,12 +149,14 @@
     <paramValue name="resourceName">LaCount_y2h_data_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="PhylogeneticProfiles_Pfalciparum_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">PhylogeneticProfiles_Pfalciparum_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="MutualInformationScores_Pfalciparum_RSRC" xmlFile="loadResource.xml">
@@ -171,4 +179,12 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
+
+  <subgraph name="Pf_RMgm_Phenotype_DBRefs_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pf_RMgm_Phenotype_DBRefs_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
 </workflowGraph>

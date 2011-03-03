@@ -15,20 +15,18 @@ sub run {
     my $descripFile = $self->getParamValue('descripFile');
     my $descripString = $self->getParamValue('descripString');
 
-    my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
-
     my $cmd = <<"EOF";
-      makeCodonUsage  --outFile $apiSiteFilesDir/$outputFile  --inFile  $apiSiteFilesDir/$inputFile  --verbose
+      makeCodonUsage  --outFile $outputFile  --inFile $inputFile  --verbose
 EOF
-  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $apiSiteFilesDir/$descripFile";
+  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
 
     if ($undo) {
-	$self->runCmd(0, "rm -f $apiSiteFilesDir/$outputFile");
-        $self->runCmd(0, "rm -f $apiSiteFilesDir/$descripFile");
+	#$self->runCmd(0, "rm -f $outputFile");
+        #$self->runCmd(0, "rm -f $descripFile");
     } else {
 	if ($test) {
-	    $self->testInputFile('inputFile', "$apiSiteFilesDir/$inputFile");
-	    $self->runCmd(0,"echo test > $apiSiteFilesDir/$outputFile");
+	    $self->testInputFile('inputFile', "$inputFile");
+	    $self->runCmd(0,"echo test > $outputFile");
 	}else{
 	    $self->runCmd($test,$cmd);
 	    $self->runCmd($test, $cmdDec);

@@ -17,7 +17,18 @@ sub run {
 
     _formatForCLI($pluginArgs);
 
-    $self->runPlugin($test, $undo, $plugin, $pluginArgs);
+    if ($plugin =~ m/InsertSequenceFeatures/ && $undo){
+
+      my $mapFile = $1 if ($pluginArgs =~ m/mapFile\s+(\S+)\s+/);
+
+      my $algInvIds = $self->getAlgInvIds();
+	
+      $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $mapFile --algInvocationId $algInvIds --workflowContext --commit");
+	
+    }else{
+
+	$self->runPlugin($test, $undo, $plugin, $pluginArgs);
+    }
 }
 
 sub _formatForCLI {

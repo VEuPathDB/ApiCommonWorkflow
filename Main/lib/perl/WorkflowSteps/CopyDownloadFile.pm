@@ -11,14 +11,12 @@ sub run {
   my $fromFile = $self->getParamValue('fromFile');
   my $toFile = $self->getParamValue('toFile');
 
-  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
-
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "cp $apiSiteFilesDir/$fromFile $workflowDataDir/$toFile";
+  my $cmd = "cp $fromFile $workflowDataDir/$toFile";
 
   if ($test) {
-    $self->testInputFile('fromFile', "$apiSiteFilesDir/$fromFile");
+    $self->testInputFile('fromFile', "$fromFile");
     $self->runCmd(0, "echo test > $workflowDataDir/$toFile");
   }
 

@@ -1,14 +1,14 @@
 <workflowGraph name="makeAndBlockAssemblies">
 
-    <param name="parentDataDir"/>
+    <param name="dataDir"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="parentNcbiTaxonId"/>
     <param name="ncbiTaxonId"/>
     <param name="distanceBetweenStartsForAlignmentsInSameCluster"/>
-    <param name="dataDir"/>
     <param name="assemblySeqsDataDir"/>
     <param name="repeatMaskSpecies"/>
     <param name="makeAssemblies"/>
+
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -20,6 +20,14 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">$$distanceBetweenStartsForAlignmentsInSameCluster$$</paramValue>
       <depends name="makeDataDir"/>
+    </step>
+
+    <step name="document-clusterAssemblySeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">cluster_assembly_seqs_MTHD</paramValue>
+      <paramValue name="version">unknown</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="clusterTranscriptsByGenomeAlignment"/>
     </step>
 
    <step name="putUnalignedTranscriptsIntoOneCluster"
@@ -58,6 +66,14 @@
       <depends name="splitClusterFile"/>
     </step>
 
+    <step name="document-makeAssemblies"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">Consensus_transcript_prediction_MTHD</paramValue>
+      <paramValue name="version">4</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeAndLoadAssembliesFromBigClusters"/>
+    </step>
+
    <step name="extractAssemblies"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAssemblies">
       <paramValue name="outputFile">$$dataDir$$/assemblies.fsa</paramValue>
@@ -94,5 +110,14 @@
       <paramValue name="outputFiles">blocked.seq</paramValue>
       <depends name="runClusterTask"/>
     </step>
+
+    <step name="document-maskAssemblies"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">repeat_mask_assemblies_MTHD</paramValue>
+      <paramValue name="version">1.214</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="clusterTranscriptsByGenomeAlignment"/>
+    </step>
+
 
 </workflowGraph>

@@ -3,10 +3,10 @@
   <param name="projectVersion"/>
   <param name="parentDataDir"/>
   <param name="organismResourceXmlFile"/>
-  <param name="downloadSiteDataDir"/>
+  <param name="downloadSiteDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/PyoeliiSpecific</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Pyoelii</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDir$$/Pyoelii</constant>
   <constant name="genomicSeqsFile">$$parentDataDir$$/PyoeliiLoadGenome/genomicSeqs.fsa</constant>
   <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/PyoeliiLoadGenome/genomicSeqsForSsa.fsa</constant>
   <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/PyoeliiLoadGenome/transcriptSeqsForSsa.fsa</constant>
@@ -21,35 +21,16 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <subgraph name="mapIsolatesToGenome" xmlFile="plasmodb/plasmoMapIsolatesToGenome.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <subgraph name="plasmodiumGenbankIsolates_mapToGenome" xmlFile="mapIsolatesToGenome.xml">
+      <paramValue name="dataDir">$$dataDir$$/plasmodiumGenbankIsolates_mapToGenome</paramValue>
       <paramValue name="organismName">Pyoelii</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">Pyoelii_Contigs_RSRC|@@Pyoelii_Contigs_VER@@</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Pyoelii_Contigs_RSRC|@@Pyoelii_Contigs_VER@@</paramValue>
+      <paramValue name="isolateExtDbRlsSpec">PlasmodiumGenbankIsolates_RSRC|@@PlasmodiumGenbankIsolates_VER@@</paramValue>
+      <paramValue name="idRegex">(\\S+)</paramValue>
       <depends name="mirrorToCluster"/>
       <dependsGlobal name="isolatesResource"/>
     </subgraph>
-
-    <subgraph name="Py_CorrectGeneAliases_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Py_CorrectGeneAliases_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
-
-  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
-     <paramValue name="genomeExtDbRlsSpec">Pyoelii_Contigs_RSRC|@@Pyoelii_Contigs_VER@@</paramValue>
-     <paramValue name="outputFile">$$downloadSiteDataDir$$/PyoeliiGeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <depends name="Py_CorrectGeneAliases_RSRC"/>
-  </step>
-
-  <subgraph name="dbxRefsResources" xmlFile="plasmodb/pyoeliiDbxRefsResource.xml">
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/PyoeliiEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="Py_CorrectGeneAliases_RSRC"/>
-  </subgraph>
 
   <subgraph name="miscResources" xmlFile="plasmodb/pyoeliiMiscResource.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
@@ -64,7 +45,7 @@
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
-      <depends name="Py_CorrectGeneAliases_RSRC"/>
+      <depends name="makeDataDir"/>
     </subgraph>
 
     <subgraph name="Pyoelii_EC_numbers_RSRC" xmlFile="loadResource.xml">
@@ -73,5 +54,20 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
       <dependsGlobal name="enzymeDB_RSRC"/>
+    </subgraph>
+
+
+    <subgraph name="Pyoelii_Comments_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pyoelii_Comments_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Pyoelii_GeneName_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pyoelii_GeneName_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
     </subgraph>
 </workflowGraph>

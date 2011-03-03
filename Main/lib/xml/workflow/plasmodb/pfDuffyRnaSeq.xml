@@ -1,7 +1,6 @@
 <workflowGraph name="pfDuffyRnaSeq">
     <param name="parentDataDir"/>
     <param name="organismResourceXmlFile"/>
-    <param name="genomicSeqsFile"/>
     <param name="ssaGeneModelFile"/>
     <param name="genomicSeqsFileForSsa"/>
     <param name="transcriptSeqsFileForSsa"/>
@@ -41,7 +40,6 @@
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">PL01</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Duffy_RSRC/final/PL01.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzePL01/PL01.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/PL01.int</paramValue>
@@ -62,7 +60,6 @@
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">PL02</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Duffy_RSRC/final/PL02.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzePL02/PL02.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/PL02.int</paramValue>
@@ -83,7 +80,6 @@
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">3D7</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Duffy_RSRC/final/3D7.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyze3D7/3D7.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/3D7.int</paramValue>
@@ -100,36 +96,66 @@
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <step name="mergeIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
+    <step name="mergeMinIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
       <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt</paramValue>
-      <paramValue name="profileElementOrder">PL01.int,PL02.int,3D7.int</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">PL01.int.min,PL02.int.min,3D7.int.min</paramValue>
       <depends name="makeSeqCoverageAndIntensityDataDir"/>
       <depends name="analyzePL01Sample"/>
       <depends name="analyzePL02Sample"/>
       <depends name="analyze3D7Sample"/>
     </step>
 
-    <step name="makePercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
-      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt</paramValue>
-      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt.pct</paramValue>
+    <step name="mergeMaxIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">PL01.int.max,PL02.int.max,3D7.int.max</paramValue>
+      <depends name="makeSeqCoverageAndIntensityDataDir"/>
+      <depends name="analyzePL01Sample"/>
+      <depends name="analyzePL02Sample"/>
+      <depends name="analyze3D7Sample"/>
+    </step>
+
+    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt.pct</paramValue>
       <paramValue name="ties">min</paramValue>
-      <paramValue name="hasHeader">false</paramValue>
-      <depends name="mergeIntensityFiles"/>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+    </step>
+
+    <step name="makeMaxPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt.pct</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMaxIntensityFiles"/>
+    </step>
+
+    <step name="makeDiffProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff">
+      <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="minInputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>     
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/diffProfiles.txt</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
     </step>
 
     <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
       <paramValue name="configFile">$$dataDir$$/Pf_RNASeq_Duffy_RSRC/final/config.txt</paramValue>
       <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <paramValue name="extDbRlsSpec">Pf_RNASeq_Duffy_RSRC|@@Pf_RNASeq_Duffy_VER@@</paramValue>
-      <depends name="makePercentileProfile"/>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="makeMinPercentileProfile"/>
+      <depends name="makeDiffProfile"/>
     </step>
 
     <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
       <paramValue name="copyFromDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <paramValue name="configFile">$$dataDir$$/Pf_RNASeq_Duffy_RSRC/final/config.txt</paramValue>
       <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
-      <depends name="mergeIntensityFiles"/>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
     </step>
 
 </workflowGraph>

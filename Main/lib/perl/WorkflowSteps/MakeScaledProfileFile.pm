@@ -22,6 +22,7 @@ sub run {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     } elsif ($test){
 	 $self->testInputFile('inputFilesDir', "$workflowDataDir/$inputFilesDir");
+	 $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
     }else{
 	     my (@sc,@intensity);
 

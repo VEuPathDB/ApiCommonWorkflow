@@ -48,25 +48,28 @@ sub run {
 	for(my $i =0; $i <= ($#allGenomes-1); $i++){
 	    for(my $j =$i+1 ; $j <= $#allGenomes; $j++){
 		my $dirName = "$mercatorDir/$allGenomes[$i]-$allGenomes[$j]";
-		$self->testInputFile('inputFile', "$dirName/$allGenomes[$i]-$allGenomes[$j].align-synteny");
+		$self->testInputFile('inputFile', "$workflowDataDir/$dirName/$allGenomes[$i]-$allGenomes[$j].align-synteny");
 	    }
 	}
     }
 
-	for(my $i =0; $i <= ($#allGenomes-1); $i++){
+    if ($undo){
+	$self->runPlugin($test, 1, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $args);
+	}else{
+	 for(my $i =0; $i <= ($#allGenomes-1); $i++){
 	    for(my $j =$i+1 ; $j <= $#allGenomes; $j++){
 		my $databaseName = "$allGenomes[$i]-$allGenomes[$j] synteny from Mercator";
 		my $dbPluginArgs = "--name '$databaseName' ";
-		$self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
+		$self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 		my $releasePluginArgs = "--databaseName '$databaseName' --databaseVersion '$mercatorSyntenyVersion'";
-		$self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
+		$self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
 	    }
 	}
 
 
-    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $args);
+    $self->runPlugin($test, 0, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $args);
 
- 
+    }
 }
 
 sub getParamsDeclaration {

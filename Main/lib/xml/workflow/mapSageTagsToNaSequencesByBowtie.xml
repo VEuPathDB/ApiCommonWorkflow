@@ -1,0 +1,35 @@
+<workflowGraph name="SsaBowtie">
+  <param name="parentDataDir"/>
+  <param name="genomicSeqsFile"/>
+  <param name="sageTagFile"/>
+  <param name="outputFile"/>
+  <param name="bowtieParam"/>
+
+
+  <constant name="dataDir">$$parentDataDir$$/mapSageTagsToNaSequencesByBowtie</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="outputIndexDir">$$dataDir$$/indexes</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="runBowtie" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$sageTagFile$$</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">$$bowtieParam$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/bowtieOutputFile.out</paramValue>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+    <step name="bowtie2TagToSeq" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::Bowtie2TagToSeq">
+     <paramValue name="inputFile">$$dataDir$$/bowtieOutputFile.out</paramValue>
+     <paramValue name="outputFile">$$parentDataDir$$/mapSageTagsToNaSequences.out</paramValue>
+    <depends name="runBowtie"/>
+  </step>
+
+</workflowGraph>

@@ -1,0 +1,34 @@
+<workflowGraph name="pfalciparumGeneAliasesResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/pfalciparumGeneAliasesResource</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <subgraph name="Pfalciparum_geneDB_Ids_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pfalciparum_geneDB_Ids_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+  <subgraph name="Pfalciparum_previous_aliases_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pfalciparum_previous_aliases_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
+    <subgraph name="Pf_CorrectGeneAliases_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pf_CorrectGeneAliases_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="Pfalciparum_geneDB_Ids_RSRC"/>
+      <depends name="Pfalciparum_previous_aliases_RSRC"/>
+    </subgraph>
+
+
+</workflowGraph>

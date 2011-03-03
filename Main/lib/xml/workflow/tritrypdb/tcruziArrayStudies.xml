@@ -1,0 +1,66 @@
+<workflowGraph name="tcruziArrayResources">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="ssaGeneModelFile"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="transcriptSeqsFileForSsa"/>
+  <param name="downloadSiteTranscriptExpressionDataDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+
+  <constant name="dataDir">$$parentDataDir$$/tcruziArrayResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+  <subgraph name="Tcruzi_array_GPL8132_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Tcruzi_array_GPL8132_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tcruzi_array_GPL8132_RSRC|@@Tcruzi_array_GPL8132_VER@@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="limitNU">14</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">false</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">true</paramValue>
+    <paramValue name="cdfFileName"></paramValue>
+    <paramValue name="isNimbleGen">false</paramValue>
+    <paramValue name="ndfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="Tcruzi_Tarleton_Rick_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Tcruzi_Tarleton_Rick_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Tcruzi_array_GPL8132_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Tcruzi_Tarleton_Rick_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Tcruzi_Tarleton_Rick_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tcruzi_array_GPL8132_RSRC|@@Tcruzi_array_GPL8132_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Tcruzi_Tarleton_Rick_RSRC|@@Tcruzi_Tarleton_Rick_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="insertAnalysisResult">true</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Tcruzi_array_GPL8132_RSRC/geneProbeMapping.txt</paramValue>
+    <paramValue name="profileSetNames">Profiles of T.cruzi Tarleton Rick array data</paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Tcruzi_Tarleton_Rick</paramValue>
+    <depends name="Tcruzi_Tarleton_Rick_RSRC"/>
+  </subgraph>
+
+</workflowGraph>

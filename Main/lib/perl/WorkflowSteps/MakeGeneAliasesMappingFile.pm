@@ -10,15 +10,15 @@ sub run {
 
   my $outputFile = $self->getParamValue('outputFile');
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
-  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
+  my $dbRefNAFeatureExtDbSpec = $self->getParamValue('dbRefNAFeatureExtDbSpec');
 
-  my $cmd = "getGeneAliases --extDbSpec '$genomeExtDbRlsSpec' --outfile $apiSiteFilesDir/$outputFile";
+  my $cmd = "getGeneAliases --extDbSpec '$genomeExtDbRlsSpec' --outfile $outputFile --dbRefNAFeatureExtDbSpec '$dbRefNAFeatureExtDbSpec'";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $apiSiteFilesDir/$outputFile");
+    $self->runCmd(0, "rm -f $outputFile");
   } else {
       if ($test) {
-	  $self->runCmd(0,"echo test > $apiSiteFilesDir/$outputFile");
+	  $self->runCmd(0,"echo test > $outputFile");
       }else{
 	  $self->runCmd($test,$cmd);
       }

@@ -65,7 +65,7 @@ createSAMFile=$createSAMFile
 countMismatches=$countMismatches
 ";
 
-      $taskPropFileContent .= "$clusterWorkflowDataDir/pairedReadFilePath=$pairedReadFilePath\n" if $pairedReadFilePath;
+      $taskPropFileContent .= "pairedReadFilePath=$clusterWorkflowDataDir/$pairedReadFilePath\n" if $pairedReadFilePath;
       $taskPropFileContent .= "transcriptFastaFile=$clusterWorkflowDataDir/$transcriptFastaFile\n" if $transcriptFastaFile;
       $taskPropFileContent .= "transcriptBowtieIndex=$clusterWorkflowDataDir/$transcriptBowtieIndex\n" if $transcriptBowtieIndex;
       $taskPropFileContent .= "genomeBowtieIndex=$clusterWorkflowDataDir/$genomeBowtieIndex\n" if $genomeBowtieIndex;

@@ -16,6 +16,9 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  $self->error("Proteins file '$proteinsFile' does not exist or is empty") unless -s $proteinsFile;  # in case exportpred does not test
+
+
   my $cmd = "${binPath}/exportpred --input=$workflowDataDir/$proteinsFile --output=$workflowDataDir/$outputFile";
 
   if ($undo) {

@@ -1,0 +1,17 @@
+<workflowGraph name="lmajor_sanger_BACEnds">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/lmajor_sanger_BACEnds</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="Lmajor_sanger_BACEnds_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Lmajor_sanger_BACEnds_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+</workflowGraph>

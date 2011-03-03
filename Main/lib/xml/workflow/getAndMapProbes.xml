@@ -1,10 +1,11 @@
 <workflowGraph name="getAndMapProbes">
     <param name="parentDataDir"/>
     <param name="probeResourceName"/>
-    <param name="organismResourceXmlFile"/>
-    <param name="ssaGeneModelFile"/>
     <param name="chipProbeExtDbRlsSpec"/>
     <param name="isOneChannel"/>
+    <param name="isNimbleGen"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="ssaGeneModelFile"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="genomicSeqsFileForSsa"/>
     <param name="transcriptSeqsFileForSsa"/>
@@ -14,6 +15,7 @@
     <param name="pairedReadFilePath"/>
     <param name="countMismatches"/>
     <param name="cdfFileName"/>
+    <param name="ndfFileName"/>
 
     <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
     <constant name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.all</constant>
@@ -22,11 +24,6 @@
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
-    </step>
-
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
     </step>
 
     <subgraph name="probe_RSRC" xmlFile="loadResource.xml">
@@ -39,6 +36,11 @@
     <step name="runParse2fasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunParse2fasta">
       <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
       <depends name="probe_RSRC"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="runParse2fasta"/>
     </step>
 
     <subgraph name="runRUMOnCluster"  xmlFile="runRUMOnCluster.xml">
@@ -97,6 +99,13 @@
       <paramValue name="probename2sequenceInputFile">$$dataDir$$/$$probeResourceName$$/final/probename2sequence.tab</paramValue>
       <paramValue name="cdfFile">$$dataDir$$/$$probeResourceName$$/final/$$cdfFileName$$</paramValue>
       <paramValue name="tbasePbaseFile">$$dataDir$$/$$probeResourceName$$/final/tbase-pbase.out</paramValue>
+      <depends name="makeProbeGeneMappingFile"/>
+    </step>
+
+    <step name="reCreateNdfFileForNimbleGen" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReCreateNdfFile" includeIf="$$isNimbleGen$$">
+      <paramValue name="gene2probesInputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
+      <paramValue name="ndfFile">$$dataDir$$/$$probeResourceName$$/final/$$ndfFileName$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/$$ndfFileName$$</paramValue>
       <depends name="makeProbeGeneMappingFile"/>
     </step>
 

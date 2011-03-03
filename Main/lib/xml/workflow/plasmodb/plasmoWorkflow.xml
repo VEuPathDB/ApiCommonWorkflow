@@ -6,6 +6,7 @@
   <constant name="comparativeGenomicsFastaDir">common/comparativeGenomics/Fasta/</constant>
   <constant name="comparativeGenomicsGffDir">common/comparativeGenomics/Gff/</constant>
   <constant name="webServicesDataDir">webServices/$$projectName$$/release-$$projectVersion$$/</constant>
+  <constant name="downloadSiteDir">@@downloadSite@@/$$projectName$$/release-$$projectVersion$$/</constant>
 
 
   <globalSubgraph name="global" xmlFile="globalGraph.xml">
@@ -32,9 +33,12 @@
     <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
     <paramValue name="organismSpecificISFReference">plasmodb/pfalciparumISFResource.xml</paramValue>
     <paramValue name="ncbiTaxonId">36329</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="extractProteins">true</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">true</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
     <depends name="common"/>
     <dependsGlobal name="taxonomy_RSRC"/> 
     <dependsGlobal name="SO_RSRC"/>
@@ -68,6 +72,7 @@
     <paramValue name="iedbDbRefResourceName">Pf_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
     <paramValue name="dbESTResourceName">Pf_dbEST_RSRC</paramValue>
     <paramValue name="dbESTVersion">@@Pf_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
     <paramValue name="ncbiTaxonId">36329</paramValue>
     <paramValue name="parentNcbiTaxonId">5833</paramValue>
     <paramValue name="usePredictedTranscripts">true</paramValue>
@@ -81,15 +86,17 @@
     <paramValue name="genomeSize">23310514</paramValue>
     <paramValue name="skipProteomeAnalysis">false</paramValue>
     <paramValue name="skipGenomeAnalysis">false</paramValue>
-    <paramValue name="mapEpitope">true</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
     <paramValue name="makeAssemblySeqs">true</paramValue>
     <paramValue name="makeAssemblies">true</paramValue>
     <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
     <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
     <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="loadProductName">true</paramValue>
     <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
     <paramValue name="organismSpecificESTResourcesReference">plasmodb/pfalciparumESTResource.xml</paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference">plasmodb/pfalciparumMassSpecResource.xml</paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">plasmodb/pfalciparumProductNameResource.xml</paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
     <depends name="PfalciparumLoadGenome"/>
   </subgraph>
@@ -99,13 +106,32 @@
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
     <depends name="PfalciparumLoadGenome"/>
   </subgraph>
 
+  <subgraph name="PfalciparumLoadAndCorrectGeneAliases" xmlFile="loadAndCorrectGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Pfalciparum</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">plasmodb/pfalciparumGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
+    <depends name="PfalciparumLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="PfalciparumLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
+    <paramValue name="organismName">Pfalciparum</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">plasmodb/pfalciparumDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
+    <depends name="PfalciparumLoadAndCorrectGeneAliases"/>
+  </subgraph>
+
   <subgraph name="PfalciparumMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="organismName">Pfalciparum</paramValue>
     <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
     <paramValue name="ncbiTaxonId">36329</paramValue>
@@ -127,24 +153,8 @@
     <depends name="PfalciparumMakeAndMaskTopLevelGenome"/>
   </subgraph>
 
-    <step name="PfalciparumMitoMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/PfalciparumMito/fasta</paramValue>
-    </step>
-
-    <step name="PfalciparumMitoMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/PfalciparumMito/tabular</paramValue>
-    </step>
-
-    <step name="PfalciparumMitoMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/PfalciparumMito/gff</paramValue>
-    </step>
-
-    <step name="PfalciparumMitoMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/PfalciparumMito/transcriptExpression</paramValue>
-    </step>
-
   <subgraph name="PfalciparumMitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="organismName">PfalciparumMito</paramValue>
     <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
     <paramValue name="ncbiTaxonId">36329</paramValue>
@@ -164,30 +174,10 @@
     <paramValue name="makeGenomicDownloadFile">true</paramValue>
     <depends name="PfalciparumPostLoadGenome"/>
     <depends name="PfalciparumMakeAndMaskTopLevelGenome"/>
-    <depends name="PfalciparumMitoMakeDownloadSiteFastaDataDir"/>
-    <depends name="PfalciparumMitoMakeDownloadSiteTabularDataDir"/>
-    <depends name="PfalciparumMitoMakeDownloadSiteGffDataDir"/>
-    <depends name="PfalciparumMitoMakeDownloadSiteTranscriptExpressionDataDir"/>
   </subgraph>
 
-    <step name="PfalciparumPlastidMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/PfalciparumPlastid/fasta</paramValue>
-    </step>
-
-    <step name="PfalciparumPlastidMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/PfalciparumPlastid/tabular</paramValue>
-    </step>
-
-    <step name="PfalciparumPlastidMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/PfalciparumPlastid/gff</paramValue>
-    </step>
-
-    <step name="PfalciparumPlastidMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/PfalciparumPlastid/transcriptExpression</paramValue>
-    </step>
-
   <subgraph name="PfalciparumPlastidMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="organismName">PfalciparumPlastid</paramValue>
     <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
     <paramValue name="ncbiTaxonId">36329</paramValue>
@@ -207,10 +197,6 @@
     <paramValue name="makeGenomicDownloadFile">true</paramValue>
     <depends name="PfalciparumPostLoadGenome"/>
     <depends name="PfalciparumMakeAndMaskTopLevelGenome"/>
-    <depends name="PfalciparumPlastidMakeDownloadSiteFastaDataDir"/>
-    <depends name="PfalciparumPlastidMakeDownloadSiteTabularDataDir"/>
-    <depends name="PfalciparumPlastidMakeDownloadSiteGffDataDir"/>
-    <depends name="PfalciparumPlastidMakeDownloadSiteTranscriptExpressionDataDir"/>
   </subgraph>
 
 <!--Pchabaudi-->
@@ -222,9 +208,13 @@
     <paramValue name="organismResourceXmlFile">plasmodb/pchabaudi.xml</paramValue>
     <paramValue name="organismSpecificISFReference">plasmodb/pchabaudiISFResource.xml</paramValue>
     <paramValue name="ncbiTaxonId">31271</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="extractProteins">true</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndPlastidDownloadDirs.xml</paramValue>
+
     <depends name="common"/>
     <dependsGlobal name="taxonomy_RSRC"/>
     <dependsGlobal name="SO_RSRC"/>
@@ -258,6 +248,7 @@
     <paramValue name="iedbDbRefResourceName">Pc_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
     <paramValue name="dbESTResourceName">Pc_dbEST_RSRC</paramValue>
     <paramValue name="dbESTVersion">@@Pc_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
     <paramValue name="ncbiTaxonId">31271</paramValue>
     <paramValue name="parentNcbiTaxonId">5825</paramValue>
     <paramValue name="usePredictedTranscripts">false</paramValue>
@@ -270,15 +261,17 @@
     <paramValue name="genomeSize">16893362</paramValue>
     <paramValue name="skipProteomeAnalysis">false</paramValue>
     <paramValue name="skipGenomeAnalysis">false</paramValue>
-    <paramValue name="mapEpitope">true</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
     <paramValue name="makeAssemblySeqs">false</paramValue>
     <paramValue name="makeAssemblies">false</paramValue>
     <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
     <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
     <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="loadProductName">true</paramValue>
     <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
     <paramValue name="organismSpecificESTResourcesReference"></paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">plasmodb/pchabaudiProductNameResource.xml</paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pchabaudi.xml</paramValue>
     <depends name="PchabaudiLoadGenome"/>
   </subgraph>
@@ -288,12 +281,31 @@
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pchabaudi.xml</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <depends name="PchabaudiLoadGenome"/>
   </subgraph>
 
+  <subgraph name="PchabaudiLoadAndCorrectGeneAliases" xmlFile="loadAndCorrectGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Pchabaudi</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">plasmodb/pchabaudiGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pchabaudi.xml</paramValue>
+    <depends name="PchabaudiLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="PchabaudiLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
+    <paramValue name="organismName">Pchabaudi</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">plasmodb/pchabaudiDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pchabaudi.xml</paramValue>
+    <depends name="PchabaudiLoadAndCorrectGeneAliases"/>
+  </subgraph>
+
   <subgraph name="PchabaudiMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="organismName">Pchabaudi</paramValue>
     <paramValue name="organismFullName">@@PcOrganismFullName@@</paramValue>
     <paramValue name="ncbiTaxonId">31271</paramValue>
@@ -324,9 +336,12 @@
     <paramValue name="organismResourceXmlFile">plasmodb/pberghei.xml</paramValue>
     <paramValue name="organismSpecificISFReference">plasmodb/pbergheiISFResource.xml</paramValue>
     <paramValue name="ncbiTaxonId">5823</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="extractProteins">true</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndPlastidDownloadDirs.xml</paramValue>
     <depends name="common"/>
     <dependsGlobal name="taxonomy_RSRC"/> 
     <dependsGlobal name="SO_RSRC"/>
@@ -360,6 +375,7 @@
     <paramValue name="iedbDbRefResourceName">Pb_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
     <paramValue name="dbESTResourceName">Pb_dbEST_RSRC</paramValue>
     <paramValue name="dbESTVersion">@@Pb_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
     <paramValue name="ncbiTaxonId">5823</paramValue>
     <paramValue name="parentNcbiTaxonId">5821</paramValue>
     <paramValue name="usePredictedTranscripts">true</paramValue>
@@ -372,15 +388,17 @@
     <paramValue name="genomeSize">17996878</paramValue>
     <paramValue name="skipProteomeAnalysis">false</paramValue>
     <paramValue name="skipGenomeAnalysis">false</paramValue>
-    <paramValue name="mapEpitope">true</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
     <paramValue name="makeAssemblySeqs">true</paramValue>
     <paramValue name="makeAssemblies">true</paramValue>
     <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
     <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
     <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="loadProductName">true</paramValue>
     <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
     <paramValue name="organismSpecificESTResourcesReference">plasmodb/pbergheiESTResource.xml</paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference">plasmodb/pbergheiMassSpecResource.xml</paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">plasmodb/pbergheiProductNameResource.xml</paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pberghei.xml</paramValue>
     <depends name="PbergheiLoadGenome"/>
   </subgraph>
@@ -390,12 +408,31 @@
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pberghei.xml</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <depends name="PbergheiLoadGenome"/>
   </subgraph>
 
+  <subgraph name="PbergheiLoadAndCorrectGeneAliases" xmlFile="loadAndCorrectGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Pberghei</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">plasmodb/pbergheiGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pberghei.xml</paramValue>
+    <depends name="PbergheiLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="PbergheiLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
+    <paramValue name="organismName">Pberghei</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">plasmodb/pbergheiDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pberghei.xml</paramValue>
+    <depends name="PbergheiLoadAndCorrectGeneAliases"/>
+  </subgraph>
+
   <subgraph name="PbergheiMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="organismName">Pberghei</paramValue>
     <paramValue name="organismFullName">@@PbOrganismFullName@@</paramValue>
     <paramValue name="ncbiTaxonId">5823</paramValue>
@@ -425,9 +462,12 @@
     <paramValue name="organismResourceXmlFile">plasmodb/pknowlesi.xml</paramValue>
     <paramValue name="organismSpecificISFReference">plasmodb/pknowlesiISFResource.xml</paramValue>
     <paramValue name="ncbiTaxonId">5851</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="extractProteins">true</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndPlastidDownloadDirs.xml</paramValue>
     <depends name="common"/>
     <dependsGlobal name="taxonomy_RSRC"/> 
     <dependsGlobal name="SO_RSRC"/>
@@ -435,7 +475,7 @@
 
   <subgraph name="PknowlesiMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
     <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="organismName"></paramValue>
+    <paramValue name="organismName">Pknowlesi</paramValue>
     <paramValue name="organismFullName">@@PkOrganismFullName@@</paramValue>
     <paramValue name="genomeExtDbRlsSpec">Pknowlesi_chromosomes_RSRC|@@Pknowlesi_chromosomes_VER@@</paramValue>
     <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
@@ -461,6 +501,7 @@
     <paramValue name="iedbDbRefResourceName">Pk_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
     <paramValue name="dbESTResourceName">Pk_dbEST_RSRC</paramValue>
     <paramValue name="dbESTVersion">@@Pk_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
     <paramValue name="ncbiTaxonId">5851</paramValue>
     <paramValue name="parentNcbiTaxonId">5850</paramValue>
     <paramValue name="usePredictedTranscripts">false</paramValue>
@@ -473,15 +514,17 @@
     <paramValue name="genomeSize">23729792</paramValue>
     <paramValue name="skipProteomeAnalysis">false</paramValue>
     <paramValue name="skipGenomeAnalysis">false</paramValue>
-    <paramValue name="mapEpitope">true</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
     <paramValue name="makeAssemblySeqs">false</paramValue>
     <paramValue name="makeAssemblies">false</paramValue>
     <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
     <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
     <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="loadProductName">true</paramValue>
     <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
     <paramValue name="organismSpecificESTResourcesReference"></paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">plasmodb/pknowlesiProductNameResource.xml</paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pknowlesi.xml</paramValue>
     <depends name="PknowlesiLoadGenome"/>
   </subgraph>
@@ -491,12 +534,31 @@
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pknowlesi.xml</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <depends name="PknowlesiLoadGenome"/>
   </subgraph>
 
+  <subgraph name="PknowlesiLoadAndCorrectGeneAliases" xmlFile="loadAndCorrectGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Pknowlesi</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">plasmodb/pknowlesiGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pknowlesi.xml</paramValue>
+    <depends name="PknowlesiLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="PknowlesiLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
+    <paramValue name="organismName">Pknowlesi</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">plasmodb/pknowlesiDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pknowlesi.xml</paramValue>
+    <depends name="PknowlesiLoadAndCorrectGeneAliases"/>
+  </subgraph>
+
   <subgraph name="PknowlesiMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="organismName">Pknowlesi</paramValue>
     <paramValue name="organismFullName">@@PkOrganismFullName@@</paramValue>
     <paramValue name="ncbiTaxonId">36329</paramValue>
@@ -526,9 +588,12 @@
     <paramValue name="organismResourceXmlFile">plasmodb/pgallinaceum.xml</paramValue>
     <paramValue name="organismSpecificISFReference">plasmodb/pgallinaceumISFResource.xml</paramValue>
     <paramValue name="ncbiTaxonId">5849</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="extractProteins">false</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndPlastidDownloadDirs.xml</paramValue>
     <depends name="common"/>
     <dependsGlobal name="taxonomy_RSRC"/> 
     <dependsGlobal name="SO_RSRC"/>
@@ -562,6 +627,7 @@
     <paramValue name="iedbDbRefResourceName"></paramValue>
     <paramValue name="dbESTResourceName">Pg_dbEST_RSRC</paramValue>
     <paramValue name="dbESTVersion">@@Pg_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
     <paramValue name="ncbiTaxonId">5849</paramValue>
     <paramValue name="parentNcbiTaxonId">5849</paramValue>
     <paramValue name="usePredictedTranscripts">false</paramValue>
@@ -574,15 +640,17 @@
     <paramValue name="genomeSize">16926281</paramValue>
     <paramValue name="skipProteomeAnalysis">true</paramValue>
     <paramValue name="skipGenomeAnalysis">false</paramValue>
-    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
     <paramValue name="makeAssemblySeqs">false</paramValue>
     <paramValue name="makeAssemblies">false</paramValue>
     <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
     <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
     <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="loadProductName">false</paramValue>
     <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
     <paramValue name="organismSpecificESTResourcesReference"></paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pgallinaceum.xml</paramValue>
     <depends name="PgallinaceumLoadGenome"/>
   </subgraph>
@@ -592,12 +660,12 @@
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pgallinaceum.xml</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <depends name="PgallinaceumLoadGenome"/>
   </subgraph>
 
   <subgraph name="PgallinaceumMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="organismName">Pgallinaceum</paramValue>
     <paramValue name="organismFullName">@@PgOrganismFullName@@</paramValue>
     <paramValue name="ncbiTaxonId">5849</paramValue>
@@ -627,9 +695,12 @@
     <paramValue name="organismResourceXmlFile">plasmodb/preichenowi.xml</paramValue>
     <paramValue name="organismSpecificISFReference">plasmodb/preichenowiISFResource.xml</paramValue>
     <paramValue name="ncbiTaxonId">5854</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="extractProteins">false</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndPlastidDownloadDirs.xml</paramValue>
     <depends name="common"/>
     <dependsGlobal name="taxonomy_RSRC"/> 
     <dependsGlobal name="SO_RSRC"/>
@@ -663,6 +734,7 @@
     <paramValue name="iedbDbRefResourceName"></paramValue>
     <paramValue name="dbESTResourceName">Pr_dbEST_RSRC</paramValue>
     <paramValue name="dbESTVersion">@@Pr_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
     <paramValue name="ncbiTaxonId">5854</paramValue>
     <paramValue name="parentNcbiTaxonId">5854</paramValue>
     <paramValue name="usePredictedTranscripts">false</paramValue>
@@ -675,15 +747,17 @@
     <paramValue name="genomeSize">7381029</paramValue>
     <paramValue name="skipProteomeAnalysis">true</paramValue>
     <paramValue name="skipGenomeAnalysis">false</paramValue>
-    <paramValue name="mapEpitope">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
     <paramValue name="makeAssemblySeqs">false</paramValue>
     <paramValue name="makeAssemblies">false</paramValue>
     <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
     <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
     <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="loadProductName">false</paramValue>
     <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
     <paramValue name="organismSpecificESTResourcesReference"></paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/preichenowi.xml</paramValue>
     <depends name="PreichenowiLoadGenome"/>
   </subgraph>
@@ -693,12 +767,12 @@
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/preichenowi.xml</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <depends name="PreichenowiLoadGenome"/>
   </subgraph>
 
   <subgraph name="PreichenowiMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="organismName">Preichenowi</paramValue>
     <paramValue name="organismFullName">@@PrOrganismFullName@@</paramValue>
     <paramValue name="ncbiTaxonId">5854</paramValue>
@@ -729,10 +803,13 @@
     <paramValue name="organismResourceXmlFile">plasmodb/pvivax.xml</paramValue>
     <paramValue name="organismSpecificISFReference">plasmodb/pvivaxISFResource.xml</paramValue>
     <paramValue name="ncbiTaxonId">126793</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="extractProteins">true</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="common"/>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">true</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoDownloadDirs.xml</paramValue>
+   <depends name="common"/>
     <dependsGlobal name="taxonomy_RSRC"/> 
     <dependsGlobal name="SO_RSRC"/>
   </subgraph>
@@ -765,6 +842,7 @@
     <paramValue name="iedbDbRefResourceName">Pv_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
     <paramValue name="dbESTResourceName">Pv_dbEST_RSRC</paramValue>
     <paramValue name="dbESTVersion">@@Pv_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
     <paramValue name="ncbiTaxonId">126793</paramValue>
     <paramValue name="parentNcbiTaxonId">5855</paramValue>
     <paramValue name="usePredictedTranscripts">true</paramValue>
@@ -777,15 +855,17 @@
     <paramValue name="genomeSize">26960075</paramValue>
     <paramValue name="skipProteomeAnalysis">false</paramValue>
     <paramValue name="skipGenomeAnalysis">false</paramValue>
-    <paramValue name="mapEpitope">true</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
     <paramValue name="makeAssemblySeqs">true</paramValue>
     <paramValue name="makeAssemblies">true</paramValue>
     <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
     <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
     <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="loadProductName">true</paramValue>
     <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">30000</paramValue>
     <paramValue name="organismSpecificESTResourcesReference">plasmodb/pvivaxESTResource.xml</paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference">plasmodb/pvivaxMassSpecResource.xml</paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">plasmodb/pvivaxProductNameResource.xml</paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pvivax.xml</paramValue>
     <depends name="PvivaxLoadGenome"/>
   </subgraph>
@@ -795,12 +875,32 @@
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pvivax.xml</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <depends name="PvivaxLoadGenome"/>
   </subgraph>
 
+  <subgraph name="PvivaxLoadAndCorrectGeneAliases" xmlFile="loadAndCorrectGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Pvivax</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">plasmodb/pvivaxGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pvivax.xml</paramValue>
+    <depends name="PvivaxLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="PvivaxLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
+    <paramValue name="organismName">Pvivax</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">plasmodb/pvivaxDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pvivax.xml</paramValue>
+    <depends name="PvivaxLoadAndCorrectGeneAliases"/>
+  </subgraph>
+
+
   <subgraph name="PvivaxMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="organismName">Pvivax</paramValue>
     <paramValue name="organismFullName">@@PvOrganismFullName@@</paramValue>
     <paramValue name="ncbiTaxonId">126793</paramValue>
@@ -822,24 +922,8 @@
     <depends name="PvivaxMakeAndMaskTopLevelGenome"/>
   </subgraph>
 
-    <step name="PvivaxMitoMakeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/PvivaxMito/fasta</paramValue>
-    </step>
-
-    <step name="PvivaxMitoMakeDownloadSiteTabularDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/PvivaxMito/tabular</paramValue>
-    </step>
-
-    <step name="PvivaxMitoMakeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/PvivaxMito/gff</paramValue>
-    </step>
-
-    <step name="PvivaxMitoMakeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">downloadSite/$$projectName$$/release-$$projectVersion$$/PvivaxMito/transcriptExpression</paramValue>
-    </step>
-
   <subgraph name="PvivaxMitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="organismName">PvivaxMito</paramValue>
     <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
     <paramValue name="ncbiTaxonId">36329</paramValue>
@@ -859,10 +943,6 @@
     <paramValue name="makeGenomicDownloadFile">true</paramValue>
      <depends name="PvivaxPostLoadGenome"/>
     <depends name="PvivaxMakeAndMaskTopLevelGenome"/>
-    <depends name="PvivaxMitoMakeDownloadSiteFastaDataDir"/>
-    <depends name="PvivaxMitoMakeDownloadSiteTabularDataDir"/>
-    <depends name="PvivaxMitoMakeDownloadSiteGffDataDir"/>
-    <depends name="PvivaxMitoMakeDownloadSiteTranscriptExpressionDataDir"/>
   </subgraph>
 
 <!--Pyoelii-->
@@ -873,9 +953,12 @@
     <paramValue name="organismResourceXmlFile">plasmodb/pyoelii.xml</paramValue>
     <paramValue name="organismSpecificISFReference">plasmodb/pyoeliiISFResource.xml</paramValue>
     <paramValue name="ncbiTaxonId">352914</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="extractProteins">true</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndPlastidDownloadDirs.xml</paramValue>
     <depends name="common"/>
     <dependsGlobal name="taxonomy_RSRC"/> 
     <dependsGlobal name="SO_RSRC"/>
@@ -909,6 +992,7 @@
     <paramValue name="iedbDbRefResourceName">Py_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
     <paramValue name="dbESTResourceName">Py_dbEST_RSRC</paramValue>
     <paramValue name="dbESTVersion">@@Py_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
     <paramValue name="ncbiTaxonId">352914</paramValue>
     <paramValue name="parentNcbiTaxonId">5861</paramValue>
     <paramValue name="usePredictedTranscripts">true</paramValue>
@@ -921,15 +1005,17 @@
     <paramValue name="genomeSize">20171213</paramValue>
     <paramValue name="skipProteomeAnalysis">false</paramValue>
     <paramValue name="skipGenomeAnalysis">false</paramValue>
-    <paramValue name="mapEpitope">true</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
     <paramValue name="makeAssemblySeqs">true</paramValue>
     <paramValue name="makeAssemblies">true</paramValue>
     <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
     <paramValue name="loadOrganismSpecificESTResource">true</paramValue>
     <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="loadProductName">true</paramValue>
     <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
     <paramValue name="organismSpecificESTResourcesReference">plasmodb/pyoeliiESTResource.xml</paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference">plasmodb/pyoeliiMassSpecResource.xml</paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">plasmodb/pyoeliiProductNameResource.xml</paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pyoelii.xml</paramValue>
     <depends name="PyoeliiLoadGenome"/>
   </subgraph>
@@ -939,12 +1025,31 @@
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pyoelii.xml</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <depends name="PyoeliiLoadGenome"/>
   </subgraph>
 
+  <subgraph name="PyoeliiLoadAndCorrectGeneAliases" xmlFile="loadAndCorrectGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Pyoelii</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">plasmodb/pyoeliiGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pyoelii.xml</paramValue>
+    <depends name="PyoeliiLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="PyoeliiLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
+    <paramValue name="organismName">Pyoelii</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">plasmodb/pyoeliiDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pyoelii.xml</paramValue>
+    <depends name="PyoeliiLoadAndCorrectGeneAliases"/>
+  </subgraph>
+
   <subgraph name="PyoeliiMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="organismName">Pyoelii</paramValue>
     <paramValue name="organismFullName">@@PyOrganismFullName@@</paramValue>
     <paramValue name="ncbiTaxonId">352914</paramValue>
@@ -974,9 +1079,12 @@
     <paramValue name="organismResourceXmlFile">plasmodb/pyoelii.xml</paramValue>
     <paramValue name="organismSpecificISFReference">plasmodb/pyoeliiProvisionalGenesISFResource.xml</paramValue>
     <paramValue name="ncbiTaxonId">352914</paramValue>
-    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
     <paramValue name="extractProteins">true</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndPlastidDownloadDirs.xml</paramValue>
     <depends name="common"/>
     <dependsGlobal name="taxonomy_RSRC"/> 
     <dependsGlobal name="SO_RSRC"/>
@@ -990,11 +1098,12 @@
     <paramValue name="organismFullName">@@PyOrganismFullName@@</paramValue>
     <paramValue name="organismTwoLetterAbbrev">PyProvisionalGenes</paramValue>
     <paramValue name="genomeExtDbRlsSpec">Pyoelii_Kappe_Annotation_RSRC|@@Pyoelii_Kappe_Annotation_VER@@</paramValue>
-    <paramValue name="iedbResourceName">Py_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbResourceName">PyoeliiProvisionalGenes_IEDB_Epitopes_RSRC</paramValue>
     <paramValue name="iedbVersion">@@Py_IEDB_Epitopes_VER@@</paramValue>
-    <paramValue name="iedbDbRefResourceName">Py_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="iedbDbRefResourceName">PyoeliiProvisionalGenes_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
     <paramValue name="dbESTResourceName">Py_dbEST_RSRC</paramValue>
     <paramValue name="dbESTVersion">@@Py_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
     <paramValue name="ncbiTaxonId">352914</paramValue>
     <paramValue name="parentNcbiTaxonId">5861</paramValue>
     <paramValue name="usePredictedTranscripts">false</paramValue>
@@ -1007,15 +1116,17 @@
     <paramValue name="genomeSize">20171213</paramValue>
     <paramValue name="skipProteomeAnalysis">false</paramValue>
     <paramValue name="skipGenomeAnalysis">true</paramValue>
-    <paramValue name="mapEpitope">true</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
     <paramValue name="makeAssemblySeqs">false</paramValue>
     <paramValue name="makeAssemblies">false</paramValue>
     <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
     <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
     <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="loadProductName">false</paramValue>
     <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
     <paramValue name="organismSpecificESTResourcesReference"></paramValue>
     <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/pyoelii.xml</paramValue>
     <depends name="PyoeliiProvisionalGenesLoadGenome"/>
   </subgraph>
@@ -1036,8 +1147,9 @@
     <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
     <paramValue name="organismResourceXmlFile">plasmodb/plasmodbCommon.xml</paramValue>
     <paramValue name="commonResourceXmlFile">plasmodb/plasmodbCommon.xml</paramValue>
-    <paramValue name="orthoMCLPhyleticProfilesResourceName">OrthoMCL_Phyletic_RSRC</paramValue>
-    <paramValue name="orthoMCLOrthologousGroupsResourceName">OrthoMCL_RSRC</paramValue>
+    <paramValue name="createGenesForGeneFeatures">false</paramValue>
+    <paramValue name="organismSpecificCreateGenesForGeneFeatures"></paramValue>
+    <paramValue name="organism">@@PlasmodiumFullName@@</paramValue>
     <depends name="PfalciparumMakeAndMaskTopLevelGenome"/>
     <depends name="PbergheiMakeAndMaskTopLevelGenome"/>
     <depends name="PchabaudiMakeAndMaskTopLevelGenome"/>
@@ -1046,6 +1158,19 @@
     <depends name="PreichenowiMakeAndMaskTopLevelGenome"/>
     <depends name="PvivaxMakeAndMaskTopLevelGenome"/>
     <depends name="PyoeliiMakeAndMaskTopLevelGenome"/>
+    <depends name="PfalciparumLoadAndCorrectGeneAliases"/>
+    <depends name="PchabaudiLoadAndCorrectGeneAliases"/>
+    <depends name="PbergheiLoadAndCorrectGeneAliases"/>
+    <depends name="PknowlesiLoadAndCorrectGeneAliases"/>
+    <depends name="PvivaxLoadAndCorrectGeneAliases"/>
+    <depends name="PyoeliiLoadAndCorrectGeneAliases"/>
+  </subgraph>
+
+  <subgraph name="RodentPlasmodiumChromosomes_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">RodentPlasmodiumChromosomes_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$commonResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$/common/comparativeGenomics</paramValue>
+    <depends name="ComparativeGenomics"/> 
   </subgraph>
 
 </workflowGraph>

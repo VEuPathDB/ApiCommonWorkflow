@@ -3,10 +3,10 @@
   <param name="projectVersion"/>
   <param name="parentDataDir"/>
   <param name="organismResourceXmlFile"/>
-  <param name="downloadSiteDataDir"/>
+  <param name="downloadSiteDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/PknowlesiSpecific</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Pknowlesi</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDir$$/Pknowlesi</constant>
   <constant name="genomicSeqsFile">$$parentDataDir$$/PknowlesiLoadGenome/genomicSeqs.fsa</constant>
 
 
@@ -19,35 +19,16 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <subgraph name="mapIsolatesToGenome" xmlFile="plasmodb/plasmoMapIsolatesToGenome.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <subgraph name="plasmodiumGenbankIsolates_mapToGenome" xmlFile="mapIsolatesToGenome.xml">
+      <paramValue name="dataDir">$$dataDir$$/plasmodiumGenbankIsolates_mapToGenome</paramValue>
       <paramValue name="organismName">Pknowlesi</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">Pknowlesi_chromosomes_RSRC|@@Pknowlesi_chromosomes_VER@@</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Pknowlesi_chromosomes_RSRC|@@Pknowlesi_chromosomes_VER@@</paramValue>
+      <paramValue name="isolateExtDbRlsSpec">PlasmodiumGenbankIsolates_RSRC|@@PlasmodiumGenbankIsolates_VER@@</paramValue>
+      <paramValue name="idRegex">(\\S+)</paramValue>
       <depends name="mirrorToCluster"/>
       <dependsGlobal name="isolatesResource"/>
     </subgraph>
-
-    <subgraph name="Pk_CorrectGeneAliases_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Pk_CorrectGeneAliases_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
-
-  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
-     <paramValue name="genomeExtDbRlsSpec">Pknowlesi_chromosomes_RSRC|@@Pknowlesi_chromosomes_VER@@</paramValue>
-     <paramValue name="outputFile">$$downloadSiteDataDir$$/PknowlesiGeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <depends name="Pk_CorrectGeneAliases_RSRC"/>
-  </step>
-
-  <subgraph name="dbxRefsResources" xmlFile="plasmodb/pknowlesiDbxRefsResource.xml">
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/PknowlesiyEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="Pk_CorrectGeneAliases_RSRC"/>
-  </subgraph>
 
     <subgraph name="GOAssociations_Pknowlesi_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">GOAssociations_Pknowlesi_RSRC</paramValue>
@@ -64,6 +45,20 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
       <dependsGlobal name="enzymeDB_RSRC"/>
+    </subgraph>
+
+    <subgraph name="Pknowlesi_GeneName_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pknowlesi_GeneName_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Pknowlesi_Comments_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pknowlesi_Comments_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
     </subgraph>
 
   <subgraph name="miscResources" xmlFile="plasmodb/pknowlesiMiscResource.xml">

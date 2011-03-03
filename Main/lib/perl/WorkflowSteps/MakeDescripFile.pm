@@ -13,12 +13,10 @@ sub run {
     my $descripFile = $self->getParamValue('descripFile');
     my $descripString = $self->getParamValue('descripString');
 
-    my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
-
-    my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $apiSiteFilesDir/$descripFile";
+    my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
 
     if ($undo) {
-        $self->runCmd(0, "rm -f $apiSiteFilesDir/$descripFile");
+        $self->runCmd(0, "rm -f $descripFile");
     } else {
 	if ($test) {
 	}else{

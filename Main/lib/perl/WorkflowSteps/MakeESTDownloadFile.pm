@@ -14,8 +14,6 @@ sub run {
   my $descripString= $self->getParamValue('descripString');
   my $useTaxonHierarchy = $self->getParamValue('useTaxonHierarchy');
 
-  my $apiSiteFilesDir = $self->getSharedConfig('apiSiteFilesDir');
-
   my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$parentNcbiTaxonId);
   my $taxonIdList = $self->getTaxonIdList($test, $taxonId, $useTaxonHierarchy);
 
@@ -38,15 +36,15 @@ sub run {
             AND so.term_name = 'EST'
 EOF
 
-  my $cmd = "gusExtractSequences --outputFile $apiSiteFilesDir/$outputFile  --idSQL \"$sql\"";
-  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $apiSiteFilesDir/$descripFile";
+  my $cmd = "gusExtractSequences --outputFile $outputFile  --idSQL \"$sql\"";
+  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
 
   if($undo){
-    $self->runCmd(0, "rm -f $apiSiteFilesDir/$outputFile");
-    $self->runCmd(0, "rm -f $apiSiteFilesDir/$descripFile");
+    #$self->runCmd(0, "rm -f $outputFile");
+    #$self->runCmd(0, "rm -f $descripFile");
   }else{  
       if ($test) {
-	  $self->runCmd(0, "echo test > $apiSiteFilesDir/$outputFile");
+	  $self->runCmd(0, "echo test > $outputFile");
       }else {
 	  $self->runCmd($test, $cmd);
 	  $self->runCmd($test, $cmdDec);

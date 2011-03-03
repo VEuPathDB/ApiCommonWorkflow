@@ -1,21 +1,22 @@
 <workflowGraph name="pyoeliiDbxRefsResource">
       <param name="organismResourceXmlFile"/>
       <param name="parentDataDir"/>
-      <param name="euPathUniProtLinkDownloadFile"/>
+      <param name="projectVersion"/>
       <param name="projectName"/>
+      <param name="downloadSiteDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/pyoeliiDbxRefsResources</constant>
+  <constant name="euPathUniProtLinkDownloadFile">$$downloadSiteDir$$/txt/PyoeliiEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</constant>
+  <constant name="geneAliasesMappingDownloadFile">$$downloadSiteDir$$/txt/PyoeliiGeneAlias_$$projectName$$-$$projectVersion$$.txt</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <subgraph name="Py_Entrez_DBRefs_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">Py_Entrez_DBRefs_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
+  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
+     <paramValue name="genomeExtDbRlsSpec">Pyoelii_Contigs_RSRC|@@Pyoelii_Contigs_VER@@</paramValue>
+     <paramValue name="outputFile">$$geneAliasesMappingDownloadFile$$</paramValue>
+  </step>
 
   <subgraph name="Py_Pubmed_DBRefs_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Py_Pubmed_DBRefs_RSRC</paramValue>
@@ -28,6 +29,7 @@
     <paramValue name="resourceName">Py_Entrez_Gene_dbxref_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Py_Uniprot_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
@@ -48,6 +50,7 @@
     <paramValue name="resourceName">Py_Winzeler_Westenberger_Dbrefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
   <subgraph name="Py_Winzeler_Literature_References_RSRC" xmlFile="loadResource.xml">
@@ -74,6 +77,13 @@
 
   <subgraph name="Py_ApiLoc_EupathDB_Dbrefs_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">Py_ApiLoc_EupathDB_Dbrefs_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="Py_RMgm_Phenotype_DBRefs_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Py_RMgm_Phenotype_DBRefs_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>

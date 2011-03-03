@@ -3,10 +3,10 @@
   <param name="projectVersion"/>
   <param name="parentDataDir"/>
   <param name="organismResourceXmlFile"/>
-  <param name="downloadSiteDataDir"/>
+  <param name="downloadSiteDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/PbergheiSpecific</constant>
-  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Pberghei</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDir$$/Pberghei</constant>
   <constant name="genomicSeqsFile">$$parentDataDir$$/PbergheiLoadGenome/genomicSeqs.fsa</constant>
   <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/PbergheiLoadGenome/genomicSeqsForSsa.fsa</constant>
   <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/PbergheiLoadGenome/transcriptSeqsForSsa.fsa</constant>
@@ -21,35 +21,16 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <subgraph name="mapIsolatesToGenome" xmlFile="plasmodb/plasmoMapIsolatesToGenome.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <subgraph name="plasmodiumGenbankIsolates_mapToGenome" xmlFile="mapIsolatesToGenome.xml">
+      <paramValue name="dataDir">$$dataDir$$/plasmodiumGenbankIsolates_mapToGenome</paramValue>
       <paramValue name="organismName">Pberghei</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@@Pberghei_chromosomes_VER@@</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@@Pberghei_chromosomes_VER@@</paramValue>
+      <paramValue name="isolateExtDbRlsSpec">PlasmodiumGenbankIsolates_RSRC|@@PlasmodiumGenbankIsolates_VER@@</paramValue>
+      <paramValue name="idRegex">(\\S+)</paramValue>
       <depends name="mirrorToCluster"/>
       <dependsGlobal name="isolatesResource"/>
     </subgraph>
-
-    <subgraph name="Pb_CorrectGeneAliases_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">Pb_CorrectGeneAliases_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
-
-  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
-     <paramValue name="genomeExtDbRlsSpec">Pberghei_chromosomes_RSRC|@@Pberghei_chromosomes_VER@@</paramValue>
-     <paramValue name="outputFile">$$downloadSiteDataDir$$/PbergheiGeneAlias_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <depends name="Pb_CorrectGeneAliases_RSRC"/>
-  </step>
-
-  <subgraph name="dbxRefsResources" xmlFile="plasmodb/pbergheiDbxRefsResource.xml">
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="euPathUniProtLinkDownloadFile">$$downloadSiteDataDir$$/PbergheiEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="Pb_CorrectGeneAliases_RSRC"/>
-  </subgraph>
 
     <subgraph name="arrayResources" xmlFile="plasmodb/pbergheiArrayStudies.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -58,7 +39,7 @@
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
-      <depends name="Pb_CorrectGeneAliases_RSRC"/>
+      <depends name="makeDataDir"/>
     </subgraph>
 
     <subgraph name="GOAssociations_Pberghei_RSRC" xmlFile="loadResource.xml">
@@ -76,6 +57,20 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
       <dependsGlobal name="enzymeDB_RSRC"/>
+    </subgraph>
+
+    <subgraph name="Pberghei_Comments_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pberghei_Comments_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Pberghei_GeneName_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pberghei_GeneName_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
     </subgraph>
 
   <subgraph name="miscResources" xmlFile="plasmodb/pbergheiMiscResource.xml">

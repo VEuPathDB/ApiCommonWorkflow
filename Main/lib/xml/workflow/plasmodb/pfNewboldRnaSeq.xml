@@ -1,7 +1,6 @@
 <workflowGraph name="pfNewboldRnaSeq">
     <param name="parentDataDir"/>
     <param name="organismResourceXmlFile"/>
-    <param name="genomicSeqsFile"/>
     <param name="ssaGeneModelFile"/>
     <param name="genomicSeqsFileForSsa"/>
     <param name="transcriptSeqsFileForSsa"/>
@@ -42,7 +41,6 @@
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour0</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour0.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour0/Hour0.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour0.int</paramValue>
@@ -63,7 +61,6 @@
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour8</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour8.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour8/Hour8.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour8.int</paramValue>
@@ -85,7 +82,6 @@
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour16</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour16.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour16/Hour16.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour16.int</paramValue>
@@ -107,7 +103,6 @@
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour24</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour24.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour24/Hour24.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour24.int</paramValue>
@@ -129,7 +124,6 @@
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour32</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour32.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour32/Hour32.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour32.int</paramValue>
@@ -151,7 +145,6 @@
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour40</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour40.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour40/Hour40.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour40.int</paramValue>
@@ -172,7 +165,6 @@
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Hour48</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/hour48.fsa</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeHour48/Hour48.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Hour48.int</paramValue>
@@ -190,10 +182,10 @@
     </subgraph>
 
 
-    <step name="mergeIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
+    <step name="mergeMinIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
       <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt</paramValue>
-      <paramValue name="profileElementOrder">Hour0.int,Hour8.int,Hour16.int,Hour24.int,Hour32.int,Hour40.int,Hour48.int</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">Hour0.int.min,Hour8.int.min,Hour16.int.min,Hour24.int.min,Hour32.int.min,Hour40.int.min,Hour48.int.min</paramValue>
       <depends name="makeSeqCoverageAndIntensityDataDir"/>
       <depends name="analyzeHour0Sample"/>
       <depends name="analyzeHour8Sample"/>
@@ -204,19 +196,52 @@
       <depends name="analyzeHour48Sample"/>
     </step>
 
-    <step name="makePercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
-      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt</paramValue>
-      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/profiles.txt.pct</paramValue>
+    <step name="mergeMaxIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">Hour0.int.max,Hour8.int.max,Hour16.int.max,Hour24.int.max,Hour32.int.max,Hour40.int.max,Hour48.int.max</paramValue>
+      <depends name="makeSeqCoverageAndIntensityDataDir"/>
+      <depends name="analyzeHour0Sample"/>
+      <depends name="analyzeHour8Sample"/>
+      <depends name="analyzeHour16Sample"/>
+      <depends name="analyzeHour24Sample"/>
+      <depends name="analyzeHour32Sample"/>
+      <depends name="analyzeHour40Sample"/>
+      <depends name="analyzeHour48Sample"/>
+    </step>
+
+    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiless.txt.pct</paramValue>
       <paramValue name="ties">min</paramValue>
-      <paramValue name="hasHeader">false</paramValue>
-      <depends name="mergeIntensityFiles"/>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+    </step>
+
+    <step name="makeMaxPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt.pct</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMaxIntensityFiles"/>
+    </step>
+
+    <step name="makeDiffProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff">
+      <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="minInputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>     
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/diffProfiles.txt</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
     </step>
 
     <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
       <paramValue name="configFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/config.txt</paramValue>
       <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <paramValue name="extDbRlsSpec">Pf_RNASeq_Newbold_RSRC|@@Pf_RNASeq_Newbold_VER@@</paramValue>
-      <depends name="makePercentileProfile"/>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="makeMinPercentileProfile"/>
+      <depends name="makeDiffProfile"/>
     </step>
 
     <step name="calculateExpressionStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateExpressionStatsForTimeSeries" stepLoadTypes="plugin">
@@ -231,6 +256,7 @@
       <paramValue name="copyFromDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <paramValue name="configFile">$$dataDir$$/Pf_RNASeq_Newbold_RSRC/final/config.txt</paramValue>
       <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
-      <depends name="mergeIntensityFiles"/>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
     </step>
 </workflowGraph>
