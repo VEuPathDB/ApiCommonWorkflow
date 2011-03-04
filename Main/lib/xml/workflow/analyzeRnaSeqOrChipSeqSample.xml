@@ -5,6 +5,8 @@
     <param name="shortSeqsFile"/>
     <param name="outputCoverageFile"/>
     <param name="outputIntensityFile"/>
+    <param name="outputMappingStatsFile"/>
+    <param name="outputCountFile"/>
     <param name="makeIntensityFile"/>
     <param name="rnaSeqExtDbRlsSpec"/>
     <param name="genomeExtDbSpec"/>
@@ -96,6 +98,23 @@
       <paramValue name="soVersion">@@SO_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
       <depends name="makeExonJunctionGffFile"/>
+    </step>
+
+    <step name="generateMappingStatsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile">
+      <paramValue name="uniqueFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
+      <paramValue name="outputFile">$$outputMappingStatsFile$$</paramValue>
+      <depends name="sortRUMUniqueResultByLocation"/>
+      <depends name="sortRUMNUResultByLocation"/>
+    </step>
+
+    <step name="generateCountFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateCountFile">
+      <paramValue name="uniqueFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputFile">$$outputCountFile$$</paramValue>
+      <depends name="sortRUMUniqueResultByLocation"/>
+      <depends name="sortRUMNUResultByLocation"/>
     </step>
 
     <step name="makeUniqueNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">

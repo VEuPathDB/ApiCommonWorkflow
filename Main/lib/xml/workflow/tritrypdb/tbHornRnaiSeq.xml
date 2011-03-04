@@ -45,6 +45,8 @@
       <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNAiSeq_Horn_RSRC/final/U_R.fastq</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeNo_Tet/No_Tet.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/No_Tet.int</paramValue>
+      <paramValue name="outputMappingStatsFile">$$samplesDataDir$$/No_Tet.mappingStats</paramValue>
+      <paramValue name="outputCountFile">$$samplesDataDir$$/No_Tet.count</paramValue>
       <paramValue name="makeIntensityFile">true</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_RSRC|@@Tbrucei_RNAiSeq_Horn_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -64,6 +66,8 @@
       <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNAiSeq_Horn_RSRC/final/PF_R.fastq</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzePF/PF.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/PF.int</paramValue>
+      <paramValue name="outputMappingStatsFile">$$samplesDataDir$$/PF.mappingStats</paramValue>
+      <paramValue name="outputCountFile">$$samplesDataDir$$/PF.count</paramValue>
       <paramValue name="makeIntensityFile">true</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_RSRC|@@Tbrucei_RNAiSeq_Horn_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -83,6 +87,8 @@
       <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNAiSeq_Horn_RSRC/final/DIF_R.fastq</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeDIF/DIF.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/DIF.int</paramValue>
+      <paramValue name="outputMappingStatsFile">$$samplesDataDir$$/DIF.mappingStats</paramValue>
+      <paramValue name="outputCountFile">$$samplesDataDir$$/DIF.count</paramValue>
       <paramValue name="makeIntensityFile">true</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_RSRC|@@Tbrucei_RNAiSeq_Horn_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -102,6 +108,8 @@
       <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNAiSeq_Horn_RSRC/final/D3_R.fastq</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeBFD3/BFD3.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/BFD3.int</paramValue>
+      <paramValue name="outputMappingStatsFile">$$samplesDataDir$$/BFD3.mappingStats</paramValue>
+      <paramValue name="outputCountFile">$$samplesDataDir$$/BFD3.count</paramValue>
       <paramValue name="makeIntensityFile">true</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_RSRC|@@Tbrucei_RNAiSeq_Horn_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -121,6 +129,8 @@
       <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNAiSeq_Horn_RSRC/final/D6_R.fastq</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeBFD6/BFD6.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/BFD6.int</paramValue>
+      <paramValue name="outputMappingStatsFile">$$samplesDataDir$$/BFD6.mappingStats</paramValue>
+      <paramValue name="outputCountFile">$$samplesDataDir$$/BFD6.count</paramValue>
       <paramValue name="makeIntensityFile">true</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_RSRC|@@Tbrucei_RNAiSeq_Horn_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -136,7 +146,7 @@
     <step name="mergeMinIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
       <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
       <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
-      <paramValue name="profileElementOrder">No_Tet.int.min</paramValue>
+      <paramValue name="profileElementOrder">No_Tet.int.min,PF.int.min,DIF.int.min,BFD3.int.min,BFD6.int.min</paramValue>
       <depends name="makeSeqCoverageAndIntensityDataDir"/>
       <depends name="analyzeNo_TetSample"/>
     </step>
@@ -144,9 +154,13 @@
     <step name="mergeMaxIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
       <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
       <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
-      <paramValue name="profileElementOrder">No_Tet.int.max</paramValue>
+      <paramValue name="profileElementOrder">No_Tet.int.max,PF.int.max,DIF.int.max,BFD3.int.max,BFD6.int.max</paramValue>
       <depends name="makeSeqCoverageAndIntensityDataDir"/>
       <depends name="analyzeNo_TetSample"/>
+      <depends name="analyzePFSample"/>
+      <depends name="analyzeDIFSample"/>
+      <depends name="analyzeBFD3Sample"/>
+      <depends name="analyzeBFD6Sample"/>
     </step>
 
     <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
@@ -189,6 +203,17 @@
       <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
       <depends name="mergeMinIntensityFiles"/>
       <depends name="mergeMaxIntensityFiles"/>
+    </step>
+
+    <step name="compareTwoSamples" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CompareTwoSamples">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="sampleNameList">No_Tet,PF,DIF,BFD3,BFD6</paramValue>
+      <depends name="analyzeNo_TetSample"/>
+      <depends name="analyzePFSample"/>
+      <depends name="analyzeDIFSample"/>
+      <depends name="analyzeBFD3Sample"/>
+      <depends name="analyzeBFD6Sample"/>
     </step>
 
 </workflowGraph>
