@@ -1,0 +1,46 @@
+<workflowGraph name="tgME49BoothroydArrayResources">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="ssaGeneModelFile"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="transcriptSeqsFileForSsa"/>
+  <param name="downloadSiteTranscriptExpressionDataDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+
+  <constant name="dataDir">$$parentDataDir$$/tgME49BoothroydResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+<!--Boothroyd -->
+  <subgraph name="tgME49Boothroyd_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">tgME49Boothroyd_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="tgME49Boothroyd_RSRC_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">tgME49Boothroyd_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec"></paramValue>
+    <paramValue name="experimentExtDbRlsSpec">tgME49Boothroyd_RSRC|@@tgME49Boothroyd_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/Tgondiia520372.cdf</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/tgME49Boothroyd</paramValue>
+    <depends name="tgME49Boothroyd_RSRC"/>
+  </subgraph>
+
+</workflowGraph>
