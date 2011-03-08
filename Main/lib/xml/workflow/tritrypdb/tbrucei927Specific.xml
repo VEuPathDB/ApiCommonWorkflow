@@ -9,7 +9,7 @@
   <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/Tbrucei927LoadGenome/genomicSeqsForSsa.fsa</constant>
   <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/Tbrucei927LoadGenome/transcriptSeqsForSsa.fsa</constant>
   <constant name="ssaGeneModelFile">$$parentDataDir$$/Tbrucei927LoadGenome/geneModelForSsa.txt</constant>
-
+  <constant name="samHeaderFile">$$parentDataDir$$/Tbrucei927LoadGenome/samHeader</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -47,6 +47,7 @@
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
     <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
     <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="samHeaderFile">$$samHeaderFile$$</paramValue>
     <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
       <paramValue name="genomeExtDbRlsSpec">Tbrucei927_genome_RSRC|@@Tbrucei927_genome_VER@@</paramValue>
     <depends name="mirrorToCluster"/>
@@ -80,17 +81,17 @@
     <paramValue name="calFreq">true</paramValue>
     <paramValue name="prependSeq">CATG</paramValue>
     <paramValue name="useBowtie">true</paramValue>
-    <paramValue name="bowtieParam">-v 0 -m 20</paramValue>
+    <paramValue name="bowtieParam">-a -best -strata -v 0 -m 20</paramValue>
     <depends name="SageTagArrayDesign_RSRC"/>
   </subgraph>
--->
+
     <subgraph name="SageTagFreqs_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">SageTagFreqs_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="SageTagArrayDesign_RSRC"/>
     </subgraph>
-
+-->
     <subgraph name="GOAssociations_Tbrucei927_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">GOAssociations_Tbrucei927_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
