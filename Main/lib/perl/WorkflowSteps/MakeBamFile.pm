@@ -25,7 +25,7 @@ sub run {
       if ($test) {
 	  $self->testInputFile('seqFile', "$workflowDataDir/$samFile");
       }else{
-          my $cmd = "samtools view $workflowDataDir/$samFile > $workflowDataDir/$bamFile";
+          my $cmd = "samtools view -b -S $workflowDataDir/$samFile > $workflowDataDir/$bamFile";
 	  $self->runCmd($test,$cmd);
 	  my $cmd = "samtools index $workflowDataDir/$bamFile $workflowDataDir/$bamIndex";
 	  $self->runCmd($test,$cmd);
