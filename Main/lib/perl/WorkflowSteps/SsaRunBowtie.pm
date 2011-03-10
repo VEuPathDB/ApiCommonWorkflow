@@ -17,7 +17,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "bowtie $bowtieParam $workflowDataDir/$inputIndexesDir/genomicIndexes $inputShortSeqsFileType $workflowDataDir/$inputShortSeqsFile > $workflowDataDir/$outputFile";
+    my $cmd = "bowtie $bowtieParam --best --strata $workflowDataDir/$inputIndexesDir/genomicIndexes $inputShortSeqsFileType $workflowDataDir/$inputShortSeqsFile > $workflowDataDir/$outputFile";
 
 
     if ($undo) {
