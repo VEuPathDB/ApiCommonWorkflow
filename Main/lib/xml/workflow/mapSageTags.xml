@@ -31,15 +31,26 @@
       <depends name="extractSageTags"/>
     </step>
 
-    <subgraph name="mapSageTagsToNaSequencesByBowtie" xmlFile="mapSageTagsToNaSequencesByBowtie.xml" includeIf="$$useBowtie$$">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="sageTagFile">$$dataDir$$/sageTags.fsa</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/mapSageTagsToNaSequences.out</paramValue>
+    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes" includeIf="$$useBowtie$$">
+      <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="outputIndexDir">$$dataDir$$/indexes</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="runBowtie" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie" includeIf="$$useBowtie$$">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/sageTags.fsa</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
       <paramValue name="bowtieParam">$$bowtieParam$$</paramValue>
       <paramValue name="inputShortSeqsFileType">-f</paramValue>
-      <depends name="extractSageTags"/>
-    </subgraph>
+      <paramValue name="outputFile">$$dataDir$$/bowtieOutputFile.out</paramValue>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+    <step name="bowtie2TagToSeq" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::Bowtie2TagToSeq" includeIf="$$useBowtie$$">
+     <paramValue name="inputFile">$$dataDir$$/bowtieOutputFile.out</paramValue>
+     <paramValue name="outputFile">$$dataDir$$/mapSageTagsToNaSequences.out</paramValue>
+    <depends name="runBowtie"/>
+  </step>
 
     <step name="loadSageTagMap" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadExpressionFeature" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/mapSageTagsToNaSequences.out</paramValue>
