@@ -1,0 +1,50 @@
+<workflowGraph name="linfantumMylerSplicedLeaderAndPolyASites">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="genomicSeqsFile"/>
+    <param name="genomeExtDbRlsSpec"/>
+
+    <constant name="dataDir">$$parentDataDir$$/linfantumMylerSplicedLeaderAndPolyASites</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="outputIndexDir">$$dataDir$$/indexes</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="Linfantum_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Linfantum_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="runBowtie_ah013" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Linfantum_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC/final/ah013.seqs</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-r</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/ah013.bt</paramValue>
+      <depends name="Linfantum_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+     <step name="insertSpliceSiteFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSpliceSiteFeatures" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/Linfantum_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC/final/config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">Linfantum_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC|@@Linfantum_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_VER@@</paramValue>
+      <paramValue name="type">Splice Site</paramValue>
+      <depends name="runBowtie_ah013"/>
+    </step>
+
+</workflowGraph>
