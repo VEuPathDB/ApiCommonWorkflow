@@ -22,7 +22,8 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $args = "--dirPath $workflowDataDir/$inputDir --dirPath $workflowDataDir/$inputDir --configFile $workflowDataDir/$configFile  --extDbName $extDbName --extDbVer $extDbVer --type $type";
-  
+  $args.= " --fileNames $self->getParamValue('fileNames')" if $self->getParamValue('fileNames');
+
   if ($test) {
     $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
     $self->testInputFile('configFile', "$workflowDataDir/$configFile");
