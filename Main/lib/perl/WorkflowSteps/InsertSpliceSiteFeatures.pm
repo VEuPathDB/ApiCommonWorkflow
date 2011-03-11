@@ -17,11 +17,15 @@ sub run {
 
   my $type = $self->getParamValue('type');
 
+  my $fileNames = $self->getParamValue('fileNames');
+
   my ($extDbName,$extDbVer) = split(/\|/,$extDbRlsSpec);
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $args = "--dirPath $workflowDataDir/$inputDir --dirPath $workflowDataDir/$inputDir --configFile $workflowDataDir/$configFile  --extDbName $extDbName --extDbVer $extDbVer --type '$type'";
+
+  $args.= " --fileNames $fileNames" if $fileNames;
   
   if ($test) {
     $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
