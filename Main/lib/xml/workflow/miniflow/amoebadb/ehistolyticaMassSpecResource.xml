@@ -1,0 +1,20 @@
+<workflowGraph name="ehistolyticaMassSpecResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/ehistolyticaMassSpecResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="Ehistolytica_Proteomics_Glycosylation_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Ehistolytica_Glycosylation_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+
+
+</workflowGraph>
