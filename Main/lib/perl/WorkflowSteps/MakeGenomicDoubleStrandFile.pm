@@ -45,7 +45,7 @@ sub run {
             AND sa.is_top_level = 1";
 
   $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
-  my $cmd = "gusExtractSequences --outputFile $outputFile  --idSQL \"$sql\"  --posStrand '\+' --negStrand '-' ";
+  my $cmd = "gusExtractSequences --outputFile $outputFile  --idSQL \"$sql\"  --posStrand '\\+' --negStrand '-' ";
   my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
 
 
