@@ -1,0 +1,27 @@
+<workflowGraph name="tgondiiMASGenomeISFResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="dataDir"/>
+
+    <constant name="dataDir">$$dataDir$$/toxoGenomeResourceISFResource</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+  <subgraph name="TgondiiMAS_genome_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">TgondiiMAS_genome_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="TgondiiMAS_contigs_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">TgondiiMAS_contigs_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="TgondiiMAS_genome_RSRC"/>
+  </subgraph>
+</workflowGraph>
+
+
+
