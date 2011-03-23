@@ -59,7 +59,13 @@
       <depends name="mirrorToCluster"/>
     </subgraph>
 
- 
+    <step name="loadPaired_sequencesExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$samplesDataDir$$/analyzePaired_sequences/exonJunctionOutput.rum</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNASeq_Clayton_RSRC|@@Tbrucei_RNASeq_Clayton_VER@@</paramValue>
+      <paramValue name="sampleName">Paired_sequences</paramValue>
+      <depends name="analyzePaired_sequencesSample"/>
+    </step>
+
     <step name="mergeMinIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
       <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
       <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
