@@ -20,7 +20,9 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  $self->error("Sequence file '$seqFile' does not exist or is empty") unless (-s $seqFile || $test);  # in case the filter doesn't test
+  if (!$test && !$undo){
+    $self->error("Sequence file '$seqFile' does not exist or is empty") unless (-s $seqFile);
+  }
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
