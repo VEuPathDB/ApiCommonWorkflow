@@ -78,4 +78,19 @@
       <depends name="runBowtie_ah047"/>
     </step>
 
+     <step name="extractSpliceSiteGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSpliceSiteGenes">
+      <paramValue name="configFile">$$dataDir$$/Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC/final/config.txt</paramValue>
+      <paramValue name="outputUniqFile">$$dataDir$$/uniqProfile.out</paramValue>
+      <paramValue name="outputNonUniqFile">$$dataDir$$/nonUniqProfile.out</paramValue>
+      <depends name="insertSpliceSiteFeatures_Splice_Site"/>
+      <depends name="insertSpliceSiteFeatures_PolyA"/>
+    </step>
+
+    <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC/final/profile_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC|@@Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_VER@@</paramValue>
+      <depends name="extractSpliceSiteGenes"/>
+    </step>
+
 </workflowGraph>

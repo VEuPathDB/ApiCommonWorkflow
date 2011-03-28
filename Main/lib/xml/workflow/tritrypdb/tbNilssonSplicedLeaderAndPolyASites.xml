@@ -135,4 +135,18 @@
       <depends name="runBowtie_SRR058977"/>
     </step>
 
+     <step name="extractSpliceSiteGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSpliceSiteGenes">
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/config.txt</paramValue>
+      <paramValue name="outputUniqFile">$$dataDir$$/uniqProfile.out</paramValue>
+      <paramValue name="outputNonUniqFile">$$dataDir$$/nonUniqProfile.out</paramValue>
+      <depends name="insertSpliceSiteFeatures"/>
+    </step>
+
+    <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/profile_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC|@@Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_VER@@</paramValue>
+      <depends name="extractSpliceSiteGenes"/>
+    </step>
+
 </workflowGraph>
