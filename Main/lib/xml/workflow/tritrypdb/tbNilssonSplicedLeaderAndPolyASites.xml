@@ -124,18 +124,31 @@
       <depends name="runBowtie_SRR058976"/>
     </step>
 
+    <step name="runTuningManager"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager">
+      <depends name="insertSpliceSiteFeatures"/> 
+  </step>
+
      <step name="extractSpliceSiteGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSpliceSiteGenes">
       <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/config.txt</paramValue>
       <paramValue name="outputUniqFile">$$dataDir$$/uniqProfile.out</paramValue>
       <paramValue name="outputNonUniqFile">$$dataDir$$/nonUniqProfile.out</paramValue>
-      <depends name="insertSpliceSiteFeatures"/>
+      <depends name="runTuningManager"/>
+    </step>
+
+    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$dataDir$$/uniqProfile.out</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/minPercents.txt</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="extractSpliceSiteGenes"/>
     </step>
 
     <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
       <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/profile_config.txt</paramValue>
       <paramValue name="inputDir">$$dataDir$$</paramValue>
       <paramValue name="extDbRlsSpec">Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC|@@Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_VER@@</paramValue>
-      <depends name="extractSpliceSiteGenes"/>
+      <depends name="makeMinPercentileProfile"/>
     </step>
 
 </workflowGraph>
