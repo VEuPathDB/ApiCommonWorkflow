@@ -1,0 +1,71 @@
+<workflowGraph name="pchabaudiSpecific">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/PchabaudiSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDir$$/Pchabaudi</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/PchabaudiLoadGenome/genomicSeqs.fsa</constant>
+
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="plasmodiumGenbankIsolates_mapToGenome" xmlFile="mapIsolatesToGenome.xml">
+      <paramValue name="dataDir">$$dataDir$$/plasmodiumGenbankIsolates_mapToGenome</paramValue>
+      <paramValue name="organismName">Pchabaudi</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Pchabaudi_chromosomes_RSRC|@@Pchabaudi_chromosomes_VER@@</paramValue>
+      <paramValue name="isolateExtDbRlsSpec">PlasmodiumGenbankIsolates_RSRC|@@PlasmodiumGenbankIsolates_VER@@</paramValue>
+      <paramValue name="idRegex">(\\S+)</paramValue>
+      <depends name="mirrorToCluster"/>
+      <dependsGlobal name="isolatesResource"/>
+    </subgraph>
+
+    <subgraph name="GOAssociations_Pchabaudi_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">GOAssociations_Pchabaudi_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+      <dependsGlobal name="GO_RSRC"/>
+      <dependsGlobal name="GO_evidence_codes_RSRC"/>
+    </subgraph>
+
+    <subgraph name="Pchabaudi_ECNumbers_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pchabaudi_ECNumbers_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+      <dependsGlobal name="enzymeDB_RSRC"/>
+    </subgraph>
+
+    <subgraph name="Pchabaudi_Comments_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pchabaudi_Comments_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="Pchabaudi_GeneName_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pchabaudi_GeneName_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+
+  <subgraph name="miscResources" xmlFile="plasmodb/pchabaudiMiscResource.xml">
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+</workflowGraph>

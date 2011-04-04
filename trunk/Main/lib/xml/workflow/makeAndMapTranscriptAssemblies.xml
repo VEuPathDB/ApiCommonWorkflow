@@ -1,0 +1,113 @@
+<workflowGraph name="makeAndMapTranscriptAssemblies">
+
+  <param name="parentDataDir"/>
+  <param name="organismName"/>
+  <param name="organismFullName"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="ncbiTaxonId"/>
+  <param name="parentNcbiTaxonId"/>
+  <param name="usePredictedTranscripts"/>
+  <param name="predictedTranscriptsExtDbRlsSpec"/>
+  <param name="maxIntronSize"/>
+  <param name="distanceBetweenStartsForAlignmentsInSameCluster"/>
+  <param name="organismAbbrev"/>
+  <param name="repeatMaskSpecies"/>
+  <param name="makeAssemblySeqs"/>
+  <param name="makeAssemblies"/>
+  <param name="mapAssemblySeqsAndAssemblies"/>
+  <param name="genomicSeqsDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/assemblies</constant>
+  <constant name="assemblySeqsDataDir">$$dataDir$$/makeAssemblySeqs</constant>
+  <constant name="assembliesDataDir">$$dataDir$$/makeAssemblies</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="makeAndBlockAssemblySeqs" xmlFile="makeAndBlockAssemblySeqs.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
+      <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="usePredictedTranscripts">$$usePredictedTranscripts$$</paramValue>
+      <paramValue name="dataDir">$$assemblySeqsDataDir$$</paramValue>
+      <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
+      <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
+      <paramValue name="makeAssemblySeqs">$$makeAssemblySeqs$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="mapAssemblySeqsToGenome" xmlFile="blatDnaAgainstGenome.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
+      <paramValue name="dataDir">$$dataDir$$/assemSeqsBlat</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="targetNcbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="targetSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="queryNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+      <paramValue name="queryFile">$$assemblySeqsDataDir$$/master/mainresult/blocked.seq</paramValue>
+      <paramValue name="queryTable">AssemblySequence</paramValue>
+      <paramValue name="queryExtDbRlsSpec"></paramValue>
+      <depends name="makeAndBlockAssemblySeqs"/>
+    </subgraph>
+
+    <step name="document-mapAssemblySeqsToGenome"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">blat_assembly_seqs_MTHD</paramValue>
+      <paramValue name="version">31</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="mapAssemblySeqsToGenome"/>
+    </step>
+
+    <subgraph name="makeAndBlockAssemblies" xmlFile="makeAndBlockAssemblies.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
+      <paramValue name="dataDir">$$assembliesDataDir$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">$$distanceBetweenStartsForAlignmentsInSameCluster$$</paramValue>
+      <paramValue name="assemblySeqsDataDir">$$assemblySeqsDataDir$$</paramValue>
+      <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
+      <paramValue name="makeAssemblies">$$makeAssemblies$$</paramValue>
+      <depends name="mapAssemblySeqsToGenome"/>
+    </subgraph>
+
+    <subgraph name="mapAssembliesToGenome" xmlFile="blatDnaAgainstGenome.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
+      <paramValue name="dataDir">$$dataDir$$/assembliesBlat</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="targetNcbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="targetSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="queryNcbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="queryFile">$$assembliesDataDir$$/master/mainresult/blocked.seq</paramValue>
+      <paramValue name="queryTable">Assembly</paramValue>
+      <paramValue name="queryExtDbRlsSpec"></paramValue>
+      <depends name="makeAndBlockAssemblies"/>
+    </subgraph>
+
+    <step name="document-mapAssembliesToGenome"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">blat_assemblies_MTHD</paramValue>
+      <paramValue name="version">31</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="mapAssembliesToGenome"/>
+    </step>
+
+   <step name="updateAssemblySourceId"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateAssemblySourceId" stepLoadTypes="plugin" includeIf="$$makeAssemblies$$">
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="organismTwoLetterAbbrev">$$organismAbbrev$$</paramValue>
+      <depends name="mapAssembliesToGenome"/>
+    </step>
+
+    <step name="document-transcriptAssembliesOverview"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">transcript_assemblies_overview_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="mapAssembliesToGenome"/>
+    </step>
+
+</workflowGraph>

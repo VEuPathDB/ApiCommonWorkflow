@@ -1,0 +1,796 @@
+<workflowGraph name="pfalciparumArrayResources">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="ssaGeneModelFile"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="transcriptSeqsFileForSsa"/>
+  <param name="downloadSiteTranscriptExpressionDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/pfalciparumArrayResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+  <subgraph name="A_MEXP_1407_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pf_array_A_MEXP_1407_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+    <paramValue name="limitNU">30</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">true</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">false</paramValue>
+    <paramValue name="cdfFileName"></paramValue>
+    <paramValue name="isNimbleGen">false</paramValue>
+    <paramValue name="ndfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+    <subgraph name="ChIP_Chip_Artur_Scherf_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="A_MEXP_1407_getAndMapProbes"/>
+    </subgraph>
+
+  <subgraph name="scherf_AnalyzeChipChip_9981A_3D7-H4K20me3-wt_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Artur_Scherf_RSRC|@@ChIP_Chip_Artur_Scherf_VER@@</paramValue>
+    <paramValue name="inputSampleFile">9981A_3D7_H4K20me3_wt.txt.norm</paramValue>
+    <paramValue name="sampleName">9981A_3D7-H4K20me3-wt</paramValue>
+    <paramValue name="sampleOrder">scherf1</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="scherf_AnalyzeChipChip_9981A_3D7-H3K9me3-wt_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Artur_Scherf_RSRC|@@ChIP_Chip_Artur_Scherf_VER@@</paramValue>
+    <paramValue name="inputSampleFile">9981A_3D7_H3K9me3_wt.txt.norm</paramValue>
+    <paramValue name="sampleName">9981A_3D7-H3K9me3-wt</paramValue>
+    <paramValue name="sampleOrder">scherf2</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="scherf_AnalyzeChipChip_9981_3D7-H3K9me3-wt_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Artur_Scherf_RSRC|@@ChIP_Chip_Artur_Scherf_VER@@</paramValue>
+    <paramValue name="inputSampleFile">9981_3D7_H3K9me3_wt.txt.norm</paramValue>
+    <paramValue name="sampleName">9981_3D7-H3K9me3-wt</paramValue>
+    <paramValue name="sampleOrder">scherf3</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="scherf_AnalyzeChipChip_9435B_3D7-H4K20me3-wt_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Artur_Scherf_RSRC|@@ChIP_Chip_Artur_Scherf_VER@@</paramValue>
+    <paramValue name="inputSampleFile">9435B_3D7_H4K20me3_wt.txt.norm</paramValue>
+    <paramValue name="sampleName">9435B_3D7-H4K20me3-wt</paramValue>
+    <paramValue name="sampleOrder">scherf4</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="scherf_AnalyzeChipChip_9435B_3D7-H3K9me3-wt_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Artur_Scherf_RSRC|@@ChIP_Chip_Artur_Scherf_VER@@</paramValue>
+    <paramValue name="inputSampleFile">9435B_3D7_H3K9me3_wt.txt.norm</paramValue>
+    <paramValue name="sampleName">9435B_3D7-H3K9me3-wt</paramValue>
+    <paramValue name="sampleOrder">scherf5</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="scherf_AnalyzeChipChip_9435B_3D7-H3K9Ac-wt_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Artur_Scherf_RSRC|@@ChIP_Chip_Artur_Scherf_VER@@</paramValue>
+    <paramValue name="inputSampleFile">9435B_3D7_H3K9Ac_wt.txt.norm</paramValue>
+    <paramValue name="sampleName">9435B_3D7-H3K9Ac-wt</paramValue>
+    <paramValue name="sampleOrder">scherf6</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="scherf_AnalyzeChipChip_9435B_3D7-H3K4me3-wt_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Artur_Scherf_RSRC|@@ChIP_Chip_Artur_Scherf_VER@@</paramValue>
+    <paramValue name="inputSampleFile">9435B_3D7_H3K4me3_wt.txt.norm</paramValue>
+    <paramValue name="sampleName">9435B_3D7-H3K4me3-wt</paramValue>
+    <paramValue name="sampleOrder">scherf7</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="scherf_AnalyzeChipChip_9435A_3D7-H3K9me3-sir2KO_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Artur_Scherf_RSRC|@@ChIP_Chip_Artur_Scherf_VER@@</paramValue>
+    <paramValue name="inputSampleFile">9435A_3D7_H3K9me3_sir2KO.txt.norm</paramValue>
+    <paramValue name="sampleName">9435A_3D7-H3K9me3-sir2KO</paramValue>
+    <paramValue name="sampleOrder">scherf8</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="scherf_AnalyzeChipChip_9435A_3D7-H3K9Ac-wt_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Artur_Scherf_RSRC|@@ChIP_Chip_Artur_Scherf_VER@@</paramValue>
+    <paramValue name="inputSampleFile">9435A_3D7_H3K9Ac_wt.txt.norm</paramValue>
+    <paramValue name="sampleName">9435A_3D7-H3K9Ac-wt</paramValue>
+    <paramValue name="sampleOrder">scherf9</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="scherf_AnalyzeChipChip_9435A_3D7-H3K9Ac-sir2KO_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Artur_Scherf_RSRC|@@ChIP_Chip_Artur_Scherf_VER@@</paramValue>
+    <paramValue name="inputSampleFile">9435A_3D7_H3K9Ac_sir2KO.txt.norm</paramValue>
+    <paramValue name="sampleName">9435A_3D7-H3K9Ac-sir2KO</paramValue>
+    <paramValue name="sampleOrder">scherf10</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="scherf_AnalyzeChipChip_9435A_3D7-H3K4me3-wt_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Artur_Scherf_RSRC|@@ChIP_Chip_Artur_Scherf_VER@@</paramValue>
+    <paramValue name="inputSampleFile">9435A_3D7_H3K4me3_wt.txt.norm</paramValue>
+    <paramValue name="sampleName">9435A_3D7-H3K4me3-wt</paramValue>
+    <paramValue name="sampleOrder">scherf11</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="scherf_AnalyzeChipChip_14070B_3D7-H3K9me3-sir2KO_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Artur_Scherf_RSRC|@@ChIP_Chip_Artur_Scherf_VER@@</paramValue>
+    <paramValue name="inputSampleFile">14070B_3D7_H3K9me3_sir2KO.txt.norm</paramValue>
+    <paramValue name="sampleName">14070B_3D7-H3K9me3-sir2KO</paramValue>
+    <paramValue name="sampleOrder">scherf12</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="scherf_AnalyzeChipChip_14070B_3D7-H3K9Ac-sir2KO_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Artur_Scherf_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_1407_RSRC|@@Pf_array_A_MEXP_1407_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Artur_Scherf_RSRC|@@ChIP_Chip_Artur_Scherf_VER@@</paramValue>
+    <paramValue name="inputSampleFile">14070B_3D7_H3K9Ac_sir2KO.txt.norm</paramValue>
+    <paramValue name="sampleName">14070B_3D7-H3K9Ac-sir2KO</paramValue>
+    <paramValue name="sampleOrder">scherf13</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Artur_Scherf_RSRC"/>
+  </subgraph>
+
+  <subgraph name="GPL8808_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pf_array_GPL8808_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_GPL8808_RSRC|@@Pf_array_GPL8808_VER@@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+    <paramValue name="limitNU">30</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">true</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">false</paramValue>
+    <paramValue name="cdfFileName"></paramValue>
+    <paramValue name="isNimbleGen">false</paramValue>
+    <paramValue name="ndfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+    <subgraph name="ChIP_Chip_Till_Voss_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">ChIP_Chip_Till_Voss_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="GPL8808_getAndMapProbes"/>
+    </subgraph>
+
+  <subgraph name="voss_AnalyzeChipChip_7821202_ChIP-005HA-ab9110_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Till_Voss_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_GPL8808_RSRC|@@Pf_array_GPL8808_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Till_Voss_RSRC|@@ChIP_Chip_Till_Voss_VER@@</paramValue>
+    <paramValue name="inputSampleFile">7821202_ChIP-005HA-ab9110.tab</paramValue>
+    <paramValue name="sampleName">7821202_ChIP-005HA-ab9110</paramValue>
+    <paramValue name="sampleOrder">voss1</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Till_Voss_RSRC"/>
+  </subgraph>
+
+
+  <subgraph name="winzeler_Westenberger_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pf_array_Affy_Winzeler_Westenberger_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_Winzeler_Westenberger_RSRC|@@Pf_array_Affy_Winzeler_Westenberger_VER@@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+    <paramValue name="limitNU">30</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">true</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">false</paramValue>
+    <paramValue name="cdfFileName"></paramValue>
+    <paramValue name="isNimbleGen">false</paramValue>
+    <paramValue name="ndfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+    <subgraph name="ChIP_Chip_Winzeler_Westenberger_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">ChIP_Chip_Winzeler_Westenberger_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="winzeler_Westenberger_getAndMapProbes"/>
+    </subgraph>
+
+  <subgraph name="winzeler_westenberger_AnalyzeChipChip_H4_ring_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Winzeler_Westenberger_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_Winzeler_Westenberger_RSRC|@@Pf_array_Affy_Winzeler_Westenberger_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Winzeler_Westenberger_RSRC|@@ChIP_Chip_Winzeler_Westenberger_VER@@</paramValue>
+    <paramValue name="inputSampleFile">H4_ring.norm</paramValue>
+    <paramValue name="sampleName">H4_ring</paramValue>
+    <paramValue name="sampleOrder">winzeler1</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">false</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Winzeler_Westenberger_RSRC"/>
+  </subgraph>
+
+  <subgraph name="winzeler_westenberger_AnalyzeChipChip_H4_trophozoite_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Winzeler_Westenberger_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_Winzeler_Westenberger_RSRC|@@Pf_array_Affy_Winzeler_Westenberger_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Winzeler_Westenberger_RSRC|@@ChIP_Chip_Winzeler_Westenberger_VER@@</paramValue>
+    <paramValue name="inputSampleFile">H4_troph.norm</paramValue>
+    <paramValue name="sampleName">H4_trophozoite</paramValue>
+    <paramValue name="sampleOrder">winzeler2</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">false</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Winzeler_Westenberger_RSRC"/>
+  </subgraph>
+
+  <subgraph name="winzeler_westenberger_AnalyzeChipChip_H4_schizont_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Winzeler_Westenberger_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_Winzeler_Westenberger_RSRC|@@Pf_array_Affy_Winzeler_Westenberger_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Winzeler_Westenberger_RSRC|@@ChIP_Chip_Winzeler_Westenberger_VER@@</paramValue>
+    <paramValue name="inputSampleFile">H4_schizont.norm</paramValue>
+    <paramValue name="sampleName">H4_schizont</paramValue>
+    <paramValue name="sampleOrder">winzeler3</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">false</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Winzeler_Westenberger_RSRC"/>
+  </subgraph>
+
+  <subgraph name="winzeler_westenberger_AnalyzeChipChip_H3K9ac_troph_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_Winzeler_Westenberger_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_Winzeler_Westenberger_RSRC|@@Pf_array_Affy_Winzeler_Westenberger_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_Winzeler_Westenberger_RSRC|@@ChIP_Chip_Winzeler_Westenberger_VER@@</paramValue>
+    <paramValue name="inputSampleFile">H3K9ac_troph.norm</paramValue>
+    <paramValue name="sampleName">H3K9ac_troph</paramValue>
+    <paramValue name="sampleOrder">winzeler4</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">false</paramValue>
+    <paramValue name="organismFullName">@@PfOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <depends name="ChIP_Chip_Winzeler_Westenberger_RSRC"/>
+  </subgraph>
+
+
+  <subgraph name="Affy-scrMalaria_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pf_array_Affy_scrMalaria_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_scrMalaria_RSRC|@@Pf_array_Affy_scrMalaria_VER@@</paramValue>
+    <paramValue name="isOneChannel">true</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="limitNU">30</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">false</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">true</paramValue>
+    <paramValue name="cdfFileName">scrMalariaa.cdf</paramValue>
+    <paramValue name="isNimbleGen">false</paramValue>
+    <paramValue name="ndfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="Pf_Winzeler_CellCycle_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pf_Winzeler_CellCycle_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Affy-scrMalaria_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Pf_Winzeler_CellCycle_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Pf_Winzeler_CellCycle_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_scrMalaria_RSRC|@@Pf_array_Affy_scrMalaria_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Pf_Winzeler_CellCycle_RSRC|@@Pf_Winzeler_CellCycle_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Pf_array_Affy_scrMalaria_RSRC/Pf_array_Affy_scrMalaria_RSRC/final/scrMalariaa.cdf</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs">winzeler_cc_sporExp|winzeler_cc_sporPct,winzeler_cc_sorbExp|winzeler_cc_sorbPct,winzeler_cc_tempExp|winzeler_cc_tempPct</paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">true</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Pf_Winzeler_CellCycle</paramValue>
+    <depends name="Pf_Winzeler_CellCycle_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Pf_Winzeler_WBCGametocyte_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pf_Winzeler_WBCGametocyte_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Affy-scrMalaria_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Pf_Winzeler_WBCGametocyte_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Pf_Winzeler_WBCGametocyte_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_scrMalaria_RSRC|@@Pf_array_Affy_scrMalaria_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Pf_Winzeler_WBCGametocyte_RSRC|@@Pf_Winzeler_WBCGametocyte_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Pf_array_Affy_scrMalaria_RSRC/Pf_array_Affy_scrMalaria_RSRC/final/scrMalariaa.cdf</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs">winzeler_3D7_gametocyte|winzeler_3D7_pct,winzeler_3D7_MAC|winzeler_3D7_MACpct,winzeler_NF54_gametocyte|winzeler_NF54_pct</paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">true</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Pf_Winzeler_WBCGametocyte</paramValue>
+    <depends name="Pf_Winzeler_WBCGametocyte_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Pf_Cowman_Invasion_KO_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pf_Cowman_Invasion_KO_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Affy-scrMalaria_getAndMapProbes"/>
+  </subgraph>
+
+
+
+  <subgraph name="Pf_Cowman_Invasion_KO_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Pf_Cowman_Invasion_KO_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_scrMalaria_RSRC|@@Pf_array_Affy_scrMalaria_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Pf_Cowman_Invasion_KO_RSRC|@@Pf_Cowman_Invasion_KO_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Pf_array_Affy_scrMalaria_RSRC/Pf_array_Affy_scrMalaria_RSRC/final/scrMalariaa.cdf</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Pf_Cowman_Invasion_KO</paramValue>
+    <depends name="Pf_Cowman_Invasion_KO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Pf_Daily_ArrayExpression_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pf_Daily_ArrayExpression_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Affy-scrMalaria_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Pf_Daily_ArrayExpression_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Pf_Daily_ArrayExpression_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_scrMalaria_RSRC|@@Pf_array_Affy_scrMalaria_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Pf_Daily_ArrayExpression_RSRC|@@Pf_Daily_ArrayExpression_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Pf_array_Affy_scrMalaria_RSRC/Pf_array_Affy_scrMalaria_RSRC/final/scrMalariaa.cdf</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Pf_Daily_ArrayExpression</paramValue>
+    <depends name="Pf_Daily_ArrayExpression_RSRC"/>
+  </subgraph>
+
+  <subgraph name="derisi_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pf_array_derisi_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_derisi_RSRC|@@Pf_array_derisi_VER@@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="limitNU">30</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">false</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">true</paramValue>
+    <paramValue name="cdfFileName"></paramValue>
+    <paramValue name="isNimbleGen">false</paramValue>
+    <paramValue name="ndfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="Pf_Derisi_Dd2_TimeSeries_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pf_Derisi_Dd2_TimeSeries_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="derisi_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Pf_Derisi_Dd2_TimeSeries_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Pf_Derisi_Dd2_TimeSeries_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_derisi_RSRC|@@Pf_array_derisi_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Pf_Derisi_Dd2_TimeSeries_RSRC|@@Pf_Derisi_Dd2_TimeSeries_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Pf_array_derisi_RSRC/geneProbeMapping.txt</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs">DeRisi Dd2 Smoothed|Percentiles of DeRisi Dd2 Red</paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats">$$dataDir$$/Pf_Derisi_Dd2_TimeSeries_RSRC/final/tp_mapping_Dd2.txt</paramValue>
+    <paramValue name="calculateExpressionStats">true</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Pf_Derisi_Dd2_TimeSeries</paramValue>
+    <depends name="Pf_Derisi_Dd2_TimeSeries_RSRC"/>
+  </subgraph>
+
+
+  <subgraph name="Pf_Derisi_3D7_TimeSeries_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pf_Derisi_3D7_TimeSeries_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="derisi_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Pf_Derisi_3D7_TimeSeries_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Pf_Derisi_3D7_TimeSeries_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_derisi_RSRC|@@Pf_array_derisi_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Pf_Derisi_3D7_TimeSeries_RSRC|@@Pf_Derisi_3D7_TimeSeries_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Pf_array_derisi_RSRC/geneProbeMapping.txt</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs">DeRisi 3D7 Smoothed|Percentiles of DeRisi 3D7 Red</paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats">$$dataDir$$/Pf_Derisi_3D7_TimeSeries_RSRC/final/tp_mapping_3D7.txt</paramValue>
+    <paramValue name="calculateExpressionStats">true</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Pf_Derisi_3D7_TimeSeries</paramValue>
+    <depends name="Pf_Derisi_3D7_TimeSeries_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Pf_Derisi_HB3_TimeSeries_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pf_Derisi_HB3_TimeSeries_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="derisi_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Pf_Derisi_HB3_TimeSeries_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Pf_Derisi_HB3_TimeSeries_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_derisi_RSRC|@@Pf_array_derisi_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Pf_Derisi_HB3_TimeSeries_RSRC|@@Pf_Derisi_HB3_TimeSeries_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Pf_array_derisi_RSRC/geneProbeMapping.txt</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs">DeRisi HB3 Smoothed|Percentiles of DeRisi HB3 Red</paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats">$$dataDir$$/Pf_Derisi_HB3_TimeSeries_RSRC/final/tp_mapping_HB3.txt</paramValue>
+    <paramValue name="calculateExpressionStats">true</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Pf_Derisi_HB3_TimeSeries</paramValue>
+    <depends name="Pf_Derisi_HB3_TimeSeries_RSRC"/>
+  </subgraph>
+
+
+
+  <subgraph name="A-MEXP-75_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pf_array_A_MEXP_75_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_75_RSRC|@@Pf_array_A_MEXP_75_VER@@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="limitNU">30</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">false</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">true</paramValue>
+    <paramValue name="cdfFileName"></paramValue>
+    <paramValue name="isNimbleGen">false</paramValue>
+    <paramValue name="ndfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="Pf_E_MEXP_128_ArrayExpression_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pf_E_MEXP_128_ArrayExpression_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="A-MEXP-75_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Pf_E_MEXP_128_ArrayExpression_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Pf_E_MEXP_128_ArrayExpression_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_A_MEXP_75_RSRC|@@Pf_array_A_MEXP_75_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Pf_E_MEXP_128_ArrayExpression_RSRC|@@Pf_E_MEXP_128_ArrayExpression_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Pf_array_A_MEXP_75_RSRC/geneProbeMapping.txt</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs">Expression profile of 3D7 clones 3D7AH1S2 and 3D7S8.4 at ring, trophozite and schizont stages.|Percentiles of 3D7 clones 3D7AH1S2 and 3D7S8.4 at 3 life stages Red</paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">true</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Pf_E_MEXP_128_ArrayExpression</paramValue>
+    <depends name="Pf_E_MEXP_128_ArrayExpression_RSRC"/>
+  </subgraph>
+
+
+  <subgraph name="Affy-pf-sanger_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pf_array_Affy_pf_sanger_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_pf_sanger_RSRC|@@Pf_array_Affy_pf_sanger_VER@@</paramValue>
+    <paramValue name="isOneChannel">true</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="limitNU">30</paramValue>
+    <paramValue name="numInsertions">0</paramValue>
+    <paramValue name="dnaHybridazation">false</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">true</paramValue>
+    <paramValue name="cdfFileName">PFSANGERb520296.cdf</paramValue>
+    <paramValue name="isNimbleGen">false</paramValue>
+    <paramValue name="ndfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="Pf_Cowman_Sir2_KO_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pf_Cowman_Sir2_KO_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Affy-pf-sanger_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Pf_Cowman_Sir2_KO_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Pf_Cowman_Sir2_KO_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_scrMalaria_RSRC|@@Pf_array_Affy_scrMalaria_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Pf_Cowman_Sir2_KO_RSRC|@@Pf_Cowman_Sir2_KO_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Pf_array_Affy_pf_sanger_RSRC/Pf_array_Affy_pf_sanger_RSRC/final/PFSANGERb520296.cdf</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Pf_Cowman_Sir2_KO</paramValue>
+    <depends name="Pf_Cowman_Sir2_KO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Pf_Newbold_ArrayExpression_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pf_Newbold_ArrayExpression_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Affy-pf-sanger_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Pf_Newbold_ArrayExpression_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Pf_Newbold_ArrayExpression_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_pf_sanger_RSRC|@@Pf_array_Affy_pf_sanger_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Pf_Newbold_ArrayExpression_RSRC|@@Pf_Newbold_ArrayExpression_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Pf_array_Affy_pf_sanger_RSRC/Pf_array_Affy_pf_sanger_RSRC/final/PFSANGERb520296.cdf</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Pf_Newbold_ArrayExpression</paramValue>
+    <depends name="Pf_Newbold_ArrayExpression_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Affy-plasmodiumanopheles_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pf_array_Affy_plasmodiumanopheles_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_plasmodiumanopheles_RSRC|@@Pf_array_Affy_plasmodiumanopheles_VER@@</paramValue>
+    <paramValue name="isOneChannel">true</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="limitNU">30</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">false</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">true</paramValue>
+    <paramValue name="cdfFileName">Plasmodium_Anopheles.cdf</paramValue>
+    <paramValue name="isNimbleGen">false</paramValue>
+    <paramValue name="ndfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="Pf_GSE10022_CQstudy_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pf_GSE10022_CQstudy_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Affy-plasmodiumanopheles_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Pf_GSE10022_CQstudy_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Pf_GSE10022_CQstudy_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_Affy_plasmodiumanopheles_RSRC|@@Pf_array_Affy_plasmodiumanopheles_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Pf_GSE10022_CQstudy_RSRC|@@Pf_GSE10022_CQstudy_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">true</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Pf_array_Affy_plasmodiumanopheles_RSRC/Pf_array_Affy_plasmodiumanopheles_RSRC/final/Plasmodium_Anopheles.cdf</paramValue>
+    <paramValue name="profileSetNames">Profiles of E-GEOD-10022 array from Su</paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Pf_Newbold_ArrayExpression</paramValue>
+    <depends name="Pf_GSE10022_CQstudy_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Pf_GPL3983_Malaria_Oligo_P19_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Pf_array_GPL3983_Malaria_Oligo_P19_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_GPL3983_Malaria_Oligo_P19_RSRC|@@Pf_array_GPL3983_Malaria_Oligo_P19_VER@@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="limitNU">30</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">false</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">true</paramValue>
+    <paramValue name="cdfFileName"></paramValue>
+    <paramValue name="isNimbleGen">false</paramValue>
+    <paramValue name="ndfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="Pf_Derisi_HalfLife_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pf_Derisi_HalfLife_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Pf_GPL3983_Malaria_Oligo_P19_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Pf_Derisi_HalfLife_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Pf_Derisi_HalfLife_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_GPL3983_Malaria_Oligo_P19_RSRC|@@Pf_array_GPL3983_Malaria_Oligo_P19_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Pf_Derisi_HalfLife_RSRC|@@Pf_Derisi_HalfLife_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Pf_array_GPL3983_Malaria_Oligo_P19_RSRC/geneProbeMapping.txt</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Pf_Derisi_HalfLife</paramValue>
+    <depends name="Pf_Derisi_HalfLife_RSRC"/>
+  </subgraph>
+
+</workflowGraph>

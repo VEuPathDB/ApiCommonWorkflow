@@ -1,0 +1,140 @@
+<workflowGraph name="pfalciparumGeneExpressionResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+      <param name="genomicSeqsFile"/>
+
+  <subgraph name="DeRisi_oligoResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">DeRisi_oligos</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+  <subgraph name="mapDeRisiOligosToGenomicSeqs" xmlFile="mapOligos.xml">
+    <paramValue name="parentDataDir">$$parentDataDir$$/DeRisi_oligo</paramValue>
+    <paramValue name="oligoExtDbRlsSpec"></paramValue>
+    <paramValue name="genomeExtDbRlsSpec"></paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="idRegex">(\\S+)\\s+length</paramValue>
+    <paramValue name="loadOptions">--hspMatchLength 64 --hspPctIdent 95 --hspsLimit 1</paramValue>
+    <depends name="DeRisi_oligoResource"/>
+  </subgraph>
+
+  <subgraph name="derisi_Dd2_time_seriesResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">derisi_Dd2_time_series</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <depends name="mapDeRisiOligosToGenomicSeqs"/>
+  </subgraph>
+
+  <subgraph name="derisi_3D7_time_seriesResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">derisi_3D7_time_series</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <depends name="mapDeRisiOligosToGenomicSeqs"/>
+  </subgraph>
+
+  <subgraph name="derisi_HB3_time_seriesResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">derisi_HB3_time_series</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <depends name="mapDeRisiOligosToGenomicSeqs"/>
+  </subgraph>
+
+  <subgraph name="winzeler_cell_cycleResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">winzeler_cell_cycle</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+  <subgraph name="winzeler_gametocyte_expressionResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">winzeler_gametocyte_expression</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+
+  <subgraph name="CowmanStubbs_arrayDataResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">CowmanStubbs_arrayData</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+
+  <subgraph name="CowmanDuraisingh_arrayDataResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">CowmanDuraisingh_arrayData</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+
+  <subgraph name="CowmanBaum_arrayDataResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">CowmanBaum_arrayData</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+  <subgraph name="Cowman_PageResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Cowman_radAnalysis</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+  <subgraph name="daily_expressionProfilesResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">daily_expressionProfiles</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+
+  <subgraph name="daily_correlationsResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">daily_correlations</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+
+
+  <subgraph name="e-mexp-128_percentilesResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">e-mexp-128_percentiles</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+
+
+  <subgraph name="Pfalciparum_newbold_Gene_ExpressionResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pfalciparum_newbold_Gene_Expression</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+
+  <subgraph name="New_Cowman_Sir2_KOResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">New_Cowman_Sir2_KO</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+
+
+  <subgraph name="E-GEOD-10022_arrayResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">E-GEOD-10022_array</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+
+  <subgraph name="E-GEOD-10022_pageResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">E-GEOD-10022_page</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+
+  <subgraph name="New_Cowman_foldChangeResource" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">New_Cowman_foldChange</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+  </subgraph>
+
+</workflowGraph>

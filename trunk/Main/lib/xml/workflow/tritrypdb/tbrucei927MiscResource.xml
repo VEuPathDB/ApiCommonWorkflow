@@ -1,0 +1,23 @@
+<workflowGraph name="tbrucei927MiscResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/tbrucei927MiscResource</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <subgraph name="Tbrucei_Sanger_siRNA_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei_Sanger_siRNA_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+   <step name="patchSiRNABySql" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PatchSiRNABySql">
+     <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <depends name="Tbrucei_Sanger_siRNA_RSRC"/>
+   </step>
+ 
+</workflowGraph>

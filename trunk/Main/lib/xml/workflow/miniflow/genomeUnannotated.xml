@@ -1,0 +1,146 @@
+<workflowGraph name="genomeUnannotated">
+      <param name="parentDataDir"/>
+      <param name="organismName"/>
+      <param name="organismFullName"/>
+      <param name="organismAbbrev"/> 
+      <param name="genomeExtDbRlsSpec"/>
+      <param name="genomeVirtualSeqsExtDbRlsSpec"/>
+      <param name="insertVirtualSeqFromAgpFile"/>
+      <param name="insertVirtualSeqFromAgpFileResourceName"/>
+      <param name="organismResourceXmlFile"/>
+      <param name="repeatMaskSpecies"/>
+      <param name="organismSpecificISFReference"/>
+      <param name="ncbiTaxonId"/>
+      <param name="parentNcbiTaxonId"/>  
+      <param name="downloadSiteDataDir"/>
+      <param name="projectName"/>
+      <param name="projectVersion"/>
+      <param name="loadDbest"/>
+      <param name="dbESTResourceName"/>
+      <param name="dbESTVersion"/>
+      <param name="maxIntronSize"/>
+      <param name="taxonHierarchyForBlastxFilter"/>
+      <param name="genomeSize"/>
+      <param name="makeAssemblySeqs"/>
+      <param name="makeAssemblies"/>
+      <param name="mapAssemblySeqsAndAssemblies"/>
+      <param name="distanceBetweenStartsForAlignmentsInSameCluster"/>
+      <param name="loadOrganismSpecificESTResource"/>
+      <param name="organismSpecificESTResourcesReference"/>
+      <param name="genomeSource"/>
+      <param name="dbESTExtDbRlsSpec"/>
+      <param name="haveOrganelleGenomeSequence"/>
+      <param name="organelleInitDownloadDirSubgraph"/>
+      <param name="minOrfLength"/>
+      <param name="deprecated"/>
+      <param name="soTermIdsOrNames"/>
+      <param name="makeESTDownloadFile"/>
+      <param name="makeGenomicDownloadFile"/>
+      <param name="downloadSiteDataDir"/>
+      <param name="webServicesDataDir"/>
+      <param name="comparativeGenomicsFastaDir"/>
+      <param name="comparativeGenomicsGffDir"/>
+     
+
+    <constant name="dataDir">$$parentDataDir$$/$$organismName$$LoadGenome</constant>
+    <constant name="topLevelFastaFile">$$dataDir$$/topLevelGenomicSeqs.fsa</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+<subgraph name="LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <paramValue name="organismName">$$organismName$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="organismSpecificISFReference">$$organismSpecificISFReference$$</paramValue>
+    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+    <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$</paramValue>
+    <paramValue name="extractProteins">false</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">$$haveOrganelleGenomeSequence$$</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">$$organelleInitDownloadDirSubgraph$$</paramValue>
+  </subgraph>
+
+  <subgraph name="MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <paramValue name="organismName">$$organismName$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec">$$genomeVirtualSeqsExtDbRlsSpec$$</paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName">$$insertVirtualSeqFromAgpFileResourceName$$</paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">$$insertVirtualSeqFromAgpFile$$</paramValue>
+    <paramValue name="runComparativeGenomics">false</paramValue>
+    <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <paramValue name="organismName">$$organismName$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName">$$dbESTResourceName$$</paramValue>
+    <paramValue name="dbESTVersion">$$dbESTVersion$$</paramValue>
+    <paramValue name="loadDbest">$$loadDbest$$</paramValue>
+    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+    <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">$$taxonHierarchyForBlastxFilter$$</paramValue>
+    <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
+    <paramValue name="genomeSize">$$genomeSize$$</paramValue>
+    <paramValue name="skipProteomeAnalysis">true</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">$$makeAssemblySeqs$$</paramValue>
+    <paramValue name="makeAssemblies">$$makeAssemblies$$</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">$$mapAssemblySeqsAndAssemblies$$</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">$$loadOrganismSpecificESTResource$$</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">$$distanceBetweenStartsForAlignmentsInSameCluster$$</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference">$$organismSpecificESTResourcesReference$$</paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <depends name="LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$</paramValue>
+    <paramValue name="organismName">$$organismName$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+    <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+    <paramValue name="genomeSource">$$genomeSource$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">$$dbESTExtDbRlsSpec$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec">$$genomeVirtualSeqsExtDbRlsSpec$$</paramValue>
+    <paramValue name="minOrfLength">$$minOrfLength$$</paramValue>
+    <paramValue name="deprecated">$$deprecated$$</paramValue>
+    <paramValue name="soTermIdsOrNames">$$soTermIdsOrNames$$</paramValue>
+    <paramValue name="makeESTDownloadFile">$$makeESTDownloadFile$$</paramValue>
+    <paramValue name="makeProteomeDownloadFile">false</paramValue>
+    <paramValue name="makeGenomicDownloadFile">$$makeGenomicDownloadFile$$</paramValue>
+    <depends name="PostLoadGenome"/>
+    <depends name="MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+</workflowGraph>

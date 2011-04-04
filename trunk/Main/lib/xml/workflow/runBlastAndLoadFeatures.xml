@@ -1,0 +1,67 @@
+<workflowGraph name="runBlastAndLoadFeatures">
+    <param name="dataDir"/>
+    <param name="queryFile"/>
+    <param name="subjectFile"/>
+    <param name="blastArgs"/>
+    <param name="idRegex"/>
+    <param name="blastType"/>
+    <param name="vendor"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="extDbRlsSpec"/>
+    <param name="organismFullName"/>
+
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBlastTaskInputDir">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="queryFile">$$queryFile$$</paramValue>
+      <paramValue name="subjectFile">$$subjectFile$$</paramValue>
+      <paramValue name="blastArgs">$$blastArgs$$</paramValue>
+      <paramValue name="idRegex">$$idRegex$$</paramValue>
+      <paramValue name="blastType">$$blastType$$</paramValue>
+      <paramValue name="vendor">$$vendor$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeClusterTaskInputDir"/>
+    </step>
+
+    <step name="runClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="numNodes">10</paramValue>
+      <paramValue name="processorsPerNode">2</paramValue>
+      <depends name="mirrorToCluster"/>
+    </step>
+
+    <step name="mirrorFromCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorFromComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputFiles">blastSimilarity.out</paramValue>
+      <depends name="runClusterTask"/>
+    </step>
+
+
+    <step name="blastSimilaritiesToGff" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ConvertBlastSimilaritiesToGff">
+      <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
+      <paramValue name="gffOutputFile">$$dataDir$$/blastSimilarity.gff</paramValue>
+      <depends name="mirrorFromCluster"/>
+    </step>
+
+    <step name="loadBlastGff"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlastGffFile" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/blastSimilarity.gff</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$extDbRlsSpec$$</paramValue>
+      <paramValue name="substepClass">ExternalNASequence</paramValue>
+      <paramValue name="defaultOrg">$$organismFullName$$</paramValue>
+      <paramValue name="isfMappingFileRelToGusHome">lib/xml/isf/PlasmoDB/plasmoTransposableElementFeature2gus.xml</paramValue>
+      <paramValue name="soVersion">@@SO_VER@@</paramValue>
+      <depends name="blastSimilaritiesToGff"/>
+    </step>
+
+</workflowGraph>

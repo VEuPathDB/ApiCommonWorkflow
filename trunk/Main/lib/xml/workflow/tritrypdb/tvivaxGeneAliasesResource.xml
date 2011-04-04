@@ -1,0 +1,18 @@
+<workflowGraph name="tvivaxGeneAliasesResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/tvivaxGeneAliasesResource</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <subgraph name="Tvivax_previds_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tvivax_previds_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+</workflowGraph>

@@ -1,0 +1,36 @@
+<workflowGraph name="common">
+      <param name="projectName"/>
+      <param name="projectVersion"/>
+      <param name="comparativeGenomicsFastaDir"/>
+      <param name="comparativeGenomicsGffDir"/>
+      <param name="webServicesDataDir"/>
+
+    <constant name="dataDir">common</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeBlastWebServicesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">$$webServicesDataDir$$/blast</paramValue>
+    </step>
+
+    <step name="makeMercatorWebServicesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">$$webServicesDataDir$$/mercator</paramValue>
+    </step>
+
+    <step name="makeMotifWebServicesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+      <paramValue name="apiSiteFilesDir">$$webServicesDataDir$$/motif</paramValue>
+    </step>
+
+    <step name="makeComparativeGenomicsFastaDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$comparativeGenomicsFastaDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeComparativeGenomicsGffDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$comparativeGenomicsGffDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+</workflowGraph>

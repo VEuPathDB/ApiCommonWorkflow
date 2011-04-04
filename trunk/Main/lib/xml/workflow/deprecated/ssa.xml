@@ -1,0 +1,111 @@
+<workflowGraph name="Ssa">
+  <param name="parentDataDir"/>
+  <param name="bowtieGenomicIndexDir"/>
+  <param name="bowtieTranscriptIndexDir"/>
+  <param name="geneModelFile"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomicSeqsDir"/>
+  <param name="useTranscripts"/>
+  <param name="shortSeqsFile"/>
+  <param name="outputUniqueFile"/>
+  <param name="outputNonUniqueFile"/>
+  <param name="isChipSeq"/>
+  <param name="readType"/>
+  <param name="readLength"/>
+  <param name="maxIntronSize"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="nonUniqueMappingSuppressLimits"/>
+  <param name="reportMismatches"/>
+
+  <constant name="dataDir">$$parentDataDir$$/ssa</constant>
+  <constant name="bowtieUniqueFile">$$dataDir$$/bowtieUnique</constant>
+  <constant name="bowtieNonUniqueFile">$$dataDir$$/bowtieNonUnique</constant>
+  <constant name="bowtieUnmappedFile">$$dataDir$$/bowtieUnmapped</constant>
+  <constant name="blatUniqueFile">$$dataDir$$/blatUnique</constant>
+  <constant name="blatNonUniqueFile">$$dataDir$$/blatNonUnique</constant>
+  <constant name="tmpUniqueFile">$$dataDir$$/tmpUnique</constant>
+  <constant name="tmpNonUniqueFile">$$dataDir$$/tmpNonUnique</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="bowtieGenome" xmlFile="ssaBowtie.xml" excludeIf="$$useTranscripts$$">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
+      <paramValue name="subjectIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="geneModelFile">$$geneModelFile$$</paramValue>
+      <paramValue name="transcriptOrGenome">genome</paramValue>
+      <paramValue name="outputUniqueFile">$$bowtieUniqueFile$$</paramValue>
+      <paramValue name="outputNonUniqueFile">$$bowtieNonUniqueFile$$</paramValue>
+      <paramValue name="readType">$$readType$$</paramValue>
+      <paramValue name="bowtieOutputFile">$$dataDir$$/ssaBowtie/bowtieGenome.out</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="bowtieGenomeAndTranscripts" xmlFile="ssaBowtieGenomeAndTranscripts.xml" includeIf="$$useTranscripts$$">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="shortSeqsFile">$$shortSeqsFile$$</paramValue>
+      <paramValue name="genomeIndexDir">$$bowtieGenomicIndexDir$$</paramValue>
+      <paramValue name="geneModelFile">$$geneModelFile$$</paramValue>
+      <paramValue name="transcriptIndexDir">$$bowtieTranscriptIndexDir$$</paramValue>
+      <paramValue name="outputUniqueFile">$$bowtieUniqueFile$$</paramValue>
+      <paramValue name="outputNonUniqueFile">$$bowtieNonUniqueFile$$</paramValue>
+      <paramValue name="readType">$$readType$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
+    <step name="findUnmappedSeqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaFindBowtieUnmappedSeqs">
+      <paramValue name="inputShortSeqsFile">$$shortSeqsFile$$</paramValue>
+      <paramValue name="inputBowtieUniqueFile">$$bowtieUniqueFile$$</paramValue>
+      <paramValue name="inputBowtieNonUniqueFile">$$bowtieNonUniqueFile$$</paramValue>
+      <paramValue name="outputBowtieUnmappedSeqsFile">$$bowtieUnmappedFile$$</paramValue>
+      <paramValue name="readType">$$readType$$</paramValue>
+      <depends name="bowtieGenomeAndTranscripts"/>
+      <depends name="bowtieGenome"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="findUnmappedSeqs"/>
+    </step>
+
+  <subgraph name="blatGenome" xmlFile="ssaBlat.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="shortSeqsFile">$$bowtieUnmappedFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="outputUniqueFile">$$blatUniqueFile$$</paramValue>
+      <paramValue name="outputNonUniqueFile">$$blatNonUniqueFile$$</paramValue>
+      <paramValue name="isChipSeq">$$isChipSeq$$</paramValue>
+      <paramValue name="readLength">$$readLength$$</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <depends name="mirrorToCluster"/>
+  </subgraph>
+
+
+    <step name="mergeBowtieAndBlat" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMergeBowtieAndBlat">
+      <paramValue name="inputBlatUniqueFile">$$blatUniqueFile$$</paramValue>
+      <paramValue name="inputBlatNonUniqueFile">$$blatNonUniqueFile$$</paramValue>
+      <paramValue name="inputBowtieUniqueFile">$$bowtieUniqueFile$$</paramValue>
+      <paramValue name="inputBowtieNonUniqueFile">$$bowtieNonUniqueFile$$</paramValue>
+      <paramValue name="outputUniqueFile">$$tmpUniqueFile$$</paramValue>
+      <paramValue name="outputNonUniqueFile">$$tmpNonUniqueFile$$</paramValue>
+      <paramValue name="readType">$$readType$$</paramValue>
+      <paramValue name="nonUniqueMappingSuppressLimits">$$nonUniqueMappingSuppressLimits$$</paramValue>
+      <depends name="blatGenome"/>
+    </step>
+
+    <step name="cleanTrailingMismatches" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaCleanTrailingMismatches">
+      <paramValue name="inputUniqueFile">$$tmpUniqueFile$$</paramValue>
+      <paramValue name="inputNonUniqueFile">$$tmpNonUniqueFile$$</paramValue>
+      <paramValue name="outputUniqueFile">$$outputUniqueFile$$</paramValue>
+      <paramValue name="outputNonUniqueFile">$$outputNonUniqueFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="reportMismatches">$$reportMismatches$$</paramValue>
+      <depends name="mergeBowtieAndBlat"/>
+    </step>
+
+
+
+</workflowGraph>

@@ -1,0 +1,111 @@
+<workflowGraph name="linfantumArrayResources">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="ssaGeneModelFile"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="transcriptSeqsFileForSsa"/>
+  <param name="downloadSiteTranscriptExpressionDataDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+
+  <constant name="dataDir">$$parentDataDir$$/linfantumArrayResources</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+  <subgraph name="Linfantum_array_Myler_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Linfantum_array_Myler_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Linfantum_array_Myler_RSRC|@@Linfantum_array_Myler_VER@@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="limitNU">14</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">false</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">true</paramValue>
+    <paramValue name="cdfFileName"></paramValue>
+    <paramValue name="isNimbleGen">true</paramValue>
+    <paramValue name="ndfFileName">$$dataDir$$/getAndMap_Linfantum_array_Myler_RSRC/Linfantum_array_Myler_RSRC/final/2006-12-20_PM_LINF_expr.ndf</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="Linfantum_Myler_Promastigote_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Linfantum_Myler_Promastigote_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Linfantum_array_Myler_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Linfantum_Myler_Promastigote_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Linfantum_Myler_Promastigote_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Linfantum_array_Myler_RSRC|@@Linfantum_array_Myler_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Linfantum_Myler_Promastigote_RSRC|@@Linfantum_Myler_Promastigote_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Linfantum_array_Myler_RSRC/2006-12-20_PM_LINF_expr.ndf</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Linfantum_Myler_Promastigote</paramValue>
+    <depends name="Linfantum_Myler_Promastigote_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Linfantum_array_Papadoupou_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="probeResourceName">Linfantum_array_Papadoupou_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Linfantum_array_Papadoupou_RSRC|@@Linfantum_array_Papadoupou_VER@@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="limitNU">14</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">false</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">true</paramValue>
+    <paramValue name="cdfFileName"></paramValue>
+    <paramValue name="isNimbleGen">false</paramValue>
+    <paramValue name="ndfFileName"></paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="Linfantum_Papadoupou_Amastigote_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Linfantum_Papadoupou_Amastigote_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Linfantum_array_Papadoupou_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Linfantum_Papadoupou_Amastigote_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="experimentResourceName">Linfantum_Papadoupou_Amastigote_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Linfantum_array_Papadoupou_RSRC|@@Linfantum_array_Papadoupou_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Linfantum_Papadoupou_Amastigote_RSRC|@@Linfantum_Papadoupou_Amastigote_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="insertAnalysisResult">true</paramValue>
+    <paramValue name="probeGenesMappingFile">$$dataDir$$/getAndMap_Linfantum_array_Papadoupou_RSRC/geneProbeMapping.txt</paramValue>
+    <paramValue name="profileSetNames">Profiles of Linfantum axenic and intracellular amastigote array data</paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/Linfantum_Papadoupou_Amastigote</paramValue>
+    <depends name="Linfantum_Papadoupou_Amastigote_RSRC"/>
+  </subgraph>
+
+</workflowGraph>

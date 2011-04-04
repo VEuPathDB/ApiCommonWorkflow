@@ -1,0 +1,42 @@
+<workflowGraph name="lmajorFriedlinDbxRefsResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+      <param name="projectVersion"/>
+      <param name="projectName"/>
+      <param name="downloadSiteDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/lmajorFriedlinDbxRefsResources</constant>
+  <constant name="geneAliasesMappingDownloadFile">$$downloadSiteDataDir$$/LmajorFriedlin/txt/LmajorFriedlinGeneAlias_$$projectName$$-$$projectVersion$$.txt</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
+     <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
+     <paramValue name="dbRefNAFeatureExtDbSpec">LmajorFriedlin_previds_dbxref_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
+     <paramValue name="outputFile">$$geneAliasesMappingDownloadFile$$</paramValue>
+  </step>
+
+  <subgraph name="Lmajor_Entrez_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Lmajor_Entrez_Gene_dbxref_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="Lmajor_Uniprot_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Lmajor_Uniprot_Gene_dbxref_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="Lmajor_LeishCYC_dbxref_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Lmajor_LeishCYC_dbxref_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+</workflowGraph>

@@ -1,0 +1,202 @@
+<workflowGraph name="analyzeRnaSeqOrChipSeqSample">
+    <param name="parentDataDir"/>
+    <param name="sampleName"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="shortSeqsFile"/>
+    <param name="outputCoverageFile"/>
+    <param name="outputIntensityFile"/>
+    <param name="outputMappingStatsFile"/>
+    <param name="outputCountFile"/>
+    <param name="makeIntensityFile"/>
+    <param name="rnaSeqExtDbRlsSpec"/>
+    <param name="genomeExtDbSpec"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+    <param name="pairedReadFilePath"/>
+    <param name="numInsertions"/>
+    <param name="limitNU"/>
+    <param name="samHeaderFile"/>
+
+    <constant name="dataDir">$$parentDataDir$$/analyze$$sampleName$$</constant>
+    <constant name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.all</constant>
+    <constant name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.all</constant>
+
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+ 
+    <subgraph name="runRUMOnCluster"  xmlFile="runRUMOnCluster.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="readFilePath">$$shortSeqsFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="transcriptFastaFile">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath">$$pairedReadFilePath$$</paramValue>
+      <paramValue name="limitNU">$$limitNU$$</paramValue>
+      <paramValue name="numInsertions">$$numInsertions$$</paramValue>
+      <paramValue name="createSAMFile">false</paramValue>
+      <paramValue name="countMismatches">false</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="document-RnaSeqOrChipSeqRum"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">rum_rna_or_chip_seq_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+
+     <step name="sortRUMUniqueResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation" stepLoadTypes="rumSort">
+      <paramValue name="inputFile">$$uniqueFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="sortRUMNUResultByLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SortRUMResultByLocation" stepLoadTypes="rumSort">
+      <paramValue name="inputFile">$$nonUniqueFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="makeExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeExonJunctionCall">
+      <paramValue name="uniqueFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
+      <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/exonJunctionOutput</paramValue>
+      <depends name="sortRUMUniqueResultByLocation"/>
+      <depends name="sortRUMNUResultByLocation"/>
+    </step>
+
+    <step name="document-RnaSeqOrChipExonJunctionCall"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">exon_junction_rna_or_chip_seq_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeExonJunctionCall"/>
+    </step>
+
+    <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/exonJunctionOutput.rum</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <depends name="makeExonJunctionCall"/>
+    </step>
+
+    <step name="generateMappingStatsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile">
+      <paramValue name="uniqueFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
+      <paramValue name="outputFile">$$outputMappingStatsFile$$</paramValue>
+      <depends name="sortRUMUniqueResultByLocation"/>
+      <depends name="sortRUMNUResultByLocation"/>
+    </step>
+
+    <step name="generateCountFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateCountFile">
+      <paramValue name="uniqueFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputFile">$$outputCountFile$$</paramValue>
+      <depends name="sortRUMUniqueResultByLocation"/>
+      <depends name="sortRUMNUResultByLocation"/>
+    </step>
+
+    <step name="makeUniqueNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
+      <paramValue name="inputFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="outputUnNormFile">$$outputCoverageFile$$.Unique.UnNorm</paramValue>
+      <paramValue name="outputNormFile">$$outputCoverageFile$$.Unique.Norm</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <depends name="sortRUMUniqueResultByLocation"/>
+    </step>
+
+    <step name="document-makeUniqueNormalizedCoverageFile"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">make_unique_norm_cov_file_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeUniqueNormalizedCoverageFile"/>
+    </step>
+
+    <step name="makeNUNormalizedCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeNormalizedCoverageFile">
+      <paramValue name="inputFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
+      <paramValue name="outputUnNormFile">$$outputCoverageFile$$.NU.UnNorm</paramValue>
+      <paramValue name="outputNormFile">$$outputCoverageFile$$.NU.Norm</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <depends name="sortRUMNUResultByLocation"/>
+    </step>
+
+    <step name="document-makeNUNormalizedCoverageFile"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">make_non_unique_norm_cov_file_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeNUNormalizedCoverageFile"/>
+    </step>
+
+   <step name="reformatNUCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
+      <paramValue name="inputFile">$$outputCoverageFile$$.NU.Norm</paramValue>
+      <paramValue name="outputFile">$$outputCoverageFile$$.NU.Norm.reformated</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="multiple">true</paramValue>
+      <depends name="makeNUNormalizedCoverageFile"/>
+    </step>
+
+    <step name="reformatUniqueCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr">
+      <paramValue name="inputFile">$$outputCoverageFile$$.Unique.Norm</paramValue>
+      <paramValue name="outputFile">$$outputCoverageFile$$.Unique.Norm.reformated</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="multiple">false</paramValue>
+      <depends name="makeUniqueNormalizedCoverageFile"/>
+    </step>
+
+    <step name="loadUniqueRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$outputCoverageFile$$.Unique.Norm.reformated</paramValue>
+      <depends name="reformatUniqueCoverageFile"/>
+    </step>
+
+    <step name="loadNURnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$outputCoverageFile$$.NU.Norm.reformated</paramValue>
+      <depends name="reformatNUCoverageFile"/>
+    </step>
+
+    <step name="makeIntensityFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeIntensityFile" includeIf="$$makeIntensityFile$$">
+      <paramValue name="inputSortedFile">$$dataDir$$/RUM_Unique.all.sorted,$$dataDir$$/RUM_NU.all.sorted</paramValue>
+      <paramValue name="inputGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputIntensityFile">$$outputIntensityFile$$</paramValue>
+      <depends name="sortRUMUniqueResultByLocation"/>
+      <depends name="sortRUMNUResultByLocation"/>
+    </step>
+
+    <step name="document-makeIntensityFile"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">make_rna_or_chip_seq_intensity_file_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeIntensityFile"/>
+    </step>
+
+    <subgraph name="makeSamAndBamFiles"  xmlFile="makeSamAndBamFiles.xml">
+       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+       <paramValue name="readFilePath">$$shortSeqsFile$$</paramValue>
+       <paramValue name="pairedReadFilePath">$$pairedReadFilePath$$</paramValue>
+       <paramValue name="uniqueFile">$$dataDir$$/RUM_Unique.all.sorted</paramValue>
+       <paramValue name="nonUniqueFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
+       <paramValue name="sampleName">$$sampleName$$</paramValue>
+       <paramValue name="samHeaderFile">$$samHeaderFile$$</paramValue>
+       <depends name="runRUMOnCluster"/>
+    </subgraph> 
+
+</workflowGraph>
+
+

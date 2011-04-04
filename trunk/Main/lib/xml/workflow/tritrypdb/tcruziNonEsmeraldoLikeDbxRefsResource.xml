@@ -1,0 +1,49 @@
+<workflowGraph name="tcruziNonEsmeraldoLikeDbxRefsResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+      <param name="projectVersion"/>
+      <param name="projectName"/>
+      <param name="downloadSiteDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/tcruziNonEsmeraldoLikeDbxRefsResources</constant>
+  <constant name="geneAliasesMappingDownloadFile">$$downloadSiteDataDir$$/TcruziNonEsmeraldoLike/txt/TcruziNonEsmeraldoLikeGeneAlias_$$projectName$$-$$projectVersion$$.txt</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
+     <paramValue name="genomeExtDbRlsSpec">TcruziNonEsmeraldoLike_genome_RSRC|@@TcruziNonEsmeraldoLike_genome_VER@@</paramValue>
+     <paramValue name="dbRefNAFeatureExtDbSpec">TcruziNonEsmeraldoLike_previds_dbxref_RSRC|@@TcruziNonEsmeraldoLike_genome_VER@@</paramValue>
+     <paramValue name="outputFile">$$geneAliasesMappingDownloadFile$$</paramValue>
+  </step>
+
+  <subgraph name="TcruziNonEsmeraldoLike_Aguero_SNP_DBRefs_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">TcruziNonEsmeraldoLike_Aguero_SNP_DBRefs_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="TcruziNonEsmeraldoLike_Entrez_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">TcruziNonEsmeraldoLike_Entrez_Gene_dbxref_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="TcruziNonEsmeraldoLike_Uniprot_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">TcruziNonEsmeraldoLike_Uniprot_Gene_dbxref_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="TcruziNonEsmeraldoLike_geneDB_NewID_dbxref_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">TcruziNonEsmeraldoLike_geneDB_NewID_dbxref_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+</workflowGraph>

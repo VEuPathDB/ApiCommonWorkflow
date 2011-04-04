@@ -1,0 +1,63 @@
+<workflowGraph name="formatDownloadFiles">
+    <param name="downloadSiteDataDir"/>
+    <param name="organismName"/>
+    <param name="projectName"/>
+    <param name="projectVersion"/>
+    <param name="webServicesDataDir"/>
+    <param name="makeESTDownloadFile"/>
+    <param name="makeProteomeDownloadFile"/>
+    <param name="makeGenomicDownloadFile"/>
+    <constant name="downloadSiteFastaDataDir">$$downloadSiteDataDir$$/$$organismName$$/fasta</constant>
+
+    <step name="formatESTDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeESTDownloadFile$$">
+      <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismName$$EST_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
+      <paramValue name="formattedFileName">$$organismName$$EST</paramValue>
+      <paramValue name="args">-n -t release-$$projectVersion$$/$$organismName$$EST</paramValue>
+    </step>
+
+    <step name="formatDotsAssemblyDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeESTDownloadFile$$">
+      <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismName$$Assembly_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
+      <paramValue name="formattedFileName">$$organismName$$Assemblies</paramValue>
+      <paramValue name="args">-n -t release-$$projectVersion$$/$$organismName$$Assemblies</paramValue>
+    </step>
+
+    <step name="formatAnnotatedCDSDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeProteomeDownloadFile$$">
+      <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismName$$AnnotatedCDS_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
+      <paramValue name="formattedFileName">$$organismName$$CDS</paramValue>
+      <paramValue name="args">-n -t release-$$projectVersion$$/$$organismName$$CDS</paramValue>
+    </step>
+
+    <step name="formatAnnotatedTranscriptDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeProteomeDownloadFile$$">
+      <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismName$$AnnotatedTranscripts_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
+      <paramValue name="formattedFileName">$$organismName$$Transcripts</paramValue>
+      <paramValue name="args">-n -t release-$$projectVersion$$/$$organismName$$Transcripts</paramValue>
+    </step>
+
+    <step name="formatAnnotatedProteinsDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeProteomeDownloadFile$$">
+      <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismName$$AnnotatedProteins_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
+      <paramValue name="formattedFileName">$$organismName$$Proteins</paramValue>
+      <paramValue name="args">-p -C X -t release-$$projectVersion$$/$$organismName$$Proteins</paramValue>
+    </step>
+
+    <step name="formatMixedGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeGenomicDownloadFile$$">
+      <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismName$$Genomic_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
+      <paramValue name="formattedFileName">$$organismName$$Genomics</paramValue>
+      <paramValue name="args">-n -t release-$$projectVersion$$/$$organismName$$Genomics</paramValue>
+    </step>
+
+    <step name="formatOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeGenomicDownloadFile$$">
+      <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismName$$ORFs_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
+      <paramValue name="formattedFileName">$$organismName$$ORF</paramValue>
+      <paramValue name="args">-p -C X -t release-$$projectVersion$$/$$organismName$$ORF</paramValue>
+    </step>
+
+
+
+</workflowGraph>

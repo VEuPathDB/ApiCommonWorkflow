@@ -1,0 +1,77 @@
+<workflowGraph name="analyzeMicroarrayExpression">
+    <param name="parentDataDir"/>
+    <param name="experimentResourceName"/>
+    <param name="chipProbeExtDbRlsSpec"/>
+    <param name="experimentExtDbRlsSpec"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="insertAnalysisResult"/>
+    <param name="probeGenesMappingFile"/>
+    <param name="profileSetNames"/>
+    <param name="profileSetSpecs"/>
+    <param name="isLogged"/>
+    <param name="mappingFileForExpressionStats"/>
+    <param name="calculateExpressionStats"/>
+    <param name="downloadSiteTranscriptExpressionDataDir"/>
+
+    <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
+      <paramValue name="inputDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
+      <paramValue name="probeGenesMappingFile">$$probeGenesMappingFile$$</paramValue>
+    </step>
+
+    <step name="loadExpressionProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
+      <paramValue name="inputDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
+      <paramValue name="configFile">$$parentDataDir$$/$$experimentResourceName$$/final/expression_profile_config.txt</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentExtDbRlsSpec$$</paramValue>
+      <depends name="doTranscriptExpression"/>
+    </step>
+
+    <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
+      <paramValue name="copyFromDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
+      <paramValue name="configFile">$$parentDataDir$$/$$experimentResourceName$$/final/expression_profile_config.txt</paramValue>
+      <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
+      <depends name="doTranscriptExpression"/>
+    </step>
+
+    <step name="calculateExpressionStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateExpressionStatsForTimeSeries" stepLoadTypes="plugin" includeIf="$$calculateExpressionStats$$" undoRoot="loadExpressionProfilesFromConfig">
+      <paramValue name="profileSetSpecs">$$profileSetSpecs$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentExtDbRlsSpec$$</paramValue>
+      <paramValue name="isLogged">$$isLogged$$</paramValue>
+      <paramValue name="mappingFile">$$mappingFileForExpressionStats$$</paramValue>
+      <depends name="loadExpressionProfilesFromConfig"/>
+    </step>
+
+    <step name="insertAnalysisResultFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin" includeIf="$$insertAnalysisResult$$">
+      <paramValue name="analysisWorkingDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
+      <paramValue name="configFile">$$parentDataDir$$/$$experimentResourceName$$/final/analysis_result_config.txt</paramValue>
+      <paramValue name="analysisResultView">DifferentialExpression</paramValue>
+      <paramValue name="naFeatureView">GeneFeature</paramValue>
+      <paramValue name="useSqlLdr">false</paramValue>
+      <paramValue name="profileSetNames">$$profileSetNames$$</paramValue>
+      <depends name="doTranscriptExpression"/>
+    </step>
+
+    <step name="document-oneChannel"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">one_channel_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="doTranscriptExpression"/>
+    </step>
+
+    <step name="document-twoChannel"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">two_channel_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="doTranscriptExpression"/>
+    </step>
+
+    <step name="document-PaGE"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">PaGE_MTHD</paramValue>
+      <paramValue name="version">5.1.6.1</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="doTranscriptExpression"/>
+    </step>
+
+</workflowGraph>

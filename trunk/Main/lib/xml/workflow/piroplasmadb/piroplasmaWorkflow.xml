@@ -1,0 +1,515 @@
+<workflowGraph name="piroplasmaWorkflow">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+
+
+  <constant name="comparativeGenomicsFastaDir">common/comparativeGenomics/Fasta/</constant>
+  <constant name="comparativeGenomicsGffDir">common/comparativeGenomics/Gff/</constant>
+  <constant name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</constant>
+  <constant name="downloadSiteDir">@@downloadSite@@/$$projectName$$/release-$$projectVersion$$/</constant>
+
+
+  <globalSubgraph name="global" xmlFile="globalGraph.xml">
+    <paramValue name="isolatesResourceReference"></paramValue>
+    <paramValue name="loadIsolates">false</paramValue>
+    <paramValue name="commonResourceXmlFile">piroplasmadb/piroplasmadbCommon.xml</paramValue>
+    <paramValue name="globalResourceXmlFile">globalResources.xml</paramValue>
+  </globalSubgraph>
+
+  <subgraph name="common" xmlFile="common.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+  </subgraph>
+
+
+  <subgraph name="TannulataAnkaraLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TannulataAnkara</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TannulataAnkara_genomes_RSRC|@@TannulataAnkara_genomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/tannulataAnkara.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">piroplasmadb/tannulataAnkaraISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">353154</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">true</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndPlastidDownloadDirs.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="TannulataAnkaraMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TannulataAnkara</paramValue>
+    <paramValue name="organismFullName">@@TannulataAnkaraOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TannulataAnkara_genomes_RSRC|@@TannulataAnkara_genomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Piroplasmida</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/tannulataAnkara.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="TannulataAnkaraLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TannulataAnkaraPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TannulataAnkara</paramValue>
+    <paramValue name="organismFullName">@@TannulataAnkaraOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">TannulataAnkara</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TannulataAnkara_genomes_RSRC|@@TannulataAnkara_genomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName">TannulataAnkara_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@TannulataAnkara_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">TannulataAnkara_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">TannulataAnkara_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@TannulataAnkara_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
+    <paramValue name="ncbiTaxonId">353154</paramValue>
+    <paramValue name="parentNcbiTaxonId">5874</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Apicomplexa, Piroplasmida</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Piroplasmida</paramValue>
+    <paramValue name="genomeSize">8358125</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">piroplasmadb/tannulataAnkaraProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/tannulataAnkara.xml</paramValue>
+    <depends name="TannulataAnkaraLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TannulataAnkaraSpecificWorkflow" xmlFile="piroplasmadb/tannulataAnkaraSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/tannulataAnkara.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="TannulataAnkaraLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TannulataAnkaraLoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TannulataAnkara</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">piroplasmadb/tannulataAnkaraGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/tannulataAnkara.xml</paramValue>
+    <depends name="TannulataAnkaraLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TannulataAnkaraLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TannulataAnkara</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">piroplasmadb/tannulataAnkaraDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/tannulataAnkara.xml</paramValue>
+    <depends name="TannulataAnkaraLoadGeneAliases"/>
+  </subgraph>
+
+  <subgraph name="TannulataAnkaraMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TannulataAnkara</paramValue>
+    <paramValue name="organismFullName">@@TannulataAnkaraOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">353154</paramValue>
+    <paramValue name="parentNcbiTaxonId">5874</paramValue>
+    <paramValue name="genomeSource">@@TannulataAnkaraGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">TannulataAnkara_dbEST_RSRC|@@TannulataAnkara_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TannulataAnkara_genomes_RSRC|@@TannulataAnkara_genomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TannulataAnkaraPostLoadGenome"/>
+    <depends name="TannulataAnkaraMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+  <subgraph name="TannulataAnkaraMitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TannulataAnkaraMito</paramValue>
+    <paramValue name="organismFullName">@@TannulataAnkaraOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">353154</paramValue>
+    <paramValue name="parentNcbiTaxonId">5874</paramValue>
+    <paramValue name="genomeSource">@@TannulataAnkaraGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">TannulataAnkara_dbEST_RSRC|@@TannulataAnkara_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TannulataAnkara_genomes_RSRC|@@TannulataAnkara_genomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TannulataAnkaraPostLoadGenome"/>
+    <depends name="TannulataAnkaraMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+  <subgraph name="BbovisT2BoLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">BbovisT2Bo</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">BbovisT2Bo_genomes_RSRC|@@BbovisT2Bo_genomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/bbovisT2Bo.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">piroplasmadb/bbovisT2BoISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">484906</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">true</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndPlastidDownloadDirs.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="BbovisT2BoMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">BbovisT2Bo</paramValue>
+    <paramValue name="organismFullName">@@BbovisT2BoOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">BbovisT2Bo_genomes_RSRC|@@BbovisT2Bo_genomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Piroplasmida</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/bbovisT2Bo.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="BbovisT2BoLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="BbovisT2BoPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">BbovisT2Bo</paramValue>
+    <paramValue name="organismFullName">@@BbovisT2BoOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">BbovisT2Bo</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">BbovisT2Bo_genomes_RSRC|@@BbovisT2Bo_genomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName">BbovisT2Bo_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@BbovisT2Bo_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">BbovisT2Bo_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">BbovisT2Bo_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@BbovisT2Bo_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
+    <paramValue name="ncbiTaxonId">484906</paramValue>
+    <paramValue name="parentNcbiTaxonId">5865</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Apicomplexa, Piroplasmida</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Piroplasmida</paramValue>
+    <paramValue name="genomeSize">8179706</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">piroplasmadb/bbovisT2BoProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/bbovisT2Bo.xml</paramValue>
+    <depends name="BbovisT2BoLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="BbovisT2BoSpecificWorkflow" xmlFile="piroplasmadb/bbovisT2BoSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/bbovisT2Bo.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="BbovisT2BoLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="BbovisT2BoLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">BbovisT2Bo</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">piroplasmadb/bbovisT2BoDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/bbovisT2Bo.xml</paramValue>
+    <depends name="BbovisT2BoLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="BbovisT2BoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">BbovisT2Bo</paramValue>
+    <paramValue name="organismFullName">@@BbovisT2BoOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">484906</paramValue>
+    <paramValue name="parentNcbiTaxonId">5865</paramValue>
+    <paramValue name="genomeSource">@@BbovisT2BoGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">BbovisT2Bo_dbEST_RSRC|@@BbovisT2Bo_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">BbovisT2Bo_genomes_RSRC|@@BbovisT2Bo_genomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="BbovisT2BoPostLoadGenome"/>
+    <depends name="BbovisT2BoMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+  <subgraph name="BbovisT2BoMitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">BbovisT2BoMito</paramValue>
+    <paramValue name="organismFullName">@@BbovisT2BoOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">484906</paramValue>
+    <paramValue name="parentNcbiTaxonId">5865</paramValue>
+    <paramValue name="genomeSource">@@BbovisT2BoGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">BbovisT2Bo_dbEST_RSRC|@@BbovisT2Bo_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">BbovisT2Bo_genomes_RSRC|@@BbovisT2Bo_genomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="BbovisT2BoPostLoadGenome"/>
+    <depends name="BbovisT2BoMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+  <subgraph name="BbovisT2BoPlastidMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">BbovisT2BoPlastid</paramValue>
+    <paramValue name="organismFullName">@@BbovisT2BoOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">484906</paramValue>
+    <paramValue name="parentNcbiTaxonId">5865</paramValue>
+    <paramValue name="genomeSource">@@BbovisT2BoGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">BbovisT2Bo_dbEST_RSRC|@@BbovisT2Bo_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">BbovisT2Bo_genomes_RSRC|@@BbovisT2Bo_genomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">apicoplast_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="BbovisT2BoPostLoadGenome"/>
+    <depends name="BbovisT2BoMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+  <subgraph name="TparvaMugugaLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TparvaMuguga</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TparvaMuguga_genomes_RSRC|@@TparvaMuguga_genomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/tparvaMuguga.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">piroplasmadb/tparvaMugugaISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">333668</paramValue>
+    <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">true</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndPlastidDownloadDirs.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="TparvaMugugaMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TparvaMuguga</paramValue>
+    <paramValue name="organismFullName">@@TparvaMugugaOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TparvaMuguga_genomes_RSRC|@@TparvaMuguga_genomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Piroplasmida</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/tparvaMuguga.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="TparvaMugugaLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TparvaMugugaPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TparvaMuguga</paramValue>
+    <paramValue name="organismFullName">@@TparvaMugugaOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">TparvaMuguga</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TparvaMuguga_genomes_RSRC|@@TparvaMuguga_genomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName">TparvaMuguga_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@TparvaMuguga_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">TparvaMuguga_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">TparvaMuguga_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@TparvaMuguga_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
+    <paramValue name="ncbiTaxonId">333668</paramValue>
+    <paramValue name="parentNcbiTaxonId">5875</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">20000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Apicomplexa, Piroplasmida</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Piroplasmida</paramValue>
+    <paramValue name="genomeSize">8353501</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">piroplasmadb/tparvaMugugaProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/tparvaMuguga.xml</paramValue>
+    <depends name="TparvaMugugaLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TparvaMugugaSpecificWorkflow" xmlFile="piroplasmadb/tparvaMugugaSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/tparvaMuguga.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="TparvaMugugaLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TparvaMugugaLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TparvaMuguga</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">piroplasmadb/tparvaMugugaDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/tparvaMuguga.xml</paramValue>
+    <depends name="TparvaMugugaLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TparvaMugugaMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TparvaMuguga</paramValue>
+    <paramValue name="organismFullName">@@TparvaMugugaOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">333668</paramValue>
+    <paramValue name="parentNcbiTaxonId">5875</paramValue>
+    <paramValue name="genomeSource">@@TparvaMugugaGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">TparvaMuguga_dbEST_RSRC|@@TparvaMuguga_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TparvaMuguga_genomes_RSRC|@@TparvaMuguga_genomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TparvaMugugaPostLoadGenome"/>
+    <depends name="TparvaMugugaMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+  <subgraph name="TparvaMugugaMitoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TparvaMugugaMito</paramValue>
+    <paramValue name="organismFullName">@@TparvaMugugaOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">333668</paramValue>
+    <paramValue name="parentNcbiTaxonId">5875</paramValue>
+    <paramValue name="genomeSource">@@TparvaMugugaGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">TparvaMuguga_dbEST_RSRC|@@TparvaMuguga_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TparvaMuguga_genomes_RSRC|@@TparvaMuguga_genomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">mitochondrial_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TparvaMugugaPostLoadGenome"/>
+    <depends name="TparvaMugugaMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+  <subgraph name="TparvaMugugaPlastidMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TparvaMugugaPlastid</paramValue>
+    <paramValue name="organismFullName">@@TparvaMugugaOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">333668</paramValue>
+    <paramValue name="parentNcbiTaxonId">5875</paramValue>
+    <paramValue name="genomeSource">@@TparvaMugugaGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">TparvaMuguga_dbEST_RSRC|@@TparvaMuguga_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TparvaMuguga_genomes_RSRC|@@TparvaMuguga_genomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">apicoplast_chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TparvaMugugaPostLoadGenome"/>
+    <depends name="TparvaMugugaMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+  <subgraph name="ComparativeGenomics" xmlFile="comparativeGenomics.xml">
+    <paramValue name="parentDataDir">common/comparativeGenomics/</paramValue>
+    <paramValue name="mercatorDraftGenomes">@@mercatorDraftGenomes@@</paramValue>
+    <paramValue name="mercatorNonDraftGenomes">@@mercatorNonDraftGenomes@@</paramValue>
+    <paramValue name="mercatorDraftExternalDbSpec">@@mercatorDraftExternalDbSpec@@</paramValue>
+    <paramValue name="mercatorNonDraftExternalDbSpec">@@mercatorNonDraftExternalDbSpec@@</paramValue>
+    <paramValue name="mercatorDraftSeqTables">@@mercatorDraftSeqTables@@</paramValue>
+    <paramValue name="mercatorNonDraftSeqTables">@@mercatorNonDraftSeqTables@@</paramValue>
+    <paramValue name="cndSrcBin">@@cndSrcBin@@</paramValue>
+    <paramValue name="mavidExe">@@mavidExe@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="mercatorFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="mercatorGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/piroplasmadbCommon.xml</paramValue>
+    <paramValue name="commonResourceXmlFile">piroplasmadb/piroplasmadbCommon.xml</paramValue>
+    <paramValue name="createGenesForGeneFeatures">false</paramValue>
+    <paramValue name="organismSpecificCreateGenesForGeneFeatures"></paramValue>
+    <paramValue name="organism">Piroplasma</paramValue>
+    <depends name="TannulataAnkaraLoadGenome"/>
+    <depends name="BbovisT2BoLoadGenome"/>
+    <depends name="TparvaMugugaLoadGenome"/>
+  </subgraph>
+
+</workflowGraph>
+

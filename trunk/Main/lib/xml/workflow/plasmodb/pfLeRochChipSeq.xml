@@ -1,0 +1,319 @@
+<workflowGraph name="pfLeRochChipSeq">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+
+    <constant name="dataDir">$$parentDataDir$$/pfLeRochChipSeq</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+    <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+    </step>
+
+    <subgraph name="Pf_ChipSeq_Le_Roch_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pf_ChipSeq_Le_Roch_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE0Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE0</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE0.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE0/MAINE0.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE0.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE6Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE6</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE6.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE6/MAINE6.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE6.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE12Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE12</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE12.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE12/MAINE12.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE12.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+    <subgraph name="analyzeMAINE18Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE18</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE18.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE18/MAINE18.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE18.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+    <subgraph name="analyzeMAINE24Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE24</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE24.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE24/MAINE24.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE24.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+    <subgraph name="analyzeMAINE30Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE30</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE30.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE30/MAINE30.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE30.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeMAINE36Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">MAINE36</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/MAINE36.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeMAINE36/MAINE36.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/MAINE36.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeFAIRE0Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE0</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE0.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE0/FAIRE0.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE0.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeFAIRE6Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE6</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE6.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE6/FAIRE6.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE6.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeFAIRE12Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE12</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE12.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE12/FAIRE12.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE12.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+    <subgraph name="analyzeFAIRE18Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE18</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE18.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE18/FAIRE18.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE18.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeFAIRE24Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE24</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE24.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE24/FAIRE24.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE24.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+    <subgraph name="analyzeFAIRE30Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE30</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE30.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE30/FAIRE30.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE30.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeFAIRE36Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">FAIRE36</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Le_Roch_RSRC/final/FAIRE36.fsa</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeFAIRE36/FAIRE36.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/FAIRE36.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Le_Roch_RSRC|@@Pf_ChipSeq_Le_Roch_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="Pf_ChipSeq_Le_Roch_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+</workflowGraph>

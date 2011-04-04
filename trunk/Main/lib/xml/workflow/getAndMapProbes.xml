@@ -1,0 +1,112 @@
+<workflowGraph name="getAndMapProbes">
+    <param name="parentDataDir"/>
+    <param name="probeResourceName"/>
+    <param name="chipProbeExtDbRlsSpec"/>
+    <param name="isOneChannel"/>
+    <param name="isNimbleGen"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+    <param name="limitNU"/>
+    <param name="numInsertions"/>
+    <param name="dnaHybridazation"/>
+    <param name="pairedReadFilePath"/>
+    <param name="countMismatches"/>
+    <param name="cdfFileName"/>
+    <param name="ndfFileName"/>
+
+    <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
+    <constant name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.all</constant>
+    <constant name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.all</constant>
+
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <subgraph name="probe_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$probeResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="runParse2fasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunParse2fasta">
+      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
+      <depends name="probe_RSRC"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="runParse2fasta"/>
+    </step>
+
+    <subgraph name="runRUMOnCluster"  xmlFile="runRUMOnCluster.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="readFilePath">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
+      <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="transcriptFastaFile">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath">$$pairedReadFilePath$$</paramValue>
+      <paramValue name="limitNU">$$limitNU$$</paramValue>
+      <paramValue name="numInsertions">$$numInsertions$$</paramValue>
+      <paramValue name="createSAMFile">false</paramValue>
+      <paramValue name="countMismatches">$$countMismatches$$</paramValue>
+     <depends name="runParse2fasta"/>
+    </subgraph>
+
+    <step name="revertProbeSeqId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RevertProbeSeqId">
+      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
+      <paramValue name="originalShortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa.org</paramValue>
+      <paramValue name="inputUniqueFile">$$uniqueFile$$</paramValue>
+      <paramValue name="inputNonUniqueFile">$$nonUniqueFile$$</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="excludeMultiExonHits" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExcludeMultiExonHits" includeIf="$$dnaHybridazation$$">
+      <paramValue name="inputUniqueFile">$$uniqueFile$$</paramValue>
+      <paramValue name="inputNonUniqueFile">$$nonUniqueFile$$</paramValue>
+      <depends name="revertProbeSeqId"/>
+    </step>
+
+    <step name="makeProbeGenomeMappingGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateGenomeMappingGff">
+      <paramValue name="inputUniqueFile">$$uniqueFile$$</paramValue>
+      <paramValue name="inputNonUniqueFile">$$nonUniqueFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/genomeMapping.gff</paramValue>
+      <paramValue name="allowedMismatches">1</paramValue>
+      <depends name="revertProbeSeqId"/>
+      <depends name="excludeMultiExonHits"/>
+    </step>
+
+    <step name="loadProbeGenomeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadArrayElementFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/genomeMapping.gff</paramValue>
+      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <depends name="makeProbeGenomeMappingGffFile"/>
+    </step>
+
+    <step name="makeProbeGeneMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProbeGeneMappingFile">
+      <paramValue name="outputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
+      <paramValue name="aefExtDbSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <paramValue name="geneExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="isOneChannel">$$isOneChannel$$</paramValue>
+      <depends name="loadProbeGenomeMapping"/>
+    </step>
+
+    <step name="makeCdfFileForAffyArray" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$isOneChannel$$">
+      <paramValue name="gene2probesInputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
+      <paramValue name="probename2sequenceInputFile">$$dataDir$$/$$probeResourceName$$/final/probename2sequence.tab</paramValue>
+      <paramValue name="cdfFile">$$dataDir$$/$$probeResourceName$$/final/$$cdfFileName$$</paramValue>
+      <paramValue name="tbasePbaseFile">$$dataDir$$/$$probeResourceName$$/final/tbase-pbase.out</paramValue>
+      <depends name="makeProbeGeneMappingFile"/>
+    </step>
+
+    <step name="reCreateNdfFileForNimbleGen" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReCreateNdfFile" includeIf="$$isNimbleGen$$">
+      <paramValue name="gene2probesInputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
+      <paramValue name="ndfFile">$$dataDir$$/$$probeResourceName$$/final/$$ndfFileName$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/$$ndfFileName$$</paramValue>
+      <depends name="makeProbeGeneMappingFile"/>
+    </step>
+
+</workflowGraph>

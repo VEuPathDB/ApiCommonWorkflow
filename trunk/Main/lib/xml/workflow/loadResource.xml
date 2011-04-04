@@ -1,0 +1,41 @@
+<workflowGraph name="resourceWorkflow">
+    <param name="resourceName"/>
+    <param name="resourceXmlFileName"/>
+    <param name="parentDataDir"/>
+
+    <constant name="dataDir">$$parentDataDir$$/$$resourceName$$</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="getAndUnpack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ResourceGetAndUnpack">
+      <paramValue name="resourceName">$$resourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$resourceXmlFileName$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="insertExtDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertExtDb" stepLoadTypes="plugin">
+      <paramValue name="resourceName">$$resourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$resourceXmlFileName$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="insertExtDbRls" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertExtDbRls" stepLoadTypes="plugin">
+      <paramValue name="resourceName">$$resourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$resourceXmlFileName$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <depends name="insertExtDb"/>
+    </step>
+
+    <step name="runPlugin" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ResourceRunPlugin" stepLoadTypes="plugin">
+      <paramValue name="resourceName">$$resourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$resourceXmlFileName$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <depends name="getAndUnpack"/>
+      <depends name="insertExtDbRls"/>
+    </step>
+
+</workflowGraph>
