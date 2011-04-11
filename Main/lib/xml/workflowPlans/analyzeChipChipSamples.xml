@@ -1,0 +1,41 @@
+<workflowGraph name="analyzeChipChipSamples">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="experimentResourceName"/>
+  <param name="experimentResourceVersion"/>
+  <param name="chipProbeExtDbRlsSpec"/>
+  <param name="organismFullName"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="peakFinderArgs"/>
+  <param name="runPeakCalls"/>
+
+  <constant name="dataDir">$$parentDataDir$$/analyzeSamples</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+
+  <datasetClass name="chipChipSample">
+    <prop name="sampleName"/>
+    <prop name="sampleOrder"/>
+
+    <subgraph name="scherf_AnalyzeChipChip_9981A_3D7-H3K9me3-wt_sample" xmlFile="analyzeChipChip.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="ChipChipResourceName">$$experimentResourceName$$</paramValue>
+      <paramValue name="chipProbeExtDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
+      <paramValue name="inputSampleFile">&&sampleName&&.norm</paramValue>
+      <paramValue name="sampleName">&&sampleName&&</paramValue>
+      <paramValue name="sampleOrder">&&sampleOrder&&</paramValue>
+      <paramValue name="peakFinderArgs">&&peakFinderArgs&&</paramValue>
+      <paramValue name="runPeakCalls">&&runPeakCalls&&</paramValue>
+      <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+  </datasetClass>
+
+
+</workflowGraph>
