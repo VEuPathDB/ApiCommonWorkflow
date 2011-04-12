@@ -3,10 +3,7 @@
     <param name="parentDataDir"/>
     <param name="genomicSeqsFile"/>
     <param name="sageTagExtDbRlsSpec"/>
-    <param name="studyName"/>
-    <param name="paramValue"/>
     <param name="nickName"/>
-    <param name="calFreq"/>
     <param name="prependSeq"/>
     <param name="useBowtie"/>
     <param name="bowtieParam"/>
@@ -60,18 +57,5 @@
       <depends name="mapSageTagsToNaSequencesByBowtie"/>
     </step>
 
-    <step name="createSageTagNormFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSageTagNormFile" stepLoadTypes="plugin" includeIf="$$calFreq$$">
-
-      <paramValue name="studyName">$$studyName$$</paramValue>
-      <paramValue name="paramValue">$$paramValue$$</paramValue>
-      <paramValue name="outputDir">$$dataDir$$</paramValue>
-      <depends name="loadSageTagMap"/>
-    </step>
-
-    <step name="insertNormSageTagFreqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNormSageTagFreqs" stepLoadTypes="plugin" includeIf="$$calFreq$$">
-      <paramValue name="inputDir">$$dataDir$$</paramValue>
-      <paramValue name="studyName">$$studyName$$</paramValue>
-      <depends name="createSageTagNormFile"/>
-    </step>
 
 </workflowGraph>
