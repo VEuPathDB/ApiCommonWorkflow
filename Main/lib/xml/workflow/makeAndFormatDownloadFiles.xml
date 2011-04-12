@@ -18,10 +18,10 @@
     <param name="makeGenomicDownloadFile"/>
     <param name="soTermIdsOrNames"/>
 
-    <constant name="downloadSiteFastaDataDir">$$downloadSiteDataDir$$/$$organismName$$/fasta</constant>
-    <constant name="downloadSiteTxtDataDir">$$downloadSiteDataDir$$/$$organismName$$/txt</constant>
-    <constant name="downloadSiteGffDataDir">$$downloadSiteDataDir$$/$$organismName$$/gff</constant>
-    <constant name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/$$organismName$$/transcriptExpression</constant>
+    <constant name="downloadSiteFastaDataDir">$$downloadSiteDataDir$$/fasta</constant>
+    <constant name="downloadSiteTxtDataDir">$$downloadSiteDataDir$$/txt</constant>
+    <constant name="downloadSiteGffDataDir">$$downloadSiteDataDir$$/gff</constant>
+    <constant name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</constant>
     <constant name="ESTDescripString">EST sequences (NT)</constant>
     <constant name="dotsAssemblyDescripString">Predicted transcript sequences (NT) based on EST assemblies</constant>
     <constant name="annotatedCDSDescripString">Protein coding portion of spliced transcript sequences (NT)</constant>
@@ -143,6 +143,14 @@
     <depends name="makeMixedGenomicDownloadFile"/>
     </step>
 
+    <step name="makeDoubleStrandGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomicDoubleStrandFile" includeIf="$$makeGenomicDownloadFile$$">
+      <paramValue name="outputFile">$$downloadSiteFastaDataDir$$/$$organismName$$Genomic_doubleStrand_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="descripFile">$$downloadSiteFastaDataDir$$/.$$organismName$$Genomic_doubleStrand_$$projectName$$-$$projectVersion$$.fasta.desc</paramValue>
+      <paramValue name="descripString">$$mixedGenomicDescripString$$</paramValue>
+      <paramValue name="organismSource">$$genomeSource$$</paramValue>
+      <paramValue name="genomeExtDbSpecList">$$genomeExtDbRlsSpec$$,$$genomeVirtualSeqsExtDbRlsSpec$$</paramValue>
+      <paramValue name="soTermIdsOrNames">$$soTermIdsOrNames$$</paramValue>
+    </step>
 
     <step name="makeOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfDownloadFile" includeIf="$$makeGenomicDownloadFile$$">
       <paramValue name="outputFile">$$downloadSiteFastaDataDir$$/$$organismName$$ORFs_$$projectName$$-$$projectVersion$$.fasta</paramValue>
@@ -212,8 +220,8 @@
 
 
     <step name="makeReadMeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeReadMeFile">
-      <paramValue name="baseDir">$$downloadSiteDataDir$$/$$organismName$$</paramValue>    
-      <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismName$$/README.htaccess</paramValue>    
+      <paramValue name="baseDir">$$downloadSiteDataDir$$</paramValue>    
+      <paramValue name="outputFile">$$downloadSiteDataDir$$/README.htaccess</paramValue>    
     <depends name="makeAnnotatedCDSDownloadFile"/>
     <depends name="makeESTDownloadFile"/>
     <depends name="makeDotsAssemblyDownloadFile"/>
