@@ -1,0 +1,30 @@
+<workflowGraph name="">
+  <param name="organismResourceXmlFile"/>
+  <param name="parentDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/loadESTs</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetClass name="dbEST">
+    <subgraph name="$$orgAbbrev$$_dbEST_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$orgAbbrev$$_dbEST_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetClass>
+
+  <datasetClass name="ESTsFromFasta">
+    <prop name="name"/>
+    <subgraph name="$$orgAbbrev_EST_$$name$$_sequences_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$orgAbbrev_EST_$$name$$_sequences_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetClass>
+
+</workflowGraph>

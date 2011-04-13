@@ -1,4 +1,6 @@
-<workflowGraph name="tgondiiME49SpecificAnalysis">
+<workflowGraph name="">
+  <param name="project"/>
+  <param name="orgAbbrev"/>
   <param name="parentDataDir"/>
   <param name="organismName"/>
   <param name="organismFullName"/>
@@ -19,10 +21,24 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <datasetClass name="isolates">
+  <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetClass name="isolates_genbank">
+    <subgraph name="mapGenbankIsolatesToGenome" xmlFile="mapIsolatesToGenome.xml">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismName">$$organismName$$</paramValue>
+      <paramValue name="isolatesExtDbRlsSpec">$$orgAbbrev$$_isolates_genbank_RSRC|TODAY</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    </subgraph>
+  </datasetClass>
+
+  <datasetClass name="isolatesFeaturesGFF2">
     <prop name="name"/>
     <prop name="version"/>
-    <subgraph name="mapIsolatesToGenome" xmlFile="mapIsolatesToGenome.xml">
+    <subgraph name="mapGenbankIsolatesToGenome" xmlFile="mapIsolatesToGenome.xml">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
       <paramValue name="isolatesExtDbRlsSpec">&&name&&|&&version&&</paramValue>
@@ -31,7 +47,7 @@
     </subgraph>
   </datasetClass>
 
-  <subgraph name="arrayResources" xmlFile="plasmodb/pfalciparumArrayStudies.xml">
+  <subgraph name="arrayResources" xmlFile="$$project$$/$$orgAbbrev$$/arrayStudies.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
@@ -41,192 +57,80 @@
     <depends name="makeDataDir"/>
   </subgraph>
 
+  <datasetClass name="BACends">
+    <prop name="name"/>
+    <prop name="version"/>
+    <subgraph name="&&name&&_BAC_ends_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
+      <paramValue name="dataDir">$$dataDir$$/&&name&&_BAC_ends_loadAndAnalyze</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">&&name&&_RSRC|&&version&&</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorFriedlinLoadGenome/genomicSeqs</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+  </datasetClass>
 
-  <subgraph name="extractAndBlockDnaSeq" xmlFile="extractAndBlockDnaSeq.xml">
-    <paramValue name="dataDir">$$BACEndsDir$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="BACEndsExtDbRlsSpec">$$BACEndsExtDbRlsSpec$$</paramValue>
-    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-    <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
-
-
-  <subgraph name="extractAndBlockCosmidEnds" xmlFile="extractAndBlockDnaSeq.xml">
-    <paramValue name="dataDir">$$cosmidEndsDir$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="BACEndsExtDbRlsSpec">$$cosmidEndsExtDbRlsSpec$$</paramValue>
-    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-    <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
-
-
-  <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="extractGenbankIsolateSeqs"/>
-    <depends name="extractSibleyIsolateSeqs"/>
-  </step>
-
-  <subgraph name="mapBACEndsSeqsToGenome" xmlFile="blatDnaSeqAgainstGenome.xml">
+  <subgraph name="snps" xmlFile="project$$/$$orgAbbrev$$/SNPs.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-    <paramValue name="targetNcbiTaxonId">$$ncbiTaxonId$$</paramValue>
-    <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="targetSeqsDir">$$parentDataDir$$/$$organismName$$/genome/mapAssemblySeqs/genomicSeqs</paramValue>
-    <paramValue name="queryNcbiTaxonId">$$ncbiTaxonId$$</paramValue>
-    <paramValue name="queryFile">$$BACEndsDir$$/master/mainresult/blocked.seq</paramValue>
-    <paramValue name="queryTable">ExternalNASequence</paramValue>
-    <paramValue name="queryExtDbRlsSpec">$$BACEndsExtDbRlsSpec$$</paramValue>
-    <depends name="extractAndBlockDnaSeq"/>
-  </subgraph>
-
-  <subgraph name="mapCosmidEndsSeqsToGenome" xmlFile="blatDnaSeqAgainstGenome.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-    <paramValue name="targetNcbiTaxonId">$$ncbiTaxonId$$</paramValue>
-    <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="targetSeqsDir">$$parentDataDir$$/$$organismName$$/genome/mapAssemblySeqs/genomicSeqs</paramValue>
-    <paramValue name="queryNcbiTaxonId">$$ncbiTaxonId$$</paramValue>
-    <paramValue name="queryFile">$$cosmidEndsDir$$/master/mainresult/blocked.seq</paramValue>
-    <paramValue name="queryTable">ExternalNASequence</paramValue>
-    <paramValue name="queryExtDbRlsSpec">$$cosmidEndsExtDbRlsSpec$$</paramValue>
-    <depends name="extractAndBlockCosmidEnds"/>
-  </subgraph>
-
-  <subgraph name="stanfordSnps_Mummer" xmlFile="runMummer.xml">
-    <paramValue name="snpExtDbRlsSpec">$$stanfordSnpExtDbRlsSpec$$</paramValue>
-    <paramValue name="snpNickName">StanfordSnps</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="resourcesFile">ME49_SNPs_fixed/Tg10x_31-StanfordSNPs.final.gff</paramValue>
-    <paramValue name="strain">Me49</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
-
-  <subgraph name="sibleySnps_Mummer" xmlFile="runMummer.xml">
-    <paramValue name="snpExtDbRlsSpec">$$sibleySnpExtDbRlsSpec$$</paramValue>
-    <paramValue name="snpNickName">SibleySnps</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="resourcesFile">GeneticMarkers_Sibley_fixed/Tg10x_31-SibleySNPs.fixed.gff</paramValue>
-    <paramValue name="strain">ME49</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
-
-  <subgraph name="nucmerSnps_Mummer" xmlFile="runMummer.xml">
-    <paramValue name="snpExtDbRlsSpec">$$nucmerSnpExtDbRlsSpec$$</paramValue>
-    <paramValue name="snpNickName">nucmerSnps</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="resourcesFile">AmitAlignmentSnps/nucmerSnps.gff</paramValue>
-    <paramValue name="strain">ME49</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
-
-  <subgraph name="lindstrom454Snps_Mummer" xmlFile="runMummer.xml">
-    <paramValue name="snpExtDbRlsSpec">$$lindstrom454SnpExtDbRlsSpec$$</paramValue>
-    <paramValue name="snpNickName">lindstrom454Snps</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="resourcesFile">Lindstrom454Snps/Lindstrom454Snps.gff</paramValue>
-    <paramValue name="strain">ME49</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
-
-  <subgraph name="map3pSageTags" xmlFile="mapSageTags.xml">
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="studyName">T. gondii 3p SAGE tag frequencies</paramValue>
-    <paramValue name="sageTagExtDbRlsSpec">T. gondii 3p SAGE tags from M. White lab|1</paramValue>
-    <paramValue name="paramValue">290062</paramValue>
-    <paramValue name="nickName">map3pSageTags</paramValue>
-    <paramValue name="calFreq">true</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
-
-  <subgraph name="map5pSageTags" xmlFile="mapSageTags.xml">
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="studyName">T. gondii 5p SAGE tag frequencies</paramValue>
-    <paramValue name="sageTagExtDbRlsSpec">T. gondii 5p SAGE tags from M. White lab|1</paramValue>
-    <paramValue name="paramValue">290062</paramValue>
-    <paramValue name="nickName">map5pSageTags</paramValue>
-    <paramValue name="calFreq">false</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
-
-  <subgraph name="einsteinChIP" xmlFile="ChIP-chip.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="chipNickName">einsteinChIP-chip</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="probeFileRelativeToManualDeliveryDir">$$einsteinChipProbeFile$$</paramValue>
-    <paramValue name="chipExtDbRlsSpec">$$einsteinChipExtDbRlsSpec$$</paramValue>
-    <paramValue name="inputDir">$$einsteinChipRadAnalysisWorkingDir$$</paramValue>
-    <paramValue name="mapProbesToNaSequences">true</paramValue>
-    <paramValue name="insertSimpleRadAnalysisFromConfig">false</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
 
-  <subgraph name="einsteinChIPPeaks" xmlFile="ChIP-chip.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="chipNickName">einsteinChIP-chipdPeaks</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="probeFileRelativeToManualDeliveryDir">$$einsteinChipPeaksProbeFile$$</paramValue>
-    <paramValue name="chipExtDbRlsSpec">$$einsteinChipPeaksExtDbRlsSpec$$</paramValue>
-    <paramValue name="inputDir">$$einsteinChipRadAnalysisWorkingDir$$</paramValue>
-    <paramValue name="mapProbesToNaSequences">true</paramValue>
-    <paramValue name="insertSimpleRadAnalysisFromConfig">true</paramValue>
-    <depends name="makeDataDir"/>
-    <depends name="einsteinChIP"/>
-  </subgraph>
+  <datasetClass name="sageTagSequences">
+    <prop name="name"/>
+    <prop name="version"/>
 
+    <subgraph name="$$orgAbbrev$$_sageTag_&&name&&_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$orgAbbrev$$_sageTag_&&name&&_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
 
-  <subgraph name="hakimiChIP" xmlFile="ChIP-chip.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="chipNickName">hakimiChIP-chip</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="probeFileRelativeToManualDeliveryDir">$$hakimiChipProbeFile$$</paramValue>
-    <paramValue name="chipExtDbRlsSpec">$$hakimiChipExtDbRlsSpec$$</paramValue>
-    <paramValue name="inputDir">$$hakimiChipRadAnalysisWorkingDir$$</paramValue>
-    <paramValue name="mapProbesToNaSequences">true</paramValue>
-    <paramValue name="insertSimpleRadAnalysisFromConfig">false</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
+    <subgraph name="mapSageTags" xmlFile="mapSageTags.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="sageTagExtDbRlsSpec">WirthSageTagArrayDesign_RSRC|@@WirthSageTagArrayDesign_VER@@</paramValue>
+      <paramValue name="studyName">Transcriptional profile of P.falciparum by Serial analysis of gene expression</paramValue>
+      <paramValue name="paramValue">25372</paramValue>  
+      <paramValue name="nickName">mapSageTags</paramValue>   
+      <paramValue name="calFreq">true</paramValue>
+      <depends name="WirthSageTagArrayDesign_RSRC"/>
+      <depends name="WirthSageTagFreqs_RSRC"/>
+    </subgraph>
 
-  <subgraph name="hakimiChIPPeaks" xmlFile="ChIP-chip.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="chipNickName">hakimiChIP-chipPeaks</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="probeFileRelativeToManualDeliveryDir">$$hakimiChipPeaksProbeFile$$</paramValue>
-    <paramValue name="chipExtDbRlsSpec">$$hakimiChipPeaksExtDbRlsSpec$$</paramValue>
-    <paramValue name="inputDir">$$hakimiChipRadAnalysisWorkingDir$$</paramValue>
-    <paramValue name="mapProbesToNaSequences">true</paramValue>
-    <paramValue name="insertSimpleRadAnalysisFromConfig">true</paramValue>
-    <depends name="makeDataDir"/>
-    <depends name="hakimiChIP"/>
-  </subgraph>
+  </datasetClass>
 
-  <subgraph name="einsteinCentromereChIP" xmlFile="ChIP-chip.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="chipNickName">einsteinCentromereChIP-chip</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="probeFileRelativeToManualDeliveryDir"></paramValue>
-    <paramValue name="chipExtDbRlsSpec"></paramValue>
-    <paramValue name="inputDir">$$einsteinCentromereRadAnalysisWorkingDir$$</paramValue>
-    <paramValue name="mapProbesToNaSequences">false</paramValue>
-    <depends name="makeDataDir"/>
-    <depends name="einsteinChIP"/>
-  </subgraph>
+  <datasetClass name="sageTagFrequencies">
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="normalizeFrequencies"/>
+
+    <subgraph name="$$orgAbbrev$$_sageTag_&&name&&_frequencies_RSRC" xmlFile="loadSageTagFrequencies.xml">
+      <paramValue name="resourceName">$$orgAbbrev$$_sageTag_&&name&&_frequencies_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="studyName">$$name$$</paramValue>      
+      <paramValue name="normalizeFrequencies">&&normalizeFrequencies&&</paramValue>      
+      <depends name="$$orgAbbrev$$_sageTag_&&name&&_RSRC"/>
+    </subgraph>
+  </datasetClass>
+
+  <datasetClass name="genomeFeatures_GFF2">
+    <prop name="name"/> 
+    <subgraph name="$$orgAbbrev$$_genomeFeature_$$name$$_GFF2_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$orgAbbrev$$_genomeFeature_$$name$$_GFF2_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetClass>
 
 </workflowGraph>
 
