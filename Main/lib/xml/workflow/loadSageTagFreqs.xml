@@ -1,0 +1,19 @@
+    <subgraph name="$$orgAbbrev$$_sageTag_&&name&&_frequencies_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$orgAbbrev$$_sageTag_&&name&&_frequencies_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="$$orgAbbrev$$_sageTag_&&name&&_RSRC"/>
+    </subgraph>
+
+    <step name="createSageTagNormFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSageTagNormFile" stepLoadTypes="plugin" includeIf="$$calFreq$$">
+
+      <paramValue name="studyName">$$name$$</paramValue>
+      <paramValue name="outputDir">$$dataDir$$</paramValue>
+      <depends name="loadSageTagMap"/>
+    </step>
+
+    <step name="insertNormSageTagFreqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNormSageTagFreqs" stepLoadTypes="plugin" includeIf="$$calFreq$$">
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="studyName">$$name$$</paramValue>
+      <depends name="createSageTagNormFile"/>
+    </step>
