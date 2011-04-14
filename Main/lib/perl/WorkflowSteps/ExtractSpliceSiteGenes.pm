@@ -11,10 +11,14 @@ sub run {
   my $configFile = $self->getParamValue('configFile');
   my $outputUniqFile = $self->getParamValue('outputUniqFile');
   my $outputNonUniqFile = $self->getParamValue('outputNonUniqFile');
+  my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
 
+  my $cmd="extractSpliceSiteGenes --uniqFile $workflowDataDir/$outputUniqFile --nonUniqFile $workflowDataDir/$outputNonUniqFile --configFile $workflowDataDir/$configFile";
+
+  $cmd .= " --genomeExtDbRlsSpec '$genomeExtDbRlsSpec'" if $genomeExtDbRlsSpec;
 
     if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputUniqFile");
@@ -24,7 +28,7 @@ sub run {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputNonUniqFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputUniqFile");
 	}else{
-	    $self->runCmd($test,"extractSpliceSiteGenes --uniqFile $workflowDataDir/$outputUniqFile --nonUniqFile $workflowDataDir/$outputNonUniqFile --configFile $workflowDataDir/$configFile");
+	    $self->runCmd($test,$cmd);
 	}
     }
 }
