@@ -32,18 +32,28 @@
       <paramValue name="isolatesExtDbRlsSpec">$$orgAbbrev$$_isolates_genbank_RSRC|TODAY</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="makeDataDir"/>
     </subgraph>
   </datasetClass>
 
   <datasetClass name="isolatesFeaturesGFF2">
     <prop name="name"/>
     <prop name="version"/>
-    <subgraph name="mapGenbankIsolatesToGenome" xmlFile="mapIsolatesToGenome.xml">
+
+    <subgraph name="$$orgAbbrev$_isolate_$$name$$_sequences_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$orgAbbrev$_isolate_$$name$$_sequences_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="map&&name&&IsolatesToGenome" xmlFile="mapIsolatesToGenome.xml">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
       <paramValue name="isolatesExtDbRlsSpec">&&name&&|&&version&&</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="$$orgAbbrev$_isolate_$$name$$_sequences_RSRC"/>
     </subgraph>
   </datasetClass>
 
@@ -101,8 +111,7 @@
       <paramValue name="paramValue">25372</paramValue>  
       <paramValue name="nickName">mapSageTags</paramValue>   
       <paramValue name="calFreq">true</paramValue>
-      <depends name="WirthSageTagArrayDesign_RSRC"/>
-      <depends name="WirthSageTagFreqs_RSRC"/>
+      <depends name="$$orgAbbrev$$_sageTag_&&name&&_RSRC"/>
     </subgraph>
 
   </datasetClass>

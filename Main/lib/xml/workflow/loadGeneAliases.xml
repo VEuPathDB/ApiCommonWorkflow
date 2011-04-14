@@ -1,17 +1,17 @@
 <workflowGraph name="loadAndCorrectGeneAliases">
+  <param name="project"/>
   <param name="parentDataDir"/>
-  <param name="organismSpecificGeneAliasesReference"/>
+  <param name="orgAbbrev"/>
   <param name="organismResourceXmlFile"/>
-  <param name="organismName"/>
 
 
-  <constant name="dataDir">$$parentDataDir$$/$$organismName$$GeneAliases</constant>
+  <constant name="dataDir">$$parentDataDir$$/$$orgAbbrev$$_geneAliases</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <subgraph name="geneAliasesResource" xmlFile="$$organismSpecificGeneAliasesReference$$">
+  <subgraph name="geneAliasesResource" xmlFile="$$project$$/$$orgAbbrev$$/geneAliases.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
