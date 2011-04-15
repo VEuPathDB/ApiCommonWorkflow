@@ -1,0 +1,21 @@
+<workflowGraph name="">
+  <param name="organismResourceXmlFile"/>
+  <param name="parentDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/massSpec</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetClass name="massSpecPreprocessed">
+    <prop name="name"/> 
+    <subgraph name="$$orgAbbrev$$_massSpec_$$name$$_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$orgAbbrev$$_massSpec_&&name&&_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetClass>
+
+</workflowGraph>

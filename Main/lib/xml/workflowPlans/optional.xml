@@ -115,35 +115,37 @@
 
   </datasetClass>
 
+  <!-- double check that loading sage tag freqs does not depend on map of seqs to genome -->
   <datasetClass name="sageTagFrequencies">
     <prop name="name"/>
     <prop name="version"/>
     <prop name="normalizeFrequencies"/>
 
-    <subgraph name="$$orgAbbrev$$_sageTag_&&name&&_frequencies_RSRC" xmlFile="loadSageTagFrequencies.xml">
+    <subgraph name="$$orgAbbrev$$_sageTag_&&name&&_frequencies_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">$$orgAbbrev$$_sageTag_&&name&&_frequencies_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="studyName">$$name$$</paramValue>      
-      <paramValue name="normalizeFrequencies">&&normalizeFrequencies&&</paramValue>      
       <depends name="$$orgAbbrev$$_sageTag_&&name&&_RSRC"/>
     </subgraph>
+
+    <step name="&&name&&_createSageTagNormFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSageTagNormFile" stepLoadTypes="plugin" includeIf="&&normalizeFrequencies&&">
+
+      <paramValue name="studyName">$$name$$</paramValue>
+      <paramValue name="outputDir">$$dataDir$$</paramValue>
+      <depends name="$$orgAbbrev$$_sageTag_&&name&&_frequencies_RSRC"/>
+    </step>
+
+    <step name="&&name&&_insertNormSageTagFreqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNormSageTagFreqs" stepLoadTypes="plugin" includeIf="&&normalizeFrequencies&&">
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="studyName">$$name$$</paramValue>
+      <depends name="&&name&&_createSageTagNormFile"/>
+    </step>
   </datasetClass>
 
   <datasetClass name="genomeFeatures_GFF2">
     <prop name="name"/> 
     <subgraph name="$$orgAbbrev$$_genomeFeature_&&name&&_GFF2_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">$$orgAbbrev$$_genomeFeature_$$name$$_GFF2_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
-  </datasetClass>
-
-  <datasetClass name="massSpecPreprocessed">
-    <prop name="name"/> 
-    <subgraph name="$$orgAbbrev$$_massSpec_$$name$$_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$orgAbbrev$$_massSpec_&&name&&_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
