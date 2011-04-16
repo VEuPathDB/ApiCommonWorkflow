@@ -1,8 +1,8 @@
-<workflowGraph name="loadAndAnalyzeBACEnds">
+<workflowGraph name="loadAndAnalyzeClonedInsertEnds">
   <param name="dataDir"/>
-  <param name="BACEndsResourcesReference"/>
+  <param name="clonedInsertEndsResourcesReference"/>
   <param name="organismResourceXmlFile"/>
-  <param name="BACEndsExtDbRlsSpec"/>
+  <param name="clonedInsertEndsExtDbRlsSpec"/>
   <param name="maxIntronSize"/>
   <param name="ncbiTaxonId"/>
   <param name="genomicSeqsFile"/>
@@ -10,35 +10,35 @@
   <param name="repeatMaskSpecies"/>
   <param name="genomicSeqsDir"/>
 
-  <constant name="BACEndsSeqFile">$$dataDir$$/BACEndsSeqs.fsa</constant>
+  <constant name="clonedInsertEndsSeqFile">$$dataDir$$/clonedInsertEndsSeqs.fsa</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <subgraph name="loadBACEndsResource" xmlFile="$$BACEndsResourcesReference$$">
+  <subgraph name="loadClonedInsertEndsResource" xmlFile="$$clonedInsertEndsResourcesReference$$">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
-  <step name="extractBACEndsSeqs"
+  <step name="extractClonedInsertEndsSeqs"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
-      <paramValue name="extDbRlsSpec">$$BACEndsExtDbRlsSpec$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$clonedInsertEndsExtDbRlsSpec$$</paramValue>
       <paramValue name="table">ExternalNASequence</paramValue>
       <paramValue name="alternateDefline">na_sequence_id, description, 'length='||length</paramValue>
-      <paramValue name="outputFile">$$BACEndsSeqFile$$</paramValue>
+      <paramValue name="outputFile">$$clonedInsertEndsSeqFile$$</paramValue>
       <paramValue name="separateFastaFiles">false</paramValue>
       <paramValue name="outputDirForSeparateFiles"></paramValue>
-      <depends name="loadBACEndsResource"/> 
+      <depends name="loadClonedInsertEndsResource"/> 
     </step>
 
     <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskTaskInputDir">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="seqsFile">$$BACEndsSeqFile$$</paramValue>
+      <paramValue name="seqsFile">$$clonedInsertEndsSeqFile$$</paramValue>
       <paramValue name="dangleMax">30</paramValue>
       <paramValue name="options">$$repeatMaskSpecies$$</paramValue>
-      <depends name="extractBACEndsSeqs"/>
+      <depends name="extractClonedInsertEndsSeqs"/>
     </step>
 
     <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
@@ -60,8 +60,8 @@
       <depends name="runClusterTask"/>
     </step>
 
-    <subgraph name="mapBACEndsSeqsToGenome" xmlFile="blatDnaAgainstGenome.xml">
-      <paramValue name="dataDir">$$dataDir$$/BACEndsSeqsBlat</paramValue>
+    <subgraph name="mapToGenome" xmlFile="blatDnaAgainstGenome.xml">
+      <paramValue name="dataDir">$$dataDir$$/clonedInsertEndsSeqsBlat</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="targetNcbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="targetSeqsDir">$$genomicSeqsDir$$</paramValue>
@@ -69,7 +69,7 @@
       <paramValue name="queryNcbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="queryFile">$$dataDir$$/master/mainresult/blocked.seq</paramValue>
       <paramValue name="queryTable">ExternalNASequence</paramValue>
-      <paramValue name="queryExtDbRlsSpec">$$BACEndsExtDbRlsSpec$$</paramValue>
+      <paramValue name="queryExtDbRlsSpec">$$clonedInsertEndsExtDbRlsSpec$$</paramValue>
       <depends name="mirrorFromCluster"/>
     </subgraph>
 
