@@ -1,0 +1,227 @@
+<workflowGraph name="tbArcherStuartCellCycleRnaSeq">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+    <param name="downloadSiteTranscriptExpressionDataDir"/>
+    <param name="genomeExtDbRlsSpec"/>
+
+    <constant name="dataDir">$$parentDataDir$$/tbArcherStuartCellCycleRnaSeq</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+    <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSeqCoverageAndIntensityDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC"/>
+    </step>
+
+    <subgraph name="analyze0.5HoursSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">0.5Hours</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC/final/early_G1.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzePaired_sequences/0.5Hours.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/0.5Hours.int</paramValue>
+      <paramValue name="outputMappingStatsFile"></paramValue>
+      <paramValue name="outputCountFile"></paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC|@@Tbrucei_RNASeq_ArcherStuart_CellCycle_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <depends name="Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="load0.5HoursExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$samplesDataDir$$/analyze0.5Hours/exonJunctionOutput.rum</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC|@@Tbrucei_RNASeq_ArcherStuart_CellCycle_VER@@</paramValue>
+      <paramValue name="sampleName">0.5Hours</paramValue>
+      <depends name="analyze0.5HoursSample"/>
+    </step>
+
+    <subgraph name="analyze3HoursSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">3Hours</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC/final/late_G1.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzePaired_sequences/3Hours.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/3Hours.int</paramValue>
+      <paramValue name="outputMappingStatsFile"></paramValue>
+      <paramValue name="outputCountFile"></paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC|@@Tbrucei_RNASeq_ArcherStuart_CellCycle_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <depends name="Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="load3HoursExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$samplesDataDir$$/analyze3Hours/exonJunctionOutput.rum</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC|@@Tbrucei_RNASeq_ArcherStuart_CellCycle_VER@@</paramValue>
+      <paramValue name="sampleName">3Hours</paramValue>
+      <depends name="analyze3HoursSample"/>
+    </step>
+
+    <subgraph name="analyze5.5HoursSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">5.5Hours</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC/final/S_phase.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzePaired_sequences/5.5Hours.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/5.5Hours.int</paramValue>
+      <paramValue name="outputMappingStatsFile"></paramValue>
+      <paramValue name="outputCountFile"></paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC|@@Tbrucei_RNASeq_ArcherStuart_CellCycle_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <depends name="Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="load5.5HoursExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$samplesDataDir$$/analyze5.5Hours/exonJunctionOutput.rum</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC|@@Tbrucei_RNASeq_ArcherStuart_CellCycle_VER@@</paramValue>
+      <paramValue name="sampleName">5.5Hours</paramValue>
+      <depends name="analyze5.5HoursSample"/>
+    </step>
+
+    <subgraph name="analyze7.25HoursSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">7.25Hours</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC/final/G2_M_phase.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzePaired_sequences/7.25Hours.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/7.25Hours.int</paramValue>
+      <paramValue name="outputMappingStatsFile"></paramValue>
+      <paramValue name="outputCountFile"></paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC|@@Tbrucei_RNASeq_ArcherStuart_CellCycle_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <depends name="Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="load7.25HoursExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$samplesDataDir$$/analyze7.25Hours/exonJunctionOutput.rum</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC|@@Tbrucei_RNASeq_ArcherStuart_CellCycle_VER@@</paramValue>
+      <paramValue name="sampleName">7.25Hours</paramValue>
+      <depends
+
+    <step name="mergeMinIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">0.5Hours.int.min,3Hours.int.min,5.5Hours.int.min,7.25Hours.int.min</paramValue>
+      <depends name="makeSeqCoverageAndIntensityDataDir"/>
+      <depends name="analyze0.5HoursSample"/>
+      <depends name="analyze3HoursSample"/>
+      <depends name="analyze5.5HoursSample"/>
+      <depends name="analyze7.25HoursSample"/>
+    </step>
+
+    <step name="mergeMaxIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">0.5Hours.int.max,3Hours.int.max,5.5Hours.int.max,7.25Hours.int.max</paramValue>
+      <depends name="makeSeqCoverageAndIntensityDataDir"/>
+      <depends name="analyze0.5HoursSample"/>
+      <depends name="analyze3HoursSample"/>
+      <depends name="analyze5.5HoursSample"/>
+      <depends name="analyze7.25HoursSample"/>
+    </step>
+
+    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt.pct</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+    </step>
+
+    <step name="makeMaxPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt.pct</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+    </step>
+
+    <step name="makeDiffProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff">
+      <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="minInputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>     
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/diffProfiles.txt</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
+    </step>
+
+    <step name="makeDiffPercentile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff">
+      <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt.pct</paramValue>
+      <paramValue name="minInputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt.pct</paramValue>      
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/diffProfiles.txt.pct</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="makeMinPercentileProfile"/>
+      <depends name="makeMaxPercentileProfile"/>
+    </step>
+
+    <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC/final/config.txt</paramValue>
+      <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC|@@Tbrucei_RNASeq_ArcherStuart_CellCycle_VER@@</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="makeMinPercentileProfile"/>
+      <depends name="makeDiffProfile"/>
+      <depends name="makeDiffPercentile"/>
+    </step>
+
+    <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
+      <paramValue name="copyFromDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_ArcherStuart_CellCycle_RSRC/final/config.txt</paramValue>
+      <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
+    </step>
+
+</workflowGraph>
