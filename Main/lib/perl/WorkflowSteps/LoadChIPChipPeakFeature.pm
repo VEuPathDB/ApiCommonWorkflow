@@ -14,7 +14,7 @@ sub run {
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $substepClass = $self->getParamValue('substepClass');
   my $defaultOrgTaxId = $self->getParamValue('defaultOrgTaxId');
-  my $isfMappingFileRelToGusHome = $self->getParamValue('isfMappingFileRelToGusHome');
+  my $isfMappingFile = $self->getParamValue('isfMappingFile');
   my $soVersion = $self->getParamValue('soVersion');
 
   my $gusHome = $self->getSharedConfig('gusHome');
@@ -32,7 +32,7 @@ sub run {
 --extDbRlsVer '$extDbRlsVer' \\
 --seqExtDbName '$seqExtDbName'  \\
 --seqExtDbRlsVer '$seqExtDbRlsVer' \\
---mapFile $gusHome/$isfMappingFileRelToGusHome \\
+--mapFile $gusHome/lib/xml/isf/$isfMappingFile \\
 --inputFileOrDir $workflowDataDir/$inputFile \\
 --fileFormat gff2   \\
 --gff2GroupTag ID \\
