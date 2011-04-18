@@ -13,7 +13,7 @@ sub run {
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $substepClass = $self->getParamValue('substepClass');
-  my $defaultOrg = $self->getParamValue('defaultOrg');
+  my $defaultOrgTaxId = $self->getParamValue('defaultOrgTaxId');
   my $isfMappingFileRelToGusHome = $self->getParamValue('isfMappingFileRelToGusHome');
   my $soVersion = $self->getParamValue('soVersion');
 
@@ -40,8 +40,8 @@ sub run {
 --soCvsVersion $soVersion \\
 --naSequenceSubclass $substepClass \\
 EOF
-  if ($defaultOrg) {
-    $args .= "--defaultOrganism '$defaultOrg'";
+  if ($defaultOrgTaxId) {
+    $args .= "--defaultOrganism '$defaultOrgTaxId'";
   }
 
 
