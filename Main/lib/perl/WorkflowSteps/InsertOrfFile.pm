@@ -12,8 +12,8 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $substepClass = $self->getParamValue('substepClass');
-  my $ncbiTaxId = $self->getParamValue('ncbiTaxId');
-  my $isfMappingFileRelToGusHome = $self->getParamValue('isfMappingFileRelToGusHome');
+  my $ncbiTaxId = $self->getParamValue('ncbiTaxonId');
+  my $isfMappingFile = $self->getParamValue('isfMappingFile');
   my $soVersion = $self->getParamValue('soVersion');
 
   my $gusHome = $self->getSharedConfig('gusHome');
@@ -27,7 +27,7 @@ sub run {
   my $args = <<"EOF";
 --extDbName '$extDbName'  \\
 --extDbRlsVer '$extDbRlsVer' \\
---mapFile $gusHome/$isfMappingFileRelToGusHome \\
+--mapFile $gusHome/lib/xml/isf/$isfMappingFile \\
 --inputFileOrDir $workflowDataDir/$inputFile \\
 --fileFormat gff3   \\
 --seqSoTerm ORF  \\
