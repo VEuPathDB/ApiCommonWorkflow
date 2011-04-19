@@ -12,7 +12,7 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $substepClass = $self->getParamValue('substepClass');
-  my $defaultOrg = $self->getParamValue('defaultOrg');
+  my $ncbiTaxId = $self->getParamValue('ncbiTaxId');
   my $isfMappingFileRelToGusHome = $self->getParamValue('isfMappingFileRelToGusHome');
   my $soVersion = $self->getParamValue('soVersion');
 
@@ -33,12 +33,8 @@ sub run {
 --seqSoTerm ORF  \\
 --soCvsVersion $soVersion \\
 --naSequenceSubclass $substepClass \\
+--organism $ncbiTaxId \\
 EOF
-  if ($defaultOrg) {
-    $args .= "--defaultOrganism '$defaultOrg'";
-  }
-
-
 
   if ($undo){
       $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $gusHome/$isfMappingFileRelToGusHome --algInvocationId $algInvIds --workflowContext --commit");
@@ -58,7 +54,7 @@ sub getParamsDeclaration {
 	  'inputFile',
 	  'genomeExtDbRlsSpec',
 	  'substepClass',
-	  'defaultOrg',
+	  'defaultOrgTaxId',
 	  'isfMappingFileRelToGusHome',
 	  'soVersion',
 	 );
