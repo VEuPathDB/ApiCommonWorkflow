@@ -1,8 +1,8 @@
 <workflowGraph name="analyzeMicroarrayExpression">
     <param name="parentDataDir"/>
     <param name="experimentResourceName"/>
+    <param name="experimentResourceVersion"/>
     <param name="chipProbeExtDbRlsSpec"/>
-    <param name="experimentExtDbRlsSpec"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="insertAnalysisResult"/>
     <param name="probeGenesMappingFile"/>
@@ -21,7 +21,7 @@
     <step name="loadExpressionProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
       <paramValue name="inputDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
       <paramValue name="configFile">$$parentDataDir$$/$$experimentResourceName$$/final/expression_profile_config.txt</paramValue>
-      <paramValue name="extDbRlsSpec">$$experimentExtDbRlsSpec$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
       <depends name="doTranscriptExpression"/>
     </step>
 

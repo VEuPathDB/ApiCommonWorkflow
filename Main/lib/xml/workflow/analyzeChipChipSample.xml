@@ -1,15 +1,14 @@
-<workflowGraph name="analyzeChipChip">
+<workflowGraph name="analyzeChipChipSample">
     <param name="parentDataDir"/>
-    <param name="ChipChipResourceName"/>
+    <param name="experimentResourceName"/>
     <param name="chipProbeExtDbRlsSpec"/>
-    <param name="experimentExtDbRlsSpec"/>
+    <param name="genomeExtDbRlsSpec"/>
     <param name="inputSampleFile"/>
     <param name="sampleName"/>
+    <param name="sampleOrder"/>
     <param name="peakFinderArgs"/>
     <param name="runPeakCalls"/>
     <param name="ncbiTaxId"/>
-    <param name="genomeExtDbRlsSpec"/>
-    <param name="sampleOrder"/>
 
     <constant name="dataDir">$$parentDataDir$$/analyze_ChIP_Chip_$$sampleName$$</constant>
     <constant name="peakFinderDataDir">$$dataDir$$/smoothedDataAndPeaks</constant>
@@ -20,7 +19,7 @@
     </step>
 
     <step name="transformRawDataToGenomeCoordinates" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TransformRawDataToGenomeCoordinates">
-      <paramValue name="inputFile">$$parentDataDir$$/$$ChipChipResourceName$$/final/$$inputSampleFile$$</paramValue>
+      <paramValue name="inputFile">$$parentDataDir$$/$$experimentResourceName$$/final/$$inputSampleFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/transformedAndAveragedRawData.tab</paramValue>
       <paramValue name="chipProbeExtDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
       <depends name="makeDataDir"/>
@@ -58,7 +57,7 @@
 
     <step name="loadChIPChipSmoothedProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin">
       <paramValue name="analysisWorkingDir">$$dataDir$$/smoothedDataAndPeaks</paramValue>
-      <paramValue name="configFile">$$parentDataDir$$/$$ChipChipResourceName$$/final/$$sampleName$$_smoothe_config.txt</paramValue>
+      <paramValue name="configFile">$$parentDataDir$$/$$ChipChipResourceName$$/final/$$sampleName$$_smoothed_config.txt</paramValue>
       <paramValue name="analysisResultView">DataTransformationResult</paramValue>
       <paramValue name="naFeatureView">ArrayElementFeature</paramValue>
       <paramValue name="useSqlLdr">true</paramValue>
@@ -79,7 +78,7 @@
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
       <paramValue name="substepClass">ExternalNASequence</paramValue>
       <paramValue name="defaultOrgTaxId">$$ncbiTaxId$$</paramValue>
-      <paramValue name="isfMappingFile">PlasmoDB/plasmoPeakFeature2gus.xml</paramValue>
+      <paramValue name="isfMappingFile">chipChipPeakFeature2gus.xml</paramValue>
       <paramValue name="soVersion">@@SO_VER@@</paramValue>
       <depends name="generateChIPChipPeakFeatureGffFile"/>
     </step>

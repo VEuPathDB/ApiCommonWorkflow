@@ -2,8 +2,6 @@
   <param name="parentDataDir"/>
   <param name="organismName"/>
   <param name="genomeExtDbRlsSpec"/>
-  <param name="iedbResourceName"/>
-  <param name="iedbVersion"/>
   <param name="iedbDbRefResourceName"/>
   <param name="ncbiTaxonId"/>
   <param name="runExportPred"/>
@@ -11,6 +9,7 @@
   <param name="organismResourceXmlFile"/>
   <param name="proteinsFile"/>
   <param name="organismSpecificProductNameResourcesReference"/>
+  <param name="organismAbbrev"/>
 
   <constant name="dataDir">$$parentDataDir$$/proteome</constant>
   <constant name="blastpNrdbArgs">-cpus=2 -topcomboN=1 V=100 B=20 -hspmax=1000000 -gi E=1e-3 -wordmask=seg -hspsepQmax=4000 -span1 W=3 T=1000</constant>
@@ -127,7 +126,7 @@
     </step>
 
   <subgraph name="IEDBResource" xmlFile="loadResource.xml" includeIf="$$loadEpitope$$">
-    <paramValue name="resourceName">$$iedbResourceName$$</paramValue>
+    <paramValue name="resourceName">$$organismAbbrev$$_epitope_IEDB_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
@@ -135,10 +134,9 @@
 
     <subgraph name="mapEpitopesToProteins" xmlFile="epitopes.xml" includeIf="$$loadEpitope$$">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="iedbExtDbRlsSpec">$$iedbResourceName$$|$$iedbVersion$$</paramValue>
-      <paramValue name="iedbResourceName">$$iedbResourceName$$</paramValue>
       <depends name="IEDBResource"/>
     </subgraph>
 
