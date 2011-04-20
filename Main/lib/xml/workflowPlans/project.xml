@@ -21,26 +21,34 @@
   </subgraph>
 
   <datasetTemplate class="organism">
-    <prop name="nameLower"/>
     <prop name="ncbiTaxonId"/>
+    <prop name="organismAbbrev"/>
+    <prop name="publicOrganismAbbrev"/>
+    <prop name="organismFullName"/>
+    <prop name="organismNameForFiles"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="speciesNcbiTaxonId"/>
+    <prop name="isReferenceStrain"/>
+    <prop name="isDraftGenome"/>
+    <prop name="orthomclAbbrev"/>
+    <prop name="strainAbbrev"/>
     <prop name="extractProteins"/>
     <prop name="hasOrganelleSeq"/>
-    <prop name="organismFullName"/>
     <prop name="organelleInitDownloadDirSubgraph"/>
+    <prop name="genomeExtDbRlsSpec"/>
     <prop name="genomeVirtualSeqsExtDbRlsSpec"/>
     <prop name="insertVirtualSeqFromAgpFileResourceName"/>
     <prop name="insertVirtualSeqFromAgpFile"/>
-    <prop name="repeatMaskSpecies Plasmodium"/>
+    <prop name="repeatMaskSpecies"/>
     <prop name="twoLetterAbbrev"/>
-    <prop name="orgAbbrev"/>
+    <prop name="organismAbbrev"/>
     <prop name="loadDbest"/>
-    <prop name="parentNcbiTaxonId"/>
     <prop name="usePredictedTranscripts"/>
     <prop name="predictedTranscriptsExtDbRlsSpec"/>
     <prop name="runtRNAScan"/>
     <prop name="runExportPred"/>
     <prop name="maxIntronSize"/>
-    <prop name="taxonHierarchyForBlastxFilter Apicomplexa Plasmodium"/>
+    <prop name="taxonHierarchyForBlastxFilter"/>
     <prop name="genomeSize"/>
     <prop name="skipProteomeAnalysis"/>
     <prop name="skipGenomeAnalysis"/>
@@ -61,13 +69,20 @@
     <prop name="hasMito"/>
     <prop name="hasPlastid"/>
 
-    <subgraph name="&&orgAbbrev&&_LoadGenome" xmlFile="loadGenome.xml">
+    <subgraph name="&&organismAbbrev&&_LoadGenome" xmlFile="loadGenome.xml">
       <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="organismName">&&NAME&&</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">&&NAME&&_chromosomes_RSRC|@@&&NAME&&_chromosomes_VER@@</paramValue>
-      <paramValue name="organismResourceXmlFile">$$projectName$$/&&orgAbbrev&&.xml</paramValue>
-      <paramValue name="organismSpecificISFReference">&&projectName&&/&&nameLower&&ISFResource.xml</paramValue>
+      <paramValue name="organismAbbrev">&&organismAbbrev&&</paramValue>
+      <paramValue name="organismFullName">&&organismFullName&&</paramValue>
+      <paramValue name="organismNameForFiles">&&organismNameForFiles&&</paramValue>
+      <paramValue name="publicOrganismAbbrev">&&publicOrganismAbbrev&&</paramValue>
       <paramValue name="ncbiTaxonId">&&ncbiTaxonId&&</paramValue>
+      <paramValue name="speciesNcbiTaxonId">&&speciesNcbiTaxonId&&</paramValue>
+      <paramValue name="isReferenceStrain">&&isReferenceStrain&&</paramValue>
+      <paramValue name="isDraftGenome">&&isDraftGenome&&</paramValue>
+      <paramValue name="orthomclAbbrev">&&orthomclAbbrev&&</paramValue>
+      <paramValue name="strainAbbrev">&&strainAbbrev&&</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">&&genomeExtDbRlsSpec&&</paramValue>
+      <paramValue name="organismResourceXmlFile">$$projectName$$/&&organismAbbrev&&.xml</paramValue>
       <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
       <paramValue name="extractProteins">&&extractProteins&&</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -79,35 +94,28 @@
       <dependsGlobal name="SO_RSRC"/>
     </subgraph>
 
-    <subgraph name="&&orgAbbrev&&_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <subgraph name="&&organismAbbrev&&_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
       <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="organismName">&&NAME&&</paramValue>
+      <paramValue name="organismAbbrev">&&organismAbbrev&&</paramValue>
       <paramValue name="organismFullName">&&organismFullName&&</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">&&NAME&&_chromosomes_RSRC|@@&&NAME&&_chromosomes_VER@@</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">&&genomeExtDbRlsSpec&&</paramValue>
       <paramValue name="genomeVirtualSeqsExtDbRlsSpec">&&genomeVirtualSeqsExtDbRlsSpec&&</paramValue>
       <paramValue name="insertVirtualSeqFromAgpFileResourceName">&&insertVirtualSeqFromAgpFileResourceName&&</paramValue>
       <paramValue name="insertVirtualSeqFromAgpFile">&&insertVirtualSeqFromAgpFile&&</paramValue>
       <paramValue name="repeatMaskSpecies">-species &&repeatMaskSpecies&&</paramValue>
-      <paramValue name="organismResourceXmlFile">&&projectName&&/&&orgAbbrev&&.xml</paramValue>
+      <paramValue name="organismResourceXmlFile">&&projectName&&/&&organismAbbrev&&.xml</paramValue>
       <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
       <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
-      <depends name="&&orgAbbrev&&_LoadGenome"/>
+      <depends name="&&organismAbbrev&&_LoadGenome"/>
     </subgraph>
 
-    <subgraph name="&&orgAbbrev&&_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <subgraph name="&&organismAbbrev&&_PostLoadGenome" xmlFile="postLoadGenome.xml">
       <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="organismName">&&NAME&&</paramValue>
       <paramValue name="organismFullName">&&organismFullName&&</paramValue>
-      <paramValue name="organismAbbrev">&&NAME&&</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">&&NAME&&_chromosomes_RSRC|@@&&NAME&&_chromosomes_VER@@</paramValue>
-      <paramValue name="iedbResourceName">&&NAME&&_IEDB_Epitopes_RSRC</paramValue>
-      <paramValue name="iedbVersion">@@&&NAME&&_IEDB_Epitopes_VER@@</paramValue>
-      <paramValue name="iedbDbRefResourceName">&&NAME&&_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
-      <paramValue name="dbESTResourceName">&&NAME&&_dbEST_RSRC</paramValue>
-      <paramValue name="dbESTVersion">@@&&NAME&&_dbEST_VER@@</paramValue>
+      <paramValue name="organismAbbrev">&&organismAbbrev&&</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">&&genomeExtDbRlsSpec&&</paramValue>
       <paramValue name="loadDbest">&&loadDbest&&</paramValue>
       <paramValue name="ncbiTaxonId">&&ncbiTaxonId&&</paramValue>
-      <paramValue name="parentNcbiTaxonId">&&parentNcbiTaxonId&&</paramValue>
       <paramValue name="usePredictedTranscripts">&&usePredictedTranscripts&&</paramValue>
       <paramValue name="predictedTranscriptsExtDbRlsSpec">&&predictedTranscriptsExtDbRlsSpec&&</paramValue>
       <paramValue name="runtRNAScan">&&runtRNAScan&&</paramValue>
@@ -125,43 +133,42 @@
       <paramValue name="loadOrganismSpecificESTResource">&&loadOrganismSpecificESTResource&&</paramValue>
       <paramValue name="loadOrganismSpecificMassSpecResource">&&loadOrganismSpecificMassSpecResource&&</paramValue>
       <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">&&distanceBetweenStartsForAlignmentsInSameCluster&&</paramValue>
-      <paramValue name="organismSpecificESTResourcesReference">$$projectName$$/&&orgAbbrev&&/ESTs.xml</paramValue>
-      <paramValue name="organismSpecificMassSpecResourcesReference">$$projectName$$/&&orgAbbrev&&/massSpec.xml</paramValue>
-      <paramValue name="organismSpecificProductNameResourcesReference">$$projectName$$/&&orgAbbrev&&/productNames.xml</paramValue>
-      <paramValue name="organismResourceXmlFile">&&projectName&&/&&orgAbbrev&&.xml</paramValue>
-      <depends name="&&orgAbbrev&&_LoadGenome"/>
+      <paramValue name="organismSpecificESTResourcesReference">$$projectName$$/&&organismAbbrev&&/ESTs.xml</paramValue>
+      <paramValue name="organismSpecificMassSpecResourcesReference">$$projectName$$/&&organismAbbrev&&/massSpec.xml</paramValue>
+      <paramValue name="organismSpecificProductNameResourcesReference">$$projectName$$/&&organismAbbrev&&/productNames.xml</paramValue>
+      <paramValue name="organismResourceXmlFile">&&projectName&&/&&organismAbbrev&&.xml</paramValue>
+      <depends name="&&organismAbbrev&&_LoadGenome"/>
     </subgraph>
 
-    <subgraph name="&&orgAbbrev&&_Optional" xmlFile="&&projectName&&/&&orgAbbrev&&/optional.xml">
+    <subgraph name="&&organismAbbrev&&_Optional" xmlFile="&&projectName&&/&&organismAbbrev&&/optional.xml">
       <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="organismResourceXmlFile">&&projectName&&/&&nameLower&&.xml</paramValue>
+      <paramValue name="organismResourceXmlFile">&&projectName&&/&&organismAbbrev&&.xml</paramValue>
       <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
-      <depends name="&&orgAbbrev&&_LoadGenome"/>
+      <depends name="&&organismAbbrev&&_LoadGenome"/>
     </subgraph>
 
-    <subgraph name="&&orgAbbrev&&_LoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <subgraph name="&&organismAbbrev&&_LoadGeneAliases" xmlFile="loadGeneAliases.xml">
       <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="organismName">&&NAME&&</paramValue>
-      <paramValue name="organismSpecificGeneAliasesReference">&&projectName&&/&&nameLower&&GeneAliasesResource.xml</paramValue>
-      <paramValue name="organismResourceXmlFile">&&projectName&&/&&nameLower&&.xml</paramValue>
-      <depends name="&&orgAbbrev&&_LoadGenome"/>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">&&organismAbbrev&&</paramValue>
+      <paramValue name="organismResourceXmlFile">&&projectName&&/&&organismAbbrev&&.xml</paramValue>
+      <depends name="&&organismAbbrev&&_LoadGenome"/>
     </subgraph>
 
-    <subgraph name="&&orgAbbrev&&_LoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <subgraph name="&&organismAbbrev&&_LoadDbxRefs" xmlFile="loadDbxRefs.xml">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="parentDataDir"></paramValue>
       <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
-      <paramValue name="organismName">&&NAME&&</paramValue>
-      <paramValue name="organismSpecificDbxRefsReference">&&projectName&&/&&nameLower&&DbxRefsResource.xml</paramValue>
-      <paramValue name="organismResourceXmlFile">&&projectName&&/&&nameLower&&.xml</paramValue>
-      <depends name="&&orgAbbrev&&_LoadGeneAliases"/>
+      <paramValue name="organismAbbrev">&&organismAbbrev&&</paramValue>
+      <paramValue name="organismSpecificDbxRefsReference">&&projectName&&/&&organismAbbrev&&/dbXRefs.xml</paramValue>
+      <paramValue name="organismResourceXmlFile">&&projectName&&/&&organismAbbrev&&.xml</paramValue>
+      <depends name="&&organismAbbrev&&_LoadGeneAliases"/>
     </subgraph>
 
-    <subgraph name="&&orgAbbrev&&_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <subgraph name="&&organismAbbrev&&_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
       <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
-      <paramValue name="organismName">&&NAME&&</paramValue>
-      <paramValue name="organismFullName">&&organismFullName&&</paramValue>
+      <paramValue name="organismNameForFiles">&&organismNameForFiles&&</paramValue>
       <paramValue name="ncbiTaxonId">&&ncbiTaxonId&&</paramValue>
       <paramValue name="parentNcbiTaxonId">&&parentNcbiTaxonId&&</paramValue>
       <paramValue name="genomeSource">@@&&NAME&&GenomeSource@@</paramValue>
@@ -169,7 +176,7 @@
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="dbESTExtDbRlsSpec">&&NAME&&_dbEST_RSRC|@@&&NAME&&_dbEST_VER@@</paramValue>
       <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">&&NAME&&_genome_RSRC|@@&&NAME&&_genome_VER@@</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">&&genomeExtDbRlsSpec&&</paramValue>
       <paramValue name="genomeVirtualSeqsExtDbRlsSpec">&&genomeVirtualSeqsExtDbRlsSpec&&</paramValue>
       <paramValue name="minOrfLength">50</paramValue>
       <paramValue name="deprecated">&&deprecated&&</paramValue>
@@ -177,29 +184,19 @@
       <paramValue name="makeESTDownloadFile">&&makeESTDownloadFile&&</paramValue>
       <paramValue name="makeProteomeDownloadFile">&&makeProteomeDownloadFile&&</paramValue>
       <paramValue name="makeGenomicDownloadFile">&&makeGenomicDownloadFile&&</paramValue>
-      <depends name="&&orgAbbrev&&_PostLoadGenome"/>
-      <depends name="&&orgAbbrev&&_MakeAndMaskTopLevelGenome"/>
+      <depends name="&&organismAbbrev&&_PostLoadGenome"/>
+      <depends name="&&organismAbbrev&&_MakeAndMaskTopLevelGenome"/>
     </subgraph>
   </datasetTemplate>
 
 
   <subgraph name="ComparativeGenomics" xmlFile="comparativeGenomics.xml">
     <paramValue name="parentDataDir">common/comparativeGenomics/</paramValue>
-    <paramValue name="mercatorDraftGenomes">@@mercatorDraftGenomes@@</paramValue>
-    <paramValue name="mercatorNonDraftGenomes">@@mercatorNonDraftGenomes@@</paramValue>
-    <paramValue name="mercatorDraftExternalDbSpec">@@mercatorDraftExternalDbSpec@@</paramValue>
-    <paramValue name="mercatorNonDraftExternalDbSpec">@@mercatorNonDraftExternalDbSpec@@</paramValue>
-    <paramValue name="mercatorDraftSeqTables">@@mercatorDraftSeqTables@@</paramValue>
-    <paramValue name="mercatorNonDraftSeqTables">@@mercatorNonDraftSeqTables@@</paramValue>
-    <paramValue name="cndSrcBin">@@cndSrcBin@@</paramValue>
-    <paramValue name="mavidExe">@@mavidExe@@</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="mercatorFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
     <paramValue name="mercatorGffDir">$$comparativeGenomicsGffDir$$</paramValue>
     <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
-    <paramValue name="organismResourceXmlFile">plasmodb/plasmodbCommon.xml</paramValue>
-    <paramValue name="commonResourceXmlFile">plasmodb/plasmodbCommon.xml</paramValue>
-    <paramValue name="createGenesForGeneFeatures">false</paramValue>
+    <paramValue name="commonResourceXmlFile">$$projectName$$/common.xml</paramValue>
+    <paramValue name="createReferenceGene2GeneInstanceMapping">false</paramValue>
     <paramValue name="organismSpecificCreateGenesForGeneFeatures"></paramValue>
     <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
 

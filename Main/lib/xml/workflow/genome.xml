@@ -1,17 +1,14 @@
 <workflowGraph name="genomeAnalysis">
   <param name="parentDataDir"/>
-  <param name="organismName"/>
-  <param name="orgAbbrev"/>
-  <param name="organismFullName"/>
-  <param name="genomeExtDbRlsSpec"/>
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
   <param name="ncbiTaxonId"/>
-  <param name="parentNcbiTaxonId"/>
+  <param name="genomeExtDbRlsSpec"/>
   <param name="usePredictedTranscripts"/>
   <param name="predictedTranscriptsExtDbRlsSpec"/>
   <param name="maxIntronSize"/>
   <param name="distanceBetweenStartsForAlignmentsInSameCluster"/>
   <param name="taxonHierarchyForBlastxFilter"/>
-  <param name="organismAbbrev"/>
   <param name="repeatMaskSpecies"/>
   <param name="genomeSize"/>
   <param name="runtRNAScan"/>
@@ -20,12 +17,9 @@
   <param name="mapAssemblySeqsAndAssemblies"/>
   <param name="loadOrganismSpecificESTResource"/>
   <param name="loadOrganismSpecificMassSpecResource"/>
-  <param name="organismSpecificESTResourcesReference"/>
-  <param name="organismSpecificMassSpecResourcesReference"/>
   <param name="organismResourceXmlFile"/>
   <param name="genomicSeqsFile"/>
   <param name="genomicSeqsDir"/>
-  <param name="dbESTResourceName"/>
   <param name="loadDbest"/>
 
   <constant name="dataDir">$$parentDataDir$$/genome</constant>
@@ -42,13 +36,13 @@
     </step>
 
   <subgraph name="dbESTResource" xmlFile="loadResource.xml" includeIf="$$loadDbest$$">
-    <paramValue name="resourceName">$$dbESTResourceName$$</paramValue>
+    <paramValue name="resourceName">$$organismAbbrev$$_dbEST_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
-  <subgraph name="organismSpecificESTResource" xmlFile="$$project$$/$$orgAbbrev$$/ESTs.xml" includeIf="$$loadOrganismSpecificESTResource$$">
+  <subgraph name="organismSpecificESTResource" xmlFile="$$project$$/$$organismAbbrev$$/ESTs.xml" includeIf="$$loadOrganismSpecificESTResource$$">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
@@ -85,11 +79,12 @@
       <depends name="blastxGenomicSeqsNrdb"/>
     </step>
 
+    <!-- this step creates the tRNA scan resource.  it is not an external dataset -->
     <subgraph name="tRNAScan" xmlFile="trnaScan.xml" includeIf="$$runtRNAScan$$">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="tRNAExtDbRlsSpec">$$organismName$$TRNAscan-SE|1.23</paramValue>
+      <paramValue name="tRNAExtDbRlsSpec">$$organismAbbrev$$_TRNAscan_RSRC|dontcare</paramValue>
       <paramValue name="soVersion">@@SO_VER@@</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
@@ -123,13 +118,13 @@
       <paramValue name="inputFile">$$dataDir$$/Orf50.gff</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="substepClass">ExternalNASequence</paramValue>
-      <paramValue name="defaultOrg">$$organismFullName$$</paramValue>
-      <paramValue name="isfMappingFileRelToGusHome">lib/xml/isf/orf2gus.xml</paramValue>
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="isfMappingFile">orf2gus.xml</paramValue>
       <paramValue name="soVersion">@@SO_VER@@</paramValue>
       <depends name="makeOrfFile"/>
     </step>
 
-  <subgraph name="organismSpecificMassSpecResource" xmlFile="$$organismSpecificMassSpecResourcesReference$$" includeIf="$$loadOrganismSpecificMassSpecResource$$">
+  <subgraph name="organismSpecificMassSpecResource" xmlFile="$$projectName$$/$$organismAbbrev$$/massSpec.xml" includeIf="$$loadOrganismSpecificMassSpecResource$$">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="loadOrfFile"/>
@@ -188,11 +183,9 @@
 
   <subgraph name="makeAndMapTranscriptAssemblies" xmlFile="makeAndMapTranscriptAssemblies.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="organismName">$$organismName$$</paramValue>
-    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-    <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+    <paramValue name="parentNcbiTaxonId">DONT_WANT_TO_DO_THIS</paramValue>
     <paramValue name="usePredictedTranscripts">$$usePredictedTranscripts$$</paramValue>
     <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
     <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>

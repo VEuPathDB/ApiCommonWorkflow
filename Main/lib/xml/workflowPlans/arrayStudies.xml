@@ -6,7 +6,6 @@
   <param name="transcriptSeqsFileForSsa"/>
   <param name="downloadSiteTranscriptExpressionDataDir"/>
   <param name="genomeExtDbRlsSpec"/>
-  <param name="organismFullName"/>
 
   <constant name="dataDir">$$parentDataDir$$/arrayResources</constant>
 
@@ -68,20 +67,18 @@
       <depends name="&&microArrayPlatformName&&_getAndMapProbes"/>
     </subgraph>
 
-    <subgraph name="&&experimentName&&_analyzeChipChipSamples" xmlFile="&&experimentName&&_analyzeChipChipSamples.xml">
+    <subgraph name="&&experimentName&&_chipChipSamples" xmlFile="&&experimentName&&_chipChipSamples.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="ChipChipResourceName">&&experimentName&&</paramValue>
+      <paramValue name="experimentResourceName">&&experimentName&&</paramValue>
       <paramValue name="chipProbeExtDbRlsSpec">&&microArrayPlatformName&&|&&microArrayPlatformVersion&&</paramValue>
-      <paramValue name="experimentExtDbRlsSpec">&&experimentName&&|&&experimentVersion&&</paramValue>
       <paramValue name="peakFinderArgs">&&peakFinderArgs&&</paramValue>
       <paramValue name="runPeakCalls">&&runPeakCalls&&</paramValue>
-      <paramValue name="organismFullName">$$organismFullName$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="&&experimentName&&"/>
     </subgraph>
   </datasetClass>
 
-  <datasetClass name="microarrayExperiment">
+  <datasetClass name="microarrayExpressionExperiment">
     <prop name="experimentName"/>
     <prop name="experimentVersion"/>
     <prop name="experimentDisplayName"/>
@@ -101,11 +98,11 @@
       <depends name="&&microArrayPlatformName&&_getAndMapProbes"/>
     </subgraph>
 
-    <subgraph name="&&experimentName&&_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <subgraph name="&&experimentName&&_analyzeMicroarrayExperiment" xmlFile="analyzeMicroarrayExperiment.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="experimentResourceName">&&experimentName&</paramValue>
+      <paramValue name="experimentResourceVersion">&&experimentVersion&&</paramValue>
       <paramValue name="chipProbeExtDbRlsSpec">&&microArrayPlatformName&&|&&microArrayPlatformVersion&&</paramValue>
-      <paramValue name="experimentExtDbRlsSpec">&&experimentName&&|&&experimentVersion&&</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="insertAnalysisResult">false</paramValue>
       <paramValue name="probeGenesMappingFile">$$dataDir$$/&&microArrayPlatformName&&_getAndMapProbes/&&microArrayPlatformName&&/probesMapping.cdf</paramValue>
@@ -114,7 +111,7 @@
       <paramValue name="isLogged">&&isLogged&&</paramValue>
       <paramValue name="mappingFileForExpressionStats">&&mappingFileForExpressionStats&&</paramValue>
       <paramValue name="calculateExpressionStats">&&calculateExpressionStats&&</paramValue>
-      <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/&&experimentDisplayName&&</paramValue>
+      <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/&&experimentNameForFiles&&</paramValue>
       <depends name="&&experimentName&&"/>
     </subgraph>
   </datasetClass>

@@ -1,14 +1,11 @@
 <workflowGraph name="proteomeAnalysis">
   <param name="parentDataDir"/>
-  <param name="organismName"/>
   <param name="genomeExtDbRlsSpec"/>
-  <param name="iedbDbRefResourceName"/>
   <param name="ncbiTaxonId"/>
   <param name="runExportPred"/>
   <param name="loadEpitope"/>
   <param name="organismResourceXmlFile"/>
   <param name="proteinsFile"/>
-  <param name="organismSpecificProductNameResourcesReference"/>
   <param name="organismAbbrev"/>
 
   <constant name="dataDir">$$parentDataDir$$/proteome</constant>
@@ -32,7 +29,7 @@
       <paramValue name="idSql">select taas.aa_sequence_id, taas.sequence from DoTS.TranslatedAASequence taas, DoTs.AAFeature af, DOTS.NAFeature nf where taas.aa_sequence_id=af.aa_sequence_id and af.na_feature_id=nf.na_feature_id and nf.name not in ('ORF') and taas.external_database_release_id = ?</paramValue>
     </step>
 
-  <subgraph name="loadProductName" xmlFile="$$organismSpecificProductNameResourcesReference$$">
+  <subgraph name="loadProductName" xmlFile="$$projectName$$/$$organismAbbrev$$/productNames.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
@@ -141,7 +138,7 @@
     </subgraph>
 
   <subgraph name="IEDBDBxRefResource" xmlFile="loadResource.xml" includeIf="$$loadEpitope$$">
-    <paramValue name="resourceName">$$iedbDbRefResourceName$$</paramValue>
+    <paramValue name="resourceName">$$organismAbbrev$$_dbxref_epitope_IEDB_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="IEDBResource"/>
@@ -211,7 +208,6 @@
       <paramValue name="nrdbFileShortDefline">$$global_NRDBOutputFile_shortDefline$$</paramValue>
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismName">$$organismName$$</paramValue>
       <depends name="mirrorToCluster"/>
       <dependsGlobal name="NRDB_RSRC"/>
     </subgraph>

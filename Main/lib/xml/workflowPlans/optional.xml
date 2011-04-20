@@ -7,15 +7,10 @@
   <param name="genomeExtDbRlsSpec"/>
   <param name="maxIntronSize"/>
   <param name="ncbiTaxonId"/>
-  <param name="BACEndsExtDbRlsSpec"/>
-  <param name="cosmidEndsExtDbRlsSpec"/>
   <param name="repeatMaskSpecies"/>
 
   <constant name="dataDir">$$parentDataDir$$/$$organismName$$/SpecificAnalysis</constant>
   <constant name="genomicSeqsFile">$$parentDataDir$$/$$organismName$$/genome/genomicSeqs.fsa</constant>
-  <constant name="BACEndsDir">$$dataDir$$/extractAndBlockDnaSeq</constant>
-  <constant name="cosmidEndsDir">$$dataDir$$/extractAndBlockCosmidEnds</constant>
-
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -40,7 +35,7 @@
     <prop name="name"/>
     <prop name="version"/>
 
-    <subgraph name="$$orgAbbrev$_isolate_$$name$$_sequences_RSRC" xmlFile="loadResource.xml">
+    <subgraph name="$$orgAbbrev$$_isolate_$$name$$_sequences_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">$$orgAbbrev$_isolate_$$name$$_sequences_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -68,19 +63,20 @@
     <depends name="makeDataDir"/>
   </subgraph>
 
-  <datasetClass name="BACends">
+  <datasetClass name="clonedInsertEnds">
     <prop name="name"/>
     <prop name="version"/>
-    <subgraph name="&&name&&_BAC_ends_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
+    <prop name="repeatMaskSpecies"/>
+    <subgraph name="&&name&&_clonedInsertEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeClonedInsertEnds.xml">
       <paramValue name="dataDir">$$dataDir$$/&&name&&_BAC_ends_loadAndAnalyze</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="BACEndsExtDbRlsSpec">&&name&&_RSRC|&&version&&</paramValue>
+      <paramValue name="clonedInsertEndsExtDbRlsSpec">&&name&&_RSRC|&&version&&</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/LmajorFriedlinLoadGenome/genomicSeqs</paramValue>
+      <paramValue name="repeatMaskSpecies">-species &&repeatMaskSpecies&&</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$orgAbbrev$$_LoadGenome/genomicSeqs</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetClass>
