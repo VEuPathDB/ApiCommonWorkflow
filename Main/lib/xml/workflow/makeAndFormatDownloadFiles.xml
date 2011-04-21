@@ -126,6 +126,12 @@
     <depends name="makeAnnotatedProteinsDownloadFile"/>
     </step>
 
+    <step name="copyAnnotatedProteinsMotifFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyMotifFile" includeIf="$$makeProteomeDownloadFile$$">
+      <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismName$$AnnotatedProteins_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="outputFile">$$webServicesDataDir$$/motif/$$organismName$$AnnotatedProteins_$$projectName$$.fasta</paramValue>
+    <depends name="makeAnnotatedProteinsDownloadFile"/>
+    </step>
+
     <step name="makeMixedGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMixedGenomicDownloadFile" includeIf="$$makeGenomicDownloadFile$$">
       <paramValue name="outputFile">$$downloadSiteFastaDataDir$$/$$organismName$$Genomic_$$projectName$$-$$projectVersion$$.fasta</paramValue>
       <paramValue name="descripFile">$$downloadSiteFastaDataDir$$/.$$organismName$$Genomic_$$projectName$$-$$projectVersion$$.fasta.desc</paramValue>
@@ -152,6 +158,12 @@
       <paramValue name="soTermIdsOrNames">$$soTermIdsOrNames$$</paramValue>
     </step>
 
+    <step name="copyDoubleStrandGenomicMotifFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyMotifFile" includeIf="$$makeGenomicDownloadFile$$">
+      <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismName$$Genomic_doubleStrand_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="outputFile">$$webServicesDataDir$$/motif/$$organismName$$Genomic_$$projectName$$.fasta</paramValue>
+    <depends name="makeDoubleStrandGenomicDownloadFile"/>
+    </step>
+
     <step name="makeOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfDownloadFile" includeIf="$$makeGenomicDownloadFile$$">
       <paramValue name="outputFile">$$downloadSiteFastaDataDir$$/$$organismName$$ORFs_$$projectName$$-$$projectVersion$$.fasta</paramValue>
       <paramValue name="descripFile">$$downloadSiteFastaDataDir$$/.$$organismName$$ORFs_$$projectName$$-$$projectVersion$$.fasta.desc</paramValue>
@@ -167,6 +179,12 @@
       <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
       <paramValue name="formattedFileName">$$organismName$$ORF</paramValue>
       <paramValue name="args">-p -C X -t release-$$projectVersion$$/$$organismName$$ORF</paramValue>
+    <depends name="makeOrfDownloadFile"/>
+    </step>
+
+    <step name="copyOrfMotifFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyMotifFile" includeIf="$$makeGenomicDownloadFile$$">
+      <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismName$$ORFs_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="outputFile">$$webServicesDataDir$$/motif/$$organismName$$ORFs_$$projectName$$.fasta</paramValue>
     <depends name="makeOrfDownloadFile"/>
     </step>
 
