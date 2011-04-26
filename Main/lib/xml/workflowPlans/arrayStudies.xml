@@ -18,7 +18,7 @@
     <depends name="makeDataDir"/>
   </step>
 
-  <datasetClass class="microarrayPlatform">
+  <datasetTemplate class="microarrayPlatform">
     <prop name="project"/>
     <prop name="orgAbbrev"/>
     <prop name="name"/>
@@ -30,11 +30,11 @@
     <prop name="countMismatches"/>
     <prop name="isNimbleGen"/>
     
-    <subgraph name="&&name&&_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <subgraph name="${name${_getAndMapProbes" xmlFile="getAndMapProbes.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="probeResourceName">&&name&&</paramValue>
-      <paramValue name="chipProbeExtDbRlsSpec">&&name&&|&&version&&</paramValue>
-      <paramValue name="isOneChannel">&&isOneChannel&&</paramValue>
+      <paramValue name="probeResourceName">${name}</paramValue>
+      <paramValue name="chipProbeExtDbRlsSpec">${name}|${version}</paramValue>
+      <paramValue name="isOneChannel">${isOneChannel}</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -50,9 +50,9 @@
       <paramValue name="ndfFileName"></paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
-  </datasetClass>
+  </datasetTemplate>
 
-  <datasetClass name="chipChipExperiment">
+  <datasetTemplate name="chipChipExperiment">
     <prop name="experimentName"/>
     <prop name="experimentVersion"/>
     <prop name="microArrayPlatformName"/>
@@ -60,25 +60,25 @@
     <prop name="peakFinderArgs"/>
     <prop name="runPeakCalls"/>
 
-    <subgraph name="&&experimentName&&" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">&&experimentName&&</paramValue>
+    <subgraph name="${experimentName}" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${experimentName}</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="&&microArrayPlatformName&&_getAndMapProbes"/>
+      <depends name="${microArrayPlatformName${_getAndMapProbes"/>
     </subgraph>
 
-    <subgraph name="&&experimentName&&_chipChipSamples" xmlFile="&&experimentName&&_chipChipSamples.xml">
+    <subgraph name="${experimentName${_chipChipSamples" xmlFile="${experimentName${_chipChipSamples.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="experimentResourceName">&&experimentName&&</paramValue>
-      <paramValue name="chipProbeExtDbRlsSpec">&&microArrayPlatformName&&|&&microArrayPlatformVersion&&</paramValue>
-      <paramValue name="peakFinderArgs">&&peakFinderArgs&&</paramValue>
-      <paramValue name="runPeakCalls">&&runPeakCalls&&</paramValue>
+      <paramValue name="experimentResourceName">${experimentName}</paramValue>
+      <paramValue name="chipProbeExtDbRlsSpec">${microArrayPlatformName}|${microArrayPlatformVersion}</paramValue>
+      <paramValue name="peakFinderArgs">${peakFinderArgs}</paramValue>
+      <paramValue name="runPeakCalls">${runPeakCalls}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="&&experimentName&&"/>
+      <depends name="${experimentName}"/>
     </subgraph>
-  </datasetClass>
+  </datasetTemplate>
 
-  <datasetClass name="microarrayExpressionExperiment">
+  <datasetTemplate name="microarrayExpressionExperiment">
     <prop name="experimentName"/>
     <prop name="experimentVersion"/>
     <prop name="experimentDisplayName"/>
@@ -86,34 +86,34 @@
     <prop name="microArrayPlatformVersion"/>
     <prop name="insertAnalysisResult"/>
     <prop name="profileSetNames"/>
-    <prop name="profileSetSpecs"//>
+    <prop name="profileSetSpecs"/>
     <prop name="isLogged"/>
     <prop name="mappingFileForExpressionStats"/>
 
 
-    <subgraph name="&&experimentName&&" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">&&experimentName&&</paramValue>
+    <subgraph name="${experimentName}" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${experimentName}</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="&&microArrayPlatformName&&_getAndMapProbes"/>
+      <depends name="${microArrayPlatformName${_getAndMapProbes"/>
     </subgraph>
 
-    <subgraph name="&&experimentName&&_analyzeMicroarrayExperiment" xmlFile="analyzeMicroarrayExperiment.xml">
+    <subgraph name="${experimentName${_analyzeMicroarrayExperiment" xmlFile="analyzeMicroarrayExperiment.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="experimentResourceName">&&experimentName&</paramValue>
-      <paramValue name="experimentResourceVersion">&&experimentVersion&&</paramValue>
-      <paramValue name="chipProbeExtDbRlsSpec">&&microArrayPlatformName&&|&&microArrayPlatformVersion&&</paramValue>
+      <paramValue name="experimentResourceName">${experimentName}</paramValue>
+      <paramValue name="experimentResourceVersion">${experimentVersion}</paramValue>
+      <paramValue name="chipProbeExtDbRlsSpec">${microArrayPlatformName}|${microArrayPlatformVersion}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="insertAnalysisResult">false</paramValue>
-      <paramValue name="probeGenesMappingFile">$$dataDir$$/&&microArrayPlatformName&&_getAndMapProbes/&&microArrayPlatformName&&/probesMapping.cdf</paramValue>
-      <paramValue name="profileSetNames">&&profileSetNames&&</paramValue>
-      <paramValue name="profileSetSpecs">&&profileSetSpecs&&</paramValue>
-      <paramValue name="isLogged">&&isLogged&&</paramValue>
-      <paramValue name="mappingFileForExpressionStats">&&mappingFileForExpressionStats&&</paramValue>
-      <paramValue name="calculateExpressionStats">&&calculateExpressionStats&&</paramValue>
-      <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/&&experimentNameForFiles&&</paramValue>
-      <depends name="&&experimentName&&"/>
+      <paramValue name="probeGenesMappingFile">$$dataDir$$/${microArrayPlatformName${_getAndMapProbes/${microArrayPlatformName}/probesMapping.cdf</paramValue>
+      <paramValue name="profileSetNames">${profileSetNames}</paramValue>
+      <paramValue name="profileSetSpecs">${profileSetSpecs}</paramValue>
+      <paramValue name="isLogged">${isLogged}</paramValue>
+      <paramValue name="mappingFileForExpressionStats">${mappingFileForExpressionStats}</paramValue>
+      <paramValue name="calculateExpressionStats">${calculateExpressionStats}</paramValue>
+      <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$/${experimentNameForFiles}</paramValue>
+      <depends name="${experimentName}"/>
     </subgraph>
-  </datasetClass>
+  </datasetTemplate>
 
 </workflowGraph>
