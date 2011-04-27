@@ -13,7 +13,7 @@
       <param name="genomeExtDbRlsSpec"/>
       <param name="organismResourceXmlFile"/>
       <param name="downloadSiteDataDir"/>
-      <param name="extractProteins"/>
+      <param name="isAnnotatedGenome"/>
       <param name="projectName"/>
       <param name="projectVersion"/>
       <param name="haveOrganelleGenomeSequence"/>
@@ -50,7 +50,7 @@
       <paramValue name="strainAbbrev">$$strainAbbrev$$</paramValue>
     </step>
 
-  <!-- depends on insertOrganismProject to be sure we validate genome info before getting too far -->
+  <!-- depends on insertOrganismProject so we run that step early in the flow, thereby validating the organism info before getting too far -->
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
       <depends name="insertOrganismProject"/>
@@ -107,7 +107,7 @@
     </step>
 
     <step name="extractProteins"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAnnotatedProteinsBySpecies" includeIf="$$extractProteins$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAnnotatedProteinsBySpecies" includeIf="$$isAnnotatedGenome$$">
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="outputFile">$$proteinsFile$$</paramValue>
@@ -152,14 +152,14 @@
     </step>
 
   <step name="extractTranscriptSeqsForSsa"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTranscriptSeqsForSsa" includeIf="$$extractProteins$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTranscriptSeqsForSsa" includeIf="$$isAnnotatedGenome$$">
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="outputFile">$$transcriptSeqsFileForSsa$$</paramValue>
       <depends name="runTuningManager"/> 
     </step>
 
   <step name="extractGeneModelForSsa"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa" includeIf="$$extractProteins$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa" includeIf="$$isAnnotatedGenome$$">
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="outputFile">$$geneModelFileForSsa$$</paramValue>
       <depends name="runTuningManager"/> 
