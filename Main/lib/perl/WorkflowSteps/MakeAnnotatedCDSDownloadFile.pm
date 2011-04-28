@@ -40,13 +40,13 @@ sub run {
                 ||' | location='||
             fl.sequence_source_id
                 ||':'||
-            gf.coding_start
+            min(gf.coding_start,gf.coding_end)
                 ||'-'||
-	    gf.coding_end
+	    max(gf.coding_start,gf.coding_end)
                 ||'('||
             decode(fl.is_reversed, 1, '-', '+')
                 ||') | length='||
-            (taaf.translation_stop - taaf.translation_start + 1)
+            (abs(gf.coding_start - gf.coding_stop) + 1)
             as defline,
            SUBSTR(snas.sequence,
                   taaf.translation_start,
