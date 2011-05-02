@@ -1,0 +1,345 @@
+<workflowGraph name="tbHornRnaiSeqCDS">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+    <param name="downloadSiteTranscriptExpressionDataDir"/>
+    <param name="genomeExtDbRlsSpec"/>
+
+    <constant name="dataDir">$$parentDataDir$$/tbHornRnaiSeqCDS</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+    <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSeqCoverageAndIntensityDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="Tbrucei_RNAiSeq_Horn_CDS_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei_RNAiSeq_Horn_CDS_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Tbrucei_RNAiSeq_Horn_CDS_RSRC"/>
+    </step>
+
+    <subgraph name="analyzeNo_TetSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">No_Tet</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNAiSeq_Horn_CDS_RSRC/final/U_1.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeNo_Tet/No_Tet.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/No_Tet.int</paramValue>
+      <paramValue name="outputMappingStatsFile">$$samplesDataDir$$/No_Tet.mappingStats</paramValue>
+      <paramValue name="outputCountFile">$$samplesDataDir$$/No_Tet.count</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_CDS_RSRC|@@Tbrucei_RNAiSeq_Horn_CDS_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath">$$dataDir$$/Tbrucei_RNAiSeq_Horn_CDS_RSRC/final/U_2.fsq</paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <depends name="Tbrucei_RNAiSeq_Horn_CDS_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="loadNo_TetExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$samplesDataDir$$/analyzeNo_Tet/exonJunctionOutput.rum</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_CDS_RSRC|@@Tbrucei_RNAiSeq_Horn_CDS_VER@@</paramValue>
+      <paramValue name="sampleName">No_Tet</paramValue>
+      <depends name="analyzeNo_TetSample"/>
+    </step>
+
+
+    <step name="generateCountFileNo_Tet" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateCountFile">
+      <paramValue name="uniqueFile">$$samplesDataDir$$/analyzeNo_Tet/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$samplesDataDir$$/analyzeNo_Tet/RUM_NU.all.sorted</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/No_Tet.count</paramValue>
+      <depends name="analyzeNo_TetSample"/>
+    </step>
+
+    <step name="generateMappingStatsFileNo_Tet" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile">
+      <paramValue name="uniqueFile">$$samplesDataDir$$/analyzeNo_Tet/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$samplesDataDir$$/analyzeNo_Tet/RUM_NU.all.sorted</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/No_Tet.mappingStats</paramValue>
+      <depends name="analyzeNo_TetSample"/>
+    </step>
+
+
+
+    <subgraph name="analyzePFSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">PF</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNAiSeq_Horn_CDS_RSRC/final/PF_1.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzePF/PF.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/PF.int</paramValue>
+      <paramValue name="outputMappingStatsFile">$$samplesDataDir$$/PF.mappingStats</paramValue>
+      <paramValue name="outputCountFile">$$samplesDataDir$$/PF.count</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_CDS_RSRC|@@Tbrucei_RNAiSeq_Horn_CDS_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath">$$dataDir$$/Tbrucei_RNAiSeq_Horn_CDS_RSRC/final/PF_2.fsq</paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <depends name="Tbrucei_RNAiSeq_Horn_CDS_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="loadPFExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$samplesDataDir$$/analyzePF/exonJunctionOutput.rum</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_CDS_RSRC|@@Tbrucei_RNAiSeq_Horn_CDS_VER@@</paramValue>
+      <paramValue name="sampleName">PF</paramValue>
+      <depends name="analyzePFSample"/>
+    </step>
+
+    <step name="generateCountFilePF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateCountFile">
+      <paramValue name="uniqueFile">$$samplesDataDir$$/analyzePF/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$samplesDataDir$$/analyzePF/RUM_NU.all.sorted</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/PF.count</paramValue>
+      <depends name="analyzePFSample"/>
+    </step>
+
+    <step name="generateMappingStatsFilePF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile">
+      <paramValue name="uniqueFile">$$samplesDataDir$$/analyzePF/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$samplesDataDir$$/analyzePF/RUM_NU.all.sorted</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/PF.mappingStats</paramValue>
+      <depends name="analyzePFSample"/>
+    </step>
+
+    <subgraph name="analyzeDIFSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">DIF</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNAiSeq_Horn_CDS_RSRC/final/DIF_1.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeDIF/DIF.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/DIF.int</paramValue>
+      <paramValue name="outputMappingStatsFile">$$samplesDataDir$$/DIF.mappingStats</paramValue>
+      <paramValue name="outputCountFile">$$samplesDataDir$$/DIF.count</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_CDS_RSRC|@@Tbrucei_RNAiSeq_Horn_CDS_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath">$$dataDir$$/Tbrucei_RNAiSeq_Horn_CDS_RSRC/final/DIF_2.fsq</paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <depends name="Tbrucei_RNAiSeq_Horn_CDS_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="loadDIFExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$samplesDataDir$$/analyzeDIF/exonJunctionOutput.rum</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_CDS_RSRC|@@Tbrucei_RNAiSeq_Horn_CDS_VER@@</paramValue>
+      <paramValue name="sampleName">DIF</paramValue>
+      <depends name="analyzeDIFSample"/>
+    </step>
+
+    <step name="generateCountFileDIF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateCountFile">
+      <paramValue name="uniqueFile">$$samplesDataDir$$/analyzeDIF/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$samplesDataDir$$/analyzeDIF/RUM_NU.all.sorted</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/DIF.count</paramValue>
+      <depends name="analyzeDIFSample"/>
+    </step>
+
+    <step name="generateMappingStatsFileDIF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile">
+      <paramValue name="uniqueFile">$$samplesDataDir$$/analyzeDIF/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$samplesDataDir$$/analyzeDIF/RUM_NU.all.sorted</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/DIF.mappingStats</paramValue>
+      <depends name="analyzeDIFSample"/>
+    </step>
+
+    <subgraph name="analyzeBFD3Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">BFD3</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNAiSeq_Horn_CDS_RSRC/final/D3_1.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeBFD3/BFD3.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/BFD3.int</paramValue>
+      <paramValue name="outputMappingStatsFile">$$samplesDataDir$$/BFD3.mappingStats</paramValue>
+      <paramValue name="outputCountFile">$$samplesDataDir$$/BFD3.count</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_CDS_RSRC|@@Tbrucei_RNAiSeq_Horn_CDS_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath">$$dataDir$$/Tbrucei_RNAiSeq_Horn_CDS_RSRC/final/D3_2.fsq</paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <depends name="Tbrucei_RNAiSeq_Horn_CDS_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="loadBFD3ExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$samplesDataDir$$/analyzeBFD3/exonJunctionOutput.rum</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_CDS_RSRC|@@Tbrucei_RNAiSeq_Horn_CDS_VER@@</paramValue>
+      <paramValue name="sampleName">BFD3</paramValue>
+      <depends name="analyzeBFD3Sample"/>
+    </step>
+
+    <step name="generateCountFileBFD3" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateCountFile">
+      <paramValue name="uniqueFile">$$samplesDataDir$$/analyzeBFD3/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$samplesDataDir$$/analyzeBFD3/RUM_NU.all.sorted</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/BFD3.count</paramValue>
+      <depends name="analyzeBFD3Sample"/>
+    </step>
+
+    <step name="generateMappingStatsFileBFD3" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile">
+      <paramValue name="uniqueFile">$$samplesDataDir$$/analyzeBFD3/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$samplesDataDir$$/analyzeBFD3/RUM_NU.all.sorted</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/BFD3.mappingStats</paramValue>
+      <depends name="analyzeBFD3Sample"/>
+    </step>
+
+    <subgraph name="analyzeBFD6Sample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">BFD6</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tbrucei_RNAiSeq_Horn_CDS_RSRC/final/D6_1.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeBFD6/BFD6.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/BFD6.int</paramValue>
+      <paramValue name="outputMappingStatsFile">$$samplesDataDir$$/BFD6.mappingStats</paramValue>
+      <paramValue name="outputCountFile">$$samplesDataDir$$/BFD6.count</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_CDS_RSRC|@@Tbrucei_RNAiSeq_Horn_CDS_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath">$$dataDir$$/Tbrucei_RNAiSeq_Horn_CDS_RSRC/final/D6_2.fsq</paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <depends name="Tbrucei_RNAiSeq_Horn_CDS_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="loadBFD6ExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$samplesDataDir$$/analyzeBFD6/exonJunctionOutput.rum</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tbrucei_RNAiSeq_Horn_CDS_RSRC|@@Tbrucei_RNAiSeq_Horn_CDS_VER@@</paramValue>
+      <paramValue name="sampleName">BFD6</paramValue>
+      <depends name="analyzeBFD6Sample"/>
+    </step>
+
+    <step name="generateCountFileBFD6" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateCountFile">
+      <paramValue name="uniqueFile">$$samplesDataDir$$/analyzeBFD6/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$samplesDataDir$$/analyzeBFD6/RUM_NU.all.sorted</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/BFD6.count</paramValue>
+      <depends name="analyzeBFD6Sample"/>
+    </step>
+
+    <step name="generateMappingStatsFileBFD6" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile">
+      <paramValue name="uniqueFile">$$samplesDataDir$$/analyzeBFD6/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$samplesDataDir$$/analyzeBFD6/RUM_NU.all.sorted</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/BFD6.mappingStats</paramValue>
+      <depends name="analyzeBFD6Sample"/>
+    </step>
+
+
+
+    <step name="mergeMinIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">No_Tet.int.min,BFD3.int.min,BFD6.int.min,PF.int.min,DIF.int.min</paramValue>
+      <depends name="makeSeqCoverageAndIntensityDataDir"/>
+      <depends name="analyzeNo_TetSample"/>
+    </step>
+
+    <step name="mergeMaxIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">No_Tet.int.max,BFD3.int.max,BFD6.int.max,PF.int.max,DIF.int.max</paramValue>
+      <depends name="makeSeqCoverageAndIntensityDataDir"/>
+      <depends name="analyzeNo_TetSample"/>
+      <depends name="analyzePFSample"/>
+      <depends name="analyzeDIFSample"/>
+      <depends name="analyzeBFD3Sample"/>
+      <depends name="analyzeBFD6Sample"/>
+    </step>
+
+    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt.pct</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+    </step>
+
+    <step name="makeMaxPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt.pct</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+    </step>
+
+    <step name="makeDiffProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff">
+      <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="minInputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>     
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/diffProfiles.txt</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
+    </step>
+
+    <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNAiSeq_Horn_CDS_RSRC/final/config.txt</paramValue>
+      <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">Tbrucei_RNAiSeq_Horn_CDS_RSRC|@@Tbrucei_RNAiSeq_Horn_CDS_VER@@</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="makeMinPercentileProfile"/>
+      <depends name="makeDiffProfile"/>
+    </step>
+
+    <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
+      <paramValue name="copyFromDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNAiSeq_Horn_CDS_RSRC/final/config.txt</paramValue>
+      <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
+    </step>
+
+    <step name="compareTwoSamples" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CompareTwoSamples">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="sampleNameList">No_Tet,BFD3,BFD6,PF,DIF</paramValue>
+      <paramValue name="paired_end">yes</paramValue>
+      <depends name="analyzeNo_TetSample"/>
+      <depends name="analyzePFSample"/>
+      <depends name="analyzeDIFSample"/>
+      <depends name="analyzeBFD3Sample"/>
+      <depends name="analyzeBFD6Sample"/>
+    </step>
+
+    <step name="insertAnalysisResultFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin">
+      <paramValue name="analysisWorkingDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNAiSeq_Horn_CDS_RSRC/final/analysis_result_config.txt</paramValue>
+      <paramValue name="analysisResultView">DifferentialExpression</paramValue>
+      <paramValue name="naFeatureView">GeneFeature</paramValue>
+      <paramValue name="useSqlLdr">false</paramValue>
+      <paramValue name="profileSetNames">T.brucei Horn RNAi Sequence minProfiles using CDS coordinates</paramValue>
+      <depends name="compareTwoSamples"/>
+    </step>
+
+</workflowGraph>
