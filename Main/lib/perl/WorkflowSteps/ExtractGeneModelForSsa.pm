@@ -10,11 +10,16 @@ sub run {
 
   my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
   my $outputFile = $self->getParamValue('outputFile');
+  my $useCDSCoordinates = $self->getParamValue('useCDSCoordinates');
 
 
   my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$ncbiTaxonId);
 
   my $workflowDataDir = $self->getWorkflowDataDir();
+
+  my $cmd = "extractGeneModelForSsa --outputFile $workflowDataDir/$outputFile --taxonId $taxonId";
+  
+  $cmd .= " --coordinates CDS" if (lc $useCDSCoordinates eq 'true');
 
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
@@ -22,7 +27,7 @@ sub run {
       if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }else{
-	    $self->runCmd($test,"extractGeneModelForSsa --outputFile $workflowDataDir/$outputFile --taxonId $taxonId");
+	    $self->runCmd($test,$cmd);
       }
   }
 }
