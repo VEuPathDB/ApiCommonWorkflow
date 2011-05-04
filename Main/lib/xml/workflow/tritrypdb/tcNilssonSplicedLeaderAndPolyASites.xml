@@ -3,6 +3,7 @@
     <param name="organismResourceXmlFile"/>
     <param name="genomicSeqsFile"/>
     <param name="genomeExtDbRlsSpec"/>
+    <param name="downloadSiteTranscriptExpressionDataDir"/>
 
     <constant name="dataDir">$$parentDataDir$$/tcNilssonSplicedLeaderAndPolyASites</constant>
     <constant name="samplesDataDir">$$dataDir$$/samples</constant>
@@ -150,6 +151,13 @@
       <paramValue name="inputDir">$$dataDir$$</paramValue>
       <paramValue name="extDbRlsSpec">Tcruzi_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC|@@Tcruzi_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_VER@@</paramValue>
       <depends name="makeMinPercentileProfile"/>
+    </step>
+
+    <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
+      <paramValue name="copyFromDir">$$dataDir$$</paramValue>
+      <paramValue name="configFile">$$dataDir$$/Tcruzi_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/profile_config.txt</paramValue>
+      <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
+      <depends name="insertExpressionProfile"/>
     </step>
 
 </workflowGraph>
