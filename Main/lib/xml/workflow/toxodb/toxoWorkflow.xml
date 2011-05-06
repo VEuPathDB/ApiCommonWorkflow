@@ -11,4 +11,43 @@
       <paramValue name="downloadSiteTranscriptExpressionDataDir"></paramValue>
     </subgraph>
 
+    <subgraph name="lorenziCosmidEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeBACEnds.xml">
+      <paramValue name="dataDir">lorenziCosmidEnds_loadAndAnalyze</paramValue>
+      <paramValue name="BACEndsResourcesReference">toxodb/tgonME49_lorenzi_CosmidEnds.xml</paramValue>
+      <paramValue name="organismResourceXmlFile">toxodb/tgondiiME49ArrayStudies.xml</paramValue>
+      <paramValue name="BACEndsExtDbRlsSpec">TgonME49_lorenzi_CosmidEnds_RSRC|2011-05-04</paramValue>
+      <paramValue name="maxIntronSize">100</paramValue>
+      <paramValue name="ncbiTaxonId">508771</paramValue>
+      <paramValue name="genomicSeqsFile">TgondiiME49/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">T.gondii ME49 contigs from Genbank|2008-07-23</paramValue>
+      <paramValue name="repeatMaskSpecies"></paramValue>
+      <paramValue name="genomicSeqsDir">TgondiiME49/genomicSeqs</paramValue>
+    </subgraph>
+
+    <subgraph name="tgGT1MapBACEndsSeqsToGenome" xmlFile="blatDnaAgainstGenome.xml">
+      <paramValue name="dataDir">lorenziCosmidEnds_tgGT1Analyze/BACEndsSeqsBlat</paramValue>
+      <paramValue name="maxIntronSize">100</paramValue>
+      <paramValue name="targetNcbiTaxonId">507601</paramValue>
+      <paramValue name="targetSeqsDir">TgondiiGT1/genomicSeqs</paramValue>
+      <paramValue name="targetExtDbRlsSpec">T.gondii GT1 contigs from Genbank|2008-07-23</paramValue>
+      <paramValue name="queryNcbiTaxonId">508771</paramValue>
+      <paramValue name="queryFile">lorenziCosmidEnds_loadAndAnalyze/master/mainresult/blocked.seq</paramValue>
+      <paramValue name="queryTable">ExternalNASequence</paramValue>
+      <paramValue name="queryExtDbRlsSpec">TgonME49_lorenzi_CosmidEnds_RSRC|2011-05-04</paramValue>
+      <depends name="lorenziCosmidEnds_loadAndAnalyze"/>
+    </subgraph>
+
+    <subgraph name="tgVEGMapBACEndsSeqsToGenome" xmlFile="blatDnaAgainstGenome.xml">
+      <paramValue name="dataDir">lorenziCosmidEnds_tgVEGAnalyze/BACEndsSeqsBlat</paramValue>
+      <paramValue name="maxIntronSize">100</paramValue>
+      <paramValue name="targetNcbiTaxonId">432359</paramValue>
+      <paramValue name="targetSeqsDir">TgondiiVEG/genomicSeqs</paramValue>
+      <paramValue name="targetExtDbRlsSpec">T.gondii VEG contigs from Genbank|2008-07-23</paramValue>
+      <paramValue name="queryNcbiTaxonId">508771</paramValue>
+      <paramValue name="queryFile">lorenziCosmidEnds_loadAndAnalyze/master/mainresult/blocked.seq</paramValue>
+      <paramValue name="queryTable">ExternalNASequence</paramValue>
+      <paramValue name="queryExtDbRlsSpec">TgonME49_lorenzi_CosmidEnds_RSRC|2011-05-04</paramValue>
+      <depends name="lorenziCosmidEnds_loadAndAnalyze"/>
+    </subgraph>
+
 </workflowGraph>
