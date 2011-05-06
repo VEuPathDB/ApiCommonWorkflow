@@ -1,0 +1,18 @@
+<workflowGraph name="nceranaeBRL01ISFResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="dataDir"/>
+
+    <constant name="dataDir">$$dataDir$$/nceranaeBRL01ISFResource</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+  <subgraph name="NceranaeBRL01_genomes_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">NceranaeBRL01_genomes_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
+</workflowGraph>
