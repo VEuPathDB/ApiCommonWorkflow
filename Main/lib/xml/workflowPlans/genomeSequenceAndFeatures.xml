@@ -9,13 +9,27 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <datasetTemplate class="genbank_genome">
+  <datasetTemplate class="genbank_primary_genome">
     <prop name="name"/>
-    <subgraph name="$$organismAbbrev$$_genome_${name}_genbank_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismAbbrev$$_genome_${name}_genbank_RSRC</paramValue>
+    <prop name="soTerm"/>
+    <subgraph name="$$organismAbbrev$$_${soTerm}_${name}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$organismAbbrev$$_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="genbank_secondary_genome">
+    <prop name="name"/>
+    <prop name="soTerm"/>
+    <prop name="parentDataset"/>
+    <subgraph name="$$organismAbbrev$$_${soTerm}_${name}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$organismAbbrev$$_${soTerm}_${name}_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+      <depends name="${parentDataset}"/>
     </subgraph>
   </datasetTemplate>
 
@@ -26,6 +40,7 @@
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
+      <depends name="${parentDataset}" selfAllowed="true"/>
     </subgraph>
   </datasetTemplate>
 
@@ -38,13 +53,4 @@
     </subgraph>
   </datasetTemplate>
 
-  <datasetTemplate name="genome_chromosome_assembly_agp">
-    <prop name="parentResource"/>
-    <subgraph name="$$organismAbbrev$$_genome_chromosome_assembly_agp_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismAbbrev$$_genome_chromosome_assembly_agp_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="${parentResource}"/>
-    </subgraph>
-  </datasetTemplate>
 </workflowGraph>

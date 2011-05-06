@@ -20,7 +20,7 @@
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
   </step>
 
-  <datasetTemplate name="isolates_genbank">
+  <datasetTemplate class="isolates_genbank">
     <subgraph name="mapGenbankIsolatesToGenome" xmlFile="mapIsolatesToGenome.xml">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
@@ -42,13 +42,13 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="map${name${IsolatesToGenome" xmlFile="mapIsolatesToGenome.xml">
+    <subgraph name="map${name}IsolatesToGenome" xmlFile="mapIsolatesToGenome.xml">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
       <paramValue name="isolatesExtDbRlsSpec">${name}|${version}</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="$$orgAbbrev$_isolate_$$name$$_sequences_RSRC"/>
+      <depends name="$$orgAbbrev$_isolate_${name}_sequences_RSRC"/>
     </subgraph>
   </datasetTemplate>
 
@@ -63,14 +63,14 @@
     <depends name="makeDataDir"/>
   </subgraph>
 
-  <datasetTemplate name="clonedInsertEnds">
+  <datasetTemplate class="clonedInsertEnds">
     <prop name="name"/>
     <prop name="version"/>
     <prop name="repeatMaskSpecies"/>
-    <subgraph name="${name${_clonedInsertEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeClonedInsertEnds.xml">
-      <paramValue name="dataDir">$$dataDir$$/${name${_BAC_ends_loadAndAnalyze</paramValue>
+    <subgraph name="${name}_clonedInsertEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeClonedInsertEnds.xml">
+      <paramValue name="dataDir">$$dataDir$$/${name}_BAC_ends_loadAndAnalyze</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="clonedInsertEndsExtDbRlsSpec">${name${_RSRC|${version}</paramValue>
+      <paramValue name="clonedInsertEndsExtDbRlsSpec">${name}_RSRC|${version}</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
@@ -89,12 +89,11 @@
     <depends name="makeDataDir"/>
   </subgraph>
 
-  <datasetTemplate name="sageTagSequences">
+  <datasetTemplate class="sageTagSequences">
     <prop name="name"/>
-    <prop name="version"/>
 
-    <subgraph name="$$orgAbbrev$$_sageTag_${name${_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$orgAbbrev$$_sageTag_${name${_RSRC</paramValue>
+    <subgraph name="$$orgAbbrev$$_sageTag_${name}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$orgAbbrev$$_sageTag_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -107,42 +106,42 @@
       <paramValue name="studyName">Transcriptional profile of P.falciparum by Serial analysis of gene expression</paramValue>
       <paramValue name="nickName">mapSageTags</paramValue>   
       <paramValue name="calFreq">true</paramValue>
-      <depends name="$$orgAbbrev$$_sageTag_${name${_RSRC"/>
+      <depends name="$$orgAbbrev$$_sageTag_${name}_RSRC"/>
     </subgraph>
 
   </datasetTemplate>
 
   <!-- double check that loading sage tag freqs does not depend on map of seqs to genome -->
-  <datasetTemplate name="sageTagFrequencies">
+  <datasetTemplate class="sageTagFrequencies">
     <prop name="name"/>
     <prop name="version"/>
     <prop name="normalizeFrequencies"/>
 
-    <subgraph name="$$orgAbbrev$$_sageTag_${name${_frequencies_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$orgAbbrev$$_sageTag_${name${_frequencies_RSRC</paramValue>
+    <subgraph name="$$orgAbbrev$$_sageTag_${name}_frequencies_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$orgAbbrev$$_sageTag_${name}_frequencies_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="$$orgAbbrev$$_sageTag_${name${_RSRC"/>
     </subgraph>
 
-    <step name="${name${_createSageTagNormFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSageTagNormFile" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">
+    <step name="${name}_createSageTagNormFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSageTagNormFile" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">
 
       <paramValue name="studyName">$$name$$</paramValue>
       <paramValue name="outputDir">$$dataDir$$</paramValue>
-      <depends name="$$orgAbbrev$$_sageTag_${name${_frequencies_RSRC"/>
+      <depends name="$$orgAbbrev$$_sageTag_${name}_frequencies_RSRC"/>
     </step>
 
-    <step name="${name${_insertNormSageTagFreqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNormSageTagFreqs" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">
+    <step name="${name}_insertNormSageTagFreqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNormSageTagFreqs" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">
       <paramValue name="inputDir">$$dataDir$$</paramValue>
       <paramValue name="studyName">$$name$$</paramValue>
       <depends name="${name${_createSageTagNormFile"/>
     </step>
   </datasetTemplate>
 
-  <datasetTemplate name="genomeFeatures_GFF2">
+  <datasetTemplate class="genomeFeatures_GFF2">
     <prop name="name"/> 
-    <subgraph name="$$orgAbbrev$$_genomeFeature_${name${_GFF2_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$orgAbbrev$$_genomeFeature_$$name$$_GFF2_RSRC</paramValue>
+    <subgraph name="genomeFeature_${name}_GFF2_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">genomeFeature_${name}_GFF2_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
