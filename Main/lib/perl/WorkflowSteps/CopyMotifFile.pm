@@ -16,7 +16,7 @@ sub run {
   } else{
       if($test){
 	  $self->testInputFile('inputFile', "$inputFile");
-	  $self->testInputFile('outputFile', "$outputFile");
+	 # $self->testInputFile('outputFile', "$outputFile");
 	  $self->runCmd(0, "echo test > $outputFile");
       }else {
 	  $self->runCmd($test, "cp $inputFile $outputFile");	   
