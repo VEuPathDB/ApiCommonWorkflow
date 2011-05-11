@@ -35,25 +35,25 @@
     <constant name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/$$organismNameForFiles$$/transcriptExpression</constant>
 
 
-  <step name="insertOrganismProject"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrganismProject">
+  <step name="insertOrganism"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrganism">
+      <paramValue name="fullName">$$organismFullName$$</paramValue>
       <paramValue name="project">$$projectName$$</paramValue>
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="organismFullName">$$organismFullName$$</paramValue>
-      <paramValue name="organismNameForFiles">$$organismNameForFiles$$</paramValue>
+      <paramValue name="abbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="abbrevPublic">$$organismAbbrev$$</paramValue>
+      <paramValue name="abbrevForFilenames">$$organismNameForFiles$$</paramValue>
+      <paramValue name="abbrevOrthomcl">$$orthomclAbbrev$$</paramValue>
+      <paramValue name="abbrevStrain">$$strainAbbrev$$</paramValue>
       <paramValue name="isReferenceStrain">$$isReferenceStrain$$</paramValue>
-      <paramValue name="publicAbbreviation">$$publicAbbreviation$$</paramValue>
       <paramValue name="isDraftGenome">$$isDraftGenome$$</paramValue>
-      <paramValue name="orthomclAbbrev">$$orthomclAbbrev$$</paramValue>
-      <paramValue name="strainAbbrev">$$strainAbbrev$$</paramValue>
     </step>
 
-  <!-- depends on insertOrganismProject so we run that step early in the flow, thereby validating the organism info before getting too far -->
+  <!-- set depends to insertOrganism to force that step to run early in the flow, thereby validating the organism info before getting too far -->
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
-      <depends name="insertOrganismProject"/>
+      <depends name="insertOrganism"/>
     </step>
 
     <step name="initDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitDownloadSiteDir">
