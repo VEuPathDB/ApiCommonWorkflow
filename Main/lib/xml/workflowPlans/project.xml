@@ -1,11 +1,20 @@
+<!-- 
+
+$$relativeDownloadSiteDir$$ = downloadSite/$$projectName$$/release-$$projectVersion$$
+$$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersion$$
+
+@@websiteFilesDir@@/$$relativeDownloadSiteDir$$/organismFileName
+@@websiteFilesDir@@/$$relativeWebServicesDir$$/
+-->
+
 <workflowGraph name="plasmoWorkflow">
   <param name="projectName"/>
   <param name="projectVersion"/>
 
   <constant name="comparativeGenomicsFastaDir">common/comparativeGenomics/Fasta/</constant>
   <constant name="comparativeGenomicsGffDir">common/comparativeGenomics/Gff/</constant>
-  <constant name="webServicesDataDir">webServices/$$projectName$$/release-$$projectVersion$$/</constant>
-  <constant name="downloadSiteDir">@@downloadSite@@/$$projectName$$/release-$$projectVersion$$/</constant>
+  <constant name="relativeWebServicesDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$</constant>
+  <constant name="relativeDownloadSiteDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$/</constant>
 
   <globalSubgraph name="global" xmlFile="globalGraph.xml">
     <paramValue name="commonResourceXmlFile">$$project$$/$$project$$Common.xml</paramValue>
@@ -31,6 +40,7 @@
     <prop name="speciesNcbiTaxonId"/>
     <prop name="isReferenceStrain"/>
     <prop name="isDraftGenome"/>
+    <prop name="hasTemporaryNcbiTaxonId"/>
     <prop name="orthomclAbbrev"/>
     <prop name="strainAbbrev"/>
     <prop name="hasOrganelleSeq"/>
@@ -82,7 +92,7 @@
       <paramValue name="strainAbbrev">${strainAbbrev}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${genomeExtDbRlsSpec}</paramValue>
       <paramValue name="organismResourceXmlFile">$$projectName$$/${organismAbbrev}.xml</paramValue>
-      <paramValue name="downloadSiteDir">$$downloadSiteDir$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
@@ -138,7 +148,7 @@
     <subgraph name="${organismAbbrev}_Optional" xmlFile="${projectName}/${organismAbbrev}/optional.xml">
       <paramValue name="parentDataDir"></paramValue>
       <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
-      <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
@@ -155,12 +165,12 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-      <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <depends name="${organismAbbrev}_LoadGeneAliases"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
-      <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="organismNameForFiles">${organismNameForFiles}</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>

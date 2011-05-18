@@ -306,6 +306,15 @@ sub getAlgInvIds {
   return join(",", @algInvIds);
 }
 
+# the root directory that holds all website files.
+# at EuPathDB this is apiSiteFiles/
+# if in test mode, files go into test/ dir to keep separate from real files
+sub getWebsiteFilesDir {
+    my ($self, $test) = @_;
+
+    my $websiteFilesDir = $self->getSharedConfig('websiteFilesDir');
+    return $test? "$websiteFilesDir/test" : $websiteFilesDir;
+}
 
 1;
 

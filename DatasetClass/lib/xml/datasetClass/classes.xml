@@ -11,6 +11,7 @@
     <prop name="speciesNcbiTaxonId"/>
     <prop name="isReferenceStrain"/>
     <prop name="isDraftGenome"/>
+    <prop name="hasTemporaryNcbiTaxonId"/>
     <prop name="orthomclAbbrev"/>
     <prop name="strainAbbrev"/>
     <prop name="hasOrganelleSeq"/>
@@ -78,7 +79,7 @@
 
     <graphFile planFile="genomeSequenceAndFeatures.xml" dir="${project}/${organismAbbrev}"/>
 
-    <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC"
+    <resource resource="${organismAbbrev}_primary_genome_RSRC"
               version="${version}"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures">
 
@@ -96,14 +97,13 @@
     <prop name="version"/>
     <prop name="soTerm"/>
     <prop name="mapFile"/>
-    <prop name="parentDataset"/>
 
      <graphFile planFile="genomeSequenceAndFeatures.xml" dir="${project}/${organismAbbrev}"/>
 
     <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC"
               version="${version}"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
-	      parentResource="${parentDataset}">
+	      parentResource="${organismAbbrev}_primary_genome_RSRC">
 
       <manualGet fileOrDir="${project}/${organismAbbrev}/genome/${soTerm}_${name}_genbank/%RESOURCE_VERSION%/final/genome.gbf"/>
 
@@ -142,19 +142,18 @@
     <prop name="ncbiTaxonId"/>
     <prop name="version"/>
     <prop name="soTerm"/>
-    <prop name="parentResource"/>
 
     <graphFile planFile="genomeSequenceAndFeatures.xml" dir="${project}/${organismAbbrev}"/>
 
     <resource resource="${organismAbbrev}_${soTerm}_GeneDB_features_RSRC"
               version="${version}"
-	      parentResource="${parentResource}"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
 	      internalDescrip="">
 
       <manualGet fileOrDir="global/empty"/>
 
-      <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/geneDBGFF2Gus.xml --inputFileOrDir @@dataDir@@/../${parentResource}/final/genome.gff --inputFileExtension "gff"  --fileFormat gff3 --soCvsVersion @@SO_VER@@ --defaultOrganism ${ncbiTaxonId}  --seqSoTerm '${soTerm}' --validationLog @@dataDir@@/validation.log --bioperlTreeOutput @@dataDir@@/bioperlTree.out --seqIdColumn source_id --naSequenceSubclass ExternalNASequence</pluginArgs>
+      <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/geneDBGFF2Gus.xml --inputFileOrDir @@dataDir@@/../${organismAbbrev}_primary_genome_RSRC/final/genome.gff --inputFileExtension "gff"  --fileFormat gff3 --soCvsVersion @@SO_VER@@ --defaultOrganism ${ncbiTaxonId}  --seqSoTerm '${soTerm}' --validationLog @@dataDir@@/validation.log --bioperlTreeOutput @@dataDir@@/bioperlTree.out --seqIdColumn source_id --naSequenceSubclass ExternalNASequence</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -170,7 +169,7 @@
     <resource resource="${organismAbbrev}_genome_virtual_sequence_agp_RSRC"
               version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertVirtualSeqFromAgpFile"
-	      parentResource="${parentDataset}">
+	      parentResource="${organismAbbrev}_primary_genome_RSRC">
       
       <manualGet fileOrDir="${project}/${organismAbbrev}/genome/${virtualSeqSOTerm}_assembly_agp/%RESOURCE_VERSION%/final/assembly.agp"/>
 
@@ -186,7 +185,6 @@
     <prop name="ncbiTaxonId"/>
     <prop name="name"/>
     <prop name="version"/>
-    <prop name="parentResource"/>
     <prop name="mapFile"/>
     <prop name="gff2GroupTag"/>
 
@@ -195,7 +193,7 @@
     <resource resource="${organismAbbrev}_genomeFeature_${name}_GFF2_RSRC"
               version="${version}"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
-	      parentResource="${parentResource}">
+	      parentResource="${organismAbbrev}_primary_genome_RSRC">
 
       <manualGet fileOrDir="${project}/${organismAbbrev}/genomeFeature/${name}_GFF/%RESOURCE_VERSION%/final/features.gff"/>
 
@@ -372,14 +370,13 @@
     <prop name="project"/>
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
-    <prop name="parentResource"/>
 
     <graphFile planFile="dbXRefs.xml" dir="${project}/${organismAbbrev}"/>
 
     <resource resource="${organismAbbrev}_dbxref_gene2Entrez_RSRC"
 	      version="@@${organismAbbrev}_dbxref_gene2Entrez_VER@@"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
-	      parentResource="${parentResource}">
+	      parentResource="${organismAbbrev}_primary_genome_RSRC">
 
 
       <manualGet fileOrDir="common/dbxref/gene2Entrez/%RESOURCE_VERSION%/final/gene_info.gz"/>
@@ -398,14 +395,13 @@
     <prop name="project"/>
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
-    <prop name="parentResource"/>
 
     <graphFile planFile="dbXRefs.xml" dir="${project}/${organismAbbrev}"/>
 
     <resource resource="${organismAbbrev}_dbxref_gene2Uniprot_RSRC"
 	      version="@@${organismAbbrev}_dbxref_gene2Uniprot_VER@@"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
-	      parentResource="${parentResource}">
+	      parentResource="${organismAbbrev}_primary_genome_RSRC">
 
       <manualGet fileOrDir="common/dbxref/gene2Uniprot/%RESOURCE_VERSION%/final/idmapping_selected.tab.gz"/>
 
@@ -609,13 +605,12 @@
     <prop name="organismAbbrev"/>
     <prop name="name"/>
     <prop name="version"/>
-    <prop name="parentResource"/>
  
     <graphFile planFile="productNames.xml" dir="${project}/${organismAbbrev}"/>
 
     <resource resource="${organismAbbrev}_function_${name}_product_names_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertGeneFeatProductFromTabFile"
-	      parentResource="${parentResource}">
+	      parentResource="${organismAbbrev}_primary_genome_RSRC">
 
       <manualGet fileOrDir="${project}/${organismAbbrev}/function/${name}_product_names/%RESOURCE_VERSION%/final/product.txt"/>
 
@@ -679,7 +674,7 @@
 
     <resource resource="${organismAbbrev}_massSpec_${name}_RSRC" version="2007-05-11"
 	      plugin="ApiCommonData::Load::Plugin::InsertMassSpecPreprocessed"
-	      parentResource="${genomeRSRC}"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC",
 	      internalDescrip="">
 
       <manualGet fileOrDir="${project}/${organismAbbrev}/massSpec/${name}/%RESOURCE_VERSION%/final"/>
