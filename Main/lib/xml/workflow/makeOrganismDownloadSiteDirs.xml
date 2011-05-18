@@ -1,0 +1,47 @@
+<workflowGraph name="">
+  <param name="organismAbbrev"/>
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="organelleName"/>
+
+  <step name="initOrganismDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitOrganismDownloadSiteDir">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="organelleName">$$organelleName$$</paramValue>
+  </step>
+
+  <step name="makeDownloadSiteFastaDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrganismWebSiteSubDir">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="subDir">fasta</paramValue>
+    <paramValue name="organelleName">$$organelleName$$</paramValue>
+    <depends name="initOrganismDownloadSiteDir"/>
+  </step>
+
+  <step name="makeDownloadSiteTxtDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrganismWebSiteSubDir">
+    <paramValue name="organismAbbrev">$$organismNameForFiles$$</paramValue>
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="subDir">txt</paramValue>
+    <paramValue name="organelleName">$$organelleName$$</paramValue>
+    <depends name="initOrganismDownloadSiteDir"/>
+  </step>
+
+  <step name="makeDownloadSiteGffDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrganismWebSiteSubDir">
+    <paramValue name="organismAbbrev">$$organismNameForFiles$$</paramValue>
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="subDir">gff</paramValue>
+    <paramValue name="organelleName">$$organelleName$$</paramValue>
+    <depends name="initOrganismDownloadSiteDir"/>
+  </step>
+
+  <step name="makeDownloadSiteTranscriptExpressionDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrganismWebSiteSubDir">
+    <paramValue name="organismAbbrev">$$organismNameForFiles$$</paramValue>
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="subDir">transcriptExpression</paramValue>
+    <paramValue name="apiSiteFilesDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
+    <paramValue name="organelleName">$$organelleName$$</paramValue>
+    <depends name="initDownloadSiteDir"/>
+  </step>
+
+</workflowGraph>
