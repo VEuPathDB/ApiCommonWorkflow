@@ -1,0 +1,33 @@
+<workflowGraph name="ltarentolaeSpecific">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/LtarentolaeSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Ltarentolae</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/LtarentolaeLoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/LtarentolaeLoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/LtarentolaeLoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/LtarentolaeLoadGenome/geneModelForSsa.txt</constant>
+  <constant name="samHeaderFile">$$parentDataDir$$/LtarentolaeLoadGenome/samHeader</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+  <subgraph name="Ltarentolae_contigs_DBRefs_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Ltarentolae_contigs_DBRefs_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+</workflowGraph>
+
+
+
