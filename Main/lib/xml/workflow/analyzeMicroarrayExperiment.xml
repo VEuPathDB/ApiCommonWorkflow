@@ -11,7 +11,8 @@
     <param name="isLogged"/>
     <param name="mappingFileForExpressionStats"/>
     <param name="calculateExpressionStats"/>
-    <param name="downloadSiteTranscriptExpressionDataDir"/>
+    <param name="relativeDownloadSiteDir"/>
+    <param name="organismAbbrev"/>
 
     <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
       <paramValue name="inputDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
@@ -28,7 +29,8 @@
     <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
       <paramValue name="copyFromDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
       <paramValue name="configFile">$$parentDataDir$$/$$experimentResourceName$$/final/expression_profile_config.txt</paramValue>
-      <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <depends name="doTranscriptExpression"/>
     </step>
 

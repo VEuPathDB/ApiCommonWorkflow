@@ -1,18 +1,24 @@
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeAnnotatedProteinsDownloadFile;
 
-@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 use strict;
-use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
-sub run {
-  my ($self, $test, $undo) = @_;
+sub getExtraParams {
+    return (
+          'organismSource',
+          'genomeExtDbRlsSpecList',
+	  'deprecated',
+          'soTermIdsOrNames'
+	);
+}
+
+sub getDownloadFileCmd {
+    my ($self, $downloadFileName) = @_;
 
   # get parameters
   my @genomeExtDbSpecList = split(/,/,$self->getParamValue('genomeExtDbSpecList'));
-  my $outputFile = $self->getParamValue('outputFile');
   my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
-  my $descripFile= $self->getParamValue('descripFile');
-  my $descripString= $self->getParamValue('descripString');
   my $organismSource = $self->getParamValue('organismSource');
 
   my (@extDbRlsVers,@extDbNames);
@@ -70,41 +76,7 @@ sub run {
 
   $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
   my $cmd = " gusExtractSequences --outputFile $outputFile  --idSQL \"$sql\"";
-  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
-
-
-  
-  if ($undo) {
-    #$self->runCmd(0, "rm -f $outputFile");
-    #$self->runCmd(0, "rm -f $descripFile");
-  }else{
-      if ($test) {
-	  $self->runCmd(0, "echo test > $outputFile");
-      }else{
-	  $self->runCmd($test, $cmd);
-	  $self->runCmd($test, $cmdDec);
-      }
-  }
-
+    return $cmd;
 }
 
-
-
-
-sub getParamsDeclaration {
-  return (
-          'outputFile',
-          'extDbName',
-          'extDbRls',
-          'deprecated',
-	  'organismSource',
-          'soTermIdsOrNames'
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
+1;

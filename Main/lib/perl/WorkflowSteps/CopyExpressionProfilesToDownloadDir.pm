@@ -3,19 +3,27 @@ package ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownload
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::Util::OrganismInfo;
 
 sub run {
   my ($self, $test, $undo) = @_;
 
   # get parameters
   my $copyFromDir = $self->getParamValue('copyFromDir');
-  my $copyToDir = $self->getParamValue('copyToDir');
   my $configFile = $self->getParamValue('configFile');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  # this is relative to the website files dir.
+  # it will look something like downloadSite/ToxoDB/release-6.3
+  my $relativeDir = $self->getParamValue('relativeDir');
 
+  my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+
+  my $organismNameForFiles =
+      $self->getOrganismInfo($organismAbbrev)->getNameForFiles();
+
+  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/transcriptExpression";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-
-  $self->runCmd(0, "mkdir -p $copyToDir");
 
   my $cmd = "copyExpressionProfilesToDownloadDir --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir --configFile $workflowDataDir/$configFile";
 
@@ -24,7 +32,7 @@ sub run {
   }
 
   if ($undo) {
-    $self->runCmd(0, "rm -fr $copyToDir");
+    $self->runCmd(0, "rm -fr $copyToDir/*");
   } else {
     $self->runCmd($test, $cmd);
   }
@@ -34,7 +42,8 @@ sub run {
 sub getParamsDeclaration {
   return (
           'copyFromDir',
-          'copyToDir',
+          'organismAbbrev',
+          'relativeDir',
           'configFile',
          );
 }

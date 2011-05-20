@@ -1,17 +1,14 @@
 <workflowGraph name="">
-  <param name="project"/>
-  <param name="orgAbbrev"/>
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="organismResourceXmlFile"/>
   <param name="parentDataDir"/>
-  <param name="organismName"/>
-  <param name="organismFullName"/>
   <param name="genomeExtDbRlsSpec"/>
   <param name="maxIntronSize"/>
-  <param name="downloadSiteDir"/>
-  <param name="ncbiTaxonId"/>
-  <param name="repeatMaskSpecies"/>
+  <param name="relativeDownloadSiteDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/$$organismName$$/SpecificAnalysis</constant>
-  <constant name="genomicSeqsFile">$$parentDataDir$$/$$organismName$$/genome/genomicSeqs.fsa</constant>
+  <constant name="dataDir">$$parentDataDir$$/optionalAnalysis</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/loadGenome/genomicSeqs.fsa</constant>
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -25,7 +22,7 @@
     <subgraph name="mapGenbankIsolatesToGenome" xmlFile="mapIsolatesToGenome.xml">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
       <paramValue name="organismName">$$organismName$$</paramValue>
-      <paramValue name="isolatesExtDbRlsSpec">$$orgAbbrev$$_isolates_genbank_RSRC|TODAY</paramValue>
+      <paramValue name="isolatesExtDbRlsSpec">$$organismAbbrev$$_isolates_genbank_RSRC|TODAY</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="makeDataDir"/>
@@ -36,8 +33,8 @@
     <prop name="name"/>
     <prop name="version"/>
 
-    <subgraph name="$$orgAbbrev$$_isolate_$$name$$_sequences_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$orgAbbrev$_isolate_$$name$$_sequences_RSRC</paramValue>
+    <subgraph name="$$organismAbbrev$$_isolate_$$name$$_sequences_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$organismAbbrev$_isolate_$$name$$_sequences_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -49,18 +46,19 @@
       <paramValue name="isolatesExtDbRlsSpec">${name}|${version}</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="$$orgAbbrev$_isolate_${name}_sequences_RSRC"/>
+      <depends name="$$organismAbbrev$_isolate_${name}_sequences_RSRC"/>
     </subgraph>
   </datasetTemplate>
 
   <!-- this subgraph might be empty, if there are no array studies -->
-  <subgraph name="arrayResources" xmlFile="$$project$$/$$orgAbbrev$$/arrayStudies.xml">
+  <subgraph name="arrayResources" xmlFile="$$projectName$$/$$organismAbbrev$$/arrayStudies.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
     <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
     <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
-    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDir$$/transcriptExpression</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
@@ -76,14 +74,14 @@
       <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="repeatMaskSpecies">-species ${repeatMaskSpecies}</paramValue>
-      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$orgAbbrev$$_LoadGenome/genomicSeqs</paramValue>
+      <paramValue name="repeatMaskSpeciesOption">-species ${repeatMaskSpecies}</paramValue>
+      <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismAbbrev$$_LoadGenome/genomicSeqs</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
   <!-- this subgraph might be empty, if there are no array studies -->
-  <subgraph name="snps" xmlFile="project$$/$$orgAbbrev$$/SNPs.xml">
+  <subgraph name="snps" xmlFile="$$projectName$$/$$organismAbbrev$$/SNPs.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
@@ -93,8 +91,8 @@
   <datasetTemplate class="sageTagSequences">
     <prop name="name"/>
 
-    <subgraph name="$$orgAbbrev$$_sageTag_${name}_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$orgAbbrev$$_sageTag_${name}_RSRC</paramValue>
+    <subgraph name="$$organismAbbrev$$_sageTag_${name}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$organismAbbrev$$_sageTag_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -107,7 +105,7 @@
       <paramValue name="studyName">Transcriptional profile of P.falciparum by Serial analysis of gene expression</paramValue>
       <paramValue name="nickName">mapSageTags</paramValue>   
       <paramValue name="calFreq">true</paramValue>
-      <depends name="$$orgAbbrev$$_sageTag_${name}_RSRC"/>
+      <depends name="$$organismAbbrev$$_sageTag_${name}_RSRC"/>
     </subgraph>
 
   </datasetTemplate>
@@ -118,18 +116,18 @@
     <prop name="version"/>
     <prop name="normalizeFrequencies"/>
 
-    <subgraph name="$$orgAbbrev$$_sageTag_${name}_frequencies_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$orgAbbrev$$_sageTag_${name}_frequencies_RSRC</paramValue>
+    <subgraph name="$$organismAbbrev$$_sageTag_${name}_frequencies_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$organismAbbrev$$_sageTag_${name}_frequencies_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="$$orgAbbrev$$_sageTag_${name${_RSRC"/>
+      <depends name="$$organismAbbrev$$_sageTag_${name${_RSRC"/>
     </subgraph>
 
     <step name="${name}_createSageTagNormFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSageTagNormFile" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">
 
       <paramValue name="studyName">$$name$$</paramValue>
       <paramValue name="outputDir">$$dataDir$$</paramValue>
-      <depends name="$$orgAbbrev$$_sageTag_${name}_frequencies_RSRC"/>
+      <depends name="$$organismAbbrev$$_sageTag_${name}_frequencies_RSRC"/>
     </step>
 
     <step name="${name}_insertNormSageTagFreqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNormSageTagFreqs" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">

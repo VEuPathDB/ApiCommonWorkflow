@@ -1,17 +1,21 @@
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfDownloadFile;
 
-@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 use strict;
-use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
 
-sub run {
-  my ($self, $test, $undo) = @_;
+sub getExtraParams {
+    return (
+          'genomeExtDbRlsSpec',
+          'genomeVirtualSeqsExtDbRlsSpec',
+          'soTermIdsOrNames'
+	  'minOrfLength'
+	);
+}
 
-  # get parameters
-  my $outputFile = $self->getParamValue('outputFile');
-  my $descripFile= $self->getParamValue('descripFile');
-  my $descripString= $self->getParamValue('descripString');
+sub getDownloadFileCmd {
+    my ($self, $downloadFileName) = @_;
 
   my @extDbRlsIds;
   push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeExtDbRlsSpec'))) if $self->getParamValue('genomeExtDbRlsSpec');
@@ -63,37 +67,7 @@ EOF
       gusExtractSequences --outputFile $outputFile \\
       --idSQL \"$sql\" \\
       --verbose
-EOF
-
-  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
-
-
-  if ($undo) {
-    #$self->runCmd(0, "rm -f $outputFile");
-    #$self->runCmd(0, "rm -f $descripFile");
-  } else {
-      if ($test) {
-	  $self->runCmd(0,"echo test > $outputFile");
-      }else{
-	  $self->runCmd($test,$cmd);
-	  $self->runCmd($test, $cmdDec);
-      }
-  }
-}
-
-sub getParamsDeclaration {
-  return (
-          'outputFile',
-          'genomeExtDbRlsSpec',
-          'genomeVirtualSeqsExtDbRlsSpec',
-          'soTermIdsOrNames'
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
+   EOF
+    return $cmd;
 }
 

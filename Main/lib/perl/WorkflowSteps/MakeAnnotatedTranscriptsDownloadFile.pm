@@ -1,15 +1,24 @@
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeAnnotatedTranscriptsDownloadFile;
 
-@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 use strict;
-use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
 
-sub run {
-  my ($self, $test, $undo) = @_;
+sub getExtraParams {
+    return (
+          'organismSource',
+          'genomeExtDbRlsSpec',
+          'genomeVirtualSeqsExtDbRlsSpec',
+	  'deprecated',
+          'soTermIdsOrNames'
+	);
+}
+
+sub getDownloadFileCmd {
+    my ($self, $downloadFileName) = @_;
 
   # get parameters
-  my $outputFile = $self->getParamValue('outputFile');
   my $organismSource = $self->getParamValue('organismSource');
   my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
 
@@ -61,44 +70,10 @@ sub run {
         AND gf.external_db_version in ($vers)
         AND fl.is_top_level = 1
         AND gf.is_deprecated = $deprecated
-EOF
+  EOF
 
-$sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
+  $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
 
-my $cmd = "gusExtractSequences --outputFile $outputFile  --idSQL \"$sql\" --verbose";
-my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
-
-
-
-   if ($undo) {
-       #$self->runCmd(0, "rm -f $outputFile");
-       #$self->runCmd(0, "rm -f $descripFile");
-  } else {
-      if ($test) {
-	  $self->runCmd(0,"echo test > $outputFile");
-      }else{
-	  $self->runCmd($test,$cmd);
-	  $self->runCmd($test, $cmdDec);
-      }
-  }
-
-}
-
-sub getParamsDeclaration {
-  return (
-          'outputFile',
-          'organismSource',
-          'genomeExtDbRlsSpec',
-          'genomeVirtualSeqsExtDbRlsSpec',
-	  'deprecated',
-          'soTermIdsOrNames'
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
+  my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" --verbose";
 }
 

@@ -1,15 +1,20 @@
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfNADownloadFile;
 
-@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 use strict;
-use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
-sub run {
-  my ($self, $test, $undo) = @_;
+sub getExtraParams {
+    return (
+          'genomeExtDbRlsSpec',
+          'genomeVirtualSeqsExtDbRlsSpec',
+          'soTermIdsOrNames'
+	  'minOrfLength'
+	);
+}
 
-  my $outputFile = $self->getParamValue('outputFile');
-  my $descripFile= $self->getParamValue('descripFile');
-  my $descripString= $self->getParamValue('descripString');
+sub getDownloadFileCmd {
+    my ($self, $downloadFileName) = @_;
 
   my @extDbRlsIds;
   push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeExtDbRlsSpec'))) if $self->getParamValue('genomeExtDbRlsSpec');
