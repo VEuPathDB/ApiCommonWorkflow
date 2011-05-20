@@ -1,9 +1,10 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::InitDownloadSiteDir;
+package ApiCommonWorkflow::Main::WorkflowSteps::InitOrganismDownloadSiteDir;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::Util::OrganismInfo;
 
 # initialize the download site dirs for an organism.
 # there are two, one in apiSiteFiles/downloadSite and one in apiSiteFiles/downloadSiteRestrictedAccess
@@ -17,15 +18,25 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $projectName = $self->getParamValue('projectName');
-  my $projectVersion = $self->getParamValue('projectVersion');
-  my $organismName = $self->getParamValue('organismName');
+  # get parameters
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $organelleName = $self->getParamValue('organelleName');
+  # this is relative to the website files dir.
+  # it will look something like downloadSite/ToxoDB/release-6.3
+  my $relativeDir = $self->getParamValue('relativeDir');
 
-  my $downloadSiteDataDir = $self->getSharedConfig('downloadSiteDir');  # where we actually write the data
+  my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+
+  my $organismNameForFiles =
+      $self->getOrganismInfo($organismAbbrev)->getNameForFiles();
+
+  if ($organelleName) {
+      $organismNameForFiles .= "-$organelleName";
+  }
 
   # not using restricted access.  set up dir the old way
-  if ($downloadSiteDataDir !~ /Restricted/) {
-      my $fullPath = "$downloadSiteDataDir/$projectName/release-$projectVersion/$organismName";
+  if ($relativeDir !~ /Restricted/) {
+      my $fullPath = "$websiteFilesDir/$relativeDir/$organismNameForFiles";
       if ($undo) {
 	  $self->runCmd(0, "rm -rf $fullPath");
       } else {
@@ -42,8 +53,8 @@ sub run {
 	  $self->error("Can't find organism 'name' in xml file '$xmlFile'");
       }
       
-      my $fullPathRestricted = "$downloadSiteDataDir/$projectName/release-$projectVersion/$organismName";
-      my $fullPathPublic = "downloadSite/$projectName/release-$projectVersion/$organismName";
+      my $fullPathRestricted = "$downloadSiteDataDir/$relativeDir/$organismName";
+      my $fullPathPublic = "downloadSite/$relativeDir/$organismName";
       if ($undo) {
 	  $self->runCmd(0, "rm -rf $fullPathPublic");
 	  $self->runCmd(0, "rm -rf $fullPathRestricted");
@@ -72,8 +83,9 @@ sub _parseXmlFile {
 
 sub getParamsDeclaration {
     return (
-	'organism',
-	'outputFile',
+	'organismAbbrev',
+	'relativeDir',
+	'organelleName',
 	);
 }
 
