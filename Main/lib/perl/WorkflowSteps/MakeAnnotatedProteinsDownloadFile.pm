@@ -14,7 +14,7 @@ sub getExtraParams {
 }
 
 sub getDownloadFileCmd {
-    my ($self, $downloadFileName) = @_;
+    my ($self, $downloadFileName, $test) = @_;
 
   # get parameters
   my @genomeExtDbSpecList = split(/,/,$self->getParamValue('genomeExtDbSpecList'));
@@ -75,7 +75,7 @@ sub getDownloadFileCmd {
 
 
   $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
-  my $cmd = " gusExtractSequences --outputFile $outputFile  --idSQL \"$sql\"";
+  my $cmd = " gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"";
     return $cmd;
 }
 

@@ -28,7 +28,7 @@ sub getExtraConfig {
 
 # required. return a command that will create the download file
 sub getDownloadFileCmd {
-    my ($self, $downloadFileName) = @_;
+    my ($self, $downloadFileName, $test) = @_;
 }
 
 ##############################################################
@@ -47,25 +47,25 @@ sub run {
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $organismNameForFiles = $self->getOrganismInfo($organismAbbrev)->getNameForFiles();
-  my $outputDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/$subDir";
+  my $outputDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/$fileType";
 
-  my $downloadFile = "$projectName-$projectVersion_$organismNameForFiles_$dataName.$fileType";
-  my $descripFile = ".$projectName-$projectVersion_$organismNameForFiles_$dataName.$fileType.desc";
+  my $downloadFile = "$projectName-${projectVersion}_${organismNameForFiles}_$dataName.$fileType";
+  my $descripFile = ".$projectName-${projectVersion}_${organismNameForFiles}_$dataName.$fileType.desc";
 
-  my $downloadFileCmd =  $self->getDownloadFileCmd($downloadFile);
+  my $downloadFileCmd =  $self->getDownloadFileCmd($downloadFile, $test);
 
   my $descripFileCmd =  "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
 
   if($undo){
     $self->runCmd(0, "rm -f $downloadFile");
     $self->runCmd(0, "rm -f $descripFile");
-  }else{  
+  }else {
       if ($test) {
 	  $self->runCmd(0, "echo test > $downloadFile");
 	  $self->runCmd(0, "echo test > $descripFile");
       }else {
 	  $self->runCmd($test, $downloadFileCmd);
-	  $self->runCmd($test, $descriptFileCmd);
+	  $self->runCmd($test, $descripFileCmd);
       }
   }
 }
@@ -78,7 +78,8 @@ sub getParamsDeclaration {
 	'projectName',
 	'projectVersion',
 	'relativeDir',
-	'subDir',
+	'fileType',
+	'dataName',
 	'descripString',
 	);
     my @extraParams = $self->getExtraParams();

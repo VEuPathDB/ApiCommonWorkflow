@@ -13,7 +13,7 @@ sub getExtraParams {
 }
 
 sub getDownloadFileCmd {
-    my ($self, $downloadFileName) = @_;
+    my ($self, $downloadFileName, $test) = @_;
 
   # get parameters
   my @genomeExtDbSpecList = split (/,/,$self->getParamValue('genomeExtDbSpecList'));

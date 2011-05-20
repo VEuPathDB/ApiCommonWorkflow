@@ -13,7 +13,7 @@ sub getExtraParams {
 }
 
 sub getDownloadFileCmd {
-    my ($self, $downloadFileName) = @_;
+    my ($self, $downloadFileName, $test) = @_;
 
   my $genomeDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
   my $interproDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('interproExtDbRlsSpec'));
@@ -63,7 +63,7 @@ sub getDownloadFileCmd {
 EOF
 
     $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
-    my $cmd = " makeFileWithSql --outFile $outputFile --sql \"$sql\" ";
+    my $cmd = " makeFileWithSql --outFile $downloadFileName --sql \"$sql\" ";
     return $cmd;
 }
 

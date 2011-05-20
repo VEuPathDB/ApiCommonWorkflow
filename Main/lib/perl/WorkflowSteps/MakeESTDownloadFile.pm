@@ -5,7 +5,7 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
 sub getDownloadFileCmd {
-    my ($self, $downloadFileName) = @_;
+    my ($self, $downloadFileName, $test) = @_;
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
@@ -30,7 +30,7 @@ sub getDownloadFileCmd {
 	AND t.taxon_id = x.taxon_id
 	AND x.sequence_ontology_id = so.sequence_ontology_id
 	AND so.term_name = 'EST'
-    EOF
+EOF
 
     my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"";
     return $cmd;

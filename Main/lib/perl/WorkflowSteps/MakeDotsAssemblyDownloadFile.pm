@@ -5,7 +5,7 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
 sub getDownloadFileCmd {
-    my ($self, $downloadFileName) = @_;
+    my ($self, $downloadFileName, $test) = @_;
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
@@ -27,7 +27,7 @@ sub getDownloadFileCmd {
         AND tn.name_class = 'scientific name'
         AND t.taxon_id = a.taxon_id";
 
-    my $cmd = " gusExtractSequences --outputFile $outputFile  --idSQL \"$sql\"";
+    my $cmd = " gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"";
     return $cmd;
 }
 

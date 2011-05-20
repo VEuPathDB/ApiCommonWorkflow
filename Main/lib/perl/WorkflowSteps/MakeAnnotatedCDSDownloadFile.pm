@@ -15,7 +15,7 @@ sub getExtraParams {
 }
 
 sub getDownloadFileCmd {
-    my ($self, $downloadFileName) = @_;
+    my ($self, $downloadFileName, $test) = @_;
 
     my $organismSource = $self->getParamValue('organismSource');
     my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
@@ -73,7 +73,7 @@ sub getDownloadFileCmd {
         AND t.na_feature_id = taaf.na_feature_id
         AND fl.is_top_level = 1
         AND gf.is_deprecated = $deprecated
-	EOF
+EOF
 
 	$sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
     my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"  --verbose";

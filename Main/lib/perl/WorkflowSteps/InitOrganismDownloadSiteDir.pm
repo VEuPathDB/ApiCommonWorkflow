@@ -53,8 +53,8 @@ sub run {
 	  $self->error("Can't find organism 'name' in xml file '$xmlFile'");
       }
       
-      my $fullPathRestricted = "$downloadSiteDataDir/$relativeDir/$organismName";
-      my $fullPathPublic = "downloadSite/$relativeDir/$organismName";
+      my $fullPathRestricted = "$websiteFilesDir/$relativeDir/$organismNameForFiles";
+      my $fullPathPublic = "downloadSite/$relativeDir/$organismNameForFiles";
       if ($undo) {
 	  $self->runCmd(0, "rm -rf $fullPathPublic");
 	  $self->runCmd(0, "rm -rf $fullPathRestricted");

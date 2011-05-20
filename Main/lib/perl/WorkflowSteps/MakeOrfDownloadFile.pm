@@ -9,13 +9,13 @@ sub getExtraParams {
     return (
           'genomeExtDbRlsSpec',
           'genomeVirtualSeqsExtDbRlsSpec',
-          'soTermIdsOrNames'
-	  'minOrfLength'
+          'soTermIdsOrNames',
+	  'minOrfLength',
 	);
 }
 
 sub getDownloadFileCmd {
-    my ($self, $downloadFileName) = @_;
+    my ($self, $downloadFileName, $test) = @_;
 
   my @extDbRlsIds;
   push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeExtDbRlsSpec'))) if $self->getParamValue('genomeExtDbRlsSpec');
@@ -64,10 +64,10 @@ EOF
 
   $sql .= " and enas.sequence_ontology_id in ($soIds)" if $soIds;
     my $cmd = <<"EOF";
-      gusExtractSequences --outputFile $outputFile \\
+      gusExtractSequences --outputFile $downloadFileName \\
       --idSQL \"$sql\" \\
       --verbose
-   EOF
+EOF
     return $cmd;
 }
 

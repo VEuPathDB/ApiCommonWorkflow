@@ -16,7 +16,7 @@ sub getExtraParams {
 }
 
 sub getDownloadFileCmd {
-    my ($self, $downloadFileName) = @_;
+    my ($self, $downloadFileName, $test) = @_;
 
   # get parameters
   my $organismSource = $self->getParamValue('organismSource');
@@ -70,7 +70,7 @@ sub getDownloadFileCmd {
         AND gf.external_db_version in ($vers)
         AND fl.is_top_level = 1
         AND gf.is_deprecated = $deprecated
-  EOF
+EOF
 
   $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
 

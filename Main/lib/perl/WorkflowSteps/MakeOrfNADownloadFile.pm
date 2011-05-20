@@ -8,13 +8,13 @@ sub getExtraParams {
     return (
           'genomeExtDbRlsSpec',
           'genomeVirtualSeqsExtDbRlsSpec',
-          'soTermIdsOrNames'
+          'soTermIdsOrNames',
 	  'minOrfLength'
 	);
 }
 
 sub getDownloadFileCmd {
-    my ($self, $downloadFileName) = @_;
+    my ($self, $downloadFileName, $test) = @_;
 
   my @extDbRlsIds;
   push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeExtDbRlsSpec'))) if $self->getParamValue('genomeExtDbRlsSpec');
@@ -64,39 +64,10 @@ EOF
 
   $sql .= " and enas.sequence_ontology_id in ($soIds)" if $soIds;
    my $cmd = <<"EOF";
-      gusExtractSequences --outputFile $outputFile \\
+      gusExtractSequences --outputFile $downloadFileName \\
       --idSQL \"$sql\" \\
       --verbose
 EOF
-  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
-
-  if ($undo) {
-   # $self->runCmd(0, "rm -f $outputFile");
-   # $self->runCmd(0, "rm -f $descripFile");
-  } else {
-      if ($test) {
-	  $self->runCmd(0,"echo test > $outputFile");
-      }else{
-	  $self->runCmd($test,$cmd);
-	  $self->runCmd($test, $cmdDec);
-      }
-  }
-}
-
-sub getParamsDeclaration {
-   my @properties =
-     ('outputFile',
-      'genomeExtDbRlsSpec',
-      'genomeVirtualSeqsExtDbRlsSpec',
-       'soTermIdsOrNames'
-     );
-     return @properties;
-}
-
-sub getConfigDeclaration {
-   my @properties = 
-        (
-         # [name, default, description]
-         );
+    return $cmd;
 }
 
