@@ -26,7 +26,7 @@ sub getExtraConfig {
     return ();
 }
 
-# required. return a command that will create the download file
+# required. return a command that will create the download file, given the full download file name
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 }
@@ -49,8 +49,8 @@ sub run {
   my $organismNameForFiles = $self->getOrganismInfo($organismAbbrev)->getNameForFiles();
   my $outputDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/$fileType";
 
-  my $downloadFile = "$projectName-${projectVersion}_${organismNameForFiles}_$dataName.$fileType";
-  my $descripFile = ".$projectName-${projectVersion}_${organismNameForFiles}_$dataName.$fileType.desc";
+  my $downloadFile = "$outputDir/$projectName-${projectVersion}_${organismNameForFiles}_$dataName.$fileType";
+  my $descripFile = "$outputDir/.$projectName-${projectVersion}_${organismNameForFiles}_$dataName.$fileType.desc";
 
   my $downloadFileCmd =  $self->getDownloadFileCmd($downloadFile, $test);
 
