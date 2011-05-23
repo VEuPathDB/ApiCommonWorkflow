@@ -54,7 +54,7 @@ sub getParamsDeclaration {
 	'projectName',
 	'projectVersion',
 	'downloadSiteRelativeDir',
-	'usbServicesRelativeDir',
+	'useServicesRelativeDir',
 	'dataName',
 	);
 }
