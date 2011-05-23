@@ -1,0 +1,65 @@
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServiceBlastFiles;
+
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
+use strict;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+
+sub run {
+  my ($self, $test, $undo) = @_;
+
+  # standard parameters for making download files
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $projectName = $self->getParamValue('projectName');
+  my $projectVersion = $self->getParamValue('projectVersion');
+  my $downloadSiteRelativeDir = $self->getParamValue('downloadSiteRelativeDir');
+  my $webServicesRelativeDir = $self->getParamValue('webServicesRelativeDir');
+  my $dataName = $self->getParamValue('dataName');
+
+  my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+
+  # get download site file
+  my $organismNameForFiles = $self->getOrganismInfo($organismAbbrev)->getNameForFiles();
+  my $downloadFileDir = "$websiteFilesDir/$downloadSiteRelativeDir/$organismNameForFiles/$fileType";
+  my $inputDownloadFile = "$downloadFileDir/$projectName-${projectVersion}_${organismNameForFiles}_$dataName.fasta";
+
+  # get web services dir
+  my $outputWebservicesFileDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/blast";
+
+  my $blastPath = $self->getConfig('wuBlastPath');
+  my $cmd = "$blastPath/xdformat $args -o $outputWebservicesFileDir/$dataName $inputDownloadFile";
+
+  if($undo) {
+    $self->runCmd(0, "rm -f $outputWebservicesFileDir/$dataName.*");
+  } else{
+      if($test){
+	  $self->testInputFile('inputDownloadFile', "$inputDownloadFile");
+	  $self->testInputFile('outputWebservicesFileDir', "$outputWebservicesFileDir");
+	  $self->runCmd(0, "echo test > $outputWebservicesFileDir/$dataName.xnd");
+      }else {
+	   if($args =~/\-p/){
+	       my $tempFile = "$outputWebservicesFileDir/$dataName.tmp";
+	       $self->runCmd($test,"cat $inputFile | perl -pe 'unless (/^>/){s/J/X/g;}' > $tempFile");
+	       $self->runCmd($test,"$blastPath/xdformat $args -o $outputWebservicesFileDir/$dataName $tempFile");
+	       $self->runCmd($test,"rm -fr $tempFile");
+	   }else {
+	       $self->runCmd($test, $cmd);
+	   }
+       }
+  }
+}
+
+sub getParamsDeclaration {
+     return (
+	'organismAbbrev',
+	'projectName',
+	'projectVersion',
+	'downloadSiteRelativeDir',
+	'usbServicesRelativeDir',
+	'dataName',
+	);
+}
+
+sub getConfigDeclaration {
+    return ();
+}
+

@@ -1,19 +1,18 @@
 <workflowGraph name="makeAndFormatDownloadFiles">
-    <param name="downloadSiteDataDir"/>
-    <param name="organismNameForFiles"/>
+    <param name="relativeDownloadSiteDir"/>
+    <param name="organismAbbrev"/>
     <param name="genomeSource"/>
     <param name="projectName"/>
     <param name="projectVersion"/>
     <param name="dbESTExtDbRlsSpec"/>
-    <param name="webServicesDataDir"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="genomeVirtualSeqsExtDbRlsSpec"/>
     <param name="minOrfLength"/>
     <param name="deprecated"/>
+    <param name="soTermIdsOrNames"/>
     <param name="makeESTDownloadFile"/>
     <param name="makeProteomeDownloadFile"/>
     <param name="makeGenomicDownloadFile"/>
-    <param name="soTermIdsOrNames"/>
 
     <constant name="ESTDescripString">EST sequences (NT)</constant>
     <constant name="dotsAssemblyDescripString">Predicted transcript sequences (NT) based on EST assemblies</constant>
@@ -34,13 +33,13 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="relativeDir">$$relativeDir$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="fileType">fasta</paramValue>
       <paramValue name="dataName">ESTs</paramValue>
       <paramValue name="descripString">$$ESTdescripString$$</paramValue>
     </step>
 
-    <step name="formatESTDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeESTDownloadFile$$">
+    <step name="formatESTDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" includeIf="$$makeESTDownloadFile$$">
       <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismNameForFiles$$EST_$$projectName$$-$$projectVersion$$.fasta</paramValue>
       <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
       <paramValue name="formattedFileName">$$organismNameForFiles$$EST</paramValue>
@@ -48,19 +47,17 @@
     <depends name="makeESTDownloadFile"/>
     </step>
 
-
     <step name="makeDotsAssemblyDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDotsAssemblyDownloadFile" includeIf="$$makeESTDownloadFile$$">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="relativeDir">$$relativeDir$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="fileType">fasta</paramValue>
       <paramValue name="dataName">TranscriptAssemblies</paramValue>
       <paramValue name="descripString">$$dotsAssemblyDescripString$$</paramValue>
     </step>
 
-
-    <step name="formatDotsAssemblyDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeESTDownloadFile$$">
+    <step name="formatDotsAssemblyDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" includeIf="$$makeESTDownloadFile$$">
       <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismNameForFiles$$Assembly_$$projectName$$-$$projectVersion$$.fasta</paramValue>
       <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
       <paramValue name="formattedFileName">$$organismNameForFiles$$Assemblies</paramValue>
@@ -72,11 +69,10 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="relativeDir">$$relativeDir$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="fileType">fasta</paramValue>
       <paramValue name="dataName">AnnotatedCDSs</paramValue>
       <paramValue name="descripString">$$annotatedCDSDescripString$$</paramValue>
-
       <paramValue name="organismSource">$$genomeSource$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeVirtualSeqsExtDbRlsSpec">$$genomeVirtualSeqsExtDbRlsSpec$$</paramValue>
@@ -84,7 +80,7 @@
       <paramValue name="soTermIdsOrNames">$$soTermIdsOrNames$$</paramValue>
     </step>
 
-    <step name="formatAnnotatedCDSDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeProteomeDownloadFile$$">
+    <step name="formatAnnotatedCDSDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" includeIf="$$makeProteomeDownloadFile$$">
       <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismNameForFiles$$AnnotatedCDS_$$projectName$$-$$projectVersion$$.fasta</paramValue>
       <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
       <paramValue name="formattedFileName">$$organismNameForFiles$$CDS</paramValue>
@@ -96,7 +92,7 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="relativeDir">$$relativeDir$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="fileType">fasta</paramValue>
       <paramValue name="dataName">AnnotatedCDSs</paramValue>
       <paramValue name="descripString">$$annotatedTranscriptsDescripString$$</paramValue>
@@ -108,7 +104,7 @@
       <paramValue name="soTermIdsOrNames">$$soTermIdsOrNames$$</paramValue>
     </step>
 
-    <step name="formatAnnotatedTranscriptDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeProteomeDownloadFile$$">
+    <step name="formatAnnotatedTranscriptDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" includeIf="$$makeProteomeDownloadFile$$">
       <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismNameForFiles$$AnnotatedTranscripts_$$projectName$$-$$projectVersion$$.fasta</paramValue>
       <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
       <paramValue name="formattedFileName">$$organismNameForFiles$$Transcripts</paramValue>
@@ -120,18 +116,17 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="relativeDir">$$relativeDir$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="fileType">fasta</paramValue>
       <paramValue name="dataName">AnnotatedProteins</paramValue>
       <paramValue name="descripString">$$annotatedProteinsDescripString$$</paramValue>
-
       <paramValue name="organismSource">$$genomeSource$$</paramValue>
       <paramValue name="deprecated">$$deprecated$$</paramValue>
       <paramValue name="genomeExtDbSpecList">$$genomeExtDbRlsSpec$$,$$genomeVirtualSeqsExtDbRlsSpec$$</paramValue>
       <paramValue name="soTermIdsOrNames">$$soTermIdsOrNames$$</paramValue>
     </step>
 
-    <step name="formatAnnotatedProteinsDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeProteomeDownloadFile$$">
+    <step name="formatAnnotatedProteinsDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" includeIf="$$makeProteomeDownloadFile$$">
       <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismNameForFiles$$AnnotatedProteins_$$projectName$$-$$projectVersion$$.fasta</paramValue>
       <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
       <paramValue name="formattedFileName">$$organismNameForFiles$$Proteins</paramValue>
@@ -143,7 +138,7 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="relativeDir">$$relativeDir$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="fileType">fasta</paramValue>
       <paramValue name="dataName">Genome</paramValue>
       <paramValue name="descripString">$$mixedGenomicDescripString$$</paramValue>
@@ -152,7 +147,7 @@
       <paramValue name="soTermIdsOrNames">$$soTermIdsOrNames$$</paramValue>
     </step>
 
-    <step name="formatMixedGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeGenomicDownloadFile$$">
+    <step name="formatMixedGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" includeIf="$$makeGenomicDownloadFile$$">
       <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismNameForFiles$$Genomic_$$projectName$$-$$projectVersion$$.fasta</paramValue>
       <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
       <paramValue name="formattedFileName">$$organismNameForFiles$$Genomics</paramValue>
@@ -164,11 +159,10 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="relativeDir">$$relativeDir$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="fileType">fasta</paramValue>
       <paramValue name="dataName">GenomeDoubleStrand</paramValue>
       <paramValue name="descripString">$$mixedGenomicDescripString$$</paramValue>
-
       <paramValue name="organismSource">$$genomeSource$$</paramValue>
       <paramValue name="genomeExtDbSpecList">$$genomeExtDbRlsSpec$$,$$genomeVirtualSeqsExtDbRlsSpec$$</paramValue>
       <paramValue name="soTermIdsOrNames">$$soTermIdsOrNames$$</paramValue>
@@ -178,7 +172,7 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="relativeDir">$$relativeDir$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="fileType">fasta</paramValue>
       <paramValue name="dataName">ORFs_AA</paramValue>
       <paramValue name="descripString">$$orfDescripString$$</paramValue>
@@ -188,11 +182,14 @@
       <paramValue name="minOrfLength">$$minOrfLength$$</paramValue>
     </step>
 
-    <step name="formatOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile" includeIf="$$makeGenomicDownloadFile$$">
-      <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismNameForFiles$$ORFs_$$projectName$$-$$projectVersion$$.fasta</paramValue>
-      <paramValue name="outputDir">$$webServicesDataDir$$/blast</paramValue>
-      <paramValue name="formattedFileName">$$organismNameForFiles$$ORF</paramValue>
-      <paramValue name="args">-p -C X -t release-$$projectVersion$$/$$organismNameForFiles$$ORF</paramValue>
+    <step name="formatOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" includeIf="$$makeGenomicDownloadFile$$">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="dataName">ORFs_AA</paramValue>
+      <paramValue name="args">-p -C X</paramValue>
     <depends name="makeOrfDownloadFile"/>
     </step>
 
@@ -200,11 +197,10 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="relativeDir">$$relativeDir$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="fileType">fasta</paramValue>
       <paramValue name="dataName">ORFs_NA</paramValue>
       <paramValue name="descripString">$$orfNADescripString$$</paramValue>
-
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeVirtualSeqsExtDbRlsSpec">$$genomeVirtualSeqsExtDbRlsSpec$$</paramValue>
       <paramValue name="soTermIdsOrNames">$$soTermIdsOrNames$$</paramValue>
@@ -215,11 +211,10 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="relativeDir">$$relativeDir$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="fileType">txt</paramValue>
       <paramValue name="dataName">InterproDomains</paramValue>
       <paramValue name="descripString">$$interproDescripString$$</paramValue>
-
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="interproExtDbRlsSpec">InterproscanData_RSRC|@@InterproscanData_VER@@</paramValue>
       <paramValue name="projectDB">$$projectName$$</paramValue>

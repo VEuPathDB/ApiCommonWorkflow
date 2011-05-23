@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeOrganismWebSiteSubDir;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeOrganismWebsiteSubdir;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
