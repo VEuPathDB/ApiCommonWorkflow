@@ -11,15 +11,17 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $projectName = $self->getParamValue('projectName');
   my $projectVersion = $self->getParamValue('projectVersion');
-  my $downloadSiteRelativeDir = $self->getParamValue('downloadSiteRelativeDir');
+  my $downloadSiteRelativeDir = $self->getParamValue('downloadSiteRelativeDir');  my $dataName = $self->getParamValue('dataName');
+
+  # extra params for this step
   my $webServicesRelativeDir = $self->getParamValue('webServicesRelativeDir');
-  my $dataName = $self->getParamValue('dataName');
+  my $args = $self->getParamValue('args');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   # get download site file
   my $organismNameForFiles = $self->getOrganismInfo($organismAbbrev)->getNameForFiles();
-  my $downloadFileDir = "$websiteFilesDir/$downloadSiteRelativeDir/$organismNameForFiles/$fileType";
+  my $downloadFileDir = "$websiteFilesDir/$downloadSiteRelativeDir/$organismNameForFiles/fasta";
   my $inputDownloadFile = "$downloadFileDir/$projectName-${projectVersion}_${organismNameForFiles}_$dataName.fasta";
 
   # get web services dir
@@ -38,7 +40,7 @@ sub run {
       }else {
 	   if($args =~/\-p/){
 	       my $tempFile = "$outputWebservicesFileDir/$dataName.tmp";
-	       $self->runCmd($test,"cat $inputFile | perl -pe 'unless (/^>/){s/J/X/g;}' > $tempFile");
+	       $self->runCmd($test,"cat $inputDownloadFile | perl -pe 'unless (/^>/){s/J/X/g;}' > $tempFile");
 	       $self->runCmd($test,"$blastPath/xdformat $args -o $outputWebservicesFileDir/$dataName $tempFile");
 	       $self->runCmd($test,"rm -fr $tempFile");
 	   }else {

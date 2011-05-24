@@ -8,7 +8,11 @@ use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
-    
+
+    my $organismAbbrev = $self->getParamValue('organismAbbrev');
+    my $projectName = $self->getParamValue('projectName');
+    my $projectVersion = $self->getParamValue('projectVersion');
+    my $relativeDir = $self->getParamValue('relativeDir');
     my $inputDataName = $self->getParamValue("inputDataName");
 
     my $websiteFilesDir = $self->getWebsiteFilesDir($test);
