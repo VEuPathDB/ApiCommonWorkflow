@@ -27,6 +27,7 @@ sub getExtraConfig {
 }
 
 # required. return a command that will create the download file, given the full download file name
+# return "NONE" if there is no command to run.  this is the case for writing only a descrip file.
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 }
@@ -49,22 +50,24 @@ sub run {
   my $organismNameForFiles = $self->getOrganismInfo($organismAbbrev)->getNameForFiles();
   my $outputDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/$fileType";
 
-  my $downloadFile = "$outputDir/$projectName-${projectVersion}_${organismNameForFiles}_$dataName.$fileType";
-  my $descripFile = "$outputDir/.$projectName-${projectVersion}_${organismNameForFiles}_$dataName.$fileType.desc";
+  $dataName = "_$dataName" if $dataName; # gff does not use $dataName, so allow it to be empty
+
+  my $downloadFile = "$outputDir/$projectName-${projectVersion}_${organismNameForFiles}$dataName.$fileType";
+  my $descripFile = "$outputDir/.$projectName-${projectVersion}_${organismNameForFiles}$dataName.$fileType.desc";
 
   my $downloadFileCmd =  $self->getDownloadFileCmd($downloadFile, $test);
 
   my $descripFileCmd =  "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
 
   if($undo){
-    $self->runCmd(0, "rm -f $downloadFile");
+    $self->runCmd(0, "rm -f $downloadFile") unless $downloadFileCmd eq 'NONE';
     $self->runCmd(0, "rm -f $descripFile");
   }else {
       if ($test) {
-	  $self->runCmd(0, "echo test > $downloadFile");
+	  $self->runCmd(0, "echo test > $downloadFile") unless $downloadFileCmd eq 'NONE';
 	  $self->runCmd(0, "echo test > $descripFile");
       }else {
-	  $self->runCmd($test, $downloadFileCmd);
+	  $self->runCmd($test, $downloadFileCmd) unless $downloadFileCmd eq 'NONE';
 	  $self->runCmd($test, $descripFileCmd);
       }
   }

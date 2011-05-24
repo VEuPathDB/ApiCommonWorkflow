@@ -27,6 +27,7 @@
     <constant name="geneDescripString">Gene annotation and information in detail</constant>
     <constant name="sequenceDescripString">Genomic DNA sequence statistics and information in detail</constant>
     <constant name="gffDescripString">Genome sequences and annotations in GFF3 format</constant>
+    <constant name="annotatedCDSsDataName">AnnotatedCDSs</constant>
 
     <step name="makeESTDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeESTDownloadFile" includeIf="$$makeESTDownloadFile$$">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -76,7 +77,7 @@
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="fileType">fasta</paramValue>
-      <paramValue name="dataName">AnnotatedCDSs</paramValue>
+      <paramValue name="dataName">$$annotatedCDSsDataName$$</paramValue>
       <paramValue name="descripString">$$annotatedCDSDescripString$$</paramValue>
       <paramValue name="organismSource">$$genomeSource$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -91,7 +92,7 @@
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="dataName">AnnotatedCDSs</paramValue>
+      <paramValue name="dataName">$$annotatedCDSsDataName$$</paramValue>
       <paramValue name="args">-n</paramValue>
     <depends name="makeAnnotatedCDSDownloadFile"/>
     </step>
@@ -238,47 +239,45 @@
     </step>
 
     <step name="makeCodonUsage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCodonUsage" includeIf="$$makeProteomeDownloadFile$$">
-      <paramValue name="inputFile">$$downloadSiteFastaDataDir$$/$$organismNameForFiles$$AnnotatedCDS_$$projectName$$-$$projectVersion$$.fasta</paramValue>    
-      <paramValue name="descripFile">$$downloadSiteTxtDataDir$$/.$$organismNameForFiles$$AnnotatedCDS_$$projectName$$-$$projectVersion$$.fasta.desc</paramValue>    
-      <paramValue name="descripString">$$codonDescripString$$</paramValue>    
-      <paramValue name="outputFile">$$downloadSiteTxtDataDir$$/$$organismNameForFiles$$CodonUsage_$$projectName$$-$$projectVersion$$.txt</paramValue>
-    <depends name="makeAnnotatedCDSDownloadFile"/>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">txt</paramValue>
+      <paramValue name="dataName">CodonUsage</paramValue>
+      <paramValue name="descripString">$$interproDescripString$$</paramValue>
+      <paramValue name="inputDataName">$$annotatedCDSsDataName$$</paramValue>
+      <depends name="makeAnnotatedCDSDownloadFile"/>
     </step>
 
     <step name="makeGeneDescripFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDescripFile">
-      <paramValue name="descripFile">$$downloadSiteTxtDataDir$$/.$$organismNameForFiles$$Gene_$$projectName$$-$$projectVersion$$.txt.desc</paramValue>    
-      <paramValue name="descripString">$$geneDescripString$$</paramValue>    
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">txt</paramValue>
+      <paramValue name="dataName">Genes</paramValue>
+      <paramValue name="descripString">$$geneNADescripString$$</paramValue>
     </step>
 
     <step name="makeSequenceDescripFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDescripFile">
-      <paramValue name="descripFile">$$downloadSiteTxtDataDir$$/.$$organismNameForFiles$$Sequence_$$projectName$$-$$projectVersion$$.txt.desc</paramValue>    
-      <paramValue name="descripString">$$sequenceDescripString$$</paramValue>    
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">txt</paramValue>
+      <paramValue name="dataName">Sequences</paramValue>
+      <paramValue name="descripString">$$sequenceDescripString$$</paramValue>
     </step>
 
     <step name="makeGffDescripFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDescripFile">
-      <paramValue name="descripFile">$$downloadSiteTxtDataDir$$/.$$organismNameForFiles$$_$$projectName$$-$$projectVersion$$.gff.desc</paramValue>    
-      <paramValue name="descripString">$$gffDescripString$$</paramValue>    
-    </step>
-
-
-    <step name="makeReadMeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeReadMeFile">
-      <paramValue name="baseDir">$$downloadSiteDataDir$$/$$organismNameForFiles$$</paramValue>    
-      <paramValue name="outputFile">$$downloadSiteDataDir$$/$$organismNameForFiles$$/README.htaccess</paramValue>    
-    <depends name="makeAnnotatedCDSDownloadFile"/>
-    <depends name="makeESTDownloadFile"/>
-    <depends name="makeDotsAssemblyDownloadFile"/>
-    <depends name="makeAnnotatedCDSDownloadFile"/>
-    <depends name="makeAnnotatedTranscriptsDownloadFile"/>
-    <depends name="makeAnnotatedProteinsDownloadFile"/>
-    <depends name="makeMixedGenomicDownloadFile"/>
-    <depends name="makeOrfDownloadFile"/>
-    <depends name="makeOrfNADownloadFile"/>
-    <depends name="makeInterproDownloadFile"/>
-    <depends name="makeCodonUsage"/>
-    <depends name="makeGeneAliasDescripFile"/>
-    <depends name="makeGeneDescripFile"/>
-    <depends name="makeSequenceDescripFile"/>
-    <depends name="makeGffDescripFile"/>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">gff</paramValue>
+      <paramValue name="dataName"></paramValue>
+      <paramValue name="descripString">$$gffDescripString$$</paramValue>
     </step>
 
 </workflowGraph>

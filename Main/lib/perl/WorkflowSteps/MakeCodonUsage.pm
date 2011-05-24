@@ -1,50 +1,32 @@
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeCodonUsage;
 
-@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 
 use strict;
-use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
 
-sub run {
-    my ($self, $test, $undo) = @_;
+sub getDownloadFileCmd {
+    my ($self, $downloadFileName, $test) = @_;
+    
+    my $inputDataName = $self->getParamValue("inputDataName");
 
-    # get parameters
-    my $inputFile = $self->getParamValue('inputFile');
-    my $outputFile = $self->getParamValue('outputFile');
-    my $descripFile = $self->getParamValue('descripFile');
-    my $descripString = $self->getParamValue('descripString');
+    my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+    my $organismNameForFiles = $self->getOrganismInfo($organismAbbrev)->getNameForFiles();
+    my $inputDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/fasta";
 
-    my $cmd = <<"EOF";
-      makeCodonUsage  --outFile $outputFile  --inFile $inputFile  --verbose
-EOF
-  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
+    my $inputDownloadFile = "$inputDir/$projectName-${projectVersion}_${organismNameForFiles}_$inputDataName.fasta";
 
-    if ($undo) {
-	#$self->runCmd(0, "rm -f $outputFile");
-        #$self->runCmd(0, "rm -f $descripFile");
-    } else {
-	if ($test) {
-	    $self->testInputFile('inputFile', "$inputFile");
-	    $self->runCmd(0,"echo test > $outputFile");
-	}else{
-	    $self->runCmd($test,$cmd);
-	    $self->runCmd($test, $cmdDec);
-	}
-    }
+    my $cmd = "makeCodonUsage  --outFile $downloadFileName  --inFile $inputDownloadFile  --verbose";
+
+    return $cmd;
+
 }
 
-
-sub getParamsDeclaration {
-    return ('inputFile',
-            'outputFile',
+sub getExtraParams {
+    return ('inputDataName',
            );
+
 }
 
-
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-           );
-}
 
