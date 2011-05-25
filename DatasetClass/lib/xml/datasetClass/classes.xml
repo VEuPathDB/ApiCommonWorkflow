@@ -62,7 +62,7 @@
     <prop name="strainAbbrev"/>
     <prop name="project"/>
     <prop name="ncbiTaxonId"/>
-    <prop name="ncbiSpeciesTaxonId"/>
+    <prop name="speciesNcbiTaxonId"/>
   </datasetClass>
 
 
@@ -101,7 +101,7 @@
 
      <graphFile planFile="genomeSequenceAndFeatures.xml" dir="${project}/${organismAbbrev}"/>
 
-    <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC"
+    <resource resource="${organismAbbrev}_primary_genome_RSRC"
               version="${version}"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
 	      parentResource="${organismAbbrev}_primary_genome_RSRC">
@@ -112,7 +112,7 @@
     </resource>
   </datasetClass>
 
-  <datasetClass class="GeneDB_GFF_genome_sequence">
+  <datasetClass class="GeneDB_GFF_primary_genome_sequence">
     <prop name="project"/>
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
@@ -137,7 +137,7 @@
   </datasetClass>
 
 
-  <datasetClass class="GeneDB_GFF_genome_features">
+  <datasetClass class="GeneDB_GFF_primary_genome_features">
     <prop name="project"/>
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
@@ -146,7 +146,7 @@
 
     <graphFile planFile="genomeSequenceAndFeatures.xml" dir="${project}/${organismAbbrev}"/>
 
-    <resource resource="${organismAbbrev}_${soTerm}_GeneDB_features_RSRC"
+    <resource resource="${organismAbbrev}_primary_genome_features_RSRC"
               version="${version}"
 	      parentResource="${organismAbbrev}_primary_genome_RSRC"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
@@ -208,7 +208,7 @@
   <datasetClass class="dbEST">
     <prop name="project"/>
     <prop name="organismAbbrev"/>
-    <prop name="ncbiSpeciesTaxonId"/>
+    <prop name="speciesNcbiTaxonId"/>
 
     <graphFile planFile="ESTs.xml" dir="${project}/${organismAbbrev}"/>
 
@@ -217,7 +217,7 @@
 	      internalDescrip="">
       <manualGet fileOrDir="global/empty"/>
 
-      <unpack>getSubTaxa --ncbiTaxId ${ncbiSpeciesTaxonId} --outputFile @@dataDir@@/taxonIdFile</unpack>
+      <unpack>getSubTaxa --ncbiTaxId ${speciesNcbiTaxonId} --outputFile @@dataDir@@/taxonIdFile</unpack>
 
       <unpack>createPropFile --file @@dataDir@@/dbestProp --propList "dbestLogin:@@dbestLogin@@,dbestPswd:@@dbestPswd@@"</unpack>
 
@@ -463,7 +463,6 @@
   <datasetClass class="microarrayExpressionExperiment">
     <prop name="project"/>
     <prop name="organismAbbrev"/>
-    <prop name="name"/>
     <prop name="version"/>
     <prop name="experimentName"/>
     <prop name="experimentVersion"/>
@@ -482,7 +481,7 @@
 	      plugin="ApiCommonData::Load::Plugin::DoNothing"
 	      internalDescrip="">
       
-      <manualGet fileOrDir="${project}/${organismAbbrev}/microarrayExpression/${name}/%RESOURCE_VERSION%/final"/>
+      <manualGet fileOrDir="${project}/${organismAbbrev}/microarrayExpression/${experimentName}/%RESOURCE_VERSION%/final"/>
 
       <getAndUnpackOutput dir="@@dataDir@@/final"/>
       <getAndUnpackOutput file="@@dataDir@@/final/expression_profile_config.txt"/>
@@ -530,12 +529,30 @@
 
   <!-- Category: fasta sequence -->
 
+  <!-- when we have dataset subclasses, this can be a subclass of fastaSequence -->
+  <!-- with category = dnaSeq -->
   <datasetSubclass class="clonedInsertEnds" includesClass="fastaSequence">
-    <prop name="category">dnaSeq</prop>
+    <prop name="project"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="category"/>
+    <prop name="table"/>
+    <prop name="soTermName"/>
+    <prop name="regexSourceId"/>
     <prop name="repeatMaskSpecies"/>
  
     <graphFile planFile="optional.xml" dir="${project}/${organismAbbrev}"/>
 
+    <resource resource="${organismAbbrev$_dnaSeq_${name}_sequences_RSRC" version="2001-09-19"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+	      internalDescrip="">
+
+      <manualGet fileOrDir="${project}/${organismAbbrev}/dnaSeq/${name}/%RESOURCE_VERSION%/final/seqs.fasta"/>
+
+      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/seqs.fasta --soTermName ${soTermName} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
+    </resource>
   </datasetSubclass>
 
   <datasetClass class="fastaSequence">
@@ -645,7 +662,7 @@
   </datasetClass>
 
   <!-- the ncbi taxon ID is not important.  isolate strain info is provided by dedicated isolate info tables -->
-  <datasetClass class="isolatesFeaturesGFF2" includesClass="fastaSequence">
+  <datasetClass class="isolatesFeaturesGFF2">
     <prop name="project"/>
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
