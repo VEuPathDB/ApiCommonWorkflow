@@ -9,7 +9,8 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
-  my $genomeVirtualSeqsExtDbRlsSpec = $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');
+#  my $genomeVirtualSeqsExtDbRlsSpec = $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');
+  my $genomeVirtualSeqsExtDbRlsSpec = "FIX THIS see Redmine #4305";
   my $outputFile = $self->getParamValue('outputFile');
 
   my @extDbRlsSpecList = split(/,/, $genomeExtDbRlsSpec);
@@ -72,7 +73,7 @@ sub run {
 sub getParamsDeclaration {
   return (
 	  'genomeExtDbRlsSpec',
-	  'genomeVirtualSeqsExtDbRlsSpec',
+#	  'genomeVirtualSeqsExtDbRlsSpec',
 	  'outputFile',
 	 );
 }

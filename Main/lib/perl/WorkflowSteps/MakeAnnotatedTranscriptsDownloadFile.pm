@@ -9,7 +9,7 @@ sub getExtraParams {
     return (
           'organismSource',
           'genomeExtDbRlsSpec',
-          'genomeVirtualSeqsExtDbRlsSpec',
+#          'genomeVirtualSeqsExtDbRlsSpec',
 	  'deprecated',
           'soTermIdsOrNames'
 	);
@@ -23,7 +23,8 @@ sub getDownloadFileCmd {
   my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
 
   my (@dbnames,@dbvers);
-  my ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeExtDbRlsSpec')) if $self->getParamValue('genomeExtDbRlsSpec');
+#  my ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeExtDbRlsSpec')) if $self->getParamValue('genomeExtDbRlsSpec');
+  my ($name,$ver) = "FIX THIS see redmine #4306";
   push (@dbnames,$name);
   push (@dbvers,$ver);
   ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec')) if $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');

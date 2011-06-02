@@ -7,7 +7,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 sub getExtraParams {
     return (
           'organismSource',
-          'genomeExtDbRlsSpecList',
+#          'genomeExtDbRlsSpecList',
           'soTermIdsOrNames'
 	);
 }
@@ -16,7 +16,8 @@ sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
   # get parameters
-  my @genomeExtDbSpecList = split (/,/,$self->getParamValue('genomeExtDbSpecList'));
+#  my @genomeExtDbSpecList = split (/,/,$self->getParamValue('genomeExtDbSpecList'));
+  my @genomeExtDbSpecList = "FIX THIS see redmine #4306 ";
   my $organismSource = $self->getParamValue('organismSource');
 
   my (@extDbRlsVers,@extDbNames);

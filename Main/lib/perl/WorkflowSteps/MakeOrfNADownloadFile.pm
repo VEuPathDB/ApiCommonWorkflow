@@ -7,7 +7,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 sub getExtraParams {
     return (
           'genomeExtDbRlsSpec',
-          'genomeVirtualSeqsExtDbRlsSpec',
+#          'genomeVirtualSeqsExtDbRlsSpec',
           'soTermIdsOrNames',
 	  'minOrfLength'
 	);
@@ -18,7 +18,7 @@ sub getDownloadFileCmd {
 
   my @extDbRlsIds;
   push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeExtDbRlsSpec'))) if $self->getParamValue('genomeExtDbRlsSpec');
-  push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec'))) if $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');
+#  push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec'))) if $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec'); FIX THIS see redmine #4306
   my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
 
   my $length = $self->getParamValue('minOrfLength');

@@ -10,7 +10,8 @@ sub run {
 
   my $parentNcbiTaxonId = $self->getParamValue('parentNcbiTaxonId');
   my $useTaxonHierarchy = $self->getParamValue('useTaxonHierarchy');
-  my $predictedTranscriptsExtDbRlsSpec = $self->getParamValue('predictedTranscriptsExtDbRlsSpec');
+#  my $predictedTranscriptsExtDbRlsSpec = $self->getParamValue('predictedTranscriptsExtDbRlsSpec');
+  my $predictedTranscriptsExtDbRlsSpec = "FIX THIS see redmine #4306"
 
   my $vectorFile = $self->getConfig('vectorFile');
   my $phrapDir = $self->getConfig('phrapDir');

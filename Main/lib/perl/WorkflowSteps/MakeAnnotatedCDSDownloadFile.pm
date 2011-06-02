@@ -8,7 +8,7 @@ sub getExtraParams {
     return (
           'organismSource',
           'genomeExtDbRlsSpec',
-          'genomeVirtualSeqsExtDbRlsSpec',
+#          'genomeVirtualSeqsExtDbRlsSpec',
 	  'deprecated',
           'soTermIdsOrNames'
 	);
@@ -24,7 +24,8 @@ sub getDownloadFileCmd {
     my ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeExtDbRlsSpec')) if $self->getParamValue('genomeExtDbRlsSpec');
     push (@dbnames,$name);
     push (@dbvers,$ver);
-    ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec')) if $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');
+#    ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec')) if $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');
+    ($name,$ver) = "FIX THIS see redmine #4306";
     push (@dbnames,$name);
     push (@dbvers,$ver);
     my $names = join (",", map{"'$_'"} @dbnames);

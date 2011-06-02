@@ -7,7 +7,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 sub getExtraParams {
     return (
           'organismSource',
-          'genomeExtDbRlsSpecList',
+#          'genomeExtDbRlsSpecList',
 	  'deprecated',
           'soTermIdsOrNames'
 	);
@@ -17,7 +17,8 @@ sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
   # get parameters
-  my @genomeExtDbSpecList = split(/,/,$self->getParamValue('genomeExtDbSpecList'));
+#  my @genomeExtDbSpecList = split(/,/,$self->getParamValue('genomeExtDbSpecList'));
+  my @genomeExtDbSpecList = "FIUX THIS see redmine #4306";
   my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
   my $organismSource = $self->getParamValue('organismSource');
 
