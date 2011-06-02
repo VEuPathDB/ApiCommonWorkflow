@@ -33,7 +33,7 @@ sub getComputeClusterTaskLogsDir {
 }
 
 sub makeClusterControllerPropFile {
-  my ($self, $taskInputDir, $slotsPerNode, $taskSize, $taskClass) = @_;
+  my ($self, $taskInputDir, $slotsPerNode, $taskSize, $taskClass, $keepNode) = @_;
 
   my $nodePath = $self->getSharedConfig('nodePath');
   my $nodeClass = $self->getSharedConfig('nodeClass');
@@ -53,10 +53,9 @@ sub makeClusterControllerPropFile {
 
   # print out the file
   my $controllerPropFile = "$workflowDataDir/$taskInputDir/controller.prop";
-  open(F, ">$controllerPropFile")
-      || $self->error("Can't open controller prop file '$controllerPropFile' for writing");
-  print F 
-"masterdir=$clusterWorkflowDataDir/$masterDir
+
+  my $controllerPropFileContent = "
+masterdir=$clusterWorkflowDataDir/$masterDir
 inputdir=$clusterWorkflowDataDir/$taskInputDir
 nodedir=$nodePath
 slotspernode=$slotsPerNode
@@ -65,7 +64,14 @@ taskclass=$taskClass
 nodeclass=$nodeClass
 restart=no
 ";
-    close(F);
+
+  $controllerPropFileContent .= "keepNodeForPostProcessing=$keepNode\n" if $keepNode;
+
+  open(F, ">$controllerPropFile")
+      || $self->error("Can't open controller prop file '$controllerPropFile' for writing");
+  print F "$controllerPropFileContent\n";
+
+  close(F);
 }
 
 # avoid using this subroutine!
