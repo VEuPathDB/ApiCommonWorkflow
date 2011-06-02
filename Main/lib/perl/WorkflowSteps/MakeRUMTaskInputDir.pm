@@ -21,7 +21,8 @@ sub run {
   my $createSAMFile = $self->getParamValue("createSAMFile");
   my $countMismatches = $self->getParamValue("countMismatches");
   my $taskInputDir = $self->getParamValue("taskInputDir");
-
+  my $strandSpecific = $self->getParamValue("strandSpecific");
+  my $SNPS = $self->getParamValue("SNPs");
 
   my $taskSize = $self->getConfig('taskSize');
   my $bowtieBinDir = $self->getConfig('bowtieBinDir');
@@ -63,6 +64,8 @@ numInsertions=$numInsertions
 minBlatIdentity=93
 createSAMFile=$createSAMFile
 countMismatches=$countMismatches
+strandSpecific=$strandSpecific
+SNPs=$SNPS
 ";
 
       $taskPropFileContent .= "pairedReadFilePath=$clusterWorkflowDataDir/$pairedReadFilePath\n" if $pairedReadFilePath;
