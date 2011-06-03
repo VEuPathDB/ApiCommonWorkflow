@@ -4,14 +4,6 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeAnnotatedProteinsDownloadFil
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
-sub getExtraParams {
-    return (
-          'organismSource',
-#          'genomeExtDbRlsSpecList',
-	  'deprecated',
-          'soTermIdsOrNames'
-	);
-}
 
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;

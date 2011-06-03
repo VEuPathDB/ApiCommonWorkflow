@@ -4,13 +4,6 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomicDoubleStrandFile;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
-sub getExtraParams {
-    return (
-          'organismSource',
-#          'genomeExtDbRlsSpecList',
-          'soTermIdsOrNames'
-	);
-}
 
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;

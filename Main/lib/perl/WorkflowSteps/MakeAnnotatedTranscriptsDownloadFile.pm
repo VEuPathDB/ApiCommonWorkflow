@@ -5,15 +5,6 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
 
-sub getExtraParams {
-    return (
-          'organismSource',
-          'genomeExtDbRlsSpec',
-#          'genomeVirtualSeqsExtDbRlsSpec',
-	  'deprecated',
-          'soTermIdsOrNames'
-	);
-}
 
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;

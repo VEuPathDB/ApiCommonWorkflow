@@ -4,13 +4,6 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeInterproDownloadFile;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
-sub getExtraParams {
-    return (
-          'genomeExtDbRlsSpec',
-          'interproExtDbRlsSpec',
-          'soTermIdsOrNames'
-	);
-}
 
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;

@@ -10,13 +10,6 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 #abstract methods available to subclasses.  the subclass must override each of these methods by
 #providing a version of them which returns the correct thing for that subclass
 
-# optional. return a list of param names to add to the param declaration.  these are in addition
-# to the standard ones provided by this superclass
-# only needed if the subclass has extra params
-sub getExtraParams {
-    my ($self) = @_;
-    return ();
-}
 
 # optional. return a list of config names to add to the config declaration.  these are in addition
 # to the standard ones provided by this superclass
@@ -73,21 +66,6 @@ sub run {
   }
 }
 
-sub getParamsDeclaration {
-    my ($self) = @_;
-
-    my @baseParams = (
-	'organismAbbrev',
-	'projectName',
-	'projectVersion',
-	'relativeDir',
-	'fileType',
-	'dataName',
-	'descripString',
-	);
-    my @extraParams = $self->getExtraParams();
-    return (@baseParams, @extraParams);
-}
 
 sub getConfigDeclaration {
     my ($self) = @_;

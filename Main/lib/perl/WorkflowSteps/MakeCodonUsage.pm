@@ -27,10 +27,5 @@ sub getDownloadFileCmd {
 
 }
 
-sub getExtraParams {
-    return ('inputDataName',
-           );
-
-}
 
 

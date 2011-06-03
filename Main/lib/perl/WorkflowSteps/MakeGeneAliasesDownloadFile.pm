@@ -15,12 +15,3 @@ sub getDownloadFileCmd {
   return $cmd;   
 }
 
-sub getExtraParams {
-  return (
-          'genomeExtDbRlsSpec',
-          'dbRefNAFeatureExtDbSpec',
-         );
-}
-
-
-
