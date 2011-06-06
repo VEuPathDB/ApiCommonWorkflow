@@ -9,6 +9,7 @@
       <param name="organismResourceXmlFile"/>
       <param name="comparativeGenomicsFastaDir"/>
       <param name="comparativeGenomicsGffDir"/>
+      <param name="includeInComparativeGenomics"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$organismAbbrev$$_MakeAndMaskTopLevelGenome</constant>
     <constant name="topLevelFastaFile">$$dataDir$$/topLevelGenomicSeqs.fsa</constant>
@@ -36,47 +37,47 @@
       <depends name="runTuningManager"/> 
     </step>
 
-    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSoftMaskTaskInputDir" includeIf="$$runComparativeGenomics$$">
+    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSoftMaskTaskInputDir" includeIf="$$includeInComparativeGenomics$$">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="seqsFile">$$topLevelFastaFile$$</paramValue>
       <paramValue name="options">$$repeatMaskSpeciesOption$$ -xsmall</paramValue>
       <depends name="extractTopLevelFastaSeqs"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster" includeIf="$$runComparativeGenomics$$">
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster" includeIf="$$includeInComparativeGenomics$$">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeClusterTaskInputDir"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster" includeIf="$$runComparativeGenomics$$">
+    <step name="runClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster" includeIf="$$includeInComparativeGenomics$$">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="numNodes">20</paramValue>
       <paramValue name="processorsPerNode">2</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
 
-    <step name="mirrorFromCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorFromComputeCluster" includeIf="$$runComparativeGenomics$$">
+    <step name="mirrorFromCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorFromComputeCluster" includeIf="$$includeInComparativeGenomics$$">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blocked.err,blocked.seq</paramValue>
       <depends name="runClusterTask"/>
     </step>
 
-    <step name="copyMaskedTopLevelFastaFileToComparativeGenomicsFastaDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$runComparativeGenomics$$">
+    <step name="copyMaskedTopLevelFastaFileToComparativeGenomicsFastaDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$includeInComparativeGenomics$$">
       <paramValue name="fromFile">$$dataDir$$/master/mainresult/blocked.seq</paramValue>
       <paramValue name="toFile">$$comparativeGenomicsFastaDir$$/$$organismAbbrev$$.fasta</paramValue>
       <depends name="mirrorFromCluster"/>
     </step>
 
   <step name="makeMercatorGffFile"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMercatorGffFile" includeIf="$$runComparativeGenomics$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMercatorGffFile" includeIf="$$includeInComparativeGenomics$$">
       <paramValue name="organismFullName">$$organismFullName$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/$$organismAbbrev$$.gff</paramValue>
        <depends name="runTuningManager"/> 
     </step>
 
   <step name="correctReadingFrameInMercatorGffFile"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CorrectReadingFrameInMercatorGffFile" includeIf="$$runComparativeGenomics$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CorrectReadingFrameInMercatorGffFile" includeIf="$$includeInComparativeGenomics$$">
       <paramValue name="inputFastaFile">$$topLevelFastaFile$$</paramValue>
       <paramValue name="inputGffFile">$$dataDir$$/$$organismAbbrev$$.gff</paramValue>
       <paramValue name="outputGffFile">$$dataDir$$/$$organismAbbrev$$_corrected.gff</paramValue>
@@ -84,7 +85,7 @@
     </step>
 
   <step name="copyCorrectedGffFileToComparativeGenomicsGffDir"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$runComparativeGenomics$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$includeInComparativeGenomics$$">
       <paramValue name="fromFile">$$dataDir$$/$$organismAbbrev$$_corrected.gff</paramValue>
       <paramValue name="toFile">$$comparativeGenomicsGffDir$$/$$organismAbbrev$$.gff</paramValue>
       <depends name="correctReadingFrameInMercatorGffFile"/> 

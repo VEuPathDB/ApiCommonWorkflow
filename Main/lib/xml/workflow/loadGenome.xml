@@ -16,6 +16,7 @@
   <param name="genomeExtDbRlsSpec"/>
   <param name="organismResourceXmlFile"/>
   <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
   <param name="projectName"/>
   <param name="projectVersion"/>
 
@@ -58,7 +59,8 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="organelleName"></paramValue>
-    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
   </subgraph>
 
   <subgraph name="makeOrganismPlastidDownloadSite" xmlFile="makeOrganismDownloadSiteDirs.xml" includeIf="$$hasPlastidGenomeSequence$$">
@@ -66,7 +68,8 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="organelleName">plastid</paramValue>
-    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
   </subgraph>
 
   <subgraph name="makeOrganismMitoDownloadSite" xmlFile="makeOrganismDownloadSiteDirs.xml" includeIf="$$hasMitochondrialGenomeSequence$$">
@@ -74,10 +77,11 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="organelleName">mito</paramValue>
-    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
   </subgraph>
 
-  <subgraph name="genomeSequenceAndFeatures" xmlFile="$$projectName$$/$$orgAbbrev$$/genomeSequenceAndFeatures.xml">
+  <subgraph name="genomeSequenceAndFeatures" xmlFile="$$projectName$$/$$organismAbbrev$$/genomeSequenceAndFeatures.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -92,7 +96,7 @@
     <paramValue name="outputFile">$$genomicSeqsFile$$</paramValue>
     <paramValue name="separateFastaFiles">false</paramValue>
     <paramValue name="outputDirForSeparateFiles"></paramValue>
-    <depends name="organismSpecificISF"/> 
+    <depends name="genomeSequenceAndFeatures"/> 
   </step>
 
   <step name="extractProteins"
@@ -100,7 +104,7 @@
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
     <paramValue name="outputFile">$$proteinsFile$$</paramValue>
-    <depends name="organismSpecificISF"/>
+    <depends name="genomeSequenceAndFeatures"/>
   </step>
 
   <step name="extractGenomicSeqsIntoSeparateFastaFiles"
@@ -111,7 +115,7 @@
     <paramValue name="alternateDefline"></paramValue>
     <paramValue name="separateFastaFiles">true</paramValue>
     <paramValue name="outputDirForSeparateFiles">$$genomicSeqsDir$$_ori</paramValue>
-    <depends name="organismSpecificISF"/>
+    <depends name="genomeSequenceAndFeatures"/>
   </step>
 
 
@@ -127,38 +131,32 @@
     <depends name="fixFileNamesforGenomicSeqsSeparateFasta"/>
   </step>
 
-  <step name="runTuningManager"
-        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager">
-    <depends name="organismSpecificISF"/> 
-  </step>
-
   <step name="extractGenomicSeqsForSsa"
         stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqsForSsa">
     <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
     <paramValue name="outputFile">$$genomicSeqsFileForSsa$$</paramValue>
-    <depends name="organismSpecificISF"/> 
-    <depends name="runTuningManager"/> 
+    <depends name="genomeSequenceAndFeatures"/>
   </step>
 
   <step name="extractTranscriptSeqsForSsa"
         stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTranscriptSeqsForSsa" excludeIf="$$isUnannotatedGenome$$">
     <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
     <paramValue name="outputFile">$$transcriptSeqsFileForSsa$$</paramValue>
-    <depends name="runTuningManager"/> 
+    <depends name="genomeSequenceAndFeatures"/>
   </step>
 
   <step name="extractGeneModelForSsa"
         stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa" excludeIf="$$isUnannotatedGenome$$">
     <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
     <paramValue name="outputFile">$$geneModelFileForSsa$$</paramValue>
-    <depends name="runTuningManager"/> 
+    <depends name="genomeSequenceAndFeatures"/>
   </step>
 
   <step name="makeSamHeader"
         stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSamHeader">
     <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
     <paramValue name="outputFile">$$samHeaderFile$$</paramValue>
-    <depends name="runTuningManager"/> 
+    <depends name="genomeSequenceAndFeatures"/>
   </step>
 
   <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">

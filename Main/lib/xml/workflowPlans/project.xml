@@ -74,6 +74,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <prop name="makeGenomicDownloadFile"/>
     <prop name="hasMito"/>
     <prop name="hasPlastid"/>
+    <prop name="includeInComparativeGenomics"/>
 
     <step name="${organismAbbrev}_makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">${organismAbbrev}</paramValue>
@@ -98,6 +99,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome|${genomeVersion}</paramValue>
       <paramValue name="organismResourceXmlFile">$$projectName$$/${organismAbbrev}.xml</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <depends name="${organismAbbrev}_makeDataDir"/>
@@ -115,11 +117,13 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
       <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
       <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+      <paramValue name="includeInComparativeGenomics">${includeInComparativeGenomics}</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_PostLoadGenome" xmlFile="postLoadGenome.xml">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismFullName">${organismFullName}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome|${genomeVersion}</paramValue>
@@ -132,6 +136,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="taxonHierarchyForBlastxFilter">${taxonHierarchyForBlastxFilter}</paramValue>
       <paramValue name="repeatMaskSpeciesOption">-species ${repeatMaskSpecies}</paramValue>
       <paramValue name="genomeSize">${genomeSize}</paramValue>
+      <paramValue name="isUnannotatedGenome">${isUnannotatedGenome}</paramValue>
       <paramValue name="skipProteomeAnalysis">${skipProteomeAnalysis}</paramValue>
       <paramValue name="skipGenomeAnalysis">${skipGenomeAnalysis}</paramValue>
       <paramValue name="loadEpitope">${loadEpitope}</paramValue>
