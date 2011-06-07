@@ -5,7 +5,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
 -->
 
-<workflowGraph name="plasmoWorkflow">
+<workflowGraph name="">
   <param name="projectName"/>
   <param name="projectVersion"/>
 
@@ -38,43 +38,38 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <prop name="ncbiTaxonId"/>
     <prop name="speciesNcbiTaxonId"/>
     <prop name="isReferenceStrain"/>
-    <prop name="isUnannotatedGenome"/>
+    <prop name="isAnnotatedGenome"/>
+    <prop name="isDraftGenome"/>
     <prop name="hasTemporaryNcbiTaxonId"/>
     <prop name="orthomclAbbrev"/>
     <prop name="strainAbbrev"/>
-    <prop name="hasMitochondrialGenomeSequence"/>
     <prop name="hasPlastidGenomeSequence"/>
+    <prop name="hasMitochondrialGenomeSequence"/>
+    <prop name="hasDeprecatedGenes"/>
     <prop name="genomeSource"/>
-    <prop name="organelleInitDownloadDirSubgraph"/>
     <prop name="genomeVersion"/>
-    <prop name="insertVirtualSeqFromAgpFile"/>
-    <prop name="repeatMaskSpecies"/>
-    <prop name="twoLetterAbbrev"/>
-    <prop name="organismAbbrev"/>
-    <prop name="loadDbest"/>
-    <prop name="usePredictedTranscripts"/>
     <prop name="runtRNAScan"/>
     <prop name="runExportPred"/>
-    <prop name="maxIntronSize"/>
     <prop name="taxonHierarchyForBlastxFilter"/>
-    <prop name="genomeSize"/>
-    <prop name="skipProteomeAnalysis"/>
     <prop name="skipGenomeAnalysis"/>
-    <prop name="loadEpitope"/>
+    <prop name="includeInComparativeGenomics"/>
+
     <prop name="makeAssemblySeqs"/>
     <prop name="makeAssemblies"/>
     <prop name="mapAssemblySeqsAndAssemblies"/>
-    <prop name="loadProductName"/>
     <prop name="distanceBetweenStartsForAlignmentsInSameCluster"/>
+    <prop name="usePredictedTranscripts"/>
+
     <prop name="minOrfLength"/>
-    <prop name="deprecated"/>
-    <prop name="soTermIdsOrNames"/>
-    <prop name="makeESTDownloadFile"/>
-    <prop name="makeProteomeDownloadFile"/>
-    <prop name="makeGenomicDownloadFile"/>
-    <prop name="hasMito"/>
-    <prop name="hasPlastid"/>
-    <prop name="includeInComparativeGenomics"/>
+    <prop name="genomeTopLevelSoTerm"/>
+
+    <prop name="loadEpitope"/>
+    <prop name="loadProductName"/>
+    <prop name="insertVirtualSeqFromAgpFile"/>
+
+    <prop name="genomeSize"/>
+    <prop name="repeatMaskSpecies"/>
+    <prop name="maxIntronSize"/>
 
     <step name="${organismAbbrev}_makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">${organismAbbrev}</paramValue>
@@ -90,7 +85,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
       <paramValue name="isReferenceStrain">${isReferenceStrain}</paramValue>
-      <paramValue name="isUnannotatedGenome">${isUnannotatedGenome}</paramValue>
+      <paramValue name="isAnnotatedGenome">${isAannotatedGenome}</paramValue>
       <paramValue name="hasTemporaryNcbiTaxonId">${hasTemporaryNcbiTaxonId}</paramValue>
       <paramValue name="orthomclAbbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="strainAbbrev">${strainAbbrev}</paramValue>
@@ -124,6 +119,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <subgraph name="${organismAbbrev}_PostLoadGenome" xmlFile="postLoadGenome.xml">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="projectVersion">$$projectName$$</paramValue>
       <paramValue name="organismFullName">${organismFullName}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome|${genomeVersion}</paramValue>
@@ -136,8 +132,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="taxonHierarchyForBlastxFilter">${taxonHierarchyForBlastxFilter}</paramValue>
       <paramValue name="repeatMaskSpeciesOption">-species ${repeatMaskSpecies}</paramValue>
       <paramValue name="genomeSize">${genomeSize}</paramValue>
-      <paramValue name="isUnannotatedGenome">${isUnannotatedGenome}</paramValue>
-      <paramValue name="skipProteomeAnalysis">${skipProteomeAnalysis}</paramValue>
+      <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <paramValue name="skipGenomeAnalysis">${skipGenomeAnalysis}</paramValue>
       <paramValue name="loadEpitope">${loadEpitope}</paramValue>
       <paramValue name="makeAssemblySeqs">${makeAssemblySeqs}</paramValue>
@@ -145,6 +140,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="mapAssemblySeqsAndAssemblies">${mapAssemblySeqsAndAssemblies}</paramValue>
       <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">${distanceBetweenStartsForAlignmentsInSameCluster}</paramValue>
       <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
@@ -186,8 +182,8 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="dbESTExtDbRlsSpec">${organismAbbrev}_dbEST_RSRC|@@${organismAbbrev}_dbEST_VER@@</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome|${genomeVersion}</paramValue>
       <paramValue name="minOrfLength">50</paramValue>
-      <paramValue name="deprecated">${deprecated}</paramValue>
-      <paramValue name="soTermIdsOrNames">${soTermIdsOrNames}</paramValue>
+      <paramValue name="hasDeprecatedGenes">${hasDeprecatedGenes}</paramValue>
+      <paramValue name="genomeTopLevelSoTerm">${genomeTopLevelSoTerm}</paramValue>
       <paramValue name="makeESTDownloadFile">${makeESTDownloadFile}</paramValue>
       <paramValue name="makeProteomeDownloadFile">${makeProteomeDownloadFile}</paramValue>
       <paramValue name="makeGenomicDownloadFile">${makeGenomicDownloadFile}</paramValue>
@@ -206,8 +202,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <paramValue name="commonResourceXmlFile">$$projectName$$/common.xml</paramValue>
     <paramValue name="createReferenceGene2GeneInstanceMapping">false</paramValue>
     <paramValue name="organismSpecificCreateGenesForGeneFeatures"></paramValue>
-    <dependsPattern 
-name="*_MakeAndMaskTopLevelGenome"/>
+    <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
 
   </subgraph>
 

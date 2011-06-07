@@ -9,7 +9,9 @@ sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
     my $organismSource = $self->getParamValue('organismSource');
-    my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
+    my $deprecated = ($self->getParamValue('isDeprecatedGenes') eq 'true') ? 1 :0;
+
+    $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
     my (@dbnames,@dbvers);
     my ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeExtDbRlsSpec')) if $self->getParamValue('genomeExtDbRlsSpec');

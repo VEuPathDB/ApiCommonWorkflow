@@ -1,0 +1,103 @@
+<workflowGraph name="makeAndFormatDownloadFiles">
+    <param name="relativeDownloadSiteDir"/>
+    <param name="organismAbbrev"/>
+    <param name="genomeSource"/>
+    <param name="projectName"/>
+    <param name="projectVersion"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="minOrfLength"/>
+    <param name="soTermIdsOrNames"/>
+    <param name="isDeprecatedGenes"/>
+    <param name="annotatedCDSDescripString"/>
+    <param name="annotatedTranscriptsDescripString"/>
+    <param name="annotatedProteinsDescripString"/>
+    <param name="annotatedCDSsDataName"/>
+
+    <step name="makeAnnotatedCDSDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAnnotatedCDSDownloadFile">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">fasta</paramValue>
+      <paramValue name="dataName">$$annotatedCDSsDataName$$</paramValue>
+      <paramValue name="descripString">$$annotatedCDSDescripString$$</paramValue>
+      <paramValue name="organismSource">$$genomeSource$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="isDeprecatedGenes">$$isDeprecatedGenes$$</paramValue>
+      <paramValue name="soTermIdsOrNames">$$soTermIdsOrNames$$</paramValue>
+    </step>
+
+    <step name="formatAnnotatedCDSDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="dataName">$$annotatedCDSsDataName$$</paramValue>
+      <paramValue name="args">-n</paramValue>
+      <paramValue name="isDeprecatedGenes">$$isDeprecatedGenes$$</paramValue>
+    <depends name="makeAnnotatedCDSDownloadFile"/>
+    </step>
+
+    <step name="makeAnnotatedTranscriptsDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAnnotatedTranscriptsDownloadFile">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">fasta</paramValue>
+      <paramValue name="dataName">AnnotatedTranscripts</paramValue>
+      <paramValue name="descripString">$$annotatedTranscriptsDescripString$$</paramValue>
+      <paramValue name="organismSource">$$genomeSource$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="isDeprecatedGenes">$$isDeprecatedGenes$$</paramValue>
+      <paramValue name="soTermIdsOrNames">$$soTermIdsOrNames$$</paramValue>
+    </step>
+
+    <step name="formatAnnotatedTranscriptDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="dataName">AnnotatedTranscripts</paramValue>
+      <paramValue name="args">-n</paramValue>
+      <paramValue name="isDeprecatedGenes">$$isDeprecatedGenes$$</paramValue>
+    <depends name="makeAnnotatedTranscriptsDownloadFile"/>
+    </step>
+
+    <step name="makeAnnotatedProteinsDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAnnotatedProteinsDownloadFile">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">fasta</paramValue>
+      <paramValue name="dataName">AnnotatedProteins</paramValue>
+      <paramValue name="descripString">$$annotatedProteinsDescripString$$</paramValue>
+      <paramValue name="organismSource">$$genomeSource$$</paramValue>
+      <paramValue name="isDeprecatedGenes">$$isDeprecatedGenes$$</paramValue>
+      <paramValue name="soTermIdsOrNames">$$soTermIdsOrNames$$</paramValue>
+    </step>
+
+    <step name="formatAnnotatedProteinsDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="dataName">AnnotatedProteins</paramValue>
+      <paramValue name="args">-p -C X</paramValue>
+      <paramValue name="isDeprecatedGenes">$$isDeprecatedGenes$$</paramValue>
+    <depends name="makeAnnotatedProteinsDownloadFile"/>
+    </step>
+
+    <step name="makeGeneDescripFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDescripFile">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">txt</paramValue>
+      <paramValue name="dataName">Genes</paramValue>
+      <paramValue name="descripString">$$geneNADescripString$$</paramValue>
+    </step>
+
+</workflowGraph>

@@ -1,11 +1,11 @@
 <workflowGraph name="genomeAnalysis">
   <param name="parentDataDir"/>
   <param name="projectName"/>
+  <param name="projectVersion"/>
   <param name="organismAbbrev"/>
   <param name="ncbiTaxonId"/>
   <param name="genomeExtDbRlsSpec"/>
   <param name="usePredictedTranscripts"/>
-  <param name="predictedTranscriptsExtDbRlsSpec"/>
   <param name="maxIntronSize"/>
   <param name="distanceBetweenStartsForAlignmentsInSameCluster"/>
   <param name="taxonHierarchyForBlastxFilter"/>
@@ -18,7 +18,7 @@
   <param name="organismResourceXmlFile"/>
   <param name="genomicSeqsFile"/>
   <param name="genomicSeqsDir"/>
-  <param name="loadDbest"/>
+  <param name="relativeDownloadSiteDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/genome</constant>
   <constant name="blastxArgs">-cpus=4 -topcomboN=1 W=4 T=18 V=100 B=1000000 -hspmax=1000000 -gi E=1e-3 -wordmask=seg+xnu -hspsepQmax=4000 -span1</constant>
@@ -33,18 +33,14 @@
       <depends name="makeDataDir"/>
     </step>
 
-  <subgraph name="dbESTResource" xmlFile="loadResource.xml" includeIf="$$loadDbest$$">
-    <paramValue name="resourceName">$$organismAbbrev$$_dbEST_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
-
-  <subgraph name="organismSpecificESTResource" xmlFile="$$projectName$$/$$organismAbbrev$$/ESTs.xml">
+  <subgraph name="ESTResources" xmlFile="$$projectName$$/$$organismAbbrev$$/ESTs.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <depends name="dbESTResource"/>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </subgraph>
 
     <subgraph name="blastxGenomicSeqsNrdb" xmlFile="blast.xml">
@@ -122,7 +118,7 @@
       <depends name="makeOrfFile"/>
     </step>
 
-  <subgraph name="organismSpecificMassSpecResource" xmlFile="$$projectName$$/$$organismAbbrev$$/massSpec.xml">
+  <subgraph name="massSpecResources" xmlFile="$$projectName$$/$$organismAbbrev$$/massSpec.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="loadOrfFile"/>
@@ -194,8 +190,7 @@
     <paramValue name="mapAssemblySeqsAndAssemblies">$$mapAssemblySeqsAndAssemblies$$</paramValue>
     <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
     <depends name="mirrorToCluster"/>
-    <depends name="dbESTResource"/>
-    <depends name="organismSpecificESTResource"/>
+    <depends name="ESTResources"/>
   </subgraph>
 
 </workflowGraph>

@@ -10,9 +10,11 @@ sub getDownloadFileCmd {
 
   # get parameters
 #  my @genomeExtDbSpecList = split(/,/,$self->getParamValue('genomeExtDbSpecList'));
-  my @genomeExtDbSpecList = "FIUX THIS see redmine #4306";
-  my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
+  my @genomeExtDbSpecList = "FIX THIS see redmine #4306";
+  my $deprecated = ($self->getParamValue('isDeprecatedGenes') eq 'true') ? 1 :0;
   my $organismSource = $self->getParamValue('organismSource');
+
+    $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
   my (@extDbRlsVers,@extDbNames);
 
