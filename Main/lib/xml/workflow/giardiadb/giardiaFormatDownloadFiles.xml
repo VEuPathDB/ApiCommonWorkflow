@@ -1,0 +1,48 @@
+<workflowGraph name="giardiaFormatDownloadFiles">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+
+  <constant name="webServicesDataDir">$$projectName$$/release-$$projectVersion$$</constant>
+
+  <subgraph name="GintestinalisAssemblageBDownloadFiles" xmlFile="formatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@//$$projectName$$/release-$$projectVersion$$/GintestinalisAssemblageB/fasta</paramValue>
+    <paramValue name="organismName">GintestinalisAssemblageB</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$webServicesDataDir$$</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+  </subgraph>
+
+  <subgraph name="GintestinalisAssemblageEDownloadFiles" xmlFile="formatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@//$$projectName$$/release-$$projectVersion$$/GintestinalisAssemblageE/fasta</paramValue>
+    <paramValue name="organismName">GintestinalisAssemblageE</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$webServicesDataDir$$</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+  </subgraph>
+
+  <subgraph name="GintestinalisAssemblageADownloadFiles" xmlFile="formatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@//$$projectName$$/release-$$projectVersion$$/GintestinalisAssemblageA/fasta</paramValue>
+    <paramValue name="organismName">Glamblia</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$webServicesDataDir$$</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+  </subgraph>
+
+    <step name="formatGenbankIsolateDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFile">
+      <paramValue name="inputFile">@@downloadSiteDir@@//$$projectName$$/release-$$projectVersion$$/Isolates/fasta/GiardiaGenbankIsolates_$$projectName$$-$$projectVersion$$.fasta</paramValue>
+      <paramValue name="outputDir">@@webServicesDir@@/$$webServicesDataDir$$/blast</paramValue>
+      <paramValue name="formattedFileName">GiardiaGenbankIsolates</paramValue>
+      <paramValue name="args">-n -t release-$$projectVersion$$/GiardiaGenbankIsolates</paramValue>
+    </step>
+
+</workflowGraph>
+
