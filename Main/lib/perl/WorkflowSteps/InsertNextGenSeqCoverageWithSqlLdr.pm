@@ -11,9 +11,15 @@ sub run {
 
   my $inputFile = $self->getParamValue('inputFile');
 
+  my $isReversed = $self->getParamValue('isReversed');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $args = "--dataFile $workflowDataDir/$inputFile";
+
+  $args .= " --isReversed 1" if $isReversed eq "yes";
+
+  $args .= " --isReversed 0" if $isReversed eq "no";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertNextGenSeqCoverageWithSqlLdr", $args);
 
