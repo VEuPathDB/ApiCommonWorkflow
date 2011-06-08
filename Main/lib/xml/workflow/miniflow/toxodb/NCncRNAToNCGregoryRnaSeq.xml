@@ -1,11 +1,11 @@
-<workflowGraph name="VEGmRNAToME49GregoryRnaSeq">
+<workflowGraph name="NCncRNAToNCGregoryRnaSeq">
     <param name="parentDataDir"/>
     <param name="resourceXmlFileName"/>
     <param name="ssaGeneModelFile"/>
     <param name="genomicSeqsFileForSsa"/>
     <param name="transcriptSeqsFileForSsa"/>
 
-    <constant name="dataDir">$$parentDataDir$$/VEGmRNAToME49GregoryRnaSeq</constant>
+    <constant name="dataDir">$$parentDataDir$$/NCncRNAToNCGregoryRnaSeq</constant>
     <constant name="samplesDataDir">$$dataDir$$/samples</constant>
     <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
 
@@ -23,8 +23,8 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <subgraph name="TgVEG_mRNA_Gregory_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">TgVEG_mRNA_Gregory_RSRC</paramValue>
+    <subgraph name="NC_ncRNA_Gregory_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">NC_ncRNA_Gregory_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$resourceXmlFileName$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -33,19 +33,19 @@
      <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeSamplesDataDir"/>
-      <depends name="TgVEG_mRNA_Gregory_RSRC"/>
+      <depends name="NC_ncRNA_Gregory_RSRC"/>
     </step>
  
-    <subgraph name="analyzeVEGmRNA" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
+    <subgraph name="analyzeNCncRNA" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">VEGmRNA</paramValue>
+      <paramValue name="sampleName">NCncRNA</paramValue>
       <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/TgVEG_mRNA_Gregory_RSRC/final/HWI-ST431_53_4_1.export.txt.qc.fq</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeVEGmRNA/VEGmRNA.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/VEGmRNA.int</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/NC_ncRNA_Gregory_RSRC/final/toxo_nc1_smrna_040711.fasta</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeNCncRNA/NCncRNA.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/NCncRNA.int</paramValue>
       <paramValue name="makeIntensityFile">true</paramValue>     
-      <paramValue name="rnaSeqExtDbRlsSpec">TgVEG_mRNA_Gregory_RSRC|@@TgVEG_mRNA_Gregory_VER@@</paramValue>
-      <paramValue name="genomeExtDbSpec">T.gondii ME49 contigs from Genbank|@@T.gondii ME49 contigs from Genbank_VER@@</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">NC_ncRNA_Gregory_RSRC|@@NC_ncRNA_Gregory_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Sanger N. caninum chromosomes|@@Sanger_Ncaninum_chromosomes_VER@@</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="pairedReadFilePath"></paramValue>
@@ -54,23 +54,22 @@
       <paramValue name="SNPs">false</paramValue>
       <paramValue name="strandSpecific">true</paramValue>
       <depends name="makeSamplesDataDir"/>
-      <depends name="TgVEG_mRNA_Gregory_RSRC"/>
+      <depends name="NC_ncRNA_Gregory_RSRC"/>
       <depends name="mirrorToCluster"/>
     </subgraph>
-
 <!--
     <step name="mergeMinIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
       <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
       <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
-      <paramValue name="profileElementOrder">VEGmRNA.int.min</paramValue>
-      <depends name="analyzeVEGmRNA"/>
+      <paramValue name="profileElementOrder">ME49ncRNA.int.min</paramValue>
+      <depends name="analyzeME49ncRNA"/>
     </step>
 
     <step name="mergeMaxIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
       <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
       <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
-      <paramValue name="profileElementOrder">VEGmRNA.int.max</paramValue>
-      <depends name="analyzeVEGmRNA"/>
+      <paramValue name="profileElementOrder">ME49ncRNA.int.max</paramValue>
+      <depends name="analyzeME49ncRNA"/>
     </step>
 
     <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
@@ -93,19 +92,24 @@
 
 
     <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$dataDir$$/TgVEG_mRNA_Gregory_RSRC/final/tgVEGmRNAToME49config.txt</paramValue>
+      <paramValue name="configFile">$$dataDir$$/TgRH_ncRNA_Gregory_RSRC/final/tgRHncRNAToME49config.txt/final/tgME49ncRNAconfig.txt</paramValue>
       <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
-      <paramValue name="extDbRlsSpec">TgVEG_mRNA_Gregory_RSRC|@@TgVEG_mRNA_Gregory_VER@@</paramValue>
+      <paramValue name="extDbRlsSpec">TgME49_ncRNA_Gregory_RSRC|@@TgME49_ncRNA_Gregory_VER@@</paramValue>
       <depends name="makeDiffProfile"/>
       <depends name="makeMinPercentileProfile"/>
     </step>
 
+
     <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
       <paramValue name="copyFromDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
-      <paramValue name="configFile">$$dataDir$$/TgVEG_mRNA_Gregory_RSRC/final/tgVEGmRNAToME49config.txt</paramValue>
+      <paramValue name="configFile">$$dataDir$$/TgRH_ncRNA_Gregory_RSRC/final/tgRHncRNAToME49config.txt/final/tgME49ncRNAconfig.txt</paramValue>
       <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
       <depends name="mergeIntensityFiles"/>
     </step>
 -->
+
+
+
+
 
 </workflowGraph>
