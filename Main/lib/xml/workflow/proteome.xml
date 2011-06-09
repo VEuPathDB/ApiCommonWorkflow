@@ -1,4 +1,6 @@
 <workflowGraph name="proteomeAnalysis">
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
   <param name="parentDataDir"/>
   <param name="genomeExtDbRlsSpec"/>
   <param name="ncbiTaxonId"/>
@@ -6,7 +8,6 @@
   <param name="loadEpitope"/>
   <param name="organismResourceXmlFile"/>
   <param name="proteinsFile"/>
-  <param name="organismAbbrev"/>
 
   <constant name="dataDir">$$parentDataDir$$/proteome</constant>
   <constant name="blastpNrdbArgs">-cpus=2 -topcomboN=1 V=100 B=20 -hspmax=1000000 -gi E=1e-3 -wordmask=seg -hspsepQmax=4000 -span1 W=3 T=1000</constant>
@@ -29,7 +30,7 @@
       <paramValue name="idSql">select taas.aa_sequence_id, taas.sequence from DoTS.TranslatedAASequence taas, DoTs.AAFeature af, DOTS.NAFeature nf where taas.aa_sequence_id=af.aa_sequence_id and af.na_feature_id=nf.na_feature_id and nf.name not in ('ORF') and taas.external_database_release_id = ?</paramValue>
     </step>
 
-  <subgraph name="loadProductName" xmlFile="$$projectName$$/$$organismAbbrev$$/productNames.xml">
+  <subgraph name="loadProductName" xmlFile="$$projectName$$/$$organismAbbrev$$/productNames.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
