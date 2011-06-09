@@ -3,12 +3,10 @@
     <param name="parentDataDir"/>
     <param name="genomicSeqsFile"/>
     <param name="sageTagExtDbRlsSpec"/>
-    <param name="stepNickName"/>
-    <param name="prependSeq"/>
-    <param name="useBowtie"/>
-    <param name="bowtieParam"/>
+    <param name="isMissingCATG"/>
+    <param name="nickName"/>
 
-    <constant name="dataDir">$$parentDataDir$$/$$stepNickName$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/$$nickName$$</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -16,25 +14,18 @@
 
     <step name="extractSageTags" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSageTags">
       <paramValue name="sageTagExtDbRlsSpec">$$sageTagExtDbRlsSpec$$</paramValue>
-      <paramValue name="prependSeq">$$prependSeq$$</paramValue>
+      <paramValue name="prependSeq">$$isMissingCATG$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/sageTags.fsa</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="mapSageTagsToNaSequences" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MapSageTagsToNaSequences" excludeIf="$$useBowtie$$">
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="sageTagFile">$$dataDir$$/sageTags.fsa</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/mapSageTagsToNaSequences.out</paramValue>
-      <depends name="extractSageTags"/>
-    </step>
-
-    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes" includeIf="$$useBowtie$$">
+    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
       <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="outputIndexDir">$$dataDir$$/indexes</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="runBowtie" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie" includeIf="$$useBowtie$$">
+    <step name="runBowtie" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
       <paramValue name="inputShortSeqsFile">$$dataDir$$/sageTags.fsa</paramValue>
       <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
       <paramValue name="bowtieParam">$$bowtieParam$$</paramValue>
@@ -43,7 +34,7 @@
       <depends name="createBowtieIndices"/>
     </step>
 
-    <step name="bowtie2TagToSeq" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::Bowtie2TagToSeq" includeIf="$$useBowtie$$">
+    <step name="bowtie2TagToSeq" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::Bowtie2TagToSeq">
      <paramValue name="inputFile">$$dataDir$$/bowtieOutputFile.out</paramValue>
      <paramValue name="outputFile">$$dataDir$$/mapSageTagsToNaSequences.out</paramValue>
     <depends name="runBowtie"/>

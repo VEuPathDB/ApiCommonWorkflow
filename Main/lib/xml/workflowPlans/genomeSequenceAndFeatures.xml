@@ -1,7 +1,6 @@
 <workflowGraph name="">
   <param name="organismResourceXmlFile"/>
   <param name="dataDir"/>
-  <param name="organismAbbrev"/>
 
   <constant name="dataDir">$$dataDir$$/loadGenome</constant>
 
@@ -10,10 +9,9 @@
   </step>
 
   <datasetTemplate class="genbank_primary_genome">
-    <prop name="name"/>
-    <prop name="soTerm"/>
-    <subgraph name="$$organismAbbrev$$_${soTerm}_${name}_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismAbbrev$$_${soTerm}_${name}_RSRC</paramValue>
+    <prop name="organismAbbrev"/>
+    <subgraph name="${organismAbbrev}_primary_genome_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_primary_genome_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -23,33 +21,33 @@
   <datasetTemplate class="genbank_secondary_genome">
     <prop name="name"/>
     <prop name="soTerm"/>
-    <prop name="parentDataset"/>
-    <subgraph name="$$organismAbbrev$$_${soTerm}_${name}_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismAbbrev$$_${soTerm}_${name}_RSRC</paramValue>
+    <prop name="organismAbbrev"/>
+    <subgraph name="${organismAbbrev}_${soTerm}_${name}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
-      <depends name="${parentDataset}"/>
+      <depends name="${organismAbbrev}_primary_genome_RSRC"/>
     </subgraph>
   </datasetTemplate>
 
-  <datasetTemplate class="GeneDB_GFF_genome_sequence">
-    <prop name="name"/>
-    <subgraph name="$$organismAbbrev$$_genome_GeneDB_GFF_sequence_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismAbbrev$$_genome_GeneDB_GFF_sequence_RSRC</paramValue>
+  <datasetTemplate class="GeneDB_GFF_primary_genome_sequence">
+    <prop name="organismAbbrev"/>
+    <subgraph name="${organismAbbrev}_primary_genome_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_primary_genome_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
-      <depends name="${parentDataset}" selfAllowed="true"/>
     </subgraph>
   </datasetTemplate>
 
-  <datasetTemplate class="GeneDB_GFF_genome_features">
-    <subgraph name="$$organismAbbrev$$_genome_GeneDB_GFF_features_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismAbbrev$$_genome_GeneDB_GFF_features_RSRC</paramValue>
+  <datasetTemplate class="GeneDB_GFF_primary_genome_features">
+    <prop name="organismAbbrev"/>
+    <subgraph name="${organismAbbrev}_primary_genome_features_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_primary_genome_features_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="$$organismAbbrev$$_genome_GeneDB_GFF_sequence_RSRC"/>
+      <depends name="${organismAbbrev}_primary_genome_RSRC"/>
     </subgraph>
   </datasetTemplate>
 
