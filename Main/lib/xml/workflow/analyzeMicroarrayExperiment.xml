@@ -4,19 +4,15 @@
     <param name="experimentResourceVersion"/>
     <param name="chipProbeExtDbRlsSpec"/>
     <param name="genomeExtDbRlsSpec"/>
-    <param name="insertAnalysisResult"/>
+    <param name="doExpressionAnalysis"/>
     <param name="probeGenesMappingFile"/>
-    <param name="profileSetNames"/>
-    <param name="profileSetSpecs"/>
-    <param name="isLogged"/>
-    <param name="mappingFileForExpressionStats"/>
-    <param name="calculateExpressionStats"/>
+    <param name="isTimeSeries"/>
     <param name="relativeDownloadSiteDir"/>
     <param name="organismAbbrev"/>
 
     <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
       <paramValue name="inputDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
-      <paramValue name="probeGenesMappingFile">$$probeGenesMappingFile$$</paramValue>
+      <paramValue name="probeGenesMappingFileDir">$$probeGenesMappingFileDir$$</paramValue>
     </step>
 
     <step name="loadExpressionProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
@@ -34,21 +30,18 @@
       <depends name="doTranscriptExpression"/>
     </step>
 
-    <step name="calculateExpressionStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateExpressionStatsForTimeSeries" stepLoadTypes="plugin" includeIf="$$calculateExpressionStats$$" undoRoot="loadExpressionProfilesFromConfig">
-      <paramValue name="profileSetSpecs">$$profileSetSpecs$$</paramValue>
+    <step name="isTimeSeries" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateExpressionStatsForTimeSeries" stepLoadTypes="plugin" includeIf="$$isTimeSeries$$" undoRoot="loadExpressionProfilesFromConfig">
       <paramValue name="extDbRlsSpec">$$experimentExtDbRlsSpec$$</paramValue>
-      <paramValue name="isLogged">$$isLogged$$</paramValue>
-      <paramValue name="mappingFile">$$mappingFileForExpressionStats$$</paramValue>
+      <paramValue name="isLogged">$$useLogScale$$</paramValue>
       <depends name="loadExpressionProfilesFromConfig"/>
     </step>
 
-    <step name="insertAnalysisResultFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin" includeIf="$$insertAnalysisResult$$">
+    <step name="doExpressionAnalysisFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin" includeIf="$$doExpressionAnalysis$$">
       <paramValue name="analysisWorkingDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
       <paramValue name="configFile">$$parentDataDir$$/$$experimentResourceName$$/final/analysis_result_config.txt</paramValue>
       <paramValue name="analysisResultView">DifferentialExpression</paramValue>
       <paramValue name="naFeatureView">GeneFeature</paramValue>
       <paramValue name="useSqlLdr">false</paramValue>
-      <paramValue name="profileSetNames">$$profileSetNames$$</paramValue>
       <depends name="doTranscriptExpression"/>
     </step>
 

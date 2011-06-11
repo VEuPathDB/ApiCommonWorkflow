@@ -428,12 +428,10 @@
     <prop name="organismAbbrev"/>
     <prop name="name"/>
     <prop name="version"/>
-    <prop name="isOneChannel"/>
+    <prop name="isAffymetrix"/>
+    <prop name="isNimbleGen"/>
     <prop name="limitNU"/>
     <prop name="numInsertions"/>
-    <prop name="dnaHybridization"/>
-    <prop name="countMismatches"/>
-    <prop name="isNimbleGen"/>
 
     <graphFile planFile="arrayStudies.xml"/>
 
@@ -449,6 +447,30 @@
     </resource>
   </datasetClass>
 
+  <!-- FIX WORKFLOW: need to change getAndMapProbes.xml to lose final/ -->
+  <datasetClass class="chipChipPlatform">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="limitNU"/>
+    <prop name="numInsertions"/>
+
+    <graphFile planFile="arrayStudies.xml"/>
+
+    <resource resource="${organismAbbrev}_chipChipPlatform_${name}_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+	      internalDescrip="">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/microarrayPlatform/${name}/%RESOURCE_VERSION%/final/probes.fsa"/>
+
+      <getAndUnpackOutput file="@@dataDir@@/probes.fsa"/>
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
   <!-- Category: microarrayExpression -->
 
   <!-- FIX: needs an analysis config file -->
@@ -460,15 +482,14 @@
     <prop name="experimentName"/>
     <prop name="experimentVersion"/>
     <prop name="experimentNameForFiles"/>
-    <prop name="microArrayPlatformName"/>
-    <prop name="microArrayPlatformVersion"/>
-    <prop name="insertAnalysisResult"/>
-    <prop name="useLogScale"/>
-    <prop name="calculateExpressionStats"/>
+    <prop name="microarrayPlatformName"/>
+    <prop name="microarrayPlatformVersion"/>
+    <prop name="doExpressionAnalysis"/>
+    <prop name="isTimeSeries"/>
 
     <graphFile planFile="arrayStudies.xml"/>
 
-    <resource resource="${organismAbbrev}_microarrayExpression_${name}_RSRC" version="${version}"
+    <resource resource="${organismAbbrev}_microarrayExpression_${experimentName}_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::DoNothing"
 	      internalDescrip="">
       

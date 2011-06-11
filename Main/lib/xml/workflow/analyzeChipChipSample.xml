@@ -7,7 +7,7 @@
     <param name="sampleName"/>
     <param name="sampleOrder"/>
     <param name="peakFinderArgs"/>
-    <param name="runPeakCalls"/>
+    <param name="loadPeakCalls"/>
     <param name="ncbiTaxId"/>
 
     <constant name="dataDir">$$parentDataDir$$/analyze_ChIP_Chip_$$sampleName$$</constant>
@@ -30,7 +30,7 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="runChIPChipPeakFinder" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindChipChipPeaks">
+    <step name="runChIPChipPeakFinderAndSmoother" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindChipChipPeaks">
       <paramValue name="inputFile">$$dataDir$$/transformedAndAveragedRawData.tab</paramValue>
       <paramValue name="outputPeaksFile">$$peakFinderDataDir$$/peaks.txt</paramValue>
       <paramValue name="outputSmoothedFile">$$peakFinderDataDir$$/smoothedProfiles.txt</paramValue>
@@ -44,7 +44,7 @@
       <paramValue name="method">chip_chip_peak_finder_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters"></paramValue>
-      <depends name="runChIPChipPeakFinder"/>
+      <depends name="runChIPChipPeakFinderAndSmoother"/>
     </step>
 
 
@@ -52,7 +52,7 @@
       <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/smoothedProfiles.txt</paramValue>
       <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/smoothedProfiles_reformated.txt</paramValue>
       <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
-      <depends name="runChIPChipPeakFinder"/>
+      <depends name="runChIPChipPeakFinderAndSmoother"/>
     </step>
 
     <step name="loadChIPChipSmoothedProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin">
@@ -64,14 +64,14 @@
       <depends name="reformatChIPChipSmoothedProfiles"/>
     </step>
 
-    <step name="generateChIPChipPeakFeatureGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateChIPChipPeakFeatureGff" includeIf="$$runPeakCalls$$">
+    <step name="generateChIPChipPeakFeatureGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateChIPChipPeakFeatureGff" includeIf="$$loadPeakCalls$$">
       <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.txt</paramValue>
       <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.gff</paramValue>
       <paramValue name="sampleOrder">$$sampleOrder$$</paramValue>
       <depends name="runChIPChipPeakFinder"/>
     </step>
 
-    <step name="loadChIPChipPeakFeature" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChIPChipPeakFeature" stepLoadTypes="plugin" includeIf="$$runPeakCalls$$">
+    <step name="loadChIPChipPeakFeature" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChIPChipPeakFeature" stepLoadTypes="plugin" includeIf="$$loadPeakCalls$$">
 
       <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.gff</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -83,14 +83,14 @@
       <depends name="generateChIPChipPeakFeatureGffFile"/>
     </step>
 
-    <step name="reformatChIPChipPeakScoreFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipPeakScoreFile" includeIf="$$runPeakCalls$$">
+    <step name="reformatChIPChipPeakScoreFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipPeakScoreFile" includeIf="$$loadPeakCalls$$">
       <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.txt</paramValue>
       <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/peak_scores.txt</paramValue>
       <paramValue name="sampleOrder">$$sampleOrder$$</paramValue>
       <depends name="runChIPChipPeakFinder"/>
     </step>
 
-    <step name="loadChIPChipPeakScoreFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin" includeIf="$$runPeakCalls$$">
+    <step name="loadChIPChipPeakScoreFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin" includeIf="$$loadPeakCalls$$">
       <paramValue name="analysisWorkingDir">$$dataDir$$/smoothedDataAndPeaks</paramValue>
       <paramValue name="configFile">$$parentDataDir$$/$$ChipChipResourceName$$/final/$$sampleName$$_peak_config.txt</paramValue>
       <paramValue name="analysisResultView">DataTransformationResult</paramValue>

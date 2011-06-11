@@ -1,23 +1,22 @@
 <workflowGraph name="getAndMapProbes">
     <param name="parentDataDir"/>
+    <param name="probeSetName"/>
     <param name="probeResourceName"/>
-    <param name="chipProbeExtDbRlsSpec"/>
-    <param name="isOneChannel"/>
-    <param name="isNimbleGen"/>
+    <param name="probeResourceVersion"/>
+    <param name="makeCdfFile"/>
+    <param name="makeNdfFile"/>
     <param name="organismResourceXmlFile"/>
     <param name="ssaGeneModelFile"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="genomicSeqsFileForSsa"/>
     <param name="transcriptSeqsFileForSsa"/>
+    <param name="dnaHybridization"/>
+    <param name="pairedReadFilePath"/>
     <param name="limitNU"/>
     <param name="numInsertions"/>
-    <param name="dnaHybridazation"/>
-    <param name="pairedReadFilePath"/>
     <param name="countMismatches"/>
-    <param name="cdfFileName"/>
-    <param name="ndfFileName"/>
 
-    <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/$$probeSetName$$</constant>
     <constant name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.all</constant>
     <constant name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.all</constant>
 
@@ -65,7 +64,7 @@
       <depends name="runRUMOnCluster"/>
     </step>
 
-    <step name="excludeMultiExonHits" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExcludeMultiExonHits" includeIf="$$dnaHybridazation$$">
+    <step name="excludeMultiExonHits" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExcludeMultiExonHits" includeIf="$$dnaHybridization$$">
       <paramValue name="inputUniqueFile">$$uniqueFile$$</paramValue>
       <paramValue name="inputNonUniqueFile">$$nonUniqueFile$$</paramValue>
       <depends name="revertProbeSeqId"/>
@@ -82,30 +81,30 @@
 
     <step name="loadProbeGenomeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadArrayElementFeature" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/genomeMapping.gff</paramValue>
-      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$probeResourceName$$|$$probeResourceVersion$$</paramValue>
       <depends name="makeProbeGenomeMappingGffFile"/>
     </step>
 
     <step name="makeProbeGeneMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProbeGeneMappingFile">
       <paramValue name="outputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
-      <paramValue name="aefExtDbSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <paramValue name="aefExtDbSpec">$$probeResourceName$$|$$probeResourceVersion$$</paramValue>
       <paramValue name="geneExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="isOneChannel">$$isOneChannel$$</paramValue>
+      <paramValue name="isOneChannel">$$makeCdfFile$$</paramValue>
       <depends name="loadProbeGenomeMapping"/>
     </step>
 
-    <step name="makeCdfFileForAffyArray" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$isOneChannel$$">
+    <step name="makeCdfFileForAffyArray" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$makeCdfFile$$">
       <paramValue name="gene2probesInputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
       <paramValue name="probename2sequenceInputFile">$$dataDir$$/$$probeResourceName$$/final/probename2sequence.tab</paramValue>
-      <paramValue name="cdfFile">$$dataDir$$/$$probeResourceName$$/final/$$cdfFileName$$</paramValue>
+      <paramValue name="cdfFile">$$dataDir$$/geneProbeMapping.cdf</paramValue>
       <paramValue name="tbasePbaseFile">$$dataDir$$/$$probeResourceName$$/final/tbase-pbase.out</paramValue>
       <depends name="makeProbeGeneMappingFile"/>
     </step>
 
-    <step name="reCreateNdfFileForNimbleGen" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReCreateNdfFile" includeIf="$$isNimbleGen$$">
+    <step name="reCreateNdfFileForNimbleGen" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReCreateNdfFile" includeIf="$$makeNdfFile$$">
       <paramValue name="gene2probesInputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
       <paramValue name="ndfFile">$$dataDir$$/$$probeResourceName$$/final/$$ndfFileName$$</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/$$ndfFileName$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/geneProbeMapping.ndf</paramValue>
       <depends name="makeProbeGeneMappingFile"/>
     </step>
 
