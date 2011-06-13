@@ -20,9 +20,13 @@ sub run {
   if ($isReversed eq "yes"){
 
       $args .= " --isReversed 1";
-  }else{
+
+  }elsif ($isReversed eq "no"){
 
       $args .= " --isReversed 0";
+  }else{
+      
+       $args .= " --isReversed null";
   }
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertNextGenSeqCoverageWithSqlLdr", $args);
