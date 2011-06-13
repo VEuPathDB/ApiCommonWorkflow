@@ -72,7 +72,7 @@ countMismatches=$countMismatches
       $taskPropFileContent .= "transcriptBowtieIndex=$clusterWorkflowDataDir/$transcriptBowtieIndex\n" if $transcriptBowtieIndex;
       $taskPropFileContent .= "genomeBowtieIndex=$clusterWorkflowDataDir/$genomeBowtieIndex\n" if $genomeBowtieIndex;
       $taskPropFileContent .= "strandSpecific=$strandSpecific\n" if $strandSpecific;
-      $taskPropFileContent .= "SNPs=$SNPS\n" if $SNPs;
+      $taskPropFileContent .= "SNPs=$SNPS\n" if $SNPS;
       print F "$taskPropFileContent\n";
        close(F);
   }
