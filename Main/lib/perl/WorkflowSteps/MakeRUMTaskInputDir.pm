@@ -24,6 +24,8 @@ sub run {
   my $strandSpecific = $self->getParamValue("strandSpecific");
   my $SNPS = $self->getParamValue("SNPs");
   my $keepNode = $self->getParamValue("keepNode");
+  my $createJunctionsFile = $self->getParamValue("createJunctionsFile");
+  my $variableLengthReads = $self->getParamValue("variableLengthReads");
 
   my $taskSize = $self->getConfig('taskSize');
   my $bowtieBinDir = $self->getConfig('bowtieBinDir');
@@ -73,6 +75,8 @@ countMismatches=$countMismatches
       $taskPropFileContent .= "genomeBowtieIndex=$clusterWorkflowDataDir/$genomeBowtieIndex\n" if $genomeBowtieIndex;
       $taskPropFileContent .= "strandSpecific=$strandSpecific\n" if $strandSpecific;
       $taskPropFileContent .= "SNPs=$SNPS\n" if $SNPS;
+      $taskPropFileContent .= "createJunctionsFile=$createJunctionsFile\n" if $createJunctionsFile;
+      $taskPropFileContent .= "variableLengthReads=$variableLengthReads\n" if $variableLengthReads;
       print F "$taskPropFileContent\n";
        close(F);
   }
