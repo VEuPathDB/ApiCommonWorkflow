@@ -11,7 +11,7 @@ sub run {
 
   my $inputFile = $self->getParamValue('inputFile');
   my $strain = $self->getParamValue('strain');
-  my $organismFullName = $self->getParamValue('organismFullName');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $transcriptExtDbRlsSpec = $self->getParamValue('transcriptExtDbRlsSpec');
   my $snpExtDbRlsSpec = $self->getParamValue('snpExtDbRlsSpec');
@@ -19,6 +19,8 @@ sub run {
   my ($genomExtDbName,$genomeExtDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
   my ($snpExtDbName,$snpExtDbRlsVer) = $self->getExtDbInfo($test,$snpExtDbRlsSpec);
   my ($transcriptExtDbName,$transcriptExtDbRlsVer) = $self->getExtDbInfo($test,$transcriptExtDbRlsSpec);
+
+  my $organismFullName = $self->getOrganismInfo($organismAbbrev)->getFullName();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
