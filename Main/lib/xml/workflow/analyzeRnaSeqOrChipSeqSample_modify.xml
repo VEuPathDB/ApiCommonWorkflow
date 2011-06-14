@@ -14,6 +14,8 @@
     <param name="numInsertions"/>
     <param name="limitNU"/>
     <param name="SNPs"/>
+    <param name="reference_strain"/>
+    <param name="organismFullName"/>
     <param name="strandSpecific"/>
     <param name="variableLengthReads"/>
 
@@ -164,6 +166,16 @@
       <depends name="reformatNUPSCoverageFile"/>
     </step>
 
+    <step name="insertSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/SNPs.gff</paramValue>
+      <paramValue name="strain">$$strain$$</paramValue>
+      <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="NGS_SNP">true</paramValue>
+      <depends name=""/>
+    </step>
 
 </workflowGraph>
 
