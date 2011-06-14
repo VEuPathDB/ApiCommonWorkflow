@@ -1,8 +1,8 @@
 <workflowGraph name="loadAndAnalyzeClonedInsertEnds">
   <param name="dataDir"/>
-  <param name="clonedInsertEndsResourcesReference"/>
   <param name="organismResourceXmlFile"/>
-  <param name="clonedInsertEndsExtDbRlsSpec"/>
+  <param name="resourceName"/>
+  <param name="resourceVersion"/>
   <param name="maxIntronSize"/>
   <param name="ncbiTaxonId"/>
   <param name="genomicSeqsFile"/>
@@ -16,15 +16,16 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <subgraph name="loadClonedInsertEndsResource" xmlFile="$$clonedInsertEndsResourcesReference$$">
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+  <subgraph name="loadClonedInsertEndsResource" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$resourceName$$</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
   <step name="extractClonedInsertEndsSeqs"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
-      <paramValue name="extDbRlsSpec">$$clonedInsertEndsExtDbRlsSpec$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$resourceName$$|$$resourceVersion$$</paramValue>
       <paramValue name="table">ExternalNASequence</paramValue>
       <paramValue name="alternateDefline">na_sequence_id, description, 'length='||length</paramValue>
       <paramValue name="outputFile">$$clonedInsertEndsSeqFile$$</paramValue>
@@ -69,7 +70,7 @@
       <paramValue name="queryNcbiTaxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="queryFile">$$dataDir$$/master/mainresult/blocked.seq</paramValue>
       <paramValue name="queryTable">ExternalNASequence</paramValue>
-      <paramValue name="queryExtDbRlsSpec">$$clonedInsertEndsExtDbRlsSpec$$</paramValue>
+      <paramValue name="queryExtDbRlsSpec">$$resourceName$$|$$resourceVersion$$</paramValue>
       <depends name="mirrorFromCluster"/>
     </subgraph>
 

@@ -62,6 +62,7 @@
     
     <subgraph name="${name}_getAndMapProbes" xmlFile="getAndMapProbes.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="probeSetName">${name}</paramValue>
       <paramValue name="probeResourceName">${organismAbbrev}_chipChipPlatform_${name}_RSRC</paramValue>
       <paramValue name="probeResourceVersion">${version}</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
@@ -72,6 +73,7 @@
       <paramValue name="limitNU">${limitNU}</paramValue>
       <paramValue name="numInsertions">${numInsertions}</paramValue>
       <paramValue name="dnaHybridization">true</paramValue>
+      <paramValue name="countMismatches">false</paramValue>
       <paramValue name="pairedReadFilePath"></paramValue>
       <paramValue name="makeCdfFile">false</paramValue>
       <paramValue name="cdfFileName"></paramValue>
@@ -105,16 +107,17 @@
       <paramValue name="experimentResourceVersion">${experimentVersion}</paramValue>
       <paramValue name="chipProbeExtDbRlsSpec">${organismAbbrev}_microarrayPlatform_${microarrayPlatformName}_RSRC|${microarrayPlatformVersion}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="doExpressionAnalysis">$$doExpressionAnalysis$$</paramValue>
+      <paramValue name="doExpressionAnalysis">${doExpressionAnalysis}</paramValue>
       <paramValue name="probeGenesMappingFileDir">$$dataDir$$/${microarrayPlatformName}</paramValue>
       <paramValue name="isTimeSeries">${isTimeSeries}</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <depends name="${experimentName}"/>
     </subgraph>
   </datasetTemplate>
 
   <datasetTemplate class="chipChipExperiment">
+    <prop name="projectName"/>
     <prop name="organismAbbrev"/>
     <prop name="experimentName"/>
     <prop name="experimentVersion"/>
@@ -130,13 +133,15 @@
       <depends name="${chipChipPlatformName}_getAndMapProbes"/>
     </subgraph>
 
-    <subgraph name="${experimentName}_chipChipSamples" xmlFile="${experimentName}_chipChipSamples.xml">
+    <subgraph name="${experimentName}_chipChipSamples" xmlFile="${projectName}/${organismAbbrev}/${experimentName}/chipChipSamples.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="experimentResourceName">${organismAbbrev}_chipChipExpression_${experimentName}_RSRC</paramValue>
       <paramValue name="chipProbeExtDbRlsSpec">${chipChipPlatformName}|${chipChipPlatformVersion}</paramValue>
       <paramValue name="peakFinderArgs">${peakFinderArgs}</paramValue>
       <paramValue name="loadPeakCalls">${loadPeakCalls}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="configFilesDir">$$dataDir$$/${organismAbbrev}_chipChipExpression_${experimentName}_RSRC/final</paramValue>
       <depends name="${experimentName}"/>
     </subgraph>
   </datasetTemplate>

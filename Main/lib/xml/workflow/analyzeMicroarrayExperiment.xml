@@ -5,7 +5,7 @@
     <param name="chipProbeExtDbRlsSpec"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="doExpressionAnalysis"/>
-    <param name="probeGenesMappingFile"/>
+    <param name="probeGenesMappingFileDir"/>
     <param name="isTimeSeries"/>
     <param name="relativeDownloadSiteDir"/>
     <param name="organismAbbrev"/>
@@ -30,9 +30,8 @@
       <depends name="doTranscriptExpression"/>
     </step>
 
-    <step name="isTimeSeries" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateExpressionStatsForTimeSeries" stepLoadTypes="plugin" includeIf="$$isTimeSeries$$" undoRoot="loadExpressionProfilesFromConfig">
-      <paramValue name="extDbRlsSpec">$$experimentExtDbRlsSpec$$</paramValue>
-      <paramValue name="isLogged">$$useLogScale$$</paramValue>
+    <step name="calculateExpressionStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateExpressionStatsForTimeSeries" stepLoadTypes="plugin" includeIf="$$isTimeSeries$$" undoRoot="loadExpressionProfilesFromConfig">
+      <paramValue name="extDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
       <depends name="loadExpressionProfilesFromConfig"/>
     </step>
 
