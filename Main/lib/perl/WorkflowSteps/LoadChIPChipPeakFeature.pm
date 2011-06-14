@@ -13,7 +13,7 @@ sub run {
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $substepClass = $self->getParamValue('substepClass');
-  my $defaultOrgTaxId = $self->getParamValue('defaultOrgTaxId');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $isfMappingFile = $self->getParamValue('isfMappingFile');
   my $soVersion = $self->getParamValue('soVersion');
 
@@ -34,16 +34,15 @@ sub run {
 --seqExtDbRlsVer '$seqExtDbRlsVer' \\
 --mapFile $gusHome/lib/xml/isf/$isfMappingFile \\
 --inputFileOrDir $workflowDataDir/$inputFile \\
+--organism $ncbiTaxonId \\
 --fileFormat gff2   \\
 --gff2GroupTag ID \\
 --seqIdColumn source_id \\
 --soCvsVersion $soVersion \\
 --naSequenceSubclass $substepClass \\
 EOF
-  if ($defaultOrgTaxId) {
-    $args .= "--defaultOrganism '$defaultOrgTaxId'";
-  }
 
+  my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
 
 
   if ($undo){
