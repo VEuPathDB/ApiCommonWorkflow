@@ -166,15 +166,22 @@
       <depends name="reformatNUPSCoverageFile"/>
     </step>
 
-    <step name="insertSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$dataDir$$/SNPs.gff</paramValue>
+    <step name="parseVarscanToGff" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ParseVarscanToGff" includeIf="$$SNPs$$" >
+      <paramValue name="inputFile">$$dataDir$$/master/mainresult/RUM.snps</paramValue>
+      <paramValue name="strain">$$reference_strain$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/snps.gff</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="insertSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="plugin" includeIf="$$SNPs$$" >
+      <paramValue name="inputFile">$$dataDir$$/snps.gff</paramValue>
       <paramValue name="strain">$$reference_strain$$</paramValue>
       <paramValue name="organismFullName">$$organismFullName$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbSpec$$</paramValue>
       <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbSpec$$</paramValue>
       <paramValue name="snpExtDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
       <paramValue name="NGS_SNP">true</paramValue>
-      <depends name="runRUMOnCluster"/>
+      <depends name="parseVarscanToGff"/>
     </step>
 
 </workflowGraph>
