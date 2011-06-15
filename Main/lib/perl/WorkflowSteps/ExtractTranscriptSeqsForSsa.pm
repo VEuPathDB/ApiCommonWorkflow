@@ -9,9 +9,9 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $outputFile = $self->getParamValue('outputFile');
-  my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
+  my $organismAbbrev = $self->getParamValue($organismAbbrev);
 
-
+  my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
 
   my $sql = "SELECT ga.source_id||':'||ga.sequence_id||':'||(ga.start_min - 1)||'-'||ga.end_max||'_'||(decode(ga.is_reversed, 1, '-', '+')), snas.sequence
              FROM dots.transcript t,

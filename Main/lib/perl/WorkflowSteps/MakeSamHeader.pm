@@ -8,9 +8,10 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $outputFile = $self->getParamValue('outputFile');
 
+  my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

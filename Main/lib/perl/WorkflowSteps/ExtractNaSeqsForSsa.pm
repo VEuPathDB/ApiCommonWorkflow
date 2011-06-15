@@ -10,8 +10,9 @@ sub run {
 
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $outputFile = $self->getParamValue('outputFile');
-  my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
+  my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
 
   my @extDbRlsSpecList = split(/,/, $extDbRlsSpec);
 

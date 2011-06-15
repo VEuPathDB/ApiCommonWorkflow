@@ -12,9 +12,11 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $substepClass = $self->getParamValue('substepClass');
-  my $ncbiTaxId = $self->getParamValue('ncbiTaxonId');
+  my $organismAbbrev = $self->getParamValue('organsimAbbrev');
   my $isfMappingFile = $self->getParamValue('isfMappingFile');
   my $soVersion = $self->getParamValue('soVersion');
+
+  my $ncbiTaxId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
 
   my $gusHome = $self->getSharedConfig('gusHome');
 

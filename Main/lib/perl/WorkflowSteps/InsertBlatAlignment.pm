@@ -8,10 +8,10 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $targetNcbiTaxId = $self->getParamValue('targetNcbiTaxId');
+  my $targetOrganismAbbrev = $self->getParamValue('targetOrganismAbbrev');
   my $targetExtDbRlsSpec = $self->getParamValue('targetExtDbRlsSpec');
   my $targetTable = $self->getParamValue('targetTable');
-  my $queryNcbiTaxId = $self->getParamValue('queryNcbiTaxId');
+  my $queryOrganismAbbrev = $self->getParamValue('queryOrganismAbbrev');
   my $queryExtDbRlsSpec = $self->getParamValue('queryExtDbRlsSpec');
   my $queryTable = $self->getParamValue('queryTable');
   my $queryFile = $self->getParamValue('queryFile');
@@ -19,6 +19,10 @@ sub run {
   my $action = $self->getParamValue('action');
   my $percentTop = $self->getParamValue('percentTop');
   my $blatFile = $self->getParamValue('blatFile');
+
+  my $targetNcbiTaxonId = $self->getOrganismInfo($targetOrganismAbbrev)->getNcbiTaxonId();
+  my $queryNcbiTaxonId = $self->getOrganismInfo($queryOrganismAbbrev)->getNcbiTaxonId();
+
 
   my $targetTaxonId = $self->getTaxonIdFromNcbiTaxId($test,$targetNcbiTaxId);
   my $targetTableId = $self->getTableId($targetTable);
