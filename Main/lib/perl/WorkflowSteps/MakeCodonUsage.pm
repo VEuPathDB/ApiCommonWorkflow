@@ -1,9 +1,9 @@
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeCodonUsage;
 
-@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
+@ISA = (ApiCommonWorkflow::Main::Util::DownloadFileMaker);
 
 use strict;
-use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
+use ApiCommonWorkflow::Main::Util::DownloadFileMaker;
 
 
 sub getDownloadFileCmd {
