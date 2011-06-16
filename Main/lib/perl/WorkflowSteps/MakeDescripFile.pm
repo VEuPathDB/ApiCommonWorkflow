@@ -1,9 +1,9 @@
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeDescripFile;
 
-@ISA = (ApiCommonWorkflow::Main::Util::DownloadFileMaker);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 
 use strict;
-use ApiCommonWorkflow::Main::Util::DownloadFileMaker;
+use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
 
 sub getDownloadFileCmd {
