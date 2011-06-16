@@ -17,9 +17,9 @@ use ApiCommonWorkflow::Main::Util::OrganismInfo;
 sub getComputeClusterHomeDir {
     my ($self) = @_;
     my $clusterBase = $self->getSharedConfig('clusterBaseDir');
-    my $projectName = $self->getWorkflowConfig('name');
-    my $projectVersion = $self->getWorkflowConfig('version');
-    return "$clusterBase/$projectName/$projectVersion";
+    my $workflowName = $self->getWorkflowConfig('name');
+    my $workflowVersion = $self->getWorkflowConfig('version');
+    return "$clusterBase/$workflowName/$workflowVersion";
 }
 
 sub getClusterWorkflowDataDir {
