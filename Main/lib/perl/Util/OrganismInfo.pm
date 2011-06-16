@@ -5,11 +5,13 @@ use strict;
 sub new {
     my ($class, $workflowStep, $test, $organismAbbrev) = @_;
 
-    if ($test) {
-	my $self = {test => 1, organismAbbrev => $organismAbbrev};
-	bless($self,$class);
-	return $self;
-    }
+    my $self = {test => $test,
+		organismAbbrev => $organismAbbrev,
+		workflowStep => $workflowStep
+	       };
+    bless($self,$class);
+
+    return $self if $test;
 
     my $sql = "select nameForFiles
              from apidb.organism
@@ -27,30 +29,24 @@ sub new {
 
     my $stmt = $workflowStep->runSql($sql);
     my ($fullName, $ncbiTaxonId, $taxonId) = $stmt->fetchrow_array(); 
-    
+
     $sql = "select ncbi_tax_id, taxon_id
    from
   (select taxon_id, ncbi_tax_id, rank 
    from sres.taxon
    connect by taxon_id = prior parent_id
-   start with taxon_id = $taxon_id) t
+   start with taxon_id = $taxonId) t
    where t.rank = 'species'";
 
     $stmt = $workflowStep->runSql($sql);
     my ($speciesNcbiTaxonId, $speciesTaxonId) = $stmt->fetchrow_array(); 
-    
-    my $self = {
-	test => 0,
-	organismAbbrev => $organismAbbrev,
-	fullName => $fullName,
-	nameForFiles => $nameForFiles,
-	ncbiTaxonId => $ncbiTaxonId,
-	taxonId => $taxonId,
-	speciesNcbiTaxonId => $speciesNcbiTaxonId,
-	speciesTaxonId => $speciesTaxonId,
-    };
 
-    bless($self,$class);
+    $self->{fullName} = $fullName;
+    $self->{nameForFiles} = $nameForFiles;
+    $self->{ncbiTaxonId} = $ncbiTaxonId;
+    $self->{taxonId} = $taxonId;
+    $self->{speciesNcbiTaxonId} = $speciesNcbiTaxonId;
+    $self->{speciesTaxonId} = $speciesTaxonId;
 
     return $self;
 }
@@ -95,15 +91,15 @@ sub getTaxonIdList {
   my ($self, $hierarchy) = @_;
 
   if ($hierarchy) {
-    my $idList = $self->runCmd($test, "getSubTaxaList --taxon_id $self->{taxonId}");
-    if ($test) {
+    my $idList = $self->{workflowStep}->runCmd($self->{test}, "getSubTaxaList --taxon_id $self->{taxonId}");
+    if ($self->{test}) {
       return "$self->{organismAbbrev}_TAXON_ID_LIST";
     } else {
       chomp($idList);
       return  $idList;
     }
   } else {
-    return $taxonId;
+    return $self->getTaxonId();
   }
 }
 
