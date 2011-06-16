@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::Util::DownloadFileMaker;
+package ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
