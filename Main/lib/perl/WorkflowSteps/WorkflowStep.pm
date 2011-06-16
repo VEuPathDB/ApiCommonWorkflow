@@ -11,6 +11,9 @@ use Carp;
 
 use ReFlow::Controller::WorkflowStepInvoker;
 use CBIL::Util::SshCluster;
+use GUS::Model::ApiDB::Organism;
+use ApiCommonWorkflow::Main::Util::TaxonInfo;
+
 
 sub getComputeClusterHomeDir {
     my ($self) = @_;
@@ -112,6 +115,8 @@ sub getTableId {
   return  $tableId;
 }
 
+# this method is replaced by getOrganismInfo, and should be retired
+# when all api workflows use organismAbbrev as key for an organism
 sub getTaxonIdFromNcbiTaxId {
   my ($self, $test, $taxId) = @_;
 
@@ -128,6 +133,8 @@ sub getTaxonIdFromNcbiTaxId {
   }
 }
 
+# this method is replaced by getOrganismInfo, and should be retired
+# when all api workflows use organismAbbrev as key for an organism
 sub getTaxonIdList {
   my ($self, $test, $taxonId, $hierarchy) = @_;
 
@@ -305,6 +312,17 @@ sub getAlgInvIds {
   }
   return join(",", @algInvIds);
 }
+
+sub getOrganismInfo {
+    my ($self, $test, $organismAbbrev) = @_;
+
+    if (!$self->{organismInfo}->{$organismAbbrev}) {
+	$self->{organismInfo}->{$organismAbbrev} =
+	    ApiCommonWorkflow::Main::Util::OrganismInfo->new($self, $test, $organismAbbrev);
+    }    
+    return $self->{organismInfo}->{$organismAbbrev};
+}
+
 
 # the root directory that holds all website files.
 # at EuPathDB this is apiSiteFiles/
