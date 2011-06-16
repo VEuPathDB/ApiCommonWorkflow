@@ -10,7 +10,7 @@ sub run {
 
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
-    my $organism = $self->getOrganismInfo($organismAbbrev)->getFullName();
+    my $organism = $self->getOrganismInfo($test, $organismAbbrev)->getFullName();
     my $outputFile;
 
     if($self->getParamValue('outputFile')){

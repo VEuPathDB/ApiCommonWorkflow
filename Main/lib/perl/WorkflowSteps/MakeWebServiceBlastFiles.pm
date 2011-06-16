@@ -20,7 +20,7 @@ sub run {
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   # get download site file
-  my $organismNameForFiles = $self->getOrganismInfo($organismAbbrev)->getNameForFiles();
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
   my $downloadFileDir = "$websiteFilesDir/$downloadSiteRelativeDir/$organismNameForFiles/fasta";
   my $inputDownloadFile = "$downloadFileDir/$projectName-${projectVersion}_${organismNameForFiles}_$dataName.fasta";
 

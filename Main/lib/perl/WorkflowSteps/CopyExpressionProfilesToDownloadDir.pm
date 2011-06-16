@@ -19,7 +19,7 @@ sub run {
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $organismNameForFiles =
-      $self->getOrganismInfo($organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
 
   my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/transcriptExpression";
 

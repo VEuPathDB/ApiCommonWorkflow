@@ -40,7 +40,7 @@ sub run {
   my $descripString= $self->getParamValue('descripString');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
-  my $organismNameForFiles = $self->getOrganismInfo($organismAbbrev)->getNameForFiles();
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
   my $outputDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/$fileType";
 
   $dataName = "_$dataName" if $dataName; # gff does not use $dataName, so allow it to be empty

@@ -20,7 +20,7 @@ sub run {
   my ($snpExtDbName,$snpExtDbRlsVer) = $self->getExtDbInfo($test,$snpExtDbRlsSpec);
   my ($transcriptExtDbName,$transcriptExtDbRlsVer) = $self->getExtDbInfo($test,$transcriptExtDbRlsSpec);
 
-  my $organismFullName = $self->getOrganismInfo($organismAbbrev)->getFullName();
+  my $organismFullName = $self->getOrganismInfo($test, $organismAbbrev)->getFullName();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

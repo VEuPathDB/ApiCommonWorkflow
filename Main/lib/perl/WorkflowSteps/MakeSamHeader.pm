@@ -11,7 +11,7 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $outputFile = $self->getParamValue('outputFile');
 
-  my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

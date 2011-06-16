@@ -12,7 +12,7 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
-  my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
   my @extDbRlsSpecList = split(/,/, $extDbRlsSpec);
 
@@ -25,8 +25,6 @@ sub run {
   }
 
   $dbRlsIds =~ s/(,)$//g;
-
-  my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$ncbiTaxonId);
 
   my $sql = "select sa.source_id||':1-'||sa.length||'_strand=+',ns.sequence 
              from apidb.sequenceattributes sa, dots.nasequence ns 
@@ -47,14 +45,6 @@ sub run {
 	    $self->runCmd($test,"modify_fa_to_have_seq_on_one_line.pl $workflowDataDir/$outputFile.multiLine >$workflowDataDir/$outputFile");
       }
   }
-}
-
-sub getParamsDeclaration {
-  return (
-	  'extDbRlsSpec',
-	  'outputFile',
-	  'ncbiTaxonId'
-	 );
 }
 
 sub getConfigDeclaration {

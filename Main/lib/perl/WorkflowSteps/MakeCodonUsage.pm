@@ -16,7 +16,7 @@ sub getDownloadFileCmd {
     my $inputDataName = $self->getParamValue("inputDataName");
 
     my $websiteFilesDir = $self->getWebsiteFilesDir($test);
-    my $organismNameForFiles = $self->getOrganismInfo($organismAbbrev)->getNameForFiles();
+    my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
     my $inputDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/fasta";
 
     my $inputDownloadFile = "$inputDir/$projectName-${projectVersion}_${organismNameForFiles}_$inputDataName.fasta";

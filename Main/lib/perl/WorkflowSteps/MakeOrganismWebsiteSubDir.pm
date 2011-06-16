@@ -24,7 +24,7 @@ sub run {
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $organismNameForFiles =
-      $self->getOrganismInfo($organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
 
   if ($organelleName) {
       $organismNameForFiles .= "-$organelleName";

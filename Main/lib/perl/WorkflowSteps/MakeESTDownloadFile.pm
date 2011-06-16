@@ -9,9 +9,8 @@ sub getDownloadFileCmd {
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
-    my $speciesNcbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getSpeciesNcbiTaxonId();
-    my $taxonId = $self->getTaxonIdFromNcbiTaxId($test, $speciesNcbiTaxonId);
-    my $taxonIdList = $self->getTaxonIdList($test, $taxonId, 1);
+    my $speciesTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
+    my $taxonIdList = $self->getTaxonIdList($test, $speciesTaxonId, 1);
 
     my $sql = <<"EOF";
     SELECT x.source_id

@@ -8,7 +8,7 @@ sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
-    my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
+    my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
     my $sql = "
       SELECT  a.source_id

@@ -42,7 +42,7 @@ sub run {
 --naSequenceSubclass $substepClass \\
 EOF
 
-  my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
 
   if ($undo){

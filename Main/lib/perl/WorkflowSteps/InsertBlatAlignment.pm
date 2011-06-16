@@ -20,14 +20,11 @@ sub run {
   my $percentTop = $self->getParamValue('percentTop');
   my $blatFile = $self->getParamValue('blatFile');
 
-  my $targetNcbiTaxonId = $self->getOrganismInfo($targetOrganismAbbrev)->getNcbiTaxonId();
-  my $queryNcbiTaxonId = $self->getOrganismInfo($queryOrganismAbbrev)->getNcbiTaxonId();
+  my $targetTaxonId = $self->getOrganismInfo($test, $targetOrganismAbbrev)->getTaxonId();
+  my $queryTaxonId = $self->getOrganismInfo($test, $queryOrganismAbbrev)->getTaxonId();
 
-
-  my $targetTaxonId = $self->getTaxonIdFromNcbiTaxId($test,$targetNcbiTaxId);
   my $targetTableId = $self->getTableId($targetTable);
   my $targetExtDbRlsId = $self->getExtDbRlsId($test, $targetExtDbRlsSpec);
-  my $queryTaxonId = $self->getTaxonIdFromNcbiTaxId($test,$queryNcbiTaxId);
   my $queryTableId = $self->getTableId($queryTable);
   my $queryExtDbRlsId = $self->getExtDbRlsId($test, $queryExtDbRlsSpec) if $queryExtDbRlsSpec;
 
@@ -45,22 +42,6 @@ sub run {
   }
 
   $self->runPlugin($test, $undo,"GUS::Community::Plugin::LoadBLATAlignments", $args);
-}
-
-sub getParamDeclaration {
-  return (
-	  'targetTaxonId',
-	  'queryTaxonId',
-	  'targetExtDbRlsSpec',
-	  'queryExtDbRlsSpec',
-	  'regex',
-	  'action',
-	  'percentTop',
-	  'blatFile',
-	  'queryFile',
-	  'targetTable',
-	  'queryTable',
-	 );
 }
 
 sub getConfigDeclaration {

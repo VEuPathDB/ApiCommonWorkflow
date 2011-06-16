@@ -11,8 +11,7 @@ use Carp;
 
 use ReFlow::Controller::WorkflowStepInvoker;
 use CBIL::Util::SshCluster;
-use GUS::Model::ApiDB::Organism;
-use ApiCommonWorkflow::Main::Util::TaxonInfo;
+use ApiCommonWorkflow::Main::Util::OrganismInfo;
 
 
 sub getComputeClusterHomeDir {

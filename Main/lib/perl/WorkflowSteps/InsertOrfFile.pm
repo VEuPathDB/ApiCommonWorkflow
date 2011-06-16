@@ -16,7 +16,7 @@ sub run {
   my $isfMappingFile = $self->getParamValue('isfMappingFile');
   my $soVersion = $self->getParamValue('soVersion');
 
-  my $ncbiTaxId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
+  my $ncbiTaxId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
   my $gusHome = $self->getSharedConfig('gusHome');
 
