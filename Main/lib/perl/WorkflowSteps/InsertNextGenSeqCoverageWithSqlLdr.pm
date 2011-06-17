@@ -21,12 +21,9 @@ sub run {
 
       $args .= " --isReversed 1";
 
-  }elsif ($isReversed eq "no"){
+  }else{
 
       $args .= " --isReversed 0";
-  }else{
-      
-       $args .= " --isReversed null";
   }
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertNextGenSeqCoverageWithSqlLdr", $args);
