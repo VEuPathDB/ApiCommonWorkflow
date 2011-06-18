@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+use File::Basename;
+use strict;
+
 my $project = $ARGV[0];
 my $version = $ARGV[1];
 my $stagingDir = $ARGV[2];
@@ -11,8 +14,8 @@ my $targetDir = $ARGV[3];
 
 usage() unless $stagingDir && $targetDir;
 
-processTopDir('downloadSite', $stagingDir, $targetDir);
-processTopDir('webServices', $stagingDir, $targetDir);
+processTopDir('downloadSite', $stagingDir, $targetDir, $project, $version);
+processTopDir('webServices', $stagingDir, $targetDir, $project, $version);
 
 sub processTopDir {
   my ($type, $stagingDir, $targetDir, $project, $version) = @_;
@@ -28,9 +31,6 @@ sub processTopDir {
   my $t = "$targetDir/$type/$project/release-$version";
   die "targetDir $t already exists\n" if -e $t;
 
-  my $targetWebServicesDir = "$stagingDir/webServices/$project/release-CURRENT";
-  die "stagingDir $stagingWebServicesDir does not exist\n" unless -e $stagingWebServicesDir;
-
   runCmd("mkdir -p $targetDir/$type/$project");
   runCmd("cp -r $s $t");
 
@@ -45,8 +45,10 @@ sub renameFilesInDir {
   my @files = readdir($dh);
   closedir $dh;
   foreach my $f (@files) {
+    next if $f eq '.' || $f eq '..';
+    $f = "$dir/$f";
     if (-d $f) {
-      renameFilesInDir($f);
+      renameFilesInDir($f, $version);
     } elsif ($f =~ /CURRENT/) {
       my $new = $f;
       $new =~ s/CURRENT/$version/;
@@ -56,13 +58,24 @@ sub renameFilesInDir {
 }
 
 sub runCmd {
-  my ($cm) = @_;
+  my ($cmd) = @_;
   system($cmd);
   my $status = $? >> 8;
   die "Error running command:\n$cmd\n $?" if $status;
 }
 
+sub usage {
+  my $n = basename($0);
+  print STDERR "
 
+Move download site and web services file from a staging area to the real area.
+Staging area file names have the word CURRENT where the project's version
+be.  As part of copying, substitute back in the version.
 
+Usage: $n projectName projectVersion stagingDir targetDir
 
+";
 
+exit(1);
+
+}
