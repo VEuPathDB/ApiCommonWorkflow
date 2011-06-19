@@ -713,5 +713,40 @@
     </resource>
   </datasetClass>
 
+  <datasetClass class="orthomclPhyletic">
+    <prop name="projectName"/>
+
+    <graphFile planFile="comparativeGenomics.xml"/>
+
+    <resource resource="OrthoMCL_Phyletic_RSRC" version="@@OrthoMCL_VER@@"
+	      plugin="ApiCommonData::Load::Plugin::InsertPhylogeneticProfile">
+      <manualGet fileOrDir="common/orthology/orthoMCL/%RESOURCE_VERSION%/orthomclGroups.txt"/>
+      <pluginArgs>--projectName ${projectName} --groupsFile @@dataDir@@/orthomclGroups.txt</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="orthomcl">
+    <prop name="projectName"/>
+
+    <graphFile planFile="comparativeGenomics.xml"/>
+
+    <resource resource="OrthoMCL_RSRC" version="@@OrthoMCL_VER@@"
+	      plugin="ApiCommonData::Load::Plugin::InsertOrthologousGroups">
+      <manualGet fileOrDir="common/orthology/orthoMCL/%RESOURCE_VERSION%/orthomclGroups.txt"/>
+      <pluginArgs>--projectName ${projectName} --OrthologFile @@dataDir@@/orthomclGroups.txt --AnalysisName 'OrthoMCL-based Orthology Predictions' --AnalysisDescription 'OrthoMCL-based Orthology Predictions' --ElementResultTable "DoTS::GeneFeature"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="orthomclTree">
+    <prop name="projectName"/>
+
+    <graphFile planFile="comparativeGenomics.xml"/>
+
+    <resource resource="OrthoMCLTree_RSRC" version="@@OrthoMCL_VER@@"
+	      plugin="ApiCommonData::Load::Plugin::InsertOrthomclTaxon">
+      <manualGet fileOrDir="common/orthology/orthoMCL/%RESOURCE_VERSION%/orthomclClades.txt"/>
+      <pluginArgs>--cladeFile @@dataDir@@/%RESOURCE_VERSION%/orthomclClades.txt --speciesFile @@dataDir@@/%RESOURCE_VERSION%/orthomclTaxons.txt </pluginArgs>
+    </resource>
+  </datasetClass>
 
 </datasetClasses>
