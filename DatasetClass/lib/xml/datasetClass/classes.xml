@@ -175,7 +175,7 @@
     <prop name="mapFile"/>
     <prop name="gff2GroupTag"/>
 
-    <graphFile planFile="optional.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev}_genomeFeature_${name}_GFF2_RSRC"
               version="${version}"
@@ -541,7 +541,7 @@
 
   <!-- when we have dataset subclasses, this can be a subclass of fastaSequence -->
   <!-- with category = dnaSeq -->
-  <datasetSubclass class="clonedInsertEnds" includesClass="fastaSequence">
+  <datasetClass class="clonedInsertEnds">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
@@ -553,7 +553,7 @@
     <prop name="regexSourceId"/>
     <prop name="repeatMaskSpecies"/>
  
-    <graphFile planFile="optional.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev$_dnaSeq_${name}_sequences_RSRC" version="2001-09-19"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
@@ -563,7 +563,7 @@
 
       <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/seqs.fasta --soTermName ${soTermName} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
     </resource>
-  </datasetSubclass>
+  </datasetClass>
 
   <datasetClass class="fastaSequence">
     <prop name="projectName"/>
@@ -594,7 +594,7 @@
     <prop name="name"/>
     <prop name="version"/>
  
-    <graphFile planFile="optional.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev}_sageTag_${name}_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadSagePrimers">
@@ -614,7 +614,7 @@
     <prop name="version"/>
     <prop name="normalizeFrequencies"/>
  
-    <graphFile planFile="optional.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev}_sageTag_${name}_frequencies_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadSageFrequencies"
@@ -652,7 +652,7 @@
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
  
-    <graphFile planFile="optional.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev}_isolates_genbank_RSRC" version="TODAY"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
@@ -672,7 +672,7 @@
   </datasetClass>
 
   <!-- the ncbi taxon ID is not important.  isolate strain info is provided by dedicated isolate info tables -->
-  <datasetClass class="isolatesFeaturesGFF2">
+  <datasetClass class="isolateFeaturesGFF2">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
@@ -680,7 +680,7 @@
     <prop name="version"/>
     <prop name="mapfile"/>
  
-    <graphFile planFile="optional.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev}_isolate_${name}_features_RSRC" version="2009-03-23"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures">
