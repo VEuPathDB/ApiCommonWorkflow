@@ -4,31 +4,35 @@
 
   <subgraph name="miniGlobal" xmlFile="miniflow/miniGlobal.xml" > </subgraph>
 
-   <subgraph name="tgME49LoadGenome" xmlFile="miniflow/miniLoadGenome.xml">
-    <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="organismName">tgME49</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">T.gondii ME49 contigs from Genbank|@@Tgondii_ME49_contigs_from_Genbank_VER@@</paramValue>
-    <paramValue name="ncbiTaxonId">508771</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="miniGlobal"/>
-  </subgraph>
 
-  <subgraph name="tgGT1LoadGenome" xmlFile="miniflow/miniLoadGenome.xml">
-    <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="organismName">tgGT1</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
-    <paramValue name="ncbiTaxonId">507601</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="miniGlobal"/> 
-  </subgraph>
+  <step name="tgME49ExtractGenomicSeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+      <paramValue name="extDbRlsSpec">T.gondii ME49 contigs from Genbank|@@Tgondii_ME49_contigs_from_Genbank_VER@@</paramValue>
+      <paramValue name="table">ExternalNASequence</paramValue>
+      <paramValue name="alternateDefline"></paramValue>
+      <paramValue name="outputFile">tgME49GenomicSeqs.fsa</paramValue>
+      <paramValue name="separateFastaFiles">false</paramValue>
+      <paramValue name="outputDirForSeparateFiles"></paramValue>
+      <depends name="miniGlobal"/> 
+    </step>
 
+  <step name="tgGT1ExtractGenomicSeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+      <paramValue name="extDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
+      <paramValue name="table">ExternalNASequence</paramValue>
+      <paramValue name="alternateDefline"></paramValue>
+      <paramValue name="outputFile">tgGT1GenomicSeqs.fsa</paramValue>
+      <paramValue name="separateFastaFiles">false</paramValue>
+      <paramValue name="outputDirForSeparateFiles"></paramValue>
+      <depends name="miniGlobal"/> 
+    </step>
 
   <subgraph name="tgME49GubbelsHTS" xmlFile="miniflow/toxodb/tgME49GubbelsHTS.xml">
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="resourceXmlFileName">toxodb/gubbelsHTSResources.xml</paramValue>
-    <depends name="tgME49LoadGenome"/> 
+    <depends name="tgME49ExtractGenomicSeqs"/> 
   </subgraph>
 
   <subgraph name="tgGT1GubbelsHTS" xmlFile="miniflow/toxodb/tgGT1GubbelsHTS.xml">
@@ -36,7 +40,7 @@
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="resourceXmlFileName">toxodb/gubbelsHTSResources.xml</paramValue>
-    <depends name="tgGT1LoadGenome"/> 
+    <depends name="tgGT1ExtractGenomicSeqs"/> 
   </subgraph>
 
 

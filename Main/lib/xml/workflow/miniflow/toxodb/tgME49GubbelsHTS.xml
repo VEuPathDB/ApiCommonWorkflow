@@ -7,10 +7,8 @@
   <constant name="dataDir">$$parentDataDir$$/tgME49GubbelsHTS</constant>
   <constant name="samplesDataDir">$$dataDir$$/samples</constant>
   <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
-  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/tgME49LoadGenome/genomicSeqsForSsa.fsa</constant>
-  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/tgME49LoadGenome/transcriptSeqsForSsa.fsa</constant>
-  <constant name="ssaGeneModelFile">$$parentDataDir$$/tgME49LoadGenome/geneModelForSsa.txt</constant>
-  <constant name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$/</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/tgME49GenomicSeqs.fsa</constant>
+
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -33,15 +31,9 @@
       <depends name="makeDataDir"/>
      </subgraph>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="TgRH_HTS_Gubbels_RSRC"/>
-    </step>
-
-    <subgraph name="analyzeLane5" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
+    <subgraph name="analyzeLane5" xmlFile="analyzeNGSSNPSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Lane5</paramValue>
-      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="shortSeqsFile">$$dataDir$$/TgRH_HTS_Gubbels_RSRC/final/PARENT-302WB_lane5_mate1.fq</paramValue>
       <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeLane5/Lane5.cov</paramValue>
       <paramValue name="outputIntensityFile">$$samplesDataDir$$/Lane5.int</paramValue>
