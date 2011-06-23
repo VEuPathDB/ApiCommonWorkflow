@@ -33,23 +33,23 @@
   </datasetTemplate>
 
   <datasetTemplate class="isolateFeaturesGFF2">
+    <prop name="organismAbbrev"/>
     <prop name="name"/>
     <prop name="version"/>
 
-    <subgraph name="$$organismAbbrev$$_isolate_$$name$$_sequences_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismAbbrev$_isolate_$$name$$_sequences_RSRC</paramValue>
+    <subgraph name="${organismAbbrev}_isolate_${name}_sequences_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_isolate_${name}_sequences_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="map${name}IsolatesToGenome" xmlFile="mapIsolatesToGenome.xml">
+    <subgraph name="map_${name}_IsolatesToGenome" xmlFile="mapIsolatesToGenome.xml">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismName">$$organismName$$</paramValue>
-      <paramValue name="isolatesExtDbRlsSpec">${name}|${version}</paramValue>
+      <paramValue name="isolatesExtDbRlsSpec">${organismAbbrev}_isolate_${name}_features_RSRC|${version}</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="$$organismAbbrev$_isolate_${name}_sequences_RSRC"/>
+      <depends name="${organismAbbrev}_isolate_${name}_sequences_RSRC"/>
     </subgraph>
   </datasetTemplate>
 
