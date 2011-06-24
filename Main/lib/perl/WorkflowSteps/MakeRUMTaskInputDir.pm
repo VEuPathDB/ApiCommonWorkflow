@@ -63,7 +63,7 @@ perlScriptsDir=$perlScriptsDir
 limitNU=$limitNU
 numInsertions=$numInsertions
 minBlatIdentity=93
-createSAMFile=$createSAMFile
+createSAMFile=true
 countMismatches=$countMismatches
 ";
 
@@ -73,6 +73,9 @@ countMismatches=$countMismatches
       $taskPropFileContent .= "genomeBowtieIndex=$clusterWorkflowDataDir/$genomeBowtieIndex\n" if $genomeBowtieIndex;
       $taskPropFileContent .= "strandSpecific=$strandSpecific\n" if $strandSpecific;
       $taskPropFileContent .= "SNPs=$SNPS\n" if $SNPS;
+      $taskPropFileContent .= "createJunctionsFile=true\n";
+       $taskPropFileContent .= "variableLengthReads=true\n";
+
       print F "$taskPropFileContent\n";
        close(F);
   }
