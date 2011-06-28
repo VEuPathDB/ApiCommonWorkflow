@@ -25,7 +25,7 @@ sub run {
 
   my $args = "--reference '$strain' --organism '$organismFullName' --snpExternalDatabaseName '$snpExtDbName' --snpExternalDatabaseVersion '$snpExtDbRlsVer' --naExternalDatabaseName '$genomExtDbName' --naExternalDatabaseVersion '$genomeExtDbRlsVer' --transcriptExternalDatabaseName '$transcriptExtDbName' --transcriptExternalDatabaseVersion '$transcriptExtDbRlsVer' --seqTable 'DoTS::ExternalNASequence' --ontologyTerm 'SNP' --snpFile $workflowDataDir/$inputFile";
 
-  my $args .= " --NGS_SNP" if ($NGS_SNP eq 'true');
+  $args .= " --NGS_SNP" if ($NGS_SNP eq 'true');
 
   if ($test) {
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
