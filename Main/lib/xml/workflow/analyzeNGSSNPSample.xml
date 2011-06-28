@@ -36,7 +36,7 @@
 
     <step name="identifySNPsFromBamFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::IdentifySNPsFromBamFile">
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="bamFile">$$dataDir$$/RUM_NU.all.sorted</paramValue>
+      <paramValue name="bamFile">$$dataDir$$/SNPs.bam</paramValue>
       <paramValue name="outputFile">$$dataDir$$/SNPs.snps</paramValue>
       <depends name="makeSortedBAMFile"/>
     </step>
@@ -45,6 +45,7 @@
       <paramValue name="inputFile">$$dataDir$$/SNPs.snps</paramValue>
       <paramValue name="strain">$$reference_strain$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/SNPs.gff</paramValue>
+      <depends name="identifySNPsFromBamFile"/>
     </step>
 
     <step name="insertSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="plugin">

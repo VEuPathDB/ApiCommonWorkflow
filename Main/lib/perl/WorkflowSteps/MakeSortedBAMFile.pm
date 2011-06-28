@@ -15,8 +15,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "samtools view -uS $workflowDataDir/$inputFile | samtools sort - SNPs";
-
+  my $cmd = "samtools view -uS $workflowDataDir/$inputFile > $workflowDataDir/$outputFile";
   
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
