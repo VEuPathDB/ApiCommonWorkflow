@@ -1,0 +1,43 @@
+<workflowGraph name="EhWeedallSOLID">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+  <param name="parentDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/EhWeedallSOLID</constant>
+  <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+  <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/EhistolyticaGenomicSeqs.fsa</constant>
+  <constant name="BowtieIndexDir">$$parentDataDir$$/EhistolyticaGenomicSeqsIndexes</constant>
+
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="makeSeqCoverageAndIntensityDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="analyzeLane5" xmlFile="analyzeNGSSNPSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Lane5</paramValue>
+      <paramValue name="shortSeqsFile">$$parentDataDir$$/TgRH_HTS_Gubbels_RSRC/final/PARENT-302WB_lane5_mate1.fq</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">TgRH_HTS_Gubbels_RSRC|@@TgRH_HTS_Gubbels_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">T.gondii ME49 contigs from Genbank|@@Tgondii_ME49_contigs_from_Genbank_VER@@</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="pairedReadFilePath">$$parentDataDir$$/TgRH_HTS_Gubbels_RSRC/final/PARENT-302WB_lane5_mate2.fq</paramValue>
+      <paramValue name="reference_strain">tgME49</paramValue>
+      <paramValue name="BowtieIndexDir">$$BowtieIndexDir$$</paramValue>
+      <paramValue name="organismFullName">Toxoplasma gondii RH</paramValue>
+      <paramValue name="bowtieParam">-a -S -n 3</paramValue>
+      <paramValue name="inputShortSeqsFileType"></paramValue>
+      <depends name="makeSamplesDataDir"/>
+    </subgraph>
+
+</workflowGraph>
