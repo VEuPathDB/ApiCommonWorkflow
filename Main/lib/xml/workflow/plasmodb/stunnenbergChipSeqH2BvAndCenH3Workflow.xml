@@ -1,0 +1,26 @@
+<workflowGraph name="stunnenbergChipSeqH2BvAndCenH3Workflow">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+
+  <constant name="genomicSeqsFileForSsa">PfalciparumLoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">PfalciparumLoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">PfalciparumLoadGenome/geneModelForSsa.txt</constant>
+
+   <subgraph name="pfLoadGenome" xmlFile="miniflow/miniLoadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Pfalciparum</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="ncbiTaxonId">36329</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+  </subgraph>
+
+  <subgraph name="getAndAnalyzeStunnenbergChipSeqH2BvAndCenH3" xmlFile="plasmodb/pfStunnenbergChipSeqH2BvAndCenH3.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">plasmodb/pfalciparum.xml</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+    <depends name="pfLoadGenome"/>
+  </subgraph>
+
+</workflowGraph>
