@@ -1,0 +1,39 @@
+<workflowGraph name="ehWeedallSNPWorkflow">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+
+
+  <step name="EhistolyticaExtractGenomicSeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+      <paramValue name="extDbRlsSpec">E. histolytica Genome and Annotations from jCVI|@@Ehistolytica_genome_VER@@</paramValue>
+      <paramValue name="table">ExternalNASequence</paramValue>
+      <paramValue name="alternateDefline"></paramValue>
+      <paramValue name="outputFile">EhistolyticaGenomicSeqs.fsa</paramValue>
+      <paramValue name="separateFastaFiles">false</paramValue>
+      <paramValue name="outputDirForSeparateFiles"></paramValue>
+    </step>
+
+    <step name="EhistolyticaCreateBowtieIndicesForColorspace" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">EhistolyticaGenomicSeqs.fsa</paramValue>
+      <paramValue name="outputIndexDir">EhistolyticaGenomicSeqsIndexes</paramValue>
+      <paramValue name="colorspace">true</paramValue>
+      <depends name="ehistolyticaExtractGenomicSeqs"/>
+    </step>
+
+    <subgraph name="Eh_Weedall_SOLID_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Eh_Weedall_SOLID_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">amoebadb/ehistolytica.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+     </subgraph>
+
+  <subgraph name="EhWeedallSOLID" xmlFile="miniflow/amoebadb/EhWeedallSOLID.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <depends name="EhistolyticaCreateBowtieIndicesForColorspace"/> 
+    <depends name="Eh_Weedall_SOLID_RSRC"/> 
+  </subgraph>
+
+
+</workflowGraph>
+

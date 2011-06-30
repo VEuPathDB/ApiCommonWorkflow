@@ -13,9 +13,15 @@ sub run {
 
   my $outputIndexDir = $self->getParamValue('outputIndexDir');
 
+  my $colorspace = $self->getParamValue('colorspace');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   $self->runCmd(0,"mkdir -p $workflowDataDir/$outputIndexDir");
+
+  my $cmd= "createBowtieIndexes --inputFile $workflowDataDir/$inputFile --outputIndexDir $workflowDataDir/$outputIndexDir/genomicIndexes";
+
+  $cmd .= " --colorspace" if $colorspace;
       
   if($undo){
 
@@ -25,7 +31,7 @@ sub run {
       if ($test) {
 	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       }else{
-	  $self->runCmd($test, "createBowtieIndexes --inputFile $workflowDataDir/$inputFile --outputIndexDir $workflowDataDir/$outputIndexDir/genomicIndexes");
+	  $self->runCmd($test, $cmd);
       }
   }
 }
