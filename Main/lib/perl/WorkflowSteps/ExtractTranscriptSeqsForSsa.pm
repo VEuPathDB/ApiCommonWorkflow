@@ -9,7 +9,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $outputFile = $self->getParamValue('outputFile');
-  my $organismAbbrev = $self->getParamValue($organismAbbrev);
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
