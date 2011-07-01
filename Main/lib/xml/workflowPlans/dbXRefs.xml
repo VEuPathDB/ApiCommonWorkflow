@@ -15,8 +15,9 @@
 
   <datasetTemplate class="dbxref_simple">
     <prop name="name"/>
-    <subgraph name="$$organismAbbrev$$_dbxref_${name}_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismAbbrev$$_dbxref_${name}_RSRC</paramValue>
+    <prop name="organismAbbrev"/>
+    <subgraph name="${organismAbbrev}_dbxref_${name}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_dbxref_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -24,8 +25,9 @@
   </datasetTemplate>
   
   <datasetTemplate class="dbxref_ApiLoc">
-    <subgraph name="$$organismAbbrev$$_dbxref_ApiLoc_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismAbbrev$$_dbxref_ApiLoc_RSRC</paramValue>
+    <prop name="organismAbbrev"/>
+    <subgraph name="${organismAbbrev}_dbxref_ApiLoc_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_dbxref_ApiLoc_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -33,8 +35,9 @@
   </datasetTemplate>
   
   <datasetTemplate class="dbxref_gene2Entrez">
-    <subgraph name="$$organismAbbrev$$_dbxref_gene2Entrez_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismAbbrev$$_dbxref_gene2Entrez_RSRC</paramValue>
+    <prop name="organismAbbrev"/>
+    <subgraph name="${organismAbbrev}_dbxref_gene2Entrez_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_dbxref_gene2Entrez_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -43,25 +46,25 @@
   
   <datasetTemplate class="dbxref_gene2Uniprot">
     <prop name="name"/>
-    <subgraph name="$$organismAbbrev$$_dbxref_gene2Uniprot_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismAbbrev$$_dbxref_gene2Uniprot_RSRC</paramValue>
+    <prop name="organismAbbrev"/>
+    <subgraph name="${organismAbbrev}_dbxref_gene2Uniprot_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_dbxref_gene2Uniprot_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="$$organismAbbrev$$_dbxref_gene2Entrez_RSRC"/>
+      <depends name="${organismAbbrev}_dbxref_gene2Entrez_RSRC"/>
     </subgraph>
 
     <step name="makeEuPathUniProtLinkFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEuPathUniProtLinkFile">
-      <paramValue name="dbrefExtDbRlsSpec">$$organismAbbrev$$_dbxref_gene2Uniprot_RSRC|@@$$organismAbbrev$$_dbxref_gene2Uniprot_VER@@</paramValue>
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="dbrefExtDbRlsSpec">${organismAbbrev}_dbxref_gene2Uniprot_RSRC|@@${organismAbbrev}_dbxref_gene2Uniprot_VER@@</paramValue>
+    <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="fileType">txt</paramValue>
     <paramValue name="dataName">UniProtMapping</paramValue>
     <paramValue name="descripString">$$UniProtDescripString$$</paramValue>
-    <depends name="$$organismAbbrev$$_dbxref_gene2Uniprot_RSRC"/>
+    <depends name="${organismAbbrev}_dbxref_gene2Uniprot_RSRC"/>
     </step>
-
   </datasetTemplate>
   
 </workflowGraph>
