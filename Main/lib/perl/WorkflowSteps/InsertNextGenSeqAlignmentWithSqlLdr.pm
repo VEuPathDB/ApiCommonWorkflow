@@ -11,9 +11,13 @@ sub run {
 
   my $inputFile = $self->getParamValue('inputFile');
 
+  my $extDbSpecs = $self->getParamValue('extDbSpecs');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--dataFile $workflowDataDir/$inputFile";
+  my ($externalDatabase,$externalDatabaseRls) = split(/\|/,$extDbSpecs);
+
+  my $args = "--dataFile $workflowDataDir/$inputFile --externalDatabase $externalDatabase --externalDatabaseRls $externalDatabaseRls";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertNextGenSeqAlignmentWithSqlLdr", $args);
 
@@ -22,6 +26,7 @@ sub run {
 sub getParamDeclaration {
   return (
 	  'inputFile',
+	  'extDbSpecs',
 	 );
 }
 
