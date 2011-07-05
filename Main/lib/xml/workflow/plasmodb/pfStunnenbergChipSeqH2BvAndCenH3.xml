@@ -19,17 +19,18 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeSamplesDataDir"/>
-    </step>
-
     <subgraph name="Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC"/>
+    </step>
 
     <subgraph name="analyzeH2Bv_20hSample" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
