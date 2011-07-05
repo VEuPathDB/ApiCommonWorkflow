@@ -1,0 +1,62 @@
+<workflowGraph name="gubbelsHTSWorkflow">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+
+
+  <step name="tgME49ExtractGenomicSeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+      <paramValue name="extDbRlsSpec">T.gondii ME49 contigs from Genbank|@@Tgondii_ME49_contigs_from_Genbank_VER@@</paramValue>
+      <paramValue name="table">ExternalNASequence</paramValue>
+      <paramValue name="alternateDefline"></paramValue>
+      <paramValue name="outputFile">tgME49GenomicSeqs.fsa</paramValue>
+      <paramValue name="separateFastaFiles">false</paramValue>
+      <paramValue name="outputDirForSeparateFiles"></paramValue>
+    </step>
+
+    <step name="tgME49CreateBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">tgME49GenomicSeqs.fsa</paramValue>
+      <paramValue name="outputIndexDir">tgME49GenomicSeqsIndexes</paramValue>
+      <depends name="tgME49ExtractGenomicSeqs"/>
+    </step>
+
+  <step name="tgGT1ExtractGenomicSeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+      <paramValue name="extDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
+      <paramValue name="table">ExternalNASequence</paramValue>
+      <paramValue name="alternateDefline"></paramValue>
+      <paramValue name="outputFile">tgGT1GenomicSeqs.fsa</paramValue>
+      <paramValue name="separateFastaFiles">false</paramValue>
+      <paramValue name="outputDirForSeparateFiles"></paramValue>
+    </step>
+
+    <step name="tgGT1CreateBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">tgGT1GenomicSeqs.fsa</paramValue>
+      <paramValue name="outputIndexDir">tgGT1GenomicSeqsIndexes</paramValue>
+      <depends name="tgGT1ExtractGenomicSeqs"/>
+    </step>
+
+    <subgraph name="TgRH_HTS_Gubbels_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TgRH_HTS_Gubbels_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">toxodb/gubbelsHTSResources.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+     </subgraph>
+
+  <subgraph name="tgME49GubbelsHTS" xmlFile="miniflow/toxodb/tgME49GubbelsHTS.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <depends name="tgME49ExtractGenomicSeqs"/> 
+    <depends name="TgRH_HTS_Gubbels_RSRC"/> 
+  </subgraph>
+<!--
+  <subgraph name="tgGT1GubbelsHTS" xmlFile="miniflow/toxodb/tgGT1GubbelsHTS.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <depends name="tgGT1ExtractGenomicSeqs"/> 
+    <depends name="TgRH_HTS_Gubbels_RSRC"/> 
+  </subgraph>
+-->
+
+</workflowGraph>
+
