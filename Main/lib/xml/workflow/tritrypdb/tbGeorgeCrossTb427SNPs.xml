@@ -1,27 +1,24 @@
 <workflowGraph name="tbGeorgeCrossTb427SNPs">
     <param name="parentDataDir"/>
     <param name="organismResourceXmlFile"/>
-    <param name="ssaGeneModelFile"/>
-    <param name="genomicSeqsFileForSsa"/>
-    <param name="transcriptSeqsFileForSsa"/>
-    <param name="downloadSiteTranscriptExpressionDataDir"/>
+    <param name="genomicSeqsFile"/>
     <param name="genomeExtDbRlsSpec"/>
 
     <constant name="dataDir">$$parentDataDir$$/tbGeorgeCrossTb427SNPs</constant>
     <constant name="samplesDataDir">$$dataDir$$/samples</constant>
-    <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeSeqCoverageAndIntensityDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
-      <paramValue name="dataDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+    <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
-      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="outputIndexDir">$$dataDir$$/indexes</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
@@ -32,86 +29,56 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeSamplesDataDir"/>
-      <depends name="Tb427_SNPs_George_Cross_RSRC"/>
-    </step>
-
-    <subgraph name="analyzeLane1" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
+    <subgraph name="analyzeLane1" xmlFile="analyzeNGSSNPSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">Lane1</paramValue>
-      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Tb427_SNPs_George_Cross_RSRC/final/Input_gDNA_lane1_76bp.fq</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeLane1/Lane1.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/Lane1.int</paramValue>
-      <paramValue name="makeIntensityFile">false</paramValue>     
+      <paramValue name="shortSeqsFile">$$parentDataDir$$/Tb427_SNPs_George_Cross_RSRC/final/Input_gDNA_lane1_76bp.fq</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Tb427_SNPs_George_Cross_RSRC|@@Tb427_SNPs_George_Cross_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="pairedReadFilePath"></paramValue>
-      <paramValue name="numInsertions">1</paramValue>
-      <paramValue name="limitNU">14</paramValue>
-      <paramValue name="SNPs">true</paramValue>
       <paramValue name="reference_strain">Tb927</paramValue>
+      <paramValue name="BowtieIndexDir">$$dataDir$$/indexes</paramValue>
       <paramValue name="organismFullName">Trypanosoma brucei brucei strain 427</paramValue>
-      <paramValue name="strandSpecific">false</paramValue>
-      <paramValue name="variableLengthReads">false</paramValue>
+      <paramValue name="bowtieParam">-a -S -n 3</paramValue>
+      <paramValue name="inputShortSeqsFileType">-q</paramValue>
       <depends name="makeSamplesDataDir"/>
-      <depends name="Tb427_SNPs_George_Cross_RSRC"/>
-      <depends name="mirrorToCluster"/>
+      <depends name="createBowtieIndices"/>
     </subgraph>
 
-    <subgraph name="analyzeLane2" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
+
+    <subgraph name="analyzeLane2" xmlFile="analyzeNGSSNPSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">Lane2</paramValue>
-      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Tb427_SNPs_George_Cross_RSRC/final/Input_gDNA_lane2_76bp.fq</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeLane2/Lane2.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/Lane2.int</paramValue>
-      <paramValue name="makeIntensityFile">false</paramValue>     
+      <paramValue name="sampleName">Lane1</paramValue>
+      <paramValue name="shortSeqsFile">$$parentDataDir$$/Tb427_SNPs_George_Cross_RSRC/final/Input_gDNA_lane2_76bp.fq</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Tb427_SNPs_George_Cross_RSRC|@@Tb427_SNPs_George_Cross_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="pairedReadFilePath"></paramValue>
-      <paramValue name="numInsertions">1</paramValue>
-      <paramValue name="limitNU">14</paramValue>
-      <paramValue name="SNPs">true</paramValue>
       <paramValue name="reference_strain">Tb927</paramValue>
+      <paramValue name="BowtieIndexDir">$$dataDir$$/indexes</paramValue>
       <paramValue name="organismFullName">Trypanosoma brucei brucei strain 427</paramValue>
-      <paramValue name="strandSpecific">false</paramValue>
-      <paramValue name="variableLengthReads">false</paramValue>
+      <paramValue name="bowtieParam">-a -S -n 3</paramValue>
+      <paramValue name="inputShortSeqsFileType">-q</paramValue>
       <depends name="makeSamplesDataDir"/>
-      <depends name="Tb427_SNPs_George_Cross_RSRC"/>
-      <depends name="mirrorToCluster"/>
+      <depends name="createBowtieIndices"/>
     </subgraph>
 
-    <subgraph name="analyzeLane3" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
+    <subgraph name="analyzeLane3" xmlFile="analyzeNGSSNPSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">Lane3</paramValue>
-      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Tb427_SNPs_George_Cross_RSRC/final/Input_gDNA_lane3_76bp.fq</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeLane3/Lane3.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/Lane3.int</paramValue>
-      <paramValue name="makeIntensityFile">false</paramValue>     
+      <paramValue name="sampleName">Lane1</paramValue>
+      <paramValue name="shortSeqsFile">$$parentDataDir$$/Tb427_SNPs_George_Cross_RSRC/final/Input_gDNA_lane3_76bp.fq</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Tb427_SNPs_George_Cross_RSRC|@@Tb427_SNPs_George_Cross_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="pairedReadFilePath"></paramValue>
-      <paramValue name="numInsertions">1</paramValue>
-      <paramValue name="limitNU">14</paramValue>
-      <paramValue name="SNPs">true</paramValue>
       <paramValue name="reference_strain">Tb927</paramValue>
+      <paramValue name="BowtieIndexDir">$$dataDir$$/indexes</paramValue>
       <paramValue name="organismFullName">Trypanosoma brucei brucei strain 427</paramValue>
-      <paramValue name="strandSpecific">false</paramValue>
-      <paramValue name="variableLengthReads">false</paramValue>
+      <paramValue name="bowtieParam">-a -S -n 3</paramValue>
+      <paramValue name="inputShortSeqsFileType">-q</paramValue>
       <depends name="makeSamplesDataDir"/>
-      <depends name="Tb427_SNPs_George_Cross_RSRC"/>
-      <depends name="mirrorToCluster"/>
+      <depends name="createBowtieIndices"/>
     </subgraph>
 
 </workflowGraph>
