@@ -13,7 +13,8 @@ sub run {
     my $outputFile = $self->getParamValue('outputFile');
     my $bowtieParam = $self->getParamValue('bowtieParam');
     my $inputShortSeqsFileType = $self->getParamValue('inputShortSeqsFileType');
-    my $pairedReadFilePath = $self->getParamValue('pairedReadFilePath');
+    my $pairedReadOrQualFileType = $self->getParamValue('pairedReadOrQualFileType');
+    my $pairedReadOrQualFilePath = $self->getParamValue('pairedReadOrQualFilePath');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
@@ -22,13 +23,13 @@ sub run {
 
     $cmd .= " $inputShortSeqsFileType" if ($inputShortSeqsFileType);
 
-    if ($pairedReadFilePath){
-	$cmd .= " -1 $workflowDataDir/$inputShortSeqsFile -2 $workflowDataDir/$pairedReadFilePath > $workflowDataDir/$outputFile";
-    }else{
-	$cmd .= " $workflowDataDir/$inputShortSeqsFile > $workflowDataDir/$outputFile";
-    }
+    $cmd .= " $workflowDataDir/$inputShortSeqsFile" if ($inputShortSeqsFileType);
 
+    $cmd .= " $pairedReadOrQualFileType" if ($pairedReadOrQualFileType);
 
+    $cmd .= " $workflowDataDir/$pairedReadOrQualFilePath" if ($pairedReadOrQualFilePath);
+
+    $cmd .= " > $workflowDataDir/$outputFile";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
@@ -36,7 +37,7 @@ sub run {
 	if ($test) {
 	    $self->testInputFile('inputCoverageFile', "$workflowDataDir/$inputIndexesDir");
 	    $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$inputShortSeqsFile");
-	    $self->testInputFile('pairedReadFilePath', "$workflowDataDir/$pairedReadFilePath") if ($pairedReadFilePath);
+	    $self->testInputFile('pairedReadOrQualFilePath', "$workflowDataDir/$pairedReadOrQualFilePath") if ($pairedReadOrQualFilePath);
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}
 	$self->runCmd($test, $cmd);
