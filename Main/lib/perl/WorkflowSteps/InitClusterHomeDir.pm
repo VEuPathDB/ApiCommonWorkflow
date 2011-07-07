@@ -15,8 +15,7 @@ sub run {
    if ($undo) {
       $self->runCmdOnCluster(0, "rm -fr $clusterDataDir");
       $self->runCmdOnCluster(0, "rm -fr $clusterTaskLogsDir");
-   } else { 
-       
+   } else {
       $self->runCmdOnCluster(0, "mkdir -p $clusterDataDir");
       $self->runCmdOnCluster(0, "mkdir -p $clusterTaskLogsDir");
    }
