@@ -9,7 +9,7 @@ sub getDownloadFileCmd {
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
-    my $speciesTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
+    my $speciesTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNcbiTaxonId();
     my $taxonIdList = $self->getTaxonIdList($test, $speciesTaxonId, 1);
 
     my $sql = <<"EOF";

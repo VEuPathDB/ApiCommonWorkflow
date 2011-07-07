@@ -73,6 +73,12 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="common"/>      
     </step>
 
+  <step name="${organismAbbrev}_mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">${organismAbbrev}</paramValue>
+    <depends name="${organismAbbrev}_makeDataDir"/>
+    <dependsGlobal name="initClusterHomeDir"/>
+  </step>
+
     <subgraph name="${organismAbbrev}_LoadGenome" xmlFile="loadGenome.xml">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -94,13 +100,13 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">${organismAbbrev}/genomicSeqsForSsa.fsa</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">${organismAbbrev}/transcriptSeqsForSsa.fsa</paramValue>
-      <paramValue name="geneModelFileForSsa">${organismAbbrev}/geneModelForSsa.txt</paramValue>
-      <paramValue name="genomicSeqsFile">${organismAbbrev}/genomicSeqs.fsa</paramValue>
-      <paramValue name="genomicSeqsDir">${organismAbbrev}/genomicSeqs</paramValue>
-      <paramValue name="proteinsFile">${organismAbbrev}/AnnotatedProteins.fsa</paramValue>
-      <paramValue name="samHeaderFile">${organismAbbrev}/samHeader</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">${organismAbbrev}/loadGenome/genomicSeqsForSsa.fsa</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">${organismAbbrev}/loadGenome/transcriptSeqsForSsa.fsa</paramValue>
+      <paramValue name="geneModelFileForSsa">${organismAbbrev}/loadGenome/geneModelForSsa.txt</paramValue>
+      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
+      <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <paramValue name="samHeaderFile">${organismAbbrev}/loadGenome/samHeader</paramValue>
       <depends name="${organismAbbrev}_makeDataDir"/>
       <dependsGlobal name="taxonomy_RSRC"/> 
       <dependsGlobal name="SO_RSRC"/>
@@ -142,9 +148,9 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="genomicSeqsFile">${organismAbbrev}/genomicSeqs.fsa</paramValue>
-      <paramValue name="genomicSeqsDir">${organismAbbrev}/genomicSeqs</paramValue>
-      <paramValue name="proteinsFile">${organismAbbrev}/AnnotatedProteins.fsa</paramValue>
+      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
+      <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
@@ -156,11 +162,11 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome|${genomeVersion}</paramValue>
       <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">${organismAbbrev}/genomicSeqsForSsa.fsa</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">${organismAbbrev}/transcriptSeqsForSsa.fsa</paramValue>
-      <paramValue name="geneModelFileForSsa">${organismAbbrev}/geneModelForSsa.txt</paramValue>
-      <paramValue name="genomicSeqsFile">${organismAbbrev}/genomicSeqs.fsa</paramValue>
-      <paramValue name="samHeaderFile">${organismAbbrev}/samHeader</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">${organismAbbrev}/loadGenome/genomicSeqsForSsa.fsa</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">${organismAbbrev}/loadGenome/transcriptSeqsForSsa.fsa</paramValue>
+      <paramValue name="geneModelFileForSsa">${organismAbbrev}/loadGenome/geneModelForSsa.txt</paramValue>
+      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="samHeaderFile">${organismAbbrev}/loadGenome/samHeader</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
