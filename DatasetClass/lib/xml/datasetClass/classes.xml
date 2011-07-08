@@ -152,15 +152,16 @@
     <prop name="parentDataset"/>
     <prop name="virtualSeqSOTerm"/>
     <prop name="sourceIdPrefix"/>
+    <prop name="genomeVersion"/>
+
 
     <resource resource="${organismAbbrev}_genome_virtual_sequence_agp_RSRC"
               version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::InsertVirtualSeqFromAgpFile"
-	      parentResource="${organismAbbrev}_primary_genome_RSRC">
+	      plugin="ApiCommonData::Load::Plugin::InsertVirtualSeqFromAgpFile">
       
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${virtualSeqSOTerm}_assembly_agp/%RESOURCE_VERSION%/final/assembly.agp"/>
 
-      <pluginArgs>--agpFile @@dataDir@@/assembly.agp --seqPieceExtDbName %PARENT_RESOURCE_NAME% --seqPieceExtDbRlsVer %PARENT_RESOURCE_VERSION% --virSeqExtDbName %RESOURCE_NAME% --virSeqExtDbRlsVer %RESOURCE_VERSION% --virtualSeqSOTerm ${virtualSeqSOTerm}  --ncbiTaxId ${ncbiTaxonId} --soVer @@SO_VER@@ --sourceIdPrefix ${sourceIdPrefix}</pluginArgs>
+      <pluginArgs>--agpFile @@dataDir@@/assembly.agp --seqPieceExtDbName ${organismAbbrev}_primary_genome_RSRC --seqPieceExtDbRlsVer ${genomeVersion} --virSeqExtDbName %RESOURCE_NAME% --virSeqExtDbRlsVer %RESOURCE_VERSION% --virtualSeqSOTerm ${virtualSeqSOTerm}  --ncbiTaxId ${ncbiTaxonId} --soVer @@SO_VER@@ --sourceIdPrefix ${sourceIdPrefix}</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -174,17 +175,19 @@
     <prop name="version"/>
     <prop name="mapFile"/>
     <prop name="gff2GroupTag"/>
+    <prop name="genomeVersion"/>
+
 
     <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev}_genomeFeature_${name}_GFF2_RSRC"
               version="${version}"
-	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures">
 	      parentResource="${organismAbbrev}_primary_genome_RSRC">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genomeFeature/${name}_GFF/%RESOURCE_VERSION%/final/features.gff"/>
 
-      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --seqExtDbName %PARENT_RESOURCE_NAME% --seqExtDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @gusHome@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/features.gff --fileFormat gff2  --gff2GroupTag "${gff2GroupTag}" --soCvsVersion @@SO_VER@@ --defaultOrganism ${ncbiTaxonId} --naSequenceSubclass ExternalNASequence --seqIdColumn source_id  --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
+      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --seqExtDbName ${organismAbbrev}_primary_genome_RSRC --seqExtDbRlsVer ${genomeVersion} --mapFile @gusHome@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/features.gff --fileFormat gff2  --gff2GroupTag "${gff2GroupTag}" --soCvsVersion @@SO_VER@@ --defaultOrganism ${ncbiTaxonId} --naSequenceSubclass ExternalNASequence --seqIdColumn source_id  --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -290,11 +293,12 @@
   <datasetClass class="GeneDB_GFF_gene_aliases">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
+    <prop name="version"/>
 
     <graphFile planFile="geneAliases.xml"/>
 
     <resource resource="${organismAbbrev}_GeneDB_GFF_gene_aliases_RSRC"
-	      version="dontcare"
+	      version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertNaFeatureNaGene"
 	      internalDescrip="">
 
@@ -357,13 +361,13 @@
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
+    <prop name="genomeVersion"/>
 
     <graphFile planFile="dbXRefs.xml"/>
 
     <resource resource="${organismAbbrev}_dbxref_gene2Entrez_RSRC"
 	      version="@@${organismAbbrev}_dbxref_gene2Entrez_VER@@"
-	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
-	      parentResource="${organismAbbrev}_primary_genome_RSRC">
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs">
 
 
       <manualGet fileOrDir="common/dbxref/gene2Entrez/%RESOURCE_VERSION%/final/gene_info.gz"/>
@@ -372,7 +376,7 @@
 
       <unpack>rm -f @@dataDir@@/gene_info.gz</unpack>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2entrez.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '%PARENT_RESOURCE_NAME%|%PARENT_RESOURCE_VERSION%'  --idType 'alternate id'</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2entrez.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'  --idType 'alternate id'</pluginArgs>
 
     </resource>
   </datasetClass>
@@ -382,20 +386,20 @@
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
+    <prop name="genomeVersion"/>
 
     <graphFile planFile="dbXRefs.xml"/>
 
     <resource resource="${organismAbbrev}_dbxref_gene2Uniprot_RSRC"
 	      version="@@${organismAbbrev}_dbxref_gene2Uniprot_VER@@"
-	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
-	      parentResource="${organismAbbrev}_primary_genome_RSRC">
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs">
 
       <manualGet fileOrDir="common/dbxref/gene2Uniprot/%RESOURCE_VERSION%/final/idmapping_selected.tab.gz"/>
 
       <!-- need to use the gene2entrez file to get map of NCBI ids -->
       <unpack>uniprotIdMap2DbRefsFile @@dataDir@@/idmapping_selected.tab.gz @@dataDir@@/../${organismAbbrev}_dbxref_gene2Entrez_RSRC/entrez2gene.tab > @@dataDir@@/gene2uniprot.tab</unpack>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2uniprot.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '%PARENT_RESOURCE_NAME%|%PARENT_RESOURCE_VERSION%' --idType 'alternate id'</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2uniprot.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --idType 'alternate id'</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -640,7 +644,7 @@
 	      plugin="ApiCommonData::Load::Plugin::InsertGeneFeatProductFromTabFile"
 	      parentResource="${organismAbbrev}_primary_genome_RSRC">
 
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/function/${name}_product_names/%RESOURCE_VERSION%/final/product.txt"/>
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/function/${name}_product_names/%PARENT_RESOURCE_VERSION%/final/product.txt"/>
 
       <pluginArgs>--file @@dataDir@@/product.txt  --productDbName %PARENT_RESOURCE_NAME% --productDbVer %PARENT_RESOURCE_VERSION%</pluginArgs>
     </resource>
@@ -697,17 +701,17 @@
     <prop name="name"/>
     <prop name="version"/>
     <prop name="flag"/>
+    <prop name="genomeVersion"/>
  
     <graphFile planFile="massSpec.xml"/>
 
     <resource resource="${organismAbbrev}_massSpec_${name}_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertMassSpecPreprocessed"
-	      parentResource="${organismAbbrev}_primary_genome_RSRC"
 	      internalDescrip="">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/massSpec/${name}/%RESOURCE_VERSION%/final"/>
 
-      <pluginArgs>--inputDir @@dataDir@@/final --externalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%" --geneExternalDatabaseSpec '%PARENT_RESOURCE_NAME%|%PARENT_RESOURCE_VERSION%' ${flag} </pluginArgs>
+      <pluginArgs>--inputDir @@dataDir@@/final --externalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%" --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' ${flag} </pluginArgs>
     </resource>
   </datasetClass>
 
