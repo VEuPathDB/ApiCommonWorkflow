@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServiceBlastFiles;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
