@@ -294,13 +294,13 @@
     <graphFile planFile="geneAliases.xml"/>
 
     <resource resource="${organismAbbrev}_GeneDB_GFF_gene_aliases_RSRC"
-	      version="@@${organismAbbrev}_GeneDB_GFF_gene_aliases_RSRC@@"
+	      version="dontcare"
 	      plugin="ApiCommonData::Load::Plugin::InsertNaFeatureNaGene"
 	      internalDescrip="">
 
       <manualGet fileOrDir="global/empty"/>
 
-      <unpack>grep 'previous_systematic_id=' @@dataDir@@/../${organismAbbrev}_genedb_gff_genome_RSRC/genome.gff3 >  @@dataDir@@/previousIdLines</unpack>
+      <unpack>grep 'previous_systematic_id=' @@dataDir@@/../${organismAbbrev}_primary_genome_RSRC/genome.gff3 >  @@dataDir@@/previousIdLines</unpack>
 
       <unpack><![CDATA[perl -e '%hsh;while(<>){chomp; @arr=split(/\t/,$_); $arr[8]=~ /ID=(\w+)\:.+previous_systematic_id\=(\w+)/; $hsh{$1}=$2;} foreach $k(keys %hsh){print "$k\t$hsh{$k}\n";}' @@dataDir@@/previousIdLines > @@dataDir@@/new2oldIds.txt]]></unpack>
 
