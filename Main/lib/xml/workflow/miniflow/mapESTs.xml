@@ -1,3 +1,4 @@
+
 <workflowGraph name="mapESTs">
   <param name="parentDataDir"/>
   <param name="organismName"/>
@@ -21,6 +22,9 @@
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
+    <step name="initClusterHomeDir"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitClusterHomeDir">
+    </step>
 
     <step name="extractGenomicSeqsIntoSeparateFastaFiles"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
@@ -48,6 +52,7 @@
     <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeGenomeTargetListFile"/>
+      <depends name="initClusterHomeDir"/>
     </step>
 
    <step name="runNibOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNibOnCluster">
