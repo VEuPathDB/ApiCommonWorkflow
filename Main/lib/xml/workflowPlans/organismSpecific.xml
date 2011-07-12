@@ -23,9 +23,11 @@
   </step>
 
   <datasetTemplate class="isolates_genbank">
-    <subgraph name="mapGenbankIsolatesToGenome" xmlFile="mapIsolatesToGenome.xml">
+    <prop name="organismAbbrev"/>
+
+    <subgraph name="${organismAbbrev}_isolates_genbank_RSRC" xmlFile="mapIsolatesToGenome.xml">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
-     <paramValue name="isolatesExtDbRlsSpec">$$organismAbbrev$$_isolates_genbank_RSRC|TODAY</paramValue>
+      <paramValue name="isolatesExtDbRlsSpec">${organismAbbrev}_isolates_genbank_RSRC|TODAY</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="makeDataDir"/>
@@ -37,8 +39,8 @@
     <prop name="name"/>
     <prop name="version"/>
 
-    <subgraph name="${organismAbbrev}_isolate_${name}_sequences_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">${organismAbbrev}_isolate_${name}_sequences_RSRC</paramValue>
+    <subgraph name="${organismAbbrev}_isolates_${name}_sequences_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_isolates_${name}_sequences_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -49,7 +51,7 @@
       <paramValue name="isolatesExtDbRlsSpec">${organismAbbrev}_isolate_${name}_features_RSRC|${version}</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="${organismAbbrev}_isolate_${name}_sequences_RSRC"/>
+      <depends name="${organismAbbrev}_isolates_${name}_sequences_RSRC"/>
     </subgraph>
   </datasetTemplate>
 

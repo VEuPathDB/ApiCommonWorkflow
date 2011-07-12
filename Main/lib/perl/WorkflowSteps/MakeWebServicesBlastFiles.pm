@@ -11,10 +11,10 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $projectName = $self->getParamValue('projectName');
   my $projectVersion = $self->getParamValue('projectVersion');
-  my $downloadSiteRelativeDir = $self->getParamValue('downloadSiteRelativeDir');  my $dataName = $self->getParamValue('dataName');
+  my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  my $dataName = $self->getParamValue('dataName');
 
   # extra params for this step
-  my $webServicesRelativeDir = $self->getParamValue('webServicesRelativeDir');
+  my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
   my $args = $self->getParamValue('args');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
