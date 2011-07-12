@@ -1,0 +1,79 @@
+<workflowGraph name="mapESTs">
+  <param name="parentDataDir"/>
+  <param name="organismName"/>
+  <param name="genomeExtDbRlsSpec"/>
+ <param name="organismFullName"/>
+  <param name="ncbiTaxonId"/>
+  <param name="parentNcbiTaxonId"/>
+  <param name="usePredictedTranscripts"/>
+  <param name="predictedTranscriptsExtDbRlsSpec"/>
+  <param name="maxIntronSize"/>
+  <param name="distanceBetweenStartsForAlignmentsInSameCluster"/>
+  <param name="organismAbbrev"/>
+  <param name="repeatMaskSpecies"/>
+  <param name="makeAssemblySeqs"/>
+  <param name="makeAssemblies"/>
+  <param name="mapAssemblySeqsAndAssemblies"/>
+
+  <constant name="dataDir">$$parentDataDir$$/$$organismName$$MapESTs</constant>
+   constant name="genomicSeqsDir">$$dataDir$$/genomicSeqs</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="extractGenomicSeqsIntoSeparateFastaFiles"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+      <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="table">ExternalNASequence</paramValue>
+      <paramValue name="outputFile"></paramValue>
+      <paramValue name="alternateDefline"></paramValue>
+      <paramValue name="separateFastaFiles">true</paramValue>
+      <paramValue name="outputDirForSeparateFiles">$$genomicSeqsDir$$_ori</paramValue>
+    </step>
+
+
+    <step name="fixFileNamesforGenomicSeqsSeparateFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixGenomicSeqsSeparateFastaFileNames">
+      <paramValue name="inputDir">$$genomicSeqsDir$$_ori</paramValue>
+      <paramValue name="outputDir">$$genomicSeqsDir$$</paramValue>
+      <depends name="extractGenomicSeqsIntoSeparateFastaFiles"/>
+     </step>
+
+    <step name="makeGenomeTargetListFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomeTargetListFile">
+      <paramValue name="targetDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/targetList</paramValue>
+      <depends name="fixFileNamesforGenomicSeqsSeparateFasta"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeGenomeTargetListFile"/>
+    </step>
+
+   <step name="runNibOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNibOnCluster">
+      <paramValue name="inputFile">$$dataDir$$/targetList</paramValue>
+      <paramValue name="outputDir">$$genomicSeqsDir$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </step>
+
+  <subgraph name="makeAndMapTranscriptAssemblies" xmlFile="makeAndMapTranscriptAssemblies.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismName">$$organismName$$</paramValue>
+    <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+    <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+    <paramValue name="usePredictedTranscripts">$$usePredictedTranscripts$$</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
+    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">$$distanceBetweenStartsForAlignmentsInSameCluster$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="repeatMaskSpecies">$$repeatMaskSpecies$$</paramValue>
+    <paramValue name="makeAssemblySeqs">$$makeAssemblySeqs$$</paramValue>
+    <paramValue name="makeAssemblies">$$makeAssemblies$$</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">$$mapAssemblySeqsAndAssemblies$$</paramValue>
+    <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+    <depends name="runNibOnCluster"/>
+  </subgraph>
+
+</workflowGraph>
