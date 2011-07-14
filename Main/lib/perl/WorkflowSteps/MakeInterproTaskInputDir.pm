@@ -15,8 +15,9 @@ sub run {
   my $email = $self->getSharedConfig('email');
 
   # get properties
-  my $taskSize = $self->getConfig('taskSize');
-  my $applications = $self->getConfig('applications');
+  my $clusterServer = $self->getSharedConfig('clusterServer');
+  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $applications = $self->getConfig("applications");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -30,7 +31,7 @@ sub run {
       
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
       # make controller.prop file
-      $self->makeClusterControllerPropFile($taskInputDir, 1, $taskSize,
+      $self->makeDistribJobControllerPropFile($taskInputDir, 1, $taskSize,
 				       "DJob::DistribJobTasks::IprscanTask");
       # make task.prop file
       my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";

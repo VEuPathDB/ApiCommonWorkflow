@@ -15,7 +15,7 @@
     <constant name="dataDir">$$parentDataDir$$/$$organismName$$MakeAndMaskTopLevelGenome</constant>
     <constant name="topLevelFastaFile">$$dataDir$$/topLevelGenomicSeqs.fsa</constant>
 
-    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
@@ -46,19 +46,19 @@
       <depends name="extractTopLevelFastaSeqs"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster" includeIf="$$runComparativeGenomics$$">
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" includeIf="$$runComparativeGenomics$$">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeClusterTaskInputDir"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster" includeIf="$$runComparativeGenomics$$">
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster" includeIf="$$runComparativeGenomics$$">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="numNodes">20</paramValue>
       <paramValue name="processorsPerNode">2</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
 
-    <step name="mirrorFromCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorFromComputeCluster" includeIf="$$runComparativeGenomics$$">
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" includeIf="$$runComparativeGenomics$$">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blocked.err,blocked.seq</paramValue>

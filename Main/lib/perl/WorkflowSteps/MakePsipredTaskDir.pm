@@ -13,9 +13,10 @@ sub run {
   my $nrdbFile = $self->getParamValue('nrdbFile');
 
   # get step properties
-  my $taskSize = $self->getConfig('taskSize');
-  my $psipredPath = $self->getConfig('clusterpath');
-  my $ncbiBinPath = $self->getConfig('ncbiBinPath');
+  my $clusterServer = $self->getSharedConfig('clusterServer');
+  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $psipredPath = $self->getConfig("$clusterServer.clusterpath");
+  my $ncbiBinPath = $self->getConfig("n$clusterServer.cbiBinPath");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -31,7 +32,7 @@ sub run {
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
-      $self->makeClusterControllerPropFile($taskInputDir, 2, $taskSize,
+      $self->makeDistribJobControllerPropFile($taskInputDir, 2, $taskSize,
 				       "DJob::DistribJobTasks::PsipredTask");
 
       # make task.prop file

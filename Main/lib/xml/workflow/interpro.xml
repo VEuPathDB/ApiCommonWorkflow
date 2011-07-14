@@ -5,7 +5,7 @@
 
     <constant name="dataDir">$$parentDataDir$$/interpro</constant>
 
-    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
@@ -15,19 +15,19 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeClusterTaskInputDir"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorClusterTask" stepLoadTypes="cluster">
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="numNodes">20</paramValue>
       <paramValue name="processorsPerNode">2</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
 
-    <step name="mirrorFromCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorFromComputeCluster">
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult/</paramValue>
       <paramValue name="outputFiles"></paramValue>

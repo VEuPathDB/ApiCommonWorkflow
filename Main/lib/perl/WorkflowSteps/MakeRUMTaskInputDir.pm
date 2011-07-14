@@ -27,11 +27,12 @@ sub run {
   my $createJunctionsFile = $self->getParamValue("createJunctionsFile");
   my $variableLengthReads = $self->getParamValue("variableLengthReads");
 
-  my $taskSize = $self->getConfig('taskSize');
-  my $bowtieBinDir = $self->getConfig('bowtieBinDir');
-  my $blatExec = $self->getConfig('blatExec');
-  my $mdustExec = $self->getConfig('mdustExec');
-  my $perlScriptsDir = $self->getConfig('perlScriptsDir');
+  my $clusterServer = $self->getSharedConfig('clusterServer');
+  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $bowtieBinDir = $self->getConfig("$clusterServer.bowtieBinDir");
+  my $blatExec = $self->getConfig("$clusterServer.blatExec");
+  my $mdustExec = $self->getConfig("$clusterServer.mdustExec");
+  my $perlScriptsDir = $self->getConfig("$clusterServer.perlScriptsDir");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -48,7 +49,7 @@ sub run {
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
-      $self->makeClusterControllerPropFile($taskInputDir, 1, $taskSize,
+      $self->makeDistribJobControllerPropFile($taskInputDir, 1, $taskSize,
 				       "DJob::DistribJobTasks::RUMTask", $keepNode); 
       # make task.prop file
       my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
