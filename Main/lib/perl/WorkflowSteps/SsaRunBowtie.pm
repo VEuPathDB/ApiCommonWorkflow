@@ -13,12 +13,23 @@ sub run {
     my $outputFile = $self->getParamValue('outputFile');
     my $bowtieParam = $self->getParamValue('bowtieParam');
     my $inputShortSeqsFileType = $self->getParamValue('inputShortSeqsFileType');
+    my $pairedReadOrQualFileType = $self->getParamValue('pairedReadOrQualFileType');
+    my $pairedReadOrQualFilePath = $self->getParamValue('pairedReadOrQualFilePath');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "bowtie $bowtieParam --best --strata $workflowDataDir/$inputIndexesDir/genomicIndexes $inputShortSeqsFileType $workflowDataDir/$inputShortSeqsFile > $workflowDataDir/$outputFile";
+    my $cmd = "bowtie $bowtieParam --best --strata $workflowDataDir/$inputIndexesDir/genomicIndexes";
 
+    $cmd .= " $inputShortSeqsFileType" if ($inputShortSeqsFileType);
+
+    $cmd .= " $workflowDataDir/$inputShortSeqsFile" if ($inputShortSeqsFileType);
+
+    $cmd .= " $pairedReadOrQualFileType" if ($pairedReadOrQualFileType);
+
+    $cmd .= " $workflowDataDir/$pairedReadOrQualFilePath" if ($pairedReadOrQualFilePath);
+
+    $cmd .= " > $workflowDataDir/$outputFile";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
@@ -26,6 +37,7 @@ sub run {
 	if ($test) {
 	    $self->testInputFile('inputCoverageFile', "$workflowDataDir/$inputIndexesDir");
 	    $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$inputShortSeqsFile");
+	    $self->testInputFile('pairedReadOrQualFilePath', "$workflowDataDir/$pairedReadOrQualFilePath") if ($pairedReadOrQualFilePath);
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}
 	$self->runCmd($test, $cmd);

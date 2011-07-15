@@ -17,9 +17,10 @@ sub run {
   my $blastType = $self->getParamValue("blastType");
   my $vendor = $self->getParamValue("vendor");
 
-  my $taskSize = $self->getConfig('taskSize');
-  my $wuBlastBinPathCluster = $self->getConfig('wuBlastBinPathCluster');
-  my $ncbiBlastBinPathCluster = $self->getConfig('ncbiBlastBinPathCluster');
+  my $clusterServer = $self->getSharedConfig('clusterServer');
+  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $wuBlastBinPathCluster = $self->getConfig("$clusterServer.wuBlastBinPathCluster");
+  my $ncbiBlastBinPathCluster = $self->getConfig("$clusterServer.ncbiBlastBinPathCluster");
 
   my $blastBinPathCluster = ($vendor eq 'ncbi')?  $ncbiBlastBinPathCluster : $wuBlastBinPathCluster;
 
@@ -39,7 +40,7 @@ sub run {
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
-      $self->makeClusterControllerPropFile($taskInputDir, 1, $taskSize,
+      $self->makeDistribJobControllerPropFile($taskInputDir, 1, $taskSize,
 				       "DJob::DistribJobTasks::BlastSimilarityTask"); 
       # make task.prop file
       my $ccBlastParamsFile = "blastParams";

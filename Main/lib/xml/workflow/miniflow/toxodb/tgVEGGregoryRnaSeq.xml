@@ -1,0 +1,31 @@
+<workflowGraph name="tgVEGGregoryRnaSeq">
+  <param name="parentDataDir"/>
+  <param name="resourceXmlFileName"/>
+  <param name="ssaGeneModelFile"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="transcriptSeqsFileForSsa"/>
+
+  <constant name="dataDir">$$parentDataDir$$/tgVEGGregoryRnaSeq</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+
+
+ <subgraph name="getAndAnalyzeVEGmRNAToVEGRnaSeq" xmlFile="miniflow/toxodb/VEGmRNAToVEGGregoryRnaSeq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="resourceXmlFileName">$$resourceXmlFileName$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+
+</workflowGraph>

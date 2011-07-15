@@ -1,0 +1,95 @@
+<workflowGraph name="tbCrossSplicedLeaderAndPolyASites">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="genomicSeqsFile"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="downloadSiteTranscriptExpressionDataDir"/>
+
+    <constant name="dataDir">$$parentDataDir$$/tbCrossSplicedLeaderAndPolyASites</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="outputIndexDir">$$dataDir$$/indexes</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="runBowtie_curated_long_splice" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC/final/sas_curated_basicinfo_for_ttdb_100115_unique.fa</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 0 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-f</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/curated_long_splice.bt</paramValue>
+      <depends name="Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+     <step name="generateAlignmentsFromMultBlocks_curated_long_splice" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateAlignmentsFromMultBlocks">
+      <paramValue name="inputFile">$$dataDir$$/curated_long_splice.bt</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/curated_long_splice.align</paramValue>
+      <paramValue name="sampleName">curated_long_splice</paramValue>
+      <paramValue name="fileType">bowtie</paramValue>
+      <paramValue name="extDbSpecs">Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC|@@Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_VER@@</paramValue>
+      <paramValue name="maxGenomeMatch">14</paramValue>
+      <depends name="runBowtie_curated_long_splice"/>
+    </step>
+
+    <step name="loadSeqAlignment_curated_long_splice" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqAlignmentWithSqlLdr" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/curated_long_splice.align</paramValue>
+      <paramValue name="extDbSpecs">Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC|@@Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_VER@@</paramValue>
+      <depends name="generateAlignmentsFromMultBlocks_curated_long_splice"/>
+    </step>
+
+    <step name="runBowtie_curated_long_polyA" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC/final/pas_curated_basicinfo_for_ttdb_100115_unique.fa</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 0 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-f</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/curated_long_polyA.bt</paramValue>
+      <depends name="Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+     <step name="generateAlignmentsFromMultBlocks_curated_long_polyA" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateAlignmentsFromMultBlocks>
+      <paramValue name="inputFile">$$dataDir$$/curated_long_polyA.bt</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/curated_long_polyA.align</paramValue>
+      <paramValue name="sampleName">curated_long_polyA</paramValue>
+      <paramValue name="fileType">bowtie</paramValue>
+      <paramValue name="extDbSpecs">Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC|@@Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_VER@@</paramValue>
+      <paramValue name="maxGenomeMatch">14</paramValue>
+      <depends name="runBowtie_curated_long_polyA"/>
+    </step>
+
+    <step name="loadSeqAlignment_curated_long_polyA" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqAlignmentWithSqlLdr" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/curated_long_polyA.align</paramValue>
+      <paramValue name="extDbSpecs">Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_RSRC|@@Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_VER@@</paramValue>
+      <depends name="generateAlignmentsFromMultBlocks_curated_long_polyA"/>
+    </step>
+
+    <subgraph name="Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_PatchCurated_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei_RNASeq_Splice_Leader_And_Poly_A_Sites_George_Cross_PatchCurated_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="loadSeqAlignment_curated_long_splice"/>
+      <depends name="loadSeqAlignment_curated_long_polyA"/>
+    </subgraph>
+
+
+
+</workflowGraph>

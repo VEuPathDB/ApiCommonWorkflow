@@ -21,13 +21,18 @@ sub run {
   my $createSAMFile = $self->getParamValue("createSAMFile");
   my $countMismatches = $self->getParamValue("countMismatches");
   my $taskInputDir = $self->getParamValue("taskInputDir");
+  my $strandSpecific = $self->getParamValue("strandSpecific");
+  my $SNPS = $self->getParamValue("SNPs");
+  my $keepNode = $self->getParamValue("keepNode");
+  my $createJunctionsFile = $self->getParamValue("createJunctionsFile");
+  my $variableLengthReads = $self->getParamValue("variableLengthReads");
 
-
-  my $taskSize = $self->getConfig('taskSize');
-  my $bowtieBinDir = $self->getConfig('bowtieBinDir');
-  my $blatExec = $self->getConfig('blatExec');
-  my $mdustExec = $self->getConfig('mdustExec');
-  my $perlScriptsDir = $self->getConfig('perlScriptsDir');
+  my $clusterServer = $self->getSharedConfig('clusterServer');
+  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $bowtieBinDir = $self->getConfig("$clusterServer.bowtieBinDir");
+  my $blatExec = $self->getConfig("$clusterServer.blatExec");
+  my $mdustExec = $self->getConfig("$clusterServer.mdustExec");
+  my $perlScriptsDir = $self->getConfig("$clusterServer.perlScriptsDir");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -44,8 +49,8 @@ sub run {
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
-      $self->makeClusterControllerPropFile($taskInputDir, 1, $taskSize,
-				       "DJob::DistribJobTasks::RUMTask"); 
+      $self->makeDistribJobControllerPropFile($taskInputDir, 1, $taskSize,
+				       "DJob::DistribJobTasks::RUMTask", $keepNode); 
       # make task.prop file
       my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
@@ -69,6 +74,10 @@ countMismatches=$countMismatches
       $taskPropFileContent .= "transcriptFastaFile=$clusterWorkflowDataDir/$transcriptFastaFile\n" if $transcriptFastaFile;
       $taskPropFileContent .= "transcriptBowtieIndex=$clusterWorkflowDataDir/$transcriptBowtieIndex\n" if $transcriptBowtieIndex;
       $taskPropFileContent .= "genomeBowtieIndex=$clusterWorkflowDataDir/$genomeBowtieIndex\n" if $genomeBowtieIndex;
+      $taskPropFileContent .= "strandSpecific=$strandSpecific\n" if $strandSpecific;
+      $taskPropFileContent .= "SNPs=$SNPS\n" if $SNPS;
+      $taskPropFileContent .= "createJunctionsFile=$createJunctionsFile\n" if $createJunctionsFile;
+      $taskPropFileContent .= "variableLengthReads=$variableLengthReads\n" if $variableLengthReads;
       print F "$taskPropFileContent\n";
        close(F);
   }

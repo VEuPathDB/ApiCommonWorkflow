@@ -15,6 +15,7 @@ sub run {
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $transcriptExtDbRlsSpec = $self->getParamValue('transcriptExtDbRlsSpec');
   my $snpExtDbRlsSpec = $self->getParamValue('snpExtDbRlsSpec');
+  my $NGS_SNP = $self->getParamValue('NGS_SNP');
 
   my ($genomExtDbName,$genomeExtDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
   my ($snpExtDbName,$snpExtDbRlsVer) = $self->getExtDbInfo($test,$snpExtDbRlsSpec);
@@ -25,6 +26,8 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $args = "--reference '$strain' --organism '$organismFullName' --snpExternalDatabaseName '$snpExtDbName' --snpExternalDatabaseVersion '$snpExtDbRlsVer' --naExternalDatabaseName '$genomExtDbName' --naExternalDatabaseVersion '$genomeExtDbRlsVer' --transcriptExternalDatabaseName '$transcriptExtDbName' --transcriptExternalDatabaseVersion '$transcriptExtDbRlsVer' --seqTable 'DoTS::ExternalNASequence' --ontologyTerm 'SNP' --snpFile $workflowDataDir/$inputFile";
+
+  $args .= " --NGS_SNP" if ($NGS_SNP eq 'true');
 
   if ($test) {
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");

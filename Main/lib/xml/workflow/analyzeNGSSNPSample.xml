@@ -1,0 +1,67 @@
+<workflowGraph name="analyzeNGSSNPSample">
+    <param name="parentDataDir"/>
+    <param name="sampleName"/>
+    <param name="shortSeqsFile"/>
+    <param name="rnaSeqExtDbRlsSpec"/>
+    <param name="genomeExtDbSpec"/>
+    <param name="genomicSeqsFile"/>
+    <param name="pairedReadOrQualFilePath"/>
+    <param name="reference_strain"/>
+    <param name="SNP_strain"/>
+    <param name="BowtieIndexDir"/>
+    <param name="organismFullName"/>
+    <param name="bowtieParam"/>
+    <param name="inputShortSeqsFileType"/>
+    <param name="pairedReadOrQualFileType"/>
+
+    <constant name="dataDir">$$parentDataDir$$/analyze$$sampleName$$</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+     <step name="runBowtie" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$shortSeqsFile$$</paramValue>
+      <paramValue name="pairedReadOrQualFilePath">$$pairedReadOrQualFilePath$$</paramValue>
+      <paramValue name="inputIndexesDir">$$BowtieIndexDir$$</paramValue>
+      <paramValue name="bowtieParam">$$bowtieParam$$</paramValue>
+      <paramValue name="inputShortSeqsFileType">$$inputShortSeqsFileType$$</paramValue>
+      <paramValue name="pairedReadOrQualFileType">$$pairedReadOrQualFileType$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SNPs.sam</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+     <step name="makeSortedBAMFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSortedBAMFile">
+      <paramValue name="inputFile">$$dataDir$$/SNPs.sam</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SNPs.bam</paramValue>
+      <depends name="runBowtie"/>
+    </step>
+
+    <step name="identifySNPsFromBamFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::IdentifySNPsFromBamFile">
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="bamFile">$$dataDir$$/SNPs.bam</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SNPs.snps</paramValue>
+      <depends name="makeSortedBAMFile"/>
+    </step>
+
+    <step name="parseVarscanToGff" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ParseVarscanToGff">
+      <paramValue name="inputFile">$$dataDir$$/SNPs.snps</paramValue>
+      <paramValue name="strain">$$SNP_strain$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SNPs.gff</paramValue>
+      <depends name="identifySNPsFromBamFile"/>
+    </step>
+
+    <step name="insertSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/SNPs.gff</paramValue>
+      <paramValue name="strain">$$reference_strain$$</paramValue>
+      <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="NGS_SNP">true</paramValue>
+      <depends name="parseVarscanToGff"/>
+    </step>
+
+</workflowGraph>
+
+

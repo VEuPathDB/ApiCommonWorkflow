@@ -1,0 +1,32 @@
+<workflowGraph name="tcruziRnaSeqAndChipSeq">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="ssaGeneModelFile"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="transcriptSeqsFileForSsa"/>
+  <param name="samHeaderFile"/>
+  <param name="downloadSiteTranscriptExpressionDataDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+
+  <constant name="dataDir">$$parentDataDir$$/tcruziRnaSeqAndChipSeq</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+  <subgraph name="getAndAnalyzeNilssonSpliceLeaderAndPolyASites" xmlFile="tritrypdb/tcNilssonSplicedLeaderAndPolyASites.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+</workflowGraph>
+

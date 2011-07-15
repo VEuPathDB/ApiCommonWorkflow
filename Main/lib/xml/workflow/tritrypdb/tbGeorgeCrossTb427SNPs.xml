@@ -1,0 +1,93 @@
+<workflowGraph name="tbGeorgeCrossTb427SNPs">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="genomicSeqsFile"/>
+    <param name="genomeExtDbRlsSpec"/>
+
+    <constant name="dataDir">$$parentDataDir$$/tbGeorgeCrossTb427SNPs</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="outputIndexDir">$$dataDir$$/indexes</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="Tb427_SNPs_George_Cross_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tb427_SNPs_George_Cross_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="analyzeLane1" xmlFile="analyzeNGSSNPSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Lane1</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tb427_SNPs_George_Cross_RSRC/final/Input_gDNA_lane1_76bp.fq</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tb427_SNPs_George_Cross_RSRC|@@Tb427_SNPs_George_Cross_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="pairedReadOrQualFilePath"></paramValue>
+      <paramValue name="reference_strain">Tb927</paramValue>
+      <paramValue name="SNP_strain">Tb427</paramValue>
+      <paramValue name="BowtieIndexDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="organismFullName">Trypanosoma brucei brucei strain 427</paramValue>
+      <paramValue name="bowtieParam">-a -S -n 3</paramValue>
+      <paramValue name="inputShortSeqsFileType">-q</paramValue>
+      <paramValue name="pairedReadOrQualFileType"></paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="createBowtieIndices"/>
+      <depends name="Tb427_SNPs_George_Cross_RSRC"/>
+    </subgraph>
+
+
+    <subgraph name="analyzeLane2" xmlFile="analyzeNGSSNPSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Lane2</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tb427_SNPs_George_Cross_RSRC/final/Input_gDNA_lane2_76bp.fq</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tb427_SNPs_George_Cross_RSRC|@@Tb427_SNPs_George_Cross_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="pairedReadOrQualFilePath"></paramValue>
+      <paramValue name="reference_strain">Tb927</paramValue>
+      <paramValue name="SNP_strain">Tb427</paramValue>
+      <paramValue name="BowtieIndexDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="organismFullName">Trypanosoma brucei brucei strain 427</paramValue>
+      <paramValue name="bowtieParam">-a -S -n 3</paramValue>
+      <paramValue name="inputShortSeqsFileType">-q</paramValue>
+      <paramValue name="pairedReadOrQualFileType"></paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="createBowtieIndices"/>
+      <depends name="Tb427_SNPs_George_Cross_RSRC"/>
+    </subgraph>
+
+    <subgraph name="analyzeLane3" xmlFile="analyzeNGSSNPSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">Lane3</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Tb427_SNPs_George_Cross_RSRC/final/Input_gDNA_lane3_76bp.fq</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Tb427_SNPs_George_Cross_RSRC|@@Tb427_SNPs_George_Cross_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="pairedReadOrQualFilePath"></paramValue>
+      <paramValue name="reference_strain">Tb927</paramValue>
+      <paramValue name="SNP_strain">Tb427</paramValue>
+      <paramValue name="BowtieIndexDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="organismFullName">Trypanosoma brucei brucei strain 427</paramValue>
+      <paramValue name="bowtieParam">-a -S -n 3</paramValue>
+      <paramValue name="inputShortSeqsFileType">-q</paramValue>
+      <paramValue name="pairedReadOrQualFileType"></paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="createBowtieIndices"/>
+      <depends name="Tb427_SNPs_George_Cross_RSRC"/>
+    </subgraph>
+
+</workflowGraph>

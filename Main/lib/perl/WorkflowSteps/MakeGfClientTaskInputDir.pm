@@ -14,8 +14,9 @@ sub run {
   my $queryFile = $self->getParamValue("queryFile");
   my $targetDir = $self->getParamValue("targetDir");
 
-  my $taskSize = $self->getConfig('taskSize');
-  my $gaBinPath = $self->getConfig('gaBinPath');
+  my $clusterServer = $self->getSharedConfig('clusterServer');
+  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $gaBinPath = $self->getConfig("$clusterServer.gaBinPath");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -32,7 +33,7 @@ sub run {
     $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
     # make controller.prop file
-    $self->makeClusterControllerPropFile($taskInputDir, 1, $taskSize,
+    $self->makeDistribJobControllerPropFile($taskInputDir, 1, $taskSize,
 				       "DJob::DistribJobTasks::GenomeAlignWithGfClientTask");
     # make task.prop file
     my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";

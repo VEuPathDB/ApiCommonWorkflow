@@ -12,8 +12,9 @@ sub run {
   my $taskInputDir = $self->getParamValue("taskInputDir");
   my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
 
-  my $taskSize = $self->getConfig('taskSize');
-  my $tRNAscanDir = $self->getConfig('tRNAscanDir');
+  my $clusterServer = $self->getSharedConfig('clusterServer');
+  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $tRNAscanDir = $self->getConfig("$clusterServer.tRNAscanDir");
 
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
@@ -28,7 +29,7 @@ sub run {
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
-      $self->makeClusterControllerPropFile($taskInputDir, 1, $taskSize,
+      $self->makeDistribJobControllerPropFile($taskInputDir, 1, $taskSize,
 				       "DJob::DistribJobTasks::tRNAscanTask"); 
 
       # make task.prop file

@@ -1,0 +1,39 @@
+<workflowGraph name="cfasciSpecificAnalysis">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/CfasciSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/Cfasci</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/CfasciLoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/CfasciLoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/CfasciLoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/CfasciLoadGenome/geneModelForSsa.txt</constant>
+  <constant name="samHeaderFile">$$parentDataDir$$/CfasciLoadGenome/samHeader</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+  <subgraph name="rnaSeqAndChipSeq" xmlFile="tritrypdb/cfasciRnaSeqAndChipSeq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="samHeaderFile">$$samHeaderFile$$</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Cfasci_contigs_RSRC|@@Cfasci_contigs_VER@@</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+</workflowGraph>
+
+
+

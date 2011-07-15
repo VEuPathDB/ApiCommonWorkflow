@@ -1,0 +1,32 @@
+<workflowGraph name="etenellaHoughtonSpecificAnalysis">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/EtenellaHoughtonSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/EtenellaHoughton</constant>
+
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+
+    <subgraph name="EtenellaHoughton_Comment_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">EtenellaHoughton_Comment_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+
+
+</workflowGraph>
+
+
+

@@ -10,10 +10,15 @@ sub run {
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $outputFile = $self->getParamValue('outputFile');
+  my $useCDSCoordinates = $self->getParamValue('useCDSCoordinates');
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
+
+  my $cmd = "extractGeneModelForSsa --outputFile $workflowDataDir/$outputFile --taxonId $taxonId";
+  
+  $cmd .= " --coordinates CDS" if (lc $useCDSCoordinates eq 'true');
 
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");

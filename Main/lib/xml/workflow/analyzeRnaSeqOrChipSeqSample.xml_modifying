@@ -1,0 +1,169 @@
+<workflowGraph name="analyzeRnaSeqOrChipSeqSample">
+    <param name="parentDataDir"/>
+    <param name="sampleName"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="shortSeqsFile"/>
+    <param name="outputCoverageFile"/>
+    <param name="outputIntensityFile"/>
+    <param name="outputMappingStatsFile"/>
+    <param name="outputCountFile"/>
+    <param name="makeIntensityFile"/>
+    <param name="rnaSeqExtDbRlsSpec"/>
+    <param name="genomeExtDbSpec"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+    <param name="pairedReadFilePath"/>
+    <param name="numInsertions"/>
+    <param name="limitNU"/>
+    <param name="SNPs"/>
+    <param name="strandSpecific"/>
+
+
+    <constant name="dataDir">$$parentDataDir$$/analyze$$sampleName$$</constant>
+    <constant name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.all</constant>
+    <constant name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.all</constant>
+
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+ 
+    <subgraph name="runRUMOnCluster"  xmlFile="runRUMOnCluster.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="readFilePath">$$shortSeqsFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="transcriptFastaFile">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath">$$pairedReadFilePath$$</paramValue>
+      <paramValue name="limitNU">$$limitNU$$</paramValue>
+      <paramValue name="numInsertions">$$numInsertions$$</paramValue>
+      <paramValue name="createSAMFile">false</paramValue>
+      <paramValue name="countMismatches">false</paramValue>
+      <paramValue name="keepNode">yes</paramValue>
+      <paramValue name="SNPs">$$SNPs$$</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="document-RnaSeqOrChipSeqRum"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">rum_rna_or_chip_seq_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+
+    <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/master/mainresult/junctions_all.rum</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+
+   <step name="reformatNUCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr" excludeIf="$$strandSpecific$$">
+      <paramValue name="inputFile">$$dataDir$$/master/mainresult/RUM_NU.cov</paramValue>     
+      <paramValue name="outputFile">$$outputCoverageFile$$.NU.reformated</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="multiple">true</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="reformatNUMSCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr" includeIf="$$strandSpecific$$">
+      <paramValue name="inputFile">$$dataDir$$/master/mainresult/RUM_NU_ms.cov</paramValue>     
+      <paramValue name="outputFile">$$outputCoverageFile$$.NU_ms.reformated</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="multiple">true</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="reformatNUPSCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr" includeIf="$$strandSpecific$$">
+      <paramValue name="inputFile">$$dataDir$$/master/mainresult/RUM_NU_ps.cov</paramValue>     
+      <paramValue name="outputFile">$$outputCoverageFile$$.NU_ps.reformated</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="multiple">true</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="reformatUniqueCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr" excludeIf="$$strandSpecific$$">
+      <paramValue name="inputFile">$$dataDir$$/master/mainresult/RUM_Unique.cov</paramValue>
+      <paramValue name="outputFile">$$outputCoverageFile$$.Unique.reformated</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="multiple">false</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="reformatUniqueMSCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr" includeIf="$$strandSpecific$$">
+      <paramValue name="inputFile">$$dataDir$$/master/mainresult/RUM_Unique_ms.cov</paramValue>     
+      <paramValue name="outputFile">$$outputCoverageFile$$.Unique_ms.reformated</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="multiple">true</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="reformatUniquePSCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr" includeIf="$$strandSpecific$$">
+      <paramValue name="inputFile">$$dataDir$$/master/mainresult/RUM_Unique_ps.cov</paramValue>     
+      <paramValue name="outputFile">$$outputCoverageFile$$.Unique_ps.reformated</paramValue>
+      <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="multiple">true</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="loadUniqueRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin" excludeIf="$$strandSpecific$$"> 
+      <paramValue name="inputFile">$$outputCoverageFile$$.Unique.reformated</paramValue>
+      <paramValue name="isReversed"></paramValue>
+      <depends name="reformatUniqueCoverageFile"/>
+    </step>
+
+    <step name="loadUniqueMSRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin" includeIf="$$strandSpecific$$"> 
+      <paramValue name="inputFile">$$outputCoverageFile$$.Unique_ms.reformated</paramValue>
+      <paramValue name="isReversed">yes</paramValue>
+      <depends name="reformatUniqueMSCoverageFile"/>
+    </step>
+
+    <step name="loadUniquePSRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin" includeIf="$$strandSpecific$$"> 
+      <paramValue name="inputFile">$$outputCoverageFile$$.Unique_ps.reformated</paramValue>
+      <paramValue name="isReversed">no</paramValue>
+      <depends name="reformatUniquePSCoverageFile"/>
+    </step>
+
+    <step name="loadNURnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin" excludeIf="$$strandSpecific$$">
+      <paramValue name="inputFile">$$outputCoverageFile$$.NU.reformated</paramValue>
+      <paramValue name="isReversed"></paramValue>
+      <depends name="reformatNUCoverageFile"/>
+    </step>
+
+    <step name="loadNUMSRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin" includeIf="$$strandSpecific$$">
+      <paramValue name="inputFile">$$outputCoverageFile$$.NU.reformated</paramValue>
+      <paramValue name="isReversed">yes</paramValue>
+      <depends name="reformatNUMSCoverageFile"/>
+    </step>
+
+    <step name="loadNUPSRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin" includeIf="$$strandSpecific$$">
+      <paramValue name="inputFile">$$outputCoverageFile$$.NU.reformated</paramValue>
+      <paramValue name="isReversed">no</paramValue>
+      <depends name="reformatNUPSCoverageFile"/>
+    </step>
+
+
+</workflowGraph>
+
+

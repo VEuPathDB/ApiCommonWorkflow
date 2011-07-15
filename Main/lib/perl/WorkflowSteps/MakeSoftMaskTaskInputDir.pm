@@ -13,8 +13,9 @@ sub run {
   my $options = $self->getParamValue('options');
 
   # get step properties
-  my $taskSize = $self->getConfig('taskSize');
-  my $rmPath = $self->getConfig('rmPath');
+  my $clusterServer = $self->getSharedConfig('clusterServer');
+  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $rmPath = $self->getConfig("$clusterServer.rmPath");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -28,7 +29,7 @@ sub run {
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
-      $self->makeClusterControllerPropFile($taskInputDir, 1, $taskSize,
+      $self->makeDistribJobControllerPropFile($taskInputDir, 1, $taskSize,
       			       "DJob::DistribJobTasks::RepeatMaskerTask");
       
       # make task.prop file

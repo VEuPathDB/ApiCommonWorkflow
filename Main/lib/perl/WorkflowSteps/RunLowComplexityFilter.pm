@@ -21,7 +21,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   if (!$test && !$undo){
-    $self->error("Sequence file '$seqFile' does not exist or is empty") unless (-s $seqFile);
+    $self->error("Sequence file '$workflowDataDir/$seqFile' does not exist or is empty") unless (-s "$workflowDataDir/$seqFile");
   }
 
   if ($undo) {
