@@ -10,7 +10,6 @@ use strict;
 use Carp;
 
 use ReFlow::Controller::WorkflowStepInvoker;
-use CBIL::Util::SshCluster;
 
 # avoid using this subroutine!
 # it is provided for backward compatibility.  plugins and commands that
