@@ -8,23 +8,10 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
-
-  my @extDbRlsSpecList = split(/,/, $extDbRlsSpec);
-
-  my $dbRlsIds;
-
-  foreach my $db (@extDbRlsSpecList){
-
-     $dbRlsIds .= $self->getExtDbRlsId($test, $db).",";
-
-  }
-
-  $dbRlsIds =~ s/(,)$//g;
 
   my $sql = "select sa.source_id||':1-'||sa.length||'_strand=+',ns.sequence 
              from apidb.sequenceattributes sa, dots.nasequence ns 

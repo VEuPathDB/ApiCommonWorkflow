@@ -12,7 +12,7 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $useCDSCoordinates = $self->getParamValue('useCDSCoordinates');
 
-  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -26,7 +26,7 @@ sub run {
       if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }else{
-	    $self->runCmd($test,"extractGeneModelForSsa --outputFile $workflowDataDir/$outputFile --taxonId $ncbiTaxonId");
+	    $self->runCmd($test, $cmd);
       }
   }
 }

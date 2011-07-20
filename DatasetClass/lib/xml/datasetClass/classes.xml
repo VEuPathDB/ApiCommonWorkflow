@@ -8,7 +8,7 @@
     <prop name="organismNameForFiles"/>
     <prop name="ncbiTaxonId"/>
     <prop name="speciesNcbiTaxonId"/>
-    <prop name="isReferenceStrain"/>
+    <prop name="isReferenceGenome"/>
     <prop name="isAnnotatedGenome"/>
     <prop name="isDraftGenome"/>
     <prop name="hasTemporaryNcbiTaxonId"/>
@@ -149,7 +149,6 @@
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
     <prop name="version"/>
-    <prop name="parentDataset"/>
     <prop name="virtualSeqSOTerm"/>
     <prop name="sourceIdPrefix"/>
     <prop name="genomeVersion"/>
@@ -419,7 +418,10 @@
 	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
 	      internalDescrip="">
 
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/SNP/${name}_gff/final/SNPs.gff"/>
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/SNP/${name}_gff/%RESOURCE_VERSION%/final/SNPs.gff"/>
+      <getAndUnpackOutput file="@@dataDir@@/SNPs.gff"/>
+
+
       <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
     </resource>
   </datasetClass>
@@ -435,6 +437,7 @@
     <prop name="isAffymetrix"/>
     <prop name="isNimbleGen"/>
     <prop name="limitNU"/>
+    <prop name="variableLengthReads"/>
     <prop name="numInsertions"/>
 
     <graphFile planFile="arrayStudies.xml"/>
@@ -532,7 +535,6 @@
 
 
   <datasetClass class="chipChipSample">
-    <prop name="experimentName"/>
     <prop name="sampleName"/>
     <prop name="sampleOrder"/>
  
@@ -551,7 +553,6 @@
     <prop name="ncbiTaxonId"/>
     <prop name="name"/>
     <prop name="version"/>
-    <prop name="category"/>
     <prop name="table"/>
     <prop name="soTermName"/>
     <prop name="regexSourceId"/>
@@ -559,7 +560,7 @@
  
     <graphFile planFile="organismSpecific.xml"/>
 
-    <resource resource="${organismAbbrev$_dnaSeq_${name}_sequences_RSRC" version="2001-09-19"
+    <resource resource="${organismAbbrev}_${name}_clonedInsertEnds_RSRC" version="2001-09-19"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
 	      internalDescrip="">
 
@@ -580,7 +581,7 @@
     <prop name="soTermName"/>
     <prop name="regexSourceId"/>
 
-    <resource resource="${organismAbbrev$_${category}_${name}_sequences_RSRC" version="2001-09-19"
+    <resource resource="${organismAbbrev}_${category}_${name}_sequences_RSRC" version="2001-09-19"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
 	      internalDescrip="">
 
@@ -644,9 +645,9 @@
 	      plugin="ApiCommonData::Load::Plugin::InsertGeneFeatProductFromTabFile"
 	      parentResource="${organismAbbrev}_primary_genome_RSRC">
 
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/function/${name}_product_names/${organismAbbrev}_primary_genome_RSRC/final/product.txt"/>
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/function/${name}_product_names/%RESOURCE_VERSION%/final/products.txt"/>
 
-      <pluginArgs>--file @@dataDir@@/product.txt  --productDbName %PARENT_RESOURCE_NAME% --productDbVer %PARENT_RESOURCE_VERSION%</pluginArgs>
+      <pluginArgs>--file @@dataDir@@/products.txt  --productDbName %PARENT_RESOURCE_NAME% --productDbVer %PARENT_RESOURCE_VERSION%</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -682,7 +683,7 @@
     <prop name="ncbiTaxonId"/>
     <prop name="name"/>
     <prop name="version"/>
-    <prop name="mapfile"/>
+    <prop name="mapFile"/>
  
     <graphFile planFile="organismSpecific.xml"/>
 

@@ -71,11 +71,12 @@
     <prop name="name"/>
     <prop name="version"/>
     <prop name="repeatMaskSpecies"/>
+    <prop name="organismAbbrev"/>
 
     <subgraph name="${name}_clonedInsertEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeClonedInsertEnds.xml">
-      <paramValue name="dataDir">$$dataDir$$/${name}_BAC_ends_loadAndAnalyze</paramValue>
+      <paramValue name="dataDir">$$dataDir$$/${name}_clonedInsertEnds</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="resourceName">${name}_RSRC</paramValue>
+      <paramValue name="resourceName">${organismAbbrev}_${name}_clonedInsertEnds_RSRC</paramValue>
       <paramValue name="resourceVersion">${version}</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -114,6 +115,7 @@
       <paramValue name="sageTagExtDbRlsSpec">${organismAbbrev}_sageTag_${name}_RSRC|${version}</paramValue>
       <paramValue name="isMissingCATG">${isMissingCATG}</paramValue>
       <paramValue name="nickName">sageTag_${name}</paramValue>   
+      <paramValue name="bowtieParams">${bowtieParams}</paramValue>   
       <depends name="${organismAbbrev}_sageTag_${name}_RSRC"/>
     </subgraph>
 
@@ -149,8 +151,9 @@
 
   <datasetTemplate class="genomeFeatures_GFF2">
     <prop name="name"/> 
+    <prop name="organismAbbrev"/>
     <subgraph name="genomeFeature_${name}_GFF2_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">genomeFeature_${name}_GFF2_RSRC</paramValue>
+      <paramValue name="resourceName">${organismAbbrev}_genomeFeature_${name}_GFF2_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>

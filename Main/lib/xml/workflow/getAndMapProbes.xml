@@ -15,6 +15,7 @@
     <param name="limitNU"/>
     <param name="numInsertions"/>
     <param name="countMismatches"/>
+    <param name="variableLengthReads"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$probeSetName$$</constant>
     <constant name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.all</constant>
@@ -34,6 +35,7 @@
 
     <step name="runParse2fasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunParse2fasta">
       <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
+      <paramValue name="pairedEndFile">$$pairedReadFilePath$$</paramValue>
       <depends name="probe_RSRC"/>
     </step>
 
@@ -53,7 +55,12 @@
       <paramValue name="numInsertions">$$numInsertions$$</paramValue>
       <paramValue name="createSAMFile">false</paramValue>
       <paramValue name="countMismatches">$$countMismatches$$</paramValue>
-     <depends name="runParse2fasta"/>
+      <paramValue name="keepNode">false</paramValue>
+      <paramValue name="isSNPs">false</paramValue>
+      <paramValue name="createJunctionsFile">false</paramValue>
+      <paramValue name="strandSpecific">false</paramValue>
+      <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
+      <depends name="runParse2fasta"/>
     </subgraph>
 
     <step name="revertProbeSeqId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RevertProbeSeqId">

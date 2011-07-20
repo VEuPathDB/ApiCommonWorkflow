@@ -10,7 +10,6 @@ sub getDownloadFileCmd {
   # get parameters
 #  my @genomeExtDbSpecList = split (/,/,$self->getParamValue('genomeExtDbSpecList'));
   my @genomeExtDbSpecList = "FIX THIS see redmine #4306";
-  my $outputFile = $self->getParamValue('outputFile');
   my $organismSource = $self->getParamValue('organismSource');
 
   my (@extDbRlsVers,@extDbNames);

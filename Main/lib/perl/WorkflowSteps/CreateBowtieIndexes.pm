@@ -21,8 +21,8 @@ sub run {
 
   my $cmd= "createBowtieIndexes --inputFile $workflowDataDir/$inputFile --outputIndexDir $workflowDataDir/$outputIndexDir/genomicIndexes";
 
-  $cmd .= " --colorspace" if $colorspace;
-      
+  $cmd .= " --colorspace" if $colorspace eq 'true';
+
   if($undo){
 
       $self->runCmd(0,"rm -fr $workflowDataDir/$outputIndexDir");

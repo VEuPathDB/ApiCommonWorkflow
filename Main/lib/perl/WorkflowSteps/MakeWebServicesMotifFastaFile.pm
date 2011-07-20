@@ -31,10 +31,10 @@ sub run {
     $self->runCmd(0, "rm -f $outputFile*");
   } else{
       if($test){
-	  $self->testInputFile('inputFile', "$inputFile");
+	  $self->testInputFile('inputFile', "$inputDownloadFile");
 	  $self->runCmd(0, "echo test > $outputFile");
       }else {
-	  $self->runCmd($test, "cp $inputFile $outputFile");	   
+	  $self->runCmd($test, "cp $inputDownloadFile $outputFile");
        }
   }
 }

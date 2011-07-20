@@ -10,65 +10,8 @@ use strict;
 use Carp;
 
 use ReFlow::Controller::WorkflowStepInvoker;
-use CBIL::Util::SshCluster;
 use ApiCommonWorkflow::Main::Util::OrganismInfo;
 
-
-sub getComputeClusterHomeDir {
-    my ($self) = @_;
-    my $clusterBase = $self->getSharedConfig('clusterBaseDir');
-    my $workflowName = $self->getWorkflowConfig('name');
-    my $workflowVersion = $self->getWorkflowConfig('version');
-    return "$clusterBase/$workflowName/$workflowVersion";
-}
-
-sub getClusterWorkflowDataDir {
-    my ($self) = @_;
-    my $home = $self->getComputeClusterHomeDir();
-    return "$home/data";
-}
-
-sub getComputeClusterTaskLogsDir {
-    my ($self) = @_;
-    my $home = $self->getComputeClusterHomeDir();
-    return "$home/taskLogs";
-}
-
-sub makeClusterControllerPropFile {
-  my ($self, $taskInputDir, $slotsPerNode, $taskSize, $taskClass) = @_;
-
-  my $nodePath = $self->getSharedConfig('nodePath');
-  my $nodeClass = $self->getSharedConfig('nodeClass');
-
-  # tweak inputs
-  my $masterDir = $taskInputDir;
-  $masterDir =~ s/input/master/;
-  $nodeClass = 'DJob::DistribJob::BprocNode' unless $nodeClass;
-
-  # get configuration values
-  my $nodePath = $self->getSharedConfig('nodePath');
-  my $nodeClass = $self->getSharedConfig('nodeClass');
-
-  # construct dir paths
-  my $workflowDataDir = $self->getWorkflowDataDir();
-  my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
-
-  # print out the file
-  my $controllerPropFile = "$workflowDataDir/$taskInputDir/controller.prop";
-  open(F, ">$controllerPropFile")
-      || $self->error("Can't open controller prop file '$controllerPropFile' for writing");
-  print F 
-"masterdir=$clusterWorkflowDataDir/$masterDir
-inputdir=$clusterWorkflowDataDir/$taskInputDir
-nodedir=$nodePath
-slotspernode=$slotsPerNode
-subtasksize=$taskSize
-taskclass=$taskClass
-nodeclass=$nodeClass
-restart=no
-";
-    close(F);
-}
 
 # avoid using this subroutine!
 # it is provided for backward compatibility.  plugins and commands that
