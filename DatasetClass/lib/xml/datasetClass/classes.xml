@@ -31,7 +31,6 @@
 
     <prop name="genomeTopLevelSoTerms"/>
 
-    <prop name="loadEpitope"/>
     <prop name="loadProductName"/>
     <prop name="insertVirtualSeqFromAgpFile"/>
 
@@ -220,7 +219,8 @@
     <prop name="version"/>
     <prop name="name"/>
     <prop name="sourceIdRegex"/>
-    <prop name="flag"/> <!-- -\-\putativeFullLength or null -->
+    <prop name="soTerm"/>
+    <prop name="isPutativeFullLength"/> <!-- true or false -->
     <prop name="libraryVector"/>
     <prop name="libraryStage"/>
     <prop name="libraryName"/>
@@ -235,16 +235,18 @@
 	      plugin="ApiCommonData::Load::Plugin::LoadEstsFromFastaFile"
 	      internalDescrip="">
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/EST/${name}/${version}/final/ests.fasta"/>
-      <pluginArgs>--sourceIdRegex "${sourceIdRegex}" --fastaFile @@dataDir@@/ests.fasta --externalDatabaseName %RESOURCE_NAME% --externalDatabaseVer %RESOURCE_VERSION%  --SOTermName 'transcript' --ncbiTaxId ${ncbiTaxonId} --libraryVector '${libraryVector}' --contactName '${contactName}' --contactAddress1 "${contactAddress1}" --contactAddress2 "${contactAddress2}" ${flag} --libraryStage '${libraryStage}' --libraryName '${libraryName}' --libraryDesc "${libraryDesc}"</pluginArgs>
+      <pluginArgs>--sourceIdRegex "${sourceIdRegex}" --fastaFile @@dataDir@@/ests.fasta --externalDatabaseName %RESOURCE_NAME% --externalDatabaseVer %RESOURCE_VERSION%  --SOTermName '${soTerm}' --ncbiTaxId ${ncbiTaxonId} --libraryVector '${libraryVector}' --contactName '${contactName}' --contactAddress1 "${contactAddress1}" --contactAddress2 "${contactAddress2}" --isPutativeFullLength ${isPutativeFullLength} --libraryStage '${libraryStage}' --libraryName '${libraryName}' --libraryDesc "${libraryDesc}"</pluginArgs>
     </resource>
   </datasetClass>
 
 
   <!-- Category: IEDB epitpotes -->
 
+  <!-- this should generate a plan file so we can lose the loadEpitopes flag in organism -->
+  <!-- only include this if a reference genome -->
   <datasetClass class="IEDB_sequences" >
     <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
+    <prop name="speciesNcbiTaxonId"/>
 
     <resource resource="${organismAbbrev}_epitope_IEDB_RSRC"
               version="@@${organismAbbrev}_epitope_IEDB_VER@@"
@@ -252,11 +254,10 @@
 
       <manualGet fileOrDir="global/empty"/>
 
-      <!-- FIX: these unpacks need to navigate up to the species taxon id -->
       <!-- validate that IEDB knows about this taxon id.  this unpack just greps IEDB's taxon list -->
-      <unpack><![CDATA[unzip -p @@manualDeliveryDir@@/common/epitope/IEDB/@@${organismAbbrev}_epitope_IEDB_VER@@/fromProvider/OrganismList.zip | grep "<OrganismId>${ncbiTaxonId}<"]]></unpack>
+      <unpack><![CDATA[unzip -p @@manualDeliveryDir@@/common/epitope/IEDB/@@${organismAbbrev}_epitope_IEDB_VER@@/fromProvider/OrganismList.zip | grep "<OrganismId>${speciesNcbiTaxonId}<"]]></unpack>
 
-      <unpack>iedbMakeTabFileFromXml --input_dir @@manualDeliveryDir@@/common/epitope/IEDB/@@${organismAbbrev}_epitope_IEDB_VER@@/final/iedb_export_fixed --outputfile @@dataDir@@/oneOrganism.txt --NCBITaxId ${ncbiTaxonId}</unpack>
+      <unpack>iedbMakeTabFileFromXml --input_dir @@manualDeliveryDir@@/common/epitope/IEDB/@@${organismAbbrev}_epitope_IEDB_VER@@/final/iedb_export_fixed --outputfile @@dataDir@@/oneOrganism.txt --NCBITaxId ${speciesNcbiTaxonId}</unpack>
 
       <unpack>mkdir -p @@dataDir@@/fasta</unpack>
 
