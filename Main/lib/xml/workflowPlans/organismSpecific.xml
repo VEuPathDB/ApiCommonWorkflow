@@ -82,7 +82,6 @@
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="repeatMaskSpeciesOption">-species ${repeatMaskSpecies}</paramValue>
       <paramValue name="genomicSeqsDir">$$parentDataDir$$/$$organismAbbrev$$_LoadGenome/genomicSeqs</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
@@ -101,6 +100,7 @@
     <prop name="version"/>
     <prop name="organismAbbrev"/>
     <prop name="isMissingCATG"/>
+    <prop name="bowtieParams"/>
 
     <subgraph name="${organismAbbrev}_sageTag_${name}_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">${organismAbbrev}_sageTag_${name}_RSRC</paramValue>
@@ -109,19 +109,18 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="mapSageTags" xmlFile="mapSageTags.xml">
+    <subgraph name="${name}_mapSageTags" xmlFile="mapSageTags.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="sageTagExtDbRlsSpec">${organismAbbrev}_sageTag_${name}_RSRC|${version}</paramValue>
       <paramValue name="isMissingCATG">${isMissingCATG}</paramValue>
-      <paramValue name="nickName">sageTag_${name}</paramValue>   
+      <paramValue name="name">${name}</paramValue>   
       <paramValue name="bowtieParams">${bowtieParams}</paramValue>   
       <depends name="${organismAbbrev}_sageTag_${name}_RSRC"/>
     </subgraph>
 
   </datasetTemplate>
 
-  <!-- double check that loading sage tag freqs does not depend on map of seqs to genome -->
   <datasetTemplate class="sageTagFrequencies">
     <prop name="name"/>
     <prop name="version"/>
@@ -132,11 +131,10 @@
       <paramValue name="resourceName">${organismAbbrev}_sageTag_${name}_frequencies_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="${organismAbbrev}_sageTag_${name}_RSRC"/>
+      <depends name="${name}_sageTags"/>
     </subgraph>
 
     <step name="${name}_createSageTagNormFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSageTagNormFile" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">
-
       <paramValue name="studyName">${name}</paramValue>
       <paramValue name="outputDir">$$dataDir$$</paramValue>
       <depends name="${organismAbbrev}_sageTag_${name}_frequencies_RSRC"/>

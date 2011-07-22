@@ -240,13 +240,15 @@
   </datasetClass>
 
 
-  <!-- Category: IEDB epitpotes -->
+  <!-- Category: IEDB epitopes -->
 
   <!-- this should generate a plan file so we can lose the loadEpitopes flag in organism -->
   <!-- only include this if a reference genome -->
-  <datasetClass class="IEDB_sequences" >
+  <datasetClass class="epitope_sequences_IEDB" >
     <prop name="organismAbbrev"/>
     <prop name="speciesNcbiTaxonId"/>
+
+    <graphFile planFile="epitopes.xml"/>
 
     <resource resource="${organismAbbrev}_epitope_IEDB_RSRC"
               version="@@${organismAbbrev}_epitope_IEDB_VER@@"
@@ -276,6 +278,9 @@
 
   <datasetClass class="IEDB_dbxrefs">
     <prop name="organismAbbrev"/>
+
+    <graphFile planFile="epitopes.xml"/>
+
     <resource resource="${organismAbbrev}_dbxref_epitope_IEDB_RSRC"
 	      version="@@${organismAbbrev}_dbxref_epitope_VER@@"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs">
@@ -291,25 +296,22 @@
 
   <!-- Category: gene aliases -->
 
-  <datasetClass class="GeneDB_GFF_gene_aliases">
+  <datasetClass class="geneAliases">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
     <prop name="version"/>
+    <prop name="name"/>
+    <prop name="idType"/>  <!-- previous id, alternate id -->
 
     <graphFile planFile="geneAliases.xml"/>
 
-    <resource resource="${organismAbbrev}_GeneDB_GFF_gene_aliases_RSRC"
+    <resource resource="${organismAbbrev}_${name}_gene_aliases_RSRC"
 	      version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::InsertNaFeatureNaGene"
-	      internalDescrip="">
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs">
 
-      <manualGet fileOrDir="global/empty"/>
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/${name}_gene_aliases/%RESOURCE_VERSION%/final/geneAliases.txt"/>
 
-      <unpack>grep 'previous_systematic_id=' @@dataDir@@/../${organismAbbrev}_primary_genome_RSRC/genome.gff3 >  @@dataDir@@/previousIdLines</unpack>
-
-      <unpack><![CDATA[perl -e '%hsh;while(<>){chomp; @arr=split(/\t/,$_); $arr[8]=~ /ID=(\w+)\:.+previous_systematic_id\=(\w+)/; $hsh{$1}=$2;} foreach $k(keys %hsh){print "$k\t$hsh{$k}\n";}' @@dataDir@@/previousIdLines > @@dataDir@@/new2oldIds.txt]]></unpack>
-
-      <pluginArgs>--MappingFile @@dataDir@@/new2oldIds.txt</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/mapping.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "${columnSpec}" --tableName ${table} --idType '${idType}'</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -321,7 +323,7 @@
     <prop name="name"/>
     <prop name="version"/>
     <prop name="columnSpec"/>
-    <prop name="table"/>
+    <prop name="type"/>  <!-- DBRefNASequence, AASequenceDBRef, DBRefAAFeature, DBRefNAFeature -->
 
     <graphFile planFile="dbXRefs.xml"/>
 
@@ -331,7 +333,7 @@
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/${name}/%RESOURCE_VERSION%/final/mapping.txt"/>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/mapping.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "${columnSpec}" --tableName ${table}</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/mapping.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "${columnSpec}" --tableName ${type}</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -339,8 +341,8 @@
   <datasetClass class="dbxref_gene2ApiLoc">
     <prop name="organismAbbrev"/>
     <prop name="projectName"/>
-    <!-- organism name as found on the ApiLoc site -->
-    <prop name="ApiLocOrganism"/>
+    <prop name="ApiLocOrganism"/>   <!-- organism name as found on the ApiLoc site -->
+
 
     <graphFile planFile="dbXRefs.xml"/>
 
@@ -420,9 +422,8 @@
 	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
 	      internalDescrip="">
 
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/SNP/${name}_gff/%RESOURCE_VERSION%/final/SNPs.gff"/>
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/SNP/${name}/%RESOURCE_VERSION%/final/SNPs.gff"/>
       <getAndUnpackOutput file="@@dataDir@@/SNPs.gff"/>
-
 
       <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
     </resource>
@@ -558,8 +559,7 @@
     <prop name="table"/>
     <prop name="soTermName"/>
     <prop name="regexSourceId"/>
-    <prop name="repeatMaskSpecies"/>
- 
+
     <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev}_${name}_clonedInsertEnds_RSRC" version="2001-09-19"
@@ -568,7 +568,7 @@
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/dnaSeq/${name}/%RESOURCE_VERSION%/final/seqs.fasta"/>
 
-      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/seqs.fasta --soTermName ${soTermName} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
+      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/seqs.fasta --soTermName ${soTermName} --regexSourceId "${regexSourceId}" --tableName "DoTS::ExternalNaSequence"</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -579,7 +579,7 @@
     <prop name="name"/>
     <prop name="version"/>
     <prop name="category"/>
-    <prop name="table"/>
+    <prop name="table"/>  <!-- example:  DoTS::NASequence -->
     <prop name="soTermName"/>
     <prop name="regexSourceId"/>
 
@@ -600,6 +600,8 @@
     <prop name="organismAbbrev"/>
     <prop name="name"/>
     <prop name="version"/>
+    <prop name="isMissingCATG"/>
+    <prop name="bowtieParams"/>
  
     <graphFile planFile="organismSpecific.xml"/>
 
@@ -611,7 +613,6 @@
       <pluginArgs>--primers_file @@dataDir@@/primers.txt</pluginArgs>
 
     </resource>
-
   </datasetClass>
 
   <datasetClass class="sageTagFrequencies">

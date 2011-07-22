@@ -41,12 +41,21 @@ sub new {
     $stmt = $workflowStep->runSql($sql);
     my ($speciesNcbiTaxonId, $speciesTaxonId) = $stmt->fetchrow_array(); 
 
+    $sql = "select name
+            from sres.taxonname
+            where taxon_id = $speciesTaxonId
+            and name_class = 'scientific name'";
+
+    $stmt = $workflowStep->runSql($sql);
+    my ($speciesName) = $stmt->fetchrow_array(); 
+
     $self->{fullName} = $fullName;
     $self->{nameForFiles} = $nameForFiles;
     $self->{ncbiTaxonId} = $ncbiTaxonId;
     $self->{taxonId} = $taxonId;
     $self->{speciesNcbiTaxonId} = $speciesNcbiTaxonId;
     $self->{speciesTaxonId} = $speciesTaxonId;
+    $self->{speciesName} = $speciesName;
 
     return $self;
 }
@@ -81,10 +90,10 @@ sub getTaxonId {
     return $self->{taxonId};
 }
 
-sub getSpeciesNcbiTaxonId {
+sub getSpeciesName {
     my ($self) = @_;
-    return "$self->{organismAbbrev}_SPECIES_TAXON_ID" if $self->{test};
-    return $self->{speciesTaxonId};
+    return "$self->{organismAbbrev}_SPECIES_NAME" if $self->{test};
+    return $self->{speciesName};
 }
 
 sub getTaxonIdList {

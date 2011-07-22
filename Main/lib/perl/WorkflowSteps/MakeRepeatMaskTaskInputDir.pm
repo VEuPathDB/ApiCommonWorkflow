@@ -10,7 +10,7 @@ sub run {
   # get parameters
   my $taskInputDir = $self->getParamValue('taskInputDir');
   my $seqsFile = $self->getParamValue('seqsFile');
-  my $options = $self->getParamValue('options');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $dangleMax = $self->getParamValue('dangleMax');
 
   # get step properties
@@ -20,6 +20,10 @@ sub run {
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
+
+  my $speciesName = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesName();
+
+  my $options = "--species $speciesName";
 
   if ($undo) {
     $self->runCmd(0,"rm -rf $workflowDataDir/$taskInputDir");

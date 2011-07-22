@@ -12,6 +12,7 @@ sub getDownloadFileCmd {
   my $dbRefNAFeatureExtDbSpec = $self->getParamValue('dbRefNAFeatureExtDbSpec');
 
   my $cmd = "getGeneAliases --extDbSpec '$genomeExtDbRlsSpec' --outfile $downloadFileName --dbRefNAFeatureExtDbSpec '$dbRefNAFeatureExtDbSpec'";
+
   return $cmd;   
 }
 

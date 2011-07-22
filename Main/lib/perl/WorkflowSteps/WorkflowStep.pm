@@ -34,6 +34,42 @@ sub getExtDbRlsId {
   }
 }
 
+sub getExtDbRlsId {
+  my ($self, $test, $extDbRlsSpec) = @_;
+
+  my ($extDbName, $extDbRlsVer) = $self->getExtDbInfo($test,$extDbRlsSpec);
+
+  my $sql = "select external_database_release_id from sres.externaldatabaserelease d, sres.externaldatabase x where x.name = '${extDbName}' and x.external_database_id = d.external_database_id and d.version = '${extDbRlsVer}'";
+
+  my $cmd = "getValueFromTable --idSQL \"$sql\"";
+  my $extDbRlsId = $self->runCmd($test, $cmd);
+
+  if ($test) {
+    return "UNKNOWN_EXT_DB_RLS_ID";
+  } else {
+    return  $extDbRlsId;
+  }
+}
+
+sub getExtDbVersion {
+  my ($self, $test, $extDbName) = @_;
+
+
+  my $sql = "select version from sres.externaldatabaserelease edr, sres.externaldatabase ed
+             where ed.name = '$extDbName'
+             and edr.external_database_id = ed.external_database_id";
+
+  my $cmd = "getValueFromTable --idSQL \"$sql\"";
+  my $extDbVer = $self->runCmd($test, $cmd);
+
+  if ($test) {
+    return "UNKNOWN_EXT_DB_VERSION";
+  } else {
+    $self->error("Error: trying to find unique ext db version for '$extDbName', but more than one found") if $extDbVer =~ /,/;   # found multiple rows
+    return  $extDbVer;
+  }
+}
+
 sub getExtDbInfo {
     my ($self,$test, $extDbRlsSpec) = @_;
 
