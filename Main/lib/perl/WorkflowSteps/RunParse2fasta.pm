@@ -32,7 +32,7 @@ sub run {
 	  $self->runCmd($test,"mv $workflowDataDir/$shortSeqsFile $workflowDataDir/$shortSeqsFile.org");
           my $cmd = "parse2fasta.pl $workflowDataDir/$shortSeqsFile.org";
 	  $cmd .= " $workflowDataDir/$pairedEndFile" if $pairedEndFile;
-	  $cmd .= " > $workflowDataDir/$outputFile";
+	  $cmd .= " > $workflowDataDir/$outputFile" if $outputFile;
 	  $self->runCmd($test,$cmd);
       }
   }
