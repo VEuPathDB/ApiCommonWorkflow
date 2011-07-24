@@ -1,0 +1,42 @@
+<workflowGraph name="">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="proteinsFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+
+  <constant name="dataDir">$$parentDataDir$$/epitopes</constant>
+
+  <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="epitope_sequences_IEDB">
+    <prop name="organismAbbrev"/>
+
+    <subgraph name="IEDBResource" xmlFile="loadResource.xml" includeIf="$$isReferenceGenome$$">
+      <paramValue name="resourceName">${organismAbbrev}_epitope_IEDB_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="mapEpitopesToProteins" xmlFile="mapEpitopes.xml">
+      <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="IEDBResource"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="IEDB_dbxrefs">
+    <prop name="organismAbbrev"/>
+    <subgraph name="IEDBDBxRefResource" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_dbxref_epitope_IEDB_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="IEDBResource"/>
+    </subgraph>
+  </datasetTemplate>
+
+</workflowGraph>
