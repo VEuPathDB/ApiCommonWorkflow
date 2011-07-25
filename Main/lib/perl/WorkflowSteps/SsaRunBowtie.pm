@@ -25,7 +25,7 @@ sub run {
     if ($pairedReadFilePath){
 	$cmd .= " -1 $workflowDataDir/$inputShortSeqsFile -2 $workflowDataDir/$pairedReadFilePath > $workflowDataDir/$outputFile";
     }else{
-	$cmd .= "$workflowDataDir/$inputShortSeqsFile > $workflowDataDir/$outputFile";
+	$cmd .= " $workflowDataDir/$inputShortSeqsFile > $workflowDataDir/$outputFile";
     }
 
 
