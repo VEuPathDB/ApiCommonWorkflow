@@ -3,7 +3,6 @@
       <param name="organismAbbrev"/>
       <param name="genomeExtDbRlsSpec"/>
       <param name="insertVirtualSeqFromAgpFile"/>
-      <param name="repeatMaskSpeciesOption"/>
       <param name="organismResourceXmlFile"/>
       <param name="comparativeGenomicsFastaDir"/>
       <param name="comparativeGenomicsGffDir"/>
@@ -35,10 +34,13 @@
       <depends name="runTuningManager"/> 
     </step>
 
-    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSoftMaskTaskInputDir" includeIf="$$includeInComparativeGenomics$$">
+    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskTaskInputDir" includeIf="$$includeInComparativeGenomics$$">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="seqsFile">$$topLevelFastaFile$$</paramValue>
-      <paramValue name="options">$$repeatMaskSpeciesOption$$ -xsmall</paramValue>
+      <paramValue name="dangleMax">0</paramValue>
+      <paramValue name="trimDangling">n</paramValue>
+      <paramValue name="options">-xsmall</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <depends name="extractTopLevelFastaSeqs"/>
     </step>
 

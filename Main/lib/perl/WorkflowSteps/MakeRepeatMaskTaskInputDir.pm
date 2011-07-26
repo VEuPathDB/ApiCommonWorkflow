@@ -10,8 +10,10 @@ sub run {
   # get parameters
   my $taskInputDir = $self->getParamValue('taskInputDir');
   my $seqsFile = $self->getParamValue('seqsFile');
+  my $options = $self->getParamValue('options');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $dangleMax = $self->getParamValue('dangleMax');
+  my $trimDangling = $self->getParamValue('trimDangling');
 
   # get step properties
   my $clusterServer = $self->getSharedConfig('clusterServer');
@@ -23,7 +25,7 @@ sub run {
 
   my $speciesName = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesName();
 
-  my $options = "--species $speciesName";
+  my $options = "$options --species $speciesName";
 
   if ($undo) {
     $self->runCmd(0,"rm -rf $workflowDataDir/$taskInputDir");
@@ -36,7 +38,7 @@ sub run {
       # make controller.prop file
       $self->makeDistribJobControllerPropFile($taskInputDir, 1, $taskSize,
       			       "DJob::DistribJobTasks::RepeatMaskerTask");
-      
+
       # make task.prop file
       my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
@@ -44,7 +46,7 @@ sub run {
       print F 
 "rmPath=$rmPath
 inputFilePath=$clusterWorkflowDataDir/$seqsFile
-trimDangling=y
+trimDangling=$trimDangling
 rmOptions=$options
 dangleMax=$dangleMax
 ";

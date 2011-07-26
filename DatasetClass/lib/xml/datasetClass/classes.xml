@@ -430,7 +430,6 @@
 
   <!-- Category: microarrayPlatform -->
 
-  <!-- FIX WORKFLOW: need to change getAndMapProbes.xml to lose final/ -->
   <datasetClass class="microarrayPlatform">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
@@ -450,7 +449,10 @@
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/microarrayPlatform/${name}/%RESOURCE_VERSION%/final/probes.fsa"/>
 
+      <unpack>probeFasta2Tab @@dataDir@@/probes.fsa > @@dataDir@@/probes.tab</unpack>
+
       <getAndUnpackOutput file="@@dataDir@@/probes.fsa"/>
+      <getAndUnpackOutput file="@@dataDir@@/probes.tab"/>
 
       <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
     </resource>

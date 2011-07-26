@@ -34,7 +34,8 @@
     </subgraph>
 
     <step name="runParse2fasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunParse2fasta">
-      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa</paramValue>
+     <paramValue name="outputShortSeqsFile">$$dataDir$$/cleanedProbes.fsa</paramValue>
       <paramValue name="pairedEndFile">$$pairedReadFilePath$$</paramValue>
       <depends name="probe_RSRC"/>
     </step>
@@ -46,7 +47,7 @@
 
     <subgraph name="runRUMOnCluster"  xmlFile="runRUMOnCluster.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="readFilePath">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
+      <paramValue name="readFilePath">$$dataDir$$/cleanedProbes.fasta</paramValue>
       <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
       <paramValue name="transcriptFastaFile">$$transcriptSeqsFileForSsa$$</paramValue>
@@ -64,8 +65,8 @@
     </subgraph>
 
     <step name="revertProbeSeqId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RevertProbeSeqId">
-      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
-      <paramValue name="originalShortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa.org</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/cleanedProbes.fsa</paramValue>
+      <paramValue name="originalShortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa</paramValue>
       <paramValue name="inputUniqueFile">$$uniqueFile$$</paramValue>
       <paramValue name="inputNonUniqueFile">$$nonUniqueFile$$</paramValue>
       <depends name="runRUMOnCluster"/>
@@ -102,7 +103,7 @@
 
     <step name="makeCdfFileForAffyArray" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$makeCdfFile$$">
       <paramValue name="gene2probesInputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
-      <paramValue name="probename2sequenceInputFile">$$dataDir$$/$$probeResourceName$$/final/probename2sequence.tab</paramValue>
+      <paramValue name="probename2sequenceInputFile">$$dataDir$$/$$probeResourceName$$/probes.tab</paramValue>
       <paramValue name="cdfFile">$$dataDir$$/geneProbeMapping.cdf</paramValue>
       <paramValue name="tbasePbaseFile">$$dataDir$$/$$probeResourceName$$/final/tbase-pbase.out</paramValue>
       <depends name="makeProbeGeneMappingFile"/>
