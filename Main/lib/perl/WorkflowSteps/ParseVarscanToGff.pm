@@ -15,10 +15,11 @@ sub run {
 
   my $strain = $self->getParamValue('strain');
 
+  my $percentCutoff = $self->getParamValue('percentCutoff');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "parseVarscanToGFF.pl --f $workflowDataDir/$inputFile --strain '$strain' --o $workflowDataDir/$outputFile";
-
+  my $cmd = "parseVarscanToGFF.pl --f $workflowDataDir/$inputFile --strain '$strain' --pc $percentCutoff --o $workflowDataDir/$outputFile";
   
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
