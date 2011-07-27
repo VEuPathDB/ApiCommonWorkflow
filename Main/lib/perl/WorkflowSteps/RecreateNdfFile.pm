@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::ReCreateNdfFile;
+package ApiCommonWorkflow::Main::WorkflowSteps::RecreateNdfFile;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -10,8 +10,8 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $gene2probesInputFile = $self->getParamValue('gene2probesInputFile');
-  my $ndfFile = $self->getParamValue('ndfFile');
-  my $outputFile = $self->getParamValue('outputFile');
+  my $ndfFile = $self->getParamValue('originalNdfFile');
+  my $outputFile = $self->getParamValue('outputNdfFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -21,7 +21,7 @@ sub run {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('ndfFile', "$workflowDataDir/$ndfFile");
+	  $self->testInputFile('originalNdfFile', "$workflowDataDir/$ndfFile");
 	  $self->testInputFile('gene2probesInputFile', "$workflowDataDir/$gene2probesInputFile");
       }else{
 	  $self->runCmd($test,$cmd);
