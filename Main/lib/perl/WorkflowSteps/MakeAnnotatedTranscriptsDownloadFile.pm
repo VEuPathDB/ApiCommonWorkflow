@@ -47,10 +47,10 @@ sub run {
             snas.length
             as defline,
             snas.sequence
-           FROM apidb.geneattributes gf,
+           FROM ApidbTuning.GeneAttributes gf,
                 dots.transcript t,
                 dots.splicednasequence snas,
-                apidb.featurelocation fl,
+                ApidbTuning.FeatureLocation fl,
                 dots.nasequence ns
       WHERE gf.na_feature_id = t.parent_id
         AND ns.na_sequence_id = fl.na_sequence_id

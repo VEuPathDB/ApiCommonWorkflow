@@ -48,8 +48,8 @@ sub run {
             taas.length
             as defline,
             taas.sequence
-           FROM apidb.featurelocation fl,
-                apidb.geneattributes gf,
+           FROM ApidbTuning.FeatureLocation fl,
+                ApidbTuning.GeneAttributes gf,
                 dots.transcript t,
                 dots.splicednasequence snas,
                 dots.translatedaafeature taaf,
