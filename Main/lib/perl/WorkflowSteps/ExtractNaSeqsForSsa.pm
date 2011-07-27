@@ -8,22 +8,9 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $outputFile = $self->getParamValue('outputFile');
   my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
 
-
-  my @extDbRlsSpecList = split(/,/, $extDbRlsSpec);
-
-  my $dbRlsIds;
-
-  foreach my $db (@extDbRlsSpecList){
-
-     $dbRlsIds .= $self->getExtDbRlsId($test, $db).",";
-
-  }
-
-  $dbRlsIds =~ s/(,)$//g;
 
   my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$ncbiTaxonId);
 
@@ -50,7 +37,6 @@ sub run {
 
 sub getParamsDeclaration {
   return (
-	  'extDbRlsSpec',
 	  'outputFile',
 	  'ncbiTaxonId'
 	 );
