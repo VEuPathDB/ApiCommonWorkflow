@@ -11,39 +11,31 @@ sub run {
 
   my $shortSeqsFile = $self->getParamValue('shortSeqsFile');
 
-  my $originalShortSeqsFile = $self->getParamValue('originalShortSeqsFile');
-
   my $inputUniqueFile = $self->getParamValue('inputUniqueFile');
 
   my $inputNonUniqueFile = $self->getParamValue('inputNonUniqueFile');
 
+  my $outputUniqueFile = $self->getParamValue('outputUniqueFile');
+
+  my $outputNonUniqueFile = $self->getParamValue('outputNonUniqueFile');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-    if ($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/$inputUniqueFile");
-    $self->runCmd(0, "rm -f $workflowDataDir/$inputNonUniqueFile");
-    $self->runCmd(0, "mv $workflowDataDir/$inputUniqueFile.org $workflowDataDir/$inputUniqueFile");
-    $self->runCmd(0, "mv $workflowDataDir/$inputNonUniqueFile.org $workflowDataDir/$inputNonUniqueFile");
+  if ($undo) {
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputUniqueFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputNonUniqueFile");
   } else {
-      if ($test) {
-	  $self->testInputFile('seqFile', "$workflowDataDir/$shortSeqsFile");
-	  $self->testInputFile('seqFile', "$workflowDataDir/$originalShortSeqsFile");
-      }else{
-	  $self->runCmd($test,"mv $workflowDataDir/$inputUniqueFile $workflowDataDir/$inputUniqueFile.org");
-	  $self->runCmd($test,"mv $workflowDataDir/$inputNonUniqueFile $workflowDataDir/$inputNonUniqueFile.org");
-	  $self->runCmd($test,"RevertProbeSeqId --originalShortSeqsFile $workflowDataDir/$originalShortSeqsFile --inputFile $workflowDataDir/$inputUniqueFile.org --outputFile $workflowDataDir/$inputUniqueFile");
-	  $self->runCmd($test,"RevertProbeSeqId --originalShortSeqsFile $workflowDataDir/$originalShortSeqsFile --inputFile $workflowDataDir/$inputNonUniqueFile.org --outputFile $workflowDataDir/$inputNonUniqueFile");
-      }
+    if ($test) {
+      $self->testInputFile('shortSeqsFile', "$workflowDataDir/$inputUniqueFile");
+      $self->testInputFile('inputUniqueFile', "$workflowDataDir/$inputNonUniqueFile");
+      $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$shortSeqsFile");
+      $self->runCmd($test,"touch $workflowDataDir/$outputUniqueFile");
+      $self->runCmd($test,"touch $workflowDataDir/$outputNonUniqueFile");
+    } else {
+      $self->runCmd($test,"RevertProbeSeqId --originalShortSeqsFile $workflowDataDir/$shortSeqsFile --inputFile $workflowDataDir/$inputUniqueFile --outputFile $workflowDataDir/$outputUniqueFile");
+      $self->runCmd($test,"RevertProbeSeqId --originalShortSeqsFile $workflowDataDir/$shortSeqsFile --inputFile $workflowDataDir/$inputNonUniqueFile --outputFile $workflowDataDir/$outputNonUniqueFile");
+    }
   }
-}
-
-sub getParamDeclaration {
-  return (
-	  'shortSeqsFile',
-	  'originalShortSeqsFile',
-	  'inputUniqueFile',
-	  'inputNonUniqueFile',
-	 );
 }
 
 sub getConfigDeclaration {

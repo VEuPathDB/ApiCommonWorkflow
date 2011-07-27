@@ -31,7 +31,7 @@
     <prop name="isNimbleGen"/>
     
     <subgraph name="${name}_getAndMapProbes" xmlFile="getAndMapProbes.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$/${name}</paramValue>
       <paramValue name="probeSetName">${name}</paramValue>
       <paramValue name="probeResourceName">${organismAbbrev}_microarrayPlatform_${name}_RSRC</paramValue>
       <paramValue name="probeResourceVersion">${version}</paramValue>
@@ -47,41 +47,8 @@
       <paramValue name="variableLengthReads">${variableLengthReads}</paramValue>
       <paramValue name="countMismatches">false</paramValue>
       <paramValue name="makeCdfFile">${isAffymetrix}</paramValue>
-      <paramValue name="cdfFileName">$$dataDir$$/geneProbeMap</paramValue>
       <paramValue name="makeNdfFile">${isNimbleGen}</paramValue>
-      <paramValue name="ndfFileName"></paramValue>
-      <depends name="mirrorToCluster"/>
-    </subgraph>
-  </datasetTemplate>
-
-  <datasetTemplate class="chipChipPlatform">
-    <prop name="project"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
-    <prop name="limitNU"/>
-    <prop name="numInsertions"/>
-    
-    <subgraph name="${name}_getAndMapProbes" xmlFile="getAndMapProbes.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="probeSetName">${name}</paramValue>
-      <paramValue name="probeResourceName">${organismAbbrev}_chipChipPlatform_${name}_RSRC</paramValue>
-      <paramValue name="probeResourceVersion">${version}</paramValue>
-      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
-      <paramValue name="limitNU">${limitNU}</paramValue>
-      <paramValue name="variableLengthReads">false</paramValue>
-      <paramValue name="numInsertions">${numInsertions}</paramValue>
-      <paramValue name="dnaHybridization">true</paramValue>
-      <paramValue name="countMismatches">false</paramValue>
-      <paramValue name="pairedReadFilePath"></paramValue>
-      <paramValue name="makeCdfFile">false</paramValue>
-      <paramValue name="cdfFileName"></paramValue>
-      <paramValue name="makeNdfFile">false</paramValue>
-      <paramValue name="ndfFileName"></paramValue>
+      <paramValue name="outputGeneProbeMappingFile">$$dataDir$$/${name}/geneProbeMapping</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
@@ -111,11 +78,42 @@
       <paramValue name="chipProbeExtDbRlsSpec">${organismAbbrev}_microarrayPlatform_${microarrayPlatformName}_RSRC|${microarrayPlatformVersion}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="doExpressionAnalysis">${doExpressionAnalysis}</paramValue>
-      <paramValue name="probeGenesMappingFileDir">$$dataDir$$/${microarrayPlatformName}</paramValue>
+      <paramValue name="geneProbeMappingFile">$$dataDir$$/${microarrayPlatformName}/geneProbeMapping</paramValue>
       <paramValue name="hasTimeSeries">${hasTimeSeries}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <depends name="${experimentName}"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="chipChipPlatform">
+    <prop name="project"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="limitNU"/>
+    <prop name="numInsertions"/>
+    
+    <subgraph name="${name}_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+      <paramValue name="dataDir">$$dataDir$$/${name}</paramValue>
+      <paramValue name="probeSetName">${name}</paramValue>
+      <paramValue name="probeResourceName">${organismAbbrev}_chipChipPlatform_${name}_RSRC</paramValue>
+      <paramValue name="probeResourceVersion">${version}</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="limitNU">${limitNU}</paramValue>
+      <paramValue name="variableLengthReads">false</paramValue>
+      <paramValue name="numInsertions">${numInsertions}</paramValue>
+      <paramValue name="dnaHybridization">true</paramValue>
+      <paramValue name="countMismatches">false</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="makeCdfFile">false</paramValue>
+      <paramValue name="makeNdfFile">false</paramValue>
+      <paramValue name="outputGeneProbeMappingFile"></paramValue>
+      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
