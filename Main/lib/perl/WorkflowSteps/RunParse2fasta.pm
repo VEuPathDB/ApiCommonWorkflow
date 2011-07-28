@@ -17,14 +17,12 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  $outputFile = $pairedEndFile ? $outputFile : $shortSeqsFile;
-
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
     if ($test) {
-      $self->testInputFile('seqFile', "$workflowDataDir/$shortSeqsFile");
-      $self->testInputFile('seqFile', "$workflowDataDir/$pairedEndFile") if $pairedEndFile;
+      $self->testInputFile('shortSeqsFile', "$workflowDataDir/$shortSeqsFile");
+      $self->testInputFile('pairedEndFile', "$workflowDataDir/$pairedEndFile") if $pairedEndFile;
       $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
     } else {
       my $cmd = "parse2fasta.pl $workflowDataDir/$shortSeqsFile";

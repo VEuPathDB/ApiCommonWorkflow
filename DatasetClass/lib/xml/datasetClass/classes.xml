@@ -112,7 +112,7 @@
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/GeneDB_GFF/%RESOURCE_VERSION%/final"/>
 
-      <unpack>makeCustomFastaAndGffFromGff3 --input_dir @@dataDir@@/%RESOURCE_VERSION%/final --output_fasta @@dataDir@@/genome.fasta --output_gff @@dataDir@@/genome.gff3</unpack>
+      <unpack>makeCustomFastaAndGffFromGff3 --input_dir @@dataDir@@/final --output_fasta @@dataDir@@/genome.fasta --output_gff @@dataDir@@/genome.gff3</unpack>
 
       <unpack>preprocessGFF3 --input_gff @@dataDir@@/genome.gff3 --output_gff @@dataDir@@/genome.gff</unpack>
 
@@ -435,8 +435,8 @@
     <prop name="organismAbbrev"/>
     <prop name="name"/>
     <prop name="version"/>
-    <prop name="isAffymetrix"/>
-    <prop name="isNimbleGen"/>
+    <prop name="isAffymetrixGeneArray"/>
+    <prop name="isNimbleGenGeneArray"/>
     <prop name="limitNU"/>
     <prop name="variableLengthReads"/>
     <prop name="numInsertions"/>
@@ -449,16 +449,16 @@
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/microarrayPlatform/${name}/%RESOURCE_VERSION%/final"/>
 
-      <unpack>probeFasta2Tab @@dataDir@@/final/probes.fsa > @@dataDir@@/final/probes.tab</unpack>
+      <unpack>probeFasta2Tab @@dataDir@@/final/probes.fsa > @@dataDir@@/probes.tab</unpack>
 
+      <getAndUnpackOutput dir="@@dataDir@@/final"/>
       <getAndUnpackOutput file="@@dataDir@@/final/probes.fsa"/>
-      <getAndUnpackOutput file="@@dataDir@@/final/probes.tab"/>
+      <getAndUnpackOutput file="@@dataDir@@/probes.tab"/>
 
       <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
     </resource>
   </datasetClass>
 
-  <!-- FIX WORKFLOW: need to change getAndMapProbes.xml to lose final/ -->
   <datasetClass class="chipChipPlatform">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
@@ -475,7 +475,12 @@
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/microarrayPlatform/${name}/%RESOURCE_VERSION%/final/probes.fsa"/>
 
-      <getAndUnpackOutput file="@@dataDir@@/probes.fsa"/>
+      <unpack>probeFasta2Tab @@dataDir@@/final/probes.fsa > @@dataDir@@/probes.tab</unpack>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/probes.fsa"/>
+      <getAndUnpackOutput file="@@dataDir@@/probes.tab"/>
+
 
       <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
     </resource>
@@ -495,6 +500,8 @@
     <prop name="microarrayPlatformVersion"/>
     <prop name="doExpressionAnalysis"/>
     <prop name="hasTimeSeries"/>
+    <prop name="usesAffymetrixGeneArray"/>
+    <prop name="usesNimbleGenGeneArray"/>
 
     <graphFile planFile="arrayStudies.xml"/>
 

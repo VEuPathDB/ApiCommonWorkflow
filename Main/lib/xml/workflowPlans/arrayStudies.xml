@@ -27,8 +27,8 @@
     <prop name="limitNU"/>
     <prop name="numInsertions"/>
     <prop name="variableLengthReads"/>
-    <prop name="isAffymetrix"/>
-    <prop name="isNimbleGen"/>
+    <prop name="isAffymetrixGeneArray"/>
+    <prop name="isNimbleGenGeneArray"/>
     
     <subgraph name="${name}_getAndMapProbes" xmlFile="getAndMapProbes.xml">
       <paramValue name="dataDir">$$dataDir$$/${name}</paramValue>
@@ -46,8 +46,8 @@
       <paramValue name="numInsertions">${numInsertions}</paramValue>
       <paramValue name="variableLengthReads">${variableLengthReads}</paramValue>
       <paramValue name="countMismatches">false</paramValue>
-      <paramValue name="makeCdfFile">${isAffymetrix}</paramValue>
-      <paramValue name="makeNdfFile">${isNimbleGen}</paramValue>
+      <paramValue name="makeCdfFile">${isAffymetrixGeneArray}</paramValue>
+      <paramValue name="makeNdfFile">${isNimbleGenGeneArray}</paramValue>
       <paramValue name="outputGeneProbeMappingTabFile">$$dataDir$$/${name}/geneProbeMapping.tab</paramValue>
       <paramValue name="outputGeneProbeMappingVendorFile">$$dataDir$$/${name}/geneProbeMappingVendor</paramValue>
 
@@ -64,8 +64,8 @@
     <prop name="microarrayPlatformVersion"/>
     <prop name="doExpressionAnalysis"/>
     <prop name="hasTimeSeries"/>
-    <prop name="isAffymetrix"/>
-    <prop name="isNimbleGen"/>
+    <prop name="usesAffymetrixGeneArray"/>
+    <prop name="usesNimbleGenGeneArray"/>
 
     <subgraph name="${experimentName}" xmlFile="loadResource.xml">
       <paramValue name="resourceName">${organismAbbrev}_microarrayExpression_${experimentName}_RSRC</paramValue>
@@ -81,13 +81,13 @@
       <paramValue name="chipProbeExtDbRlsSpec">${organismAbbrev}_microarrayPlatform_${microarrayPlatformName}_RSRC|${microarrayPlatformVersion}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="doExpressionAnalysis">${doExpressionAnalysis}</paramValue>
-      <paramValue name="geneProbeMappingTabFile">$$dataDir$$/${microarrayPlatformName}/geneProbeMapping.tab</paramValue>
-      <paramValue name="geneProbeMappingVendorFile">$$dataDir$$/${microarrayPlatformName}/geneProbeMappingVendor</paramValue>
       <paramValue name="hasTimeSeries">${hasTimeSeries}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="expectCdfFile">${isAffymetrix}</paramValue>
-      <paramValue name="expectNdfFile">${isNimbleGen}</paramValue>
+      <paramValue name="geneProbeMappingTabFile">$$dataDir$$/${microarrayPlatformName}/geneProbeMapping.tab</paramValue>
+      <paramValue name="geneProbeMappingVendorFile">$$dataDir$$/${microarrayPlatformName}/geneProbeMappingVendor</paramValue>
+      <paramValue name="expectCdfFile">${usesAffymetrixGeneArray}</paramValue>
+      <paramValue name="expectNdfFile">${usesNimbleGenGeneArray}</paramValue>
 
       <depends name="${experimentName}"/>
     </subgraph>
@@ -117,9 +117,10 @@
       <paramValue name="dnaHybridization">true</paramValue>
       <paramValue name="countMismatches">false</paramValue>
       <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="outputGeneProbeMappingTabFile"></paramValue>
+      <paramValue name="outputGeneProbeMappingVendorFile"></paramValue>
       <paramValue name="makeCdfFile">false</paramValue>
       <paramValue name="makeNdfFile">false</paramValue>
-      <paramValue name="outputGeneProbeMappingFile"></paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
