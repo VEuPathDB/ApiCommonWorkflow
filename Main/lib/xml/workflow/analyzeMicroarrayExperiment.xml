@@ -5,18 +5,31 @@
     <param name="chipProbeExtDbRlsSpec"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="doExpressionAnalysis"/>
-    <param name="geneProbeMappingFile"/>
+    <param name="geneProbeMappingTabFile"/>
+    <param name="geneProbeMappingVendorFile"/>
     <param name="hasTimeSeries"/>
     <param name="relativeDownloadSiteDir"/>
     <param name="organismAbbrev"/>
+    <param name="expectCdfFile"/>
+    <param name="expectNdfFile"/>
+
+    <constant name="dataDir">$$parentDataDir$$/$$experimentResourceName$$</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
 
     <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
       <paramValue name="inputDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
-      <paramValue name="geneProbeMappingFile">$$geneProbeMappingFile$$</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/doTranscriptExpression</paramValue>
+      <paramValue name="geneProbeMappingTabFile">$$geneProbeMappingTabFile$$</paramValue>
+      <paramValue name="geneProbeMappingVendorFile">$$geneProbeMappingVendorFile$$</paramValue>
+      <paramValue name="expectCdfFile">$$expectCdfFile$$</paramValue>
+      <paramValue name="expectNdfFile">$$expectNdfFile$$</paramValue>
     </step>
 
     <step name="loadExpressionProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
-      <paramValue name="inputDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/doTranscriptExpression</paramValue>
       <paramValue name="configFile">$$parentDataDir$$/$$experimentResourceName$$/final/expression_profile_config.txt</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
       <depends name="doTranscriptExpression"/>

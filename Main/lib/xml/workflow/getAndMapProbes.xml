@@ -5,7 +5,8 @@
     <param name="probeResourceVersion"/>
     <param name="makeCdfFile"/>
     <param name="makeNdfFile"/>
-    <param name="outputGeneProbeMappingFile"/>
+    <param name="outputGeneProbeMappingTabFile"/>
+    <param name="outputGeneProbeMappingVendorFile"/>
     <param name="organismResourceXmlFile"/>
     <param name="ssaGeneModelFile"/>
     <param name="genomeExtDbRlsSpec"/>
@@ -17,9 +18,6 @@
     <param name="numInsertions"/>
     <param name="countMismatches"/>
     <param name="variableLengthReads"/>
-
-    <constant name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.all</constant>
-    <constant name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.all</constant>
 
     <!-- parent defines name of data dir so we can pass it our output files -->
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -34,7 +32,7 @@
     </subgraph>
 
     <step name="runParse2fasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunParse2fasta">
-      <paramValue name="inputShortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa</paramValue>
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
       <paramValue name="outputShortSeqsFile">$$dataDir$$/cleanedProbes.fsa</paramValue>
       <paramValue name="pairedEndFile">$$pairedReadFilePath$$</paramValue>
       <depends name="probe_RSRC"/>
@@ -66,9 +64,9 @@
     </subgraph>
 
     <step name="revertProbeSeqId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RevertProbeSeqId">
-      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/probes.fsa</paramValue>
-      <paramValue name="inputUniqueFile">$$uniqueFile$$</paramValue>
-      <paramValue name="inputNonUniqueFile">$$nonUniqueFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeResourceName$$/final/probes.fsa</paramValue>
+      <paramValue name="inputUniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.all</paramValue>
+      <paramValue name="inputNonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.all</paramValue>
       <paramValue name="outputUniqueFile">$$dataDir$$/uniqueFileRevertedIds.txt</paramValue>
       <paramValue name="outputNonUniqueFile">$$dataDir$$/nonUniqueFileRevertedIds.txt</paramValue>
       <depends name="runRUMOnCluster"/>
@@ -97,26 +95,29 @@
       <depends name="makeProbeGenomeMappingGffFile"/>
     </step>
 
+    <!-- always output this file, even when we are making a vendor-specific -->
+    <!-- file, in which case outputting this file is not really useful -->
+    <!-- but output it anyway for simplicity -->
     <step name="makeProbeGeneMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProbeGeneMappingFile">
-      <paramValue name="outputFile">$$outputGeneProbeMappingFile$$</paramValue>
+      <paramValue name="outputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
       <paramValue name="aefExtDbSpec">$$probeResourceName$$|$$probeResourceVersion$$</paramValue>
       <paramValue name="geneExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="isOneChannel">$$makeCdfFile$$</paramValue>
       <depends name="loadProbeGenomeMapping"/>
     </step>
 
-    <step name="makeCdfFileForAffyArray" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$makeCdfFile$$">
-      <paramValue name="gene2probesInputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
-      <paramValue name="probename2sequenceInputFile">$$dataDir$$/$$probeResourceName$$/probes.tab</paramValue>
-      <paramValue name="inputCdfFile">$$dataDir$$/$$probeResourceName$$/geneProbeMapping.cdf</paramValue>
-      <paramValue name="outputCdfFile">$$outputGeneProbeMappingFile$$</paramValue>
+    <step name="fixCdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$makeCdfFile$$">
+      <paramValue name="gene2probesInputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
+      <paramValue name="probename2sequenceInputFile">$$dataDir$$/$$probeResourceName$$/final/probes.tab</paramValue>
+      <paramValue name="inputCdfFile">$$dataDir$$/$$probeResourceName$$/final/geneProbeMapping.cdf</paramValue>
+      <paramValue name="outputCdfFile">$$outputGeneProbeMappingVendorFile$$</paramValue>
       <depends name="makeProbeGeneMappingFile"/>
     </step>
 
-    <step name="recreateNdfFileForNimbleGen" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RecreateNdfFile" includeIf="$$makeNdfFile$$">
-      <paramValue name="gene2probesInputFile">$$dataDir$$/geneProbeMapping.txt</paramValue>
-      <paramValue name="inputNdfFile">$$dataDir$$/$$probeResourceName$$/geneProbeMapping.ndf</paramValue>
-      <paramValue name="outputNdfFile">$$outputGeneProbeMappingFile$$</paramValue>
+    <step name="fixNdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RecreateNdfFile" includeIf="$$makeNdfFile$$">
+      <paramValue name="gene2probesInputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
+      <paramValue name="inputNdfFile">$$dataDir$$/$$probeResourceName$$/input/geneProbeMapping.ndf</paramValue>
+      <paramValue name="outputNdfFile">$$outputGeneProbeMappingVendorFile$$</paramValue>
       <depends name="makeProbeGeneMappingFile"/>
     </step>
 
