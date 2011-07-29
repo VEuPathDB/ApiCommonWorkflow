@@ -15,7 +15,7 @@ sub run {
     my $inputRevQualsFile = $self->getParamValue('inputRevQualsFile');
     my $outputFile = $self->getParamValue('outputFile');
     my $bowtieParams = $self->getParamValue('bowtieParams');
-    my $fileType = $self->getParamValue('fileType');
+    my $seqsFileType = $self->getParamValue('seqsFileType');
     my $isPairedEnds = $self->getBooleanParamValue('isPairedEnds');
     my $isColorSpace = $self->getBooleanParamValue('isColorSpace');
     my $haveQuals = $self->getBooleanParamValue('haveQuals');
@@ -26,11 +26,11 @@ sub run {
     my %fileTypes = {'FASTA' => '-f',
 		     'FASTQ' => '-q',
 		     'raw' => '-r',
-		    };
+    };
 
-    my $fileTypeArg = $fileTypes{$fileType};
+    my $fileTypeArg = $fileTypes{$seqsFileType};
     my $allowed = join(", ", keys(%fileTypes));
-    $self->error("Invalid file type '$fileType'.  Allowed types are: $allowed") unless $fileTypeArg;
+    $self->error("Invalid seqsFileType '$fileType'.  Allowed types are: $allowed") unless $fileTypeArg;
 
     my $colorSpaceArg = $isColorSpace eq 'true'? ' -C' : '';
 
@@ -45,25 +45,24 @@ sub run {
     $self->testInputFile('inputQualsSeqsFile', "$workflowDataDir/$inputQualsSeqsFile") if $haveQuals;
     $self->testInputFile('inputIndexesDir', "$workflowDataDir/$inputIndexesDir");
 
-
     if ($isPairedEnds) {
-      $cmd .= " -2 $workflowDataDir/$inputRevSeqsFile";
-      $self->testInputFile('inputRevSeqsFile', "$workflowDataDir/$inputRevSeqsFile");
-      if ($haveQuals) {
-	$cmd .= " -Q2 $inputRevQualsFile";
-	$self->testInputFile('inputRevQualsFile', "$workflowDataDir/$inputRevQualsFile");
-      }
+	$cmd .= " -2 $workflowDataDir/$inputRevSeqsFile";
+	$self->testInputFile('inputRevSeqsFile', "$workflowDataDir/$inputRevSeqsFile");
+	if ($haveQuals) {
+	    $cmd .= " -Q2 $inputRevQualsFile";
+	    $self->testInputFile('inputRevQualsFile', "$workflowDataDir/$inputRevQualsFile");
+	}
     }
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     } else {
-      if ($test) {
-	$self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-      }
-      $self->runCmd($test, $cmd);
+	if ($test) {
+	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+	}
+	$self->runCmd($test, $cmd);
     }
-  }
+}
 
 
 sub getConfigDeclaration {
