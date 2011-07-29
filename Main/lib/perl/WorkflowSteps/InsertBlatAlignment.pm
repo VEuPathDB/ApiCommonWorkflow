@@ -23,9 +23,9 @@ sub run {
   my $targetTaxonId = $self->getOrganismInfo($test, $targetOrganismAbbrev)->getTaxonId();
   my $queryTaxonId = $self->getOrganismInfo($test, $queryOrganismAbbrev)->getTaxonId();
 
-  my $targetTableId = $self->getTableId($targetTable);
+  my $targetTableId = $self->getTableId($test, $targetTable);
   my $targetExtDbRlsId = $self->getExtDbRlsId($test, $targetExtDbRlsSpec);
-  my $queryTableId = $self->getTableId($queryTable);
+  my $queryTableId = $self->getTableId($test, $queryTable);
   my $queryExtDbRlsId = $self->getExtDbRlsId($test, $queryExtDbRlsSpec) if $queryExtDbRlsSpec;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
