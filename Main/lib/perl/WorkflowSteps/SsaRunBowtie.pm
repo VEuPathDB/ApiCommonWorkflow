@@ -23,14 +23,14 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my %fileTypes = {'FASTA' => '-f',
+    my %fileTypes = ('FASTA' => '-f',
 		     'FASTQ' => '-q',
 		     'raw' => '-r',
-    };
+		    );
 
     my $fileTypeArg = $fileTypes{$seqsFileType};
     my $allowed = join(", ", keys(%fileTypes));
-    $self->error("Invalid seqsFileType '$fileType'.  Allowed types are: $allowed") unless $fileTypeArg;
+    $self->error("Invalid seqsFileType '$seqsFileType'.  Allowed types are: $allowed") unless $fileTypeArg;
 
     my $colorSpaceArg = $isColorSpace eq 'true'? ' -C' : '';
 
@@ -42,7 +42,7 @@ sub run {
     $cmd .= "$fwdQualsArg $workflowDataDir/$inputFwdQualsFile" if $haveQuals;
 
     $self->testInputFile('inputFwdSeqsFile', "$workflowDataDir/$inputFwdSeqsFile");
-    $self->testInputFile('inputQualsSeqsFile', "$workflowDataDir/$inputQualsSeqsFile") if $haveQuals;
+    $self->testInputFile('inputFwdQualsSeqsFile', "$workflowDataDir/$inputFwdQualsFile") if $haveQuals;
     $self->testInputFile('inputIndexesDir', "$workflowDataDir/$inputIndexesDir");
 
     if ($isPairedEnds) {

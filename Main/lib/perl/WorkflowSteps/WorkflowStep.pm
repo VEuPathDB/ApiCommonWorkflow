@@ -85,7 +85,10 @@ sub getExtDbInfo {
 }
 
 sub getTableId {
-  my ($self, $tableName) = @_;
+  my ($self, $test, $tableName) = @_;
+
+  return "UNKNOWN_table_name" if $test;
+
   my $sql = "select table_id from core.tableinfo where name = '$tableName'";
 
   my $cmd = "getValueFromTable --idSQL \"$sql\"";

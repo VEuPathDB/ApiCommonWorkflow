@@ -45,7 +45,9 @@ EOF
 # initialize output dir with symlinks to all files in input dir
 # this is needed by doTranscriptExpresssion command
 sub makeSymLinks {
-  my ($inputDir, $outputDir) = @_;
+  my ($self, $inputDir, $outputDir) = @_;
+
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   opendir(my $dh, "$workflowDataDir/$inputDir") || $self->error("can't opendir $workflowDataDir/$inputDir: $!");
   while(readdir($dh)) {

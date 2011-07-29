@@ -29,8 +29,8 @@ sub run {
       $self->testInputFile('shortSeqsFile', "$workflowDataDir/$inputUniqueFile");
       $self->testInputFile('inputUniqueFile', "$workflowDataDir/$inputNonUniqueFile");
       $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$shortSeqsFile");
-      $self->runCmd($test,"touch $workflowDataDir/$outputUniqueFile");
-      $self->runCmd($test,"touch $workflowDataDir/$outputNonUniqueFile");
+      $self->runCmd(0,"echo test > $workflowDataDir/$outputUniqueFile");
+      $self->runCmd(0,"echo test > $workflowDataDir/$outputNonUniqueFile");
     } else {
       $self->runCmd($test,"RevertProbeSeqId --originalShortSeqsFile $workflowDataDir/$shortSeqsFile --inputFile $workflowDataDir/$inputUniqueFile --outputFile $workflowDataDir/$outputUniqueFile");
       $self->runCmd($test,"RevertProbeSeqId --originalShortSeqsFile $workflowDataDir/$shortSeqsFile --inputFile $workflowDataDir/$inputNonUniqueFile --outputFile $workflowDataDir/$outputNonUniqueFile");
