@@ -19,7 +19,7 @@ sub run {
 
   if ($undo){
 
-      my $sql = "delete from ApiDB.GENETABLE where source_id in (select distinct source_id from ApiDB.GENEATTRIBUTES where organism='$organismFullName' and is_deprecated=$deprecated)";
+      my $sql = "delete from ApiDB.GENETABLE where source_id in (select distinct source_id from ApidbTuning.GeneAttributes where organism='$organismFullName' and is_deprecated=$deprecated)";
 
       my $undoCmd = "executeIdSQL.pl  --idSQL \"$sql\"";
      
