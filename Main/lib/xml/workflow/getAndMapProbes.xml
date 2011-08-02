@@ -16,10 +16,15 @@
     <param name="countMismatches"/>
     <param name="cdfFileName"/>
     <param name="ndfFileName"/>
+    <param name="SNPs"/>
+    <param name="reference_strain"/>
+    <param name="organismFullName"/>
+    <param name="strandSpecific"/>
+    <param name="variableLengthReads"/>
 
     <constant name="dataDir">$$parentDataDir$$/getAndMap_$$probeResourceName$$</constant>
-    <constant name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.all</constant>
-    <constant name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.all</constant>
+    <constant name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique</constant>
+    <constant name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU</constant>
 
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
@@ -54,7 +59,12 @@
       <paramValue name="numInsertions">$$numInsertions$$</paramValue>
       <paramValue name="createSAMFile">false</paramValue>
       <paramValue name="countMismatches">$$countMismatches$$</paramValue>
-     <depends name="runParse2fasta"/>
+      <paramValue name="keepNode">yes</paramValue>
+      <paramValue name="SNPs">$$SNPs$$</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
+      <paramValue name="createJunctionsFile">false</paramValue>
+      <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
+      <depends name="runParse2fasta"/>
     </subgraph>
 
     <step name="revertProbeSeqId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RevertProbeSeqId">
