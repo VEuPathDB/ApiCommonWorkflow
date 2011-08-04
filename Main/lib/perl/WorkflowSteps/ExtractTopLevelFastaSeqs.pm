@@ -13,7 +13,7 @@ sub run {
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
-  my $sql = "select sa.source_id, ns.sequence
+  my $sql = "select sa.source_id||':1-'||sa.length||'_strand=+', ns.sequence
              from ApiDBTuning.sequenceattributes sa, dots.nasequence ns
              where sa.na_sequence_id = ns.na_sequence_id
              and sa.NCBI_TAX_ID = $ncbiTaxonId and is_top_level = 1";
@@ -35,10 +35,8 @@ sub run {
   }
 
 sub getParamsDeclaration {
-  return (
-	  'genomeExtDbRlsSpec',
-#	  'genomeVirtualSeqsExtDbRlsSpec',
-	  'outputFile',
+  return ('organismAbbrev',
+	  'outputFile'
 	 );
 }
 
