@@ -19,6 +19,12 @@
       <depends name="tgME49ExtractGenomicSeqs"/>
     </step>
 
+    <step name="tgME49CreateBWAIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBWAIndexes">
+      <paramValue name="inputFile">tgME49GenomicSeqs.fsa</paramValue>
+      <paramValue name="outputIndexDir">tgME49GenomicSeqs_bwa_indices</paramValue>
+      <depends name="tgME49ExtractGenomicSeqs"/>
+     </step>
+
   <step name="tgGT1ExtractGenomicSeqs"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
       <paramValue name="extDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
@@ -35,6 +41,12 @@
       <depends name="tgGT1ExtractGenomicSeqs"/>
     </step>
 
+    <step name="tgGT1CreateBWAIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBWAIndexes">
+      <paramValue name="inputFile">tgGT1GenomicSeqs.fsa</paramValue>
+      <paramValue name="outputIndexDir">tgGT1GenomicSeqs_bwa_indices</paramValue>
+      <depends name="tgGT1ExtractGenomicSeqs"/>
+     </step>
+
     <subgraph name="TgRH_HTS_Gubbels_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">TgRH_HTS_Gubbels_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">toxodb/gubbelsHTSResources.xml</paramValue>
@@ -45,7 +57,7 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
-    <depends name="tgME49ExtractGenomicSeqs"/> 
+    <depends name="tgME49CreateBWAIndices"/> 
     <depends name="TgRH_HTS_Gubbels_RSRC"/> 
   </subgraph>
 
@@ -53,7 +65,7 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="projectVersion">$$projectVersion$$</paramValue>
     <paramValue name="parentDataDir"></paramValue>
-    <depends name="tgGT1ExtractGenomicSeqs"/> 
+    <depends name="tgGT1CreateBWAIndices"/> 
     <depends name="TgRH_HTS_Gubbels_RSRC"/> 
   </subgraph>
 

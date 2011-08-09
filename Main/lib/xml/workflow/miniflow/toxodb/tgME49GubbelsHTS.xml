@@ -7,7 +7,7 @@
   <constant name="samplesDataDir">$$dataDir$$/samples</constant>
   <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
   <constant name="genomicSeqsFile">$$parentDataDir$$/tgME49GenomicSeqs.fsa</constant>
-  <constant name="BowtieIndexDir">$$parentDataDir$$/tgME49GenomicSeqsIndexes</constant>
+  <constant name="BwaIndexDir">$$parentDataDir$$/tgME49GenomicSeqs_bwa_indices</constant>
 
 
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
@@ -24,22 +24,22 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <subgraph name="analyzeME49GubbelsHTS" xmlFile="analyzeNGSSNPSample.xml">
-      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">combined</paramValue>
-      <paramValue name="shortSeqsFile">$$parentDataDir$$/TgRH_HTS_Gubbels_RSRC/final/PARENT-302WB_combined.fq</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">TgRH_HTS_Gubbels_RSRC|@@TgRH_HTS_Gubbels_VER@@</paramValue>
-      <paramValue name="genomeExtDbSpec">T.gondii ME49 contigs from Genbank|@@Tgondii_ME49_contigs_from_Genbank_VER@@</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="pairedReadFilePath"></paramValue>
-      <paramValue name="reference_strain">ME49</paramValue>
-      <paramValue name="SNP_strain">RH</paramValue>
-      <paramValue name="BowtieIndexDir">$$BowtieIndexDir$$</paramValue>
-      <paramValue name="organismFullName">Toxoplasma gondii ME49</paramValue>
-      <paramValue name="bowtieParam">-a -S -n 3</paramValue>
-      <paramValue name="inputShortSeqsFileType">-q</paramValue>
-      <paramValue name="percentCutoff">50</paramValue>
-      <depends name="makeSamplesDataDir"/>
-    </subgraph>
+    <subgraph name="analyzeME49GubbelsHTS" xmlFile="analyzeNGSSNPByBWA.xml">
+       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+       <paramValue name="sampleName">combined</paramValue>
+       <paramValue name="shortSeqsFile">$$parentDataDir$$/TgRH_HTS_Gubbels_RSRC/final//PARENT-302WB_combined_mate1.fq</paramValue>
+       <paramValue name="rnaSeqExtDbRlsSpec">TgRH_HTS_Gubbels_RSRC|@@TgRH_HTS_Gubbels_VER@@</paramValue>
+       <paramValue name="genomeExtDbSpec">T.gondii ME49 contigs from Genbank|@@Tgondii_ME49_contigs_from_Genbank_VER@@</paramValue>
+       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+       <paramValue name="pairedReadFile">$$parentDataDir$$/TgRH_HTS_Gubbels_RSRC/final//PARENT-302WB_combined_mate2.fq</paramValue>
+       <paramValue name="reference_strain">ME49</paramValue>
+       <paramValue name="SNP_strain">RH</paramValue>
+       <paramValue name="BWAIndexDir">$$BwaIndexDir$$</paramValue>
+       <paramValue name="organismFullName">Toxoplasma gondii ME49</paramValue>
+       <paramValue name="percentCutoff">80</paramValue>
+       <paramValue name="minPercentCutoff">51</paramValue>
+       <depends name="makeSamplesDataDir"/>
+     </subgraph>
+
 
 </workflowGraph>
