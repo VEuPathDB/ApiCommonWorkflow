@@ -16,11 +16,12 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+    <step name="createBWAIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBWAIndexes">
       <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="outputIndexDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="outputIndexDir">$$dataDir$$/bwa_indices</paramValue>
       <depends name="makeDataDir"/>
-    </step>
+     </step>
+
 
     <subgraph name="Tb427_SNPs_George_Cross_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">Tb427_SNPs_George_Cross_RSRC</paramValue>
@@ -29,25 +30,23 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="analyzeCombinedSamples" xmlFile="analyzeNGSSNPSample.xml">
-      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">combined</paramValue>
-      <paramValue name="shortSeqsFile">$$dataDir$$/Tb427_SNPs_George_Cross_RSRC/final/Input_gDNA_Combined.fq</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">Tb427_SNPs_George_Cross_RSRC|@@Tb427_SNPs_George_Cross_VER@@</paramValue>
-      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="pairedReadOrQualFilePath"></paramValue>
-      <paramValue name="reference_strain">927</paramValue>
-      <paramValue name="SNP_strain">427</paramValue>
-      <paramValue name="BowtieIndexDir">$$dataDir$$/indexes</paramValue>
-      <paramValue name="organismFullName">Trypanosoma brucei TREU927</paramValue>
-      <paramValue name="bowtieParam">-a -S -n 3</paramValue>
-      <paramValue name="inputShortSeqsFileType">-q</paramValue>
-      <paramValue name="pairedReadOrQualFileType"></paramValue>
-      <paramValue name="percentCutoff">34</paramValue>
-      <depends name="makeSamplesDataDir"/>
-      <depends name="createBowtieIndices"/>
-      <depends name="Tb427_SNPs_George_Cross_RSRC"/>
-    </subgraph>
+    <subgraph name="analyzeCombinedSamples" xmlFile="analyzeNGSSNPByBWA.xml">
+       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+       <paramValue name="sampleName">combined</paramValue>
+       <paramValue name="shortSeqsFile">$$dataDir$$/Tb427_SNPs_George_Cross_RSRC/final/Input_gDNA_Combined.fq</paramValue>
+       <paramValue name="rnaSeqExtDbRlsSpec">Tb427_SNPs_George_Cross_RSRC|@@Tb427_SNPs_George_Cross_VER@@</paramValue>
+       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+       <paramValue name="pairedReadFile"></paramValue>
+       <paramValue name="reference_strain">927</paramValue>
+       <paramValue name="SNP_strain">427</paramValue>
+       <paramValue name="BWAIndexDir">$$dataDir$$/bwa_indices</paramValue>
+       <paramValue name="organismFullName">Trypanosoma brucei TREU927</paramValue>
+       <paramValue name="percentCutoff">40</paramValue>
+       <paramValue name="minPercentCutoff">34</paramValue>
+       <depends name="makeSamplesDataDir"/>
+       <depends name="createBWAIndices"/>
+       <depends name="Tb427_SNPs_George_Cross_RSRC"/>
+     </subgraph>
 
 </workflowGraph>
