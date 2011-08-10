@@ -1,0 +1,151 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="experimentName"/>
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="geneModelFileForSsa"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+    <param name="relativeDownloadSiteDir"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="experimentResourceName"/>
+    <param name="experimentResourceVersion"/>
+    <param name="isStrandSpecific"/>
+    <param name="hasVariableLengthReads"/>
+    <param name="hasOnlyOneSample"/>
+    <param name="limitNU"/>
+    <param name="numInsertions"/>
+
+    <constant name="dataDir">$$parentDataDir$$/$$experimentResourceName$$</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+    <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSeqCoverageAndIntensityDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="experiment_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$experimentResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="experiment_RSRC"/>
+    </step>
+
+    <subgraph name="analyzeSamples" xmlFile="$$projectName$$/$$organismAbbrev$$/$$experimentName$$/rnaSeqSamples.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="experimentResourceName">$$experimentResourceName$$</paramValue>
+      <paramValue name="experimentResourceVersion">$$experimentResourceVersion$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="limitNU">$$limitNU$$</paramValue>
+      <paramValue name="hasVariableLengthReads">$$hasVariableLengthReads$$</paramValue>
+      <paramValue name="isStrandSpecific">$$isStrandSpecific$$</paramValue>
+      <paramValue name="numInsertions">$$numInsertions$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="mergeMinIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles" excludeIf="$$hasOnlyOneSample$$">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">FIX_THIS</paramValue>
+      <depends name="makeSeqCoverageAndIntensityDataDir"/>
+      <depends name="analyzeSamples"/>
+    </step>
+
+    <step name="mergeMaxIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles" excludeIf="$$hasOnlyOneSample$$">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">FIX_THIS</paramValue>
+      <depends name="makeSeqCoverageAndIntensityDataDir"/>
+      <depends name="analyzeSamples"/>
+    </step>
+
+    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile" excludeIf="$$hasOnlyOneSample$$">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt.pct</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+    </step>
+
+    <step name="makeMaxPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile" excludeIf="$$hasOnlyOneSample$$">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt.pct</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+    </step>
+
+    <step name="makeDiffProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff" excludeIf="$$hasOnlyOneSample$$">
+      <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="minInputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>     
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/diffProfiles.txt</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
+    </step>
+
+    <step name="makeDiffPercentile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff" excludeIf="$$hasOnlyOneSample$$">
+      <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt.pct</paramValue>
+      <paramValue name="minInputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt.pct</paramValue>      
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/diffProfiles.txt.pct</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="makeMinPercentileProfile"/>
+      <depends name="makeMaxPercentileProfile"/>
+    </step>
+
+    <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" excludeIf="$$hasOnlyOneSample$$" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/$$experimentResourceName$$/final/config.txt</paramValue>
+      <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
+      <depends name="makeDiffProfile"/>
+      <depends name="makeDiffPercentile"/>
+    </step>
+
+    <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir" excludeIf="$$hasOnlyOneSample$$">
+      <paramValue name="copyFromDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="configFile">$$dataDir$$/$$experimentResourceName$$/final/final/config.txt</paramValue>
+      <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
+    </step>
+
+    <step name="compareTwoSamples" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CompareTwoSamples" excludeIf="$$hasOnlyOneSample$$">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="sampleNameList">FIX_THIS</paramValue>
+      <paramValue name="paired_end">no</paramValue>
+      <depends name="analyzeSamples"/>
+    </step>
+
+    <step name="insertAnalysisResultFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" excludeIf="$$hasOnlyOneSample$$" stepLoadTypes="plugin">
+      <paramValue name="analysisWorkingDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="configFile">$$dataDir$$/$$experimentResourceName$$/final/analysis_result_config.txt</paramValue>
+      <paramValue name="analysisResultView">DifferentialExpression</paramValue>
+      <paramValue name="naFeatureView">GeneFeature</paramValue>
+      <paramValue name="useSqlLdr">false</paramValue>
+      <paramValue name="profileSetNames">FIX_THIS</paramValue>
+      <depends name="compareTwoSamples"/>
+    </step>
+
+</workflowGraph>

@@ -1,0 +1,66 @@
+<workflowGraph name="">
+  <param name="parentDataDir"/>
+  <param name="geneModelFileForSsa"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="transcriptSeqsFileForSsa"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="experimentResourceName"/>
+  <param name="experimentResourceVersion"/>
+  <param name="isStrandSpecific"/>
+  <param name="hasVariableLengthReads"/>
+  <param name="limitNU"/>
+  <param name="numInsertions"/>
+
+  <constant name="dataDir">$$parentDataDir$$/$$experimentResourceName$$</constant>
+  <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+  <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="rnaSeqSample">
+    <prop name="sampleName"/>
+    <prop name="sampleOrder"/>
+
+    <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">${sampleName}</paramValue>
+      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/final/${sampleName}.fsq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/${sampleName}/${sampleName}.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/${sampleName}.int</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <paramValue name="SNPs">false</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
+      <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
+
+    </subgraph>
+
+    <step name="generateCountFile0.5Hours" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateCountFile">
+      <paramValue name="uniqueFile">$$samplesDataDir$$/${sampleName}/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$samplesDataDir$$/${sampleName}/RUM_NU.all.sorted</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/${sampleName}.count</paramValue>
+      <depends name="analyzeSample-${sampleName}"/>
+    </step>
+
+    <step name="generateMappingStatsFile0.5Hours" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile">
+      <paramValue name="uniqueFile">$$samplesDataDir$$/${sampleName}/RUM_Unique.all.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$samplesDataDir$$/${sampleName}/RUM_NU.all.sorted</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/${sampleName}.mappingStats</paramValue>
+      <depends name="analyzeSample-${sampleName}"/>
+    </step>
+
+  </datasetTemplate>
+
+</workflowGraph>
+

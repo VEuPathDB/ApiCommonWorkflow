@@ -1,0 +1,55 @@
+<workflowGraph name="">
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="parentDataDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="maxIntronSize"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="transcriptSeqsFileForSsa"/>
+  <param name="geneModelFileForSsa"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomicSeqsDir"/>
+  <param name="samHeaderFile"/>
+
+  <constant name="dataDir">$$parentDataDir$$/optionalAnalysis</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="rnaSeq">
+    <prop name="organismAbbrev"/>
+
+    <subgraph name="${organismAbbrev}_${name}_rnaSeq_experiment" xmlFile="rnaSeqExperiment.xml">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="experimentName">${name}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="geneModelFileForSsa">$$ssaGeneModelFileForSsa$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="experimentResourceName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
+      <paramValue name="experimentResourceVersion">${version}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="limitNU">${limitNU}$</paramValue>
+      <paramValue name="hasVariableLengthReads">${hasVariableLengthReads}</paramValue>
+      <paramValue name="hasOnlyOneSample">${hasOnlyOneSample}</paramValue>
+      <paramValue name="isStrandSpecific">${isStrandSpecific}</paramValue>
+      <paramValue name="numInsertions">${numInsertions}</paramValue>
+
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+</workflowGraph>
+
+
+

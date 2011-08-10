@@ -8,7 +8,8 @@
     <prop name="organismNameForFiles"/>
     <prop name="ncbiTaxonId"/>
     <prop name="speciesNcbiTaxonId"/>
-    <prop name="isReferenceGenome"/>
+    <prop name="isReferenceStrain"/>
+    <prop name="referenceStrainOrganismAbbrev"/>
     <prop name="isAnnotatedGenome"/>
     <prop name="isDraftGenome"/>
     <prop name="hasTemporaryNcbiTaxonId"/>
@@ -556,6 +557,34 @@
   </datasetClass>
 
   <!-- GOT TO HERE -->
+
+  <datasetClass class="rnaSeq">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="isPairedEnd"/>   <!-- is this always false? -->
+    <prop name="limitNU"/>
+    <prop name="hasVariableLengthReads"/>  <!-- is this always false? -->
+    <prop name="numInsertions"/>
+    <prop name="hasOnlyOneSample"/>
+    <prop name="isStrandSpecific"/>
+
+    <graphFile planFile="organismSpecificTopLevel.xml"/>
+
+    <resource resource="${organismAbbrev}_${name}_rnaSeq_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing">
+
+      <manualGet fileOrDir="global/empty"/>
+      <unpack>ln -s @@manualDeliv@@/${projectName}/${organismAbbrev}/rnaSeq/${name}/%RESOURCE_VERSION%/final/ @@dataDir@@/final</unpack>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final" />
+      <getAndUnpackOutput file="@@dataDir@@/final/config.txt"/>
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+
+  </datasetClass>
 
   <!-- Category: fasta sequence -->
 
