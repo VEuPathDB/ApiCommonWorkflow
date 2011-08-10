@@ -21,7 +21,7 @@ sub run {
     my $stepDir = $self->getStepDir();
 
     my $cmd = "runBWA_HTS.pl --mateA $workflowDataDir/$inputShortSeqsFile --fastaFile $workflowDataDir/$genomicSeqsFile --bwaIndex $workflowDataDir/$inputIndexesDir/genomicIndexes --strain $strain --outputPrefix $workflowDataDir/$outputFile --percentCutoff $percentCutoff --minPercentCutoff $minPercentCutoff --varscan $varScanJarFile";
-
+    $cmd .= " --mateB $workflowDataDir/$pairedReadFile" if ($pairedReadFile);
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile.*");
     } else {
