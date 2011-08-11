@@ -19,7 +19,8 @@ sub run {
 
   my $useSqlLdr =  $self->getParamValue('useSqlLdr');
 
-  my $profileSetNames =  $self->getParamValue('profileSetNames');
+#  my $profileSetNames =  $self->getParamValue('profileSetNames'); # see redmine issue 4257
+  my $profileSetNames =  "";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
       

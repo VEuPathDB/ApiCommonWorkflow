@@ -7,27 +7,26 @@ use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
 
 sub getDownloadFileCmd {
-    my ($self, $downloadFileName, $test) = @_;
+  my ($self, $downloadFileName, $test) = @_;
 
   # get parameters
   my $organismSource = $self->getParamValue('organismSource');
-  my $deprecated = ($self->getParamValue('isDeprecatedGenes') eq 'true') ? 1 :0;
+  my $deprecated = ($self->getBooleanParamValue('isDeprecatedGenes') eq 'true') ? 1 :0;
+  my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
+  my $soTermIdsOrNames = $self->getParamValue('soTermIdsOrNames');
 
   $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
   my (@dbnames,@dbvers);
-#  my ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeExtDbRlsSpec')) if $self->getParamValue('genomeExtDbRlsSpec');
-  my ($name,$ver) = "FIX THIS see redmine #4306";
+  my ($name,$ver) = $self->getExtDbInfo($test, $genomeExtDbRlsSpec) if $genomeExtDbRlsSpec;
   push (@dbnames,$name);
   push (@dbvers,$ver);
-  ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec')) if $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');
+#  ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec')) if $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');
   push (@dbnames,$name);
   push (@dbvers,$ver);
   my $names = join (",",map{"'$_'"} @dbnames);
   my $vers = join (",",map{"'$_'"} @dbvers);
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
-  my $descripFile= $self->getParamValue('descripFile');
-  my $descripString= $self->getParamValue('descripString');
+  my $soIds =  $self->getSoIds($test, $soTermIdsOrNames) if $soTermIdsOrNames;
 
   my $sql = <<"EOF";
      SELECT '$organismSource'

@@ -23,6 +23,8 @@ sub run {
 
   my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$extDbRlsSpec);
 
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
+
   my $workflowDataDir = $self->getWorkflowDataDir();
   
   my $algInvIds = $self->getAlgInvIds();
@@ -46,7 +48,7 @@ EOF
 
 
   if ($undo){
-      $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $gusHome/$isfMappingFileRelToGusHome --algInvocationId $algInvIds --workflowContext --commit");
+      $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $gusHome/$isfMappingFile --algInvocationId $algInvIds --workflowContext --commit");
   }else{
       if ($test) {
 	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
@@ -55,18 +57,6 @@ EOF
       }
   }
 
-}
-
-
-sub getParamsDeclaration {
-  return (
-	  'inputFile',
-	  'genomeExtDbRlsSpec',
-	  'substepClass',
-	  'defaultOrg',
-	  'isfMappingFileRelToGusHome',
-	  'soVersion',
-	 );
 }
 
 sub getConfigDeclaration {
