@@ -13,6 +13,7 @@
     <param name="experimentResourceVersion"/>
     <param name="isStrandSpecific"/>
     <param name="hasVariableLengthReads"/>
+    <param name="hasPairedEnds"/>
     <param name="hasOnlyOneSample"/>
     <param name="limitNU"/>
     <param name="numInsertions"/>
@@ -123,18 +124,18 @@
     </step>
 
     <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir" excludeIf="$$hasOnlyOneSample$$">
-      <paramValue name="copyFromDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
-      <paramValue name="configFile">$$dataDir$$/$$experimentResourceName$$/final/final/config.txt</paramValue>
-      <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
-      <depends name="mergeMinIntensityFiles"/>
-      <depends name="mergeMaxIntensityFiles"/>
+      <paramValue name="copyFromDir">$$sataDir$$/$$experimentResourceName$$/final</paramValue>
+      <paramValue name="configFile">$$parentDataDir$$/$$experimentResourceName$$/final/expression_profile_config.txt</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <depends name="doTranscriptExpression"/>
     </step>
 
     <step name="compareTwoSamples" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CompareTwoSamples" excludeIf="$$hasOnlyOneSample$$">
       <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
       <paramValue name="outputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
       <paramValue name="sampleNameList">FIX_THIS</paramValue>
-      <paramValue name="paired_end">no</paramValue>
+      <paramValue name="paired_end">$$hasPairedEnds$$</paramValue>
       <depends name="analyzeSamples"/>
     </step>
 
