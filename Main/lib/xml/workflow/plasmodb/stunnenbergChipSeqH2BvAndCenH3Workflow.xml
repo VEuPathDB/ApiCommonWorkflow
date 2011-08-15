@@ -41,10 +41,34 @@
     <paramValue name="parentDataDir"></paramValue>
   </subgraph>
 
-  <subgraph name="Su_Pfalciparum_Progeny_Haplotype_Profiles_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">Su_Pfalciparum_Progeny_Haplotype_Profiles_RSRC</paramValue>
+    <subgraph name="Pf_array_GPL7189_eQTL_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pf_array_GPL7189_eQTL_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">plasmodb/pfalciparum.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+    </subgraph>
+
+  <subgraph name="Ferdig_Pfalciparum_eQTL_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Ferdig_Pfalciparum_eQTL_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">plasmodb/pfalciparum.xml</paramValue>
     <paramValue name="parentDataDir"></paramValue>
+    <depends name="Pf_array_GPL7189_eQTL_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Pf_Ferdig_Pfalciparum_eQTL_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="experimentResourceName">Ferdig_Pfalciparum_eQTL_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Pf_array_GPL7189_eQTL_RSRC|@@Pf_array_GPL7189_eQTL_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Ferdig_Pfalciparum_eQTL_RSRC|@@Ferdig_Pfalciparum_eQTL_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">false</paramValue>
+    <paramValue name="probeGenesMappingFile">Pf_array_GPL7189_eQTL_RSRC/geneProbeMapping.txt</paramValue>
+    <paramValue name="profileSetNames"></paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">Ferdig_Pfalciparum_eQTL_RSRC</paramValue>
+    <depends name="Ferdig_Pfalciparum_eQTL_RSRC"/>
   </subgraph>
 
 </workflowGraph>
