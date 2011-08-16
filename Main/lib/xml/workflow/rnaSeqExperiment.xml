@@ -11,14 +11,14 @@
     <param name="genomeExtDbRlsSpec"/>
     <param name="experimentResourceName"/>
     <param name="experimentResourceVersion"/>
-    <param name="isStrandSpecific"/>
-    <param name="hasVariableLengthReads"/>
+    <param name="strandSpecific"/>
+    <param name="variableLengthReads"/>
     <param name="hasPairedEnds"/>
     <param name="hasOnlyOneSample"/>
     <param name="limitNU"/>
     <param name="numInsertions"/>
 
-    <constant name="dataDir">$$parentDataDir$$/$$experimentResourceName$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesDataDir">$$dataDir$$/samples</constant>
     <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
 
@@ -52,16 +52,18 @@
     <subgraph name="analyzeSamples" xmlFile="$$projectName$$/$$organismAbbrev$$/$$experimentName$$/rnaSeqSamples.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="samplesDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="experimentResourceName">$$experimentResourceName$$</paramValue>
       <paramValue name="experimentResourceVersion">$$experimentResourceVersion$$</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="limitNU">$$limitNU$$</paramValue>
-      <paramValue name="hasVariableLengthReads">$$hasVariableLengthReads$$</paramValue>
-      <paramValue name="isStrandSpecific">$$isStrandSpecific$$</paramValue>
+      <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="numInsertions">$$numInsertions$$</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
@@ -125,11 +127,12 @@
     </step>
 
     <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir" excludeIf="$$hasOnlyOneSample$$">
-      <paramValue name="copyFromDir">$$sataDir$$/$$experimentResourceName$$/final</paramValue>
+      <paramValue name="copyFromDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
       <paramValue name="configFile">$$parentDataDir$$/$$experimentResourceName$$/final/expression_profile_config.txt</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
-      <depends name="doTranscriptExpression"/>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
     </step>
 
     <step name="compareTwoSamples" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CompareTwoSamples" excludeIf="$$hasOnlyOneSample$$">
@@ -142,7 +145,7 @@
 
     <step name="insertAnalysisResultFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" excludeIf="$$hasOnlyOneSample$$" stepLoadTypes="plugin">
       <paramValue name="analysisWorkingDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
-      <paramValue name="configFile">$$dataDir$$/$$experimentResourceName$$/final/analysis_result_config.txt</paramValue>
+      <paramValue name="configFile">$$dataDir$$/$$experimentResourceName$$/final/expression_profile_config.txt</paramValue>
       <paramValue name="analysisResultView">DifferentialExpression</paramValue>
       <paramValue name="naFeatureView">GeneFeature</paramValue>
       <paramValue name="useSqlLdr">false</paramValue>

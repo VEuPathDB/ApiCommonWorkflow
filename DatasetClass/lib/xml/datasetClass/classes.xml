@@ -580,7 +580,7 @@
       <unpack>ln -s @@manualDeliveryDir@@/${projectName}/${organismAbbrev}/rnaSeq/${name}/%RESOURCE_VERSION%/final/ @@dataDir@@/final</unpack>
 
       <getAndUnpackOutput dir="@@dataDir@@/final" />
-      <getAndUnpackOutput file="@@dataDir@@/final/config.txt"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/expression_profile_config.txt"/>
 
       <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
     </resource>
@@ -588,10 +588,25 @@
   </datasetClass>
 
   <datasetClass class="rnaSeqSample">
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
     <prop name="sampleName"/>
     <prop name="sampleOrder"/>
  
     <graphFile planFile="rnaSeqSamples.xml"/>
+
+      <!-- we load a fake resource here so we can make a getAndUnpackOutput -->
+      <!-- to declare existence of sample file that is acquired by experiment, for test mode -->
+    <resource resource="${organismAbbrev}_${experimentName}_${sampleName}_rnaSeqSample_RSRC" version="dontcare"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing">
+
+      <manualGet fileOrDir="global/empty"/>
+
+      <getAndUnpackOutput dir="@@dataDir@@/../../${organismAbbrev}_${experimentName}_rnaSeq_RSRC/final/${sampleName}.txt" />
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+
 
   </datasetClass>
 

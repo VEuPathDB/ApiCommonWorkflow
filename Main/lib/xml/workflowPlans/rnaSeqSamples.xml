@@ -1,6 +1,8 @@
 <workflowGraph name="">
   <param name="parentDataDir"/>
   <param name="samplesDataDir"/>
+  <param name="organismAbbrev"/>
+  <param name="projectName"/>
   <param name="geneModelFileForSsa"/>
   <param name="genomicSeqsFileForSsa"/>
   <param name="transcriptSeqsFileForSsa"/>
@@ -8,30 +10,34 @@
   <param name="genomeExtDbRlsSpec"/>
   <param name="experimentResourceName"/>
   <param name="experimentResourceVersion"/>
-  <param name="isStrandSpecific"/>
-  <param name="hasVariableLengthReads"/>
+  <param name="strandSpecific"/>
+  <param name="variableLengthReads"/>
   <param name="limitNU"/>
   <param name="numInsertions"/>
 
   <constant name="experimentResourcesDataDir">$$parentDataDir$$/$$experimentResourceName$$</constant>
-  <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$</paramValue>
+    <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
   </step>
 
   <datasetTemplate class="rnaSeqSample">
+    <prop name="experimentName"/>
     <prop name="sampleName"/>
     <prop name="sampleOrder"/>
+
+    <subgraph name="${sampleName}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$organismAbbrev$$_${experimentName}_${sampleName}_rnaSeqSample_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+    </subgraph>
+
 
     <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
       <paramValue name="sampleName">${sampleName}</paramValue>
       <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
-      <paramValue name="shortSeqsFile">$$experimentResourcesDataDir$$/final/${sampleName}.fsq</paramValue>
-      <paramValue name="outputCoverageFile">$$samplesDataDir$$/${sampleName}/${sampleName}.cov</paramValue>
-      <paramValue name="outputIntensityFile">$$samplesDataDir$$/${sampleName}.int</paramValue>
-      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="shortSeqsFile">$$experimentResourcesDataDir$$/final/${sampleName}.txt</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
@@ -42,23 +48,10 @@
       <paramValue name="SNPs">false</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
-
+      <depends name="${sampleName}_RSRC"/>
     </subgraph>
-
-    <step name="generateCountFile-${sampleName}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateCountFile">
-      <paramValue name="uniqueFile">$$samplesDataDir$$/${sampleName}/RUM_Unique.all.sorted</paramValue>
-      <paramValue name="nonUniqueFile">$$samplesDataDir$$/${sampleName}/RUM_NU.all.sorted</paramValue>
-      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="outputFile">$$samplesDataDir$$/${sampleName}.count</paramValue>
-      <depends name="analyzeSample-${sampleName}"/>
-    </step>
-
-    <step name="generateMappingStatsFile-${sampleName}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile">
-      <paramValue name="uniqueFile">$$samplesDataDir$$/${sampleName}/RUM_Unique.all.sorted</paramValue>
-      <paramValue name="nonUniqueFile">$$samplesDataDir$$/${sampleName}/RUM_NU.all.sorted</paramValue>
-      <paramValue name="outputFile">$$samplesDataDir$$/${sampleName}.mappingStats</paramValue>
-      <depends name="analyzeSample-${sampleName}"/>
-    </step>
+  
+   <!-- might have to reformat the count and mapping stats files made by RUM -->
 
   </datasetTemplate>
 
