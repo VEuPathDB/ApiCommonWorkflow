@@ -17,7 +17,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "generateHtsCoverageSnps.pl --configFile $workflowDataDir/$configFile --referenceOrganism $referenceOrganism --output $workflowDataDir/$outputFile";
+  my $cmd = "generateHtsCoverageSnps.pl --configFile $workflowDataDir/$configFile --referenceOrganism '$referenceOrganism' --output $workflowDataDir/$outputFile";
   
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
