@@ -26,7 +26,7 @@
 
     <subgraph name="analyzeEhRahman" xmlFile="analyzeNGSSNPSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">EhRahman</paramValue>
+      <paramValue name="sampleName">Rahman</paramValue>
       <paramValue name="shortSeqsFile">$$parentDataDir$$/Eh_Weedall_SOLID_RSRC/final/Eh_Rahman.csfasta</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Eh_Weedall_SOLID_RSRC|@@Eh_Weedall_SOLID_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">E. histolytica Genome and Annotations from jCVI|@@Ehistolytica_genome_VER@@</paramValue>
@@ -45,7 +45,7 @@
 
     <subgraph name="analyzeEh2592100" xmlFile="analyzeNGSSNPSample.xml">
       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
-      <paramValue name="sampleName">Eh2592100</paramValue>
+      <paramValue name="sampleName">2592100</paramValue>
       <paramValue name="shortSeqsFile">$$parentDataDir$$/Eh_Weedall_SOLID_RSRC/final/Eh2592100_so0063_20090826_2_2_GW_F3.csfasta</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">Eh_Weedall_SOLID_RSRC|@@Eh_Weedall_SOLID_VER@@</paramValue>
       <paramValue name="genomeExtDbSpec">E. histolytica Genome and Annotations from jCVI|@@Ehistolytica_genome_VER@@</paramValue>
@@ -175,5 +175,37 @@
       <paramValue name="percentCutoff">34</paramValue>
       <depends name="makeSamplesDataDir"/>
     </subgraph>
+
+    <step name="makeCoverageSnpsConfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCoverageSnpsConfFile">
+      <paramValue name="samplesDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleNameList">2592100;HK9;IULA;MS27;MS84;PVB;PVF;Rahman</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/coverageSnps.conf</paramValue>
+      <depends name="analyzeEhRahman"/>
+      <depends name="analyzeEh2592100"/>
+      <depends name="analyzeEhHK9"/>
+      <depends name="analyzeEhIULA"/>
+      <depends name="analyzeEhMS27"/>
+      <depends name="analyzeEhMS84"/>
+      <depends name="analyzeEhPVB"/>
+      <depends name="analyzeEhPVF"/>
+    </step>
+
+    <step name="generateHtsCoverageSnpsGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateHtsCoverageSnpsGffFile">
+      <paramValue name="configFile">$$samplesDataDir$$/coverageSnps.conf</paramValue>
+      <paramValue name="referenceOrganism">Entamoeba histolytica HM-1:IMSS</paramValue>
+      <paramValue name="outputFile">$$samplesDataDir$$/coverageSnps.gff</paramValue>
+      <depends name="makeCoverageSnpsConfFile"/>
+    </step>
+
+    <step name="insertSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="plugin" >
+      <paramValue name="inputFile">$$samplesDataDir$$/coverageSnps.gff</paramValue>
+      <paramValue name="strain">HM-1:IMSS</paramValue>
+      <paramValue name="organismFullName">Entamoeba histolytica HM-1:IMSS</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">E. histolytica Genome and Annotations from jCVI|@@Ehistolytica_genome_VER@@</paramValue>
+      <paramValue name="transcriptExtDbRlsSpec">E. histolytica Genome and Annotations from jCVI|@@Ehistolytica_genome_VER@@</paramValue>
+      <paramValue name="snpExtDbRlsSpec">Eh_Weedall_SOLID_RSRC|@@Eh_Weedall_SOLID_VER@@</paramValue>
+      <paramValue name="NGS_SNP">true</paramValue>
+      <depends name="generateHtsCoverageSnpsGffFile"/>
+    </step>
 
 </workflowGraph>
