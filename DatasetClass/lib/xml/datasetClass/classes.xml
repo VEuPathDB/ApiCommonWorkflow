@@ -71,7 +71,7 @@
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_genbank/%RESOURCE_VERSION%/final/genome.gbf"/>
 
-      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --mapFile @gusHome@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.gbf --fileFormat genbank --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
+      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --mapFile @gusHome@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.gbf --fileFormat genbank --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out --validationLog @@dataDir@@/validation.log</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -93,7 +93,50 @@
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_genbank/%RESOURCE_VERSION%/final/genome.gbf"/>
 
-      <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @gusHome@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.gbf --fileFormat genbank --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
+      <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @gusHome@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.gbf --fileFormat genbank --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out --validationLog @@dataDir@@/validation.log</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="embl_primary_genome">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="soTerm"/>
+    <prop name="mapFile"/>
+
+    <graphFile planFile="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_primary_genome_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_embl/%RESOURCE_VERSION%/final/genome.embl"/>
+
+      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --mapFile @gusHome@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.embl --fileFormat embl --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out --validationLog @@dataDir@@/validation.log</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="embl_secondary_genome">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="soTerm"/>
+    <prop name="mapFile"/>
+
+    <graphFile planFile="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_embl/%RESOURCE_VERSION%/final/genome.embl"/>
+
+      <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @gusHome@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.embl --fileFormat embl --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out--validationLog @@dataDir@@/validation.log</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -140,6 +183,50 @@
       <manualGet fileOrDir="global/empty"/>
 
       <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/geneDBGFF2Gus.xml --inputFileOrDir @@dataDir@@/../${organismAbbrev}_primary_genome_RSRC/final/genome.gff --inputFileExtension "gff"  --fileFormat gff3 --soCvsVersion @@SO_VER@@ --defaultOrganism ${ncbiTaxonId}  --seqSoTerm '${soTerm}' --validationLog @@dataDir@@/validation.log --bioperlTreeOutput @@dataDir@@/bioperlTree.out --seqIdColumn source_id --naSequenceSubclass ExternalNASequence</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="primary_genome_fasta">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="table"/>  <!-- example:  DoTS::NASequence -->
+    <prop name="soTermName"/>
+    <prop name="regexSourceId"/>
+ 
+
+    <resource resource="${organismAbbrev}_primary_genome_RSRC" version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+	      internalDescrip=""
+     >
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTermName}_{name}_fasta/%RESOURCE_VERSION%/final/genome.fasta"/>
+
+      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTermName} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="secondary_genome_fasta">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="table"/>  <!-- example:  DoTS::NASequence -->
+    <prop name="soTermName"/>
+    <prop name="regexSourceId"/>
+ 
+
+    <resource resource="${organismAbbrev}_primary_genome_RSRC" version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+	      internalDescrip=""
+              parentResource="${organismAbbrev}_primary_genome_RSRC" >
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTermName}_{name}_fasta/%RESOURCE_VERSION%/final/genome.fasta"/>
+
+      <pluginArgs>--externalDatabaseName %PARENT_RESOURCE_NAME% --externalDatabaseVersion %PARENT_RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTermName} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -735,6 +822,26 @@
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/function/${name}_product_names/%RESOURCE_VERSION%/final/products.txt"/>
 
       <pluginArgs>--file @@dataDir@@/products.txt  --productDbName %PARENT_RESOURCE_NAME% --productDbVer %PARENT_RESOURCE_VERSION%</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <!-- Category: comments -->
+
+  <datasetClass class="comments">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+ 
+    <graphFile planFile="comments.xml"/>
+
+    <resource resource="${organismAbbrev}_function_${name}_comments_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertNaFeatCommentFromTabFile"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/comment/${name}_comments/%RESOURCE_VERSION%/final/comments.txt"/>
+
+      <pluginArgs>--file @@dataDir@@/comments.txt  --genomeDbName %PARENT_RESOURCE_NAME% --genomeDbVer %PARENT_RESOURCE_VERSION%</pluginArgs>
     </resource>
   </datasetClass>
 
