@@ -164,6 +164,28 @@
       <depends name="reformatNUPSCoverageFile"/>
     </step>
 
+    <step name="makeIntensityFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeIntensityFile" includeIf="$$makeIntensityFile$$">
+      <paramValue name="inputSortedFile">$$dataDir$$/master/mainresult/RUM_Unique.sorted,$$dataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
+      <paramValue name="inputGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputIntensityFile">$$outputIntensityFile$$</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="generateMappingStatsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile">
+      <paramValue name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
+      <paramValue name="outputFile">$$parentDataDir$$/$$sampleName$$.mappingStats</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="generateCountFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateCountFile">
+      <paramValue name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputFile">$$parentDataDir$$/$$sampleName$$.count</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
 </workflowGraph>
 
 

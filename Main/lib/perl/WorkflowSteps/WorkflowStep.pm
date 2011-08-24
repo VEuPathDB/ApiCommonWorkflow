@@ -33,7 +33,7 @@ sub getComputeClusterTaskLogsDir {
 }
 
 sub makeClusterControllerPropFile {
-  my ($self, $taskInputDir, $slotsPerNode, $taskSize, $taskClass) = @_;
+  my ($self, $taskInputDir, $slotsPerNode, $taskSize, $taskClass,$keepNode) = @_;
 
   my $nodePath = $self->getSharedConfig('nodePath');
   my $nodeClass = $self->getSharedConfig('nodeClass');
@@ -64,6 +64,7 @@ subtasksize=$taskSize
 taskclass=$taskClass
 nodeclass=$nodeClass
 restart=no
+keepNodeForPostProcessing=yes
 ";
     close(F);
 }
