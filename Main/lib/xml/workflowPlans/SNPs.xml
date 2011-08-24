@@ -10,10 +10,16 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+  <!-- only needed by HTS SNPs but we always create it to keep things simple -->
+  <step name="createBWAIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBWAIndexes">
+    <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="outputIndexDir">$$dataDir$$/bwa_index</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
   <datasetTemplate class="SNPs_GFF">
     <prop name="name"/>
     <prop name="version"/>
-    <prop name="strainAbbrev"/>
     <prop name="isNextGenSeq"/>
     <prop name="organismAbbrev"/>
 
@@ -25,10 +31,38 @@
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="isNextGenSeq">${isNextGenSeq}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="referenceStrainAbbrev">${strainAbbrev}</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="SNPs_HTS">
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="strainAbbrev"/>
+    <prop name="organismAbbrev"/>
+
+    <subgraph name="${organismAbbrev}_${name}_SNPs_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_${name}_SNPs_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="map_${organismAbbrev}_${name}_SNPs" xmlFile="mapHtsSnpsByBWA.xml">
+       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+       <paramValue name="name">combined</paramValue>
+       <paramValue name="shortSeqsFile">$$dataDir$$/${organismAbbrev}_${name}_SNPs_RSRC/final/SNPs.fq</paramValue>
+       <paramValue name="rnaSeqExtDbRlsSpec">${organismAbbrev}_${name}_SNPs_RSRC|${version}</paramValue>
+       <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
+       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+       <paramValue name="pairedReadFile">${organismAbbrev}_${name}_SNPs_RSRC/final/SNPs_mate.fq</paramValue>
+       <paramValue name="SNP_strain">${strainAbbrev}</paramValue>
+       <paramValue name="BWAIndexDir">$$BwaIndexDir$$</paramValue>
+       <paramValue name="isHaploidGenome">${isHaploidGenome}</paramValue>
+       <depends name="createBWAIndices"/>
+     </subgraph>
+
   </datasetTemplate>
 
 

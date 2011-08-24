@@ -11,11 +11,12 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
   my $gffFile = $self->getParamValue('gffFile');
   my $outputFile = $self->getParamValue('outputFile');
-  my $strain = $self->getParamValue('strain');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
+  my $strainAbbrev = $self->getOrganismInfo($test, $organismAbbrev)->getStrainAbbrev();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "snpFastaMUMmerGff --gff_file $workflowDataDir/$gffFile --mummer_file $workflowDataDir/$inputFile --output_file $workflowDataDir/$outputFile --reference_strain $strain --gff_format gff2 --skip_multiple_matches --error_log step.err";
+  my $cmd = "snpFastaMUMmerGff --gff_file $workflowDataDir/$gffFile --mummer_file $workflowDataDir/$inputFile --output_file $workflowDataDir/$outputFile --reference_strain $strainAbbrev --gff_format gff2 --skip_multiple_matches --error_log step.err";
 
 
   if ($undo) {
@@ -30,15 +31,6 @@ sub run {
       }
   }
 
-}
-
-sub getParamsDeclaration {
-  return (
-          'inputFile',
-          'gffFile',
-          'outputFile',
-          'strain',
-         );
 }
 
 sub getConfigDeclaration {

@@ -13,12 +13,12 @@ sub new {
 
     return $self if $test;
 
-    my $sql = "select nameForFiles
+    my $sql = "select name_for_filenames, abbrev_strain, abbrev_public
              from apidb.organism
              where organismAbbrev = $organismAbbrev";
 
     my $stmt = $workflowStep->runSql($sql);
-    my ($nameForFiles) = $stmt->fetchrow_array(); 
+    my ($nameForFiles, $abbrevStrain, $abbrevPublic) = $stmt->fetchrow_array(); 
 
     $sql = "select tn.name, t.ncbi_tax_id, o.taxon_id
              from sres.taxonname tn, sres.taxon t, apidb.organism o
@@ -51,6 +51,8 @@ sub new {
 
     $self->{fullName} = $fullName;
     $self->{nameForFiles} = $nameForFiles;
+    $self->{strainAbbrev} = $strainAbbrev;
+    $self->{publicAbbrev} = $publicAbbrev;
     $self->{ncbiTaxonId} = $ncbiTaxonId;
     $self->{taxonId} = $taxonId;
     $self->{speciesNcbiTaxonId} = $speciesNcbiTaxonId;
@@ -94,6 +96,18 @@ sub getSpeciesName {
     my ($self) = @_;
     return "$self->{organismAbbrev}_SPECIES_NAME" if $self->{test};
     return $self->{speciesName};
+}
+
+sub getStrainAbbrev {
+    my ($self) = @_;
+    return "$self->{organismAbbrev}_STRAIN_ABBREV" if $self->{test};
+    return $self->{strainAbbrev};
+}
+
+sub getPublicAbbrev {
+    my ($self) = @_;
+    return "$self->{organismAbbrev}_PUBLIC_ABBREV" if $self->{test};
+    return $self->{publicAbbrev};
 }
 
 sub getTaxonIdList {

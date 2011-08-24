@@ -429,6 +429,26 @@
     </resource>
   </datasetClass>
 
+  <datasetClass class="SNPs_HTS">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="strainAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+
+    <graphFile planFile="SNPs.xml"/>
+
+    <resource resource="${organismAbbrev}_SNP_${name}_hts_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+	      internalDescrip="">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/SNP/${name}/%RESOURCE_VERSION%/final/SNPs.gff"/>
+      <getAndUnpackOutput file="@@dataDir@@/SNPs.gff"/>
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+  </datasetClass>
+
   <!-- Category: microarrayPlatform -->
 
   <datasetClass class="microarrayPlatform">

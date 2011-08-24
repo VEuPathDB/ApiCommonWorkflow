@@ -10,7 +10,9 @@ sub run {
   # get parameters
   my $inputFile = $self->getParamValue('inputFile');
   my $outputFile = $self->getParamValue('outputFile');
-  my $strain = $self->getParamValue('strain');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+
+  my $strainAbbrev = $self->getOrganismInfo($test, $organismAbbrev)->getStrainAbbrev();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -27,14 +29,6 @@ sub run {
       }
   }
 
-}
-
-sub getParamsDeclaration {
-  return (
-          'inputFile',
-          'outputFile',
-          'strain',
-         );
 }
 
 sub getConfigDeclaration {
