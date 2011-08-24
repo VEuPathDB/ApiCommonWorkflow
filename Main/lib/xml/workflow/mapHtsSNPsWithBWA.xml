@@ -1,19 +1,16 @@
-<workflowGraph name="analyzeNGSSNPByBWA">
+<workflowGraph name="">
     <param name="parentDataDir"/>
-    <param name="sampleName"/>
+    <param name="name"/>
     <param name="shortSeqsFile"/>
     <param name="rnaSeqExtDbRlsSpec"/>
     <param name="genomeExtDbSpec"/>
     <param name="genomicSeqsFile"/>
     <param name="pairedReadFile"/>
-    <param name="reference_strain"/>
     <param name="SNP_strain"/>
     <param name="BWAIndexDir"/>
-    <param name="organismFullName"/>
-    <param name="percentCutoff"/>
-    <param name="minPercentCutoff"/>
+    <param name="isHaploid"/>
 
-    <constant name="dataDir">$$parentDataDir$$/analyze$$sampleName$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/$$name$$</constant>
 
     <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -26,15 +23,13 @@
       <paramValue name="outputFile">$$dataDir$$/SNPs</paramValue>
       <paramValue name="inputIndexesDir">$$BWAIndexDir$$</paramValue>
       <paramValue name="strain">$$SNP_strain$$</paramValue>
-      <paramValue name="percentCutoff">$$percentCutoff$$</paramValue>
-      <paramValue name="minPercentCutoff">$$minPercentCutoff$$</paramValue>
+      <paramValue name="isHaploid">$$isHaploid$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
     <step name="insertSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/SNPs.gff</paramValue>
-      <paramValue name="strain">$$reference_strain$$</paramValue>
-      <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbSpec$$</paramValue>
       <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbSpec$$</paramValue>
       <paramValue name="snpExtDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
