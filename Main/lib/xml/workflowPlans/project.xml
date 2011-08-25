@@ -41,6 +41,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <prop name="referenceStrainOrganismAbbrev"/>
     <prop name="isAnnotatedGenome"/>
     <prop name="isDraftGenome"/>
+    <prop name="isHaploid"/>
     <prop name="hasTemporaryNcbiTaxonId"/>
     <prop name="orthomclAbbrev"/>
     <prop name="strainAbbrev"/>
@@ -72,11 +73,11 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="common"/>      
     </step>
 
-  <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">${organismAbbrev}</paramValue>
-    <depends name="${organismAbbrev}_makeDataDir"/>
-    <dependsGlobal name="initClusterHomeDir"/>
-  </step>
+    <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">${organismAbbrev}</paramValue>
+      <depends name="${organismAbbrev}_makeDataDir"/>
+      <dependsGlobal name="initClusterHomeDir"/>
+    </step>
 
     <subgraph name="${organismAbbrev}_LoadGenome" xmlFile="loadGenome.xml">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
@@ -107,7 +108,6 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
       <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
       <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
-      <paramValue name="samHeaderFile">${organismAbbrev}/loadGenome/samHeader</paramValue>
       <depends name="${organismAbbrev}_makeDataDir"/>
       <dependsGlobal name="taxonomy_RSRC"/> 
       <dependsGlobal name="SO_RSRC"/>
@@ -165,7 +165,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="geneModelFileForSsa">${organismAbbrev}/loadGenome/geneModelForSsa.txt</paramValue>
       <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
       <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
-      <paramValue name="samHeaderFile">${organismAbbrev}/loadGenome/samHeader</paramValue>
+      <paramValue name="isHaploid">${isHaploid}</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
