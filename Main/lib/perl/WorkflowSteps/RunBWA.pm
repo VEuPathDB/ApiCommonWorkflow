@@ -11,11 +11,11 @@ sub run {
     my $genomicSeqsFile = $self->getParamValue('genomicSeqsFile');
     my $inputShortSeqsFile = $self->getParamValue('inputShortSeqsFile');
     my $pairedReadFile = $self->getParamValue('pairedReadFile');
-    my $hasPairedReads = $self->getParamValue('hasPairedReads');
+    my $hasPairedReads = $self->getBooleanParamValue('hasPairedReads');
     my $outputFile = $self->getParamValue('outputFile');
     my $inputIndexesDir = $self->getParamValue('inputIndexesDir');
     my $strain = $self->getParamValue('strain');
-    my $isHaploid = $self->getParamValue('isHaploid');
+    my $isHaploid = $self->getBooleanParamValue('isHaploid');
     my $varScanJarFile = $self->getConfig('varScanJarFile');
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
