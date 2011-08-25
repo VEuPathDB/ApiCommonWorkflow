@@ -40,8 +40,9 @@
   <datasetTemplate class="SNPs_HTS">
     <prop name="name"/>
     <prop name="version"/>
-    <prop name="strainAbbrev"/>
+    <prop name="snpStrainAbbrev"/>
     <prop name="organismAbbrev"/>
+    <prop name="hasPairedReads"/>
 
     <subgraph name="${organismAbbrev}_${name}_SNPs_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">${organismAbbrev}_${name}_SNPs_RSRC</paramValue>
@@ -53,12 +54,13 @@
     <subgraph name="map_${organismAbbrev}_${name}_SNPs" xmlFile="mapHtsSnpsByBWA.xml">
        <paramValue name="parentDataDir">$$dataDir$$</paramValue>
        <paramValue name="name">combined</paramValue>
-       <paramValue name="shortSeqsFile">$$dataDir$$/${organismAbbrev}_${name}_SNPs_RSRC/final/SNPs.fq</paramValue>
+       <paramValue name="shortSeqsFile">$$dataDir$$/${organismAbbrev}_${name}_SNPs_RSRC/final/reads.txt</paramValue>
        <paramValue name="rnaSeqExtDbRlsSpec">${organismAbbrev}_${name}_SNPs_RSRC|${version}</paramValue>
        <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
        <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-       <paramValue name="pairedReadFile">${organismAbbrev}_${name}_SNPs_RSRC/final/SNPs_mate.fq</paramValue>
-       <paramValue name="SNP_strain">${strainAbbrev}</paramValue>
+       <paramValue name="hasPairedReads">$$hasPairedReads$$</paramValue>
+       <paramValue name="pairedReadFile">${organismAbbrev}_${name}_SNPs_RSRC/final/readsPaired.txt</paramValue>
+       <paramValue name="SNP_strain">${snpStrainAbbrev}</paramValue>
        <paramValue name="BWAIndexDir">$$dataDir$$/bwa_index</paramValue>
        <paramValue name="isHaploid">${isHaploid}</paramValue>
        <depends name="createBWAIndices"/>

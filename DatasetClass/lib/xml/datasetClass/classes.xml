@@ -519,25 +519,22 @@
   <datasetClass class="SNPs_HTS">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
-    <prop name="strainAbbrev"/>
+    <prop name="snpStrainAbbrev"/>
     <prop name="name"/>
     <prop name="version"/>
 
     <graphFile planFile="SNPs.xml"/>
 
-    <resource resource="${organismAbbrev}_SNP_${name}_hts_RSRC" version="${version}"
+    <resource resource="${organismAbbrev}_SNP_${name}_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
 	      internalDescrip="">
 
       <manualGet fileOrDir="global/empty"/>
-      <unpack>ln -s @@manualDeliveryDir@@/${projectName}/${organismAbbrev}/GenomicHTS/${name}/%RESOURCE_VERSION%/final/ @@dataDir@@/final</unpack>
+      <unpack>ln -s @@manualDeliveryDir@@/${projectName}/${organismAbbrev}/SNPs/${name}/%RESOURCE_VERSION%/final/ @@dataDir@@/final</unpack>
 
       <getAndUnpackOutput dir="@@dataDir@@/final" />
-      <getAndUnpackOutput file="@@dataDir@@/final/expression_profile_config.txt"/>
-
-
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/SNP/${name}/%RESOURCE_VERSION%/final/SNPs.gff"/>
-      <getAndUnpackOutput file="@@dataDir@@/SNPs.gff"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/reads.txt"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/readsPaired.txt"/>
 
       <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
     </resource>
