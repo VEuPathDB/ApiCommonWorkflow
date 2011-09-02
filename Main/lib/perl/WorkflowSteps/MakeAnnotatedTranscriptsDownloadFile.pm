@@ -11,7 +11,7 @@ sub getDownloadFileCmd {
 
   # get parameters
   my $organismSource = $self->getParamValue('organismSource');
-  my $deprecated = ($self->getBooleanParamValue('isDeprecatedGenes') eq 'true') ? 1 :0;
+  my $deprecated = $self->getBooleanParamValue('isDeprecatedGenes');
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $soTermIdsOrNames = $self->getParamValue('soTermIdsOrNames');
 

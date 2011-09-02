@@ -32,7 +32,7 @@ sub run {
     my $allowed = join(", ", keys(%fileTypes));
     $self->error("Invalid seqsFileType '$seqsFileType'.  Allowed types are: $allowed") unless $fileTypeArg;
 
-    my $colorSpaceArg = $isColorSpace eq 'true'? ' -C' : '';
+    my $colorSpaceArg = $isColorSpace? ' -C' : '';
 
     my $fwdSeqsArg = $isPairedEnds? '-1 ' : '';
     my $fwdQualsArg = $isPairedEnds? '--Q1 ' : '-Q';

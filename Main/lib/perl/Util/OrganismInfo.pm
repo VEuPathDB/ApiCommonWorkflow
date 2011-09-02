@@ -18,7 +18,7 @@ sub new {
              where organismAbbrev = $organismAbbrev";
 
     my $stmt = $workflowStep->runSql($sql);
-    my ($nameForFiles, $abbrevStrain, $abbrevPublic) = $stmt->fetchrow_array(); 
+    my ($nameForFiles, $strainAbbrev, $publicAbbrev) = $stmt->fetchrow_array(); 
 
     $sql = "select tn.name, t.ncbi_tax_id, o.taxon_id
              from sres.taxonname tn, sres.taxon t, apidb.organism o

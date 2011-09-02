@@ -17,6 +17,7 @@
     <prop name="strainAbbrev"/>
     <prop name="hasPlastidGenomeSequence"/>
     <prop name="hasMitochondrialGenomeSequence"/>
+    <prop name="isHaploid"/>
     <prop name="hasDeprecatedGenes"/>
     <prop name="genomeSource"/>
     <prop name="genomeVersion"/>
@@ -186,47 +187,49 @@
     </resource>
   </datasetClass>
 
-  <datasetClass class="primary_genome_fasta">
+  <datasetClass class="fasta_primary_genome">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
     <prop name="name"/>
     <prop name="version"/>
     <prop name="table"/>  <!-- example:  DoTS::NASequence -->
-    <prop name="soTermName"/>
+    <prop name="soTerm"/>
     <prop name="regexSourceId"/>
  
+    <graphFile planFile="genomeSequenceAndFeatures.xml"/>
 
     <resource resource="${organismAbbrev}_primary_genome_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
 	      internalDescrip=""
      >
 
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTermName}_{name}_fasta/%RESOURCE_VERSION%/final/genome.fasta"/>
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_fasta/%RESOURCE_VERSION%/final/genome.fasta"/>
 
-      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTermName} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
+      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTerm} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
     </resource>
   </datasetClass>
 
-  <datasetClass class="secondary_genome_fasta">
+  <datasetClass class="fasta_secondary_genome">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
     <prop name="name"/>
     <prop name="version"/>
     <prop name="table"/>  <!-- example:  DoTS::NASequence -->
-    <prop name="soTermName"/>
+    <prop name="soTerm"/>
     <prop name="regexSourceId"/>
  
+    <graphFile planFile="genomeSequenceAndFeatures.xml"/>
 
-    <resource resource="${organismAbbrev}_primary_genome_RSRC" version="${version}"
+    <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
 	      internalDescrip=""
               parentResource="${organismAbbrev}_primary_genome_RSRC" >
 
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTermName}_{name}_fasta/%RESOURCE_VERSION%/final/genome.fasta"/>
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_fasta/%RESOURCE_VERSION%/final/genome.fasta"/>
 
-      <pluginArgs>--externalDatabaseName %PARENT_RESOURCE_NAME% --externalDatabaseVersion %PARENT_RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTermName} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
+      <pluginArgs>--externalDatabaseName %PARENT_RESOURCE_NAME% --externalDatabaseVersion %PARENT_RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTerm} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -626,6 +629,7 @@
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/microarrayExpression/${experimentName}/%RESOURCE_VERSION%/final"/>
 
       <getAndUnpackOutput dir="@@dataDir@@/final"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/analysis_result_config.txt"/>
       <getAndUnpackOutput file="@@dataDir@@/final/expression_profile_config.txt"/>
       <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
 
@@ -651,7 +655,8 @@
 	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
 	      internalDescrip="">
 
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/chipChip/${experimentName}/%RESOURCE_VERSION%/final"/>
+     <manualGet fileOrDir="${projectName}/${organismAbbrev}/chipChip/${experimentName}/%RESOURCE_VERSION%/final"/>
+
 
       <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
 
@@ -661,10 +666,27 @@
 
 
   <datasetClass class="chipChipSample">
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
     <prop name="sampleName"/>
     <prop name="peakName"/>
  
     <graphFile planFile="chipChipSamples.xml"/>
+
+      <!-- we load a fake resource here so we can make a getAndUnpackOutput -->
+      <!-- to declare existence of sample file that is acquired by experiment, for test mode -->
+    <resource resource="${organismAbbrev}_${experimentName}_${sampleName}_rnaSeqSample_RSRC" version="dontcare"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing">
+
+      <manualGet fileOrDir="global/empty"/>
+
+      <getAndUnpackOutput dir="@@dataDir@@/../../${organismAbbrev}_chipChipExper_${experimentName}_RSRC/final/${sampleName}_smoothed_config.txt" />
+      <getAndUnpackOutput dir="@@dataDir@@/../../${organismAbbrev}_chipChipExper_${experimentName}_RSRC/final/${sampleName}_peak_config.txt" />
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+
+
 
   </datasetClass>
 

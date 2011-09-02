@@ -16,7 +16,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "snpFastaMUMmerGff --gff_file $workflowDataDir/$inputFile --reference_strain $strain --output_file $workflowDataDir/$outputFile --make_fasta_file_only --gff_format gff2";
+  my $cmd = "snpFastaMUMmerGff --gff_file $workflowDataDir/$inputFile --reference_strain $strainAbbrev --output_file $workflowDataDir/$outputFile --make_fasta_file_only --gff_format gff2";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/*${outputFile}");

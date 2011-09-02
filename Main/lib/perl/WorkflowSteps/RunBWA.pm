@@ -20,8 +20,8 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $minPercentCutoff = $isHaploid? 51 : 34
-    my $percentCutoff = $isHaploid? 80 : 40
+    my $minPercentCutoff = $isHaploid? 51 : 34;
+    my $percentCutoff = $isHaploid? 80 : 40;
 
     my $cmd = "runBWA_HTS.pl --mateA $workflowDataDir/$inputShortSeqsFile --fastaFile $workflowDataDir/$genomicSeqsFile --bwaIndex $workflowDataDir/$inputIndexesDir/genomicIndexes --strain $strain --outputPrefix $workflowDataDir/$outputFile --percentCutoff $percentCutoff --minPercentCutoff $minPercentCutoff --varscan $varScanJarFile";
     $cmd .= " --mateB $workflowDataDir/$pairedReadFile" if ($hasPairedReads);

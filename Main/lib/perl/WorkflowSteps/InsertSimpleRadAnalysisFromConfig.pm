@@ -30,6 +30,7 @@ sub run {
 
   if ($test) {
     $self->testInputFile('analysisWorkingDir', "$workflowDataDir/$analysisWorkingDir");
+    $self->testInputFile('configFile', "$workflowDataDir/$configFile");
   }
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertAnalysisResult", $args);
