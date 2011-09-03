@@ -31,7 +31,7 @@ sub run {
 	if ($test) {
 	    $self->testInputFile('inputCoverageFile', "$workflowDataDir/$inputIndexesDir");
 	    $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$inputShortSeqsFile");
-	    $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$pairedReadFile") if ($hasPairedReads);
+	    $self->testInputFile('pairedReadsFile', "$workflowDataDir/$pairedReadFile") if ($hasPairedReads);
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile.gff");
 	}
 	$self->runCmd($test, $cmd);

@@ -14,11 +14,13 @@ sub run {
 
   my $outputFile =  $self->getParamValue('outputFile');
 
-  my $peakName =  $self->getParamValue('peakName');
+  my $sampleName =  $self->getParamValue('sampleName');
+
+  my $experimentName =  $self->getParamValue('experimentName');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "reformatChIP-ChipPeakScoreFile  --inputFile '$workflowDataDir/$inputFile' --outputFile '$workflowDataDir/$outputFile' --sampleName '$peakName'";
+  my $cmd = "reformatChIP-ChipPeakScoreFile  --inputFile '$workflowDataDir/$inputFile' --outputFile '$workflowDataDir/$outputFile' --sampleName $sampleName --experimentName $experimentName";
     
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");

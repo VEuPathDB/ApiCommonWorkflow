@@ -5,7 +5,7 @@
     <param name="genomeExtDbRlsSpec"/>
     <param name="inputSampleFile"/>
     <param name="sampleName"/>
-    <param name="peakName"/>
+    <param name="experimentName"/>
     <param name="peakFinderArgs"/>
     <param name="loadPeakCalls"/>
     <param name="organismAbbrev"/>
@@ -68,7 +68,8 @@
     <step name="generateChIPChipPeakFeatureGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateChIPChipPeakFeatureGff" includeIf="$$loadPeakCalls$$">
       <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.txt</paramValue>
       <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.gff</paramValue>
-      <paramValue name="peakName">$$$peakName$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="experimentName">$$experimentName$$</paramValue>
       <depends name="runChIPChipPeakFinderAndSmoother"/>
     </step>
 
@@ -87,7 +88,8 @@
     <step name="reformatChIPChipPeakScoreFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipPeakScoreFile" includeIf="$$loadPeakCalls$$">
       <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.txt</paramValue>
       <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/peak_scores.txt</paramValue>
-      <paramValue name="peakName">$$peakName$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="experimentName">$$experimentName$$</paramValue>
       <depends name="runChIPChipPeakFinderAndSmoother"/>
     </step>
 

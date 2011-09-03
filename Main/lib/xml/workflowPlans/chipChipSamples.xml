@@ -1,6 +1,7 @@
 <workflowGraph name="">
   <param name="parentDataDir"/>
   <param name="organismAbbrev"/>
+  <param name="projectName"/>
   <param name="experimentResourceName"/>
   <param name="chipProbeExtDbRlsSpec"/>
   <param name="genomeExtDbRlsSpec"/>
@@ -18,7 +19,13 @@
 
   <datasetTemplate class="chipChipSample">
     <prop name="sampleName"/>
-    <prop name="peakName"/>
+    <prop name="experimentName"/>
+
+    <subgraph name="${sampleName}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$organismAbbrev$$_${experimentName}_${sampleName}_chipChipSample_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
 
     <subgraph name="${sampleName}" xmlFile="analyzeChipChipSample.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -26,7 +33,7 @@
       <paramValue name="chipProbeExtDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
       <paramValue name="inputSampleFile">${sampleName}.norm</paramValue>
       <paramValue name="sampleName">${sampleName}</paramValue>
-      <paramValue name="peakName">${peakName}</paramValue>
+      <paramValue name="experimentName">${experimentName}</paramValue>
       <paramValue name="peakFinderArgs">$$peakFinderArgs$$</paramValue>
       <paramValue name="loadPeakCalls">$$loadPeakCalls$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
