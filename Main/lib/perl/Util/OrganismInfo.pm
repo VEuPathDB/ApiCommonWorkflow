@@ -92,6 +92,12 @@ sub getTaxonId {
     return $self->{taxonId};
 }
 
+sub getSpeciesTaxonId {
+    my ($self) = @_;
+    return "$self->{organismAbbrev}_SPECIES_TAXON_ID" if $self->{test};
+    return $self->{speciesTaxonId};
+}
+
 sub getSpeciesName {
     my ($self) = @_;
     return "$self->{organismAbbrev}_SPECIES_NAME" if $self->{test};

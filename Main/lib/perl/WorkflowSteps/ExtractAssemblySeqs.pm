@@ -8,11 +8,11 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $parentNcbiTaxonId = $self->getParamValue('parentNcbiTaxonId');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $useTaxonHierarchy = $self->getParamValue('useTaxonHierarchy');
   my $outputFile = $self->getParamValue('outputFile');
 
-  my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$parentNcbiTaxonId);
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
   my $taxonIdList = $self->getTaxonIdList($test, $taxonId, $useTaxonHierarchy);
 
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -31,13 +31,6 @@ sub run {
 
 }
 
-sub getParamsDeclaration {
-  return (
-	  'parentNcbiTaxonId',
-	  'useTaxonHierarchy',
-	  'outputFile',
-	 );
-}
 
 sub getConfigDeclaration {
   return (

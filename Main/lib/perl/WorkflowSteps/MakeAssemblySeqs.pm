@@ -8,7 +8,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $parentNcbiTaxonId = $self->getParamValue('parentNcbiTaxonId');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $useTaxonHierarchy = $self->getParamValue('useTaxonHierarchy');
 #  my $predictedTranscriptsExtDbRlsSpec = $self->getParamValue('predictedTranscriptsExtDbRlsSpec');
   my $predictedTranscriptsExtDbRlsSpec = "FIX THIS see redmine #4306"
@@ -16,7 +16,7 @@ sub run {
   my $vectorFile = $self->getConfig('vectorFile');
   my $phrapDir = $self->getConfig('phrapDir');
 
-  my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$parentNcbiTaxonId);
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
   my $taxonIdList = $self->getTaxonIdList($test, $taxonId, $useTaxonHierarchy);
 
   my $args = "--taxon_id_list '$taxonIdList' --repeatFile $vectorFile --phrapDir $phrapDir";
@@ -45,13 +45,6 @@ sub run {
 
   $self->runPlugin($test, $undo, "DoTS::DotsBuild::Plugin::MakeAssemblySequences", $args);
 
-}
-
-sub getParamsDeclaration {
-  return (
-	  'parentNcbiTaxonId',
-	  'useTaxonHierarchy',
-	 );
 }
 
 sub getConfigDeclaration {

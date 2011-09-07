@@ -5,14 +5,11 @@
   <param name="organismAbbrev"/>
   <param name="ncbiTaxonId"/>
   <param name="genomeExtDbRlsSpec"/>
-  <param name="usePredictedTranscripts"/>
   <param name="maxIntronSize"/>
-  <param name="distanceBetweenStartsForAlignmentsInSameCluster"/>
   <param name="taxonHierarchyForBlastxFilter"/>
   <param name="genomeSize"/>
   <param name="runtRNAScan"/>
   <param name="isReferenceStrain"/>
-  <param name="mapAssemblySeqsAndAssemblies"/>
   <param name="organismResourceXmlFile"/>
   <param name="genomicSeqsFile"/>
   <param name="genomicSeqsDir"/>
@@ -175,19 +172,17 @@
       <depends name="runLowComplexityFilter"/>
     </step>
 
-  <subgraph name="makeAndMapTranscriptAssemblies" xmlFile="makeAndMapTranscriptAssemblies.xml" includeIf="$$mapAssemblySeqsAndAssemblies$$">
+  <subgraph name="mapTranscripts" xmlFile="mapTranscriptsToGenome.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-    <paramValue name="parentNcbiTaxonId">DONT_WANT_TO_DO_THIS</paramValue>
     <paramValue name="usePredictedTranscripts">$$usePredictedTranscripts$$</paramValue>
     <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">$$distanceBetweenStartsForAlignmentsInSameCluster$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="isReferenceStrain">$$isReferenceStrain$$</paramValue>
     <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
     <depends name="mirrorToCluster"/>
-    <depends name="ESTResources"/>
+    <dependsExternal name="$$organismAbbrev$$_dbEST_RSRC"/>
   </subgraph>
 
 </workflowGraph>
