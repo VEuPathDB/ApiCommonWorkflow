@@ -4,6 +4,7 @@
   <param name="resourceName"/>
   <param name="resourceVersion"/>
   <param name="maxIntronSize"/>
+  <param name="referenceStrainOrganismAbbrev"/>
   <param name="organismAbbrev"/>
   <param name="genomicSeqsFile"/>
   <param name="genomeExtDbRlsSpec"/>
@@ -14,13 +15,6 @@
   <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
-
-  <subgraph name="loadClonedInsertEndsResource" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$resourceName$$</paramValue>
-    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
 
   <step name="extractClonedInsertEndsSeqs"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
@@ -39,7 +33,7 @@
       <paramValue name="dangleMax">30</paramValue>
       <paramValue name="trimDangling">y</paramValue>
       <paramValue name="options"></paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="organismAbbrev">$$referenceStrainOrganismAbbrev$$</paramValue>
       <depends name="extractClonedInsertEndsSeqs"/>
     </step>
 
@@ -68,7 +62,6 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="targetSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="queryOrganismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="queryFile">$$dataDir$$/master/mainresult/blocked.seq</paramValue>
       <paramValue name="queryTable">ExternalNASequence</paramValue>
       <paramValue name="queryExtDbRlsSpec">$$resourceName$$|$$resourceVersion$$</paramValue>

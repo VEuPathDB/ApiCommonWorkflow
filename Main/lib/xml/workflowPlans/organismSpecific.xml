@@ -73,17 +73,31 @@
     <prop name="version"/>
     <prop name="organismAbbrev"/>
 
+    <subgraph name="loadClonedInsertEndsResource" xmlFile="loadResource.xml" externalName="${organismAbbrev}_${name}_clonedInsertEnds">
+      <paramValue name="resourceName">${organismAbbrev}_${name}_clonedInsertEnds_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="clonedInsertEndsFromReferenceStrain">
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="referenceStrainOrganismAbbrev"/>
+
     <subgraph name="${name}_clonedInsertEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeClonedInsertEnds.xml">
       <paramValue name="dataDir">$$dataDir$$/${name}_clonedInsertEnds</paramValue>
-      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="resourceName">${organismAbbrev}_${name}_clonedInsertEnds_RSRC</paramValue>
+      <paramValue name="resourceName">${referenceStrainOrganismAbbrev}_${name}_clonedInsertEnds_RSRC</paramValue>
       <paramValue name="resourceVersion">${version}</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="referenceStrainOrganismAbbrev">${referenceStrainOrganismAbbrev}</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="mirrorToCluster"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${name}_clonedInsertEnds"/>
     </subgraph>
   </datasetTemplate>
 
