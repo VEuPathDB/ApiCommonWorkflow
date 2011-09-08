@@ -8,13 +8,23 @@
   <param name="isReferenceStrain"/>
   <param name="genomicSeqsDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/assemblies</constant>
+  <constant name="dataDir">$$parentDataDir$$/mapTranscriptsToGenome</constant>
   <constant name="assemblySeqsDataDir">$$dataDir$$/makeAssemblySeqs</constant>
-  <constant name="assembliesDataDir">$$dataDir$$/makeAssemblies</constant>
 
-  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$</paramValue>
-  </step>
+
+  <!-- NOTE:
+       this file was made from a static file into a plan file so we can have
+       this one template.  Its purpose is to allow us to use an externalDepends
+       which only work inside a plan file.  this is not actually a dataset
+  -->
+
+  <datasetTemplate class="mappedTranscripts">
+    <prop name="referenceStrainOrganismAbbrev"/>
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <dependsExternal name="${referenceStrainOrganismAbbrev}_dbEST_RSRC"/>
+    </step>
+  </datasetTemplate>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
