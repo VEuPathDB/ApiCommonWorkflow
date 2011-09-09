@@ -23,14 +23,26 @@
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
   </step>
 
-  <datasetTemplate class="isolates_genbank">
+  <datasetTemplate class="isolatesGenbank">
     <prop name="organismAbbrev"/>
 
-    <subgraph name="${organismAbbrev}_isolates_genbank_RSRC" xmlFile="mapIsolatesToGenome.xml">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-      <paramValue name="isolatesExtDbRlsSpec">${organismAbbrev}_isolates_genbank_RSRC|TODAY</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <subgraph name="${organismAbbrev}_isolates_genbank" xmlFile="loadResource.xml"  externalName="${organismAbbrev}_isolates_genbank">
+      <paramValue name="resourceName">${organismAbbrev}_isolates_genbank_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="isolateSequencesFasta">
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+
+    <subgraph name="${organismAbbrev}_isolates_${name}" xmlFile="loadResource.xml" externalName="${organismAbbrev}_isolates_${name}">
+      <paramValue name="resourceName">${organismAbbrev}_isolates_${name}_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
   </datasetTemplate>
@@ -40,19 +52,25 @@
     <prop name="name"/>
     <prop name="version"/>
 
-    <subgraph name="${organismAbbrev}_isolates_${name}_sequences_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">${organismAbbrev}_isolates_${name}_sequences_RSRC</paramValue>
+    <subgraph name="${organismAbbrev}_isolates_${name}_features" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_isolates_${name}_features_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="${organismAbbrev}_isolates_${name}"/>
     </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="isolatesFromReferenceStrain">
+    <prop name="referenceStrainOrganismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
 
     <subgraph name="map_${name}_IsolatesToGenome" xmlFile="mapIsolatesToGenome.xml">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
-      <paramValue name="isolatesExtDbRlsSpec">${organismAbbrev}_isolate_${name}_features_RSRC|${version}</paramValue>
+      <paramValue name="isolatesExtDbRlsSpec">${referenceStrainOrganismAbbrev}_isolates_${name}_RSRC|${version}</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="${organismAbbrev}_isolates_${name}_sequences_RSRC"/>
+      <dependsExternal name="${referenceStrainOrganismAbbrev}_isolates_${name}"/>
     </subgraph>
   </datasetTemplate>
 
@@ -73,7 +91,7 @@
     <prop name="version"/>
     <prop name="organismAbbrev"/>
 
-    <subgraph name="loadClonedInsertEndsResource" xmlFile="loadResource.xml" externalName="${organismAbbrev}_${name}_clonedInsertEnds">
+    <subgraph name="${organismAbbrev}_${name}_clonedInsertEnds" xmlFile="loadResource.xml" externalName="${organismAbbrev}_${name}_clonedInsertEnds">
       <paramValue name="resourceName">${organismAbbrev}_${name}_clonedInsertEnds_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -86,7 +104,7 @@
     <prop name="version"/>
     <prop name="referenceStrainOrganismAbbrev"/>
 
-    <subgraph name="${name}_clonedInsertEnds_loadAndAnalyze" xmlFile="loadAndAnalyzeClonedInsertEnds.xml">
+    <subgraph name="${name}_mapClonedInsertEnds" xmlFile="mapClonedInsertEnds.xml">
       <paramValue name="dataDir">$$dataDir$$/${name}_clonedInsertEnds</paramValue>
       <paramValue name="resourceName">${referenceStrainOrganismAbbrev}_${name}_clonedInsertEnds_RSRC</paramValue>
       <paramValue name="resourceVersion">${version}</paramValue>
@@ -97,7 +115,7 @@
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="mirrorToCluster"/>
-      <depends name="${referenceStrainOrganismAbbrev}_${name}_clonedInsertEnds"/>
+      <dependsExternal name="${referenceStrainOrganismAbbrev}_${name}_clonedInsertEnds"/>
     </subgraph>
   </datasetTemplate>
 

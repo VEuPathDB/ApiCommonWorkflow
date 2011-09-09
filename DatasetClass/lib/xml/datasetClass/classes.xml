@@ -278,6 +278,10 @@
 
   <!-- Category: ESTs -->
 
+  <!-- NOTE: this dataset class only gets the sequences, it does not map
+       them to the genome.  See transcriptsFromReferenceStrain
+  -->
+
   <datasetClass class="dbEST">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
@@ -297,6 +301,11 @@
       <pluginArgs>--span 500 --taxonFile @@dataDir@@/taxonIdFile --extDbName %RESOURCE_NAME% --extDbRlsVer %%RESOURCE_VER% --soVer @@SO_VER@@ --dbestLoginFile @@dataDir@@/dbestProp --dbestConnect "@@dbestConnect@@" </pluginArgs>
     </resource>
   </datasetClass>
+
+
+  <!-- NOTE: this dataset class only gets the sequences, it does not map
+       them to the genome.  See transcriptsFromReferenceStrain
+  -->
 
   <datasetClass class="ESTsFromFasta">
     <prop name="projectName"/>
@@ -327,7 +336,7 @@
 
 
   <!-- This class gets its data from ESTs and transcripts loaded by the
-       reference strain.  It finds them in the database and maps them to
+       reference strain.  It finds all of them in the database and maps them to
        our genome.  The reference strain DOES need to include an instance
        of this class so that its transcripts get mapped to its genome  -->
 
@@ -753,10 +762,10 @@
   </datasetClass>
 
 
-  <!-- Category: fasta sequence -->
+  <!-- NOTE: this dataset class only gets the sequences, it does not map
+       them to the genome.  For that use clonedInsertEndsFromReferenceStrain
+  -->
 
-  <!-- when we have dataset subclasses, this can be a subclass of fastaSequence -->
-  <!-- with category = dnaSeq -->
   <datasetClass class="clonedInsertEnds">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
@@ -792,26 +801,6 @@
 
   </datasetClass>
 
-  <datasetClass class="fastaSequence">
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
-    <prop name="category"/>
-    <prop name="table"/>  <!-- example:  DoTS::NASequence -->
-    <prop name="soTermName"/>
-    <prop name="regexSourceId"/>
-
-    <resource resource="${organismAbbrev}_${category}_${name}_sequences_RSRC" version="2001-09-19"
-	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
-	      internalDescrip="">
-
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/${category}/${name}/%RESOURCE_VERSION%/final/seqs.fasta"/>
-
-      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/seqs.fasta --soTermName ${soTermName} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
-    </resource>
-  </datasetClass>
 
   <!-- Category: SAGE tags -->
 
@@ -896,7 +885,11 @@
 
   <!-- Category: isolates -->
 
-  <datasetClass class="isolates_genbank">
+  <!-- NOTE: this dataset class only gets the isolates, it does not map
+       them to the genome.  See isolatesFromReferenceStrain
+  -->
+
+  <datasetClass class="isolatesGenbank">
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
  
@@ -919,8 +912,32 @@
     </resource>
   </datasetClass>
 
+
+  <!-- NOTE: this dataset class only gets the isolates, it does not map
+       them to the genome.  See isolatesFromReferenceStrain
+  -->
+
+  <datasetClass class="isolateSequencesFasta">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="regexSourceId"/>
+
+    <resource resource="${organismAbbrev}_isolates_${name}_RSRC" version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+	      internalDescrip="">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/isolate/${name}/%RESOURCE_VERSION%/final/isolates.fasta"/>
+
+      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/seqs.fasta --soTermName region --regexSourceId "${regexSourceId}" --tableName "DoTS::ExternalNaSequence"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
   <!-- the ncbi taxon ID is not important.  isolate strain info is provided by dedicated isolate info tables -->
-  <datasetClass class="isolates_GFF2">
+  <datasetClass class="isolateFeaturesGFF2">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
@@ -930,13 +947,25 @@
  
     <graphFile planFile="organismSpecific.xml"/>
 
-    <resource resource="${organismAbbrev}_isolates_${name}_sequences_RSRC" version="2009-03-23"
+    <resource resource="${organismAbbrev}_isolates_${name}_features_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/isolate/${name}/%RESOURCE_VERSION%/final/isolates.gff"/>
 
       <pluginArgs> --extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --mapFile @gusHome@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/isolates.gff --fileFormat gff2 --gff2GroupTag locus_tag --naSequenceSubclass ExternalNASequence --seqIdColumn source_id  --soCvsVersion @SO_VER@ --defaultOrganism ${ncbiTaxonId} --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
     </resource>
+  </datasetClass>
+
+  <!-- NOTE: this dataset does not get the isolates, but it does map
+       them to the genome.  It extracts the sequences from the database
+  -->
+
+  <datasetClass class="isolatesFromReferenceStrain">
+    <prop name="referenceStrainOrganismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+ 
+    <graphFile planFile="organismSpecific.xml"/>
   </datasetClass>
 
   <datasetClass class="massSpecPreprocessed">
