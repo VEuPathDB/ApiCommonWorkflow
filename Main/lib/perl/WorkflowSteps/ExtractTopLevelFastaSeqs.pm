@@ -23,7 +23,7 @@ sub run {
 	if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}else{
-	    $self->runCmd($test,"dumpSequencesFromTable.pl --outputFile $workflowDataDir/$outputFile --idSQL \"$sql\" --verbose")  if ($genomeVirtualSeqsExtDbRlsSpec);
+	    $self->runCmd($test,"dumpSequencesFromTable.pl --outputFile $workflowDataDir/$outputFile --idSQL \"$sql\" --verbose");
 
 	}
     }
