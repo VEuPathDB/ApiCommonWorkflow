@@ -19,9 +19,18 @@ sub run {
   my ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeExtDbRlsSpec')) if $self->getParamValue('genomeExtDbRlsSpec');
   push (@dbnames,$name);
   push (@dbvers,$ver);
-  ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec')) if $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');
-  push (@dbnames,$name);
-  push (@dbvers,$ver);
+
+  if($self->getParamValue('genomeVirtualSeqsExtDbRlsSpec')){
+      my @virtualGenomeExtDbSpecList = split(/,/,$self->getParamValue('genomeVirtualSeqsExtDbRlsSpec'));
+
+      foreach (@virtualGenomeExtDbSpecList){
+	  ($name,$ver) = $self->getExtDbInfo($test, $_);
+	  push (@dbnames,$name);
+	  push (@dbvers,$ver);
+      }
+  }
+
+
   my $names = join (",", map{"'$_'"} @dbnames);
   my $vers = join (",", map{"'$_'"} @dbvers);
   my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
