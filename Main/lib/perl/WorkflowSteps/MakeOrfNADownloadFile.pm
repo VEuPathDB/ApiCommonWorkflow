@@ -13,7 +13,17 @@ sub run {
 
   my @extDbRlsIds;
   push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeExtDbRlsSpec'))) if $self->getParamValue('genomeExtDbRlsSpec');
-  push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec'))) if $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');
+
+  if($self->getParamValue('genomeVirtualSeqsExtDbRlsSpec')){
+      my @virtualGenomeExtDbSpecList = split(/,/,$self->getParamValue('genomeVirtualSeqsExtDbRlsSpec'));
+
+      foreach (@virtualGenomeExtDbSpecList){
+	  push(@extDbRlsIds,$self->getExtDbRlsId($test, $_));
+	  
+      }
+  }
+
+
   my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
 
   my $length = $self->getParamValue('minOrfLength');
