@@ -8,78 +8,47 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-
-    my $mercatorDir = $self->getParamValue('mercatorDir');
-    my $organism   = $self->getParamValue('organism');
-    my $mercatorDraftGenomes = $self->getParamValue('mercatorDraftGenomes');
-    my $mercatorNonDraftGenomes = $self->getParamValue('mercatorNonDraftGenomes');
-    my $mercatorSyntenyVersion = $self->getParamValue('mercatorSyntenyVersion');
+    # the file that has mercator output.  this is our input
+    my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my @drafts = ();
-    my @nonDrafts = ();
-
-    my @allGenomes = ();
-
-
-    my $draftIdx = -1;
-    my  $nonDraftIdx = -1;
-
-    if($mercatorDraftGenomes){
-	@drafts =  map { "$_" } split(',', $mercatorDraftGenomes);
-
-	$draftIdx = $#drafts;
-    }
-    
-    if($mercatorNonDraftGenomes){
-	@nonDrafts = map { "$_" } split(',', $mercatorNonDraftGenomes);
-
-
-	$nonDraftIdx = $#nonDrafts;
-    }
-
-    push(@allGenomes,@drafts,@nonDrafts);
-
-
-    my $args = "--mercatorDir $workflowDataDir/$mercatorDir --organism '$organism'";
-    
+    # in test mode, there are no input files to iterate over, so just leave
     if ($test) {
-	for(my $i =0; $i <= ($#allGenomes-1); $i++){
-	    for(my $j =$i+1 ; $j <= $#allGenomes; $j++){
-		my $dirName = "$mercatorDir/$allGenomes[$i]-$allGenomes[$j]";
-		$self->testInputFile('inputFile', "$workflowDataDir/$dirName/$allGenomes[$i]-$allGenomes[$j].align-synteny");
+	$self->testInputFile('mercatorOutputsDir', "$workflowDataDir/$mercatorOutputsDir");
+	return;
+    }
+    
+    opendir(INPUT, "$workflowDataDir/$mercatorOutputsDir") or $self->error("Could not open mercator outputs dir '$mercatorOutputsDir' for reading.\n");
+
+    foreach my $pairDir (readdir INPUT){
+	next if ($pairDir =~ m/^\./);
+	my ($orgAbbrevA, $orgAbbrevB) = split(/\-/, $pairDir);
+	
+	my $databaseName = "$pairDir synteny from Mercator";
+	my $dbPluginArgs = "--name '$databaseName' ";
+	my $releasePluginArgs = "--databaseName '$databaseName' --databaseVersion dontcare";
+	my $insertPluginArgs = "--mercatorDir $workflowDataDir/$mercatorOutputsDir/$pairDir";
+
+	if ($undo) {
+	    $self->runPlugin($test, 1, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $insertPluginArgs);
+	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
+	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
+	} else {
+	    # reformat .align file
+	    my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pairDir/$pairDir.align";
+	    my $outputFile = "$workflowDataDir/$mercatorOutputsDir/$pairDir/$pairDir.align-synteny";
+	    my $formatCmd = "reformatMercatorAlignFile --inputFile $inputFile --outputFile $outputFile";
+	    if ($self->getOrganismInfo($orgAbbrevB)->getIsDraftGenome()) {
+		$formatCmd .= " --agpFile $workflowDataDir/$mercatorOutputsDir/$pairDir/$orgAbbrevB.agp";	    
 	    }
+
+	    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
+	    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
+	    $self->runPlugin($test, 0, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $args);
 	}
     }
-
-    if ($undo){
-	$self->runPlugin($test, 1, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $args);
-    }else{
-	for(my $i =0; $i <= ($#allGenomes-1); $i++){
-	    for(my $j =$i+1 ; $j <= $#allGenomes; $j++){
-		my $databaseName = "$allGenomes[$i]-$allGenomes[$j] synteny from Mercator";
-		my $dbPluginArgs = "--name '$databaseName' ";
-		$self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
-		my $releasePluginArgs = "--databaseName '$databaseName' --databaseVersion '$mercatorSyntenyVersion'";
-		$self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
-	    }
-	}
-
-
-	$self->runPlugin($test, 0, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $args);
-
-    }
 }
-
-sub getParamsDeclaration {
-    return ('mercatorDir',
-            'organism',
-	    'mercatorDraftGenomes'.
-	    'mercatorNonDraftGenomes',
-	);
-}
-
 
 sub getConfigDeclaration {
     return (

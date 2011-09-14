@@ -17,9 +17,9 @@ sub run {
     # however, we first check to see if we have a current output dir in the cache.  if so use it,
     # else, really run mercator, and copy the outputs to the cache
 
-    my $mercatorInputsDir = $self->getParamValue('mercatorInputsDir');
-    my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir');
-    my $mercatorCacheDir = $self->getParamValue('mercatorCacheDir');
+    my $mercatorInputsDir = $self->getParamValue('mercatorInputsDir'); # holds lots of .gff and .fasta files
+    my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir'); # will hold a dir per pair
+    my $mercatorCacheDir = $self->getParamValue('mercatorCacheDir'); # will hold a dir per pair
 
     my $cndSrcBin = $self->getConfig('cndSrcBin');
     my $mavid = $self->getConfig('mavidExe');
@@ -36,10 +36,10 @@ sub run {
     my $isDraftHash = $self->getIsDraftHash(\@organismAbbrevs);  # hash of 0/1 for each organism
 
     # create and clean out needed dirs
-    $self->runCmd(0, "rm -r $workflowDataDir/$mercatorOutputDir") if -e $mercatorOutputDir;
+    $self->runCmd(0, "rm -r $workflowDataDir/$mercatorOutputDir") if -e "$workflowDataDir/$mercatorOutputDir";
     mkdir("$workflowDataDir/$mercatorOutputDir");
 
-    $self->runCmd($test, "rm -r $workflowDataDir/$mercatorTmpDir") if -e $pairTmpDir;
+    $self->runCmd($test, "rm -r $workflowDataDir/$mercatorTmpDir") if -e "$workflowDataDir/$mercatorTmpDir";
     mkdir("$workflowDataDir/$mercatorTmpDir");
 
     my $cacheDir = "$workflowDataDir/$mercatorCacheDir";
@@ -125,13 +125,17 @@ sub getIsDraftHash {
 # we make the bold assumption that nobody has 'touched' the cache dir timestamp, ie, that it
 # accurately reflects the age of the cache entry
 sub cacheHit {
-    my ($self, $orgA, $orgB, $cacheDir, $mercatorInputDir) = @_;
+    my ($self, $orgA, $orgB, $cacheDir, $mercatorInputDir, $test) = @_;
     my $pairName = "${orgA}-${orgB}";
-    return -e "$cacheDir/$pairName" 
+
+    # -M is a perl built-in function to return a file's age
+    my $cacheIsCurrent = -e "$cacheDir/$pairName" 
 	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgA.fasta" # cache is younger 
 	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgA.gff"
 	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgB.fasta"
-	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgB.gff"
+	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgB.gff";
+    $self->runCmd($test,"rm -r $cacheDir/$pairName") if !$cacheIsCurrent;
+    return $cacheIsCurrent;
 }
 
 sub getConfigDeclaration {
