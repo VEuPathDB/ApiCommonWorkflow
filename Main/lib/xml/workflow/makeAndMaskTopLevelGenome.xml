@@ -3,8 +3,7 @@
       <param name="organismAbbrev"/>
       <param name="insertVirtualSeqFromAgpFile"/>
       <param name="organismResourceXmlFile"/>
-      <param name="comparativeGenomicsFastaDir"/>
-      <param name="comparativeGenomicsGffDir"/>
+      <param name="comparativeGenomicsDir"/>
       <param name="includeInComparativeGenomics"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$organismAbbrev$$_MakeAndMaskTopLevelGenome</constant>
@@ -62,9 +61,9 @@
       <depends name="runClusterTask"/>
     </step>
 
-    <step name="copyMaskedTopLevelFastaFileToComparativeGenomicsFastaDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$includeInComparativeGenomics$$">
+    <step name="copyMaskedTopLevelFastaFileToComparativeGenomicsDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$includeInComparativeGenomics$$">
       <paramValue name="fromFile">$$dataDir$$/master/mainresult/blocked.seq</paramValue>
-      <paramValue name="toFile">$$comparativeGenomicsFastaDir$$/$$organismAbbrev$$.fasta</paramValue>
+      <paramValue name="toFile">$$comparativeGenomicsDir$$/$$organismAbbrev$$.fasta</paramValue>
       <depends name="mirrorFromCluster"/>
     </step>
 
@@ -83,10 +82,10 @@
       <depends name="makeMercatorGffFile"/> 
     </step>
 
-  <step name="copyCorrectedGffFileToComparativeGenomicsGffDir"
+  <step name="copyCorrectedGffFileToComparativeGenomicsDir"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$includeInComparativeGenomics$$">
       <paramValue name="fromFile">$$dataDir$$/$$organismAbbrev$$_corrected.gff</paramValue>
-      <paramValue name="toFile">$$comparativeGenomicsGffDir$$/$$organismAbbrev$$.gff</paramValue>
+      <paramValue name="toFile">$$comparativeGenomicsDir$$/$$organismAbbrev$$.gff</paramValue>
       <depends name="correctReadingFrameInMercatorGffFile"/> 
     </step>
 </workflowGraph>

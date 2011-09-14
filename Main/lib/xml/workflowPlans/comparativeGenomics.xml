@@ -1,26 +1,15 @@
 <workflowGraph name="comparativeGenomics">
     <param name="parentDataDir"/>
-    <param name="mercatorFastaDir"/>
-    <param name="mercatorGffDir"/>
+    <param name="comparativeGenomicsInputDir"/>
     <param name="relativeWebServicesDir"/>
 
-    <constant name="mercatorDataDir">$$parentDataDir$$/mercator_pairwise</constant>
-
-    <step name="makeMercatorDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$mercatorDataDir$$</paramValue>
-    </step>
-
-    <step name="createPairwiseMercatorDirs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreatePairwiseMercatorDirs">
-      <paramValue name="mercatorDir">$$mercatorDataDir$$</paramValue>
-      <paramValue name="mercatorFastaDir">$$mercatorFastaDir$$</paramValue>
-      <paramValue name="mercatorGffDir">$$mercatorGffDir$$</paramValue>
-
-      <paramValue name="mercatorSyntenyVersion">dontcare</paramValue>    
-      <depends name="makeMercatorDataDir"/>
-    </step>
+    <constant name="mercatorOutputsDir">$$parentDataDir$$/mercatorOutput</constant>
+    <constant name="mercatorCacheDir">$$parentDataDir$$/mercatorCache</constant>
 
     <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid">
-      <paramValue name="mercatorDir">$$mercatorDataDir$$</paramValue>
+      <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
+      <paramValue name="mercatorOutputsDir">$$mercatorOutputsDir$$</paramValue>
+      <paramValue name="mercatorCacheDir">$$mercatorCacheDir$$</paramValue>
       <depends name="createPairwiseMercatorDirs"/>
     </step>
 
@@ -29,7 +18,7 @@
       <subgraph name="OrthoMCL_Phyletic_RSRC" xmlFile="loadResource.xml">
 	<paramValue name="resourceName">OrthoMCL_Phyletic_RSRC</paramValue>
 	<paramValue name="resourceXmlFileName">${projectName}.xml</paramValue>
-	<paramValue name="parentDataDir">$$parentDataDir$$/common/comparativeGenomics</paramValue>
+	<paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
       </subgraph>
     </datasetTemplate>
 
@@ -38,7 +27,7 @@
       <subgraph name="OrthoMCL_RSRC" xmlFile="loadResource.xml">
 	<paramValue name="resourceName">OrthoMCL_RSRC</paramValue>
 	<paramValue name="resourceXmlFileName">${projectName}.xml</paramValue>
-	<paramValue name="parentDataDir">$$parentDataDir$$/common/comparativeGenomics</paramValue>
+	<paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
 	<depends name="OrthoMCL_Phyletic_RSRC"/> 
       </subgraph>
     </datasetTemplate>
@@ -58,15 +47,15 @@
   </step>
 
     <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin">
-      <paramValue name="mercatorDir">$$mercatorDataDir$$</paramValue>
+      <paramValue name="mercatorDir">$$mercatorOutputsDir$$</paramValue>
       <paramValue name="mercatorSyntenyVersion">dontcare</paramValue>   
       <depends name="runPairwiseMercatorMavid"/>
       <depends name="runTuningManager"/>
     </step>
 
     <step name="copyPairwiseMercatorDirsToWebserviceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPairwiseMercatorDirsToWebserviceDir">
-      <paramValue name="mercatorDir">$$mercatorDataDir$$</paramValue>
-      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="mercatorOutputsDir">$$mercatorOutputsDir$$</paramValue>
+      <paramValue name="mercatorWebsvcDir">$$relativeWebServicesDir$$/mercator</paramValue>
       <depends name="runPairwiseMercatorMavid"/>
     </step>
 

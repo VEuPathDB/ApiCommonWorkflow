@@ -8,41 +8,36 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $mercatorDir = $self->getParamValue('mercatorDir');
+    my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir');
 
-    my $relativeDir = $self->getParamValue('relativeDir');
+    my $mercatorWebsvcDir = $self->getParamValue('mercatorWebsvcDir');
 
     my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-    my $outputDir   = "$websiteFilesDir/$relativeDir/mercator";
+    my $outputDir   = "$websiteFilesDir/$mercatorWebsvcDir";
 
     my $workflowDataDir = $self->getWorkflowDataDir();
-    opendir(MERCATORDIR,"$workflowDataDir/$mercatorDir") or $self->error("Could not open $workflowDataDir/$mercatorDir for reading.\n");
 
-    foreach my $subDir (readdir MERCATORDIR){
-	next if ($subDir =~ m/^\./);
-	if ($undo) {
-	    $self->runCmd(0, "rm -fr $outputDir");
-	}else{
-	    if ($test) {
-		$self->runCmd(0,"mkdir -p $outputDir/$subDir");
-	    }else {
-		$self->runCmd($test,"mkdir -p $outputDir/$subDir");
-		$self->runCmd($test,"cp -R $workflowDataDir/$mercatorDir/$subDir/mercator-output/alignments $outputDir/$subDir");
-		$self->runCmd($test,"cp -R $workflowDataDir/$mercatorDir/$subDir/mercator-output/*.agp $outputDir/$subDir");
+    if ($undo) {
+	$self->runCmd(0, "rm -fr $outputDir");
+	return;
+    }
+
+    -e $outputDir && $self->error("Mercator web svc dir '$outputDir' already exists");
+    mkdir($outputDir) || $self->error("Can't make mercator web svc dir '$outputDir'");
+
+    opendir(MERCATORDIR,"$workflowDataDir/$mercatorOutputsDir") or $self->error("Could not open $workflowDataDir/$mercatorOutputsDir for reading.\n");
+
+    foreach my $pairDir (readdir MERCATORDIR){
+	next if ($pairDir =~ m/^\./);
+	    $self->runCmd(0,"mkdir -p $outputDir/$pairDir");
+	    if (!$test) {
+		$self->runCmd($test,"cp -R $workflowDataDir/$mercatorOutputsDir/$pairDir/alignments $outputDir/$pairDir");
+		$self->runCmd($test,"cp -R $workflowDataDir/$mercatorDir/$pairDir/*.agp $outputDir/$pairDir");
 	    }
 	}
     }
-
- 
 }
-
-sub getParamsDeclaration {
-    return ('mercatorDir',
-	    'workflowDataDir',
-           );
-}
-
 
 sub getConfigDeclaration {
     return (

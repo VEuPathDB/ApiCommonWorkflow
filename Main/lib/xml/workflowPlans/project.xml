@@ -9,8 +9,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
   <param name="projectName"/>
   <param name="projectVersion"/>
 
-  <constant name="comparativeGenomicsFastaDir">common/comparativeGenomics/Fasta/</constant>
-  <constant name="comparativeGenomicsGffDir">common/comparativeGenomics/Gff/</constant>
+  <constant name="comparativeGenomicsInputDir">comparativeGenomicsInputDir</constant>
   <constant name="relativeWebServicesDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$</constant>
   <constant name="relativeDownloadSiteDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$/</constant>
 
@@ -19,14 +18,14 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <paramValue name="globalResourceXmlFile">global.xml</paramValue>
   </globalSubgraph>
 
-  <subgraph name="common" xmlFile="common.xml">
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
-    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
-    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-  </subgraph>
+  <step name="makeProjectReleaseDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+  </step>
+
+  <step name="makeComparativeGenomicsDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+    <paramValue name="dataDir">$$comparativeGenomicsInputDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
 
   <datasetTemplate class="organism">
     <prop name="organismAbbrev"/>
@@ -115,8 +114,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome|${genomeVersion}</paramValue>
       <paramValue name="insertVirtualSeqFromAgpFile">${insertVirtualSeqFromAgpFile}</paramValue>
       <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
-      <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
-      <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+      <paramValue name="comparativeGenomicsDir">$$comparativeGenomicsInputDir$$</paramValue>
       <paramValue name="includeInComparativeGenomics">${includeInComparativeGenomics}</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
@@ -175,7 +173,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="geneModelFileForSsa">${organismAbbrev}/loadGenome/geneModelForSsa.txt</paramValue>
       <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
       <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
-      <depends name="${organismAbbrev}_LoadGenome"/>
+      <depends name="${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_LoadGeneAliases" xmlFile="${projectName}/${organismAbbrev}/geneAliases.xml" excludeIfXmlFileDoesNotExist="true">
@@ -220,13 +218,10 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
   </datasetTemplate>
 
-
   <subgraph name="ComparativeGenomics" xmlFile="$$projectName$$/comparativeGenomics.xml">
-    <paramValue name="parentDataDir">common/comparativeGenomics/</paramValue>
-    <paramValue name="mercatorFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
-    <paramValue name="mercatorGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="comparativeGenomicsInputDir">$$comparativeGenomicsInputDir$$</paramValue>
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-    <paramValue name="commonResourceXmlFile">$$projectName$$/common.xml</paramValue>
     <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
 
   </subgraph>

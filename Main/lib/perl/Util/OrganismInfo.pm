@@ -13,12 +13,12 @@ sub new {
 
     return $self if $test;
 
-    my $sql = "select name_for_filenames, abbrev_strain, abbrev_public
+    my $sql = "select name_for_filenames, abbrev_strain, abbrev_public, is_draft_genome
              from apidb.organism
              where organismAbbrev = $organismAbbrev";
 
     my $stmt = $workflowStep->runSql($sql);
-    my ($nameForFiles, $strainAbbrev, $publicAbbrev) = $stmt->fetchrow_array(); 
+    my ($nameForFiles, $strainAbbrev, $publicAbbrev, $isDraftGenome) = $stmt->fetchrow_array(); 
 
     $sql = "select tn.name, t.ncbi_tax_id, o.taxon_id
              from sres.taxonname tn, sres.taxon t, apidb.organism o
@@ -58,6 +58,7 @@ sub new {
     $self->{speciesNcbiTaxonId} = $speciesNcbiTaxonId;
     $self->{speciesTaxonId} = $speciesTaxonId;
     $self->{speciesName} = $speciesName;
+    $self->{isDraftGenome} = $isDraftGenome;
 
     return $self;
 }
@@ -130,6 +131,12 @@ sub getTaxonIdList {
   } else {
     return $self->getTaxonId();
   }
+}
+
+sub isDraftGenome {
+    my ($self) = @_;
+    return "$self->{organismAbbrev}_IS_DRAFT_GENOME" if $self->{test};
+    return $self->{isDraftGenome};
 }
 
 

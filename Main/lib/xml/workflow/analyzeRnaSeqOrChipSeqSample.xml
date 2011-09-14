@@ -62,7 +62,7 @@
 
    <step name="reformatNUCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr" excludeIf="$$strandSpecific$$">
       <paramValue name="inputFile">$$dataDir$$/master/mainresult/RUM_NU.normalized.cov</paramValue>     
-      <paramValue name="outputFile">$$sampleName$$.cov.NU.reformatted</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/$$sampleName$$.cov.NU.reformatted</paramValue>
       <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
@@ -72,7 +72,7 @@
 
     <step name="reformatNUMSCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr" includeIf="$$strandSpecific$$">
       <paramValue name="inputFile">$$dataDir$$/master/mainresult/RUM_NU.minus.normalized.cov</paramValue>     
-      <paramValue name="outputFile">$$sampleName$$.cov.NU_ms.reformatted</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/$$sampleName$$.cov.NU_ms.reformatted</paramValue>
       <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
@@ -82,7 +82,7 @@
 
     <step name="reformatNUPSCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr" includeIf="$$strandSpecific$$">
       <paramValue name="inputFile">$$dataDir$$/master/mainresult/RUM_NU.plus.normalized.cov</paramValue>     
-      <paramValue name="outputFile">$$sampleName$$.cov.NU_ps.reformatted</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/$$sampleName$$.cov.NU_ps.reformatted</paramValue>
       <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
@@ -92,7 +92,7 @@
 
     <step name="reformatUniqueCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr" excludeIf="$$strandSpecific$$">
       <paramValue name="inputFile">$$dataDir$$/master/mainresult/RUM_Unique.normalized.cov</paramValue>
-      <paramValue name="outputFile">$$sampleName$$.cov.Unique.reformatted</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/$$sampleName$$.cov.Unique.reformatted</paramValue>
       <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
@@ -102,7 +102,7 @@
 
     <step name="reformatUniqueMSCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr" includeIf="$$strandSpecific$$">
       <paramValue name="inputFile">$$dataDir$$/master/mainresult/RUM_Unique.minus.normalized.cov</paramValue>     
-      <paramValue name="outputFile">$$sampleName$$.cov.Unique_ms.reformatted</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/$$sampleName$$.cov.Unique_ms.reformatted</paramValue>
       <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
@@ -112,7 +112,7 @@
 
     <step name="reformatUniquePSCoverageFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatCoverageFileForInsertNextGenSeqCoverageWithSqlLdr" includeIf="$$strandSpecific$$">
       <paramValue name="inputFile">$$dataDir$$/master/mainresult/RUM_Unique.plus.normalized.cov</paramValue>     
-      <paramValue name="outputFile">$$sampleName$$.cov.Unique_ps.reformatted</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/$$sampleName$$.cov.Unique_ps.reformatted</paramValue>
       <paramValue name="extDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbSpec$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
@@ -121,37 +121,37 @@
     </step>
 
     <step name="loadUniqueRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin" excludeIf="$$strandSpecific$$"> 
-      <paramValue name="inputFile">$$sampleName$$.cov.Unique.reformatted</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/$$sampleName$$.cov.Unique.reformatted</paramValue>
       <paramValue name="isReversed"></paramValue>
       <depends name="reformatUniqueCoverageFile"/>
     </step>
 
     <step name="loadUniqueMSRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin" includeIf="$$strandSpecific$$"> 
-      <paramValue name="inputFile">$$sampleName$$.cov.Unique_ms.reformatted</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/$$sampleName$$.cov.Unique_ms.reformatted</paramValue>
       <paramValue name="isReversed">yes</paramValue>
       <depends name="reformatUniqueMSCoverageFile"/>
     </step>
 
     <step name="loadUniquePSRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin" includeIf="$$strandSpecific$$"> 
-      <paramValue name="inputFile">$$sampleName$$.cov.Unique_ps.reformatted</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/$$sampleName$$.cov.Unique_ps.reformatted</paramValue>
       <paramValue name="isReversed">no</paramValue>
       <depends name="reformatUniquePSCoverageFile"/>
     </step>
 
     <step name="loadNURnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin" excludeIf="$$strandSpecific$$">
-      <paramValue name="inputFile">$$sampleName$$.cov.NU.reformatted</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/$$sampleName$$.cov.NU.reformatted</paramValue>
       <paramValue name="isReversed"></paramValue>
       <depends name="reformatNUCoverageFile"/>
     </step>
 
     <step name="loadNUMSRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin" includeIf="$$strandSpecific$$">
-      <paramValue name="inputFile">$$sampleName$$.cov.NU_ms.reformatted</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/$$sampleName$$.cov.NU_ms.reformatted</paramValue>
       <paramValue name="isReversed">yes</paramValue>
       <depends name="reformatNUMSCoverageFile"/>
     </step>
 
     <step name="loadNUPSRnaSeqCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNextGenSeqCoverageWithSqlLdr" stepLoadTypes="plugin" includeIf="$$strandSpecific$$">
-      <paramValue name="inputFile">$$sampleName$$.cov.NU_ps.reformatted</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/$$sampleName$$.cov.NU_ps.reformatted</paramValue>
       <paramValue name="isReversed">no</paramValue>
       <depends name="reformatNUPSCoverageFile"/>
     </step>

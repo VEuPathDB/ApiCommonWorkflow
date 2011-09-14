@@ -31,7 +31,7 @@ sub run {
 
 	$draftIdx = $#drafts;
     }
-  
+    
     if($mercatorNonDraftGenomes){
 	@nonDrafts = map { "$_" } split(',', $mercatorNonDraftGenomes);
 
@@ -55,8 +55,8 @@ sub run {
 
     if ($undo){
 	$self->runPlugin($test, 1, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $args);
-	}else{
-	 for(my $i =0; $i <= ($#allGenomes-1); $i++){
+    }else{
+	for(my $i =0; $i <= ($#allGenomes-1); $i++){
 	    for(my $j =$i+1 ; $j <= $#allGenomes; $j++){
 		my $databaseName = "$allGenomes[$i]-$allGenomes[$j] synteny from Mercator";
 		my $dbPluginArgs = "--name '$databaseName' ";
@@ -67,7 +67,7 @@ sub run {
 	}
 
 
-    $self->runPlugin($test, 0, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $args);
+	$self->runPlugin($test, 0, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $args);
 
     }
 }
@@ -77,7 +77,7 @@ sub getParamsDeclaration {
             'organism',
 	    'mercatorDraftGenomes'.
 	    'mercatorNonDraftGenomes',
-           );
+	);
 }
 
 
