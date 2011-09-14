@@ -25,6 +25,7 @@ sub run {
   }else {
       if ($test){
 	  $self->runCmd(0, "echo test> $workflowDataDir/$outputFile");
+          $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       }else{
 	  $self->runCmd($test, $cmd);
       }
