@@ -4,6 +4,10 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeESTDownloadFile;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
+sub getIsSpeciesLevel {
+    return 1;
+}
+
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 

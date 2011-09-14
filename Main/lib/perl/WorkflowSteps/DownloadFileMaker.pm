@@ -4,7 +4,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
-# An abstract super class for making download files
+# An abstract superclass for making download files
 
 ##############################################################################################
 #abstract methods available to subclasses.  the subclass must override each of these methods by
@@ -25,6 +25,12 @@ sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 }
 
+# optional. return 1 to indicate that we should use speciesNameForFiles
+# 0 by default
+sub getIsSpeciesLevel {
+    return 0;
+}
+
 ##############################################################
 
 sub run {
@@ -41,12 +47,14 @@ sub run {
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
-  my $outputDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/$fileType";
+  my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
+  my $nameForFiles = $self->getIsSpeciesLevel()?  $speciesNameForFiles:  $organismNameForFiles;
+  my $outputDir = "$websiteFilesDir/$relativeDir/$nameForFiles/$fileType";
 
   $dataName = "_$dataName" if $dataName; # gff does not use $dataName, so allow it to be empty
 
-  my $downloadFile = "$outputDir/$projectName-${projectVersion}_${organismNameForFiles}$dataName.$fileType";
-  my $descripFile = "$outputDir/.$projectName-${projectVersion}_${organismNameForFiles}$dataName.$fileType.desc";
+  my $downloadFile = "$outputDir/$projectName-${projectVersion}_${nameForFiles}$dataName.$fileType";
+  my $descripFile = "$outputDir/.$projectName-${projectVersion}_${nameForFiles}$dataName.$fileType.desc";
 
   my $downloadFileCmd =  $self->getDownloadFileCmd($downloadFile, $test);
 

@@ -6,6 +6,7 @@
   <param name="relativeWebServicesDir"/>
   <param name="organelleName"/>
   <param name="isOrganelle"/>
+  <param name="isReferenceStrain"/>
 
   <step name="initOrganismDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitOrganismDownloadSiteDir">
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -18,6 +19,13 @@
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="subDir">fasta</paramValue>
     <paramValue name="organelleName">$$organelleName$$</paramValue>
+    <depends name="initOrganismDownloadSiteDir"/>
+  </step>
+
+  <step name="makeDownloadSiteSpeciesFastaDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSpeciesWebsiteSubdir" includeIf="$$isReferenceStrain$$">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="subDir">fasta</paramValue>
     <depends name="initOrganismDownloadSiteDir"/>
   </step>
 
