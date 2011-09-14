@@ -8,7 +8,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    # the file that has mercator output.  this is our input
+    # the directory that has mercator output.  this is our input
     my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
@@ -21,14 +21,14 @@ sub run {
     
     opendir(INPUT, "$workflowDataDir/$mercatorOutputsDir") or $self->error("Could not open mercator outputs dir '$mercatorOutputsDir' for reading.\n");
 
-    foreach my $pairDir (readdir INPUT){
-	next if ($pairDir =~ m/^\./);
-	my ($orgAbbrevA, $orgAbbrevB) = split(/\-/, $pairDir);
+    foreach my $pair (readdir INPUT){
+	next if ($pair =~ m/^\./);
+	my ($orgAbbrevA, $orgAbbrevB) = split(/\-/, $pair);
 	
-	my $databaseName = "$pairDir synteny from Mercator";
+	my $databaseName = "$pair synteny from Mercator";
 	my $dbPluginArgs = "--name '$databaseName' ";
 	my $releasePluginArgs = "--databaseName '$databaseName' --databaseVersion dontcare";
-	my $insertPluginArgs = "--mercatorDir $workflowDataDir/$mercatorOutputsDir/$pairDir";
+	my $insertPluginArgs = "--mercatorDir $workflowDataDir/$mercatorOutputsDir/$pair";
 
 	if ($undo) {
 	    $self->runPlugin($test, 1, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $insertPluginArgs);
@@ -36,11 +36,11 @@ sub run {
 	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 	} else {
 	    # reformat .align file
-	    my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pairDir/$pairDir.align";
-	    my $outputFile = "$workflowDataDir/$mercatorOutputsDir/$pairDir/$pairDir.align-synteny";
+	    my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align";
+	    my $outputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny";
 	    my $formatCmd = "reformatMercatorAlignFile --inputFile $inputFile --outputFile $outputFile";
 	    if ($self->getOrganismInfo($orgAbbrevB)->getIsDraftGenome()) {
-		$formatCmd .= " --agpFile $workflowDataDir/$mercatorOutputsDir/$pairDir/$orgAbbrevB.agp";	    
+		$formatCmd .= " --agpFile $workflowDataDir/$mercatorOutputsDir/$pair/$orgAbbrevB.agp";	    
 	    }
 
 	    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
