@@ -10,11 +10,11 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $gusHome = $self->getSharedConfig('gusHome');
+  my $dbaEmail = $self->getSharedConfig('dbaEmail');
   my $instance = $self->getSharedConfig('instance');
 
   my $apidbPassword = $self->getConfig('apidbPassword');
   my $xmlConfigFileName="tmpConfigFile.xml";
-  my $dbaEmail = "eupath-admin@pcbi.upenn.edu";
   my $xmlConfigFileString=
 "
 <tuningProps>
