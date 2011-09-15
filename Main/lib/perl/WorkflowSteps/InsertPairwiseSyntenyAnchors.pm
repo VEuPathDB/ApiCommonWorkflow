@@ -25,10 +25,10 @@ sub run {
 	next if ($pair =~ m/^\./);
 	my ($orgAbbrevA, $orgAbbrevB) = split(/\-/, $pair);
 	
-	my $databaseName = "$pair synteny from Mercator";
+	my $databaseName = "$pair_Mercator_synteny";
 	my $dbPluginArgs = "--name '$databaseName' ";
 	my $releasePluginArgs = "--databaseName '$databaseName' --databaseVersion dontcare";
-	my $insertPluginArgs = "--mercatorDir $workflowDataDir/$mercatorOutputsDir/$pair";
+	my $insertPluginArgs = "--mercatorDir $workflowDataDir/$mercatorOutputsDir/$pair --syntenyDbRlsSpec $databaseName|dontcare";
 
 	if ($undo) {
 	    $self->runPlugin($test, 1, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $insertPluginArgs);
