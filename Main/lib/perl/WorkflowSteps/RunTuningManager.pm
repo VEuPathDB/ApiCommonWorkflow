@@ -16,18 +16,20 @@ sub run {
   my $apidbPassword = $self->getConfig('apidbPassword');
   my $xmlConfigFileName="tmpConfigFile.xml";
   my $xmlConfigFileString=
-"<?xml version='1.0'?>
-<property>
-<password>$apidbPassword</password>
-<username>apidb</username>
-</property>
+"
+<tuningProps>
+  <password>$apidbPassword</password>
+  <dbaEmail>eupath-admin@pcbi.upenn.edu</dbaEmail>
+  <dblink>alt.login_comment</dblink>
+  <schema>ApidbTuning</schema>
+</tuningProps>
 ";
   open(F,">$xmlConfigFileName");
   print F $xmlConfigFileString;
   close F;
   my $cmd;
 
-      $cmd = "tuningManager --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail '$email' --tables 'apidb.GeneId,apidb.GeneAttributes,apidb.FeatureLocation' --cleanupAge 0";
+      $cmd = "tuningManager --instance '$instance' --propFile $xmlConfigFileName --doUpdate --tables 'GeneId,GeneAttributes,FeatureLocation' --cleanupAge 0";
 
 
   if ($undo){
