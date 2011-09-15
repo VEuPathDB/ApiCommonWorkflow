@@ -10,16 +10,16 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $gusHome = $self->getSharedConfig('gusHome');
-  my $email = $self->getSharedConfig('email');
   my $instance = $self->getSharedConfig('instance');
 
   my $apidbPassword = $self->getConfig('apidbPassword');
   my $xmlConfigFileName="tmpConfigFile.xml";
+  my $dbaEmail = "eupath-admin@pcbi.upenn.edu";
   my $xmlConfigFileString=
 "
 <tuningProps>
   <password>$apidbPassword</password>
-  <dbaEmail>eupath-admin@pcbi.upenn.edu</dbaEmail>
+  <dbaEmail>$dbaEmail</dbaEmail>
   <dblink>alt.login_comment</dblink>
   <schema>ApidbTuning</schema>
 </tuningProps>
