@@ -29,13 +29,12 @@ sub run {
     opendir(MERCATORDIR,"$workflowDataDir/$mercatorOutputsDir") or $self->error("Could not open $workflowDataDir/$mercatorOutputsDir for reading.\n");
 
     foreach my $pairDir (readdir MERCATORDIR){
-	next if ($pairDir =~ m/^\./);
-	    $self->runCmd(0,"mkdir -p $outputDir/$pairDir");
-	    if (!$test) {
-		$self->runCmd($test,"cp -R $workflowDataDir/$mercatorOutputsDir/$pairDir/alignments $outputDir/$pairDir");
-		$self->runCmd($test,"cp -R $workflowDataDir/$mercatorDir/$pairDir/*.agp $outputDir/$pairDir");
-	    }
-	}
+      next if ($pairDir =~ m/^\./);
+      $self->runCmd(0,"mkdir -p $outputDir/$pairDir");
+      if (!$test) {
+	$self->runCmd($test,"cp -R $workflowDataDir/$mercatorOutputsDir/$pairDir/alignments $outputDir/$pairDir");
+	$self->runCmd($test,"cp -R $workflowDataDir/$mercatorOutputsDir/$pairDir/*.agp $outputDir/$pairDir");
+      }
     }
 }
 

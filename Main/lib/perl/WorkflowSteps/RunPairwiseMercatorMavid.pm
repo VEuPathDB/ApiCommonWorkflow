@@ -20,6 +20,7 @@ sub run {
     my $mercatorInputsDir = $self->getParamValue('mercatorInputsDir'); # holds lots of .gff and .fasta files
     my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir'); # will hold a dir per pair
     my $mercatorCacheDir = $self->getParamValue('mercatorCacheDir'); # will hold a dir per pair
+    my $mercatorTmpDir = $self->getParamValue('mercatorTmpDir'); # will hold temp inputs for mercator
 
     my $cndSrcBin = $self->getConfig('cndSrcBin');
     my $mavid = $self->getConfig('mavidExe');
@@ -36,8 +37,8 @@ sub run {
     my $isDraftHash = $self->getIsDraftHash(\@organismAbbrevs);  # hash of 0/1 for each organism
 
     # create and clean out needed dirs
-    $self->runCmd(0, "rm -r $workflowDataDir/$mercatorOutputDir") if -e "$workflowDataDir/$mercatorOutputDir";
-    mkdir("$workflowDataDir/$mercatorOutputDir");
+    $self->runCmd(0, "rm -r $workflowDataDir/$mercatorOutputsDir") if -e "$workflowDataDir/$mercatorOutputsDir";
+    mkdir("$workflowDataDir/$mercatorOutputsDir");
 
     $self->runCmd($test, "rm -r $workflowDataDir/$mercatorTmpDir") if -e "$workflowDataDir/$mercatorTmpDir";
     mkdir("$workflowDataDir/$mercatorTmpDir");
@@ -50,8 +51,8 @@ sub run {
 	foreach my $orgB (@organismAbbrevs) {
 
 	    next unless $orgA > $orgB;  # only do each pair once, and don't do self-self
-	    
-	    my $pairOuputDir = "$workflowDataDir/$mercatorOutputDir/${orgA}-${orgB}";
+
+	    my $pairOutputDir = "$workflowDataDir/$mercatorOutputsDir/${orgA}-${orgB}";
 
 	    if ($test) {
 		$self->runCmd(0,"mkdir $pairOutputDir");
