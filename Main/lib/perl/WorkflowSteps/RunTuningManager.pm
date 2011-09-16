@@ -29,7 +29,7 @@ sub run {
   close F;
   my $cmd;
 
-      $cmd = "tuningManager --instance '$instance' --propFile $xmlConfigFileName --doUpdate --tables 'GeneId,GeneAttributes,FeatureLocation' --cleanupAge 0";
+      $cmd = "tuningManager --instance '$instance' --propFile $xmlConfigFileName --doUpdate --tables 'GeneId,GeneAttributes,FeatureLocation,SequenceAttributes' --cleanupAge 0";
 
 
   if ($undo){
