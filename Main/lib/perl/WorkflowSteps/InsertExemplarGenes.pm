@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::CreateGenesForGeneFeatures;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertExemplarGenes;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -20,12 +20,6 @@ sub run {
 
    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CreateGenesForGeneFeatures", $args);
 }
-
-sub getParamsDeclaration {
-    return ('inputFile',
-           );
-}
-
 
 sub getConfigDeclaration {
     return (
