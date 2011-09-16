@@ -39,7 +39,7 @@ sub run {
                as defline,
                ns.sequence
            FROM dots.nasequence ns,
-                apidb.sequenceattributes sa
+                apidbtuning.sequenceattributes sa
           WHERE ns.na_sequence_id = sa.na_sequence_id
             AND sa.database_name in ($extDbNameList) AND sa.database_version in ($extDbRlsVerList)
             AND sa.is_top_level = 1";

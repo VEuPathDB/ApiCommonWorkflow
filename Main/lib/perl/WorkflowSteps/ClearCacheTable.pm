@@ -20,7 +20,7 @@ sub run {
       
   $organismSql= "organism='$organismFullName'" unless ($organismFullName eq '');
 
-  $deprecatedSql = "is_deprecated=$deprecated" if (lc($cacheTable) eq 'apidb.genedetail');
+  $deprecatedSql = "is_deprecated=$deprecated" if (lc($cacheTable) eq 'apidbtuning.genedetail');
 
   if ($organismSql && $deprecatedSql){
 

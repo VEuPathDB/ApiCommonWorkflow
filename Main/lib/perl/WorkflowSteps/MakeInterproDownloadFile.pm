@@ -42,7 +42,7 @@ sub run {
     sres.externaldatabase xd1,
     sres.externaldatabaserelease xdr1,
     dots.nasequence ns,
-    apidb.featurelocation fl
+    apidbtuning.featurelocation fl
   WHERE
    gf.external_database_release_id = $genomeDbRlsId
      AND gf.na_feature_id = t.parent_id 

@@ -52,7 +52,7 @@ sub run {
                   taaf.translation_start,
                   taaf.translation_stop - taaf.translation_start + 1)
            FROM apidb.featurelocation fl,
-                apidb.geneattributes gf,
+                apidbtuning.geneattributes gf,
                 dots.transcript t,
                 dots.splicednasequence snas,
                 dots.translatedaafeature taaf,

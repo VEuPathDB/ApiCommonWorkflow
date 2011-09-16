@@ -41,7 +41,7 @@ sub run {
             dots.translatedaasequence taas,
             sres.taxonname tn,
             sres.sequenceontology so,
-            apidb.featurelocation fl,
+            apidbtuning.featurelocation fl,
             dots.nasequence enas
       WHERE m.na_feature_id = taaf.na_feature_id
         AND taaf.aa_sequence_id = taas.aa_sequence_id
