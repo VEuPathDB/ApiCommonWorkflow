@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::runMercatorMavid;
+package ApiCommonWorkflow::Main::WorkflowSteps::RunMercatorMavid;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
