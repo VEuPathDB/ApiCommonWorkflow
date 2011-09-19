@@ -11,6 +11,7 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $projectName = $self->getParamValue('projectName');
   my $projectVersion = $self->getParamValue('projectVersion');
+  my $useSpeciesName = $self->getBooleanParamValue('useSpeciesName');
   my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  my $dataName = $self->getParamValue('dataName');
 
   # extra params for this step
@@ -21,6 +22,10 @@ sub run {
 
   # get download site file
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+  if ($useSpeciesName) {
+    $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
+  }
+
   my $downloadFileDir = "$websiteFilesDir/$downloadSiteRelativeDir/$organismNameForFiles/fasta";
   my $inputDownloadFile = "$downloadFileDir/$projectName-${projectVersion}_${organismNameForFiles}_$dataName.fasta";
 

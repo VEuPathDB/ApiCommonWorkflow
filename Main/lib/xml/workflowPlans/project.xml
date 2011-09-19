@@ -24,7 +24,6 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
   <step name="makeComparativeGenomicsDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
     <paramValue name="dataDir">$$comparativeGenomicsInputDir$$</paramValue>
-    <depends name="makeDataDir"/>
   </step>
 
   <datasetTemplate class="organism">
@@ -65,12 +64,12 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
     <step name="${organismAbbrev}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">${organismAbbrev}</paramValue>
-      <depends name="common"/>      
     </step>
 
-    <step name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="$$isReferenceStrain$$">
-      <paramValue name="dataDir">${organismAbbrevReferenceStrain}_StrainsComparisonDir</paramValue>
-      <depends name="common"/>      
+    <!-- each organism creates this step, but all are ignored except the one
+         made by the ref strain. -->
+    <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}">
+      <paramValue name="dataDir">${organismAbbrev}_StrainsComparisonDir</paramValue>
     </step>
 
     <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
@@ -113,7 +112,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsGlobal name="SO_RSRC"/>
     </subgraph>
 
-    <!-- we include the ref strain as a prefix so we use it in a dependsPattern for strain comparison -->
+    <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
     <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -122,7 +121,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
       <paramValue name="comparativeGenomicsDir">$$comparativeGenomicsInputDir$$</paramValue>
       <paramValue name="includeInComparativeGenomics">${includeInComparativeGenomics}</paramValue>
-      <paramValue name="strainsComparisonDir">${organismAbbrevReferenceStrain}_StrainsComparisonDir</paramValue>
+      <paramValue name="strainsComparisonDir">${referenceStrainOrganismAbbrev}_StrainsComparisonDir</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
     </subgraph>
@@ -181,7 +180,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="geneModelFileForSsa">${organismAbbrev}/loadGenome/geneModelForSsa.txt</paramValue>
       <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
       <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
-      <depends name="${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_LoadGeneAliases" xmlFile="${projectName}/${organismAbbrev}/geneAliases.xml" excludeIfXmlFileDoesNotExist="true">
@@ -221,13 +220,13 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="hasDeprecatedGenes">${hasDeprecatedGenes}</paramValue>
       <paramValue name="genomeTopLevelSoTerms">${genomeTopLevelSoTerms}</paramValue>
       <depends name="${organismAbbrev}_PostLoadGenome"/>
-      <depends name="${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
 
   </datasetTemplate>
 
   <subgraph name="ComparativeGenomics" xmlFile="$$projectName$$/comparativeGenomics.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
     <paramValue name="comparativeGenomicsInputDir">$$comparativeGenomicsInputDir$$</paramValue>
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
     <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
@@ -238,8 +237,9 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
   <datasetTemplate class="referenceStrain">
     <prop name="organismAbbrev"/>      <!-- same as referenceStrainOrganismAbbrev -->
  
-    <subgraph name="${organismAbbrev}_strainComparison" xmlFile="strainComparison.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml">
+      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="referenceStrainOrganismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="strainsComparisonDir">${organismAbbrev}_StrainsComparisonDir</paramValue>
       <dependsPattern name="${organismAbbrev}*_MakeAndMaskTopLevelGenome"/>
     </subgraph>

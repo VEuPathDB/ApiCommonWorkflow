@@ -16,6 +16,7 @@ sub run {
   # get parameters
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $organelleName = $self->getParamValue('organelleName');
+  my $useSpeciesName = $self->getBooleanParamValue('useSpeciesName');
   # this is relative to the website files dir.
   # it will look something like downloadSite/ToxoDB/release-6.3
   my $relativeDir = $self->getParamValue('relativeDir');
@@ -25,6 +26,11 @@ sub run {
 
   my $organismNameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+
+  if ($useSpeciesName) {
+    $organismNameForFiles =
+      $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
+  }
 
   if ($organelleName) {
       $organismNameForFiles .= "-$organelleName";

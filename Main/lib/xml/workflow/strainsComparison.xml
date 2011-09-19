@@ -3,8 +3,8 @@
     <param name="referenceStrainOrganismAbbrev"/>
     <param name="strainsComparisonDir"/>
 
-    <constant name="mercatorOutputDir">$$dataDir$$/mercatorOutput</constant>
     <constant name="dataDir">$$parentDataDir$$/$$referenceStrainOrganismAbbrev$$_strainsComparison</constant>
+    <constant name="mercatorOutputDir">$$dataDir$$/mercatorOutput</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -16,15 +16,15 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="makeExemplarGenesFileFromMercator" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenesFileFromMercator" >
+    <step name="makeGeneInstanceClusters" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneInstanceClusters" >
       <paramValue name="mercatorOutputDir">$$mercatorOutputDir$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/allGenes.txt</paramValue>
       <depends name="runMercatorMavid"/>
     </step>
 
-    <step name="createGenesForGeneFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateGenesForGeneFeatures" stepLoadTypes="plugin">
+    <step name="insertExemplarGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExemplarGenes" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/allGenes.txt</paramValue>   
-      <depends name="makeGenesFileFromMercator"/>
+      <depends name="makeGeneInstanceClusters"/>
     </step>
 
 </workflowGraph>

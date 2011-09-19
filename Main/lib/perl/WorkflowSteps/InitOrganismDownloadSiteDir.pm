@@ -24,14 +24,14 @@ sub run {
   # this is relative to the website files dir.
   # it will look something like downloadSite/ToxoDB/release-6.3
   my $relativeDir = $self->getParamValue('relativeDir');
-  my $makeSpeciesDir = $self->getBooleanParamValue('makeSpeciesDir');
+  my $useSpeciesName = $self->getBooleanParamValue('useSpeciesName');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $organismNameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
 
-  if ($makeSpeciesDir) {
+  if ($useSpeciesName) {
     $organismNameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
   }

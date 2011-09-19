@@ -12,6 +12,15 @@
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="organelleName">$$organelleName$$</paramValue>
+    <paramValue name="useSpeciesName">false</paramValue>
+  </step>
+
+  <!-- used for species-level files, such as ESTs -->
+  <step name="initSpeciesDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitOrganismDownloadSiteDir" includeIf="$$isReferenceStrain$$">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="organelleName"></paramValue>
+    <paramValue name="useSpeciesName">true</paramValue>
   </step>
 
   <step name="makeDownloadSiteFastaDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrganismWebsiteSubdir">
@@ -19,14 +28,19 @@
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="subDir">fasta</paramValue>
     <paramValue name="organelleName">$$organelleName$$</paramValue>
+    <paramValue name="useSpeciesName">false</paramValue>
     <depends name="initOrganismDownloadSiteDir"/>
   </step>
 
+
+  <!-- used for species-level files, such as ESTs -->
   <step name="makeDownloadSiteSpeciesFastaDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSpeciesWebsiteSubdir" includeIf="$$isReferenceStrain$$">
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="subDir">fasta</paramValue>
-    <depends name="initOrganismDownloadSiteDir"/>
+    <paramValue name="organelleName"></paramValue>
+    <paramValue name="useSpeciesName">true</paramValue>
+    <depends name="initSpeciesDownloadSiteDir"/>
   </step>
 
   <step name="makeDownloadSiteTxtDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrganismWebsiteSubdir">
@@ -34,6 +48,7 @@
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="subDir">txt</paramValue>
     <paramValue name="organelleName">$$organelleName$$</paramValue>
+    <paramValue name="useSpeciesName">false</paramValue>
     <depends name="initOrganismDownloadSiteDir"/>
   </step>
 
@@ -42,6 +57,7 @@
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="subDir">gff</paramValue>
     <paramValue name="organelleName">$$organelleName$$</paramValue>
+    <paramValue name="useSpeciesName">false</paramValue>
     <depends name="initOrganismDownloadSiteDir"/>
   </step>
 
@@ -50,12 +66,21 @@
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="subDir">transcriptExpression</paramValue>
     <paramValue name="organelleName">$$organelleName$$</paramValue>
+    <paramValue name="useSpeciesName">false</paramValue>
     <depends name="initOrganismDownloadSiteDir"/>
   </step>
 
   <step name="initOrganismWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitOrganismWebServicesDir">
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+     <paramValue name="useSpeciesName">false</paramValue>
+ </step>
+
+  <!-- used for species-level files, such as ESTs -->
+  <step name="initSpeciesWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitOrganismWebServicesDir" includeIf="$$isReferenceStrain$$">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="useSpeciesName">true</paramValue>
   </step>
 
   <step name="makeWebServicesBlastDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrganismWebsiteSubdir" excludeIf="$$isOrganelle$$">
@@ -63,7 +88,18 @@
     <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
     <paramValue name="subDir">blast</paramValue>
     <paramValue name="organelleName"></paramValue>
+    <paramValue name="useSpeciesName">false</paramValue>
     <depends name="initOrganismWebServicesDir"/>
+  </step>
+
+  <!-- used for species-level files, such as ESTs -->
+  <step name="makeSpeciesWebServicesBlastDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrganismWebsiteSubdir" includeIf="$$isReferenceStrain$$">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="subDir">blast</paramValue>
+    <paramValue name="organelleName"></paramValue>
+    <paramValue name="useSpeciesName">true</paramValue>
+    <depends name="initSpeciesWebServicesDir"/>
   </step>
 
   <step name="makeWebServicesMotifDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrganismWebsiteSubdir" excludeIf="$$isOrganelle$$">
@@ -71,6 +107,7 @@
     <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
     <paramValue name="subDir">motif</paramValue>
     <paramValue name="organelleName"></paramValue>
+    <paramValue name="useSpeciesName">false</paramValue>
     <depends name="initOrganismWebServicesDir"/>
   </step>
 
