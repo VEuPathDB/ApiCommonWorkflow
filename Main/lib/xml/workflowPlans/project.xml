@@ -69,7 +69,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <!-- each organism creates this step, but all are ignored except the one
          made by the ref strain. -->
     <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}">
-      <paramValue name="dataDir">${organismAbbrev}_StrainsComparisonDir</paramValue>
+      <paramValue name="dataDir">${organismAbbrev}_strainsComparisonInput</paramValue>
     </step>
 
     <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
@@ -121,7 +121,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
       <paramValue name="comparativeGenomicsDir">$$comparativeGenomicsInputDir$$</paramValue>
       <paramValue name="includeInComparativeGenomics">${includeInComparativeGenomics}</paramValue>
-      <paramValue name="strainsComparisonDir">${referenceStrainOrganismAbbrev}_StrainsComparisonDir</paramValue>
+      <paramValue name="strainsComparisonInput">${referenceStrainOrganismAbbrev}_strainsComparisonDir</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
     </subgraph>
@@ -240,7 +240,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml">
       <paramValue name="parentDataDir"></paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${organismAbbrev}</paramValue>
-      <paramValue name="strainsComparisonDir">${organismAbbrev}_StrainsComparisonDir</paramValue>
+      <paramValue name="strainsComparisonDir">${organismAbbrev}_strainsComparisonInput</paramValue>
       <dependsPattern name="${organismAbbrev}*_MakeAndMaskTopLevelGenome"/>
     </subgraph>
 
