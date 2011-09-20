@@ -12,16 +12,15 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
-
-  my $sql = "select sa.source_id||':1-'||sa.length||'_strand=+', ns.sequence
-             from ApiDBTuning.sequenceattributes sa, dots.nasequence ns
-             where sa.na_sequence_id = ns.na_sequence_id
-             and sa.NCBI_TAX_ID = $ncbiTaxonId and is_top_level = 1";
-
-
-
-
-  my $workflowDataDir = $self->getWorkflowDataDir();
+  my $sql = 
+    "select sa.source_id, ns.sequence
+     from apidbtuning.sequenceattributes sa, dots.nasequence ns
+     where sa.na_sequence_id in (
+       select na_sequence_id
+       from apidbtuning.featurelocation
+       where is_top_level = 1)
+     and sa.na_sequence_id = ns.na_sequence_id
+     and sa.NCBI_TAX_ID = $ncbiTaxonId;"
 
     if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
@@ -33,12 +32,6 @@ sub run {
 	}
     }
   }
-
-sub getParamsDeclaration {
-  return ('organismAbbrev',
-	  'outputFile'
-	 );
-}
 
 sub getConfigDeclaration {
   return (
