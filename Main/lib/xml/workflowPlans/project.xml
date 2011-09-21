@@ -52,7 +52,6 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <prop name="runExportPred"/>
     <prop name="taxonHierarchyForBlastxFilter"/>
     <prop name="skipGenomeAnalysis"/>
-    <prop name="includeInComparativeGenomics"/>
 
     <prop name="genomeTopLevelSoTerms"/>
 
@@ -120,8 +119,8 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="insertVirtualSeqFromAgpFile">${insertVirtualSeqFromAgpFile}</paramValue>
       <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
       <paramValue name="comparativeGenomicsDir">$$comparativeGenomicsInputDir$$</paramValue>
-      <paramValue name="includeInComparativeGenomics">${includeInComparativeGenomics}</paramValue>
-      <paramValue name="strainsComparisonInput">${referenceStrainOrganismAbbrev}_strainsComparisonDir</paramValue>
+      <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
+      <paramValue name="strainsComparisonInputDir">${referenceStrainOrganismAbbrev}_strainsComparisonInput</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
     </subgraph>
@@ -225,7 +224,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
   </datasetTemplate>
 
-  <subgraph name="ComparativeGenomics" xmlFile="$$projectName$$/comparativeGenomics.xml">
+  <subgraph name="comparativeGenomics" xmlFile="$$projectName$$/comparativeGenomics.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="comparativeGenomicsInputDir">$$comparativeGenomicsInputDir$$</paramValue>
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
@@ -236,8 +235,9 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
   <!-- it depends on all make and mask genomes for this organism (they all have the ref strain as a prefix) -->
   <datasetTemplate class="referenceStrain">
     <prop name="organismAbbrev"/>      <!-- same as referenceStrainOrganismAbbrev -->
+    <prop name="isAnnotatedGenome"/>  <!-- if ref strain is annotated -->
  
-    <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml">
+    <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml" includeIf="${isAnnotatedGenome}">
       <paramValue name="parentDataDir"></paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="strainsComparisonDir">${organismAbbrev}_strainsComparisonInput</paramValue>

@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid;
+package ApiCommonWorkflow::Main::WorkflowSteps::RunMercatorMavid;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -6,142 +6,86 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
-    my ($self, $test, $undo) = @_;
+  my ($self, $test, $undo) = @_;
 
-    # find all the organisms to process in the mercator inputs dir produced earlier in the workflow.
-    # the dir should have a .gff and .fasta for each organism (and only that).
+  my $mercatorInputsDir = $self->getParamValue('mercatorInputsDir'); # holds lots of .gff and .fasta files
+  my $mercatorOutputDir = $self->getParamValue('mercatorOutputDir');
 
-    # for each pair we create a tmp dir to pass to mercator.  it holds the pair's input files.
-    # mercator writes its output in that dir
+  my $cndSrcBin = $self->getConfig('cndSrcBin');
+  my $mavid = $self->getConfig('mavidExe');
 
-    # however, we first check to see if we have a current output dir in the cache.  if so use it,
-    # else, really run mercator, and copy the outputs to the cache
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $mercatorInputsDir = $self->getParamValue('mercatorInputsDir'); # holds lots of .gff and .fasta files
-    my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir'); # will hold a dir per pair
-    my $mercatorCacheDir = $self->getParamValue('mercatorCacheDir'); # will hold a dir per pair
-    my $mercatorTmpDir = $self->getParamValue('mercatorTmpDir'); # will hold temp inputs for mercator
+  if ($undo) {
+    $self->runCmd(0, "rm -fr $workflowDataDir/$mercatorOutputDir");
+    return;
+  }
 
-    my $cndSrcBin = $self->getConfig('cndSrcBin');
-    my $mavid = $self->getConfig('mavidExe');
+  my @organismAbbrevs = $self->findOrganismAbbrevs("$workflowDataDir/$mercatorInputsDir"); # tests .fasta and .gff existence
 
-    my $workflowDataDir = $self->getWorkflowDataDir();
+  my $isDraftHash = $self->getIsDraftHash(\@organismAbbrevs); # hash of 0/1 for each organism
 
-    if ($undo) {
-	$self->runCmd(0, "rm -fr $workflowDataDir/$mercatorOutputsDir");
-	return;
-    }
+  $self->runCmd(0, "rm -r $workflowDataDir/$mercatorOutputDir") if -e "$workflowDataDir/$mercatorOutputDir";
 
-    my @organismAbbrevs = $self->findOrganismAbbrevs("$workflowDataDir/$mercatorInputsDir"); # tests .fasta and .gff existence
-
-    my $isDraftHash = $self->getIsDraftHash(\@organismAbbrevs);  # hash of 0/1 for each organism
-
-    # create and clean out needed dirs
-    $self->runCmd(0, "rm -r $workflowDataDir/$mercatorOutputsDir") if -e "$workflowDataDir/$mercatorOutputsDir";
-    mkdir("$workflowDataDir/$mercatorOutputsDir");
-
-    $self->runCmd($test, "rm -r $workflowDataDir/$mercatorTmpDir") if -e "$workflowDataDir/$mercatorTmpDir";
-    mkdir("$workflowDataDir/$mercatorTmpDir");
-
-    my $cacheDir = "$workflowDataDir/$mercatorCacheDir";
-    mkdir("$workflowDataDir/$mercatorCacheDir");
+  # copy inputs to output dir, as runMercator writes its output to its input dir
+  $self->runCmd(0, "cp -r $workflowDataDir/$mercatorInputsDir $workflowDataDir/$mercatorOutputDir");
 
 
-    foreach my $orgA (@organismAbbrevs) {
-	foreach my $orgB (@organismAbbrevs) {
+  my @dashT;
+  my @dashDorN;
+  foreach my $org (@organismAbbrevs) {
+    push(@dashT, "$org:0.1");
+    my $draftFlag = $isDraftHash->{$org}? '-d' : '-n';
 
-	    next unless $orgA > $orgB;  # only do each pair once, and don't do self-self
+    push(@dashDorN, "$draftFlag $org");
+  }
+  my $t = join(',', @dashT);
+  my $dn = join(' ', @dashDorN);
+  my $command = "runMercator  -t '($t);' -p $workflowDataDir/$mercatorOutputDir -c $cndSrcBin -m $mavid $dn";
+  $self->runCmd($test,$command);
 
-	    my $pairOutputDir = "$workflowDataDir/$mercatorOutputsDir/${orgA}-${orgB}";
+  # remove input files from output dir
+  $self->runCmd($test,"rm $workflowDataDir/$mercatorOutputDir/*.gff");
+  $self->runCmd($test,"rm $workflowDataDir/$mercatorOutputDir/*.fasta");
 
-	    if ($test) {
-		$self->runCmd(0,"mkdir $pairOutputDir");
-		$self->runCmd(0,"echo hello > $pairOutputDir/${orgA}-${orgB}.align");
-		next;
-	    } 
-
-	    if ($self->cacheHit("$orgA, orgB, $workflowDataDir/$mercatorInputsDir, $cacheDir")) {
-		$self->runCmd($test, "cp $cacheDir/${orgA}-${orgB} $pairOutputDir");
-	    } else {
-
-		#  set up tmp dir with input files
-		my $pairTmpDir = "$workflowDataDir/$mercatorTmpDir/${orgA}-${orgB}";
-		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgA}.* $pairTmpDir");
-		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgB}.* $pairTmpDir");
-
-		my $draftFlagA = $isDraftHash->{$orgA}? '-d' : '-n';
-		my $draftFlagB = $isDraftHash->{$orgB}? '-d' : '-n';
-
-		my $command = "runMercator  -t '($orgA:0.1,$orgB:0.1);' -p $pairTmpDir -c $cndSrcBin -m $mavid $draftFlagA $orgA $draftFlagB $orgB";
-		$self->runCmd($test,$command);
-
-		# move selected output from tmp dir to the real output dir
-		$self->runCmd($test,"cp $pairTmpDir/*.align $pairOutputDir");
-		$self->runCmd($test,"cp $pairTmpDir/*.agp $pairOutputDir");
-		$self->runCmd($test,"cp -r $pairTmpDir/alignments $pairOutputDir");
-
-		# delete tmp dir
-		$self->runCmd($test,"rm -r $pairTmpDir");
-
-		# and copy real output dir to cache
-		$self->runCmd($test, "cp $pairOutputDir $cacheDir");
-	    }
-	}
-    }
 }
 
 sub findOrganismAbbrevs {
-    my ($self, $mercatorInputsDir) = @_;
-    
-    opendir(INPUT, $mercatorInputsDir) or $self->error("Could not open mercator inputs dir '$mercatorInputsDir' for reading.\n");
+  my ($self, $mercatorInputsDir) = @_;
 
-    my %hash;
-    my $gffCount;
-    foreach my $file (readdir INPUT){
-	next if ($file =~ m/^\./);
-	if ($file =~ /(\S+)\.fasta$/) {
-	    $hash{$1} = 1;               # remember this orgAbbrev
-	} elsif ($file =~ /(\S+)\.gff$/) { 
-	    $hash{$1} || $self->error("No matching .fasta file for $mercatorInputsDir/$file");
-	    $gffCount++;
-	} else {
-	    $self->error("Unexpected file (neither .gff or .fasta): $mercatorInputsDir/$file");
-	}
+  opendir(INPUT, $mercatorInputsDir) or $self->error("Could not open mercator inputs dir '$mercatorInputsDir' for reading.\n");
+
+  my %hash;
+  my $gffCount;
+  foreach my $file (readdir INPUT) {
+    next if ($file =~ m/^\./);
+    if ($file =~ /(\S+)\.fasta$/) {
+      $hash{$1} = 1;		# remember this orgAbbrev
+    } elsif ($file =~ /(\S+)\.gff$/) { 
+      $hash{$1} || $self->error("No matching .fasta file for $mercatorInputsDir/$file");
+      $gffCount++;
+    } else {
+      $self->error("Unexpected file (neither .gff or .fasta): $mercatorInputsDir/$file");
     }
-    $self->error("Mismatched number of .fasta and .gff files in $mercatorInputsDir") unless $gffCount == keys(%hash);
-    $self->error("Empty mercator inputs dir: $mercatorInputsDir") unless $gffCount;
-    return keys(%hash);
+  }
+  $self->error("Mismatched number of .fasta and .gff files in $mercatorInputsDir") unless $gffCount == keys(%hash);
+  $self->error("Empty mercator inputs dir: $mercatorInputsDir") unless $gffCount;
+  return keys(%hash);
 }
 
 sub getIsDraftHash {
-    my ($self, $organismAbbrevs) = @_;
+  my ($self, $organismAbbrevs) = @_;
 
-    my $hash = {};
-    foreach my $organismAbbrev (@$organismAbbrevs) {
-	$hash->{$organismAbbrev} = $self->getOrganismInfo($organismAbbrev)->getIsDraftGenome();
-    }
-    return $hash;
-}
-
-# we make the bold assumption that nobody has 'touched' the cache dir timestamp, ie, that it
-# accurately reflects the age of the cache entry
-sub cacheHit {
-    my ($self, $orgA, $orgB, $cacheDir, $mercatorInputDir, $test) = @_;
-    my $pairName = "${orgA}-${orgB}";
-
-    # -M is a perl built-in function to return a file's age
-    my $cacheIsCurrent = -e "$cacheDir/$pairName" 
-	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgA.fasta" # cache is younger 
-	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgA.gff"
-	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgB.fasta"
-	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgB.gff";
-    $self->runCmd($test,"rm -r $cacheDir/$pairName") if !$cacheIsCurrent;
-    return $cacheIsCurrent;
+  my $hash = {};
+  foreach my $organismAbbrev (@$organismAbbrevs) {
+    $hash->{$organismAbbrev} = $self->getOrganismInfo($organismAbbrev)->getIsDraftGenome();
+  }
+  return $hash;
 }
 
 sub getConfigDeclaration {
-    return (
-	# [name, default, description]
+  return (
+	  # [name, default, description]
 
-	);
+	 );
 }

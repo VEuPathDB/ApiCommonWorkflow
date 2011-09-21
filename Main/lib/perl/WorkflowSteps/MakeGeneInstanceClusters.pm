@@ -9,7 +9,6 @@ sub run {
     my ($self, $test, $undo) = @_;
     my $mercatorOutputDir = $self->getParamValue('mercatorOutputDir');
     my $outputFile = $self->getParamValue('outputFile');
-    my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
 
     my $cndSrcBin = $self->getConfig('cndSrcBin');
 
@@ -22,25 +21,25 @@ sub run {
 
     # get ext db rls ids for each strain's primary genome. discover strain abbrevs from input dir
     my @extDbRlsIds;
-    opendir(DIR, $mercatorOutputDir) or $self->error("Could not open mercator output dir '$mercatorOutputDir'.\n");
+    opendir(DIR, "$workflowDataDir/$mercatorOutputDir") or $self->error("Could not open mercator output dir '$workflowDataDir/$mercatorOutputDir'.\n");
     foreach my $file (readdir DIR){
 	next unless ($file =~ /^(.+)\.agp/);    # we get one .agp per strain.
 	my $organismAbbrev = $1;
-	my $extDbName = "$organismAbbrev_primary_genome_RSRC";  # generate resource name
+	my $extDbName = "${organismAbbrev}_primary_genome_RSRC";  # generate resource name
 	my $extDbVersion = $self->getExtDbVersion($test, $extDbName);
-	my $extDbRlsId = $self->getExtDbRlsSpec($test,"$extDbName|$extDbVersion");
+	my $extDbRlsId = $self->getExtDbRlsId($test,"$extDbName|$extDbVersion");
 	push(@extDbRlsIds, $extDbRlsId);
     }
 
-    $extDbRlsIdStr =~ join(",",@extDbRlsIds);
+    my $extDbRlsIdsStr = join(",",@extDbRlsIds);
     if ($test) {
 	$self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-	$extDbRlsIdStr = "WHO_KNOWS";
-    } 
+	$extDbRlsIdsStr = "WHO_KNOWS";
+    }
 
-    $cmd = "makeGenesFromMercator --mercatorOutputDir $workflowDataDir/$mercatorDataDir --t 'protein_coding' --cndSrcBin $cndSrcBin --uga --verbose --extDbRelIds $extDbRlsIdStr > $workflowDataDir/$outputFile.Clusters";
+    my $cmd = "makeGenesFromMercator --mercatorOutputDir $workflowDataDir/$mercatorOutputDir --t 'protein_coding' --cndSrcBin $cndSrcBin --uga --verbose --extDbRelIds $extDbRlsIdsStr > $workflowDataDir/$outputFile.Clusters";
     $self->runCmd($test, $cmd);
-    $cmd = "makeGenesFromMercator --mercatorOutputDir $workflowDataDir/$mercatorDataDir --t 'rna_coding'  --cndSrcBin $cndSrcBin --uga --verbose --extDbRelIds $extDbRlsIdStr >> $workflowDataDir/$outputFile.Clusters";
+    $cmd = "makeGenesFromMercator --mercatorOutputDir $workflowDataDir/$mercatorOutputDir --t 'rna_coding'  --cndSrcBin $cndSrcBin --uga --verbose --extDbRelIds $extDbRlsIdsStr >> $workflowDataDir/$outputFile.Clusters";
     $self->runCmd($test, $cmd);
     $cmd = "grep ^cluster_ $workflowDataDir/$outputFile.Clusters >$workflowDataDir/$outputFile";
     $self->runCmd($test,$cmd);
