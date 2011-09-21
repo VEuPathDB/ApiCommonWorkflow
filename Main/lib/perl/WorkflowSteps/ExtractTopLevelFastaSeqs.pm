@@ -22,6 +22,9 @@ sub run {
      and sa.na_sequence_id = ns.na_sequence_id
      and sa.NCBI_TAX_ID = $ncbiTaxonId";
 
+   my $workflowDataDir = $self->getWorkflowDataDir();
+
+
     if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     } else {
