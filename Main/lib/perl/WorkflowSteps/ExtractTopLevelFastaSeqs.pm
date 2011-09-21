@@ -20,7 +20,7 @@ sub run {
        from apidbtuning.featurelocation
        where is_top_level = 1)
      and sa.na_sequence_id = ns.na_sequence_id
-     and sa.NCBI_TAX_ID = $ncbiTaxonId;"
+     and sa.NCBI_TAX_ID = $ncbiTaxonId";
 
     if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
