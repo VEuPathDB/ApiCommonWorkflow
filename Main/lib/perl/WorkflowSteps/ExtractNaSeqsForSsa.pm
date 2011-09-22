@@ -13,10 +13,15 @@ sub run {
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
-  my $sql = "select sa.source_id||':1-'||sa.length||'_strand=+',ns.sequence 
-             from ApidbTuning.SequenceAttributes sa, dots.nasequence ns 
-             where sa.na_sequence_id = ns.na_sequence_id
-             and sa.NCBI_TAX_ID = $ncbiTaxonId and is_top_level = 1";
+  my $sql = "select ns.source_id||':1-'||ns.length||'_strand=+', ns.sequence
+             from dots.NaSequence ns, sres.Taxon t, sres.SequenceOntology so
+             where ns.taxon_id = t.taxon_id
+               and t.ncbi_tax_id = $ncbiTaxonId
+               and ns.sequence_ontology_id = so.sequence_ontology_id
+               and so.term_name != 'EST'
+               and so.term_name != 'oligo'
+               and so.term_name != 'mature_transcript'
+               and so.term_name != 'assembly'";
 
 
   my $workflowDataDir = $self->getWorkflowDataDir();
