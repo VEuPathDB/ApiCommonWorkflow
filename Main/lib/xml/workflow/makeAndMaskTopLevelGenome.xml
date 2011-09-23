@@ -21,11 +21,13 @@
     <depends name="makeDataDir"/> 
   </subgraph>
 
+  <!-- FeatureLocation, GeneAttributes and SequenceAttributes (for top level) -->
   <step name="runTuningManager"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager" includeIf="$$insertVirtualSeqFromAgpFile$$">
       <depends name="insertVirtualSeqFromAgpFile"/> 
   </step>
 
+  <!-- ApiDBTuning.SequenceAttributes -->
   <step name="extractTopLevelFastaSeqs"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTopLevelFastaSeqs">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -74,6 +76,7 @@
       <depends name="mirrorFromCluster"/>
     </step>
 
+  <!-- ApiDB.FeatureLocation -->
   <step name="makeMercatorGffFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMercatorGffFile" includeIf="$$isAnnotatedGenome$$">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>

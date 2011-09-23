@@ -25,6 +25,14 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
+  <!-- GeneId -->
+  <step name="runTuningManager"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager">
+      <paramValue name="tables">GeneId</paramValue>
+      <depends name="${organismAbbrev}_GeneDB_GFF_gene_aliases_RSRC"/> 
+  </step>
+
+
     <step name="makeGeneAliasesDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesDownloadFile">
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
@@ -35,7 +43,7 @@
       <paramValue name="descripString">$$geneAliasDescripString$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="dbRefNAFeatureExtDbSpec">${organismAbbrev}_GeneDB_GFF_gene_aliases_RSRC|${version}</paramValue>
-      <depends name="${organismAbbrev}_GeneDB_GFF_gene_aliases_RSRC"/>
+      <depends name="runTuningManager"/>
     </step>
   </datasetTemplate>
 

@@ -9,6 +9,8 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  my $tables = $self->getParamValue('tables');
+
   my $gusHome = $self->getSharedConfig('gusHome');
   my $email = $self->getSharedConfig('email');
   my $instance = $self->getSharedConfig('instance');
@@ -27,7 +29,7 @@ sub run {
   close F;
   my $cmd;
 
-      $cmd = "tuningManager --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail '$email' --cleanupAge 0";
+      $cmd = "tuningManager --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail '$email' --tables $tables";
 
 
   if ($undo){
