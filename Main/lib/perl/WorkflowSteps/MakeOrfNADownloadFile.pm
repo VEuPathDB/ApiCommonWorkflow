@@ -7,14 +7,11 @@ use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
-  my @extDbRlsIds;
-  push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeExtDbRlsSpec'))) if $self->getParamValue('genomeExtDbRlsSpec');
-#  push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec'))) if $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec'); FIX THIS see redmine #4306
   my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
-
   my $length = $self->getParamValue('minOrfLength');
 
-  my $dbRlsIds = join(",", @extDbRlsIds);
+  my $taxonId = $self->getOrganismInfo($organismAbbrev)->getTaxonId();
+
 
   my $sql = <<"EOF";
     SELECT
@@ -44,12 +41,12 @@ sub getDownloadFileCmd {
         AND m.na_feature_id = fl.na_feature_id
         AND fl.is_top_level = 1
         AND enas.na_sequence_id = fl.na_sequence_id 
+        AND enas.taxon_id = $taxonId
         AND enas.taxon_id = tn.taxon_id
         AND tn.name_class = 'scientific name'
         AND m.sequence_ontology_id = so.sequence_ontology_id
         AND so.term_name = 'ORF'
         AND taas.length >= $length
-        AND m.external_database_release_id in ($dbRlsIds)
 EOF
 
 

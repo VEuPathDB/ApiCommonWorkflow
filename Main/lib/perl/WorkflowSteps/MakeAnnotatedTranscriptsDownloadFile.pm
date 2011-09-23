@@ -10,22 +10,14 @@ sub getDownloadFileCmd {
   my ($self, $downloadFileName, $test) = @_;
 
   # get parameters
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $organismSource = $self->getParamValue('organismSource');
   my $deprecated = $self->getBooleanParamValue('isDeprecatedGenes');
-  my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $soTermIdsOrNames = $self->getParamValue('soTermIdsOrNames');
 
   $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
+  my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
 
-  my (@dbnames,@dbvers);
-  my ($name,$ver) = $self->getExtDbInfo($test, $genomeExtDbRlsSpec) if $genomeExtDbRlsSpec;
-  push (@dbnames,$name);
-  push (@dbvers,$ver);
-#  ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec')) if $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');
-  push (@dbnames,$name);
-  push (@dbvers,$ver);
-  my $names = join (",",map{"'$_'"} @dbnames);
-  my $vers = join (",",map{"'$_'"} @dbvers);
   my $soIds =  $self->getSoIds($test, $soTermIdsOrNames) if $soTermIdsOrNames;
 
   my $sql = <<"EOF";
@@ -59,8 +51,7 @@ sub getDownloadFileCmd {
         AND t.na_sequence_id = snas.na_sequence_id
         AND gf.na_feature_id = fl.na_feature_id
         AND gf.so_term_name != 'repeat_region'
-        AND gf.external_db_name in ($names)
-        AND gf.external_db_version in ($vers)
+        AND gf.ncbi_tax_id = $ncbiTaxonId
         AND fl.is_top_level = 1
         AND gf.is_deprecated = $deprecated
 EOF

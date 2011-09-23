@@ -11,21 +11,11 @@ sub getDownloadFileCmd {
     my $organismSource = $self->getParamValue('organismSource');
     my $deprecated = ($self->getParamValue('isDeprecatedGenes') eq 'true') ? 1 :0;
 
+    my $organismAbbrev = $self->getParamValue('organismAbbrev')
+    my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
     $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
-    my (@dbnames,@dbvers);
-    my ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeExtDbRlsSpec')) if $self->getParamValue('genomeExtDbRlsSpec');
-    push (@dbnames,$name);
-    push (@dbvers,$ver);
-#    ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec')) if $self->getParamValue('genomeVirtualSeqsExtDbRlsSpec');
-    ($name,$ver) = "FIX THIS see redmine #4306";
-    push (@dbnames,$name);
-    push (@dbvers,$ver);
-    my $names = join (",", map{"'$_'"} @dbnames);
-    my $vers = join (",", map{"'$_'"} @dbvers);
-    my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
-
-    my $deprecatedGene;
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
 
     my $sql = <<"EOF";
      SELECT '$organismSource'
@@ -62,8 +52,7 @@ sub getDownloadFileCmd {
         AND gf.na_feature_id = fl.na_feature_id
         AND gf.so_term_name != 'repeat_region'
         AND gf.so_term_name = 'protein_coding'
-        AND gf.external_db_name in ($names) 
-        AND gf.external_db_version in ($vers)
+        AND gf.ncbi_tax_id = $ncbiTaxonId 
         AND t.na_feature_id = taaf.na_feature_id
         AND fl.is_top_level = 1
         AND gf.is_deprecated = $deprecated
