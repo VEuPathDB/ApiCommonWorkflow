@@ -15,14 +15,14 @@ sub new {
 
     my $sql = "select name_for_filenames, abbrev_strain, abbrev_public, is_draft_genome
              from apidb.organism
-             where organismAbbrev = $organismAbbrev";
+             where organismAbbrev = '$organismAbbrev'";
 
     my $stmt = $workflowStep->runSql($sql);
     my ($nameForFiles, $strainAbbrev, $publicAbbrev, $isDraftGenome) = $stmt->fetchrow_array(); 
 
     $sql = "select tn.name, t.ncbi_tax_id, o.taxon_id
              from sres.taxonname tn, sres.taxon t, apidb.organism o
-             where o.organismAbbrev = $organismAbbrev
+             where o.organismAbbrev = '$organismAbbrev'
              and t.taxon_id = o.taxon_id
              and tn.taxon_id = t.taxon_id
              and tn.name_class = 'scientific name'";
