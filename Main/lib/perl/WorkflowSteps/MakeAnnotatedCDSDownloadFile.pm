@@ -11,7 +11,7 @@ sub getDownloadFileCmd {
     my $organismSource = $self->getParamValue('organismSource');
     my $deprecated = ($self->getParamValue('isDeprecatedGenes') eq 'true') ? 1 :0;
 
-    my $organismAbbrev = $self->getParamValue('organismAbbrev')
+    my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
     $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
