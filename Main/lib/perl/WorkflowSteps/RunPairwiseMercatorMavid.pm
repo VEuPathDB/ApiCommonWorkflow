@@ -109,7 +109,7 @@ sub findOrganismAbbrevs {
     }
     $self->error("Mismatched number of .fasta and .gff files in $mercatorInputsDir") unless keys(%gffHash) == keys(%fastaHash);
     $self->error("Empty mercator inputs dir: $mercatorInputsDir") unless $gffCount;
-    return keys(%hash);
+    return keys(%gffHash);
 }
 
 sub getIsDraftHash {
