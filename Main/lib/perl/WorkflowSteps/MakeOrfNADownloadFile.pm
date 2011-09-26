@@ -7,6 +7,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
   my $length = $self->getParamValue('minOrfLength');
 

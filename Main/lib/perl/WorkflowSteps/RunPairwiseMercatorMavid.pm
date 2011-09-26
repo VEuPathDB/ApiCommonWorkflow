@@ -95,20 +95,19 @@ sub findOrganismAbbrevs {
     
     opendir(INPUT, $mercatorInputsDir) or $self->error("Could not open mercator inputs dir '$mercatorInputsDir' for reading.\n");
 
-    my %hash;
-    my $gffCount;
+    my %fastaHash;
+    my %gffHash;
     foreach my $file (readdir INPUT){
 	next if ($file =~ m/^\./);
 	if ($file =~ /(\S+)\.fasta$/) {
-	    $hash{$1} = 1;               # remember this orgAbbrev
+	    $fastaHash{$1} = 1;              
 	} elsif ($file =~ /(\S+)\.gff$/) { 
-	    $hash{$1} || $self->error("No matching .fasta file for $mercatorInputsDir/$file");
-	    $gffCount++;
+	    $gffHash{$1} = 1;              
 	} else {
 	    $self->error("Unexpected file (neither .gff or .fasta): $mercatorInputsDir/$file");
 	}
     }
-    $self->error("Mismatched number of .fasta and .gff files in $mercatorInputsDir") unless $gffCount == keys(%hash);
+    $self->error("Mismatched number of .fasta and .gff files in $mercatorInputsDir") unless keys(%gffHash) == keys(%fastaHash);
     $self->error("Empty mercator inputs dir: $mercatorInputsDir") unless $gffCount;
     return keys(%hash);
 }
