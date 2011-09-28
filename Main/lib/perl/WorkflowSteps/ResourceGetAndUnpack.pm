@@ -50,7 +50,7 @@ sub getResource {
 	if ($test) {
 	    -e "$manualDeliveryDir/$manualFileOrDir" || $self->error("Manual delivery file or dir '$manualDeliveryDir/$manualFileOrDir' does not exist");
 	} else {
-	    my $cmd="cp -r $manualDeliveryDir/$manualFileOrDir $targetDir";
+	    my $cmd="cp -Lr $manualDeliveryDir/$manualFileOrDir $targetDir";
 	    $self->runCmd($test, $cmd);
 	}
     }
