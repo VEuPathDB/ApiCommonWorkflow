@@ -24,7 +24,7 @@ sub run {
   my $isDraftGenome = $self->getParamValue('isDraftGenome');
   my $hasTemporaryNcbiTaxonId = $self->getParamValue('hasTemporaryNcbiTaxonId');
 
-  my $args = "--fullName $fullName --projectName $project --ncbiTaxonId $ncbiTaxonId --speciesNcbiTaxonId $speciesNcbiTaxonId --abbrev $abbrev --abbrevPublic $abbrevPublic --nameForFilenames $nameForFilenames --abbrevOrthomcl $abbrevOrthomcl --abbrevStrain  $abbrevStrain --abbrevRefStrain  $abbrevRefStrain --isAnnotatedGenome  $isAnnotatedGenome --isReferenceStrain  $isReferenceStrain --isDraftGenome $isDraftGenome --hasTemporaryNcbiTaxonId $hasTemporaryNcbiTaxonId";
+  my $args = "--fullName '$fullName' --projectName $project --ncbiTaxonId $ncbiTaxonId --speciesNcbiTaxonId $speciesNcbiTaxonId --abbrev $abbrev --abbrevPublic $abbrevPublic --nameForFilenames $nameForFilenames --abbrevOrthomcl $abbrevOrthomcl --abbrevStrain  $abbrevStrain --abbrevRefStrain  $abbrevRefStrain --isAnnotatedGenome  $isAnnotatedGenome --isReferenceStrain  $isReferenceStrain --isDraftGenome $isDraftGenome --hasTemporaryNcbiTaxonId $hasTemporaryNcbiTaxonId";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertOrganism", $args);
 
