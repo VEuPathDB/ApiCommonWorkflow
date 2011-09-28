@@ -198,7 +198,7 @@ Since this plugin step FAILED, please CLEAN UP THE DATABASE by calling:
 
   ga $undoPlugin --algInvocationId PLUGIN_ALG_INV_ID_HERE --workflowContext --commit
 
-Find the plugin's row_algorithm_invocation_id by looking in the step log
+Find the plugin's row_algorithm_invocation_id by looking above in this step log
 
 (You need to do this cleanup EVEN IF the plugin did not write any data to *its*
 tables.  ga most likely wrote to WorkflowStepAlgInvocation, and those rows
