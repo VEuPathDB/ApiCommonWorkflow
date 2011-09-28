@@ -19,12 +19,17 @@ sub run {
   my $abbrevOrthomcl = $self->getParamValue('abbrevOrthomcl');
   my $abbrevStrain = $self->getParamValue('abbrevStrain');
   my $abbrevRefStrain = $self->getParamValue('abbrevRefStrain');
-  my $isAnnotatedGenome = $self->getParamValue('isAnnotatedGenome');
-  my $isReferenceStrain = $self->getParamValue('isReferenceStrain');
-  my $isDraftGenome = $self->getParamValue('isDraftGenome');
-  my $hasTemporaryNcbiTaxonId = $self->getParamValue('hasTemporaryNcbiTaxonId');
+  my $isAnnotatedGenome = $self->getBooleanParamValue('isAnnotatedGenome');
+  my $isReferenceStrain = $self->getBooleanParamValue('isReferenceStrain');
+  my $isDraftGenome = $self->getBooleanParamValue('isDraftGenome');
+  my $hasTemporaryNcbiTaxonId = $self->getBooleanParamValue('hasTemporaryNcbiTaxonId');
 
-  my $args = "--fullName '$fullName' --projectName $project --ncbiTaxonId $ncbiTaxonId --speciesNcbiTaxonId $speciesNcbiTaxonId --abbrev $abbrev --abbrevPublic $abbrevPublic --nameForFilenames $nameForFilenames --abbrevOrthomcl $abbrevOrthomcl --abbrevStrain  $abbrevStrain --abbrevRefStrain  $abbrevRefStrain --isAnnotatedGenome  $isAnnotatedGenome --isReferenceStrain  $isReferenceStrain --isDraftGenome $isDraftGenome --hasTemporaryNcbiTaxonId $hasTemporaryNcbiTaxonId";
+  my $ag = $isAnnotatedGenome? '--isAnnotatedGenome' : '';
+  my $rs = $isReferenceStrain? '--isReferenceStrain' : '';
+  my $dg = $isDraftGenome? '--isDraftGenome' : '';
+  my $tnt = $hasTemporaryNcbiTaxonId? '--hasTemporaryNcbiTaxonId' : '';
+
+  my $args = "--fullName '$fullName' --projectName $project --ncbiTaxonId $ncbiTaxonId --speciesNcbiTaxonId $speciesNcbiTaxonId --abbrev $abbrev --abbrevPublic $abbrevPublic --nameForFilenames $nameForFilenames --abbrevOrthomcl $abbrevOrthomcl --abbrevStrain  $abbrevStrain --abbrevRefStrain  $abbrevRefStrain $ag $rs $dg $tnt";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertOrganism", $args);
 
