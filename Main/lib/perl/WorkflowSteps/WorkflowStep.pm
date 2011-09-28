@@ -179,8 +179,8 @@ sub runPlugin {
     my $commit = $args." --commit";
 
     my $cmd;
+    my $undoPlugin = $self->getUndoPlugin($plugin);
     if ($undo) {
-      my $undoPlugin = $self->getUndoPlugin($plugin);
       my $algInvIds = $self->getAlgInvIds();
       if($commit =~ /undoTables/){
 	  $cmd = "ga $undoPlugin --algInvocationId '$algInvIds' --workflowContext $commit";
@@ -189,9 +189,23 @@ sub runPlugin {
       }
 
     } else {
+;
       $cmd = "ga $plugin --workflowstepid $self->{id} $commit --comment \"$comment\"";
     }
-    $self->runCmd($test, $cmd);
+    my $msgForError=
+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Since this plugin step FAILED, please CLEAN UP THE DATABASE by calling:
+
+  ga $undoPlugin --algInvocationId PLUGIN_ALG_INV_ID_HERE --workflowContext --commit
+
+Find the plugin's row_algorithm_invocation_id by looking in the step log
+
+(You need to do this cleanup EVEN IF the plugin did not write any data to *its*
+tables.  ga most likely wrote to WorkflowStepAlgInvocation, and those rows
+must be cleaned out.)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+";
+    $self->runCmd($test, $cmd, $msgForError);
 }
 
 # individual steps can override this method if needed
