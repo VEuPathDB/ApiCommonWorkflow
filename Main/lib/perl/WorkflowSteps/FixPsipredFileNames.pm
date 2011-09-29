@@ -10,7 +10,6 @@ sub run {
 
     my $inputDir = $self->getParamValue('inputDir');
     my $outputDir = $self->getParamValue('outputDir');
-
     my $workflowDataDir = $self->getWorkflowDataDir();
 
     if ($undo) {
@@ -25,8 +24,8 @@ sub run {
 	    my @files = readdir(DIR);
 	    foreach my $file (@files) {
 		next if $file=~ /^\.\.?$/;  # skip . and ..
-		my $original = $file;
-		$file =~ s/(\S+)_(\d)/$1-$2/g;
+		my $original = $file;2
+		$file =~ s/_DASH_/-/g;
 		$self->runCmd($test, "mv $workflowDataDir/$outputDir/$original $workflowDataDir/$outputDir/$file");
 	    }
 	}
