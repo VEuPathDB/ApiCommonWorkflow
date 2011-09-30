@@ -13,10 +13,13 @@ sub run {
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
     my $workflowDataDir = $self->getWorkflowDataDir();
+
     my $targetDir = "$workflowDataDir/$dataDirPath";
 
+    $self->error("Target dir '$targetDir' does not exist") unless -d $targetDir;
+
     if ($undo) {
-      $self->runCmd(0, "rm -fr $targetDir");
+      $self->runCmd(0, "rm -fr $targetDir/*");
     } else {
 	$self->getResource($test, $dataSource, $targetDir);
 	$self->unpackResource($test, $dataSource, $targetDir);
@@ -34,8 +37,6 @@ sub getResource {
 
     die "Resource $dataSourceName must provide either <wgetArgs> or <manualGet>, but not both\n"
 	unless ($WgetArgs && !$manualGet) || ($manualGet && !$WgetArgs);
-
-    $self->runCmd(0,"mkdir -p $targetDir");
 
     if ($WgetArgs) {
         my $logFile = $self->getStepDir() . "/wget.log";
