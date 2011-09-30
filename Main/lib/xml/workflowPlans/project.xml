@@ -22,6 +22,10 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
   </step>
 
+  <step name="makeProjectReleaseWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+  </step>
+
   <step name="makeComparativeGenomicsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$comparativeGenomicsInputDir$$</paramValue>
   </step>
@@ -106,6 +110,8 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
       <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
       <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <depends name="makeProjectReleaseDownloadDir"/>
+      <depends name="makeProjectReleaseWebServicesDir"/>
       <depends name="${organismAbbrev}_makeDataDir"/>
       <dependsGlobal name="taxonomy_RSRC"/> 
       <dependsGlobal name="SO_RSRC"/>

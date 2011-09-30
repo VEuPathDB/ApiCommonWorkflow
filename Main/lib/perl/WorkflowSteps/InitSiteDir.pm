@@ -17,8 +17,13 @@ sub run {
 
   my $fullPath = "$websiteFilesDir/$relativeDir";
   if ($undo) {
-      $self->runCmd(0, "rm -rf $fullPath");
+      # should be empty because dependent steps removed their files
+      $self->runCmd(0, "rmdir $fullPath");
   } else {
+      # should not exist already
+      $self->error("Website dir '$fullPath' already exists") if -e $fullPath;
+
+      # use -p because some intermediary dirs might not exist
       $self->runCmd(0, "mkdir -p $fullPath");
   }
 }

@@ -25,9 +25,12 @@ sub run {
 
   my $fullPath = "$websiteFilesDir/$relativeDir/$organismNameForFiles";
   if ($undo) {
-      $self->runCmd(0, "rm -rf $fullPath");
+      # should be empty because dependent steps removed their files
+      $self->runCmd(0, "rmdir $fullPath");
   } else {
-      $self->runCmd(0, "mkdir -p $fullPath");
+      # do not use -p.  previous steps should have created parent dirs
+      # also, this validates that the dir doesn't already exist
+      $self->runCmd(0, "mkdir $fullPath");
   }
 }
 
