@@ -28,7 +28,7 @@ sub getDownloadFileCmd {
                 ||' | organism='||
             replace( gf.organism, ' ', '_')
                 ||' | product='||
-            gf.product
+            product_name.product
                 ||' | location='||
             fl.sequence_source_id
                 ||':'||
@@ -45,7 +45,40 @@ sub getDownloadFileCmd {
                 dots.transcript t,
                 dots.splicednasequence snas,
                 ApidbTuning.FeatureLocation fl,
-                dots.nasequence ns
+                dots.nasequence ns,
+                (select gf.na_feature_id,
+                        substr(coalesce(preferred_product.product, any_product.product, gf.product, 'unspecified product'),
+                               1, 300)
+                        || case
+                             when (coalesce(preferred_name.name, any_name.name) is not null)
+                             then ' (' || coalesce(preferred_name.name, any_name.name) || ')'
+                             else ''
+                            end
+                        as product
+                 from dots.GeneFeature gf,
+                      (select na_feature_id, max(product) as product
+                       from apidb.GeneFeatureProduct
+                       where is_preferred = 1
+                       group by na_feature_id
+                      ) preferred_product,
+                      (select na_feature_id, max(product) as product
+                       from apidb.GeneFeatureProduct
+                       group by na_feature_id
+                      ) any_product,
+                      (select na_feature_id, max(name) as name
+                       from apidb.GeneFeatureName
+                       where is_preferred = 1
+                       group by na_feature_id
+                      ) preferred_name,
+                      (select na_feature_id, max(name) as name
+                       from apidb.GeneFeatureName
+                       group by na_feature_id
+                      ) any_name
+                 where gf.na_feature_id = preferred_product.na_feature_id(+)
+                   and gf.na_feature_id = any_product.na_feature_id(+)
+                   and gf.na_feature_id = preferred_name.na_feature_id(+)
+                   and gf.na_feature_id = any_name.na_feature_id(+)
+                ) product_name
       WHERE gf.na_feature_id = t.parent_id
         AND ns.na_sequence_id = fl.na_sequence_id
         AND t.na_sequence_id = snas.na_sequence_id
@@ -54,6 +87,7 @@ sub getDownloadFileCmd {
         AND gf.ncbi_tax_id = $ncbiTaxonId
         AND fl.is_top_level = 1
         AND gf.is_deprecated = $deprecated
+        and gf.na_feature_id = product_name.na_feature_id
 EOF
 
   $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
