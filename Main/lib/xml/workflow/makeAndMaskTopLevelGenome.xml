@@ -22,8 +22,8 @@
   </subgraph>
 
   <!-- FeatureLocation, GeneAttributes and SequenceAttributes (for top level) -->
-  <step name="runTuningManager"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager" includeIf="$$insertVirtualSeqFromAgpFile$$" stepLoadTypes="tuningManager">
+  <step name="makeDerivedTopLevelTables"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedTopLevelTables" includeIf="$$insertVirtualSeqFromAgpFile$$" stepLoadTypes="tuningManager">
       <depends name="insertVirtualSeqFromAgpFile"/> 
   </step>
 
@@ -32,7 +32,7 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTopLevelFastaSeqs">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="outputFile">$$topLevelFastaFile$$</paramValue>
-      <depends name="runTuningManager"/> 
+      <depends name="makeDerivedTopLevelTables"/> 
     </step>
 
     <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskTaskInputDir" includeIf="$$isAnnotatedGenome$$">
@@ -81,7 +81,7 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMercatorGffFile" includeIf="$$isAnnotatedGenome$$">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/$$organismAbbrev$$.gff</paramValue>
-       <depends name="runTuningManager"/> 
+       <depends name="makeDerivedTopLevelTables"/> 
     </step>
 
   <step name="correctReadingFrameInMercatorGffFile"
