@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::InitOrganismDownloadSiteDir;
+package ApiCommonWorkflow::Main::WorkflowSteps::InitOrganismWebsiteDir;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
