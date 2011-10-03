@@ -15,7 +15,7 @@ sub getDownloadFileCmd {
     my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
     $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
 
     my $sql = <<"EOF";
      select '$organismSource' || '|' || gf.source_id
@@ -81,9 +81,9 @@ sub getDownloadFileCmd {
         AND fl.is_top_level = 1
         AND gf.is_deprecated = $deprecated
         and gf.na_feature_id = product_name.na_feature_id
+        AND ns.sequence_ontology_id in ($soIds)
 EOF
 
-	$sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
     my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"  --verbose";
     return $cmd;
 }

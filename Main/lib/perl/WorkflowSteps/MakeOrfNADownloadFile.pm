@@ -8,7 +8,7 @@ sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
   my $length = $self->getParamValue('minOrfLength');
 
   my $taxonId = $self->getOrganismInfo($organismAbbrev)->getTaxonId();
@@ -48,10 +48,9 @@ sub getDownloadFileCmd {
         AND m.sequence_ontology_id = so.sequence_ontology_id
         AND so.term_name = 'ORF'
         AND taas.length >= $length
+        AND enas.sequence_ontology_id in ($soIds)
 EOF
 
-
-  $sql .= " and enas.sequence_ontology_id in ($soIds)" if $soIds;
    my $cmd = <<"EOF";
       gusExtractSequences --outputFile $downloadFileName \\
       --idSQL \"$sql\" \\

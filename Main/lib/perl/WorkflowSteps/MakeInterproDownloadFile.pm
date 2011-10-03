@@ -10,7 +10,7 @@ sub getDownloadFileCmd {
 
   my $genomeDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
   my $interproDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('interproExtDbRlsSpec'));
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
 
   my $sql = <<"EOF";
   SELECT gf.source_id
@@ -53,9 +53,9 @@ sub getDownloadFileCmd {
      AND df.external_database_release_id =  $interproDbRlsId
      AND xdr1.external_database_id = xd1.external_database_id 
      AND xdr1.external_database_release_id =  $interproDbRlsId
+     AND ns.sequence_ontology_id in ($soIds)
 EOF
 
-    $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
     my $cmd = " makeFileWithSql --outFile $downloadFileName --sql \"$sql\" ";
     return $cmd;
 }

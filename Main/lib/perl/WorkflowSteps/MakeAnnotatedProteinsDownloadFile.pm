@@ -27,7 +27,7 @@ sub getDownloadFileCmd {
 
   my $extDbNameList = join(",", map{"'$_'"} @extDbNames);
   my $extDbRlsVerList = join(",",map{"'$_'"} @extDbRlsVers);
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
 
   my $sql = "SELECT '$organismSource'
                 ||'|'||
@@ -102,10 +102,10 @@ sub getDownloadFileCmd {
         AND fl.is_top_level = 1
         AND gf.is_deprecated = $deprecated
         and gf.na_feature_id = product_name.na_feature_id
+        and ns.sequence_ontology_id in ($soIds)
 ";
 
 
-  $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
   my $cmd = " gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"";
     return $cmd;
 }

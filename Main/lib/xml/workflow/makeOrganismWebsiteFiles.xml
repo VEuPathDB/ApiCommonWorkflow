@@ -8,9 +8,10 @@
     <param name="genomeExtDbRlsSpec"/>
     <param name="minOrfLength"/>
     <param name="hasDeprecatedGenes"/>
-    <param name="genomeTopLevelSoTerms"/>
+    <param name="locationSoTerms"/>
     <param name="isAnnotatedGenome"/>
     <param name="skipGenomeAnalysis"/>
+    <param name="cellularLocationSoTerms"/>
 
     <constant name="dotsAssemblyDescripString">Predicted transcript sequences (NT) based on EST assemblies</constant>
     <constant name="annotatedCDSDescripString">Protein coding portion of spliced transcript sequences (NT)</constant>
@@ -26,7 +27,7 @@
     <constant name="gffDescripString">Genome sequences and annotations in GFF3 format</constant>
     <constant name="annotatedCDSsDataName">AnnotatedCDSs</constant>
 
-    <subgraph name="annotationFiles" xmlFile="makeAndFormatAnnotDownloadFiles.xml" includeIf="$$isAnnotatedGenome$$">
+    <subgraph name="annotationFiles" xmlFile="makeOrganismWebsiteFilesAnnotated.xml" includeIf="$$isAnnotatedGenome$$">
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -35,7 +36,7 @@
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="isDeprecatedGenes">false</paramValue>
-      <paramValue name="genomeTopLevelSoTerms">$$genomeTopLevelSoTerms$$</paramValue>
+      <paramValue name="cellularLocationSoTerms">$$cellularLocationSoTerms$$</paramValue>
       <paramValue name="annotatedCDSDescripString">$$annotatedCDSDescripString$$</paramValue>
       <paramValue name="annotatedTranscriptsDescripString">$$annotatedTranscriptsDescripString$$</paramValue>
       <paramValue name="annotatedProteinsDescripString">$$annotatedProteinsDescripString$$</paramValue>
@@ -43,7 +44,7 @@
       <paramValue name="annotatedCDSsDataName">$$annotatedCDSsDataName$$</paramValue>
     </subgraph>
 
-    <subgraph name="deprecatedAnnotationFiles" xmlFile="makeAndFormatAnnotDownloadFiles.xml" includeIf="$$hasDeprecatedGenes$$">
+    <subgraph name="deprecatedAnnotationFiles" xmlFile="makeOrganismWebsiteFilesAnnotated.xml" includeIf="$$hasDeprecatedGenes$$">
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -52,7 +53,7 @@
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="isDeprecatedGenes">true</paramValue>
-      <paramValue name="genomeTopLevelSoTerms">$$genomeTopLevelSoTerms$$</paramValue>
+      <paramValue name="cellularLocationSoTerms">$$cellularLocationSoTerms$$</paramValue>
       <paramValue name="annotatedCDSDescripString">$$annotatedCDSDescripString$$</paramValue>
       <paramValue name="annotatedTranscriptsDescripString">$$annotatedTranscriptsDescripString$$</paramValue>
       <paramValue name="annotatedProteinsDescripString">$$annotatedProteinsDescripString$$</paramValue>
@@ -69,7 +70,7 @@
       <paramValue name="dataName">Genome</paramValue>
       <paramValue name="descripString">$$mixedGenomicDescripString$$</paramValue>
       <paramValue name="organismSource">$$genomeSource$$</paramValue>
-      <paramValue name="soTermIdsOrNames">$$genomeTopLevelSoTerms$$</paramValue>
+      <paramValue name="cellularLocationSoTerms">$$cellularLocationSoTerms$$</paramValue>
     </step>
 
     <step name="formatMixedGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" excludeIf="$$skipGenomeAnalysis$$">
@@ -93,7 +94,7 @@
       <paramValue name="dataName">GenomeDoubleStrand</paramValue>
       <paramValue name="descripString">$$mixedGenomicDescripString$$</paramValue>
       <paramValue name="organismSource">$$genomeSource$$</paramValue>
-      <paramValue name="soTermIdsOrNames">$$genomeTopLevelSoTerms$$</paramValue>
+      <paramValue name="cellularLocationSoTerms">$$cellularLocationSoTerms$$</paramValue>
     </step>
 
     <step name="copyDoubleStrandGenomicMotifFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesMotifFastaFile" excludeIf="$$skipGenomeAnalysis$$">
@@ -115,7 +116,7 @@
       <paramValue name="dataName">ORFs_AA</paramValue>
       <paramValue name="descripString">$$orfDescripString$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="soTermIdsOrNames">$$genomeTopLevelSoTerms$$</paramValue>
+      <paramValue name="cellularLocationSoTerms">$$cellularLocationSoTerms$$</paramValue>
       <paramValue name="minOrfLength">$$minOrfLength$$</paramValue>
     </step>
 
@@ -151,7 +152,7 @@
       <paramValue name="dataName">ORFs_NA</paramValue>
       <paramValue name="descripString">$$orfNADescripString$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="soTermIdsOrNames">$$genomeTopLevelSoTerms$$</paramValue>
+      <paramValue name="cellularLocationSoTerms">$$cellularLocationSoTerms$$</paramValue>
       <paramValue name="minOrfLength">$$minOrfLength$$</paramValue>
     </step>
 
@@ -166,7 +167,7 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="interproExtDbRlsSpec">InterproscanData_RSRC|@@InterproscanData_VER@@</paramValue>
       <paramValue name="projectDB">$$projectName$$</paramValue>
-      <paramValue name="soTermIdsOrNames">$$genomeTopLevelSoTerms$$</paramValue>
+      <paramValue name="cellularLocationSoTerms">$$cellularLocationSoTerms$$</paramValue>
     </step>
 
     <step name="makeCodonUsage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCodonUsage" includeIf="$$isAnnotatedGenome$$">

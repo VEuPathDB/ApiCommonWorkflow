@@ -23,7 +23,7 @@ sub getDownloadFileCmd {
 
   my $extDbNameList = join(",", map{"'$_'"} @extDbNames);
   my $extDbRlsVerList = join(",",map{"'$_'"} @extDbRlsVers);
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
 
   my $sql = " SELECT '$organismSource'
                 ||'|'||
@@ -41,9 +41,8 @@ sub getDownloadFileCmd {
                 ApidbTuning.SequenceAttributes sa
           WHERE ns.na_sequence_id = sa.na_sequence_id
             AND sa.database_name in ($extDbNameList) AND sa.database_version in ($extDbRlsVerList)
-            AND sa.is_top_level = 1";
-
-  $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
+            AND sa.is_top_level = 1 
+            AND ns.sequence_ontology_id in ($soIds)";
   my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"  --posStrand '\\+' --negStrand '-' ";
   return $cmd;
 }
