@@ -1,6 +1,7 @@
 <workflowGraph name="makeAndMaskTopLevelGenome">
       <param name="parentDataDir"/>
       <param name="organismAbbrev"/>
+      <param name="projectName"/>
       <param name="insertVirtualSeqFromAgpFile"/>
       <param name="organismResourceXmlFile"/>
       <param name="comparativeGenomicsDir"/>
@@ -14,8 +15,9 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-  <subgraph name="insertVirtualSeqFromAgpFile" xmlFile="loadResource.xml" includeIf="$$insertVirtualSeqFromAgpFile$$">
-    <paramValue name="resourceName">$$organismAbbrev$$_primary_virtual_genome_RSRC</paramValue>
+  <!-- optional dataset.  the subgraph might be empty -->
+  <subgraph name="insertPrimaryVirtualGenome" xmlFile="$$projectName$$/$$organismAbbrev$$/primaryVirtualGenome.xml" excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/> 
@@ -23,8 +25,8 @@
 
   <!-- FeatureLocation, GeneAttributes and SequenceAttributes (for top level) -->
   <step name="makeDerivedTopLevelTables"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedTopLevelTables" stepLoadTypes="tuningManager">
-      <depends name="insertVirtualSeqFromAgpFile"/> 
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedTopLevelTables" stepLoadTypes="tuningManager">
+    <depends name="insertPrimaryVirtualSeq"/> 
   </step>
 
   <!-- ApiDBTuning.SequenceAttributes -->
