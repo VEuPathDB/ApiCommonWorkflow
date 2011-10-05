@@ -63,17 +63,17 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <prop name="genomeSize"/>
     <prop name="maxIntronSize"/>
 
-    <step name="${organismAbbrev}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <step name="${organismAbbrev}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir" groupName="${organismAbbrev}">
       <paramValue name="dataDir">${organismAbbrev}</paramValue>
     </step>
 
     <!-- each organism creates this step, but all are ignored except the one
          made by the ref strain. -->
-    <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}">
+    <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}" groupName="${organismAbbrev}">
       <paramValue name="dataDir">${organismAbbrev}_strainsComparisonInput</paramValue>
     </step>
 
-    <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" groupName="${organismAbbrev}">
       <paramValue name="fileOrDirToMirror">${organismAbbrev}</paramValue>
       <depends name="${organismAbbrev}_makeDataDir"/>
       <dependsGlobal name="initClusterHomeDir"/>
@@ -116,7 +116,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
-    <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml" groupName="${organismAbbrev}">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
@@ -129,7 +129,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <subgraph name="${organismAbbrev}_PostLoadGenome" xmlFile="postLoadGenome.xml" groupName="${organismAbbrev}">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersion">$$projectName$$</paramValue>
@@ -153,7 +153,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_specific" xmlFile="${projectName}/${organismAbbrev}/organismSpecific.xml" excludeIfXmlFileDoesNotExist="true">
+    <subgraph name="${organismAbbrev}_specific" xmlFile="${projectName}/${organismAbbrev}/organismSpecific.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -170,7 +170,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_specific_topLevel" xmlFile="${projectName}/${organismAbbrev}/organismSpecificOnTopLevelGenome.xml" excludeIfXmlFileDoesNotExist="true">
+    <subgraph name="${organismAbbrev}_specific_topLevel" xmlFile="${projectName}/${organismAbbrev}/organismSpecificOnTopLevelGenome.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -186,7 +186,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_LoadGeneAliases" xmlFile="${projectName}/${organismAbbrev}/geneAliases.xml" excludeIfXmlFileDoesNotExist="true">
+    <subgraph name="${organismAbbrev}_LoadGeneAliases" xmlFile="${projectName}/${organismAbbrev}/geneAliases.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
@@ -197,7 +197,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_dbxRefsResource" xmlFile="${projectName}/${organismAbbrev}/dbXRefs.xml" excludeIfXmlFileDoesNotExist="true">
+    <subgraph name="${organismAbbrev}_dbxRefsResource" xmlFile="${projectName}/${organismAbbrev}/dbXRefs.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
@@ -208,7 +208,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${organismAbbrev}_LoadGeneAliases"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeNuclearAndOrganelleWebsiteFiles.xml">
+    <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeNuclearAndOrganelleWebsiteFiles.xml" groupName="${organismAbbrev}">
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
