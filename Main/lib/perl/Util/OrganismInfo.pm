@@ -126,19 +126,16 @@ sub getPublicAbbrev {
 }
 
 sub getTaxonIdList {
-  my ($self, $hierarchy) = @_;
+  my ($self, $taxonId) = @_;
 
-  if ($hierarchy) {
-    my $idList = $self->{workflowStep}->runCmd($self->{test}, "getSubTaxaList --taxon_id $self->{taxonId}");
+    my $idList = $self->{workflowStep}->runCmd($self->{test}, "getSubTaxaList --taxon_id $taxonId");
+
     if ($self->{test}) {
       return "$self->{organismAbbrev}_TAXON_ID_LIST";
     } else {
       chomp($idList);
       return  $idList;
     }
-  } else {
-    return $self->getTaxonId();
-  }
 }
 
 sub getIsDraftGenome {
