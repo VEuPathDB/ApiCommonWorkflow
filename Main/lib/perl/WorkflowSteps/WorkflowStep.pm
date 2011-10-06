@@ -114,24 +114,6 @@ sub getTaxonIdFromNcbiTaxId {
   }
 }
 
-# this method is replaced by getOrganismInfo, and should be retired
-# when all api workflows use organismAbbrev as key for an organism
-sub getTaxonIdList {
-  my ($self, $test, $taxonId, $hierarchy) = @_;
-
-  if ($hierarchy) {
-    my $idList = $self->runCmd($test, "getSubTaxaList --taxon_id $taxonId");
-    if ($test) {
-      return "UNKNOWN_TAXON_ID_LIST";
-    } else {
-      chomp($idList);
-      return  $idList;
-    }
-  } else {
-    return $taxonId;
-  }
-}
-
 
 sub getSoIds {
   my ($self,  $test,$soTermIdsOrNames) = @_;
