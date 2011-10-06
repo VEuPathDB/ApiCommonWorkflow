@@ -15,7 +15,7 @@ sub run {
   my $phrapDir = $self->getConfig('phrapDir');
 
   my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
-  my $taxonIdList = $self->getTaxonIdList($test, $taxonId, $useTaxonHierarchy);
+  my $taxonIdList = $self->getTaxonIdList($test, $taxonId);
 
   my $args = "--taxon_id_list '$taxonIdList' --repeatFile $vectorFile --phrapDir $phrapDir";
 
