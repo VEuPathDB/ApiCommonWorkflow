@@ -9,7 +9,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $tables = "GeneAttribues,SequenceAttribues,FeatureLocation";
+  my $tables = "GeneAttributes,SequenceAttributes,FeatureLocation";
 
   my $gusHome = $self->getSharedConfig('gusHome');
   my $email = $self->getSharedConfig('email');
