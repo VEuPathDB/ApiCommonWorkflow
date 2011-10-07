@@ -27,8 +27,15 @@ sub run {
 
   $self->runCmd(0, "rm -r $workflowDataDir/$mercatorOutputDir") if -e "$workflowDataDir/$mercatorOutputDir";
 
+  mkdir("$workflowDataDir/$mercatorOutputDir") || $self->error("Could not make dir '$workflowDataDir/$mercatorOutputDir'\n");
+
+  mkdir("$workflowDataDir/$mercatorOutputDir/fasta") || $self->error("Could not make dir '$workflowDataDir/$mercatorOutputDir/fasta'\n");
+
+  mkdir("$workflowDataDir/$mercatorOutputDir/gff") || $self->error("Could not make dir '$workflowDataDir/$mercatorOutputDir/gff'\n");
+
   # copy inputs to output dir, as runMercator writes its output to its input dir
-  $self->runCmd(0, "cp -r $workflowDataDir/$mercatorInputsDir $workflowDataDir/$mercatorOutputDir");
+  $self->runCmd(0, "cp -r $workflowDataDir/$mercatorInputsDir/*.fasta $workflowDataDir/$mercatorOutputDir/fasta");
+  $self->runCmd(0, "cp -r $workflowDataDir/$mercatorInputsDir/*.gff $workflowDataDir/$mercatorOutputDir/gff");
 
 
   my @dashT;
