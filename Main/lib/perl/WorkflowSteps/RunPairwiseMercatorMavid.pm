@@ -38,10 +38,12 @@ sub run {
 
     # create and clean out needed dirs
     $self->runCmd(0, "rm -r $workflowDataDir/$mercatorOutputsDir") if -e "$workflowDataDir/$mercatorOutputsDir";
-    mkdir("$workflowDataDir/$mercatorOutputsDir");
+    mkdir("$workflowDataDir/$mercatorOutputsDir")
+	|| $self->error("Could not make dir '$workflowDataDir/$mercatorOutputsDir'");
 
     $self->runCmd($test, "rm -r $workflowDataDir/$mercatorTmpDir") if -e "$workflowDataDir/$mercatorTmpDir";
-    mkdir("$workflowDataDir/$mercatorTmpDir");
+    mkdir("$workflowDataDir/$mercatorTmpDir")
+	|| $self->error("Could not make dir '$workflowDataDir/$mercatorTmpDir'");
 
     my $cacheDir = "$workflowDataDir/$mercatorCacheDir";
     mkdir("$workflowDataDir/$mercatorCacheDir");
@@ -66,8 +68,14 @@ sub run {
 
 		#  set up tmp dir with input files
 		my $pairTmpDir = "$workflowDataDir/$mercatorTmpDir/${orgA}-${orgB}";
-		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgA}.* $pairTmpDir");
-		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgB}.* $pairTmpDir");
+		mkdir("$pairTmpDir") || $self->error("Failed making dir $pairTmpDir");
+		mkdir("$pairTmpDir/fasta") || $self->error("Failed making dir $pairTmpDir/fasta");
+		mkdir("$pairTmpDir/gff") || $self->error("Failed making dir $pairTmpDir/gff");
+
+		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgA}.fasta $pairTmpDir/fasta");
+		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgA}.gff $pairTmpDir/gff");
+		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgB}.fasta $pairTmpDir/fasta");
+		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgB}.gff $pairTmpDir/gff");
 
 		my $draftFlagA = $isDraftHash->{$orgA}? '-d' : '-n';
 		my $draftFlagB = $isDraftHash->{$orgB}? '-d' : '-n';
