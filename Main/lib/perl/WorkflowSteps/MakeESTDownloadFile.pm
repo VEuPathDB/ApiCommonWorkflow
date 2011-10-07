@@ -31,7 +31,7 @@ sub getDownloadFileCmd {
 	AND t.taxon_id = tn.taxon_id
 	AND tn.name_class = 'scientific name'
 	AND t.taxon_id = x.taxon_id
-	AND x.sequence_ontology_id = so.sequence_ontology_idemacs 
+	AND x.sequence_ontology_id = so.sequence_ontology_id
 	AND so.term_name = 'EST'
 EOF
 
