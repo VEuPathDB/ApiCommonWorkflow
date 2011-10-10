@@ -1054,7 +1054,14 @@
     <resource resource="OrthoMCLTree_RSRC" version="@@OrthoMCL_VER@@"
 	      plugin="ApiCommonData::Load::Plugin::InsertOrthomclTaxon">
       <manualGet fileOrDir="common/orthology/orthoMCL/%RESOURCE_VERSION%/orthomclClades.txt"/>
-      <pluginArgs>--cladeFile @@dataDir@@/%RESOURCE_VERSION%/orthomclClades.txt --speciesFile @@dataDir@@/%RESOURCE_VERSION%/orthomclTaxons.txt </pluginArgs>
+
+      <!-- use non-standard approach here to get two individual files rather
+           than the whole dir, which has some very large files we don't need -->
+      <manualGet fileOrDir="global/empty"/>
+      <unpack>cp @@manualDeliveryDir@@/common/orthology/orthoMCL/%RESOURCE_VERSION%/orthomclClades.txt @@dataDir@@</unpack>
+      <unpack>cp @@manualDeliveryDir@@/common/orthology/orthoMCL/%RESOURCE_VERSION%/orthomclTaxons.txt @@dataDir@@</unpack>
+
+      <pluginArgs>--cladeFile @@dataDir@@/orthomclClades.txt --speciesFile @@dataDir@@/orthomclTaxons.txt</pluginArgs>
     </resource>
   </datasetClass>
 
