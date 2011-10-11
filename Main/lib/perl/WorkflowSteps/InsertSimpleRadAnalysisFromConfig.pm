@@ -19,11 +19,9 @@ sub run {
 
   my $useSqlLdr =  $self->getParamValue('useSqlLdr');
 
-  my $profileSetNames =  $self->getParamValue('profileSetNames');
-
   my $workflowDataDir = $self->getWorkflowDataDir();
       
-  my $args = "--inputDir '$workflowDataDir/$analysisWorkingDir' --configFile '$workflowDataDir/$configFile' --analysisResultView $analysisResultView  --naFeatureView $naFeatureView --profileSetName '$profileSetNames'";
+  my $args = "--inputDir '$workflowDataDir/$analysisWorkingDir' --configFile '$workflowDataDir/$configFile' --analysisResultView $analysisResultView  --naFeatureView $naFeatureView";
 
   $args.=" --useSqlLdr" if($useSqlLdr eq "true"); 
 
