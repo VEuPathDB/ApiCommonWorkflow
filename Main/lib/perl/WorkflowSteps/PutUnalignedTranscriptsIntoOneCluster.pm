@@ -17,8 +17,9 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
-  my $taxonIdList = $self->getTaxonIdList($test, $taxonId);
+  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
+  my $taxonId = $organismInfo->getSpeciesTaxonId();
+  my $taxonIdList = $organismInfo->getTaxonIdList($test, $taxonId);
 
   my $targetTaxonId = $self->getTaxonIdFromNcbiTaxId($test,$targetNcbiTaxId);
 
