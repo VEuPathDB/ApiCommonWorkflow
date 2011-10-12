@@ -65,7 +65,7 @@ sub unpackResource {
     my @unpacks2 = map { _formatForCLI($_) } @$unpacks;
 
     foreach my $unpacker (@unpacks2) {
-	print STDERR "$unpacker\n";
+	$self->error("Empty unpack command") unless $unpacker;
 	$self->runCmd($test,$unpacker);
     }
 }
@@ -95,6 +95,7 @@ sub processDeclaredOutputs {
 sub _formatForCLI {
     $_[0] =~ s/\\$//gm;
     $_[0] =~ s/[\n\r]+/ /gm;
+    return $_[0];
 }
 
 
