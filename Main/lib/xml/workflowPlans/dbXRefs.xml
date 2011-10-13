@@ -5,6 +5,7 @@
   <param name="projectVersion"/>
   <param name="relativeDownloadSiteDir"/>
   <param name="parentDataDir"/>
+  <param name="proteinsFile"/>
 
   <constant name="dataDir">$$parentDataDir$$/dbXRefs</constant>
   <constant name="UniProtDescripString">Mapping between Gene IDs and UniProt Protein IDs</constant>
@@ -12,6 +13,25 @@
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
+
+  <datasetTemplate class="dbxref_NRDB">
+    <step name="findNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindNrdbXrefs">
+      <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
+      <paramValue name="nrdbFile">$$global_NRDBOutputFile$$</paramValue>
+      <paramValue name="proteinsFileRegex">^([\\w\\.]+)</paramValue>
+      <paramValue name="nrdbFileRegex">^\\|\\d+\\|(?:emb|gb|dbj|ref|sp|pdb)\\|([\\w\\.]+)\\|</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/nrdbXrefs.txt</paramValue>
+       <depends name="makeDataDir"/>
+      <dependsGlobal name="NRDB_RSRC"/>
+    </step>
+
+    <step name="loadNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadNrdbXrefs" stepLoadTypes="plugin">
+      <paramValue name="xrefsFile">$$dataDir$$/nrdbXrefs.txt</paramValue>
+      <paramValue name="dbAbbrevList">emb,gb,dbj,ref,sp,pdb</paramValue>
+      <paramValue name="nrdbExtDbRlsSpec">NRDB_RSRC|@@NRDB_VER@@</paramValue>
+      <depends name="findNrdbXrefs"/>
+    </step>
+  </datasetTemplate>
 
   <datasetTemplate class="dbxref_simple">
     <prop name="name"/>
@@ -65,6 +85,16 @@
     <paramValue name="descripString">$$UniProtDescripString$$</paramValue>
     <depends name="${organismAbbrev}_dbxref_gene2Uniprot_RSRC"/>
     </step>
+  </datasetTemplate>
+
+  <datasetTemplate class="IEDB_dbxrefs">
+    <prop name="organismAbbrev"/>
+    <subgraph name="IEDBDBxRefResource" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_dbxref_epitope_IEDB_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="IEDBResource"/>
+    </subgraph>
   </datasetTemplate>
   
 </workflowGraph>

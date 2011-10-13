@@ -417,7 +417,7 @@
   <datasetClass class="IEDB_dbxrefs">
     <prop name="organismAbbrev"/>
 
-    <graphFile planFile="epitopes.xml"/>
+    <graphFile planFile="dbXRefs.xml"/>
 
     <resource resource="${organismAbbrev}_dbxref_epitope_IEDB_RSRC"
 	      version="@@${organismAbbrev}_epitope_IEDB_VER@@"
@@ -425,7 +425,7 @@
 
       <manualGet fileOrDir="global/empty"/>
 
-      <unpack>createEpitopeDbRefFile --inputDir @@dataDir@@/../${organismAbbrev}_epitope_IEDB_RSRC/IEDB_Epitopes_fixed --outputFile @@dataDir@@/dbRefs.txt</unpack>
+      <unpack>createEpitopeDbRefFile --inputDir @@manualDeliveryDir@@/common/epitope/IEDB/@@${organismAbbrev}_epitope_IEDB_VER@@/final/IEDB_Epitopes_fixed --outputFile @@dataDir@@/dbRefs.txt</unpack>
 
       <pluginArgs>--DbRefMappingFile @@dataDir@@/dbRefs.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier, remark" --tableName "AASequenceDbRef"</pluginArgs>
     </resource>
@@ -1183,6 +1183,10 @@
     <getAndUnpackOutput file="@@dataDir@@/nr"/>
     <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
   </resource>
+  </datasetClass>
+
+  <datasetClass class="dbxref_NRDB">
+    <graphFile planFile="dbXRefs.xml"/>
   </datasetClass>
 
   <datasetClass class="blatAlignmentQuality">
