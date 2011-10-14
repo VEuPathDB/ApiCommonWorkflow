@@ -10,42 +10,32 @@ sub run {
 
     my $inputSortedFile = $self->getParamValue('inputSortedFile');
     my $inputGeneModelFile = $self->getParamValue('inputGeneModelFile');
-    my $outputIntensityFile = $self->getParamValue('outputIntensityFile');
+    my $outputIntensityFileBasename = $self->getParamValue('outputIntensityFileBasename');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
     my ($uniqueSorted,$nuSorted) = split(',',$inputSortedFile);
 
-    my $tempOutputFile="$workflowDataDir/$outputIntensityFile"."ori";
+    my $tempOutputFile="$workflowDataDir/$outputIntensityFileBasename.tmp";
 
     my $cmd1 = "rum2quantifications.pl $workflowDataDir/$inputGeneModelFile $workflowDataDir/$uniqueSorted $workflowDataDir/$nuSorted $tempOutputFile";
 
-    my $cmd2 = "featurequant2geneprofiles.pl $workflowDataDir/$outputIntensityFile $tempOutputFile  -genes";
+    my $cmd2 = "featurequant2geneprofiles.pl $workflowDataDir/$outputIntensityFileBasename $tempOutputFile  -genes";
 
     if ($undo) {
-	$self->runCmd(0, "rm -f $workflowDataDir/$outputIntensityFile.min");
-        $self->runCmd(0, "rm -f $workflowDataDir/$outputIntensityFile.max");
-        $self->runCmd(0, "rm -f $workflowDataDir/$outputIntensityFile.intori");
+	$self->runCmd(0, "rm -f $workflowDataDir/$outputIntensityFileBasename.*");
     } else {
 	if ($test) {
 	    $self->testInputFile('inputUniqueSortedFile', "$workflowDataDir/$uniqueSorted");
 	    $self->testInputFile('inputNUSortedFile', "$workflowDataDir/$nuSorted");
 	    $self->testInputFile('inputGeneModelFile', "$workflowDataDir/$inputGeneModelFile");
-	    $self->runCmd(0,"echo test > $workflowDataDir/$outputIntensityFile.min");
-            $self->runCmd(0,"echo test > $workflowDataDir/$outputIntensityFile.max");
+	    $self->runCmd(0,"echo test > $workflowDataDir/$outputIntensityFileBasename.min");
+            $self->runCmd(0,"echo test > $workflowDataDir/$outputIntensityFileBasename.max");
 	}
 	$self->runCmd($test, $cmd1);
 	$self->runCmd($test, $cmd2);
     }
-}
-
-sub getParamsDeclaration {
-  return (
-      'inputGeneModelFile',
-      'inputSortedFile',
-      'outputIntensityFile',
-      );
 }
 
 sub getConfigDeclaration {

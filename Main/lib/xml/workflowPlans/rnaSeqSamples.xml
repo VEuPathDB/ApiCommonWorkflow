@@ -1,6 +1,6 @@
 <workflowGraph name="">
-  <param name="parentDataDir"/>
-  <param name="samplesDataDir"/>
+  <param name="experimentDataDir"/>
+  <param name="samplesOutputDir"/>
   <param name="organismAbbrev"/>
   <param name="projectName"/>
   <param name="geneModelFileForSsa"/>
@@ -15,22 +15,22 @@
   <param name="limitNU"/>
   <param name="numInsertions"/>
 
-  <constant name="experimentResourcesDataDir">$$parentDataDir$$/$$experimentResourceName$$</constant>
+  <constant name="experimentResourcesDataDir">$$experimentDataDir$$/$$experimentResourceName$$</constant>
 
   <datasetTemplate class="rnaSeqSample">
     <prop name="experimentName"/>
     <prop name="sampleName"/>
-    <prop name="sampleOrder"/>
 
     <subgraph name="${sampleName}_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">$$organismAbbrev$$_${experimentName}_${sampleName}_rnaSeqSample_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
-      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
     </subgraph>
 
 
     <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
-      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="outputDir">$$outputDir$$</paramValue>
       <paramValue name="sampleName">${sampleName}</paramValue>
       <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
       <paramValue name="shortSeqsFile">$$experimentResourcesDataDir$$/final/${sampleName}.txt</paramValue>
@@ -44,9 +44,10 @@
       <paramValue name="SNPs">false</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
+      <paramValue name="isRnaSeq">true</paramValue>
       <depends name="${sampleName}_RSRC"/>
     </subgraph>
-  
+
    <!-- might have to reformat the count and mapping stats files made by RUM -->
 
   </datasetTemplate>

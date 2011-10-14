@@ -9,23 +9,24 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  my $analysisConfigFile = $self->getParamValue('analysisConfigFile');
   my $inputDir = $self->getParamValue('inputDir');
   my $outputDir = $self->getParamValue('outputDir');
   my $geneProbeMappingTabFile = $self->getParamValue('geneProbeMappingTabFile');
   my $geneProbeMappingVendorFile = $self->getParamValue('geneProbeMappingVendorFile');
-  my $expectCdfFile = $self->getParamValue('expectCdfFile');
-  my $expectNdfFile = $self->getParamValue('expectNdfFile');
+  my $expectCdfFile = $self->getBooleanParamValue('expectCdfFile');
+  my $expectNdfFile = $self->getBooleanParamValue('expectNdfFile');
 
   my $mappingFile = ($expectCdfFile || $expectNdfFile)?
       $geneProbeMappingVendorFile : $geneProbeMappingTabFile;
 
+  # mapping file is optional.  not used for rna seq
+  my $input_file = $mappingFile?
+      "--input_file $workflowDataDir/$mappingFile" : "";
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = <<"EOF";
-doTranscriptExpression.pl --xml_file $workflowDataDir/$inputDir/analysisConfig.xml \\
---main_directory $workflowDataDir/$outputDir \\
---input_file $workflowDataDir/$mappingFile
-EOF
+  my $cmd = "doTranscriptExpression.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir $input_file";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputDir");
@@ -33,7 +34,8 @@ EOF
       $self->runCmd(0, "mkdir $workflowDataDir/$outputDir");
       if ($test) {
 	  $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-	  $self->testInputFile('geneProbeMappingFile', "$workflowDataDir/$mappingFile");
+	  $self->testInputFile('geneProbeMappingFile', "$workflowDataDir/$mappingFile") if $mappingFile;
+	  $self->testInputFile('analysisConfigFile', "$workflowDataDir/$analysisConfigFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/profiles.txt");
       } else {
 	  makeSymLinks($inputDir, $outputDir);

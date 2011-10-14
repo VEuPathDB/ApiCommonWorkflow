@@ -1,5 +1,6 @@
 <workflowGraph name="analyzeRnaSeqOrChipSeqSample_modify">
     <param name="parentDataDir"/>
+    <param name="outputDir"/>
     <param name="sampleName"/>
     <param name="geneModelFileForSsa"/>
     <param name="shortSeqsFile"/>
@@ -12,8 +13,9 @@
     <param name="limitNU"/>
     <param name="strandSpecific"/>
     <param name="variableLengthReads"/>
+    <param name="isRnaSeq"/>
 
-    <constant name="dataDir">$$parentDataDir$$/analyze$$sampleName$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/analyze_$$sampleName$$</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -52,7 +54,7 @@
     </step>
 
 
-    <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+    <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin" includeIf="isRnaSeq">
       <paramValue name="inputFile">$$dataDir$$/master/mainresult/junctions_all.rum</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
@@ -155,6 +157,30 @@
       <paramValue name="isReversed">no</paramValue>
       <depends name="reformatNUPSCoverageFile"/>
     </step>
+
+    <!-- outputs basename.min and basename.max -->
+    <step name="makeIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeIntensityFile" includeIf="$$isRnaSeq$$">
+      <paramValue name="inputSortedFile">$$dataDir$$/master/mainresult/RUM_Unique.sorted,$$dataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
+      <paramValue name="inputGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="outputIntensityFileBasename">$$outputDir$$/$$sampleName$$_intensity</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="generateMappingStatsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile">
+      <paramValue name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
+      <paramValue name="outputFile">$$outputDir$$/$$sampleName$$.mappingStats</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
+    <step name="generateCountFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateCountFile">
+      <paramValue name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.sorted</paramValue>
+      <paramValue name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
+      <paramValue name="geneAnnotationFile">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="outputFile">$$outputDir$$/$$sampleName$$.count</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step>
+
 
 </workflowGraph>
 
