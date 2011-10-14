@@ -12,7 +12,7 @@ sub run {
   # get param values
   my $fileOrDirToMirror = $self->getParamValue('fileOrDirToMirror');
   my $outputDir = $self->getParamValue('outputDir');
-  my $outputFiles = $self->getParamValue('outputFiles');
+  my $outputFiles;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
