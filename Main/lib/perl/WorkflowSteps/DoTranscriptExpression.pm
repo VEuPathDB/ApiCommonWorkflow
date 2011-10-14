@@ -16,7 +16,7 @@ sub run {
 
   my $cmd = <<"EOF";
 doTranscriptExpression.pl --xml_file $workflowDataDir/$inputDir/analysisConfig.xml \\
---main_directory $workflowDataDir/$inputDir \\
+--main_directory $workflowDataDir/$inputDir/ \\
 --input_file $workflowDataDir/$probeGenesMappingFile
 EOF
 
