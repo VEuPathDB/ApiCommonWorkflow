@@ -1,4 +1,4 @@
-<workflowGraph name="analyzeRnaSeqOrChipSeqSample_modify">
+<workflowGraph name="">
     <param name="parentDataDir"/>
     <param name="outputDir"/>
     <param name="sampleName"/>
@@ -54,7 +54,7 @@
     </step>
 
 
-    <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin" includeIf="isRnaSeq">
+    <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin" includeIf="$$isRnaSeq$$">
       <paramValue name="inputFile">$$dataDir$$/master/mainresult/junctions_all.rum</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">$$rnaSeqExtDbRlsSpec$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
@@ -161,7 +161,7 @@
     <!-- outputs basename.min and basename.max -->
     <step name="makeIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeIntensityFile" includeIf="$$isRnaSeq$$">
       <paramValue name="inputSortedFile">$$dataDir$$/master/mainresult/RUM_Unique.sorted,$$dataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
-      <paramValue name="inputGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="inputGeneModelFile">$$geneModelFileForSsa$$</paramValue>
       <paramValue name="outputIntensityFileBasename">$$outputDir$$/$$sampleName$$_intensity</paramValue>
       <depends name="runRUMOnCluster"/>
     </step>

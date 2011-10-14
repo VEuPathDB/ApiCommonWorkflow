@@ -20,6 +20,8 @@ sub run {
   my $mappingFile = ($expectCdfFile || $expectNdfFile)?
       $geneProbeMappingVendorFile : $geneProbeMappingTabFile;
 
+  my $workflowDataDir = $self->getWorkflowDataDir();
+
   # mapping file is optional.  not used for rna seq
   my $input_file = $mappingFile?
       "--input_file $workflowDataDir/$mappingFile" : "";
