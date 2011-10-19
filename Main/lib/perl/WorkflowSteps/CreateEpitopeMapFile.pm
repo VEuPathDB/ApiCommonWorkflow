@@ -44,6 +44,8 @@ sub run {
 	if ($test) {
 	  $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
 	  $self->testInputFile('inputTabFile', "$tabFile");
+	  $self->runCmd($test, "echo hello > $mappingFile");
+
 	}else{
 	  $self->error("Output file '$mappingFile' already exists") if -e $mappingFile;
 	  $self->error("Output file '$fastaFile' already exists") if -e $fastaFile;
