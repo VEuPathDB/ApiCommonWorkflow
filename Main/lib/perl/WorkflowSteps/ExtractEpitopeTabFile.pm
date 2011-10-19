@@ -22,6 +22,7 @@ sub run {
 	}
 	$self->runCmd($test,"extractEpitopeTabFile $workflowDataDir/$outputFile $speciesTaxonId");
     }
+}
 
 
 sub getConfigDeclaration {

@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::CreateEpitopeMapFile;
+package ApiCommonWorkflow::Main::WorkflowSteps::MapEpitopesToProteins;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -44,7 +44,7 @@ sub run {
 	if ($test) {
 	  $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
 	  $self->testInputFile('inputTabFile', "$tabFile");
-	  $self->runCmd($test, "echo hello > $mappingFile");
+	  $self->runCmd(0, "echo hello > $mappingFile");
 
 	}else{
 	  $self->error("Output file '$mappingFile' already exists") if -e $mappingFile;
