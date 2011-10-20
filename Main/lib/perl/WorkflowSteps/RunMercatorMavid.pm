@@ -23,6 +23,11 @@ sub run {
 
   my @organismAbbrevs = $self->findOrganismAbbrevs("$workflowDataDir/$mercatorInputsDir"); # tests .fasta and .gff existence
 
+  if (scalar(@organismAbbrevs) == 1) {
+      $self->log("Only found 1 organism in input dir $inputsDir.  No comparision needed.  Exiting.");
+      return;
+  }
+
   my $isDraftHash = $self->getIsDraftHash(\@organismAbbrevs); # hash of 0/1 for each organism
 
   $self->runCmd(0, "rm -r $workflowDataDir/$mercatorOutputDir") if -e "$workflowDataDir/$mercatorOutputDir";
@@ -51,9 +56,11 @@ sub run {
   my $command = "runMercator  -t '($t);' -p $workflowDataDir/$mercatorOutputDir -c $cndSrcBin -m $mavid $dn";
   $self->runCmd($test,$command);
 
-  # remove input files from output dir
-  $self->runCmd($test,"rm $workflowDataDir/$mercatorOutputDir/*.gff");
-  $self->runCmd($test,"rm $workflowDataDir/$mercatorOutputDir/*.fasta");
+  # remove input dirs from output dir
+  $self->runCmd($test,"rm $workflowDataDir/$mercatorOutputDir/gff/*.gff");
+  $self->runCmd($test,"rm $workflowDataDir/$mercatorOutputDir/fasta/*.fasta");
+  $self->runCmd($test,"rmdir $workflowDataDir/$mercatorOutputDir/gff");
+  $self->runCmd($test,"rmdir $workflowDataDir/$mercatorOutputDir/fasta");
 
 }
 

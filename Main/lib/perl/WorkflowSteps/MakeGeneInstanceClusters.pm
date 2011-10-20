@@ -7,6 +7,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
     my ($self, $test, $undo) = @_;
+    my $mercatorInputsDir = $self->getParamValue('mercatorInputsDir');
     my $mercatorOutputDir = $self->getParamValue('mercatorOutputDir');
     my $outputFile = $self->getParamValue('outputFile');
 
@@ -19,6 +20,19 @@ sub run {
 	return;
     }
 
+    # see if there are multiple strains.  if not, exit
+    my $inputsDir = "$workflowDataDir/$mercatorInputsDir";
+    opendir(INPUT, $inputsDir) or $self->error("Could not open mercator inputs dir '$inputsDir' for reading.");
+    my $c;
+    foreach my $file (readdir INPUT) {
+	$c++ if $file =~ /\.fasta$/; # count how many organisms we have
+    }
+    if ($c == 1) {
+	$self->log("Only found 1 organism in input dir $inputsDir.  No comparision needed.  Exiting.");
+	return;
+    }    
+ 
+
     # get ext db rls ids for each strain's primary genome. discover strain abbrevs from input dir
     my @extDbRlsIds;
     opendir(DIR, "$workflowDataDir/$mercatorOutputDir") or $self->error("Could not open mercator output dir '$workflowDataDir/$mercatorOutputDir'.\n");
@@ -30,6 +44,11 @@ sub run {
 	my $extDbRlsId = $self->getExtDbRlsId($test,"$extDbName|$extDbVersion");
 	push(@extDbRlsIds, $extDbRlsId);
     }
+
+  if (scalar(@organismAbbrevs) == 1) {
+      $self->log("Only found 1 organism in input dir: $organismAbbrevs[0].  No comparision needed.  Exiting.");
+      return;
+  }
 
     my $extDbRlsIdsStr = join(",",@extDbRlsIds);
     if ($test) {
