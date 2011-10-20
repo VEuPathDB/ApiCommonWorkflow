@@ -24,7 +24,7 @@ sub run {
   my @organismAbbrevs = $self->findOrganismAbbrevs("$workflowDataDir/$mercatorInputsDir"); # tests .fasta and .gff existence
 
   if (scalar(@organismAbbrevs) == 1) {
-      $self->log("Only found 1 organism in input dir $inputsDir.  No comparision needed.  Exiting.");
+      $self->log("Only found 1 organism in input dir $workflowDataDir/$mercatorInputsDir.  No comparision needed.  Exiting.");
       return;
   }
 

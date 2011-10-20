@@ -45,11 +45,6 @@ sub run {
 	push(@extDbRlsIds, $extDbRlsId);
     }
 
-  if (scalar(@organismAbbrevs) == 1) {
-      $self->log("Only found 1 organism in input dir: $organismAbbrevs[0].  No comparision needed.  Exiting.");
-      return;
-  }
-
     my $extDbRlsIdsStr = join(",",@extDbRlsIds);
     if ($test) {
 	$self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
