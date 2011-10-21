@@ -20,7 +20,7 @@ sub run {
 	if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}
-	$self->runCmd($test,"extractEpitopeTabFile $workflowDataDir/$outputFile $speciesTaxonId");
+	$self->runCmd($test,"extractEpitopesTabFile $workflowDataDir/$outputFile $speciesTaxonId");
     }
 }
 
