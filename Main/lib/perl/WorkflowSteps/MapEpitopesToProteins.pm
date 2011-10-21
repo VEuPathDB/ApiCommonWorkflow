@@ -22,7 +22,7 @@ sub run {
 
     my $tabFile = "$workflowDataDir/$inputTabFile";
     my $mappingFile = "$workflowDataDir/$outputMappingFile";
-    my $fastaFile = "$workflowDataDir/epitopesGenpept.fasta";
+    my $fastaFile = "$workflowDataDir/$dataDir/epitopesGenpept.fasta";
 
     # use the epitope accessions to find full length peptide seqs from genpept
     my $cmd1 = "retrieveSeqsFromGenPept --inFile $tabFile --outFile $fastaFile";
