@@ -5,7 +5,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::LoadGeneGenomicSequenceByQuery;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
-
+#The step calls ApiCommonData::Load::Plugin::InsertGeneGenomicSequence to populate a new table: ApiDB.GeneGenomicSequence_Split. This table speed up live site performance.It pre-computes values made now by the slow GeneModel wdk table query, which is slowing down the gene pages.
 
 sub run {
   my ($self, $test,$undo) = @_;
