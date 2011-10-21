@@ -414,7 +414,8 @@
 
       <getAndUnpackOutput file="@@dataDir@@/oneOrganismSimplified.txt"/>
 
-      <pluginArgs><![CDATA[--seqFileDir @@dataDir@@/fasta --externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --soTermName "epitope" --regexSourceId ">(\d+)|" --tableName "DoTS::MotifAASequence" --logFrequency 100 --regexNcbiTaxId "\|.*\|(.*)" --regexName "\|(.*)\|.*"]]></pluginArgs>
+      <!-- sourceId|name|ncbiTaxId|accession -->
+      <pluginArgs><![CDATA[--seqFileDir @@dataDir@@/fasta --externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --soTermName "epitope" --regexSourceId ">(\d+)|" --tableName "DoTS::MotifAASequence" --logFrequency 100 --regexNcbiTaxId "\>[^|]*\|[^|]*\|([^|]*)" --regexName ">[^|]*\|([^|]*)"]]></pluginArgs>
     </resource>
   </datasetClass>
 
@@ -515,6 +516,7 @@
   </datasetClass>
 
 
+  <!-- ONLY INCLUDE IF THIS ORGANISM'S GENOME IS IN GENBANK -->
   <datasetClass class="dbxref_gene2Entrez">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
