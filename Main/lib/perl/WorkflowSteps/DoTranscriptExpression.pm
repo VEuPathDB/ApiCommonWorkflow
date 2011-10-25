@@ -39,6 +39,7 @@ sub run {
 	  $self->testInputFile('geneProbeMappingFile', "$workflowDataDir/$mappingFile") if $mappingFile;
 	  $self->testInputFile('analysisConfigFile', "$workflowDataDir/$analysisConfigFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/profiles.txt");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/expression_profile_config.txt");
       } else {
 	  makeSymLinks($inputDir, $outputDir);
 	  $self->runCmd($test,$cmd);
