@@ -13,9 +13,17 @@ sub run {
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
     
     my $version = $dataSource->getVersion();
-    my $organism = $dataSource->getOrganism();
-    my $internalDescrip = $dataSource->getInternalDescrip();
-    my $dbPluginArgs = "--name '$dataSourceName' --version '$version' --internalDescrip '$internalDescrip' --organism '$organism' ";
+    my $organismAbbrev = $dataSource->getOrganismAbbrev();
+    my $scope = $dataSource->getScope();
+
+    my $isSpeciesScope = $scope eq 'species'? "--isSpeciesScope" : "";
+    my $taxonId;
+    if ($organismAbbrev) {
+	my $t = $self->getOrganismInfo($organismAbbrev)->getTaxonId();
+	$taxonId = "--taxonId $t";
+    }
+
+    my $dbPluginArgs = "--name '$dataSourceName' --version '$version' $isSpeciesscope $taxonId";
 
     $self->runPlugin($test, $undo, "ApiCommonData::Load::InsertDataSource", $dbPluginArgs);
 
