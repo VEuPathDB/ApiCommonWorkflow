@@ -24,7 +24,7 @@ sub run {
 	    my @files = readdir(DIR);
 	    foreach my $file (@files) {
 		next if $file=~ /^\.\.?$/;  # skip . and ..
-		my $original = $file;2
+		my $original = $file;
 		$file =~ s/_DASH_/-/g;
 		$self->runCmd($test, "mv $workflowDataDir/$outputDir/$original $workflowDataDir/$outputDir/$file");
 	    }
