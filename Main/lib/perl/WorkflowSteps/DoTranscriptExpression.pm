@@ -31,7 +31,7 @@ sub run {
   my $cmd = "doTranscriptExpression.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir $input_file";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/$outputDir");
+    $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir");
   } else {
       $self->runCmd(0, "mkdir $workflowDataDir/$outputDir");
       if ($test) {
