@@ -23,7 +23,7 @@ sub run {
     my $minPercentCutoff = $isHaploid? 51 : 34;
     my $percentCutoff = $isHaploid? 80 : 40;
 
-    my $cmd = "runBWA_HTS.pl --mateA $workflowDataDir/$inputShortSeqsFile --fastaFile $workflowDataDir/$genomicSeqsFile --bwaIndex $workflowDataDir/$inputIndexesDir/genomicIndexes --strain $strain --outputPrefix $workflowDataDir/$outputFile --percentCutoff $percentCutoff --minPercentCutoff $minPercentCutoff --varscan $varScanJarFile";
+    my $cmd = "runBWA_HTS.pl --mateA $workflowDataDir/$inputShortSeqsFile --fastaFile $workflowDataDir/$genomicSeqsFile --bwaIndex $workflowDataDir/$inputIndexesDir/genomicIndexes --strain '$strain' --outputPrefix $workflowDataDir/$outputFile --percentCutoff $percentCutoff --minPercentCutoff $minPercentCutoff --varscan $varScanJarFile";
     $cmd .= " --mateB $workflowDataDir/$pairedReadFile" if ($hasPairedReads);
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile.*");

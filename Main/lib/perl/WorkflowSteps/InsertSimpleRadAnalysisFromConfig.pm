@@ -24,7 +24,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
       
-  my $args = "--inputDir '$workflowDataDir/$analysisWorkingDir' --configFile '$workflowDataDir/$configFile' --analysisResultView $analysisResultView  --naFeatureView $naFeatureView --profileSetName '$profileSetNames'";
+  my $args = "--inputDir '$workflowDataDir/$analysisWorkingDir' --configFile '$workflowDataDir/$configFile' --analysisResultView $analysisResultView  --naFeatureView $naFeatureView";
 
   $args.=" --useSqlLdr" if($useSqlLdr eq "true"); 
 

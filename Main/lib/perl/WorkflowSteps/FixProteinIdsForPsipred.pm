@@ -11,7 +11,8 @@ sub run {
   my $inputProteinsFile = $self->getParamValue('inputProteinsFile');
   my $outputProteinsFile = $self->getParamValue('outputProteinsFile');
 
-  my $fix = 's/^(\S+)-(\d)/$1_$2/g';
+  #want to replace all '-' with _DASH_ in protein id
+  my $fix = 's/-/_DASH_/g';
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
