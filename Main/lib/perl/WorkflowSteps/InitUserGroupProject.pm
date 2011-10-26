@@ -8,7 +8,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   # get global properties
-  my $projectVersion = $self->getParamValue('projectVersion');
+  my $projectVersion = $self->getParamValue('projectVersionForDatabase');
 
   if ($undo) {
   } else {
