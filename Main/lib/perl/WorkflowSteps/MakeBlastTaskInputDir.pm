@@ -29,6 +29,9 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  my $cpus = 1;  # this should not be hard coded
+  $self->error("Please do not include the '-cpus' option in the blastArgs parameter.  This is taken care of automatically") if $blastArgs =~ /cpus/;
+
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
   }else {
@@ -40,7 +43,7 @@ sub run {
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
-      $self->makeDistribJobControllerPropFile($taskInputDir, 1, $taskSize,
+      $self->makeDistribJobControllerPropFile($taskInputDir, $cpus, $taskSize,
 				       "DJob::DistribJobTasks::BlastSimilarityTask"); 
       # make task.prop file
       my $ccBlastParamsFile = "blastParams";
@@ -64,7 +67,7 @@ $vendorString
 
        # make blastParams file
        open(F, ">$localBlastParamsFile") || die "Can't open blast params file '$localBlastParamsFile' for writing";;
-       print F "$blastArgs\n";
+       print F "-cpus=$cpus $blastArgs\n";
        close(F);
        #&runCmd($test, "chmod -R g+w $workflowDataDir/similarity/$queryName-$subjectName");
       
