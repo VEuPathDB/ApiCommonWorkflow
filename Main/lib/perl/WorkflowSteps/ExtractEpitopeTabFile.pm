@@ -17,15 +17,15 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-    if ($undo) {
-      $self->runCmd(0, "rm -rf $workflowDataDir/$outputFile");
-    } else {
-	if ($test) {
-	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-	}
-	$self->runCmd($test,"extractEpitopesTabFile $workflowDataDir/$outputFile $taxonIdList");
+  if ($undo) {
+    $self->runCmd(0, "rm -rf $workflowDataDir/$outputFile");
+  } else {
+    if ($test) {
+      $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+    }
+    $self->runCmd($test,"extractEpitopesTabFile $workflowDataDir/$outputFile $taxonIdList");
+  }
 }
-
 
 sub getConfigDeclaration {
   return (
