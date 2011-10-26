@@ -11,7 +11,7 @@ sub getDownloadFileCmd {
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $projectName = $self->getParamValue('projectName');
-    my $projectVersion = $self->getParamValue('projectVersion');
+    my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
     my $relativeDir = $self->getParamValue('relativeDir');
     my $inputDataName = $self->getParamValue("inputDataName");
 

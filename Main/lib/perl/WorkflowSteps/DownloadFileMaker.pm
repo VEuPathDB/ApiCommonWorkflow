@@ -39,7 +39,7 @@ sub run {
   # standard parameters for making download files
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $projectName = $self->getParamValue('projectName');
-  my $projectVersion = $self->getParamValue('projectVersion');
+  my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
   my $relativeDir = $self->getParamValue('relativeDir');
   my $fileType = $self->getParamValue('fileType');
   my $dataName = $self->getParamValue('dataName');
