@@ -19,7 +19,7 @@ sub run {
     my $isSpeciesScope = $scope eq 'species'? "--isSpeciesScope" : "";
     my $taxonId;
     if ($organismAbbrev) {
-	my $t = $self->getOrganismInfo($organismAbbrev)->getTaxonId();
+	my $t = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
 	$taxonId = "--taxonId $t";
     }
 
