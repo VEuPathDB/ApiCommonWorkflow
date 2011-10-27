@@ -12,7 +12,7 @@ sub run {
     my $inputTabFile = $self->getParamValue('inputTabFile');
     my $dataDir = $self->getParamValue('dataDir');
     my $proteinsFile = $self->getParamValue('proteinsFile');
-    my $blastDbDir = $self->getParamValue('blastDbDir');
+    my $blastDb = $self->getParamValue('blastDb');
     my $outputMappingFile = $self->getParamValue('outputMappingFile');
     my $idRegex = $self->getParamValue('idRegex');
 
@@ -28,7 +28,7 @@ sub run {
     my $cmd1 = "retrieveSeqsFromGenPept --inFile $tabFile --outFile $fastaFile";
 
     # use those to blast against subject proteins
-    my $cmd2 = "runAndParseEpitopeBlast --ncbiBlastPath $ncbiBlastPath --queryFile $fastaFile --database $blastDbDir --epitopeFile $tabFile --outputFile $mappingFile";
+    my $cmd2 = "runAndParseEpitopeBlast --ncbiBlastPath $ncbiBlastPath --queryFile $fastaFile --database $blastDb --epitopeFile $tabFile --outputFile $mappingFile";
     $cmd2 .= " --regex '$idRegex'" if $idRegex;
 
     # also find exact mapping of short epitope sequences and subject proteins
