@@ -23,7 +23,7 @@ sub run {
 	$taxonId = "--taxonId $t";
     }
 
-    my $dbPluginArgs = "--name '$dataSourceName' --version '$version' $isSpeciesScope $taxonId";
+    my $dbPluginArgs = "--dataSourceName '$dataSourceName' --version '$version' $isSpeciesScope $taxonId";
 
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertDataSource", $dbPluginArgs);
 
