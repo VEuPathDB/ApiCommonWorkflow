@@ -11,8 +11,7 @@ sub run {
 
     my $inputTabFile = $self->getParamValue('inputTabFile');
     my $dataDir = $self->getParamValue('dataDir');
-    my $proteinsFile = $self->getParamValue('proteinsFile');
-    my $blastDb = $self->getParamValue('blastDb');
+    my $proteinsFileWithBlastDb = $self->getParamValue('proteinsFileWithBlastDb');
     my $outputMappingFile = $self->getParamValue('outputMappingFile');
     my $idRegex = $self->getParamValue('idRegex');
 
@@ -28,12 +27,12 @@ sub run {
     my $cmd1 = "retrieveSeqsFromGenPept --inFile $tabFile --outFile $fastaFile";
 
     # use those to blast against subject proteins
-    my $cmd2 = "runAndParseEpitopeBlast --ncbiBlastPath $ncbiBlastPath --queryFile $fastaFile --database $blastDb --epitopeFile $tabFile --outputFile $mappingFile";
+    my $cmd2 = "runAndParseEpitopeBlast --ncbiBlastPath $ncbiBlastPath --queryFile $fastaFile --database $proteinsFileWithBlastDb --epitopeFile $tabFile --outputFile $mappingFile";
     $cmd2 .= " --regex '$idRegex'" if $idRegex;
 
     # also find exact mapping of short epitope sequences and subject proteins
     # add them to the mapping file
-    my $cmd3 = "exactMapEpitopes --subjectFile $proteinsFile --epitopeFile $tabFile --outputFile $mappingFile --rejectDuplicates";
+    my $cmd3 = "exactMapEpitopes --subjectFile $proteinsFileWithBlastDb --epitopeFile $tabFile --outputFile $mappingFile --rejectDuplicates";
 
     #TODO: Make sure we don't get exact mapping for epitope:sequence pairs that we have mapping on BLAST hits for
 
@@ -42,7 +41,7 @@ sub run {
       $self->runCmd(0, "rm -fr $fastaFile");
     } else {
 	if ($test) {
-	  $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
+	  $self->testInputFile('proteinsFileWithBlastDb', "$workflowDataDir/$proteinsFileWithBlastDb");
 	  $self->testInputFile('inputTabFile', "$tabFile");
 	  $self->runCmd(0, "echo hello > $mappingFile");
 
