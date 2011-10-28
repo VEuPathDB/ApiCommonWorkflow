@@ -129,13 +129,22 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
+
+    <!-- this step could also be in loadGenome, after protein extract -->
+    <step name="makeProteinsBlastDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatNcbiBlastFile">
+      <paramValue name="sequencesFile">$$proteinsFile$$</paramValue>
+      <paramValue name="formatterArgs">T</paramValue>
+    </step>
+
+
     <!-- a step in this subgraph uses a dependsExternal to depend on the
          reference strain loading of epitopes -->
     <subgraph name="mapEpitopesToProteins" xmlFile="$$projectName$$/$$organismAbbrev$$/mapEpitopes.xml" excludeIfXmlFileDoesNotExist="true">
-      <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
+      <paramValue name="proteinsBlastDb">$$proteinsFile$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="makeProteinsBlastDb"/>
       <depends name="makeDataDir"/>
     </subgraph>
 
