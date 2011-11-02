@@ -32,7 +32,6 @@ sub getDownloadFileCmd {
                 ApidbTuning.SequenceAttributes sa,
                 SRes.sequenceontology so
           WHERE ns.na_sequence_id = sa.na_sequence_id
-            AND sa.database_name in ($extDbNameList) AND sa.database_version in ($extDbRlsVerList)
             AND sa.is_top_level = 1 
             AND so.term_name in ($cellularLocationSoTerms)
             AND ns.sequence_ontology_id = so_sequence_ontology_id";
