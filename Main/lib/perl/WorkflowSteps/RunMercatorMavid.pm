@@ -92,7 +92,7 @@ sub getIsDraftHash {
 
   my $hash = {};
   foreach my $organismAbbrev (@$organismAbbrevs) {
-    $hash->{$organismAbbrev} = $self->getOrganismInfo($organismAbbrev)->getIsDraftGenome();
+    $hash->{$organismAbbrev} = $self->getOrganismInfo($test, $organismAbbrev)->getIsDraftGenome();
   }
   return $hash;
 }

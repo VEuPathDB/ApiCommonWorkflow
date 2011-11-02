@@ -16,7 +16,7 @@ sub getDownloadFileCmd {
   my $soTerms = $self->getParamValue('cellularLocationSoTerms');
 
   $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
-  my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
   my $soIds =  $self->getSoIds($test, $soTerms);
 

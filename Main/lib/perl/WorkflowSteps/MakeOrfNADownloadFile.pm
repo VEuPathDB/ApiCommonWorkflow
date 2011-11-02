@@ -11,7 +11,7 @@ sub getDownloadFileCmd {
   my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
   my $length = $self->getParamValue('minOrfLength');
 
-  my $taxonId = $self->getOrganismInfo($organismAbbrev)->getTaxonId();
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
 
 
   my $sql = <<"EOF";

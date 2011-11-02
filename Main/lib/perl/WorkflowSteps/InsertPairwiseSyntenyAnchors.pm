@@ -39,7 +39,7 @@ sub run {
 	    my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align";
 	    my $outputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny";
 	    my $formatCmd = "reformatMercatorAlignFile --inputFile $inputFile --outputFile $outputFile";
-	    if ($self->getOrganismInfo($orgAbbrevB)->getIsDraftGenome()) {
+	    if ($self->getOrganismInfo($test, $orgAbbrevB)->getIsDraftGenome()) {
 		$formatCmd .= " --agpFile $workflowDataDir/$mercatorOutputsDir/$pair/$orgAbbrevB.agp";
 	    }
 

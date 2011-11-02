@@ -217,6 +217,8 @@ sub getAlgInvIds {
 sub getOrganismInfo {
     my ($self, $test, $organismAbbrev) = @_;
 
+    $self->error("The first argument to getOrganismInfo() must be \$test") unless $test == 0 || $test == 1;
+
     if (!$self->{organismInfo}->{$organismAbbrev}) {
 	$self->{organismInfo}->{$organismAbbrev} =
 	    ApiCommonWorkflow::Main::Util::OrganismInfo->new($self, $test, $organismAbbrev);
