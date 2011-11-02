@@ -9,21 +9,12 @@ sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
   # get parameters
-#  my @genomeExtDbSpecList = split (/,/,$self->getParamValue('genomeExtDbSpecList'));
-  my @genomeExtDbSpecList = "FIX THIS see redmine #4306 ";
+
   my $organismSource = $self->getParamValue('organismSource');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
 
-  my (@extDbRlsVers,@extDbNames);
-
-  foreach ( @genomeExtDbSpecList ){
-      my ($extDbName,$extDbRlsVer)=$self->getExtDbInfo($test,$_);
-      push (@extDbNames,$extDbName);
-      push (@extDbRlsVers,$extDbRlsVer);
-  }
-
-  my $extDbNameList = join(",", map{"'$_'"} @extDbNames);
-  my $extDbRlsVerList = join(",",map{"'$_'"} @extDbRlsVers);
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
+  my $cellularLocationSoTerms =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
 
   my $sql = " SELECT '$organismSource'
                 ||'|'||
@@ -38,11 +29,13 @@ sub getDownloadFileCmd {
                as defline,
                ns.sequence
            FROM dots.nasequence ns,
-                ApidbTuning.SequenceAttributes sa
+                ApidbTuning.SequenceAttributes sa,
+                SRes.sequenceontology so
           WHERE ns.na_sequence_id = sa.na_sequence_id
             AND sa.database_name in ($extDbNameList) AND sa.database_version in ($extDbRlsVerList)
             AND sa.is_top_level = 1 
-            AND ns.sequence_ontology_id in ($soIds)";
+            AND so.term_name in ($cellularLocationSoTerms)
+            AND ns.sequence_ontology_id = so_sequence_ontology_id";
   my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"  --posStrand '\\+' --negStrand '-' ";
   return $cmd;
 }
