@@ -12,13 +12,17 @@ sub getDownloadFileCmd {
     my $deprecated = ($self->getParamValue('isDeprecatedGenes') eq 'true') ? 1 :0;
     my $organismSource = $self->getParamValue('organismSource');
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
-    my $cellularLocationSoTerms = $self->getParamValue('cellularLocationSoTerms');
+    my $soTerms = $self->getParamValue('cellularLocationSoTerms');
+
+    my $soIds =  $self->getSoIds($test, $soTerms);
+
     $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
     my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
 
 
-  my $sql = "SELECT '$organismSource'
+  my $sql = <<"EOF";
+    SELECT '$organismSource'
                 ||'|'||
             gf.source_id
                 || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
@@ -45,7 +49,6 @@ sub getDownloadFileCmd {
                 dots.translatedaafeature taaf,
                 dots.translatedaasequence taas,
                 dots.nasequence ns,
-                sres.sequenceontology so
                 (select gf.na_feature_id,
                         substr(coalesce(preferred_product.product, any_product.product, gf.product, 'unspecified product'),
                                1, 300)
@@ -91,9 +94,9 @@ sub getDownloadFileCmd {
         AND fl.is_top_level = 1
         AND gf.is_deprecated = $deprecated
         and gf.na_feature_id = product_name.na_feature_id
-        AND so.term_name in ($cellularLocationSoTerms)
-        AND ns.sequence_ontology_id = so_sequence_ontology_id
-";
+        AND ns.sequence_ontology_id in ($soIds)
+
+EOF
 
 
   my $cmd = " gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"";
