@@ -14,9 +14,7 @@ sub getDownloadFileCmd {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
 
-  my $soTerms =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
-
-  my $soIds =  $self->getSoIds($test, $soTerms);
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
 
   my $sql = <<"EOF";
       SELECT '$organismSource'
