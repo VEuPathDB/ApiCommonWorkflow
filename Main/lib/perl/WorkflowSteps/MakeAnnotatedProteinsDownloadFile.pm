@@ -9,7 +9,7 @@ sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
 
-    my $deprecated = ($self->getParamValue('isDeprecatedGenes') eq 'true') ? 1 :0;
+    my $deprecated = ($self->getParamValue('hasDeprecatedGenes') eq 'true') ? 1 :0;
     my $organismSource = $self->getParamValue('organismSource');
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $soTerms = $self->getParamValue('cellularLocationSoTerms');
