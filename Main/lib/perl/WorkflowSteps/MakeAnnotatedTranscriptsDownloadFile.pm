@@ -12,7 +12,7 @@ sub getDownloadFileCmd {
   # get parameters
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $organismSource = $self->getParamValue('organismSource');
-  my $deprecated = $self->getBooleanParamValue('isDeprecatedGenes');
+  my $deprecated = $self->getBooleanParamValue('hasDeprecatedGenes');
   my $soTerms = $self->getParamValue('cellularLocationSoTerms');
 
   $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
