@@ -8,28 +8,21 @@ use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
-  # get parameters
-#  my @genomeExtDbSpecList = split(/,/,$self->getParamValue('genomeExtDbSpecList'));
-  my @genomeExtDbSpecList = "FIX THIS see redmine #4306";
-  my $deprecated = ($self->getParamValue('isDeprecatedGenes') eq 'true') ? 1 :0;
-  my $organismSource = $self->getParamValue('organismSource');
+
+    my $deprecated = ($self->getParamValue('hasDeprecatedGenes') eq 'true') ? 1 :0;
+    my $organismSource = $self->getParamValue('organismSource');
+    my $organismAbbrev = $self->getParamValue('organismAbbrev');
+    my $soTerms = $self->getParamValue('cellularLocationSoTerms');
+
+    my $soIds =  $self->getSoIds($test, $soTerms);
 
     $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
-  my (@extDbRlsVers,@extDbNames);
+    my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
 
-  foreach ( @genomeExtDbSpecList ){
-      my ($extDbName,$extDbRlsVer)=$self->getExtDbInfo($test,$_);
-      push (@extDbNames,$extDbName);
-      push (@extDbRlsVers,$extDbRlsVer);
 
-  }
-
-  my $extDbNameList = join(",", map{"'$_'"} @extDbNames);
-  my $extDbRlsVerList = join(",",map{"'$_'"} @extDbRlsVers);
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
-
-  my $sql = "SELECT '$organismSource'
+  my $sql = <<"EOF";
+    SELECT '$organismSource'
                 ||'|'||
             gf.source_id
                 || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
@@ -89,21 +82,21 @@ sub getDownloadFileCmd {
                    and gf.na_feature_id = preferred_name.na_feature_id(+)
                    and gf.na_feature_id = any_name.na_feature_id(+)
                 ) product_name
-      WHERE gf.na_feature_id = t.parent_id
+      WHERE gf.ncbi_tax_id = $ncbiTaxonId
+        AND gf.na_feature_id = t.parent_id
         AND ns.na_sequence_id = fl.na_sequence_id
         AND t.na_sequence_id = snas.na_sequence_id
         AND gf.na_feature_id = fl.na_feature_id
         AND gf.so_term_name != 'repeat_region'
         AND gf.so_term_name = 'protein_coding'
-        AND gf.external_db_name in ($extDbNameList)
-        AND gf.external_db_version in ($extDbRlsVerList)
         AND t.na_feature_id = taaf.na_feature_id
         AND taaf.aa_sequence_id = taas.aa_sequence_id
         AND fl.is_top_level = 1
         AND gf.is_deprecated = $deprecated
         and gf.na_feature_id = product_name.na_feature_id
-        and ns.sequence_ontology_id in ($soIds)
-";
+        AND ns.sequence_ontology_id in ($soIds)
+
+EOF
 
 
   my $cmd = " gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"";

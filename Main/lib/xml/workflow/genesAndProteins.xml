@@ -122,6 +122,12 @@
       <depends name="insertSignalP"/>
     </step>
 
+    <!-- this step could also be in loadGenome, after protein extract -->
+    <step name="makeProteinsBlastDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatNcbiBlastFile">
+      <paramValue name="sequencesFile">$$proteinsFile$$</paramValue>
+      <paramValue name="formatterArgs">T</paramValue>
+    </step>
+
     <subgraph name="epitopes" xmlFile="$$projectName$$/$$organismAbbrev$$/epitopes.xml" excludeIfXmlFileDoesNotExist="true">
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>

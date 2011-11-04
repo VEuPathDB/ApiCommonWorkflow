@@ -9,10 +9,10 @@ sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
     my $organismSource = $self->getParamValue('organismSource');
-    my $deprecated = ($self->getParamValue('isDeprecatedGenes') eq 'true') ? 1 :0;
+    my $deprecated = ($self->getParamValue('hasDeprecatedGenes') eq 'true') ? 1 :0;
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
-    my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
+    my $ncbiTaxonId = $self->getOrganismInfo($test,$organismAbbrev)->getNcbiTaxonId();
     $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
   my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));

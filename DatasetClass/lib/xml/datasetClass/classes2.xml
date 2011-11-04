@@ -1,6 +1,35 @@
+<?xml version="1.0"?>
+
+<!--
+ * in <resource> add category, or maybe as attribute of datasetClass
+ * in <manualGet> use ${version} instead of %RESOURCE_VERSION%
+ * add <datasetFile> element to document where it is expected.
+ * add property descriptions
+ * add purpose
+
+-->
+
 <datasetClasses>
+  
+  <defaultPropertyDescriptions>
+    <prop name="organismAbbrev">The standard abbreviation for this organism.  For example TgonME49 for T. gondii ME49.  This abbreviation is like a "primary key" for the organism.  It must be unique to this organism, and may never change for the lifetime of the workflow.</prop>
+    <prop name="projectName"/>
+    <prop name="publicOrganismAbbrev"/>
+    <prop name="organismFullName"/>
+    <prop name="organismNameForFiles"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="speciesNcbiTaxonId"/>
+    <prop name="isReferenceStrain"/>
+    <prop name="referenceStrainOrganismAbbrev"/>
+    <prop name="isAnnotatedGenome"/>
+    <prop name="isDraftGenome"/>
+    <prop name="hasTemporaryNcbiTaxonId"/>
+    <prop name="orthomclAbbrev"/>
+    <prop name="strainAbbrev"/>
+  </defaultPropertyDescriptions>
 
   <datasetClass class="organism">
+    <purpose>Here is where we can add general documentation for this dataste class</purpose>
     <prop name="organismAbbrev"/>
     <prop name="projectName"/>
     <prop name="publicOrganismAbbrev"/>
@@ -29,12 +58,12 @@
     <prop name="maxIntronSize"/>
     <prop name="genomeSize"/>
 
-    <graphPlanFile name="project.xml"/>
+    <graphFile planFile="project.xml"/>
 
   </datasetClass>
 
   <datasetClass class="validateOrganismInfo">
-    <prop name="organismAbbrev"/>
+    <prop name="organismAbbrev" override="true">This description will override the default</prop>
     <prop name="strainAbbrev"/>
     <prop name="projectName"/>
     <prop name="ncbiTaxonId"/>
@@ -48,7 +77,7 @@
     <prop name="organismAbbrev"/>
     <prop name="isAnnotatedGenome"/>
 
-    <graphPlanFile name="project.xml"/>
+    <graphFile planFile="project.xml"/>
 
   </datasetClass>
 
@@ -65,15 +94,23 @@
     <prop name="soTerm"/>
     <prop name="mapFile"/>
 
-    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+    <graphFile planFile="genomeSequenceAndFeatures.xml"/>
+
+    <final>
+      <dir name="fasta">In here go all the fasta files. la la la</dir>
+         <dir name="someSubDir">Its documentation</dir>
+         <file name="*.fasta">A set of fasta files that...</file>
+      </dir>
+    </final>
+
 
     <resource resource="${organismAbbrev}_primary_genome_RSRC"
               version="${version}"
-	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures">
 
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_genbank/%RESOURCE_VERSION%/final/genome.gbf"/>
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_genbank/%RESOURCE_VERSION%/final/genome.gbf">
+       <file name="genome.gbf">This file contains the genome in .gbf format</file>
+     </manualGet>
 
       <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.gbf --fileFormat genbank --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out --validationLog @@dataDir@@/validation.log</pluginArgs>
     </resource>
@@ -88,14 +125,12 @@
     <prop name="soTerm"/>
     <prop name="mapFile"/>
 
-    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+    <graphFile planFile="genomeSequenceAndFeatures.xml"/>
 
     <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC"
               version="${version}"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
-	      parentResource="${organismAbbrev}_primary_genome_RSRC"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      parentResource="${organismAbbrev}_primary_genome_RSRC">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_genbank/%RESOURCE_VERSION%/final/genome.gbf"/>
 
@@ -112,13 +147,11 @@
     <prop name="soTerm"/>
     <prop name="mapFile"/>
 
-    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+    <graphFile planFile="genomeSequenceAndFeatures.xml"/>
 
     <resource resource="${organismAbbrev}_primary_genome_RSRC"
               version="${version}"
-	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_embl/%RESOURCE_VERSION%/final/genome.embl"/>
 
@@ -135,14 +168,12 @@
     <prop name="soTerm"/>
     <prop name="mapFile"/>
 
-    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+    <graphFile planFile="genomeSequenceAndFeatures.xml"/>
 
     <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC"
               version="${version}"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
-	      parentResource="${organismAbbrev}_primary_genome_RSRC"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      parentResource="${organismAbbrev}_primary_genome_RSRC">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_embl/%RESOURCE_VERSION%/final/genome.embl"/>
 
@@ -158,13 +189,11 @@
     <prop name="soTerm"/>
     <prop name="regex"/>
 
-    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+    <graphFile planFile="genomeSequenceAndFeatures.xml"/>
 
     <resource resource="${organismAbbrev}_primary_genome_RSRC"
               version="${version}"
-	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/GeneDB_GFF/%RESOURCE_VERSION%/final"/>
 
@@ -183,14 +212,13 @@
     <prop name="ncbiTaxonId"/>
     <prop name="version"/>
     <prop name="soTerm"/>
-    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+    <graphFile planFile="genomeSequenceAndFeatures.xml"/>
 
     <resource resource="${organismAbbrev}_primary_genome_features_RSRC"
               version="${version}"
 	      parentResource="${organismAbbrev}_primary_genome_RSRC"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      internalDescrip="">
 
       <manualGet fileOrDir="global/empty"/>
 
@@ -205,14 +233,13 @@
     <prop name="version"/>
     <prop name="soTerm"/>
 
-    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+    <graphFile planFile="genomeSequenceAndFeatures.xml"/>
 
     <resource resource="${organismAbbrev}_primary_genome_features_RSRC"
               version="${version}"
 	      parentResource="${organismAbbrev}_primary_genome_RSRC"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      internalDescrip="">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_Broad_gff3/%RESOURCE_VERSION%/final/genome.gtf"/>
 
@@ -234,12 +261,12 @@
     <prop name="soTerm"/>
     <prop name="regexSourceId"/>
  
-    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+    <graphFile planFile="genomeSequenceAndFeatures.xml"/>
 
     <resource resource="${organismAbbrev}_primary_genome_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      internalDescrip=""
+     >
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_fasta/%RESOURCE_VERSION%/final/genome.fasta"/>
 
@@ -257,13 +284,12 @@
     <prop name="soTerm"/>
     <prop name="regexSourceId"/>
  
-    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+    <graphFile planFile="genomeSequenceAndFeatures.xml"/>
 
     <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
-              parentResource="${organismAbbrev}_primary_genome_RSRC"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      internalDescrip=""
+              parentResource="${organismAbbrev}_primary_genome_RSRC" >
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_fasta/%RESOURCE_VERSION%/final/genome.fasta"/>
 
@@ -280,13 +306,11 @@
     <prop name="sourceIdPrefix"/>  <!-- optional.  add this prefix to the source ID -->
     <prop name="genomeVersion"/>
 
-    <graphPlanFile name="primaryVirtualGenome.xml"/>
+    <graphFile planFile="primaryVirtualGenome.xml"/>
 
     <resource resource="${organismAbbrev}_primary_virtual_genome_RSRC"
               version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::InsertVirtualSeqFromAgpFile"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="ApiCommonData::Load::Plugin::InsertVirtualSeqFromAgpFile">
       
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${virtualSeqSOTerm}_assembly_agp/%RESOURCE_VERSION%/final/assembly.agp"/>
 
@@ -307,14 +331,12 @@
     <prop name="genomeVersion"/>
 
 
-    <graphPlanFile name="organismSpecific.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev}_genomeFeature_${name}_GFF2_RSRC"
               version="${version}"
-	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
-	      parentResource="${organismAbbrev}_primary_genome_RSRC"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures">
+	      parentResource="${organismAbbrev}_primary_genome_RSRC">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genomeFeature/${name}_GFF/%RESOURCE_VERSION%/final/features.gff"/>
 
@@ -335,12 +357,11 @@
     <prop name="organismAbbrev"/>
     <prop name="speciesNcbiTaxonId"/>
 
-    <graphPlanFile name="ESTs.xml"/>
+    <graphFile planFile="ESTs.xml"/>
 
     <resource resource="${organismAbbrev}_dbEST_RSRC" version="@@${organismAbbrev}_dbEST_VER@@"
 	      plugin="GUS::Supported::Plugin::dbEST"
-              scope="species"
-              organismAbbrev="${organismAbbrev}">
+	      internalDescrip="">
       <manualGet fileOrDir="global/empty"/>
 
       <unpack>getSubTaxa --ncbiTaxId ${speciesNcbiTaxonId} --outputFile @@dataDir@@/taxonIdFile</unpack>
@@ -374,12 +395,11 @@
     <prop name="contactAddress1"/>
     <prop name="contactAddress2"/>
 
-    <graphPlanFile name="ESTs.xml"/>
+    <graphFile planFile="ESTs.xml"/>
 
     <resource resource="${organismAbbrev}_EST_${name}_sequences_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::LoadEstsFromFastaFile"
-              scope="species"
-              organismAbbrev="${organismAbbrev}">
+	      internalDescrip="">
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/EST/${name}/${version}/final/ests.fasta"/>
       <pluginArgs>--sourceIdRegex "${sourceIdRegex}" --fastaFile @@dataDir@@/ests.fasta --externalDatabaseName %RESOURCE_NAME% --externalDatabaseVer %RESOURCE_VERSION%  --SOTermName '${soTerm}' --ncbiTaxId ${ncbiTaxonId} --libraryVector '${libraryVector}' --contactName '${contactName}' --contactAddress1 "${contactAddress1}" --contactAddress2 "${contactAddress2}" --isPutativeFullLength ${isPutativeFullLength} --libraryStage '${libraryStage}' --libraryName '${libraryName}' --libraryDesc "${libraryDesc}"</pluginArgs>
     </resource>
@@ -394,7 +414,7 @@
   <datasetClass class="transcriptsFromReferenceStrain">
     <prop name="referenceStrainOrganismAbbrev"/>
 
-    <graphPlanFile name="mapTranscriptsToGenome.xml"/>
+    <graphFile planFile="mapTranscriptsToGenome.xml"/>
 
   </datasetClass>
 
@@ -409,13 +429,11 @@
     <prop name="organismAbbrev"/>
     <prop name="speciesNcbiTaxonId"/>
 
-    <graphPlanFile name="epitopes.xml"/>
+    <graphFile planFile="epitopes.xml"/>
 
     <resource resource="${organismAbbrev}_epitope_IEDB_RSRC"
               version="@@${organismAbbrev}_epitope_IEDB_VER@@"
-	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
-              scope="species"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences">
 
       <manualGet fileOrDir="global/empty"/>
 
@@ -449,7 +467,7 @@
   <datasetClass class="epitopesFromReferenceStrain">
     <prop name="referenceStrainOrganismAbbrev"/>
 
-    <graphPlanFile name="mapEpitopes.xml"/>
+    <graphFile planFile="mapEpitopes.xml"/>
 
   </datasetClass>
 
@@ -457,13 +475,11 @@
   <datasetClass class="IEDB_dbxrefs">
     <prop name="organismAbbrev"/>
 
-    <graphPlanFile name="dbXRefs.xml"/>
+    <graphFile planFile="dbXRefs.xml"/>
 
     <resource resource="${organismAbbrev}_dbxref_epitope_IEDB_RSRC"
 	      version="@@${organismAbbrev}_epitope_IEDB_VER@@"
-	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs">
 
       <manualGet fileOrDir="global/empty"/>
 
@@ -483,13 +499,11 @@
     <prop name="name"/>
     <prop name="idType"/>  <!-- previous id, alternate id -->
 
-    <graphPlanFile name="geneAliases.xml"/>
+    <graphFile planFile="geneAliases.xml"/>
 
     <resource resource="${organismAbbrev}_${name}_gene_aliases_RSRC"
 	      version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/${name}_gene_aliases/%RESOURCE_VERSION%/final/geneAliases.txt"/>
 
@@ -507,13 +521,11 @@
     <prop name="columnSpec"/>
     <prop name="type"/>  <!-- DBRefNASequence, AASequenceDBRef, DBRefAAFeature, DBRefNAFeature -->
 
-    <graphPlanFile name="dbXRefs.xml"/>
+    <graphFile planFile="dbXRefs.xml"/>
 
     <resource resource="${organismAbbrev}_dbxref_${name}_RSRC"
 	      version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/${name}/%RESOURCE_VERSION%/final/mapping.txt"/>
 
@@ -528,13 +540,12 @@
     <prop name="ApiLocOrganism"/>   <!-- organism name as found on the ApiLoc site -->
 
 
-    <graphPlanFile name="dbXRefs.xml"/>
+    <graphFile planFile="dbXRefs.xml"/>
 
     <resource resource="${organismAbbrev}_dbxref_ApiLoc_RSRC"
 	      version="@@${organismAbbrev}_dbxref_ApiLoc_VER@@"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      internalDescrip="">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/gene2ApiLoc/%RESOURCE_VERSION%/final/${organismAbbrev}.html"/>
 
@@ -552,13 +563,11 @@
     <prop name="ncbiTaxonId"/>
     <prop name="genomeVersion"/>
 
-    <graphPlanFile name="dbXRefs.xml"/>
+    <graphFile planFile="dbXRefs.xml"/>
 
     <resource resource="${organismAbbrev}_dbxref_gene2Entrez_RSRC"
 	      version="@@${organismAbbrev}_dbxref_gene2Entrez_VER@@"
-	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs">
 
 
       <manualGet fileOrDir="common/dbxref/gene2Entrez/%RESOURCE_VERSION%/final/gene_info.gz"/>
@@ -579,13 +588,11 @@
     <prop name="ncbiTaxonId"/>
     <prop name="genomeVersion"/>
 
-    <graphPlanFile name="dbXRefs.xml"/>
+    <graphFile planFile="dbXRefs.xml"/>
 
     <resource resource="${organismAbbrev}_dbxref_gene2Uniprot_RSRC"
 	      version="@@${organismAbbrev}_dbxref_gene2Uniprot_VER@@"
-	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs">
 
       <manualGet fileOrDir="common/dbxref/gene2Uniprot/%RESOURCE_VERSION%/final/idmapping_selected.tab.gz"/>
 
@@ -605,12 +612,11 @@
     <prop name="name"/>
     <prop name="version"/>
 
-    <graphPlanFile name="SNPs.xml"/>
+    <graphFile planFile="SNPs.xml"/>
 
     <resource resource="${organismAbbrev}_SNP_${name}_gff_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      internalDescrip="">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/SNP/${name}/%RESOURCE_VERSION%/final/SNPs.gff"/>
       <getAndUnpackOutput file="@@dataDir@@/SNPs.gff"/>
@@ -627,12 +633,11 @@
     <prop name="name"/>
     <prop name="version"/>
 
-    <graphPlanFile name="SNPs.xml"/>
+    <graphFile planFile="SNPs.xml"/>
 
     <resource resource="${organismAbbrev}_SNP_${name}_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      internalDescrip="">
 
       <manualGet fileOrDir="global/empty"/>
       <unpack>ln -s @@manualDeliveryDir@@/${projectName}/${organismAbbrev}/SNPs/${name}/%RESOURCE_VERSION%/final/ @@dataDir@@/final</unpack>
@@ -658,13 +663,11 @@
     <prop name="variableLengthReads"/>
     <prop name="numInsertions"/>
 
-    <graphPlanFile name="arrayStudies.xml"/>
+    <graphFile planFile="arrayStudies.xml"/>
 
     <resource resource="${organismAbbrev}_microarrayPlatform_${name}_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}"
-	      >
+	      internalDescrip="">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/microarrayPlatform/${name}/%RESOURCE_VERSION%/final"/>
 
@@ -688,13 +691,11 @@
     <prop name="limitNU"/>
     <prop name="numInsertions"/>
 
-    <graphPlanFile name="arrayStudies.xml"/>
+    <graphFile planFile="arrayStudies.xml"/>
 
     <resource resource="${organismAbbrev}_chipChipPlatform_${name}_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}"
-	      >
+	      internalDescrip="">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/microarrayPlatform/${name}/%RESOURCE_VERSION%/final/probes.fsa"/>
 
@@ -726,13 +727,11 @@
     <prop name="usesAffymetrixGeneArray"/>
     <prop name="usesNimbleGenGeneArray"/>
 
-    <graphPlanFile name="arrayStudies.xml"/>
+    <graphFile planFile="arrayStudies.xml"/>
 
     <resource resource="${organismAbbrev}_microarrayExpression_${experimentName}_RSRC" version="${experimentVersion}"
 	      plugin="ApiCommonData::Load::Plugin::DoNothing"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}"
-	      >
+	      internalDescrip="">
       
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/microarrayExpression/${experimentName}/%RESOURCE_VERSION%/final"/>
 
@@ -759,13 +758,11 @@
     <prop name="peakFinderArgs"/>
     <prop name="loadPeakCalls"/>
 
-    <graphPlanFile name="arrayStudies.xml"/>
+    <graphFile planFile="arrayStudies.xml"/>
 
     <resource resource="${organismAbbrev}_chipChipExper_${experimentName}_RSRC" version="${experimentVersion}"
 	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}"
-	      >
+	      internalDescrip="">
 
      <manualGet fileOrDir="${projectName}/${organismAbbrev}/chipChip/${experimentName}/%RESOURCE_VERSION%/final"/>
 
@@ -783,14 +780,12 @@
     <prop name="experimentName"/>
     <prop name="sampleName"/>
  
-    <graphPlanFile name="chipChipSamples.xml"/>
+    <graphFile planFile="chipChipSamples.xml"/>
 
       <!-- we load a fake resource here so we can make a getAndUnpackOutput -->
       <!-- to declare existence of sample file that is acquired by experiment, for test mode -->
     <resource resource="${organismAbbrev}_${experimentName}_${sampleName}_chipChipSample_RSRC" version="dontcare"
-	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing">
 
       <manualGet fileOrDir="global/empty"/>
 
@@ -821,12 +816,10 @@
     <prop name="hasPairedEnds"/>
     <prop name="isStrandSpecific"/>
 
-    <graphPlanFile name="organismSpecificOnTopLevelGenome.xml"/>
+    <graphFile planFile="organismSpecificOnTopLevelGenome.xml"/>
 
     <resource resource="${organismAbbrev}_${name}_rnaSeq_RSRC" version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing">
 
       <manualGet fileOrDir="global/empty"/>
       <unpack>ln -s @@manualDeliveryDir@@/${projectName}/${organismAbbrev}/rnaSeq/${name}/%RESOURCE_VERSION%/final/ @@dataDir@@/final</unpack>
@@ -843,14 +836,12 @@
     <prop name="experimentName"/>
     <prop name="sampleName"/>
  
-    <graphPlanFile name="rnaSeqSamples.xml"/>
+    <graphFile planFile="rnaSeqSamples.xml"/>
 
       <!-- we load a fake resource here so we can make a getAndUnpackOutput -->
       <!-- to declare existence of sample file that is acquired by experiment, for test mode -->
     <resource resource="${organismAbbrev}_${experimentName}_${sampleName}_rnaSeqSample_RSRC" version="dontcare"
-	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing">
 
       <manualGet fileOrDir="global/empty"/>
 
@@ -876,13 +867,11 @@
     <prop name="soTermName"/>
     <prop name="regexSourceId"/>
 
-    <graphPlanFile name="organismSpecific.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev}_${name}_clonedInsertEnds_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
-              scope="species"
-              organismAbbrev="${organismAbbrev}"
-	      >
+	      internalDescrip="">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/dnaSeq/${name}/%RESOURCE_VERSION%/final/seqs.fasta"/>
 
@@ -900,7 +889,7 @@
     <prop name="name"/>
     <prop name="version"/>
 
-    <graphPlanFile name="organismSpecific.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
 
   </datasetClass>
 
@@ -918,12 +907,10 @@
     <prop name="isMissingCATG"/>
     <prop name="bowtieParams"/>
  
-    <graphPlanFile name="organismSpecific.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev}_sageTag_${name}_RSRC" version="${version}"
-	      plugin="GUS::Supported::Plugin::LoadSagePrimers"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="GUS::Supported::Plugin::LoadSagePrimers">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/sageTag/${name}/%RESOURCE_VERSION%/final/primers.txt"/>
 
@@ -939,13 +926,11 @@
     <prop name="version"/>
     <prop name="normalizeFrequencies"/>
  
-    <graphPlanFile name="organismSpecific.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev}_sageTag_${name}_frequencies_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadSageFrequencies"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}"
-	      >
+	      internalDescrip="">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/sageTag/${name}/%RESOURCE_VERSION%/final/freqs.txt"/>
 
@@ -961,13 +946,11 @@
     <prop name="name"/>
     <prop name="version"/>
  
-    <graphPlanFile name="productNames.xml"/>
+    <graphFile planFile="productNames.xml"/>
 
     <resource resource="${organismAbbrev}_function_${name}_product_names_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertGeneFeatProductFromTabFile"
-	      parentResource="${organismAbbrev}_primary_genome_RSRC"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      parentResource="${organismAbbrev}_primary_genome_RSRC">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/function/${name}_product_names/%RESOURCE_VERSION%/final/products.txt"/>
 
@@ -983,13 +966,11 @@
     <prop name="name"/>
     <prop name="version"/>
  
-    <graphPlanFile name="comments.xml"/>
+    <graphFile planFile="comments.xml"/>
 
     <resource resource="${organismAbbrev}_function_${name}_comments_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertNaFeatCommentFromTabFile"
-	      parentResource="${organismAbbrev}_primary_genome_RSRC"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
+	      parentResource="${organismAbbrev}_primary_genome_RSRC">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/comment/${name}_comments/%RESOURCE_VERSION%/final/comments.txt"/>
 
@@ -1008,13 +989,11 @@
     <prop name="organismAbbrev"/>
     <prop name="speciesNcbiTaxonId"/>
  
-    <graphPlanFile name="organismSpecific.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev}_isolates_genbank_RSRC" version="TODAY"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
-              scope="species"
-              organismAbbrev="${organismAbbrev}"
-	      >
+	      internalDescrip="">
 
       <manualGet fileOrDir="global/empty"/>
 
@@ -1046,9 +1025,7 @@
 
     <resource resource="${organismAbbrev}_isolates_${name}_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
-              scope="species"
-              organismAbbrev="${organismAbbrev}"
-	      >
+	      internalDescrip="">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/isolate/${name}/%RESOURCE_VERSION%/final/isolates.fasta"/>
 
@@ -1066,12 +1043,10 @@
     <prop name="version"/>
     <prop name="mapFile"/>
  
-    <graphPlanFile name="organismSpecific.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
 
     <resource resource="${organismAbbrev}_isolates_${name}_features_RSRC" version="${version}"
-	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
-              scope="species"
-              organismAbbrev="${organismAbbrev}">
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/isolate/${name}/%RESOURCE_VERSION%/final/isolates.gff"/>
 
@@ -1088,7 +1063,7 @@
     <prop name="name"/>
     <prop name="version"/>
  
-    <graphPlanFile name="organismSpecific.xml"/>
+    <graphFile planFile="organismSpecific.xml"/>
   </datasetClass>
 
   <datasetClass class="massSpecPreprocessed">
@@ -1099,13 +1074,11 @@
     <prop name="flag"/>
     <prop name="genomeVersion"/>
  
-    <graphPlanFile name="massSpec.xml"/>
+    <graphFile planFile="massSpec.xml"/>
 
     <resource resource="${organismAbbrev}_massSpec_${name}_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertMassSpecPreprocessed"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}"
-	      >
+	      internalDescrip="">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/massSpec/${name}/%RESOURCE_VERSION%/final"/>
 
@@ -1116,13 +1089,10 @@
   <datasetClass class="orthomclPhyletic">
     <prop name="projectName"/>
 
-    <graphPlanFile name="comparativeGenomics.xml"/>
+    <graphFile planFile="comparativeGenomics.xml"/>
 
     <resource resource="OrthoMCL_Phyletic_RSRC" version="@@OrthoMCL_VER@@"
-	      plugin="ApiCommonData::Load::Plugin::InsertPhylogeneticProfile"
-              scope="global"
-              >
-
+	      plugin="ApiCommonData::Load::Plugin::InsertPhylogeneticProfile">
       <manualGet fileOrDir="common/orthology/orthoMCL/%RESOURCE_VERSION%/orthomclGroups.txt"/>
       <pluginArgs>--projectName ${projectName} --groupsFile @@dataDir@@/orthomclGroups.txt</pluginArgs>
     </resource>
@@ -1131,13 +1101,10 @@
   <datasetClass class="orthomcl">
     <prop name="projectName"/>
 
-    <graphPlanFile name="comparativeGenomics.xml"/>
+    <graphFile planFile="comparativeGenomics.xml"/>
 
     <resource resource="OrthoMCL_RSRC" version="@@OrthoMCL_VER@@"
-	      plugin="ApiCommonData::Load::Plugin::InsertOrthologousGroups"
-              scope="global"
-              >
-
+	      plugin="ApiCommonData::Load::Plugin::InsertOrthologousGroups">
       <manualGet fileOrDir="common/orthology/orthoMCL/%RESOURCE_VERSION%/orthomclGroups.txt"/>
       <pluginArgs>--projectName ${projectName} --OrthologFile @@dataDir@@/orthomclGroups.txt --AnalysisName 'OrthoMCL-based Orthology Predictions' --AnalysisDescription 'OrthoMCL-based Orthology Predictions' --ElementResultTable "DoTS::GeneFeature"</pluginArgs>
     </resource>
@@ -1146,12 +1113,10 @@
   <datasetClass class="orthomclTree">
     <prop name="projectName"/>
 
-    <graphPlanFile name="comparativeGenomics.xml"/>
+    <graphFile planFile="comparativeGenomics.xml"/>
 
     <resource resource="OrthoMCLTree_RSRC" version="@@OrthoMCL_VER@@"
-	      plugin="ApiCommonData::Load::Plugin::InsertOrthomclTaxon"
-              scope="global"
-              >
+	      plugin="ApiCommonData::Load::Plugin::InsertOrthomclTaxon">
 
       <!-- use non-standard approach here to get two individual files rather
            than the whole dir, which has some very large files we don't need -->
@@ -1166,9 +1131,7 @@
 
   <datasetClass class="geneOntology">
   <resource resource="GO_RSRC" version="@@GO_VER@@"
-      plugin="GUS::Supported::Plugin::InsertGeneOntology"
-              scope="global"
-              >
+      plugin="GUS::Supported::Plugin::InsertGeneOntology">
     <manualGet fileOrDir="global/ontology/geneOntology/%RESOURCE_VERSION%/gene_ontology.obo"/>
     <pluginArgs>--oboFile @@dataDir@@/gene_ontology.obo --extDbRlsName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --calcTransitiveClosure</pluginArgs>
   </resource>
@@ -1177,9 +1140,7 @@
   <datasetClass class="enzymeDB">
     <prop name="version"/>
   <resource resource="enzymeDB_RSRC" version="${version}"
-      plugin="GUS::Community::Plugin::LoadEnzymeDatabase"
-              scope="global"
-              >
+      plugin="GUS::Community::Plugin::LoadEnzymeDatabase">
     <wgetArgs url="ftp://ftp.expasy.org/databases/enzyme/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=3 --include list  --accept=enzclass.txt,enzyme.dat</wgetArgs>
     <pluginArgs>--InPath @@dataDir@@ --enzymeDbName %RESOURCE_NAME% --enzymeDbRlsVer %RESOURCE_VERSION%</pluginArgs>
   </resource>
@@ -1187,25 +1148,18 @@
 
   <datasetClass class="PDBProteinSequences">
   <resource resource="PDBProteinSequences_RSRC" version="@@PDBProteinSequences_VER@@"
-      plugin="GUS::Supported::Plugin::LoadFastaSequences"
-              scope="global"
-              >
+      plugin="GUS::Supported::Plugin::LoadFastaSequences">
     <wgetArgs url="ftp://ftp.wwpdb.org/pub/pdb/derived_data/pdb_seqres.txt.gz">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=3 --output-document=@@dataDir@@/pdb_seqres.txt.gz</wgetArgs>
     <unpack>gunzip @@dataDir@@/pdb_seqres.txt.gz</unpack>
-    <unpack>filterPdbFile --inputFile @@dataDir@@/pdb_seqres.txt --outputFile  @@dataDir@@/pdb.fsa.tmp</unpack>
-    <unpack><![CDATA[cat @@dataDir@@/pdb.fsa.tmp | perl -e 'while(<>) { s/J|O/X/g;print}' > @@dataDir@@/pdb.fsa]]></unpack>
-    <unpack>rm @@dataDir@@/pdb.fsa.tmp</unpack>
-    <unpack>xdformat -p @@dataDir@@/pdb.fsa</unpack>
-    <getAndUnpackOutput file="@@dataDir@@/pdb.fsa"/>   
+    <unpack>filterPdbFile --inputFile @@dataDir@@/pdb_seqres.txt --outputFile  @@dataDir@@/pdb.fsa</unpack>
+     <getAndUnpackOutput file="@@dataDir@@/pdb.fsa"/>   
     <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --sequenceFile  @@dataDir@@/pdb.fsa --SOTermName 'polypeptide'  --noSequence --regexSourceId  '>(\w+)\s+mol:protein' --regexDesc 'length:\d+\s+(.+)$' --tableName "DoTS::ExternalAASequence"</pluginArgs>
   </resource>
   </datasetClass>
 
   <datasetClass class="taxonomy">
   <resource resource="taxonomy_RSRC" version="@@taxonomy_VER@@"
-      plugin="GUS::Supported::Plugin::LoadTaxon"
-              scope="global"
-              >
+      plugin="GUS::Supported::Plugin::LoadTaxon">
     <wgetArgs url="ftp://ftp.ncbi.nih.gov/pub/taxonomy/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=2 --include list --accept=gi_taxid_prot.dmp.gz,taxdump.tar.gz</wgetArgs>
     <unpack>gunzip @@dataDir@@/gi_taxid_prot.dmp.gz</unpack>
     <unpack>$currDir=`pwd`; cd @@dataDir@@ ; tar -xzf taxdump.tar.gz ; rm -f taxdump.tar ; cd $currDir</unpack>
@@ -1216,9 +1170,7 @@
   <datasetClass class="updatePDBTaxon">
     <prop name="version"/>
   <resource resource="updatePDBTaxon_RSRC" version="${version}"
-      plugin="ApiCommonData::Load::Plugin::UpdateTaxonFieldFromFile"
-              scope="global"
-              >
+      plugin="ApiCommonData::Load::Plugin::UpdateTaxonFieldFromFile">
     <wgetArgs url="ftp://ftp.wwpdb.org/pub/pdb/derived_data/index/source.idx">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=4 --output-document=@@dataDir@@/source.idx</wgetArgs>
     <unpack>processSourceIdxFile --inFile @@dataDir@@/source.idx --outFile @@dataDir@@/source.idx.processed</unpack>
     <pluginArgs>--fileName @@dataDir@@/source.idx.processed --sourceIdRegex  '^(\w+)' --taxonNameRegex '^\w+\s+(.+)' --idSql 'select substr(lower(source_id),0,4),aa_sequence_id from dots.externalaasequence' --extDbRelSpec 'PDBProteinSequences_RSRC|@@PDBProteinSequences_VER@@'  --tableName 'DoTS::ExternalAASequence'</pluginArgs>
@@ -1227,9 +1179,7 @@
 
   <datasetClass class="sequenceOntology">
   <resource resource="SO_RSRC" version="@@SO_VER@@"
-      plugin="GUS::Supported::Plugin::InsertSequenceOntologyOBO"
-              scope="global"
-              >
+      plugin="GUS::Supported::Plugin::InsertSequenceOntologyOBO">
     <wgetArgs url="http://song.cvs.sourceforge.net/viewvc/song/ontology/so.obo">--tries=5 --output-document=@@dataDir@@/so.obo</wgetArgs>
     <pluginArgs>--inputFile @@dataDir@@/so.obo --soVersion @@SO_VER@@ --soCvsVersion @@SO_VER@@</pluginArgs>
   </resource>
@@ -1237,9 +1187,7 @@
 
   <datasetClass class="mgedOntologyTermTypes">
   <resource resource="Mged_Ontology_Term_Types_RSRC" version="1.3"
-      plugin="GUS::Supported::Plugin::InsertOntologyTermType"
-              scope="global"
-              >
+      plugin="GUS::Supported::Plugin::InsertOntologyTermType">
     <manualGet fileOrDir="global/ontology/Mged/%RESOURCE_VERSION%/MgedOntologyTermTypes.tab"/>
     <pluginArgs>--inputFile @@dataDir@@/MgedOntologyTermTypes.tab</pluginArgs>
   </resource>
@@ -1247,9 +1195,7 @@
 
   <datasetClass class="mgedOntologyRelationshipTypes">
   <resource resource="Mged_Ontology_Relationship_Types_RSRC" version="1.3"
-      plugin="GUS::Supported::Plugin::InsertOntologyRelationshipType"
-              scope="global"
-              >
+      plugin="GUS::Supported::Plugin::InsertOntologyRelationshipType">
     <manualGet fileOrDir="global/ontology/Mged/%RESOURCE_VERSION%/MgedOntologyRelationshipTypes.tab"/>
     <pluginArgs>--inputFile @@dataDir@@/MgedOntologyRelationshipTypes.tab</pluginArgs>
   </resource>
@@ -1257,9 +1203,7 @@
 
   <datasetClass class="mgedOntology">
   <resource resource="MGED_Ontology_RSRC" version="1.3"
-      plugin="GUS::Supported::Plugin::InsertOntologyTermsAndRelationships"
-              scope="global"
-              >
+      plugin="GUS::Supported::Plugin::InsertOntologyTermsAndRelationships">
     <wgetArgs url="http://mged.sourceforge.net/ontologies/MGEDOntology.owl">--tries=5 --no-directories --no-host-directories --accept=@@dataDir@@/MGEDOntology.owl </wgetArgs>
     <pluginArgs>--inFile @@dataDir@@/MGEDOntology.owl --extDbName %RESOURCE_NAME% --extDbVersion %RESOURCE_VERSION% --uri 'http://mged.sourceforge.net/ontologies/MGEDontology.php' --parserType MgedRdfRow</pluginArgs>
   </resource>
@@ -1267,9 +1211,7 @@
 
   <datasetClass class="mgedOntologyEntry">
   <resource resource="Mged_Ontology_Entry_RSRC" version="1.3"
-      plugin="GUS::Community::Plugin::LoadOntologyEntryFromMO"
-              scope="global"
-              >
+      plugin="GUS::Community::Plugin::LoadOntologyEntryFromMO">
     <manualGet fileOrDir="global/empty"/>
     <pluginArgs>--externalDatabase MGED_Ontology_RSRC --externalDatabaseRls 1.3</pluginArgs>
   </resource>
@@ -1278,9 +1220,7 @@
   <datasetClass class="geneOntologyEvidenceCodes">
     <prop name="version"/>
   <resource resource="GO_evidence_codes_RSRC" version="${version}"
-      plugin="ApiCommonData::Load::Plugin::InsertGOEvidenceCodesFromObo"
-              scope="global"
-              >
+      plugin="ApiCommonData::Load::Plugin::InsertGOEvidenceCodesFromObo">
     <wgetArgs url="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/evidence_code.obo">--tries=5 --output-document=@@dataDir@@/evidence_code.obo</wgetArgs>
     <pluginArgs>--oboFile @@dataDir@@/evidence_code.obo</pluginArgs>
   </resource>
@@ -1288,9 +1228,7 @@
 
   <datasetClass class="interproscanData">
   <resource resource="InterproscanData_RSRC" version="@@InterproscanData_VER@@"
-      plugin="ApiCommonData::Load::Plugin::InsertInterproDomainDbs"
-              scope="global"
-              >
+      plugin="ApiCommonData::Load::Plugin::InsertInterproDomainDbs">
     <manualGet fileOrDir="global/domain/iprscanData/%RESOURCE_VERSION%/iprscan"/>
     <unpack>fixSuperfamily @@dataDir@@/iprscan/data/</unpack>
     <pluginArgs>--inPath @@dataDir@@/iprscan/data/</pluginArgs>
@@ -1299,15 +1237,10 @@
 
   <datasetClass class="NRDB">
   <resource resource="NRDB_RSRC" version="@@NRDB_VER@@"
-      plugin="ApiCommonData::Load::Plugin::LoadNothing"
-              scope="global"
-              >
+      plugin="ApiCommonData::Load::Plugin::LoadNothing">
     <wgetArgs url="ftp://ftp.ncbi.nih.gov/blast/db/FASTA/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=3 --accept=nr.gz </wgetArgs>
     <unpack>gunzip @@dataDir@@/nr.gz </unpack>
-    <unpack>shortenDefLine --inputFile @@dataDir@@/nr --outputFile @@dataDir@@/nrdb-short-defline.fsa.tmp --taxonIdMappingFile @@dataDir@@/../taxonomy_RSRC/gi_taxid_prot.dmp</unpack>
-    <unpack><![CDATA[cat @@dataDir@@/nrdb-short-defline.fsa.tmp | perl -e 'while(<>) { s/J|O/X/g;print}' > @@dataDir@@/nrdb-short-defline.fsa]]></unpack>
-    <unpack>rm @@dataDir@@/nrdb-short-defline.fsa.tmp</unpack>
-    <unpack>xdformat -p @@dataDir@@/nrdb-short-defline.fsa</unpack>
+    <unpack>shortenDefLine --inputFile @@dataDir@@/nr --outputFile @@dataDir@@/nrdb-short-defline.fsa --taxonIdMappingFile @@dataDir@@/../taxonomy_RSRC/gi_taxid_prot.dmp</unpack>
     <getAndUnpackOutput file="@@dataDir@@/nrdb-short-defline.fsa"/>
     <getAndUnpackOutput file="@@dataDir@@/nr"/>
     <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
@@ -1315,15 +1248,13 @@
   </datasetClass>
 
   <datasetClass class="dbxref_NRDB">
-    <graphPlanFile name="dbXRefs.xml"/>
+    <graphFile planFile="dbXRefs.xml"/>
   </datasetClass>
 
   <datasetClass class="blatAlignmentQuality">
     <prop name="version"/>
   <resource resource="blatAlignmentQuality_RSRC" version="${version}"
-      plugin="GUS::Supported::Plugin::LoadGusXml"
-              scope="global"
-              >
+      plugin="GUS::Supported::Plugin::LoadGusXml">
     <manualGet fileOrDir="global/ontology/alignmentQuality/%RESOURCE_VERSION%/blatalignmentquality.xml"/>
     <pluginArgs>--filename @@dataDir@@/blatalignmentquality.xml</pluginArgs>
   </resource>
@@ -1332,9 +1263,7 @@
   <datasetClass class="isolateVocabulary">
     <prop name="version"/>
   <resource resource="isolateVocabulary_RSRC" version="${version}"
-      plugin="ApiCommonData::Load::Plugin::InsertIsolateVocabulary"
-              scope="global"
-              >
+      plugin="ApiCommonData::Load::Plugin::InsertIsolateVocabulary">
     <manualGet fileOrDir="global/ontology/isolate/%RESOURCE_VERSION%/isolateVocabulary.txt"/>
     <pluginArgs>--isolateVocabularyFile @@dataDir@@/isolateVocabulary.txt</pluginArgs>
   </resource>
@@ -1343,9 +1272,7 @@
   <datasetClass class="continents">
     <prop name="version"/>
   <resource resource="Continents_RSRC" version="${version}"
-      plugin="ApiCommonData::Load::Plugin::InsertContinents"
-              scope="global"
-              >
+      plugin="ApiCommonData::Load::Plugin::InsertContinents">
     <manualGet fileOrDir="global/ontology/Continents/%RESOURCE_VERSION%/continents.txt"/>
     <pluginArgs>--continentsFile @@dataDir@@/continents.txt</pluginArgs>
   </resource>
@@ -1354,9 +1281,7 @@
   <datasetClass class="bibRefType">
     <prop name="version"/>
   <resource resource="BibRefType_RSRC" version="${version}"
-      plugin="GUS::Supported::Plugin::LoadGusXml"
-              scope="global"
-              >
+      plugin="GUS::Supported::Plugin::LoadGusXml">
     <manualGet fileOrDir="global/ontology/bibliographicReferenceType/%RESOURCE_VERSION%/ncbiPublicationTypes.xml"/>
     <pluginArgs>--filename @@dataDir@@/ncbiPublicationTypes.xml</pluginArgs>
   </resource>
