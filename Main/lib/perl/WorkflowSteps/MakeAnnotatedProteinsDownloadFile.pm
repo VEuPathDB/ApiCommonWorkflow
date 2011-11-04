@@ -18,7 +18,7 @@ sub getDownloadFileCmd {
 
     $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
-    my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
+    my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
 
   my $sql = <<"EOF";
