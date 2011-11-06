@@ -553,7 +553,7 @@
               scope="organism"
               organismAbbrev="${organismAbbrev}">
 
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/gene2ApiLoc/%RESOURCE_VERSION%/final/${organismAbbrev}.html"/>
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/gene2ApiLoc/@@${organismAbbrev}_dbxref_ApiLoc_VER@@/final/${organismAbbrev}.html"/>
 
       <unpack>makeDbxRefsFromApiLocHtml @@dataDir@@/${organismAbbrev}.html "${ApiLocOrganism}" > @@dataDir@@/dbxrefs.txt</unpack>
 
@@ -578,7 +578,7 @@
               organismAbbrev="${organismAbbrev}">
 
 
-      <manualGet fileOrDir="common/dbxref/gene2Entrez/%RESOURCE_VERSION%/final/gene_info.gz"/>
+      <manualGet fileOrDir="common/dbxref/gene2Entrez/@@${organismAbbrev}_dbxref_gene2Entrez_VER@@/final/gene_info.gz"/>
 
       <unpack>ncbiGeneInfo2DbRefsFile @@dataDir@@/gene_info.gz ${ncbiTaxonId} > @@dataDir@@/gene2entrez.tab</unpack>
 
@@ -604,7 +604,7 @@
               scope="organism"
               organismAbbrev="${organismAbbrev}">
 
-      <manualGet fileOrDir="common/dbxref/gene2Uniprot/%RESOURCE_VERSION%/final/idmapping_selected.tab.gz"/>
+      <manualGet fileOrDir="common/dbxref/gene2Uniprot/@@${organismAbbrev}_dbxref_gene2Uniprot_VER@@/final/idmapping_selected.tab.gz"/>
 
       <!-- need to use the gene2entrez file to get map of NCBI ids -->
       <unpack>uniprotIdMap2DbRefsFile @@dataDir@@/idmapping_selected.tab.gz @@dataDir@@/../${organismAbbrev}_dbxref_gene2Entrez_RSRC/gene2entrez.tab > @@dataDir@@/gene2uniprot.tab</unpack>
@@ -784,7 +784,7 @@
               organismAbbrev="${organismAbbrev}"
 	      >
 
-     <manualGet fileOrDir="${projectName}/${organismAbbrev}/chipChip/${experimentName}/%RESOURCE_VERSION%/final"/>
+     <manualGet fileOrDir="${projectName}/${organismAbbrev}/chipChip/${experimentName}/${experimentVersion}/final"/>
 
      <getAndUnpackOutput dir="@@dataDir@@/final" />
 
@@ -1140,7 +1140,7 @@
               scope="global"
               >
 
-      <manualGet fileOrDir="common/orthology/orthoMCL/%RESOURCE_VERSION%/orthomclGroups.txt"/>
+      <manualGet fileOrDir="common/orthology/orthoMCL/@@OrthoMCL_VER@@/orthomclGroups.txt"/>
       <pluginArgs>--projectName ${projectName} --groupsFile @@dataDir@@/orthomclGroups.txt</pluginArgs>
     </resource>
   </datasetClass>
@@ -1155,7 +1155,7 @@
               scope="global"
               >
 
-      <manualGet fileOrDir="common/orthology/orthoMCL/%RESOURCE_VERSION%/orthomclGroups.txt"/>
+      <manualGet fileOrDir="common/orthology/orthoMCL/@@OrthoMCL_VER@@/orthomclGroups.txt"/>
       <pluginArgs>--projectName ${projectName} --OrthologFile @@dataDir@@/orthomclGroups.txt --AnalysisName 'OrthoMCL-based Orthology Predictions' --AnalysisDescription 'OrthoMCL-based Orthology Predictions' --ElementResultTable "DoTS::GeneFeature"</pluginArgs>
     </resource>
   </datasetClass>
@@ -1186,7 +1186,7 @@
       plugin="GUS::Supported::Plugin::InsertGeneOntology"
               scope="global"
               >
-    <manualGet fileOrDir="global/ontology/geneOntology/%RESOURCE_VERSION%/gene_ontology.obo"/>
+    <manualGet fileOrDir="global/ontology/geneOntology/@@GO_VER@@/gene_ontology.obo"/>
     <pluginArgs>--oboFile @@dataDir@@/gene_ontology.obo --extDbRlsName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --calcTransitiveClosure</pluginArgs>
   </resource>
   </datasetClass>
@@ -1257,7 +1257,7 @@
       plugin="GUS::Supported::Plugin::InsertOntologyTermType"
               scope="global"
               >
-    <manualGet fileOrDir="global/ontology/Mged/%RESOURCE_VERSION%/MgedOntologyTermTypes.tab"/>
+    <manualGet fileOrDir="global/ontology/Mged/1.3/MgedOntologyTermTypes.tab"/>
     <pluginArgs>--inputFile @@dataDir@@/MgedOntologyTermTypes.tab</pluginArgs>
   </resource>
   </datasetClass>
@@ -1267,7 +1267,7 @@
       plugin="GUS::Supported::Plugin::InsertOntologyRelationshipType"
               scope="global"
               >
-    <manualGet fileOrDir="global/ontology/Mged/%RESOURCE_VERSION%/MgedOntologyRelationshipTypes.tab"/>
+    <manualGet fileOrDir="global/ontology/Mged/1.3/MgedOntologyRelationshipTypes.tab"/>
     <pluginArgs>--inputFile @@dataDir@@/MgedOntologyRelationshipTypes.tab</pluginArgs>
   </resource>
   </datasetClass>
@@ -1308,7 +1308,9 @@
       plugin="ApiCommonData::Load::Plugin::InsertInterproDomainDbs"
               scope="global"
               >
-    <manualGet fileOrDir="global/domain/iprscanData/%RESOURCE_VERSION%/iprscan"/>
+
+    <manualGet fileOrDir="global/domain/iprscanData/@@InterproscanData_VER@@/iprscan"/>
+
     <unpack>fixSuperfamily @@dataDir@@/iprscan/data/</unpack>
     <pluginArgs>--inPath @@dataDir@@/iprscan/data/</pluginArgs>
   </resource>
