@@ -24,12 +24,13 @@ sub run {
 <username>apidb</username>
 </property>
 ";
-  open(F,">$xmlConfigFileName");
+  my $stepDir = $self->getStepDir();
+  open(F,">$stepDir/$xmlConfigFileName");
   print F $xmlConfigFileString;
   close F;
   my $cmd;
 
-      $cmd = "tuningManager --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail '$email' --tables $tables";
+      $cmd = "tuningManager --instance '$instance' --propFile $stepDir/$xmlConfigFileName --doUpdate --notifyEmail '$email' --tables $tables";
 
 
   if ($undo){
