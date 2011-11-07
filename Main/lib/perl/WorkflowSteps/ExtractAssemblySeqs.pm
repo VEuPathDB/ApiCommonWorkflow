@@ -14,7 +14,7 @@ sub run {
 
   my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
   my $taxonId = $organismInfo->getSpeciesTaxonId();
-  my $taxonIdList = $organismInfo->getTaxonIdList($test, $taxonId);
+  my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

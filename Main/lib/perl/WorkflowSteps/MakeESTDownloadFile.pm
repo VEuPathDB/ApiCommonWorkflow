@@ -15,7 +15,7 @@ sub getDownloadFileCmd {
 
   my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
   my $taxonId = $organismInfo->getSpeciesTaxonId();
-  my $taxonIdList = $organismInfo->getTaxonIdList($test, $taxonId);
+  my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
 
     my $sql = <<"EOF";
     SELECT x.source_id
