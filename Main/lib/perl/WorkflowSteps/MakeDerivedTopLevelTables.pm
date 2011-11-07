@@ -15,13 +15,13 @@ sub run {
   my $email = $self->getSharedConfig('email');
   my $instance = $self->getSharedConfig('instance');
 
-  my $apidbPassword = $self->getConfig('apidbPassword');
+  my $apidbTuningPassword = $self->getConfig('apidbTuningPassword');
   my $xmlConfigFileName="tmpConfigFile.xml";
   my $xmlConfigFileString=
 "<?xml version='1.0'?>
 <property>
-<password>$apidbPassword</password>
-<username>apidb</username>
+<password>$apidbTuningPassword</password>
+<schema>ApiDBTuning</schema>
 </property>
 ";
   my $stepDir = $self->getStepDir();
