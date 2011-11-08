@@ -34,7 +34,7 @@ sub run {
 
     my @organismAbbrevs = $self->findOrganismAbbrevs("$workflowDataDir/$mercatorInputsDir"); # tests .fasta and .gff existence
 
-    my $isDraftHash = $self->getIsDraftHash(\@organismAbbrevs);  # hash of 0/1 for each organism
+    my $isDraftHash = $self->getIsDraftHash(\@organismAbbrevs, $test);  # hash of 0/1 for each organism
 
     # create and clean out needed dirs
     $self->runCmd(0, "rm -r $workflowDataDir/$mercatorOutputsDir") if -e "$workflowDataDir/$mercatorOutputsDir";
@@ -121,7 +121,7 @@ sub findOrganismAbbrevs {
 }
 
 sub getIsDraftHash {
-    my ($self, $organismAbbrevs) = @_;
+    my ($self, $organismAbbrevs, $test) = @_;
 
     my $hash = {};
     foreach my $organismAbbrev (@$organismAbbrevs) {
