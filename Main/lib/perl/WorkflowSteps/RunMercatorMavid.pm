@@ -28,7 +28,7 @@ sub run {
       return;
   }
 
-  my $isDraftHash = $self->getIsDraftHash(\@organismAbbrevs); # hash of 0/1 for each organism
+  my $isDraftHash = $self->getIsDraftHash(\@organismAbbrevs,$test); # hash of 0/1 for each organism
 
   $self->runCmd(0, "rm -r $workflowDataDir/$mercatorOutputDir") if -e "$workflowDataDir/$mercatorOutputDir";
 
@@ -88,7 +88,7 @@ sub findOrganismAbbrevs {
 }
 
 sub getIsDraftHash {
-  my ($self, $organismAbbrevs) = @_;
+  my ($self, $organismAbbrevs, $test) = @_;
 
   my $hash = {};
   foreach my $organismAbbrev (@$organismAbbrevs) {
