@@ -21,7 +21,7 @@ sub run {
     $self->runCmd(0, "rm -f ${fileToFormat}.p*");
   } else {
       if ($test) {
-	  $self->runCmd(0,"echo test > $workflowDataDir/$fileToFormat.pin");
+	  $self->runCmd(0,"echo test > $fileToFormat.pin");
       } else {
 	  $self->runCmd($test,"$ncbiBlastPath/formatdb -i $fileToFormat -p $formatterArgs");
       }
