@@ -1136,6 +1136,27 @@
     </resource>
   </datasetClass>
 
+  <datasetClass class="GeneOntologyAssociations" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="version"/>
+    <prop name="name"/>
+
+    <graphPlanFile name="organismSpecific.xml"/>
+
+    <resource plugin="ApiCommonData::Load::Plugin::InsertGOAssociationsSimple"
+              resource="${organismAbbrev}_${name}_GOAssociations_RSRC"
+              version="${version}">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/function/${name}_GOAssociations/${version}/associations.gas">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--externalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%" --inputFile @@dataDir@@/Linfantum.gas --goExternalDatabaseSpec "GO_RSRC|@@GO_VER@@" --seqIdSql "SELECT g.source_id, taf.aa_sequence_id FROM dots.genefeature g, dots.transcript t, dots.translatedAAFeature taf WHERE g.na_feature_id = t.parent_id AND t.na_feature_id = taf.na_feature_id UNION SELECT taf.source_id, taf.aa_sequence_id FROM dots.translatedAAFeature taf" --targetTable "DoTS::TranslatedAASequence" --lineOfEvidence "${name}" --inputIdColumn id --tolerateMissingSeqs --skipBadGOTerms @@dataDir@@/badGOTerms.log</pluginArgs>
+    </resource>
+  </datasetClass>
+
   <!-- Category: comments -->
 
   <datasetClass class="comments" category="" datasetFileHint="">
@@ -1629,6 +1650,5 @@
     <pluginArgs>--filename @@dataDir@@/ncbiPublicationTypes.xml</pluginArgs>
   </resource>
   </datasetClass>
-
 
 </datasetClasses>
