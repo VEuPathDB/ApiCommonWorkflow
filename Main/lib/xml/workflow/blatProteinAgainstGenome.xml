@@ -1,10 +1,10 @@
 <workflowGraph name="blatDnaAgainstGenome">
-  <param name="dataDir"/>
-  <param name="maxIntronSize"/>       <!-- do we need this? -->
-  <param name="organismAbbrev"/>
+  <param name="dataDir"/>             <!-- any dir -->
+  <param name="maxIntronSize"/>       <!-- NOTE: do we need this? -->
+  <param name="organismAbbrev"/>      <!-- ${organismAbbrev} -->
   <param name="targetSeqsDir"/>       <!-- genomeSeqsDir -->
   <param name="targetExtDbRlsSpec"/>  <!-- ${organismAbbrev}_primary_genome_RSRC|${genomeVersion} -->
-  <param name="queryFile"/>           <!-- nrdb proteins -->
+  <param name="queryFile"/>           <!-- nrdb proteins file -->
   <param name="queryTable"/>          <!-- DoTS::ExternalAASequence -->
   <param name="queryExtDbRlsSpec"/>   <!-- NRDB_RSRC|@@NRDB_VER@@-->
   <param name="queryIdRegex"/>        <!-- gi\\|(\\d+)\\| -->
@@ -18,6 +18,7 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+  <!-- NOTE:  need to generalize the distribjob task -->
   <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDir">
     <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
     <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
@@ -51,18 +52,18 @@
   </step>
 
 
-  <!-- generalize this to handle blat results -->
+  <!-- NOTE: adjust and generalize this to handle blat results -->
   <step name="filterResultsByTaxon" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterBlastResultsByTaxon" includeIf="$$filterByTaxon$$">
     <paramValue name="taxonHierarchy">$$taxonHierarchyForFilter$$</paramValue>
     <paramValue name="gi2taxidFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
     <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="unfilteredOutputFile">$$dataDir$$/master/mainresult/blastSimilarity.out.orig</paramValue>
     <paramValue name="filteredOutputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
-    <depends name="mirrorFromCluster"/>
+    <depends name="fixGenomeSourceIdsInBlatResultFile"/>
   </step>
 
-  <!-- generalize this to handle blat results -->
-  <step name="extractIdsFromBlastResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractIdsFromBlastResult" includeIf="$$loadSubjectSubset$$">
+  <!-- NOTE:  adjust and generalize this to handle blat results -->
+  <step name="extractIdsFromBlatResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractIdsFromBlastResult" includeIf="$$loadSubjectSubset$$">
     <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="idType">subject</paramValue>
     <paramValue name="outputFile">$$dataDir$$/similarityIds.out</paramValue>
@@ -74,7 +75,7 @@
     <paramValue name="extDbRlsSpec">$$subjectExtDbRlsSpec$$</paramValue>
     <paramValue name="fastaFile">$$subjectFile$$</paramValue>
     <paramValue name="idsFile">$$dataDir$$/similarityIds.out</paramValue>
-    <depends name="extractIdsFromBlastResult"/>
+    <depends name="extractIdsFromBlatResult"/>
   </step>
 
   <step name="updateTaxonFieldForSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateTaxonFieldFromFile" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin">
@@ -95,10 +96,10 @@
     <paramValue name="percentTop"></paramValue>
     <paramValue name="blatFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
     <paramValue name="queryFile">$$queryFile$$</paramValue>
-    <depends name="fixGenomeSourceIdsInBlatResultFile"/>
+    <depends name="loadSubjectSubset"/>
   </step>
 
-  <!-- do we need this? -->
+  <!-- NOTE: do we need this? -->
   <step name="setBestBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
 
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
