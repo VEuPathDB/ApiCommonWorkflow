@@ -1,6 +1,6 @@
 <workflowGraph name="blatDnaAgainstGenome">
   <param name="dataDir"/>             <!-- any dir -->
-  <param name="maxIntronSize"/>       <!-- NOTE: do we need this? -->
+  <param name="maxIntronSize"/>       <!-- ??? -->
   <param name="organismAbbrev"/>      <!-- ${organismAbbrev} -->
   <param name="targetSeqsDir"/>       <!-- genomeSeqsDir -->
   <param name="targetExtDbRlsSpec"/>  <!-- ${organismAbbrev}_primary_genome_RSRC|${genomeVersion} -->
@@ -18,11 +18,11 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <!-- NOTE:  need to generalize the distribjob task -->
-  <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDir">
+  <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDirNew">
     <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
     <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
     <paramValue name="queryFile">$$queryFile$$</paramValue>
+    <paramValue name="queryType">protein</paramValue>
     <paramValue name="targetDir">$$targetSeqsDir$$</paramValue>
     <depends name="makeDataDir"/>
   </step>
@@ -98,22 +98,5 @@
     <paramValue name="queryFile">$$queryFile$$</paramValue>
     <depends name="loadSubjectSubset"/>
   </step>
-
-  <!-- NOTE: do we need this? -->
-  <step name="setBestBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
-
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="targetExtDbRlsSpec">$$targetExtDbRlsSpec$$</paramValue>
-    <paramValue name="queryExtDbRlsSpec">$$queryExtDbRlsSpec$$</paramValue>
-    <paramValue name="targetTable">ExternalNASequence</paramValue>
-    <paramValue name="queryTable">$$queryTable$$</paramValue>
-    <paramValue name="queryRegex">$$queryIdRegex$$</paramValue>
-    <paramValue name="action">setbest</paramValue>
-    <paramValue name="percentTop">100</paramValue>
-    <paramValue name="blatFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
-    <paramValue name="queryFile">$$queryFile$$</paramValue>
-    <depends name="insertBlatAlignment"/>
-  </step>
-
 
 </workflowGraph>
