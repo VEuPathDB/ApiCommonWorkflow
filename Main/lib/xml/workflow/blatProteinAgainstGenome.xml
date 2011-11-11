@@ -65,7 +65,7 @@
 
   <!-- NOTE:  adjust and generalize this to handle blat results -->
   <step name="extractIdsFromBlatResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractIdsFromSimilarityResult" includeIf="$$loadSubjectSubset$$">
-    <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="inputFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
     <paramValue name="inputFileType">blat</paramValue>
     <paramValue name="idType">subject</paramValue>
     <paramValue name="outputFile">$$dataDir$$/similarityIds.out</paramValue>
@@ -73,17 +73,17 @@
   </step>
 
   <!-- this step needs a loadBalance=1 to avoid a race condition -->
-  <step name="loadSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertFastaSubset" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin">
-    <paramValue name="extDbRlsSpec">$$subjectExtDbRlsSpec$$</paramValue>
-    <paramValue name="fastaFile">$$subjectFile$$</paramValue>
+  <step name="loadQuerySubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertFastaSubset" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin">
+    <paramValue name="extDbRlsSpec">$$targetExtDbRlsSpec$$</paramValue>
+    <paramValue name="fastaFile">$$queryFile$$</paramValue>
     <paramValue name="idsFile">$$dataDir$$/similarityIds.out</paramValue>
     <depends name="extractIdsFromBlatResult"/>
   </step>
 
-  <step name="updateTaxonFieldForSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateTaxonFieldFromFile" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin">
-    <paramValue name="extDbRlsSpec">$$subjectExtDbRlsSpec$$</paramValue>
+  <step name="updateTaxonFieldForQuerySubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateTaxonFieldFromFile" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin">
+    <paramValue name="extDbRlsSpec">$$queryExtDbRlsSpec$$</paramValue>
     <paramValue name="taxIdFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
-    <depends name="loadSubjectSubset"/>
+    <depends name="loadQuerySubset"/>
   </step>
 
   <step name="insertBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
@@ -93,12 +93,12 @@
     <paramValue name="targetTable">ExternalNASequence</paramValue>
     <paramValue name="queryExtDbRlsSpec">$$queryExtDbRlsSpec$$</paramValue>
     <paramValue name="queryTable">$$queryTable$$</paramValue>
-    <paramValue name="queryRegex">$$queryIdRegex$$</paramValue>
+    <paramValue name="regex">$$queryIdRegex$$</paramValue>
     <paramValue name="action">load</paramValue>
     <paramValue name="percentTop"></paramValue>
     <paramValue name="blatFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
     <paramValue name="queryFile">$$queryFile$$</paramValue>
-    <depends name="loadSubjectSubset"/>
+    <depends name="loadQuerySubset"/>
   </step>
 
 </workflowGraph>
