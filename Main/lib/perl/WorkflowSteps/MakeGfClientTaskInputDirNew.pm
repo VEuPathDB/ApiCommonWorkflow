@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDir;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDirNew;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -51,6 +51,7 @@ maxIntron=$maxIntronSize
 queryType=$queryType
 ";
   close(F);
+ }
 }
 
 sub getConfigDeclaration {
