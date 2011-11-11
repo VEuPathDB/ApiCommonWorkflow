@@ -21,7 +21,7 @@ sub run {
   if ($inputFileType eq 'blastSim') {
       $cmd = "makeIdFileFromBlastSimOutput --$idType --subject --blastSimFile $workflowDataDir/$inputFile --outFile $workflowDataDir/$outputFile";
   } else {
-      $cmd = "makeIdFileFromBlatOutput --blatFile $workflowDataDir/$inputFile --outFile $workflowDataDir/$outputFile";
+      $cmd = "makeIdFileFromBlatOutput --blatFile $workflowDataDir/$inputFile --outFile $workflowDataDir/$outputFile --query";
   }
 
   if ($undo) {
