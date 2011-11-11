@@ -53,18 +53,20 @@
 
 
   <!-- NOTE: adjust and generalize this to handle blat results -->
-  <step name="filterResultsByTaxon" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterBlastResultsByTaxon" includeIf="$$filterByTaxon$$">
+  <step name="filterResultsByTaxon" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterSimilarityResultsByTaxon" includeIf="$$filterByTaxon$$">
     <paramValue name="taxonHierarchy">$$taxonHierarchyForFilter$$</paramValue>
     <paramValue name="gi2taxidFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
-    <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
-    <paramValue name="unfilteredOutputFile">$$dataDir$$/master/mainresult/blastSimilarity.out.orig</paramValue>
-    <paramValue name="filteredOutputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="inputFileType">blat</paramValue>
+    <paramValue name="inputFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
+    <paramValue name="unfilteredOutputFile">$$dataDir$$/master/mainresult/out.psl.orig</paramValue>
+    <paramValue name="filteredOutputFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
     <depends name="fixGenomeSourceIdsInBlatResultFile"/>
   </step>
 
   <!-- NOTE:  adjust and generalize this to handle blat results -->
-  <step name="extractIdsFromBlatResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractIdsFromBlastResult" includeIf="$$loadSubjectSubset$$">
+  <step name="extractIdsFromBlatResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractIdsFromSimilarityResult" includeIf="$$loadSubjectSubset$$">
     <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="inputFileType">blat</paramValue>
     <paramValue name="idType">subject</paramValue>
     <paramValue name="outputFile">$$dataDir$$/similarityIds.out</paramValue>
     <depends name="filterResultsByTaxon"/>
