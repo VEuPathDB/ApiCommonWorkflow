@@ -47,38 +47,6 @@ nodePort=5550
 maxIntron=$maxIntronSize
 ";
   close(F);
-
-    $self->makeGenomeTargetListFile("$workflowDataDir/$targetDir",
-				    "$workflowDataDir/$taskInputDir/targetList",
-				    "$clusterWorkflowDataDir/$targetDir");
-
-    #&runCmd($test, "chmod -R g+w $workflowDataDir/similarity/$queryName-$subjectName");
-  }
-}
-
-sub makeGenomeTargetListFile {
-    my ($self, $inputDir, $outputFile, $clusterOutputDir) = @_; 
-
-    open(F, ">$outputFile") || die "Can't open $outputFile for writing";
-
-    opendir(D,$inputDir) || die "Can't open directory, $inputDir";
-
-    while(my $file = readdir(D)) {
-      next() if ($file =~ /^\./);
-      print F "$clusterOutputDir/$file\n";
-    }
-
-    closedir(D);
-    close(F);
-}
-
-
-sub getParamsDeclaration {
-  return ('taskInputDir',
-	  'queryFile',
-	  'targetDir',
-	  'maxIntronSize',
-	 );
 }
 
 sub getConfigDeclaration {
