@@ -1,0 +1,118 @@
+<workflowGraph name="blatDnaAgainstGenome">
+  <param name="dataDir"/>
+  <param name="maxIntronSize"/>       <!-- do we need this? -->
+  <param name="organismAbbrev"/>
+  <param name="targetSeqsDir"/>       <!-- genomeSeqsDir -->
+  <param name="targetExtDbRlsSpec"/>  <!-- ${organismAbbrev}_primary_genome_RSRC|${genomeVersion} -->
+  <param name="queryFile"/>           <!-- nrdb proteins -->
+  <param name="queryTable"/>          <!-- DoTS::ExternalAASequence -->
+  <param name="queryExtDbRlsSpec"/>   <!-- NRDB_RSRC|@@NRDB_VER@@-->
+  <param name="queryIdRegex"/>        <!-- gi\\|(\\d+)\\| -->
+  <param name="loadSubjectSubset"/>   <!-- true -->
+  <param name="filterByTaxon"/>       <!-- true -->
+  <param name="taxonHierarchyForFilter"/> <!-- Eukaryota Apicomplexa Neospora -->
+
+  <constant name="blatOutputFile">$$dataDir$$/blat.out</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDir">
+    <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+    <paramValue name="queryFile">$$queryFile$$</paramValue>
+    <paramValue name="targetDir">$$targetSeqsDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeTaskInputDir"/>
+  </step>
+
+  <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster">
+    <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+    <paramValue name="numNodes">1</paramValue>
+    <paramValue name="processorsPerNode">1</paramValue>
+    <depends name="mirrorToCluster"/>
+  </step>
+
+  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
+    <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+    <paramValue name="outputFiles">out.psl</paramValue>
+    <depends name="runClusterTask"/>
+  </step>
+
+  <step name="fixGenomeSourceIdsInBlatResultFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixGenomeSourceIdsInBlatResultFile">
+    <paramValue name="inputFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
+    <depends name="mirrorFromCluster"/>
+  </step>
+
+
+  <!-- generalize this to handle blat results -->
+  <step name="filterResultsByTaxon" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterBlastResultsByTaxon" includeIf="$$filterByTaxon$$">
+    <paramValue name="taxonHierarchy">$$taxonHierarchyForFilter$$</paramValue>
+    <paramValue name="gi2taxidFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
+    <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="unfilteredOutputFile">$$dataDir$$/master/mainresult/blastSimilarity.out.orig</paramValue>
+    <paramValue name="filteredOutputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
+    <depends name="mirrorFromCluster"/>
+  </step>
+
+  <!-- generalize this to handle blat results -->
+  <step name="extractIdsFromBlastResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractIdsFromBlastResult" includeIf="$$loadSubjectSubset$$">
+    <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="idType">subject</paramValue>
+    <paramValue name="outputFile">$$dataDir$$/similarityIds.out</paramValue>
+    <depends name="filterResultsByTaxon"/>
+  </step>
+
+  <!-- this step needs a loadBalance=1 to avoid a race condition -->
+  <step name="loadSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertFastaSubset" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin">
+    <paramValue name="extDbRlsSpec">$$subjectExtDbRlsSpec$$</paramValue>
+    <paramValue name="fastaFile">$$subjectFile$$</paramValue>
+    <paramValue name="idsFile">$$dataDir$$/similarityIds.out</paramValue>
+    <depends name="extractIdsFromBlastResult"/>
+  </step>
+
+  <step name="updateTaxonFieldForSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateTaxonFieldFromFile" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin">
+    <paramValue name="extDbRlsSpec">$$subjectExtDbRlsSpec$$</paramValue>
+    <paramValue name="taxIdFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
+    <depends name="loadSubjectSubset"/>
+  </step>
+
+  <step name="insertBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
+
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="targetExtDbRlsSpec">$$targetExtDbRlsSpec$$</paramValue>
+    <paramValue name="targetTable">ExternalNASequence</paramValue>
+    <paramValue name="queryExtDbRlsSpec">$$queryExtDbRlsSpec$$</paramValue>
+    <paramValue name="queryTable">$$queryTable$$</paramValue>
+    <paramValue name="queryRegex">$$queryIdRegex$$</paramValue>
+    <paramValue name="action">load</paramValue>
+    <paramValue name="percentTop"></paramValue>
+    <paramValue name="blatFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
+    <paramValue name="queryFile">$$queryFile$$</paramValue>
+    <depends name="fixGenomeSourceIdsInBlatResultFile"/>
+  </step>
+
+  <!-- do we need this? -->
+  <step name="setBestBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
+
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="targetExtDbRlsSpec">$$targetExtDbRlsSpec$$</paramValue>
+    <paramValue name="queryExtDbRlsSpec">$$queryExtDbRlsSpec$$</paramValue>
+    <paramValue name="targetTable">ExternalNASequence</paramValue>
+    <paramValue name="queryTable">$$queryTable$$</paramValue>
+    <paramValue name="queryRegex">$$queryIdRegex$$</paramValue>
+    <paramValue name="action">setbest</paramValue>
+    <paramValue name="percentTop">100</paramValue>
+    <paramValue name="blatFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
+    <paramValue name="queryFile">$$queryFile$$</paramValue>
+    <depends name="insertBlatAlignment"/>
+  </step>
+
+
+</workflowGraph>
