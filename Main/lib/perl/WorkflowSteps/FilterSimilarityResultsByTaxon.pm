@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::FilterBlastResultsByTaxon;
+package ApiCommonWorkflow::Main::WorkflowSteps::FilterSimilarityResultsByTaxon;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 

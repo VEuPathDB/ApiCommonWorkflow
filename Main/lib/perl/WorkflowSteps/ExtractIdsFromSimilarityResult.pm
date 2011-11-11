@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::ExtractIdsFromBlastResult;
+package ApiCommonWorkflow::Main::WorkflowSteps::ExtractIdsFromSimilarityResult;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
