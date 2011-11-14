@@ -51,7 +51,7 @@ sub run {
            SUBSTR(snas.sequence,
                   taaf.translation_start,
                   taaf.translation_stop - taaf.translation_start + 1)
-           FROM apidb.featurelocation fl,
+           FROM apidbtuning.featurelocation fl,
                 apidbtuning.geneattributes gf,
                 dots.transcript t,
                 dots.splicednasequence snas,
