@@ -180,6 +180,11 @@ Since this plugin step FAILED, please CLEAN UP THE DATABASE by calling:
 
   ga $undoPlugin --algInvocationId PLUGIN_ALG_INV_ID_HERE --workflowContext --commit
 
+or (for the ISF plugin):
+ 
+  ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapfile YOUR_ISF_MAP_FILE --algInvocationId PLUGIN_ALG_INV_ID_HERE --workflowContext --commit
+
+
 Find the plugin's row_algorithm_invocation_id by looking above in this step log
 
 (You need to do this cleanup EVEN IF the plugin did not write any data to *its*
