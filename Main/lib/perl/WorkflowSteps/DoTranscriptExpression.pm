@@ -42,7 +42,7 @@ sub run {
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/expression_profile_config.txt");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/analysis_result_config.txt");
       } else {
-	  makeSymLinks($self, $inputDir, $outputDir);
+	  $self->makeSymLinks($inputDir, $outputDir);
 	  $self->runCmd($test,$cmd);
       }
   }
@@ -56,9 +56,9 @@ sub makeSymLinks {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   opendir(my $dh, "$workflowDataDir/$inputDir") || $self->error("can't opendir $workflowDataDir/$inputDir: $!");
-  while(readdir($dh)) {
-      next if /^\.+/;
-      symlink("$workflowDataDir/$inputDir/$_", "$workflowDataDir/$outputDir/$_") || $self->error("Can't make symlink from $workflowDataDir/$inputDir/$_ to $workflowDataDir/$outputDir/$_");
+  while(my $file = readdir($dh)) {
+      next if $file =~ /^\.+/;
+      symlink("$workflowDataDir/$inputDir/$file", "$workflowDataDir/$outputDir/$file") || $self->error("Can't make symlink from $workflowDataDir/$inputDir/$file to $workflowDataDir/$outputDir/$file");
   }
     closedir $dh;
 }
