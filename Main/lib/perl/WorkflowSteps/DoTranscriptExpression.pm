@@ -42,7 +42,7 @@ sub run {
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/expression_profile_config.txt");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/analysis_result_config.txt");
       } else {
-	  makeSymLinks($inputDir, $outputDir);
+	  makeSymLinks($self, $inputDir, $outputDir);
 	  $self->runCmd($test,$cmd);
       }
   }
