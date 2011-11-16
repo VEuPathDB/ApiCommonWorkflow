@@ -25,7 +25,7 @@ sub run {
 
   my $speciesName = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesName();
 
-  my $options = "$options --species $speciesName";
+  my $options = "$options --species '$speciesName'";
 
   if ($undo) {
     $self->runCmd(0,"rm -rf $workflowDataDir/$taskInputDir");
