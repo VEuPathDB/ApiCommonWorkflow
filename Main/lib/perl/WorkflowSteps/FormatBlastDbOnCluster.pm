@@ -13,7 +13,7 @@ sub run {
 
   my $inputFile = $self->getParamValue('inputFile');
   my $vendor = $self->getParamValue('vendor');
-  my $type = $self->getParamValue('seqType');
+  my $seqType = $self->getParamValue('seqType');
 
   $self->error("Parameter seqType=$seqType is invalid.  It must be either p or n") unless $seqType eq 'p' || $seqType eq 'n';
 
@@ -21,6 +21,7 @@ sub run {
 
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cmd;
   my $undoCmd;
@@ -31,7 +32,7 @@ sub run {
   } else {
     my $tf = $seqType eq 'p'? 'T' : 'F';
     my $blastPath  = $self->getConfig("$clusterServer.ncbiBlastBinPathCluster");
-    $cmd = "$ncbiBlastPath/formatdb -i $clusterWorkflowDataDir/$inputFile -p $tf";
+    $cmd = "$blastPath/formatdb -i $clusterWorkflowDataDir/$inputFile -p $tf";
     $undoCmd = "rm -f $clusterWorkflowDataDir/${inputFile}.x*";
   }
 
@@ -39,6 +40,7 @@ sub run {
     $self->runCmdOnCluster($test,$undoCmd);
   } else {
       if ($test) {
+	  # should really test this on the cluster?
 	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       }else{
 	  $self->runCmdOnCluster($test,$cmd);
