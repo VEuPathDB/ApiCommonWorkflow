@@ -31,7 +31,7 @@ sub run {
   } else {
     my $tf = $seqType eq 'p'? 'T' : 'F';
     my $blastPath  = $self->getConfig("$clusterServer.ncbiBlastBinPathCluster");
-    $cmd = "$ncbiBlastPath/formatdb -i $clusterWorkflowDataDir/$inputFile -p $tf $formatterArgs";
+    $cmd = "$ncbiBlastPath/formatdb -i $clusterWorkflowDataDir/$inputFile -p $tf";
     $undoCmd = "rm -f $clusterWorkflowDataDir/${inputFile}.x*";
   }
 
