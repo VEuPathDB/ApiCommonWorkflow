@@ -25,7 +25,9 @@ sub run {
 
   my $speciesName = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesName();
 
-  my $options = "$options --species '$speciesName'";
+  my $localRmParamsFile = "$workflowDataDir/$taskInputDir/rmParams";
+  
+  $options .= " -species '$speciesName' -dir .";
 
   if ($undo) {
     $self->runCmd(0,"rm -rf $workflowDataDir/$taskInputDir");
@@ -47,10 +49,16 @@ sub run {
 "rmPath=$rmPath
 inputFilePath=$clusterWorkflowDataDir/$seqsFile
 trimDangling=$trimDangling
-rmOptions=$options
 dangleMax=$dangleMax
+rmParamsFile=$localRmParamsFile
 ";
       close(F);
+
+       # make species file
+       open(F, ">$localRmParamsFile") || die "Can't open species file '$localRmParamsFile' for writing";;
+       print F "$options\n";
+       close(F);
+
   }
 
 }
