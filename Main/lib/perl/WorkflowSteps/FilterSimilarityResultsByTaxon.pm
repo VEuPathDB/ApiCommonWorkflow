@@ -29,9 +29,9 @@ sub run {
 
   $self->runCmd(0,"cp $workflowDataDir/$inputFile $workflowDataDir/$unfilteredOutputFile");
 
-  my $cmd = $inputFileType eq 'blat'? "splitAndFilterBLAT" : "splitAndFilterBLASTX";
+  my $cmd = "splitAndFilterGenomeSimilarities";
 
-  $cmd .= " --taxon \"$taxonList\" --gi2taxidFile $gi2taxidFile --inputFile $workflowDataDir/$unfilteredOutputFile --outputFile $workflowDataDir/$filteredOutputFile";
+  $cmd .= " --taxon \"$taxonList\" --gi2taxidFile $gi2taxidFile --inputFile $workflowDataDir/$unfilteredOutputFile --inputFileType $inputFileType --outputFile $workflowDataDir/$filteredOutputFile";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$unfilteredOutputFile");
