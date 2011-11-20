@@ -12,7 +12,7 @@ sub getDownloadFileCmd {
 
   my $organismSource = $self->getParamValue('organismSource');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $ncbiTaxonId = $self->getOrganismInfo($organismAbbrev)->getNcbiTaxonId();
+  my $ncbiTaxonId = $self->getOrganismInfo($test,$organismAbbrev)->getNcbiTaxonId();
 
   my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
 
