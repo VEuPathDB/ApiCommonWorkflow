@@ -13,15 +13,17 @@ sub run {
 
   my $configFile = $self->getParamValue('configFile');
 
-  open(CONF, $configFile);
+  my $workflowDataDir = $self->getWorkflowDataDir();
+
+  open(CFILE, "$workflowDataDir/$configFile") || die "Can't open config file '$workflowDataDir/$configFile'";
 
   my $noPlugin;
 
-  while (my $line = <CONF>){
-    if($line =~ m/NO ANALYSIS TO LOAD/i){
-      $noPlugin = 1;
-    }
+  while (my $line = <CFILE>){
+    $noPlugin = 1 if $line =~ m/NO ANALYSIS TO LOAD/i;
   }
+
+  close(CFILE);
 
   my $analysisResultView =  $self->getParamValue('analysisResultView');
 
@@ -32,8 +34,6 @@ sub run {
 #  my $profileSetNames =  $self->getParamValue('profileSetNames'); # see redmine issue 4257
   my $profileSetNames =  "";
 
-  my $workflowDataDir = $self->getWorkflowDataDir();
-      
   my $args = "--inputDir '$workflowDataDir/$analysisWorkingDir' --configFile '$workflowDataDir/$configFile' --analysisResultView $analysisResultView  --naFeatureView $naFeatureView";
 
   $args.=" --useSqlLdr" if($useSqlLdr eq "true"); 
