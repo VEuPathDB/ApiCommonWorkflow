@@ -13,7 +13,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "replace.pl --old '#' --new '.' $workflowDataDir/$inputFile";
+  my $cmd = "replace.pl --old '#' --new '.' --file_or_dir $workflowDataDir/$inputFile";
 
   if ($undo) {
   } else {

@@ -8,12 +8,11 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $outputFile = $self->getParamValue('outputFile');
   my $useCDSCoordinates = $self->getParamValue('useCDSCoordinates');
 
-
-  my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$ncbiTaxonId);
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -27,7 +26,7 @@ sub run {
       if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }else{
-	    $self->runCmd($test,$cmd);
+	    $self->runCmd($test, $cmd);
       }
   }
 }

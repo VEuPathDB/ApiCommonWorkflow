@@ -1,0 +1,51 @@
+<workflowGraph name="">
+  <param name="organismAbbrev"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="parentDataDir"/>
+  <param name="projectVersionForWebsiteFiles"/>
+  <param name="projectName"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+
+  <constant name="dataDir">$$parentDataDir$$/geneAliases</constant>
+  <constant name="geneAliasDescripString">Current, old, and alternative gene ids</constant>
+
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="GeneDB_GFF_gene_aliases">
+    <prop name="organismAbbrev"/>
+    <prop name="version"/>
+    <subgraph name="${organismAbbrev}_GeneDB_GFF_gene_aliases_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_GeneDB_GFF_gene_aliases_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+  <!-- GeneId -->
+  <step name="makeDerivedGeneIdTable"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedGeneIdTable" stepLoadTypes="tuningManager">
+      <paramValue name="tables">GeneId</paramValue>
+      <depends name="${organismAbbrev}_GeneDB_GFF_gene_aliases_RSRC"/> 
+  </step>
+
+
+    <step name="makeGeneAliasesDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesDownloadFile">
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">txt</paramValue>
+      <paramValue name="dataName">GeneAliases</paramValue>
+      <paramValue name="descripString">$$geneAliasDescripString$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="dbRefNAFeatureExtDbSpec">${organismAbbrev}_GeneDB_GFF_gene_aliases_RSRC|${version}</paramValue>
+      <depends name="makeDerivedGeneIdTable"/>
+    </step>
+  </datasetTemplate>
+
+</workflowGraph>
+

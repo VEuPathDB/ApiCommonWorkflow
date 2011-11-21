@@ -1,20 +1,16 @@
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeInterproDownloadFile;
 
-@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 use strict;
-use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
 
-sub run {
-  my ($self, $test, $undo) = @_;
-
-  my $outputFile = $self->getParamValue('outputFile');
-  my $descripFile= $self->getParamValue('descripFile');
-  my $descripString= $self->getParamValue('descripString');
+sub getDownloadFileCmd {
+    my ($self, $downloadFileName, $test) = @_;
 
   my $genomeDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
   my $interproDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('interproExtDbRlsSpec'));
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
 
   my $sql = <<"EOF";
   SELECT gf.source_id
@@ -57,40 +53,11 @@ sub run {
      AND df.external_database_release_id =  $interproDbRlsId
      AND xdr1.external_database_id = xd1.external_database_id 
      AND xdr1.external_database_release_id =  $interproDbRlsId
+     AND ns.sequence_ontology_id in ($soIds)
 EOF
 
-  $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
-my $cmd = " makeFileWithSql --outFile $outputFile --sql \"$sql\" ";
-my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
-
-  if ($undo) {
-    #$self->runCmd(0, "rm -f $outputFile");
-    #$self->runCmd(0, "rm -f $descripFile");
-  } else {
-      if ($test) {
-	  $self->runCmd(0,"echo test > $outputFile");
-      }else{
-	  $self->runCmd($test,$cmd);
-	  $self->runCmd($test, $cmdDec);
-      }
-  }
-}
-
-
-sub getParamsDeclaration {
-  return (
-          'outputFile',
-          'genomeExtDbRlsSpec',
-          'interproExtDbRlsSpec',
-          'soTermIdsOrNames'
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
+    my $cmd = " makeFileWithSql --outFile $downloadFileName --sql \"$sql\" ";
+    return $cmd;
 }
 
 

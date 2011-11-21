@@ -9,18 +9,25 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $outputFile = $self->getParamValue('outputFile');
-  my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
-
-  my $sql = "SELECT ga.source_id||':'||ga.sequence_id||':'||(ga.start_min - 1)||'-'||ga.end_max||'_'||(decode(ga.is_reversed, 1, '-', '+')), snas.sequence
-             FROM dots.transcript t,
-                  dots.splicednasequence snas,
-                  ApidbTuning.GeneAttributes ga
-             WHERE ga.na_feature_id = t.parent_id
-              AND t.na_sequence_id = snas.na_sequence_id
-              AND ga.so_term_name != 'repeat_region'
-              AND ga.ncbi_tax_id = $ncbiTaxonId";
+  my $sql = "select ga.source_id || ':'
+                    || substr(ns.source_id, 1, 50) ||':'
+                    ||(nl.start_min - 1)||'-'||nl.end_max||'_'||(decode(nl.is_reversed, 1, '-', '+')),
+                    snas.sequence
+                          from dots.Transcript t, dots.SplicedNaSequence snas,
+                               dots.GeneFeature ga, dots.NaLocation nl,
+                               dots.NaSequence ns, sres.Taxon, sres.SequenceOntology so
+                          where ga.na_sequence_id = ns.na_sequence_id
+                            and ga.na_feature_id = t.parent_id
+                            and t.na_sequence_id = snas.na_sequence_id
+                            and ga.sequence_ontology_id = so.sequence_ontology_id
+                            and so.term_name != 'repeat_region'
+                            and snas.taxon_id = taxon.taxon_id
+                            and taxon.ncbi_tax_id = $ncbiTaxonId
+                            and nl.na_feature_id = ga.na_feature_id";
 
 
 

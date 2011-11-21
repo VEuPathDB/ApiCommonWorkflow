@@ -16,7 +16,7 @@ sub run {
 
   my $cmd = "convertBowtieOutput2tagToSeq --bowtie_output_file $workflowDataDir/$inputFile --tag2seq_file $workflowDataDir/$outputFile";
   if ($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/$gffOutputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
 	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");

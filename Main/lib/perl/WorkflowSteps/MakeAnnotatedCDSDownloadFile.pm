@@ -1,119 +1,90 @@
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeAnnotatedCDSDownloadFile;
 
-@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 use strict;
-use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
 
-sub run {
-  my ($self, $test, $undo) = @_;
+sub getDownloadFileCmd {
+    my ($self, $downloadFileName, $test) = @_;
 
-  # get parameters
-  my $outputFile = $self->getParamValue('outputFile');
-  my $organismSource = $self->getParamValue('organismSource');
-  my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
-  my $descripFile= $self->getParamValue('descripFile');
-  my $descripString = $self->getParamValue('descripString');
+    my $organismSource = $self->getParamValue('organismSource');
+    my $deprecated = ($self->getParamValue('hasDeprecatedGenes') eq 'true') ? 1 :0;
 
-  my (@dbnames,@dbvers);
-  my ($name,$ver) = $self->getExtDbInfo($test, $self->getParamValue('genomeExtDbRlsSpec')) if $self->getParamValue('genomeExtDbRlsSpec');
-  push (@dbnames,$name);
-  push (@dbvers,$ver);
+    my $organismAbbrev = $self->getParamValue('organismAbbrev');
+    my $ncbiTaxonId = $self->getOrganismInfo($test,$organismAbbrev)->getNcbiTaxonId();
+    $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
-  if($self->getParamValue('genomeVirtualSeqsExtDbRlsSpec')){
-      my @virtualGenomeExtDbSpecList = split(/,/,$self->getParamValue('genomeVirtualSeqsExtDbRlsSpec'));
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
 
-      foreach (@virtualGenomeExtDbSpecList){
-	  ($name,$ver) = $self->getExtDbInfo($test, $_);
-	  push (@dbnames,$name);
-	  push (@dbvers,$ver);
-      }
-  }
-
-
-  my $names = join (",", map{"'$_'"} @dbnames);
-  my $vers = join (",", map{"'$_'"} @dbvers);
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
-
-  my $deprecatedGene;
-
- my $sql = <<"EOF";
-     SELECT '$organismSource'
-                ||'|'||
-            gf.source_id
-                 || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
-                 ||' | organism='||
-           replace( gf.organism, ' ', '_')
-                ||' | product='||
-            gf.product
-                ||' | location='||
-            fl.sequence_source_id
-                ||':'||
-            least(gf.coding_start,gf.coding_end)
-                ||'-'||
-	    greatest(gf.coding_start,gf.coding_end)
-                ||'('||
-            decode(fl.is_reversed, 1, '-', '+')
-                ||') | length='||
-            (abs(gf.coding_start - gf.coding_end) + 1)
+    my $sql = <<"EOF";
+     select '$organismSource' || '|' || gf.source_id
+            || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
+            || ' | organism=' || replace( gf.organism, ' ', '_')
+            || ' | product=' || product_name.product || ' | location='
+            || fl.sequence_source_id || ':'
+            || least(gf.coding_start,gf.coding_end) ||'-'
+            || greatest(gf.coding_start,gf.coding_end)
+            || '('|| decode(fl.is_reversed, 1, '-', '+') || ') | length='
+            || (abs(gf.coding_start - gf.coding_end) + 1)
             as defline,
-           SUBSTR(snas.sequence,
+           substr(snas.sequence,
                   taaf.translation_start,
-                  taaf.translation_stop - taaf.translation_start + 1)
-           FROM ApidbTuning.FeatureLocation fl,
+                  taaf.translation_stop - taaf.translation_start + 1) as sequence
+           from ApidbTuning.FeatureLocation fl,
                 ApidbTuning.GeneAttributes gf,
                 dots.transcript t,
                 dots.splicednasequence snas,
                 dots.translatedaafeature taaf,
-                dots.nasequence ns
+                dots.nasequence ns,
+                (select gf.na_feature_id,
+                        substr(coalesce(preferred_product.product, any_product.product, gf.product, 'unspecified product'),
+                               1, 300)
+                        || case
+                             when (coalesce(preferred_name.name, any_name.name) is not null)
+                             then ' (' || coalesce(preferred_name.name, any_name.name) || ')'
+                             else ''
+                            end
+                        as product
+                 from dots.GeneFeature gf,
+                      (select na_feature_id, max(product) as product
+                       from apidb.GeneFeatureProduct
+                       where is_preferred = 1
+                       group by na_feature_id
+                      ) preferred_product,
+                      (select na_feature_id, max(product) as product
+                       from apidb.GeneFeatureProduct
+                       group by na_feature_id
+                      ) any_product,
+                      (select na_feature_id, max(name) as name
+                       from apidb.GeneFeatureName
+                       where is_preferred = 1
+                       group by na_feature_id
+                      ) preferred_name,
+                      (select na_feature_id, max(name) as name
+                       from apidb.GeneFeatureName
+                       group by na_feature_id
+                      ) any_name
+                 where gf.na_feature_id = preferred_product.na_feature_id(+)
+                   and gf.na_feature_id = any_product.na_feature_id(+)
+                   and gf.na_feature_id = preferred_name.na_feature_id(+)
+                   and gf.na_feature_id = any_name.na_feature_id(+)
+                ) product_name
       WHERE gf.na_feature_id = t.parent_id
         AND fl.na_sequence_id = ns.na_sequence_id
         AND t.na_sequence_id = snas.na_sequence_id
         AND gf.na_feature_id = fl.na_feature_id
         AND gf.so_term_name != 'repeat_region'
         AND gf.so_term_name = 'protein_coding'
-        AND gf.external_db_name in ($names) 
-        AND gf.external_db_version in ($vers)
+        AND gf.ncbi_tax_id = $ncbiTaxonId 
         AND t.na_feature_id = taaf.na_feature_id
         AND fl.is_top_level = 1
         AND gf.is_deprecated = $deprecated
+        and gf.na_feature_id = product_name.na_feature_id
+        AND ns.sequence_ontology_id in ($soIds)
 EOF
 
-  $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
-  my $cmd = "gusExtractSequences --outputFile $outputFile  --idSQL \"$sql\"  --verbose";
-  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
-
-
-
-  if ($undo) {
-    #$self->runCmd(0, "rm -f $outputFile");
-    #$self->runCmd(0, "rm -f $descripFile");
-  } else {
-      if ($test) {
-	  $self->runCmd(0,"echo test > $outputFile");
-      }else{
-	  $self->runCmd($test,$cmd);
-	  $self->runCmd($test, $cmdDec);
-      }
-  }
+    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"  --verbose";
+    return $cmd;
 }
-
-
-sub getParamsDeclaration {
-  return (
-          'outputFile',
-          'organismSource',
-          'genomeExtDbRlsSpec',
-          'genomeVirtualSeqsExtDbRlsSpec',
-	  'deprecated',
-          'soTermIdsOrNames'
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-
+1;

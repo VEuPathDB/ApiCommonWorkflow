@@ -9,13 +9,14 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $profileSetSpecs = $self->getParamValue('profileSetSpecs');
+#  my $profileSetSpecs = $self->getParamValue('profileSetSpecs');
+  my $profileSetSpecs = ""; # see redmine issue 4257
 
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
 
-  my $isLogged = ($self->getParamValue('isLogged') eq 'true') ? 1 :0;
+  my $isLogged = ""; # ($self->getParamValue('isLogged') eq 'true') ? 1 :0;  see redmine 4257
 
-  my $mappingFile = $self->getParamValue('mappingFile');
+  my $mappingFile = ""; # $self->getParamValue('mappingFile'); see redmine 4257
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -32,15 +33,6 @@ sub run {
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CalculateProfileSummaryStats", $args);
 
-}
-
-sub getParamDeclaration {
-  return (
-	  'profileSetSpecs',
-	  'extDbRlsSpec',
-	  'isLogged',
-	  'mappingFile',
-	 );
 }
 
 sub getConfigDeclaration {

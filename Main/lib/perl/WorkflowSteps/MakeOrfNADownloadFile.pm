@@ -1,34 +1,18 @@
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfNADownloadFile;
 
-@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 use strict;
-use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
-sub run {
-  my ($self, $test, $undo) = @_;
+sub getDownloadFileCmd {
+    my ($self, $downloadFileName, $test) = @_;
 
-  my $outputFile = $self->getParamValue('outputFile');
-  my $descripFile= $self->getParamValue('descripFile');
-  my $descripString= $self->getParamValue('descripString');
-
-  my @extDbRlsIds;
-  push(@extDbRlsIds,$self->getExtDbRlsId($test, $self->getParamValue('genomeExtDbRlsSpec'))) if $self->getParamValue('genomeExtDbRlsSpec');
-
-  if($self->getParamValue('genomeVirtualSeqsExtDbRlsSpec')){
-      my @virtualGenomeExtDbSpecList = split(/,/,$self->getParamValue('genomeVirtualSeqsExtDbRlsSpec'));
-
-      foreach (@virtualGenomeExtDbSpecList){
-	  push(@extDbRlsIds,$self->getExtDbRlsId($test, $_));
-	  
-      }
-  }
-
-
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
-
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
   my $length = $self->getParamValue('minOrfLength');
 
-  my $dbRlsIds = join(",", @extDbRlsIds);
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
+
 
   my $sql = <<"EOF";
     SELECT
@@ -58,50 +42,20 @@ sub run {
         AND m.na_feature_id = fl.na_feature_id
         AND fl.is_top_level = 1
         AND enas.na_sequence_id = fl.na_sequence_id 
+        AND enas.taxon_id = $taxonId
         AND enas.taxon_id = tn.taxon_id
         AND tn.name_class = 'scientific name'
         AND m.sequence_ontology_id = so.sequence_ontology_id
         AND so.term_name = 'ORF'
         AND taas.length >= $length
-        AND m.external_database_release_id in ($dbRlsIds)
+        AND enas.sequence_ontology_id in ($soIds)
 EOF
 
-
-  $sql .= " and enas.sequence_ontology_id in ($soIds)" if $soIds;
    my $cmd = <<"EOF";
-      gusExtractSequences --outputFile $outputFile \\
+      gusExtractSequences --outputFile $downloadFileName \\
       --idSQL \"$sql\" \\
       --verbose
 EOF
-  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
-
-  if ($undo) {
-   # $self->runCmd(0, "rm -f $outputFile");
-   # $self->runCmd(0, "rm -f $descripFile");
-  } else {
-      if ($test) {
-	  $self->runCmd(0,"echo test > $outputFile");
-      }else{
-	  $self->runCmd($test,$cmd);
-	  $self->runCmd($test, $cmdDec);
-      }
-  }
-}
-
-sub getParamsDeclaration {
-   my @properties =
-     ('outputFile',
-      'genomeExtDbRlsSpec',
-      'genomeVirtualSeqsExtDbRlsSpec',
-       'soTermIdsOrNames'
-     );
-     return @properties;
-}
-
-sub getConfigDeclaration {
-   my @properties = 
-        (
-         # [name, default, description]
-         );
+    return $cmd;
 }
 

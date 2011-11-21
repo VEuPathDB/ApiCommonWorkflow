@@ -19,12 +19,12 @@ sub run {
     my $cmd = "cat $in1 $in2 > $out";
 
     if ($undo) {
-	$self->runCmd(0, "rm -f $workflowDataDir/$outFile");
+	$self->runCmd(0, "rm -f $workflowDataDir/$out");
     } else {
 	if ($test) {
 	    $self->testInputFile('inputFile1', "$workflowDataDir/$in1");
 	    $self->testInputFile('inputFile2', "$workflowDataDir/$in2");
-	    $self->runCmd(0,"echo test > $workflowDataDir/$outFile");
+	    $self->runCmd(0,"echo test > $workflowDataDir/$out");
 	}
 	$self->runCmd($test, $cmd);
 

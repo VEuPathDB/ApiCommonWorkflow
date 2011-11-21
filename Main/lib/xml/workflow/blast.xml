@@ -68,14 +68,15 @@
       <depends name="filterResultsByTaxon"/>
      </step>
 
-    <step name="loadSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertFastaSubset" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadBalanceOne,plugin">
+    <!-- this step needs a loadBalance=1 to avoid a race condition -->
+    <step name="loadSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertFastaSubset" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin">
       <paramValue name="extDbRlsSpec">$$subjectExtDbRlsSpec$$</paramValue>
       <paramValue name="fastaFile">$$subjectFile$$</paramValue>
       <paramValue name="idsFile">$$dataDir$$/blastSimIds.out</paramValue>
       <depends name="extractIdsFromBlastResult"/>
     </step>
 
-    <step name="updateTaxonFieldForSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateTaxonFieldFromFile" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadBalanceOne,plugin">
+    <step name="updateTaxonFieldForSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateTaxonFieldFromFile" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin">
       <paramValue name="extDbRlsSpec">$$subjectExtDbRlsSpec$$</paramValue>
       <paramValue name="taxIdFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
       <depends name="loadSubjectSubset"/>

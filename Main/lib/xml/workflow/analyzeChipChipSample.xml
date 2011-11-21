@@ -1,0 +1,106 @@
+<workflowGraph name="analyzeChipChipSample">
+    <param name="parentDataDir"/>
+    <param name="experimentResourceName"/>
+    <param name="chipProbeExtDbRlsSpec"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="inputSampleFile"/>
+    <param name="sampleName"/>
+    <param name="experimentName"/>
+    <param name="peakFinderArgs"/>
+    <param name="loadPeakCalls"/>
+    <param name="organismAbbrev"/>
+    <param name="configFilesDir"/>
+
+    <constant name="dataDir">$$parentDataDir$$/analyze_ChIP_Chip_$$sampleName$$</constant>
+    <constant name="peakFinderDataDir">$$dataDir$$/smoothedDataAndPeaks</constant>
+
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="transformRawDataToGenomeCoordinates" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TransformRawDataToGenomeCoordinates">
+      <paramValue name="inputFile">$$parentDataDir$$/$$experimentResourceName$$/final/$$inputSampleFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/transformedAndAveragedRawData.tab</paramValue>
+      <paramValue name="chipProbeExtDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makePeakFinderDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$peakFinderDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="runChIPChipPeakFinderAndSmoother" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindChipChipPeaks">
+      <paramValue name="inputFile">$$dataDir$$/transformedAndAveragedRawData.tab</paramValue>
+      <paramValue name="outputPeaksFile">$$peakFinderDataDir$$/peaks.txt</paramValue>
+      <paramValue name="outputSmoothedFile">$$peakFinderDataDir$$/smoothedProfiles.txt</paramValue>
+      <paramValue name="peakFinderArgs">$$peakFinderArgs$$</paramValue>
+      <depends name="transformRawDataToGenomeCoordinates"/>
+      <depends name="makePeakFinderDataDir"/>
+    </step>
+
+    <step name="document-ChIPChipPeakFinder"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">chip_chip_peak_finder_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="runChIPChipPeakFinderAndSmoother"/>
+    </step>
+
+
+    <step name="reformatChIPChipSmoothedProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipSmoothedProfiles">
+      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/smoothedProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/smoothedProfiles_reformated.txt</paramValue>
+      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <depends name="runChIPChipPeakFinderAndSmoother"/>
+    </step>
+
+    <step name="loadChIPChipSmoothedProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin">
+      <paramValue name="analysisWorkingDir">$$dataDir$$/smoothedDataAndPeaks</paramValue>
+      <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_smoothed_config.txt</paramValue>
+      <paramValue name="analysisResultView">DataTransformationResult</paramValue>
+      <paramValue name="naFeatureView">ArrayElementFeature</paramValue>
+      <paramValue name="useSqlLdr">true</paramValue>
+      <depends name="reformatChIPChipSmoothedProfiles"/>
+    </step>
+
+    <step name="generateChIPChipPeakFeatureGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateChIPChipPeakFeatureGff" includeIf="$$loadPeakCalls$$">
+      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.txt</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.gff</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="experimentName">$$experimentName$$</paramValue>
+      <depends name="runChIPChipPeakFinderAndSmoother"/>
+    </step>
+
+    <step name="loadChIPChipPeakFeature" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChIPChipPeakFeature" stepLoadTypes="plugin" includeIf="$$loadPeakCalls$$">
+
+      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.gff</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$chipProbeExtDbRlsSpec$$</paramValue>
+      <paramValue name="substepClass">ExternalNASequence</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="isfMappingFile">chipChipPeakFeature2gus.xml</paramValue>
+      <paramValue name="soVersion">@@SO_VER@@</paramValue>
+      <depends name="generateChIPChipPeakFeatureGffFile"/>
+    </step>
+
+    <step name="reformatChIPChipPeakScoreFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipPeakScoreFile" includeIf="$$loadPeakCalls$$">
+      <paramValue name="inputFile">$$dataDir$$/smoothedDataAndPeaks/peaks.txt</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/smoothedDataAndPeaks/peak_scores.txt</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="experimentName">$$experimentName$$</paramValue>
+      <depends name="runChIPChipPeakFinderAndSmoother"/>
+    </step>
+
+    <step name="loadChIPChipPeakScoreFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin" includeIf="$$loadPeakCalls$$">
+      <paramValue name="analysisWorkingDir">$$dataDir$$/smoothedDataAndPeaks</paramValue>
+      <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_peak_config.txt</paramValue>
+      <paramValue name="analysisResultView">DataTransformationResult</paramValue>
+      <paramValue name="naFeatureView">BindingSiteFeature</paramValue>
+      <paramValue name="useSqlLdr">false</paramValue>
+      <depends name="reformatChIPChipPeakScoreFile"/>
+      <depends name="loadChIPChipPeakFeature"/>
+    </step>
+
+</workflowGraph>

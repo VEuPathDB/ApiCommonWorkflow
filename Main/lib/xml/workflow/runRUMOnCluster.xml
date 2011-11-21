@@ -5,18 +5,20 @@
       <param name="genomeFastaFile"/>
       <param name="geneAnnotationFile"/>
       <param name="transcriptFastaFile"/>
-      <param name="pairedReadFilePath"/>
+      <param name="hasPairedEnds"/>
       <param name="limitNU"/>
       <param name="numInsertions"/>
       <param name="createSAMFile"/>
       <param name="countMismatches"/>
-      <param name="SNPs"/>
+      <param name="isSNPs"/>
       <param name="strandSpecific"/>
       <param name="keepNode"/>
       <param name="createJunctionsFile"/>
       <param name="variableLengthReads"/>
 
   <constant name="dataDir">$$parentDataDir$$</constant>
+  
+    <!-- rum distribjob task creates bowtie indexes if not provided -->
 
     <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRUMTaskInputDir">
       <paramValue name="readFilePath">$$readFilePath$$</paramValue>
@@ -25,14 +27,14 @@
       <paramValue name="transcriptBowtieIndex"></paramValue>
       <paramValue name="geneAnnotationFile">$$geneAnnotationFile$$</paramValue>
       <paramValue name="transcriptFastaFile">$$transcriptFastaFile$$</paramValue>
-      <paramValue name="pairedReadFilePath">$$pairedReadFilePath$$</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
       <paramValue name="limitNU">$$limitNU$$</paramValue>
       <paramValue name="numInsertions">$$numInsertions$$</paramValue>
       <paramValue name="createSAMFile">$$createSAMFile$$</paramValue>
       <paramValue name="countMismatches">$$countMismatches$$</paramValue>
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="masterdir">$$dataDir$$/master</paramValue>
-      <paramValue name="SNPs">$$SNPs$$</paramValue>
+      <paramValue name="SNPs">$$isSNPs$$</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="keepNode">$$keepNode$$</paramValue>
       <paramValue name="createJunctionsFile">$$createJunctionsFile$$</paramValue>
@@ -54,6 +56,7 @@
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputFiles">junctions_all.rum,RUM_NU.normalized.cov,RUM_NU.plus.normalized.cov,RUM_NU.minus.normalized.cov,RUM_Unique.normalized.cov,RUM_Unique.plus.normalized.cov,RUM_Unique.minus.normalized.cov,RUM_Unique.all,RUM_NU.all,RUM_Unique.sorted,RUM_NU.sorted</paramValue>
       <depends name="runClusterTask"/>
     </step>
 

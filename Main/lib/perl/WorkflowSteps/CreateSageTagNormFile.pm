@@ -11,16 +11,14 @@ sub run {
 
   my $studyName = $self->getParamValue('studyName');
 
-  my $paramValue = $self->getParamValue('paramValue');
-
   my $outputDir = $self->getParamValue('outputDir');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-      
-  my $args = "--paramValue $paramValue --studyName '$studyName' --fileDir $workflowDataDir/$outputDir";
 
-  my $normFileDir = $studyName; 
-      
+  my $args = "--studyName '$studyName' --fileDir $workflowDataDir/$outputDir";
+
+  my $normFileDir = $studyName;
+
   $normFileDir=~ s/\s/_/g;
 
   $normFileDir =~ s/[\(\)]//g;

@@ -1,32 +1,22 @@
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeMixedGenomicDownloadFile;
 
-@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 use strict;
-use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
-sub run {
-  my ($self, $test, $undo) = @_;
+sub getDownloadFileCmd {
+    my ($self, $downloadFileName, $test) = @_;
 
   # get parameters
-  my @genomeExtDbSpecList = split (/,/,$self->getParamValue('genomeExtDbSpecList'));
-  my $outputFile = $self->getParamValue('outputFile');
-  my $organismSource = $self->getParamValue('organismSource');
-  my $descripFile= $self->getParamValue('descripFile');
-  my $descripString= $self->getParamValue('descripString');
 
-  my (@extDbRlsVers,@extDbNames);
+    my $organismSource = $self->getParamValue('organismSource');
+    my $organismAbbrev = $self->getParamValue('organismAbbrev');
+    my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
-  foreach ( @genomeExtDbSpecList ){
-      my ($extDbName,$extDbRlsVer)=$self->getExtDbInfo($test,$_);
-      push (@extDbNames,$extDbName);
-      push (@extDbRlsVers,$extDbRlsVer);
-  }
+    my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
 
-  my $extDbNameList = join(",", map{"'$_'"} @extDbNames);
-  my $extDbRlsVerList = join(",",map{"'$_'"} @extDbRlsVers);
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('soTermIdsOrNames')) if $self->getParamValue('soTermIdsOrNames');
-
-  my $sql = " SELECT '$organismSource'
+    my $sql = <<"EOF";
+       SELECT '$organismSource'
                 ||'|'||
                sa.source_id
                 ||' | organism='||
@@ -40,44 +30,13 @@ sub run {
            FROM dots.nasequence ns,
                 ApidbTuning.SequenceAttributes sa
           WHERE ns.na_sequence_id = sa.na_sequence_id
-            AND sa.database_name in ($extDbNameList) AND sa.database_version in ($extDbRlsVerList)
-            AND sa.is_top_level = 1";
+            AND sa.ncbi_tax_id = $ncbiTaxonId
+            AND sa.is_top_level = 1
+            AND ns.sequence_ontology_id in ($soIds)
+EOF
 
-  $sql .= " and ns.sequence_ontology_id in ($soIds)" if $soIds;
-  my $cmd = "gusExtractSequences --outputFile $outputFile  --idSQL \"$sql\" ";
-  my $cmdDec = "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
-
-
-  
-  if($undo){
-    #$self->runCmd(0, "rm -f $outputFile");
-    #$self->runCmd(0, "rm -f $descripFile");
-  }else{
-      if ($test) {
-	  $self->runCmd(0, "echo test > $outputFile");
-      }else{
-	  $self->runCmd($test, $cmd);
-	  $self->runCmd($test, $cmdDec);
-      }
-  }
-
-}
-
-sub getParamsDeclaration {
-  return (
-          'outputFile',
-          'extDbName',
-          'extDbRls',
-	  'organismSource',
-          'soTermIdsOrNames'
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
+    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" ";
+    return $cmd;
 }
 
 

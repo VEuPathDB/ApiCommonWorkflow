@@ -1,0 +1,22 @@
+<workflowGraph name="">
+  <param name="organismResourceXmlFile"/>
+  <param name="parentDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/comments</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="comments">
+    <prop name="name"/>
+    <prop name="organismAbbrev"/>
+    <subgraph name="${organismAbbrev}_${name}_comments_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_${name}_comments_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+</workflowGraph>

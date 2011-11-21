@@ -1,0 +1,55 @@
+<workflowGraph name="comparativeGenomics">
+    <param name="parentDataDir"/>
+    <param name="comparativeGenomicsInputDir"/>
+    <param name="relativeWebServicesDir"/>
+
+    <constant name="mercatorOutputsDir">$$parentDataDir$$/mercatorOutput</constant>
+    <constant name="mercatorCacheDir">$$parentDataDir$$/mercatorCache</constant>
+
+    <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid">
+      <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
+      <paramValue name="mercatorOutputsDir">$$mercatorOutputsDir$$</paramValue>
+      <paramValue name="mercatorCacheDir">$$mercatorCacheDir$$</paramValue>
+      <paramValue name="mercatorTmpDir">$$parentDataDir$$/mercatorTmp</paramValue>
+    </step>
+
+    <datasetTemplate class="orthomclPhyletic">
+      <prop name="projectName"/>
+      <subgraph name="OrthoMCL_Phyletic_RSRC" xmlFile="loadResource.xml">
+	<paramValue name="resourceName">OrthoMCL_Phyletic_RSRC</paramValue>
+	<paramValue name="resourceXmlFileName">${projectName}.xml</paramValue>
+	<paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+      </subgraph>
+    </datasetTemplate>
+
+    <datasetTemplate class="orthomcl">
+      <prop name="projectName"/>
+      <subgraph name="OrthoMCL_RSRC" xmlFile="loadResource.xml">
+	<paramValue name="resourceName">OrthoMCL_RSRC</paramValue>
+	<paramValue name="resourceXmlFileName">${projectName}.xml</paramValue>
+	<paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+	<depends name="OrthoMCL_Phyletic_RSRC"/> 
+      </subgraph>
+    </datasetTemplate>
+
+    <datasetTemplate class="orthomclTree">
+      <prop name="projectName"/>
+      <subgraph name="OrthoMCLTree_RSRC" xmlFile="loadResource.xml">
+	<paramValue name="resourceName">OrthoMCLTree_RSRC</paramValue>
+	<paramValue name="resourceXmlFileName">${projectName}.xml</paramValue>
+	<paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+      </subgraph>
+    </datasetTemplate>
+
+    <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin">
+      <paramValue name="mercatorOutputsDir">$$mercatorOutputsDir$$</paramValue>
+      <depends name="runPairwiseMercatorMavid"/>
+    </step>
+
+    <step name="copyPairwiseMercatorDirsToWebserviceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPairwiseMercatorDirsToWebserviceDir">
+      <paramValue name="mercatorOutputsDir">$$mercatorOutputsDir$$</paramValue>
+      <paramValue name="mercatorWebsvcDir">$$relativeWebServicesDir$$/mercator</paramValue>
+      <depends name="runPairwiseMercatorMavid"/>
+    </step>
+
+</workflowGraph>

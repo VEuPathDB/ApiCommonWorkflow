@@ -18,6 +18,13 @@
     </ant>
   </target>  
 
+  <target name="GGTools-Installation">
+    <ant antfile="../GGTools/build.xml" target="GGTools-Installation">
+      <property name="project" value="GGTools"/>
+      <property name="version" value="??"/>
+    </ant>
+  </target>  
+
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo    Checkout    oooooooooooooooooooooooooo -->
@@ -34,11 +41,18 @@
   <target name="ReFlow-Checkout" unless="ReFlow.present"> 
     <ant target="defaultProjectCheckout" inheritAll="false"> 
       <property name="svnurl" value="https://www.cbil.upenn.edu/svn/apidb/ReFlow" />
-      <property name="project" value="ApiCommonData"/>
+      <property name="project" value="ReFlow"/>
       <property name="version" value="??"/>
     </ant>
   </target>    
 
+  <target name="GGTools-Checkout" unless="GGTools.present"> 
+    <ant target="defaultProjectCheckout" inheritAll="false"> 
+      <property name="svnurl" value="https://www.cbil.upenn.edu/svn/apidb/GGTools" />
+      <property name="project" value="GGTools"/>
+      <property name="version" value="??"/>
+    </ant>
+  </target>    
 
   
   <target name="ApiCommonWorkflow-ChildCheckout">
@@ -63,7 +77,8 @@
 
   <target name="ApiCommonWorkflow-Installation" depends="ApiCommonData-Installation,
                                             ReFlow-Installation,
-                                            ApiCommonWorkflow/Main-Installation">
+                                            GGTools-Installation,
+                                            ApiCommonWorkflow/Main-Installation,                                            ApiCommonWorkflow/DatasetClass-Installation">
 
     <ant target="defaultProjectInstall"/>
   </target>  
@@ -96,6 +111,14 @@
     <exec executable="workflowResolveAll">
     </exec>
 -->
+
+  </target>  
+ 
+  <target name="ApiCommonWorkflow/DatasetClass-Installation" depends="ProjectTree">
+    <ant target="defaultComponentInstall">
+      <property name="project" value="ApiCommonWorkflow"/>
+      <property name="component" value="DatasetClass"/>
+    </ant>
 
   </target>  
  

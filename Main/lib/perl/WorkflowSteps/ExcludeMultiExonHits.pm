@@ -13,29 +13,33 @@ sub run {
 
   my $inputNonUniqueFile = $self->getParamValue('inputNonUniqueFile');
 
+  my $outputUniqueFile = $self->getParamValue('outputUniqueFile');
+
+  my $outputNonUniqueFile = $self->getParamValue('outputNonUniqueFile');
+
+  my $excludeMultiExonsIf = $self->getParamValue('excludeMultiExonsIf');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-    if ($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/$inputUniqueFile");
-    $self->runCmd(0, "rm -f $workflowDataDir/$inputNonUniqueFile");
-    $self->runCmd(0, "mv $workflowDataDir/$inputUniqueFile.save $workflowDataDir/$inputUniqueFile");
-    $self->runCmd(0, "mv $workflowDataDir/$inputNonUniqueFile.save $workflowDataDir/$inputNonUniqueFile");
-  } else {
-      if ($test) {
-      }else{
-	  $self->runCmd($test,"mv $workflowDataDir/$inputUniqueFile $workflowDataDir/$inputUniqueFile.save");
-	  $self->runCmd($test,"mv $workflowDataDir/$inputNonUniqueFile $workflowDataDir/$inputNonUniqueFile.save");
-	  $self->runCmd($test,"grep -v ',' $workflowDataDir/$inputUniqueFile.save > $workflowDataDir/$inputUniqueFile");
-	  $self->runCmd($test,"grep -v ',' $workflowDataDir/$inputNonUniqueFile.save > $workflowDataDir/$inputNonUniqueFile");
-      }
-  }
-}
+  if ($undo) {
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputUniqueFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputNonUniqueFile");
 
-sub getParamDeclaration {
-  return (
-	  'inputUniqueFile',
-	  'inputNonUniqueFile',
-	 );
+  } else {
+
+    if ($test) {
+      $self->testInputFile('inputUniqueFile', "$workflowDataDir/$inputUniqueFile");
+      $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$inputNonUniqueFile");
+
+      $self->runCmd(0,"echo test > $workflowDataDir/$outputUniqueFile");
+      $self->runCmd(0,"echo test > $workflowDataDir/$outputNonUniqueFile");
+
+    } else {
+      my $command = ($excludeMultiExonsIf eq 'true')? "grep -v ','" : "cat";
+      $self->runCmd($test,"$command $workflowDataDir/$inputUniqueFile > $workflowDataDir/$outputUniqueFile");
+      $self->runCmd($test,"$command $workflowDataDir/$inputNonUniqueFile > $workflowDataDir/$outputNonUniqueFile");
+    }
+  }
 }
 
 sub getConfigDeclaration {

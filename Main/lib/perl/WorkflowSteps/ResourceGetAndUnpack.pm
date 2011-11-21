@@ -13,10 +13,13 @@ sub run {
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
     my $workflowDataDir = $self->getWorkflowDataDir();
+
     my $targetDir = "$workflowDataDir/$dataDirPath";
 
+    $self->error("Target dir '$targetDir' does not exist") unless -d $targetDir;
+
     if ($undo) {
-      $self->runCmd(0, "rm -fr $targetDir");
+      $self->runCmd(0, "rm -fr $targetDir/*");
     } else {
 	$self->getResource($test, $dataSource, $targetDir);
 	$self->unpackResource($test, $dataSource, $targetDir);
@@ -35,8 +38,6 @@ sub getResource {
     die "Resource $dataSourceName must provide either <wgetArgs> or <manualGet>, but not both\n"
 	unless ($WgetArgs && !$manualGet) || ($manualGet && !$WgetArgs);
 
-    $self->runCmd(0,"mkdir -p $targetDir");
-
     if ($WgetArgs) {
         my $logFile = $self->getStepDir() . "/wget.log";
 	my $cmd = "wget --directory-prefix=$targetDir --output-file=$logFile $WgetArgs \"$UrlArg\"";
@@ -50,7 +51,7 @@ sub getResource {
 	if ($test) {
 	    -e "$manualDeliveryDir/$manualFileOrDir" || $self->error("Manual delivery file or dir '$manualDeliveryDir/$manualFileOrDir' does not exist");
 	} else {
-	    my $cmd="cp -r $manualDeliveryDir/$manualFileOrDir $targetDir";
+	    my $cmd="cp -Lr $manualDeliveryDir/$manualFileOrDir $targetDir";
 	    $self->runCmd($test, $cmd);
 	}
     }
@@ -63,8 +64,8 @@ sub unpackResource {
 
     my @unpacks2 = map { _formatForCLI($_) } @$unpacks;
 
-    foreach my $unpacker (@$unpacks) {
-	print STDERR "$unpacker\n";
+    foreach my $unpacker (@unpacks2) {
+	$self->error("Empty unpack command") unless $unpacker;
 	$self->runCmd($test,$unpacker);
     }
 }
@@ -94,6 +95,7 @@ sub processDeclaredOutputs {
 sub _formatForCLI {
     $_[0] =~ s/\\$//gm;
     $_[0] =~ s/[\n\r]+/ /gm;
+    return $_[0];
 }
 
 

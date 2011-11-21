@@ -16,7 +16,7 @@ sub run {
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $taskSize = $self->getConfig("$clusterServer.taskSize");
   my $psipredPath = $self->getConfig("$clusterServer.clusterpath");
-  my $ncbiBinPath = $self->getConfig("n$clusterServer.cbiBinPath");
+  my $ncbiBinPath = $self->getConfig("$clusterServer.ncbiBinPath");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();

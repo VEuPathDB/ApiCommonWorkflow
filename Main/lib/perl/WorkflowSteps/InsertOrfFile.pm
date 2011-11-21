@@ -12,36 +12,34 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $substepClass = $self->getParamValue('substepClass');
-  my $defaultOrg = $self->getParamValue('defaultOrg');
-  my $isfMappingFileRelToGusHome = $self->getParamValue('isfMappingFileRelToGusHome');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $isfMappingFile = $self->getParamValue('isfMappingFile');
   my $soVersion = $self->getParamValue('soVersion');
+
+  my $ncbiTaxId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
   my $gusHome = $self->getSharedConfig('gusHome');
 
   my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  
+
   my $algInvIds = $self->getAlgInvIds();
 
   my $args = <<"EOF";
 --extDbName '$extDbName'  \\
 --extDbRlsVer '$extDbRlsVer' \\
---mapFile $gusHome/$isfMappingFileRelToGusHome \\
+--mapFile $gusHome/lib/xml/isf/$isfMappingFile \\
 --inputFileOrDir $workflowDataDir/$inputFile \\
 --fileFormat gff3   \\
 --seqSoTerm ORF  \\
 --soCvsVersion $soVersion \\
 --naSequenceSubclass $substepClass \\
+--organism $ncbiTaxId \\
 EOF
-  if ($defaultOrg) {
-    $args .= "--defaultOrganism '$defaultOrg'";
-  }
-
-
 
   if ($undo){
-      $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $gusHome/$isfMappingFileRelToGusHome --algInvocationId $algInvIds --workflowContext --commit");
+      $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $gusHome/lib/xml/isf/$isfMappingFile --algInvocationId $algInvIds --workflowContext --commit");
   }else{
       if ($test) {
 	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
@@ -58,7 +56,7 @@ sub getParamsDeclaration {
 	  'inputFile',
 	  'genomeExtDbRlsSpec',
 	  'substepClass',
-	  'defaultOrg',
+	  'defaultOrgTaxId',
 	  'isfMappingFileRelToGusHome',
 	  'soVersion',
 	 );

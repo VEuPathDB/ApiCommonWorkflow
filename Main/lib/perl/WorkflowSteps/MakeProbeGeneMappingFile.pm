@@ -10,13 +10,13 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $outputFile = $self->getParamValue('outputFile');
-  my $aefExtDbSpec = $self->getParamValue('aefExtDbSpec');
+  my $probeExtDbSpec = $self->getParamValue('probeExtDbSpec');
   my $geneExtDbSpec = $self->getParamValue('geneExtDbSpec');
   my $aefSense = ($self->getParamValue('isOneChannel') eq 'true') ? 'sense':'either';
   my $delimiter = ($self->getParamValue('isOneChannel') eq 'true') ? '\\t':',';
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "mapArrayElementsToGenes.pl --aefExtDbSpec '$aefExtDbSpec' --geneExtDbSpec  '$geneExtDbSpec' --aefSense '$aefSense' --outputFile $workflowDataDir/$outputFile --delimiter '$delimiter'";
+  my $cmd = "mapArrayElementsToGenes.pl --aefExtDbSpec '$probeExtDbSpec' --geneExtDbSpec  '$geneExtDbSpec' --aefSense '$aefSense' --outputFile $workflowDataDir/$outputFile --delimiter '$delimiter'";
 
 
   if ($undo) {
@@ -28,15 +28,6 @@ sub run {
 	  $self->runCmd($test,$cmd);
       }
   }
-}
-
-sub getParamDeclaration {
-  return (
-	  'outputFile',
-	  'aefExtDbSpec',
-	  'geneExtDbSpec',
-	  'aefSense',
-	 );
 }
 
 sub getConfigDeclaration {

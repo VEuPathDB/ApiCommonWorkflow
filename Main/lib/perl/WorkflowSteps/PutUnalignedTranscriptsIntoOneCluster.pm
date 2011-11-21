@@ -16,9 +16,11 @@ sub run {
   my $targetNcbiTaxId = $self->getParamValue('targetNcbiTaxId');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  
-  my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$parentNcbiTaxonId);
-  my $taxonIdList = $self->getTaxonIdList($test, $taxonId, $useTaxonHierarchy);
+
+  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
+  my $taxonId = $organismInfo->getSpeciesTaxonId();
+  my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
+
   my $targetTaxonId = $self->getTaxonIdFromNcbiTaxId($test,$targetNcbiTaxId);
 
   my $cmd = "getUnalignedAssemSeqIds --alignedClustersFile $workflowDataDir/$alignedClustersFile --outputFile $workflowDataDir/$allClustersOutputFile --repeatMaskErrFile $workflowDataDir/$repeatMaskErrFile --taxonIdList $taxonIdList --targetTaxonId $targetTaxonId";

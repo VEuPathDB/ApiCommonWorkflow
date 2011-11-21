@@ -1,13 +1,12 @@
 <workflowGraph name="mapIsolatesToGenome">
-  <param name="dataDir"/>
-  <param name="organismName"/>
+  <param name="parentDataDir"/>
   <param name="genomicSeqsFile"/>
   <param name="genomeExtDbRlsSpec"/>
-  <param name="isolateExtDbRlsSpec"/>
-  <param name="idRegex"/>
+  <param name="isolatesExtDbRlsSpec"/>
 
+  <constant name="dataDir">$$parentDataDir$$/mapIsolatesToGenome</constant>
   <constant name="isolateSeqFile">$$dataDir$$/isolatesSeqs.fsa</constant>
-  <constant name="blastArgs">-cpus=2 V=1 B=1 hspsepQmax=50000 hspsepSmax=50000 -span1 -topcomboN=1 E=0.1 -wordmask=seg</constant>
+  <constant name="blastArgs">V=1 B=1 hspsepQmax=50000 hspsepSmax=50000 -span1 -topcomboN=1 E=0.1 -wordmask=seg</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -15,7 +14,7 @@
 
   <step name="extractIsolateSeqs"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
-      <paramValue name="extDbRlsSpec">$$isolateExtDbRlsSpec$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$isolatesExtDbRlsSpec$$</paramValue>
       <paramValue name="table">ExternalNASequence</paramValue>
       <paramValue name="alternateDefline"></paramValue>
       <paramValue name="outputFile">$$isolateSeqFile$$</paramValue>
@@ -34,12 +33,12 @@
       <paramValue name="nickName">blastnIsolates</paramValue>
       <paramValue name="queryFile">$$isolateSeqFile$$</paramValue>
       <paramValue name="queryTable">DoTS::ExternalNASequence</paramValue>
-      <paramValue name="queryExtDbRlsSpec">$$isolateExtDbRlsSpec$$</paramValue>
+      <paramValue name="queryExtDbRlsSpec">$$isolatesExtDbRlsSpec$$</paramValue>
       <paramValue name="subjectFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="subjectTable">DoTS::ExternalNASequence</paramValue>
       <paramValue name="subjectExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="blastArgs">$$blastArgs$$</paramValue>
-      <paramValue name="idRegex">$$idRegex$$</paramValue>
+      <paramValue name="idRegex">(\\S+)</paramValue>
       <paramValue name="blastType">blastn</paramValue>
       <paramValue name="vendor">wu</paramValue>
       <paramValue name="loadSubjectSubset">false</paramValue>

@@ -9,48 +9,61 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $inputIndexesDir = $self->getParamValue('inputIndexesDir');
-    my $inputShortSeqsFile = $self->getParamValue('inputShortSeqsFile');
+    my $inputFwdSeqsFile = $self->getParamValue('inputFwdSeqsFile');
+    my $inputFwdQualsFile = $self->getParamValue('inputFwdQualsFile');
+    my $inputRevSeqsFile = $self->getParamValue('inputRevSeqsFile');
+    my $inputRevQualsFile = $self->getParamValue('inputRevQualsFile');
     my $outputFile = $self->getParamValue('outputFile');
-    my $bowtieParam = $self->getParamValue('bowtieParam');
-    my $inputShortSeqsFileType = $self->getParamValue('inputShortSeqsFileType');
-    my $pairedReadOrQualFileType = $self->getParamValue('pairedReadOrQualFileType');
-    my $pairedReadOrQualFilePath = $self->getParamValue('pairedReadOrQualFilePath');
+    my $bowtieParams = $self->getParamValue('bowtieParams');
+    my $seqsFileType = $self->getParamValue('seqsFileType');
+    my $isPairedEnds = $self->getBooleanParamValue('isPairedEnds');
+    my $isColorSpace = $self->getBooleanParamValue('isColorSpace');
+    my $haveQuals = $self->getBooleanParamValue('haveQuals');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "bowtie $bowtieParam --best --strata $workflowDataDir/$inputIndexesDir/genomicIndexes";
+    my %fileTypes = ('FASTA' => '-f',
+		     'FASTQ' => '-q',
+		     'raw' => '-r',
+		    );
 
-    $cmd .= " $inputShortSeqsFileType" if ($inputShortSeqsFileType);
+    my $fileTypeArg = $fileTypes{$seqsFileType};
+    my $allowed = join(", ", keys(%fileTypes));
+    $self->error("Invalid seqsFileType '$seqsFileType'.  Allowed types are: $allowed") unless $fileTypeArg;
 
-    $cmd .= " $workflowDataDir/$inputShortSeqsFile" if ($inputShortSeqsFileType);
+    my $colorSpaceArg = $isColorSpace? ' -C' : '';
 
-    $cmd .= " $pairedReadOrQualFileType" if ($pairedReadOrQualFileType);
+    my $fwdSeqsArg = $isPairedEnds? '-1 ' : '';
+    my $fwdQualsArg = $isPairedEnds? '--Q1 ' : '-Q';
 
-    $cmd .= " $workflowDataDir/$pairedReadOrQualFilePath" if ($pairedReadOrQualFilePath);
+    my $cmd = "bowtie $bowtieParams --best --strata $workflowDataDir/$inputIndexesDir/genomicIndexes $colorSpaceArg $fwdSeqsArg $workflowDataDir/$inputFwdSeqsFile";
 
-    $cmd .= " > $workflowDataDir/$outputFile";
+    $cmd .= "$fwdQualsArg $workflowDataDir/$inputFwdQualsFile" if $haveQuals;
+
+    $self->testInputFile('inputFwdSeqsFile', "$workflowDataDir/$inputFwdSeqsFile");
+    $self->testInputFile('inputFwdQualsSeqsFile', "$workflowDataDir/$inputFwdQualsFile") if $haveQuals;
+    $self->testInputFile('inputIndexesDir', "$workflowDataDir/$inputIndexesDir");
+
+    if ($isPairedEnds) {
+	$cmd .= " -2 $workflowDataDir/$inputRevSeqsFile";
+	$self->testInputFile('inputRevSeqsFile', "$workflowDataDir/$inputRevSeqsFile");
+	if ($haveQuals) {
+	    $cmd .= " -Q2 $inputRevQualsFile";
+	    $self->testInputFile('inputRevQualsFile', "$workflowDataDir/$inputRevQualsFile");
+	}
+    }
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     } else {
 	if ($test) {
-	    $self->testInputFile('inputCoverageFile', "$workflowDataDir/$inputIndexesDir");
-	    $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$inputShortSeqsFile");
-	    $self->testInputFile('pairedReadOrQualFilePath', "$workflowDataDir/$pairedReadOrQualFilePath") if ($pairedReadOrQualFilePath);
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}
 	$self->runCmd($test, $cmd);
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'inputIndexesDir',
-      'inputShortSeqsFile',
-      'outputFile',
-      );
-}
 
 sub getConfigDeclaration {
   return (

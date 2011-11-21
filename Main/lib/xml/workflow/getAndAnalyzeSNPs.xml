@@ -1,12 +1,11 @@
 <workflowGraph name="getAndAnalyzeSNPs.xml">
-
     <param name="snpExtDbRlsSpec"/>
     <param name="snpResourceName"/>
     <param name="genomicSeqsFile"/>
     <param name="parentDataDir"/>
-    <param name="organismFullName"/>
+    <param name="organismAbbrev"/>
+    <param name="isNextGenSeq"/>
     <param name="genomeExtDbRlsSpec"/>
-    <param name="strain"/>
     <param name="organismResourceXmlFile"/>
 
     <constant name="dataDir">$$parentDataDir$$/getAndAnalyze_$$snpResourceName$$</constant>
@@ -29,9 +28,9 @@
     </subgraph>
 
     <step name="snpGffToFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpGffToFasta">
-      <paramValue name="inputFile">$$dataDir$$/$$snpResourceName$$/$$snpResourceName$$.gff</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/$$snpResourceName$$/SNPs.gff</paramValue>
       <paramValue name="outputFile">$$fastaOutPutDir$$/SNPs.fasta</paramValue>
-      <paramValue name="strain">$$strain$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <depends name="snpResource"/>
       <depends name="makefastaOutPutDir"/>
     </step>
@@ -45,19 +44,19 @@
 
     <step name="snpMummerToGff" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpMummerToGff">
       <paramValue name="inputFile">$$dataDir$$/SNPsMummer.out</paramValue>
-      <paramValue name="gffFile">$$dataDir$$/$$snpResourceName$$/$$snpResourceName$$.gff</paramValue>
+      <paramValue name="gffFile">$$dataDir$$/$$snpResourceName$$/SNPs.gff</paramValue>
       <paramValue name="outputFile">$$dataDir$$/SNPsMummer.gff</paramValue>
-      <paramValue name="strain">$$strain$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <depends name="runMummer"/>
     </step>
 
-    <step name="insertSnpMummer" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="loadBalanceOne,plugin">
+    <step name="insertSnpMummer" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="loadSnpFeature,plugin">
       <paramValue name="inputFile">$$dataDir$$/SNPsMummer.gff</paramValue>
-      <paramValue name="strain">$$strain$$</paramValue>
-      <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <paramValue name="isNextGenSeq">$$isNextGenSeq$$</paramValue>
       <depends name="snpMummerToGff"/>
     </step>
 

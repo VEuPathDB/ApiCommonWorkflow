@@ -1,184 +1,191 @@
 <workflowGraph name="loadGenome">
-      <param name="parentDataDir"/>
-      <param name="organismName"/>
-      <param name="genomeExtDbRlsSpec"/>
-      <param name="organismResourceXmlFile"/>
-      <param name="organismSpecificISFReference"/>
-      <param name="ncbiTaxonId"/>
-      <param name="downloadSiteDataDir"/>
-      <param name="extractProteins"/>
-      <param name="projectName"/>
-      <param name="projectVersion"/>
-      <param name="haveOrganelleGenomeSequence"/>
-      <param name="organelleInitDownloadDirSubgraph"/>
+  <param name="parentDataDir"/>
+  <param name="organismAbbrev"/>
+  <param name="organismFullName"/>
+  <param name="organismNameForFiles"/>
+  <param name="publicOrganismAbbrev"/>
+  <param name="ncbiTaxonId"/>
+  <param name="speciesNcbiTaxonId"/>
+  <param name="isReferenceStrain"/>
+  <param name="referenceStrainOrganismAbbrev"/>
+  <param name="isAnnotatedGenome"/>
+  <param name="isDraftGenome"/>
+  <param name="hasTemporaryNcbiTaxonId"/>
+  <param name="orthomclAbbrev"/>
+  <param name="strainAbbrev"/>
+  <param name="hasMitochondrialGenomeSequence"/>
+  <param name="hasPlastidGenomeSequence"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="projectName"/>
+  <param name="projectVersionForWebsiteFiles"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="transcriptSeqsFileForSsa"/>
+  <param name="geneModelFileForSsa"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomicSeqsDir"/>
+  <param name="proteinsFile"/>
 
-    <constant name="dataDir">$$parentDataDir$$/$$organismName$$LoadGenome</constant>
-    <constant name="genomicSeqsFileForSsa">$$dataDir$$/genomicSeqsForSsa.fsa</constant>
-    <constant name="transcriptSeqsFileForSsa">$$dataDir$$/transcriptSeqsForSsa.fsa</constant>
-    <constant name="geneModelFileForSsa">$$dataDir$$/geneModelForSsa.txt</constant>
-    <constant name="genomicSeqsFile">$$dataDir$$/genomicSeqs.fsa</constant>
-    <constant name="genomicSeqsDir">$$dataDir$$/genomicSeqs</constant>
-    <constant name="proteinsFile">$$dataDir$$/AnnotatedProteins.fsa</constant>
-    <constant name="samHeaderFile">$$dataDir$$/samHeader</constant>
-    <constant name="bowtieGenomicIndexDir">$$dataDir$$/genomicIndexes</constant>
-    <constant name="bowtieTranscriptIndexDir">$$dataDir$$/transcriptsIndexes</constant>
-    <constant name="downloadSiteFastaDataDir">$$downloadSiteDataDir$$/$$organismName$$/fasta</constant>
-    <constant name="downloadSiteTxtDataDir">$$downloadSiteDataDir$$/$$organismName$$/txt</constant>
-    <constant name="downloadSiteGffDataDir">$$downloadSiteDataDir$$/$$organismName$$/gff</constant>
-    <constant name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/$$organismName$$/transcriptExpression</constant>
+  <constant name="dataDir">$$parentDataDir$$/loadGenome</constant>
 
+  <step name="insertOrganism"
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrganism">
+    <paramValue name="fullName">$$organismFullName$$</paramValue>
+    <paramValue name="project">$$projectName$$</paramValue>
+    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+    <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
+    <paramValue name="abbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="abbrevPublic">$$organismAbbrev$$</paramValue>
+    <paramValue name="nameForFilenames">$$organismNameForFiles$$</paramValue>
+    <paramValue name="abbrevOrthomcl">$$orthomclAbbrev$$</paramValue>
+    <paramValue name="abbrevStrain">$$strainAbbrev$$</paramValue>
+    <paramValue name="abbrevRefStrain">$$referenceStrainOrganismAbbrev$$</paramValue>
+    <paramValue name="isReferenceStrain">$$isReferenceStrain$$</paramValue>
+    <paramValue name="isAnnotatedGenome">$$isAnnotatedGenome$$</paramValue>
+    <paramValue name="isDraftGenome">$$isDraftGenome$$</paramValue>
+    <paramValue name="hasTemporaryNcbiTaxonId">$$hasTemporaryNcbiTaxonId$$</paramValue>
+    <paramValue name="hasPlastidGenomeSeq">$$hasPlastidGenomeSequence$$</paramValue>
+    <paramValue name="hasMitoGenomeSeq">$$hasMitochondrialGenomeSequence$$</paramValue>
+  </step>
 
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-    </step>
+  <!-- set depends to insertOrganism to force that step to run early in the flow, thereby validating the organism info before getting too far -->
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+    <depends name="insertOrganism"/>
+  </step>
 
-    <step name="initDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitDownloadSiteDir">
-       <paramValue name="organismName">$$organismName$$</paramValue>
-       <paramValue name="projectName">$$projectName$$</paramValue>
-       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-    </step>
+  <subgraph name="makeOrganismWebsiteDirs" xmlFile="makeOrganismWebsiteDirs.xml">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="organelleName"></paramValue>
+    <paramValue name="isOrganelle">false</paramValue>
+    <paramValue name="isReferenceStrain">$$isReferenceStrain$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <depends name="insertOrganism"/>
+  </subgraph>
 
-    <step name="makeDownloadSiteFastaDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">$$downloadSiteFastaDataDir$$</paramValue>
-      <depends name="initDownloadSiteDir"/>
-    </step>
+  <subgraph name="makeOrganismPlastidWebsiteDirs" xmlFile="makeOrganismWebsiteDirs.xml" includeIf="$$hasPlastidGenomeSequence$$">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="organelleName">plastid</paramValue>
+    <paramValue name="isOrganelle">true</paramValue>
+    <paramValue name="isReferenceStrain">false</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <depends name="insertOrganism"/>
+  </subgraph>
 
-    <step name="makeDownloadSiteTxtDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">$$downloadSiteTxtDataDir$$</paramValue>
-      <depends name="initDownloadSiteDir"/>
-    </step>
+  <subgraph name="makeOrganismMitoWebsiteDirs" xmlFile="makeOrganismWebsiteDirs.xml" includeIf="$$hasMitochondrialGenomeSequence$$">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="organelleName">mito</paramValue>
+    <paramValue name="isOrganelle">true</paramValue>
+    <paramValue name="isReferenceStrain">false</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <depends name="insertOrganism"/>
+  </subgraph>
 
-    <step name="makeDownloadSiteGffDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">$$downloadSiteGffDataDir$$</paramValue>
-      <depends name="initDownloadSiteDir"/>
-    </step>
-
-    <step name="makeDownloadSiteTranscriptExpressionDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
-      <paramValue name="apiSiteFilesDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
-      <depends name="initDownloadSiteDir"/>
-    </step>
-
-    <subgraph name="initOrganelleDownloadSiteDir" xmlFile="$$organelleInitDownloadDirSubgraph$$" includeIf="$$haveOrganelleGenomeSequence$$">
-       <paramValue name="organismName">$$organismName$$</paramValue>
-       <paramValue name="projectName">$$projectName$$</paramValue>
-       <paramValue name="projectVersion">$$projectVersion$$</paramValue>
-       <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$</paramValue>
-   </subgraph> 
-
-  <step name="insertOrganismProject"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrganismProject">
-      <paramValue name="organism">$$organismName$$</paramValue>
-      <paramValue name="project">$$projectName$$</paramValue>
-    </step>
-
-  <subgraph name="organismSpecificISF" xmlFile="$$organismSpecificISFReference$$">
+  <subgraph name="genomeSequenceAndFeatures" xmlFile="$$projectName$$/$$organismAbbrev$$/genomeSequenceAndFeatures.xml">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
   <step name="extractGenomicSeqs"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
-      <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="table">ExternalNASequence</paramValue>
-      <paramValue name="alternateDefline"></paramValue>
-      <paramValue name="outputFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="separateFastaFiles">false</paramValue>
-      <paramValue name="outputDirForSeparateFiles"></paramValue>
-      <depends name="organismSpecificISF"/> 
-    </step>
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+    <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="table">ExternalNASequence</paramValue>
+    <paramValue name="alternateDefline"></paramValue>
+    <paramValue name="outputFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="separateFastaFiles">false</paramValue>
+    <paramValue name="outputDirForSeparateFiles"></paramValue>
+    <depends name="genomeSequenceAndFeatures"/> 
+  </step>
 
-    <step name="extractProteins"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAnnotatedProteinsBySpecies" includeIf="$$extractProteins$$">
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="outputFile">$$proteinsFile$$</paramValue>
-      <depends name="organismSpecificISF"/>
-    </step>
+  <step name="extractProteins"
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAnnotatedProteinsBySpecies" includeIf="$$isAnnotatedGenome$$">
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+    <paramValue name="outputFile">$$proteinsFile$$</paramValue>
+    <depends name="genomeSequenceAndFeatures"/>
+  </step>
 
-    <step name="extractGenomicSeqsIntoSeparateFastaFiles"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
-      <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="table">ExternalNASequence</paramValue>
-      <paramValue name="outputFile"></paramValue>
-      <paramValue name="alternateDefline"></paramValue>
-      <paramValue name="separateFastaFiles">true</paramValue>
-      <paramValue name="outputDirForSeparateFiles">$$genomicSeqsDir$$_ori</paramValue>
-      <depends name="organismSpecificISF"/>
-    </step>
+  <step name="extractGenomicSeqsIntoSeparateFastaFiles"
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+    <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="table">ExternalNASequence</paramValue>
+    <paramValue name="outputFile"></paramValue>
+    <paramValue name="alternateDefline"></paramValue>
+    <paramValue name="separateFastaFiles">true</paramValue>
+    <paramValue name="outputDirForSeparateFiles">$$genomicSeqsDir$$_ori</paramValue>
+    <depends name="genomeSequenceAndFeatures"/>
+  </step>
 
 
-    <step name="fixFileNamesforGenomicSeqsSeparateFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixGenomicSeqsSeparateFastaFileNames">
-      <paramValue name="inputDir">$$genomicSeqsDir$$_ori</paramValue>
-      <paramValue name="outputDir">$$genomicSeqsDir$$</paramValue>
-      <depends name="extractGenomicSeqsIntoSeparateFastaFiles"/>
-     </step>
+  <step name="fixFileNamesforGenomicSeqsSeparateFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixGenomicSeqsSeparateFastaFileNames">
+    <paramValue name="inputDir">$$genomicSeqsDir$$_ori</paramValue>
+    <paramValue name="outputDir">$$genomicSeqsDir$$</paramValue>
+    <depends name="extractGenomicSeqsIntoSeparateFastaFiles"/>
+  </step>
 
-    <step name="makeGenomeTargetListFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomeTargetListFile">
-      <paramValue name="targetDir">$$genomicSeqsDir$$</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/targetList</paramValue>
-      <depends name="fixFileNamesforGenomicSeqsSeparateFasta"/>
-    </step>
-
-  <step name="runTuningManager"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager">
-      <depends name="organismSpecificISF"/> 
+  <step name="makeGenomeTargetListFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomeTargetListFile">
+    <paramValue name="targetDir">$$genomicSeqsDir$$</paramValue>
+    <paramValue name="outputFile">$$dataDir$$/targetList</paramValue>
+    <depends name="fixFileNamesforGenomicSeqsSeparateFasta"/>
   </step>
 
   <step name="extractGenomicSeqsForSsa"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqsForSsa">
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="outputFile">$$genomicSeqsFileForSsa$$</paramValue>
-      <depends name="organismSpecificISF"/> 
-      <depends name="runTuningManager"/> 
-    </step>
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqsForSsa">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="outputFile">$$genomicSeqsFileForSsa$$</paramValue>
+    <depends name="genomeSequenceAndFeatures"/>
+  </step>
 
   <step name="extractTranscriptSeqsForSsa"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTranscriptSeqsForSsa" includeIf="$$extractProteins$$">
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="outputFile">$$transcriptSeqsFileForSsa$$</paramValue>
-      <depends name="runTuningManager"/> 
-    </step>
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTranscriptSeqsForSsa" includeIf="$$isAnnotatedGenome$$">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="outputFile">$$transcriptSeqsFileForSsa$$</paramValue>
+    <depends name="genomeSequenceAndFeatures"/>
+  </step>
 
   <step name="extractGeneModelForSsa"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa" includeIf="$$extractProteins$$">
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="outputFile">$$geneModelFileForSsa$$</paramValue>
-      <paramValue name="useCDSCoordinates">false</paramValue>
-      <depends name="runTuningManager"/> 
-    </step>
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa" includeIf="$$isAnnotatedGenome$$">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="outputFile">$$geneModelFileForSsa$$</paramValue>
+    <paramValue name="useCDSCoordinates">false</paramValue>
+    <depends name="genomeSequenceAndFeatures"/>
+  </step>
 
   <step name="extractGeneModelOnCDSForSsa"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa" includeIf="$$extractProteins$$">
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="outputFile">$$geneModelFileForSsa$$</paramValue>
-      <paramValue name="useCDSCoordinates">true</paramValue>
-      <depends name="runTuningManager"/> 
-    </step>
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractGeneModelForSsa" includeIf="$$isAnnotatedGenome$$">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="outputFile">$$geneModelFileForSsa$$</paramValue>
+    <paramValue name="useCDSCoordinates">true</paramValue>
+    <depends name="genomeSequenceAndFeatures"/>
+  </step>
 
-  <step name="makeSamHeader"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSamHeader">
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-      <paramValue name="outputFile">$$samHeaderFile$$</paramValue>
-      <depends name="runTuningManager"/> 
-    </step>
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="extractGenomicSeqs"/>
+    <depends name="extractProteins"/>
+    <depends name="extractGenomicSeqsForSsa"/>
+    <depends name="extractTranscriptSeqsForSsa"/>
+    <depends name="extractGeneModelForSsa"/>
+    <depends name="makeGenomeTargetListFile"/>
+  </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="extractGenomicSeqs"/>
-      <depends name="extractProteins"/>
-      <depends name="extractGenomicSeqsForSsa"/>
-      <depends name="extractTranscriptSeqsForSsa"/>
-      <depends name="extractGeneModelForSsa"/>
-      <depends name="makeGenomeTargetListFile"/>
-      <dependsGlobal name="initClusterHomeDir"/>
-    </step>
-
-    <step name="runNibOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNibOnCluster">
-      <paramValue name="inputFile">$$dataDir$$/targetList</paramValue>
-      <paramValue name="outputDir">$$genomicSeqsDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
-    </step>
+  <step name="runNibOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNibOnCluster">
+    <paramValue name="inputFile">$$dataDir$$/targetList</paramValue>
+    <paramValue name="outputDir">$$genomicSeqsDir$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </step>
 
 
 </workflowGraph>

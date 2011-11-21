@@ -13,8 +13,8 @@ sub run {
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $substepClass = $self->getParamValue('substepClass');
-  my $defaultOrg = $self->getParamValue('defaultOrg');
-  my $isfMappingFileRelToGusHome = $self->getParamValue('isfMappingFileRelToGusHome');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $isfMappingFile = $self->getParamValue('isfMappingFile');
   my $soVersion = $self->getParamValue('soVersion');
 
   my $gusHome = $self->getSharedConfig('gusHome');
@@ -22,6 +22,8 @@ sub run {
   my ($seqExtDbName,$seqExtDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
 
   my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$extDbRlsSpec);
+
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   
@@ -32,22 +34,21 @@ sub run {
 --extDbRlsVer '$extDbRlsVer' \\
 --seqExtDbName '$seqExtDbName'  \\
 --seqExtDbRlsVer '$seqExtDbRlsVer' \\
---mapFile $gusHome/$isfMappingFileRelToGusHome \\
+--mapFile $gusHome/lib/xml/isf/$isfMappingFile \\
 --inputFileOrDir $workflowDataDir/$inputFile \\
+--organism $ncbiTaxonId \\
 --fileFormat gff2   \\
 --gff2GroupTag ID \\
 --seqIdColumn source_id \\
 --soCvsVersion $soVersion \\
 --naSequenceSubclass $substepClass \\
 EOF
-  if ($defaultOrg) {
-    $args .= "--defaultOrganism '$defaultOrg'";
-  }
 
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
 
   if ($undo){
-      $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $gusHome/$isfMappingFileRelToGusHome --algInvocationId $algInvIds --workflowContext --commit");
+      $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $gusHome/$isfMappingFile --algInvocationId $algInvIds --workflowContext --commit");
   }else{
       if ($test) {
 	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
@@ -56,18 +57,6 @@ EOF
       }
   }
 
-}
-
-
-sub getParamsDeclaration {
-  return (
-	  'inputFile',
-	  'genomeExtDbRlsSpec',
-	  'substepClass',
-	  'defaultOrg',
-	  'isfMappingFileRelToGusHome',
-	  'soVersion',
-	 );
 }
 
 sub getConfigDeclaration {

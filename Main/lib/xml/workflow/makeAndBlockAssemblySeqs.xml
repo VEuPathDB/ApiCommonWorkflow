@@ -1,27 +1,15 @@
 <workflowGraph name="makeAndBlockAssemblySeqs">
-
     <param name="dataDir"/>
-    <param name="parentNcbiTaxonId"/>
-    <param name="ncbiTaxonId"/>
-    <param name="usePredictedTranscripts"/>
-    <param name="predictedTranscriptsExtDbRlsSpec"/>
-    <param name="repeatMaskSpecies"/>
-    <param name="makeAssemblySeqs"/>
+    <param name="organismAbbrev"/>
+    <param name="isReferenceStrain"/>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeAssemblySeqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAssemblySeqs" includeIf="$$makeAssemblySeqs$$">
-      <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+    <step name="makeAssemblySeqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAssemblySeqs" includeIf="$$isReferenceStrain$$">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="useTaxonHierarchy">true</paramValue>
-      <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
-    </step>
-
-    <step name="makeAssemblySeqsFromPredictedTranscripts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAssemblySeqs" includeIf="$$usePredictedTranscripts$$">
-      <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
-      <paramValue name="useTaxonHierarchy">true</paramValue>
-      <paramValue name="predictedTranscriptsExtDbRlsSpec">$$predictedTranscriptsExtDbRlsSpec$$</paramValue>
     </step>
 
     <step name="document-crossmatch"
@@ -34,7 +22,7 @@
 
    <step name="extractAssemblySeqs"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAssemblySeqs">
-      <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="useTaxonHierarchy">true</paramValue>
       <paramValue name="outputFile">$$dataDir$$/assemblySeqs.fsa</paramValue>
       <depends name="makeAssemblySeqs"/>
@@ -45,7 +33,9 @@
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="seqsFile">$$dataDir$$/assemblySeqs.fsa</paramValue>
       <paramValue name="dangleMax">30</paramValue>
-      <paramValue name="options">$$repeatMaskSpecies$$</paramValue>
+      <paramValue name="trimDangling">y</paramValue>
+      <paramValue name="options"></paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <depends name="extractAssemblySeqs"/>
     </step>
 

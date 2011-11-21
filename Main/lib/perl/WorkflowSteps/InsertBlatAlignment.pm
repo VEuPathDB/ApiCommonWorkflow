@@ -8,10 +8,13 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $targetNcbiTaxId = $self->getParamValue('targetNcbiTaxId');
+  # NOTE: this step class takes a shortcut.  it assumes that the query ncbi taxon id is for the species
+  # this might not be true for future uses of this class.  best solution is to remove the need
+  # for taxon IDs at all, which will involve changing the plugin. see redmine #5520
+
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $targetExtDbRlsSpec = $self->getParamValue('targetExtDbRlsSpec');
   my $targetTable = $self->getParamValue('targetTable');
-  my $queryNcbiTaxId = $self->getParamValue('queryNcbiTaxId');
   my $queryExtDbRlsSpec = $self->getParamValue('queryExtDbRlsSpec');
   my $queryTable = $self->getParamValue('queryTable');
   my $queryFile = $self->getParamValue('queryFile');
@@ -20,11 +23,12 @@ sub run {
   my $percentTop = $self->getParamValue('percentTop');
   my $blatFile = $self->getParamValue('blatFile');
 
-  my $targetTaxonId = $self->getTaxonIdFromNcbiTaxId($test,$targetNcbiTaxId);
-  my $targetTableId = $self->getTableId($targetTable);
+  my $targetTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
+  my $queryTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
+
+  my $targetTableId = $self->getTableId($test, $targetTable);
   my $targetExtDbRlsId = $self->getExtDbRlsId($test, $targetExtDbRlsSpec);
-  my $queryTaxonId = $self->getTaxonIdFromNcbiTaxId($test,$queryNcbiTaxId);
-  my $queryTableId = $self->getTableId($queryTable);
+  my $queryTableId = $self->getTableId($test, $queryTable);
   my $queryExtDbRlsId = $self->getExtDbRlsId($test, $queryExtDbRlsSpec) if $queryExtDbRlsSpec;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -41,22 +45,6 @@ sub run {
   }
 
   $self->runPlugin($test, $undo,"GUS::Community::Plugin::LoadBLATAlignments", $args);
-}
-
-sub getParamDeclaration {
-  return (
-	  'targetTaxonId',
-	  'queryTaxonId',
-	  'targetExtDbRlsSpec',
-	  'queryExtDbRlsSpec',
-	  'regex',
-	  'action',
-	  'percentTop',
-	  'blatFile',
-	  'queryFile',
-	  'targetTable',
-	  'queryTable',
-	 );
 }
 
 sub getConfigDeclaration {
