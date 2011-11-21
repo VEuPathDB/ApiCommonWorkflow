@@ -13,6 +13,16 @@ sub run {
 
   my $configFile = $self->getParamValue('configFile');
 
+  open(CONF, $configFile);
+
+  my $noPlugin;
+
+  while (my $line = <CONF>){
+    if($line =~ m/NO ANALYSIS TO LOAD/i){
+      $noPlugin = 1;
+    }
+  }
+
   my $analysisResultView =  $self->getParamValue('analysisResultView');
 
   my $naFeatureView =  $self->getParamValue('naFeatureView');
@@ -33,7 +43,7 @@ sub run {
     $self->testInputFile('configFile', "$workflowDataDir/$configFile");
   }
 
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertAnalysisResult", $args);
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertAnalysisResult", $args) unless $noPlugin;
 
 }
 
