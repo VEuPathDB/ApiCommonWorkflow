@@ -12,10 +12,18 @@ sub run {
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $taxIdFile = $self->getParamValue('taxIdFile');
 
+  # this param is really just for PDB which has truncated source ids for
+  # some reason.  this is the number of chars to shorten to,  or null to 
+  # not shorten
+  my $shortenSourceIdTo = $self->getParamValue('shortenSubjectSourceIdTo'); 
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--fileName $workflowDataDir/$taxIdFile  --sourceIdRegex  '^(\\d+)' --ncbiTaxIdRegex '^\\d+\\s(\\d+)' --idSql 'select source_id, aa_sequence_id from dots.externalaasequence where taxon_id is null' --extDbRelSpec '$extDbRlsSpec'  --tableName 'DoTS::ExternalAASequence'";
+  my $sourceIdSubstringLength = "";
+  $sourceIdSubstringLength = "--sourceIdSubstringLength $shortenSourceIdTo" 
+      if $shortenSourceIdTo;
+
+  my $args = "--fileName $workflowDataDir/$taxIdFile  --sourceIdRegex  '^(\\d+)' --ncbiTaxIdRegex '^\\d+\\s(\\d+)' $sourceIdSubstringLength  --extDbRelSpec '$extDbRlsSpec'  --tableName 'DoTS::ExternalAASequence'";
 
 
   if($undo){

@@ -12,6 +12,7 @@
     <param name="blastType"/>
     <param name="vendor"/>
     <param name="loadSubjectSubset"/>
+    <param name="shortenSubjectSourceIdTo"/>
     <param name="filterByTaxon"/>
     <param name="taxonHierarchyForFilter"/>
     <param name="loadOptions"/>
@@ -76,8 +77,9 @@
       <depends name="extractIdsFromBlastResult"/>
     </step>
 
-    <step name="updateTaxonFieldForSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateTaxonFieldFromFile" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin">
+    <step name="updateTaxonFieldForSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateTaxonFieldFromFile" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin" undoRoot="loadSubjectSubset">
       <paramValue name="extDbRlsSpec">$$subjectExtDbRlsSpec$$</paramValue>
+      <paramValue name="shortenSubjectSourceIdTo">$$shortenSubjectSourceIdTo$$</paramValue>
       <paramValue name="taxIdFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
       <depends name="loadSubjectSubset"/>
     </step>

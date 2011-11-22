@@ -18,7 +18,7 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDirNew">
+  <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDir">
     <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
     <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
     <paramValue name="queryFile">$$queryFile$$</paramValue>
@@ -51,8 +51,6 @@
     <depends name="mirrorFromCluster"/>
   </step>
 
-
-  <!-- NOTE: adjust and generalize this to handle blat results -->
   <step name="filterResultsByTaxon" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterSimilarityResultsByTaxon" includeIf="$$filterByTaxon$$">
     <paramValue name="taxonHierarchy">$$taxonHierarchyForFilter$$</paramValue>
     <paramValue name="gi2taxidFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
@@ -63,7 +61,6 @@
     <depends name="fixGenomeSourceIdsInBlatResultFile"/>
   </step>
 
-  <!-- NOTE:  adjust and generalize this to handle blat results ... done -->
   <step name="extractIdsFromBlatResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractIdsFromSimilarityResult" includeIf="$$loadSubjectSubset$$">
     <paramValue name="inputFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
     <paramValue name="inputFileType">blat</paramValue>
