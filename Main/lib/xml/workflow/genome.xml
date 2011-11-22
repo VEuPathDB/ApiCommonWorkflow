@@ -36,10 +36,10 @@
   </step>
 
   <subgraph name="blatNrdbAgainstGenome" xmlFile="blatProteinAgainstGenome.xml">
-    <paramValue name="dataDir">blat</paramValue>
+    <paramValue name="dataDir">$$dataDir$$/blatNrdbAgainstGenome</paramValue>
     <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="targetSeqsDir">$$genomeSeqsDir$$</paramValue> 
+    <paramValue name="targetSeqsDir">$$genomicSeqsDir$$</paramValue> 
     <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue> 
     <paramValue name="queryFile">$$global_NRDBOutputFile_shortDefline$$</paramValue>        
     <paramValue name="queryTable">DoTS::ExternalAASequence</paramValue>        
@@ -48,6 +48,8 @@
     <paramValue name="loadSubjectSubset">true</paramValue>
     <paramValue name="filterByTaxon">true</paramValue>
     <paramValue name="taxonHierarchyForFilter">$$taxonHierarchyForBlastxFilter$$</paramValue>
+    <paramValue name="shortenSubjectSourceIdTo"></paramValue>
+
     <depends name="runNibOnCluster"/>
     <depends name="mirrorToCluster"/>
     <dependsGlobal name="NRDB_RSRC"/>
@@ -56,7 +58,7 @@
     <step name="document-blatGenomicSeqsNrdb"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
       <paramValue name="method">BLAT_genome_NRDB_MTHD</paramValue>
-      <paramValue name="version"></paramValue>
+      <paramValue name="version">31</paramValue>
       <paramValue name="parameters"></paramValue>
       <depends name="blatNrdbAgainstGenome"/>
     </step>
