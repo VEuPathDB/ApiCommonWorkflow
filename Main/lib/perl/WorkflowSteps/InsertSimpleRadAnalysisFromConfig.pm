@@ -9,7 +9,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $analysisWorkingDir = $self->getParamValue('inputDir');
+  my $analysisWorkingDir = $self->getParamValue('analysisWorkingDir');
 
   my $configFile = $self->getParamValue('configFile');
 
