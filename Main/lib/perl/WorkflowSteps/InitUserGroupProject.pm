@@ -7,18 +7,14 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  # get global properties
+  # typically passed in from rootParams.prop
+  my $projectName = $self->getParamValue('projectName');
   my $projectVersion = $self->getParamValue('projectVersionForDatabase');
 
   if ($undo) {
   } else {
-      $self->runCmd($test, "insertUserProjectGroup --firstName dontcare --lastName dontcare --projectRelease $projectVersion --commit");
+      $self->runCmd($test, "insertUserProjectGroup --firstName dontcare --lastName dontcare --projectName $projectName --projectRelease $projectVersion --commit");
   }
-}
-
-sub getParamsDeclaration {
-  return (
-	 );
 }
 
 sub getConfigDeclaration {
