@@ -22,7 +22,7 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
  
-  $self->error("Parameter queryType=$queryType is invalid.  It must be either dna or protein") unless $queryType eq 'dna' || $queryType eq 'protein';
+  $self->error("Parameter queryType=$queryType is invalid.  It must be either dna or prot") unless $queryType eq 'dna' || $queryType eq 'prot';
 
   if ($undo) {
     $self->runCmd(0,"rm -rf $workflowDataDir/$taskInputDir");
