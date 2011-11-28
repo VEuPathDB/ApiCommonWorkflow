@@ -1,0 +1,29 @@
+<workflowGraph name="tgME49RnaSeqAndChipSeq">
+  <param name="parentDataDir"/>
+  <param name="resourceXmlFileName"/>
+  <param name="ssaGeneModelFile"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="transcriptSeqsFileForSsa"/>
+
+  <constant name="dataDir">$$parentDataDir$$/lmajorRnaSeqAndChipSeq</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+  <subgraph name="getAndAnalyzeLmFriedlinToLmajorRnaSeq" xmlFile="miniflow/tritrypdb/lmFriedlinToLmajorRnaSeq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="resourceXmlFileName">$$resourceXmlFileName$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+
+</workflowGraph>

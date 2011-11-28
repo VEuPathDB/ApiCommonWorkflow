@@ -1,0 +1,25 @@
+<workflowGraph name="lmajor_sanger_CosmidEnds">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/lmajor_sanger_CosmidEnds</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="Lmajor_sanger_CosmidEnds_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Lmajor_sanger_CosmidEnds_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="Lmajor_sanger_CosmidEnds_additional_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Lmajor_sanger_CosmidEnds_additional_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Lmajor_sanger_CosmidEnds_RSRC"/>
+  </subgraph>
+
+</workflowGraph>

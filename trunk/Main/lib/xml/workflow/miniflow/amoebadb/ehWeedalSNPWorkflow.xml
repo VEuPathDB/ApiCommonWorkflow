@@ -1,0 +1,118 @@
+<workflowGraph name="ehWeedallSNPWorkflow">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+
+
+  <step name="EhistolyticaExtractGenomicSeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+      <paramValue name="extDbRlsSpec">E. histolytica Genome and Annotations from jCVI|@@Ehistolytica_genome_VER@@</paramValue>
+      <paramValue name="table">ExternalNASequence</paramValue>
+      <paramValue name="alternateDefline"></paramValue>
+      <paramValue name="outputFile">EhistolyticaGenomicSeqs.fsa</paramValue>
+      <paramValue name="separateFastaFiles">false</paramValue>
+      <paramValue name="outputDirForSeparateFiles"></paramValue>
+    </step>
+
+    <step name="EhistolyticaCreateBowtieIndicesForColorspace" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">EhistolyticaGenomicSeqs.fsa</paramValue>
+      <paramValue name="outputIndexDir">EhistolyticaGenomicSeqsIndexes</paramValue>
+      <paramValue name="colorspace">true</paramValue>
+      <depends name="EhistolyticaExtractGenomicSeqs"/>
+    </step>
+
+    <subgraph name="Eh_Weedall_SOLID_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Eh_Weedall_SOLID_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">amoebadb/ehistolytica.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+     </subgraph>
+
+  <subgraph name="EhWeedallSOLID" xmlFile="miniflow/amoebadb/EhWeedallSOLID.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <depends name="EhistolyticaCreateBowtieIndicesForColorspace"/> 
+    <depends name="Eh_Weedall_SOLID_RSRC"/> 
+  </subgraph>
+
+    <subgraph name="Ehistolytica_Marion_Proteomics_Wild_Type_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Ehistolytica_Marion_Proteomics_Wild_Type_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">amoebadb/ehistolytica.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+     </subgraph>
+
+    <subgraph name="Ehistolytica_Marion_Proteomics_MyoIB_5Min_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Ehistolytica_Marion_Proteomics_MyoIB_5Min_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">amoebadb/ehistolytica.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+     </subgraph>
+
+    <subgraph name="Ehistolytica_Marion_Proteomics_MyoIB_15Min_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Ehistolytica_Marion_Proteomics_MyoIB_15Min_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">amoebadb/ehistolytica.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+     </subgraph>
+
+    <subgraph name="Ehistolytica_Markiewicz_Proteomics_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Ehistolytica_Markiewicz_Proteomics_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">amoebadb/ehistolytica.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+     </subgraph>
+
+   <subgraph name="EhistolyticaLoadGenome" xmlFile="miniflow/miniLoadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Ehistolytica</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">E. histolytica Genome and Annotations from jCVI|@@Ehistolytica_genome_VER@@</paramValue>
+    <paramValue name="ncbiTaxonId">294381</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+  </subgraph>
+
+  <subgraph name="E_his-1a520285F_array_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="probeResourceName">E_his-1a520285F_array_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">E_his-1a520285F_array_RSRC|@@E_his-1a520285F_array_VER@@</paramValue>
+    <paramValue name="isOneChannel">true</paramValue>
+    <paramValue name="organismResourceXmlFile">amoebadb/ehistolytica.xml</paramValue>
+    <paramValue name="ssaGeneModelFile">EhistolyticaLoadGenome/geneModelForSsa.txt</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">E. histolytica Genome and Annotations from jCVI|@@Ehistolytica_genome_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">EhistolyticaLoadGenome/genomicSeqsForSsa.fsa</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">EhistolyticaLoadGenome/transcriptSeqsForSsa.fsa</paramValue>
+    <paramValue name="limitNU">30</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">false</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">true</paramValue>
+    <paramValue name="cdfFileName">E_his-1a520285F.cdf</paramValue>
+    <paramValue name="isNimbleGen">false</paramValue>
+    <paramValue name="ndfFileName"></paramValue>
+    <paramValue name="SNPs"></paramValue>
+    <paramValue name="reference_strain"></paramValue>
+    <paramValue name="organismFullName"></paramValue>
+    <paramValue name="strandSpecific"></paramValue>
+    <paramValue name="variableLengthReads"></paramValue>
+    <depends name="EhistolyticaLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="Ehistolytica_Gilchrist_GSE28883_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Ehistolytica_Gilchrist_GSE28883_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">amoebadb/ehistolytica.xml</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <depends name="E_his-1a520285F_array_getAndMapProbes"/>
+  </subgraph>
+
+  <subgraph name="Ehistolytica_Gilchrist_GSE28883_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression_modify.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="experimentResourceName">Ehistolytica_Gilchrist_GSE28883_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">E_his-1a520285F_array_RSRC|@@E_his-1a520285F_array_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Ehistolytica_Gilchrist_GSE28883_RSRC|@@Ehistolytica_Gilchrist_GSE28883_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">E. histolytica Genome and Annotations from jCVI|@@Ehistolytica_genome_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">true</paramValue>
+    <paramValue name="probeGenesMappingFile">getAndMap_E_his-1a520285F_array_RSRC/E_his-1a520285F_array_RSRC/final/E_his-1a520285F.cdf</paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">Ehistolytica_Gilchrist_GSE28883</paramValue>
+    <depends name="Ehistolytica_Gilchrist_GSE28883_RSRC"/>
+  </subgraph>
+</workflowGraph>
+

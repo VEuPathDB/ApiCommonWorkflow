@@ -1,0 +1,268 @@
+<!-- 
+
+$$relativeDownloadSiteDir$$ = downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$
+$$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$
+
+-->
+
+<workflowGraph name="">
+  <param name="projectName"/>
+  <param name="projectVersionForDatabase"/>
+  <param name="projectVersionForWebsiteFiles"/>
+
+  <constant name="comparativeGenomicsInputDir">comparativeGenomicsInputDir</constant>
+  <constant name="relativeWebServicesDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
+  <constant name="relativeDownloadSiteDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
+
+  <globalSubgraph name="global" xmlFile="globalGraph.xml">
+    <paramValue name="commonResourceXmlFile">$$projectName$$/$$projectName$$Common.xml</paramValue>
+    <paramValue name="globalResourceXmlFile">global.xml</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersionForDatabase">$$projectVersionForDatabase$$</paramValue>
+  </globalSubgraph>
+
+  <step name="makeProjectReleaseDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+  </step>
+
+  <step name="makeProjectReleaseWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+  </step>
+
+  <step name="makeComparativeGenomicsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$comparativeGenomicsInputDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="organism">
+    <prop name="organismAbbrev"/>
+    <prop name="projectName"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="publicOrganismAbbrev"/>
+    <prop name="organismFullName"/>
+    <prop name="organismNameForFiles"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="speciesNcbiTaxonId"/>
+    <prop name="isReferenceStrain"/>
+    <prop name="referenceStrainOrganismAbbrev"/>
+    <prop name="isAnnotatedGenome"/>
+    <prop name="isDraftGenome"/>
+    <prop name="isHaploid"/>
+    <prop name="hasTemporaryNcbiTaxonId"/>
+    <prop name="orthomclAbbrev"/>
+    <prop name="strainAbbrev"/>
+    <prop name="hasPlastidGenomeSequence"/>
+    <prop name="hasMitochondrialGenomeSequence"/>
+    <prop name="hasDeprecatedGenes"/>
+    <prop name="genomeSource"/>
+    <prop name="genomeVersion"/>
+    <prop name="runtRNAScan"/>
+    <prop name="runExportPred"/>
+    <prop name="taxonHierarchyForBlastxFilter"/>
+    <prop name="skipGenomeAnalysis"/>
+
+    <prop name="genomeSize"/>
+    <prop name="maxIntronSize"/>
+
+    <step name="${organismAbbrev}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir" groupName="${organismAbbrev}">
+      <paramValue name="dataDir">${organismAbbrev}</paramValue>
+    </step>
+
+    <!-- each organism creates this step, but all are ignored except the one
+         made by the ref strain. -->
+    <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}" groupName="${organismAbbrev}">
+      <paramValue name="dataDir">${organismAbbrev}_strainsComparisonInput</paramValue>
+    </step>
+
+    <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" groupName="${organismAbbrev}">
+      <paramValue name="fileOrDirToMirror">${organismAbbrev}</paramValue>
+      <depends name="${organismAbbrev}_makeDataDir"/>
+      <dependsGlobal name="initClusterHomeDir"/>
+    </step>
+
+    <subgraph name="${organismAbbrev}_LoadGenome" xmlFile="loadGenome.xml" groupName="${organismAbbrev}">
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="organismFullName">${organismFullName}</paramValue>
+      <paramValue name="organismNameForFiles">${organismNameForFiles}</paramValue>
+      <paramValue name="publicOrganismAbbrev">${publicOrganismAbbrev}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
+      <paramValue name="isReferenceStrain">${isReferenceStrain}</paramValue>
+      <paramValue name="referenceStrainOrganismAbbrev">${referenceStrainOrganismAbbrev}</paramValue>
+      <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
+      <paramValue name="isDraftGenome">${isDraftGenome}</paramValue>
+      <paramValue name="hasTemporaryNcbiTaxonId">${hasTemporaryNcbiTaxonId}</paramValue>
+      <paramValue name="orthomclAbbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="strainAbbrev">${strainAbbrev}</paramValue>
+      <paramValue name="hasPlastidGenomeSequence">${hasPlastidGenomeSequence}</paramValue>
+      <paramValue name="hasMitochondrialGenomeSequence">${hasMitochondrialGenomeSequence}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="organismResourceXmlFile">$$projectName$$/${organismAbbrev}.xml</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomicSeqsListFile">${organismAbbrev}/loadGenome/genomicSeqsList.txt</paramValue>
+      <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
+      <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <depends name="makeProjectReleaseDownloadDir"/>
+      <depends name="makeProjectReleaseWebServicesDir"/>
+      <depends name="${organismAbbrev}_mirrorToCluster"/>
+      <dependsGlobal name="taxonomy_RSRC"/> 
+      <dependsGlobal name="SO_RSRC"/>
+    </subgraph>
+
+    <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
+    <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml" groupName="${organismAbbrev}">
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="comparativeGenomicsDir">$$comparativeGenomicsInputDir$$</paramValue>
+      <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
+      <paramValue name="strainsComparisonInputDir">${referenceStrainOrganismAbbrev}_strainsComparisonInput</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">${organismAbbrev}/loadGenome/genomicSeqsForSsa.fsa</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">${organismAbbrev}/loadGenome/transcriptSeqsForSsa.fsa</paramValue>
+      <paramValue name="geneModelFileForSsa">${organismAbbrev}/loadGenome/geneModelForSsa.txt</paramValue>
+      <paramValue name="cdsModelFileForSsa">${organismAbbrev}/loadGenome/cdsModelForSsa.txt</paramValue>
+      <depends name="makeComparativeGenomicsDir"/>
+      <depends name="${organismAbbrev}_LoadGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
+    </subgraph>
+
+    <subgraph name="${organismAbbrev}_PostLoadGenome" xmlFile="postLoadGenome.xml" groupName="${organismAbbrev}">
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="runtRNAScan">${runtRNAScan}</paramValue>
+      <paramValue name="runExportPred">${runExportPred}</paramValue>
+      <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
+      <paramValue name="taxonHierarchyForBlastxFilter">${taxonHierarchyForBlastxFilter}</paramValue>
+      <paramValue name="genomeSize">${genomeSize}</paramValue>
+      <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
+      <paramValue name="skipGenomeAnalysis">${skipGenomeAnalysis}</paramValue>
+      <paramValue name="isReferenceStrain">${isReferenceStrain}</paramValue>
+      <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomicSeqsListFile">${organismAbbrev}/loadGenome/genomicSeqsList.txt</paramValue>
+      <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
+      <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <depends name="${organismAbbrev}_LoadGenome"/>
+    </subgraph>
+
+    <subgraph name="${organismAbbrev}_specific" xmlFile="${projectName}/${organismAbbrev}/organismSpecific.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">${organismAbbrev}/loadGenome/genomicSeqsForSsa.fsa</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">${organismAbbrev}/loadGenome/transcriptSeqsForSsa.fsa</paramValue>
+      <paramValue name="geneModelFileForSsa">${organismAbbrev}/loadGenome/geneModelForSsa.txt</paramValue>
+      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
+      <paramValue name="isHaploid">${isHaploid}</paramValue>
+      <depends name="${organismAbbrev}_LoadGenome"/>
+    </subgraph>
+
+    <subgraph name="${organismAbbrev}_specific_topLevel" xmlFile="${projectName}/${organismAbbrev}/organismSpecificOnTopLevelGenome.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">${organismAbbrev}/loadGenome/genomicSeqsForSsa.fsa</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">${organismAbbrev}/loadGenome/transcriptSeqsForSsa.fsa</paramValue>
+      <paramValue name="geneModelFileForSsa">${organismAbbrev}/loadGenome/geneModelForSsa.txt</paramValue>
+      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+    </subgraph>
+
+    <subgraph name="${organismAbbrev}_LoadGeneAliases" xmlFile="${projectName}/${organismAbbrev}/geneAliases.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <depends name="${organismAbbrev}_LoadGenome"/>
+    </subgraph>
+
+    <subgraph name="${organismAbbrev}_dbXRefs" xmlFile="${projectName}/${organismAbbrev}/dbXRefs.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <depends name="${organismAbbrev}_LoadGeneAliases"/>
+    </subgraph>
+
+    <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeNuclearAndOrganelleWebsiteFiles.xml" groupName="${organismAbbrev}">
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="genomeSource">${genomeSource}</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="minOrfLength">50</paramValue>
+      <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
+      <paramValue name="skipGenomeAnalysis">${skipGenomeAnalysis}</paramValue>
+      <paramValue name="hasDeprecatedGenes">${hasDeprecatedGenes}</paramValue>
+      <paramValue name="hasPlastidGenomeSequence">${hasPlastidGenomeSequence}</paramValue>
+      <paramValue name="hasMitochondrialGenomeSequence">${hasMitochondrialGenomeSequence}</paramValue>
+      <depends name="${organismAbbrev}_PostLoadGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+    </subgraph>
+
+  </datasetTemplate>
+
+  <subgraph name="comparativeGenomics" xmlFile="$$projectName$$/comparativeGenomics.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="comparativeGenomicsInputDir">$$comparativeGenomicsInputDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+  <!-- only reference strains have an instance of this -->
+  <!-- it depends on all make and mask genomes for this organism (they all have the ref strain as a prefix) -->
+  <datasetTemplate class="referenceStrain">
+    <prop name="organismAbbrev"/>      <!-- same as referenceStrainOrganismAbbrev -->
+    <prop name="isAnnotatedGenome"/>  <!-- if ref strain is annotated -->
+ 
+    <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml" includeIf="${isAnnotatedGenome}"  groupName="${organismAbbrev}">
+      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="referenceStrainOrganismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="strainsComparisonDir">${organismAbbrev}_strainsComparisonInput</paramValue>
+      <dependsPattern name="${organismAbbrev}*_MakeAndMaskTopLevelGenome"/>
+    </subgraph>
+
+  </datasetTemplate>
+
+  <!-- depends on all organism specific graphs. 
+       waits for manual improvement of the vocabularies -->
+  <datasetTemplate class="isolateQualifierToVocabMapping">
+    <subgraph name="loadIsolateVocabulary" xmlFile="loadIsolatesVocabulary.xml">
+      <paramValue name="resourceXmlFile">global.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+      <dependsPattern name="*specific"/>
+    </subgraph>
+  </datasetTemplate>
+
+
+</workflowGraph>

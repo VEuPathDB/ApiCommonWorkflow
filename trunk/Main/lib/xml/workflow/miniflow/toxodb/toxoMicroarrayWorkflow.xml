@@ -1,0 +1,28 @@
+<workflowGraph name="toxoMicroarrayWorkflow">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+
+  <globalSubgraph name="miniGlobal" xmlFile="miniflow/miniGlobal.xml" >    
+  <paramValue name="globalResourceXmlFile">miniGlobalResources.xml</paramValue>
+  </globalSubgraph>
+
+   <subgraph name="tgME49LoadGenome" xmlFile="miniflow/miniLoadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">tgME49</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">T.gondii ME49 contigs from Genbank|@@Tgondii_ME49_contigs_from_Genbank_VER@@</paramValue>
+    <paramValue name="ncbiTaxonId">508771</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="miniGlobal"/>
+  </subgraph>
+
+  <subgraph name="tgME49Specific" xmlFile="miniflow/toxodb/tgME49Specific.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="resourceXmlFileName">toxodb/tgondiiME49ArrayStudies.xml</paramValue>
+    <depends name="tgME49LoadGenome"/> 
+  </subgraph>
+
+
+</workflowGraph>
+

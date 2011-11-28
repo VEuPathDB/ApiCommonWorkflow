@@ -1,0 +1,56 @@
+<workflowGraph name="cfasciBeverleyRNASeq">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+    <param name="genomeExtDbRlsSpec"/>
+
+    <constant name="dataDir">$$parentDataDir$$/cfasciBeverleyRNASeq</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+    <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="Cfasci_RNASeq_Beverley_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Cfasci_RNASeq_Beverley_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="Cfasci_RNASeq_Beverley_RSRC"/>
+    </step>
+
+    <subgraph name="analyzeRNASeq_BeverleySample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">RNASeq_Beverley</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Cfasci_RNASeq_Beverley_RSRC/final/s_8_1_sequence.txt</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeRNASeq_Beverley/RNASeq_Beverley.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/RNASeq_Beverley.int</paramValue>
+      <paramValue name="outputMappingStatsFile"></paramValue>
+      <paramValue name="outputCountFile"></paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Cfasci_RNASeq_Beverley_RSRC|@@Cfasci_RNASeq_Beverley_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath">$$dataDir$$/Cfasci_RNASeq_Beverley_RSRC/final/s_8_2_sequence.txt</paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <depends name="Cfasci_RNASeq_Beverley_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+</workflowGraph>

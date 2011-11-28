@@ -1,0 +1,25 @@
+<workflowGraph name="tcruziEsmeraldoLikeISFResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="dataDir"/>
+
+    <constant name="dataDir">$$dataDir$$/tcruziEsmeraldoLikeISFResource</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+  <subgraph name="TcruziEsmeraldoLike_chromosomes_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">TcruziEsmeraldoLike_chromosomes_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="TcruziEsmeraldoLike_annotations_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">TcruziEsmeraldoLike_annotations_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="TcruziEsmeraldoLike_chromosomes_RSRC"/>
+  </subgraph>
+
+</workflowGraph>

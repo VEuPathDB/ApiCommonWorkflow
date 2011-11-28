@@ -1,0 +1,195 @@
+<workflowGraph name="pfStunnenbergChipSeqH2BvAndCenH3">
+
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+
+    <constant name="dataDir">$$parentDataDir$$/pfStunnenbergChipSeqH2BvAndCenH3</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+    <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+    </step>
+
+    <subgraph name="Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="analyzeH2Bv_20hSample" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">H2Bv_20h</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC/final/Pf_3D7_H2BvTy_ChIPseq_H2Bv_20hpi.fastq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH2Bv_20h/H2Bv_20h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H2Bv_20h.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC|@@Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <paramValue name="SNPs">false</paramValue>
+      <paramValue name="strandSpecific">false</paramValue>
+      <paramValue name="variableLengthReads">false</paramValue>
+      <depends name="Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeH2Bv_30hSample" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">H2Bv_30h</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC/final/Pf_3D7_H2BvTy_ChIPseq_H2Bv_30hpi.fastq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH2Bv_30h/H2Bv_30h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H2Bv_30h.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC|@@Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <paramValue name="SNPs">false</paramValue>
+      <paramValue name="strandSpecific">false</paramValue>
+      <paramValue name="variableLengthReads">false</paramValue>
+      <depends name="Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeH2Bv_40hSample" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">H2Bv_40h</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC/final/Pf_3D7_H2BvTy_ChIPseq_H2Bv_40hpi.fastq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeH2Bv_40h/H2Bv_40h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/H2Bv_40h.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC|@@Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <paramValue name="SNPs">false</paramValue>
+      <paramValue name="strandSpecific">false</paramValue>
+      <paramValue name="variableLengthReads">false</paramValue>
+      <depends name="Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeinput_20hSample" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">input_20h</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC/final/Pf_3D7_H2BvTy_ChIPseq_input_20hpi.fastq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeinput_20h/input_20h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/input_20h.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC|@@Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <paramValue name="SNPs">false</paramValue>
+      <paramValue name="strandSpecific">false</paramValue>
+      <paramValue name="variableLengthReads">false</paramValue>
+      <depends name="Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeinput_30hSample" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">input_30h</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC/final/Pf_3D7_H2BvTy_ChIPseq_input_30hpi.fastq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeinput_30h/input_30h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/input_30h.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC|@@Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <paramValue name="SNPs">false</paramValue>
+      <paramValue name="strandSpecific">false</paramValue>
+      <paramValue name="variableLengthReads">false</paramValue>
+      <depends name="Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeinput_40hSample" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">input_40h</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC/final/Pf_3D7_H2BvTy_ChIPseq_input_40hpi.fastq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeinput_40h/input_40h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/input_40h.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC|@@Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <paramValue name="SNPs">false</paramValue>
+      <paramValue name="strandSpecific">false</paramValue>
+      <paramValue name="variableLengthReads">false</paramValue>
+      <depends name="Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeCenH3_40hSample" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">CenH3_40h</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC/final/Pf_3D7_H3.3Ty_ChIPseq_CenH3_40hpi.fastq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeCenH3_40h/CenH3_40h.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/CenH3_40h.int</paramValue>
+      <paramValue name="makeIntensityFile">false</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC|@@Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">Pfalciparum_chromosomes_RSRC|@@Pfalciparum_chromosomes_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <paramValue name="SNPs">false</paramValue>
+      <paramValue name="strandSpecific">false</paramValue>
+      <paramValue name="variableLengthReads">false</paramValue>
+      <depends name="Pf_ChipSeq_Stunnenberg_H2Bv_CenH3_RSRC"/>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+</workflowGraph>

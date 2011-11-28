@@ -1,0 +1,53 @@
+<workflowGraph name="piroplasmaWorkflow">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+
+
+  <constant name="comparativeGenomicsFastaDir">common/comparativeGenomics/Fasta/</constant>
+  <constant name="comparativeGenomicsGffDir">common/comparativeGenomics/Gff/</constant>
+  <constant name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</constant>
+  <constant name="downloadSiteDir">@@downloadSite@@/$$projectName$$/release-$$projectVersion$$/</constant>
+
+
+  <globalSubgraph name="global" xmlFile="globalGraph.xml">
+    <paramValue name="isolatesResourceReference"></paramValue>
+    <paramValue name="loadIsolates">false</paramValue>
+    <paramValue name="commonResourceXmlFile">piroplasmadb/piroplasmadbCommon.xml</paramValue>
+    <paramValue name="globalResourceXmlFile">globalResources.xml</paramValue>
+  </globalSubgraph>
+
+  <subgraph name="common" xmlFile="common.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+  </subgraph>
+
+   <templateInstance name="BbovisT2Bo" xmlFile="rootWorkflowTemplate.xml" rtcFile="piroplasmadb.rtc"/>
+
+
+  <subgraph name="ComparativeGenomics" xmlFile="comparativeGenomics.xml">
+    <paramValue name="parentDataDir">common/comparativeGenomics/</paramValue>
+    <paramValue name="mercatorDraftGenomes">@@mercatorDraftGenomes@@</paramValue>
+    <paramValue name="mercatorNonDraftGenomes">@@mercatorNonDraftGenomes@@</paramValue>
+    <paramValue name="mercatorDraftExternalDbSpec">@@mercatorDraftExternalDbSpec@@</paramValue>
+    <paramValue name="mercatorNonDraftExternalDbSpec">@@mercatorNonDraftExternalDbSpec@@</paramValue>
+    <paramValue name="mercatorDraftSeqTables">@@mercatorDraftSeqTables@@</paramValue>
+    <paramValue name="mercatorNonDraftSeqTables">@@mercatorNonDraftSeqTables@@</paramValue>
+    <paramValue name="cndSrcBin">@@cndSrcBin@@</paramValue>
+    <paramValue name="mavidExe">@@mavidExe@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="mercatorFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="mercatorGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">piroplasmadb/piroplasmadbCommon.xml</paramValue>
+    <paramValue name="commonResourceXmlFile">piroplasmadb/piroplasmadbCommon.xml</paramValue>
+    <paramValue name="createGenesForGeneFeatures">false</paramValue>
+    <paramValue name="organismSpecificCreateGenesForGeneFeatures"></paramValue>
+    <paramValue name="organism">Piroplasmida</paramValue>
+    <templateDepends name="LoadGenome" xmlFile="rootWorkflowTemplate.xml"/>
+  </subgraph>
+
+</workflowGraph>
+

@@ -1,0 +1,124 @@
+<workflowGraph name="makeAndBlockAssemblies">
+
+    <param name="dataDir"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="parentNcbiTaxonId"/>
+    <param name="ncbiTaxonId"/>
+    <param name="distanceBetweenStartsForAlignmentsInSameCluster"/>
+    <param name="assemblySeqsDataDir"/>
+    <param name="organismAbbrev"/>
+    <param name="isReferenceStrain"/>
+
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="clusterTranscriptsByGenomeAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ClusterTranscriptsByGenomeAlignment" includeIf="$$isReferenceStrain$$">
+      <paramValue name="outputFile">$$dataDir$$/alignedClusters.out</paramValue>
+      <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">$$distanceBetweenStartsForAlignmentsInSameCluster$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="document-clusterAssemblySeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">cluster_assembly_seqs_MTHD</paramValue>
+      <paramValue name="version">unknown</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="clusterTranscriptsByGenomeAlignment"/>
+    </step>
+
+   <step name="putUnalignedTranscriptsIntoOneCluster"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PutUnalignedTranscriptsIntoOneCluster" includeIf="$$isReferenceStrain$$">
+      <paramValue name="alignedClustersFile">$$dataDir$$/alignedClusters.out</paramValue>
+      <paramValue name="allClustersOutputFile">$$dataDir$$/allClusters.out</paramValue>
+      <paramValue name="repeatMaskErrFile">$$assemblySeqsDataDir$$/master/mainresult/blocked.err</paramValue>
+      <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
+      <paramValue name="targetNcbiTaxId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="useTaxonHierarchy">true</paramValue>
+      <depends name="clusterTranscriptsByGenomeAlignment"/>
+    </step>
+
+
+   <step name="splitClusterFile"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SplitClusterFile" includeIf="$$isReferenceStrain$$">
+      <paramValue name="inputFile">$$dataDir$$/allClusters.out</paramValue>
+      <paramValue name="outputSmallFile">$$dataDir$$/smallClusters.out</paramValue>
+      <paramValue name="outputBigFile">$$dataDir$$/bigClusters.out</paramValue>
+      <depends name="putUnalignedTranscriptsIntoOneCluster"/>
+    </step>
+
+   <step name="makeAndLoadAssembliesFromSmallClusters"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAndLoadAssemblies" stepLoadTypes="plugin" includeIf="$$isReferenceStrain$$">
+      <paramValue name="inputFile">$$dataDir$$/smallClusters.out</paramValue>
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="reassemble"></paramValue>
+      <depends name="splitClusterFile"/>
+    </step>
+
+   <step name="makeAndLoadAssembliesFromBigClusters"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAndLoadAssemblies" stepLoadTypes="plugin" includeIf="$$isReferenceStrain$$">
+      <paramValue name="inputFile">$$dataDir$$/bigClusters.out</paramValue>
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="reassemble"></paramValue>
+      <depends name="splitClusterFile"/>
+    </step>
+
+    <step name="document-makeAssemblies"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">Consensus_transcript_prediction_MTHD</paramValue>
+      <paramValue name="version">4</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeAndLoadAssembliesFromBigClusters"/>
+    </step>
+
+   <step name="extractAssemblies"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAssemblies">
+      <paramValue name="outputFile">$$dataDir$$/assemblies.fsa</paramValue>
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <depends name="makeAndLoadAssembliesFromSmallClusters"/>
+      <depends name="makeAndLoadAssembliesFromBigClusters"/>
+    </step>
+
+    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskTaskInputDir">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="seqsFile">$$dataDir$$/assemblies.fsa</paramValue>
+      <paramValue name="dangleMax">30</paramValue>
+      <paramValue name="trimDangling">y</paramValue>
+      <paramValue name="options"></paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <depends name="makeDataDir"/>
+      <depends name="extractAssemblies"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeClusterTaskInputDir"/>
+    </step>
+
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="numNodes">1</paramValue>
+      <paramValue name="processorsPerNode">1</paramValue>
+      <depends name="mirrorToCluster"/>
+    </step>
+
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputFiles">blocked.seq</paramValue>
+      <depends name="runClusterTask"/>
+    </step>
+
+    <step name="document-maskAssemblies"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">repeat_mask_assemblies_MTHD</paramValue>
+      <paramValue name="version">1.214</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="clusterTranscriptsByGenomeAlignment"/>
+    </step>
+
+
+</workflowGraph>

@@ -1,0 +1,58 @@
+<workflowGraph name="bbovisT2BoSpecificAnalysis">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/BbovisT2BoSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/BbovisT2Bo</constant>
+
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="BbovisT2Bo_ECNumbers_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">BbovisT2Bo_ECNumbers_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+      <dependsGlobal name="enzymeDB_RSRC"/>
+    </subgraph>
+
+    <subgraph name="BbovisT2Bo_Comment_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">BbovisT2Bo_Comment_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="BbovisT2Bo_altids_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">BbovisT2Bo_altids_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="BbovisT2Bo_geneid_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">BbovisT2Bo_geneid_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="BbovisT2Bo_gi_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">BbovisT2Bo_gi_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+</workflowGraph>
+
+
+

@@ -1,0 +1,21 @@
+<workflowGraph name="tbrucei427DbxRefsResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+      <param name="projectVersion"/>
+      <param name="projectName"/>
+      <param name="downloadSiteDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/tbrucei427DbxRefsResources</constant>
+  <constant name="geneAliasesMappingDownloadFile">$$downloadSiteDataDir$$/Tbrucei427/txt/Tbrucei427GeneAlias_$$projectName$$-$$projectVersion$$.txt</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
+     <paramValue name="genomeExtDbRlsSpec">Tbrucei427_chromosomes_RSRC|@@Tbrucei427_chromosomes_VER@@</paramValue>
+     <paramValue name="dbRefNAFeatureExtDbSpec">Tbrucei427_previds_dbxref_RSRC|@@Tbrucei427_chromosomes_VER@@</paramValue>
+     <paramValue name="outputFile">$$geneAliasesMappingDownloadFile$$</paramValue>
+  </step>
+
+</workflowGraph>

@@ -1,0 +1,24 @@
+<workflowGraph name="pyoeliiMiscResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/pyoeliiMiscResources</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="Py_TransFactorBindingSites_Llinas_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Py_TransFactorBindingSites_Llinas_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+    <subgraph name="Py_Rod_Mal_Phenotype_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Py_Rod_Mal_Phenotype_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+</workflowGraph>

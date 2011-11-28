@@ -1,0 +1,24 @@
+<workflowGraph name="pyoeliiESTResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/pfalciparumESTResources</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="WatanabePy17XL_PredictedTranscripts_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">WatanabePy17XL_PredictedTranscripts_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="WatanabePy17XL_EstLibrary_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">WatanabePy17XL_EstLibrary_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+</workflowGraph>

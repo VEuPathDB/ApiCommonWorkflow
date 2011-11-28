@@ -1,0 +1,38 @@
+<workflowGraph name="saccharomyces_cerevisiae_s288cSpecificAnalysis">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/saccharomyces_cerevisiae_s288cSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/saccharomyces_cerevisiae_s288c</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/saccharomyces_cerevisiae_s288cLoadGenome/genomicSeqs.fsa</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/saccharomyces_cerevisiae_s288cLoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/saccharomyces_cerevisiae_s288cLoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/saccharomyces_cerevisiae_s288cLoadGenome/geneModelForSsa.txt</constant>
+  <constant name="samHeaderFile">$$parentDataDir$$/saccharomyces_cerevisiae_s288cLoadGenome/samHeader</constant>
+
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="arrayResources" xmlFile="fungidb/saccharomyces_cerevisiae_s288cArrayStudies.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="downloadSiteTranscriptExpressionDataDir">$$downloadSiteDataDir$$/transcriptExpression</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">saccharomyces_cerevisiae_s288c_genome_sequence_RSRC|@@saccharomyces_cerevisiae_s288c_genome_sequence_VER@@</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+</workflowGraph>
+
+
+

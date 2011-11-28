@@ -1,0 +1,2314 @@
+<workflowGraph name="trypWorkflow">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+
+  <constant name="comparativeGenomicsFastaDir">common/comparativeGenomics/Fasta/</constant>
+  <constant name="comparativeGenomicsGffDir">common/comparativeGenomics/Gff/</constant>
+
+  <globalSubgraph name="global" xmlFile="globalGraph.xml">
+    <paramValue name="isolatesResourceReference"></paramValue>
+    <paramValue name="loadIsolates">false</paramValue>
+    <paramValue name="commonResourceXmlFile">tritrypdb/tritrypdbCommon.xml</paramValue>
+    <paramValue name="globalResourceXmlFile">globalResources.xml</paramValue>
+  </globalSubgraph>
+
+  <subgraph name="common" xmlFile="common.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+  </subgraph>
+
+<!--Cfasci-->
+
+  <subgraph name="CfasciLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Cfasci</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Cfasci_contigs_RSRC|@@Cfasci_contigs_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/cfasci.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/cfasciISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">5656</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">false</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="CfasciMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Cfasci</paramValue>
+    <paramValue name="organismFullName">@@CfasciOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Cfasci_contigs_RSRC|@@Cfasci_contigs_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="runComparativeGenomics">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/cfasci.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="CfasciLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="CfasciPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Cfasci</paramValue>
+    <paramValue name="organismFullName">@@CfasciOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">Cfasci</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Cfasci_contigs_RSRC|@@Cfasci_contigs_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName"></paramValue>
+    <paramValue name="dbESTVersion"></paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">5656</paramValue>
+    <paramValue name="parentNcbiTaxonId">5656</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">35386209</paramValue>
+    <paramValue name="skipProteomeAnalysis">true</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/cfasci.xml</paramValue>
+    <depends name="CfasciLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="CfasciSpecificWorkflow" xmlFile="tritrypdb/cfasciSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/cfasci.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="CfasciLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="CfasciMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Cfasciculata</paramValue>
+    <paramValue name="organismFullName">@@CfasciOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">5656</paramValue>
+    <paramValue name="parentNcbiTaxonId">5656</paramValue>
+    <paramValue name="genomeSource">@@CfasciGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec"></paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Cfasci_contigs_RSRC|@@Cfasci_contigs_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">supercontig</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">false</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="CfasciPostLoadGenome"/>
+    <depends name="CfasciMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--LtarParrotTraII-->
+
+  <subgraph name="LtarParrotTraIILoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">ltarParrotTraII</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">ltarParrotTraII_primary_genome_RSRC|@@ltarParrotTraII_genome_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/ltarParrotTraII.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/ltarParrotTraIIISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">56890001</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="LtarParrotTraIIMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">ltarParrotTraII</paramValue>
+    <paramValue name="organismFullName">@@ltarParrotTraIIOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">ltarParrotTraII_primary_genome_RSRC|@@ltarParrotTraII_genome_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/ltarParrotTraII.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <depends name="LtarParrotTraIILoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LtarParrotTraIIPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">ltarParrotTraII</paramValue>
+    <paramValue name="organismFullName">@@ltarParrotTraIIOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">ltarParrotTraII</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">ltarParrotTraII_primary_genome_RSRC|@@ltarParrotTraII_genome_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName"></paramValue>   
+    <paramValue name="dbESTVersion"></paramValue>
+    <paramValue name="loadDbest">false</paramValue>  
+    <paramValue name="ncbiTaxonId">56890001</paramValue>
+    <paramValue name="parentNcbiTaxonId">5689</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>  
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">31634726</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">tritrypdb/ltarParrotTraIIProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/ltarParrotTraII.xml</paramValue>
+    <depends name="LtarParrotTraIILoadGenome"/>
+  </subgraph>
+
+<!--LmajorLV39c5  unannotated-->
+  <subgraph name="LmajorLV39c5LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LmajorLV39c5</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LmajorLV39c5_primary_genome_RSRC|@@LmajorLV39c5_genome_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajorLV39c5.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/lmajorLV39c5ISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">860569</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">false</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/>
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="LmajorLV39c5PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LmajorLV39c5</paramValue>
+    <paramValue name="organismFullName">@@LmajorLV39c5OrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">LmajorLV39c5</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LmajorLV39c5_primary_genome_RSRC|@@LmajorLV39c5_genome_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName"></paramValue>
+    <paramValue name="dbESTVersion"></paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">860569</paramValue>
+    <paramValue name="parentNcbiTaxonId">5664</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">32882535</paramValue>
+    <paramValue name="skipProteomeAnalysis">true</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajorLV39c5.xml</paramValue>
+    <depends name="LmajorLV39c5LoadGenome"/>
+  </subgraph>
+
+<!--EmonteLV88  unannotated-->
+  <subgraph name="EmonteLV88LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">EmonteLV88</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">EmonteLV88_primary_genome_RSRC|@@EmonteLV88_genome_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/emonteLV88.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/emonteLV88ISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">1000000001</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">false</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/>
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="EmonteLV88PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">EmonteLV88</paramValue>
+    <paramValue name="organismFullName">@@EmonteLV88OrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">EmonteLV88</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">EmonteLV88_primary_genome_RSRC|@@EmonteLV88_genome_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName"></paramValue>
+    <paramValue name="dbESTVersion"></paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">1000000001</paramValue>
+    <paramValue name="parentNcbiTaxonId">5705</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">33250803</paramValue>
+    <paramValue name="skipProteomeAnalysis">true</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/emonteLV88.xml</paramValue>
+    <depends name="EmonteLV88LoadGenome"/>
+  </subgraph>
+
+<!--LpanamL13  unannotated-->
+  <subgraph name="LpanamL13LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LpanamL13</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LpanamL13_primary_genome_RSRC|@@LpanamL13_genome_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lpanamL13.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/lpanamL13ISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">1000000002</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">false</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/>
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="LpanamL13PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LpanamL13</paramValue>
+    <paramValue name="organismFullName">@@LpanamL13OrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">LpanamL13</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LpanamL13_primary_genome_RSRC|@@LpanamL13_genome_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName"></paramValue>
+    <paramValue name="dbESTVersion"></paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">1000000002</paramValue>
+    <paramValue name="parentNcbiTaxonId">5679</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">32472070</paramValue>
+    <paramValue name="skipProteomeAnalysis">true</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/LpanamL13.xml</paramValue>
+    <depends name="LpanamL13LoadGenome"/>
+  </subgraph>
+
+
+<!--Lmexicana-->
+
+  <subgraph name="LmexicanaLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lmexicana</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lmexicana_chromosomes_RSRC|@@Lmexicana_chromosomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmexicana.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/lmexicanaISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">5665</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="LmexicanaMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lmexicana</paramValue>
+    <paramValue name="organismFullName">@@LmexicanaOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lmexicana_chromosomes_RSRC|@@Lmexicana_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmexicana.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">true</paramValue>
+    <depends name="LmexicanaLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LmexicanaPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lmexicana</paramValue>
+    <paramValue name="organismFullName">@@LmexicanaOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">Lmexicana</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lmexicana_chromosomes_RSRC|@@Lmexicana_chromosomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName">Lmexicana_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Lmexicana_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
+    <paramValue name="ncbiTaxonId">5665</paramValue>
+    <paramValue name="parentNcbiTaxonId">5665</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">32108741</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">true</paramValue>
+    <paramValue name="makeAssemblies">true</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">tritrypdb/lmexicanaMassSpecResource.xml</paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">tritrypdb/lmexicanaProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmexicana.xml</paramValue>
+    <depends name="LmexicanaLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LmexicanaSpecificWorkflow" xmlFile="tritrypdb/lmexicanaSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmexicana.xml</paramValue>
+    <depends name="LmexicanaLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LmexicanaLoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lmexicana</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">tritrypdb/lmexicanaGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmexicana.xml</paramValue>
+    <depends name="LmexicanaLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LmexicanaLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Lmexicana</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">tritrypdb/lmexicanaDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmexicana.xml</paramValue>
+    <depends name="LmexicanaLoadGeneAliases"/>
+  </subgraph>
+
+
+  <subgraph name="LmexicanaMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Lmexicana</paramValue>
+    <paramValue name="organismFullName">@@LmexicanaOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">5665</paramValue>
+    <paramValue name="parentNcbiTaxonId">5665</paramValue>
+    <paramValue name="genomeSource">@@LmexicanaGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Lmexicana_dbEST_RSRC|@@Lmexicana_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lmexicana_chromosomes_RSRC|@@Lmexicana_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="LmexicanaPostLoadGenome"/>
+    <depends name="LmexicanaMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--LmajorFriedlin-->
+
+  <subgraph name="LmajorFriedlinLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LmajorFriedlin</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/lmajorFriedlinISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">347515</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="LmajorFriedlinMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LmajorFriedlin</paramValue>
+    <paramValue name="organismFullName">@@LmajorFriedlinOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">true</paramValue>
+    <depends name="LmajorFriedlinLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LmajorFriedlinPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LmajorFriedlin</paramValue>
+    <paramValue name="organismFullName">@@LmajorFriedlinOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">LmajorFriedlin</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName">LmajorFriedlin_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@LmajorFriedlin_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">LmajorFriedlin_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">Lmajor_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Lmajor_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
+    <paramValue name="ncbiTaxonId">347515</paramValue>
+    <paramValue name="parentNcbiTaxonId">5664</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">32855095</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
+    <paramValue name="makeAssemblySeqs">true</paramValue>
+    <paramValue name="makeAssemblies">true</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">tritrypdb/lmajorMassSpecResource.xml</paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">tritrypdb/lmajorFriedlinProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+    <depends name="LmajorFriedlinLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LmajorFriedlinSpecificWorkflow" xmlFile="tritrypdb/lmajorFriedlinSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="LmajorFriedlinLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LmajorFriedlinLoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LmajorFriedlin</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">tritrypdb/lmajorFriedlinGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+    <depends name="LmajorFriedlinLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LmajorFriedlinLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">LmajorFriedlin</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">tritrypdb/lmajorFriedlinDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+    <depends name="LmajorFriedlinLoadGeneAliases"/>
+  </subgraph>
+
+  <subgraph name="LmajorFriedlinMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">LmajorFriedlin</paramValue>
+    <paramValue name="organismFullName">@@LmajorFriedlinOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">347515</paramValue>
+    <paramValue name="parentNcbiTaxonId">5664</paramValue>
+    <paramValue name="genomeSource">@@LmajorFriedlinGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Lmajor_dbEST_RSRC|@@Lmajor_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LmajorFriedlin_chromosomes_RSRC|@@LmajorFriedlin_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="LmajorFriedlinPostLoadGenome"/>
+    <depends name="LmajorFriedlinMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--LmajorSD-->
+
+  <subgraph name="LmajorSDLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LmajorSD</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LmajorSD_contigs_RSRC|@@LmajorSD_contigs_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/lmajorSDISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">860570</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">false</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="LmajorSDMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LmajorSD</paramValue>
+    <paramValue name="organismFullName">@@LmajorSDOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LmajorSD_contigs_RSRC|@@LmajorSD_contigs_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec">LmajorSD_scaffolds_RSRC|@@LmajorSD_scaffolds_VER@@</paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName">LmajorSD_scaffolds_RSRC</paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">true</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">false</paramValue>
+    <depends name="LmajorSDLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LmajorSDPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LmajorSD</paramValue>
+    <paramValue name="organismFullName">@@LmajorSDOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">LmajorSD</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LmajorSD_contigs_RSRC|@@LmajorSD_contigs_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName">Lmajor_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Lmajor_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">860570</paramValue>
+    <paramValue name="parentNcbiTaxonId">5664</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">30825400</paramValue>
+    <paramValue name="skipProteomeAnalysis">true</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lmajor.xml</paramValue>
+    <depends name="LmajorSDLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LmajorSDMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">LmajorSD75.1</paramValue>
+    <paramValue name="organismFullName">@@LmajorSDOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">860570</paramValue>
+    <paramValue name="parentNcbiTaxonId">5664</paramValue>
+    <paramValue name="genomeSource">@@LmajorSDGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Lmajor_dbEST_RSRC|@@Lmajor_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LmajorSD_contigs_RSRC|@@LmajorSD_contigs_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec">LmajorSD_scaffolds_RSRC|@@LmajorSD_scaffolds_VER@@</paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">contig</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">false</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="LmajorSDPostLoadGenome"/>
+    <depends name="LmajorSDMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--Tbrucei927-->
+
+  <subgraph name="Tbrucei927LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbrucei927</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tbrucei927_genome_RSRC|@@Tbrucei927_genome_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/tbrucei927ISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">185431</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei927MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbrucei927</paramValue>
+    <paramValue name="organismFullName">@@Tbrucei927OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tbrucei927_genome_RSRC|@@Tbrucei927_genome_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">true</paramValue>
+    <depends name="Tbrucei927LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei927PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbrucei927</paramValue>
+    <paramValue name="organismFullName">@@Tbrucei927OrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">Tb927</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tbrucei927_genome_RSRC|@@Tbrucei927_genome_VER@@</paramValue>
+    <paramValue name="iedbResourceName">Tbrucei927_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@Tbrucei927_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">Tbrucei927_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">Tbrucei_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Tbrucei_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
+    <paramValue name="ncbiTaxonId">185431</paramValue>
+    <paramValue name="parentNcbiTaxonId">5691</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">29273417</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
+    <paramValue name="makeAssemblySeqs">true</paramValue>
+    <paramValue name="makeAssemblies">true</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">tritrypdb/tbruceiMassSpecResource.xml</paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">tritrypdb/tbrucei927ProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <depends name="Tbrucei927LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei927SpecificWorkflow" xmlFile="tritrypdb/tbrucei927Specific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="Tbrucei927LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei927LoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbrucei927</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">tritrypdb/tbrucei927GeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <depends name="Tbrucei927LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei927LoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Tbrucei927</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">tritrypdb/tbrucei927DbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <depends name="Tbrucei927LoadGeneAliases"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei927MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TbruceiTreu927</paramValue>
+    <paramValue name="organismFullName">@@Tbrucei927OrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">185431</paramValue>
+    <paramValue name="parentNcbiTaxonId">5691</paramValue>
+    <paramValue name="genomeSource">@@Tbrucei927GenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Tbrucei_dbEST_RSRC|@@Tbrucei_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tbrucei927_genome_RSRC|@@Tbrucei927_genome_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="Tbrucei927PostLoadGenome"/>
+    <depends name="Tbrucei927MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--Linfantum-->
+
+  <subgraph name="LinfantumLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Linfantum</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Linfantum_chromosomes_RSRC|@@Linfantum_chromosomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/linfantum.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/linfantumISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">5671</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="LinfantumMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Linfantum</paramValue>
+    <paramValue name="organismFullName">@@LinfantumOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Linfantum_chromosomes_RSRC|@@Linfantum_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/linfantum.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">true</paramValue>
+    <depends name="LinfantumLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LinfantumPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Linfantum</paramValue>
+    <paramValue name="organismFullName">@@LinfantumOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">Linfantum</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Linfantum_chromosomes_RSRC|@@Linfantum_chromosomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName">Linfantum_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@Linfantum_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">Linfantum_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">Linfantum_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Linfantum_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
+    <paramValue name="ncbiTaxonId">5671</paramValue>
+    <paramValue name="parentNcbiTaxonId">5671</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">32126170</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
+    <paramValue name="makeAssemblySeqs">true</paramValue>
+    <paramValue name="makeAssemblies">true</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">tritrypdb/linfantumMassSpecResource.xml</paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">tritrypdb/linfantumProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/linfantum.xml</paramValue>
+    <depends name="LinfantumLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LinfantumSpecificWorkflow" xmlFile="tritrypdb/linfantumSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/linfantum.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="LinfantumLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LinfantumLoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Linfantum</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">tritrypdb/linfantumGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/linfantum.xml</paramValue>
+    <depends name="LinfantumLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LinfantumLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Linfantum</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">tritrypdb/linfantumDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/linfantum.xml</paramValue>
+    <depends name="LinfantumLoadGeneAliases"/>
+  </subgraph>
+
+  <subgraph name="LinfantumMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Linfantum</paramValue>
+    <paramValue name="organismFullName">@@LinfantumOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">5671</paramValue>
+    <paramValue name="parentNcbiTaxonId">5671</paramValue>
+    <paramValue name="genomeSource">@@LinfantumGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Linfantum_dbEST_RSRC|@@Linfantum_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Linfantum_chromosomes_RSRC|@@Linfantum_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="LinfantumPostLoadGenome"/>
+    <depends name="LinfantumMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--Tcongolense-->
+
+  <subgraph name="TcongolenseLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tcongolense</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tcongolense_chromosomes_RSRC|@@Tcongolense_chromosomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcongolense.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/tcongolenseISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">5692</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="TcongolenseMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tcongolense</paramValue>
+    <paramValue name="organismFullName">@@TcongolenseOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tcongolense_chromosomes_RSRC|@@Tcongolense_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcongolense.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">true</paramValue>
+    <depends name="TcongolenseLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcongolensePostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tcongolense</paramValue>
+    <paramValue name="organismFullName">@@TcongolenseOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">Tcongolense</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tcongolense_chromosomes_RSRC|@@Tcongolense_chromosomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName">Tcongolense_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Tcongolense_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
+    <paramValue name="ncbiTaxonId">5692</paramValue>
+    <paramValue name="parentNcbiTaxonId">5692</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">38670943</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">true</paramValue>
+    <paramValue name="makeAssemblies">true</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">tritrypdb/tcongolenseProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcongolense.xml</paramValue>
+    <depends name="TcongolenseLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcongolenseSpecificWorkflow" xmlFile="tritrypdb/tcongolenseSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcongolense.xml</paramValue>
+    <depends name="TcongolenseLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcongolenseLoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tcongolense</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">tritrypdb/tcongolenseGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcongolense.xml</paramValue>
+    <depends name="TcongolenseLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcongolenseLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Tcongolense</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">tritrypdb/tcongolenseDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcongolense.xml</paramValue>
+    <depends name="TcongolenseLoadGeneAliases"/>
+  </subgraph>
+
+  <subgraph name="TcongolenseMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Tcongolense</paramValue>
+    <paramValue name="organismFullName">@@TcongolenseOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">5692</paramValue>
+    <paramValue name="parentNcbiTaxonId">5692</paramValue>
+    <paramValue name="genomeSource">@@TcongolenseGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Tcongolense_dbEST_RSRC|@@Tcongolense_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tcongolense_chromosomes_RSRC|@@Tcongolense_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TcongolensePostLoadGenome"/>
+    <depends name="TcongolenseMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+
+<!--Tvivax-->
+
+  <subgraph name="TvivaxLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tvivax</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tvivax_chromosomes_RSRC|@@Tvivax_chromosomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tvivax.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/tvivaxISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">5699</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="TvivaxMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tvivax</paramValue>
+    <paramValue name="organismFullName">@@TvivaxOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tvivax_chromosomes_RSRC|@@Tvivax_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tvivax.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">true</paramValue>
+    <depends name="TvivaxLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TvivaxPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tvivax</paramValue>
+    <paramValue name="organismFullName">@@TvivaxOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">Tvivax</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tvivax_chromosomes_RSRC|@@Tvivax_chromosomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName"></paramValue>
+    <paramValue name="dbESTVersion"></paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">5699</paramValue>
+    <paramValue name="parentNcbiTaxonId">5699</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">true</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">47504115</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">false</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">tritrypdb/tvivaxProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tvivax.xml</paramValue>
+    <depends name="TvivaxLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TvivaxSpecificWorkflow" xmlFile="tritrypdb/tvivaxSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tvivax.xml</paramValue>
+    <depends name="TvivaxLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TvivaxLoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tvivax</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">tritrypdb/tvivaxGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tvivax.xml</paramValue>
+    <depends name="TvivaxLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TvivaxLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Tvivax</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">tritrypdb/tvivaxDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tvivax.xml</paramValue>
+    <depends name="TvivaxLoadGeneAliases"/>
+  </subgraph>
+
+  <subgraph name="TvivaxMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Tvivax</paramValue>
+    <paramValue name="organismFullName">@@TvivaxOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">5699</paramValue>
+    <paramValue name="parentNcbiTaxonId">5699</paramValue>
+    <paramValue name="genomeSource">@@TvivaxGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec"></paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tvivax_chromosomes_RSRC|@@Tvivax_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TvivaxPostLoadGenome"/>
+    <depends name="TvivaxMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--Tbrucei427-->
+
+  <subgraph name="Tbrucei427LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbrucei427</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tbrucei427_chromosomes_RSRC|@@Tbrucei427_chromosomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/tbrucei427ISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">1854310</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei427MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbrucei427</paramValue>
+    <paramValue name="organismFullName">@@Tbrucei427OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tbrucei427_chromosomes_RSRC|@@Tbrucei427_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">true</paramValue>
+    <depends name="Tbrucei427LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei427PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbrucei427</paramValue>
+    <paramValue name="organismFullName">@@Tbrucei427OrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">Tb427</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tbrucei427_chromosomes_RSRC|@@Tbrucei427_chromosomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName">Tbrucei427_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@Tbrucei427_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">Tbrucei427_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">Tbrucei_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Tbrucei_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">1854310</paramValue>
+    <paramValue name="parentNcbiTaxonId">5691</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">25604931</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">tritrypdb/tbrucei427MassSpecResource.xml</paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">tritrypdb/tbrucei427ProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <depends name="Tbrucei427LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei427SpecificWorkflow" xmlFile="tritrypdb/tbrucei427Specific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <depends name="Tbrucei427LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei427LoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbrucei427</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">tritrypdb/tbrucei427GeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <depends name="Tbrucei427LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei427LoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbrucei427</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">tritrypdb/tbrucei427DbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="Tbrucei427LoadGeneAliases"/>
+  </subgraph>
+
+  <subgraph name="Tbrucei427MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Tbrucei427</paramValue>
+    <paramValue name="organismFullName">@@Tbrucei427OrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">1854310</paramValue>
+    <paramValue name="parentNcbiTaxonId">5691</paramValue>
+    <paramValue name="genomeSource">@@Tbrucei427GenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Tbrucei_dbEST_RSRC|@@Tbrucei_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tbrucei427_chromosomes_RSRC|@@Tbrucei427_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="Tbrucei427PostLoadGenome"/>
+    <depends name="Tbrucei427MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--TcruziEsmeraldoLike-->
+
+  <subgraph name="TcruziEsmeraldoLikeLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziEsmeraldoLike</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziEsmeraldoLike_chromosomes_RSRC|@@TcruziEsmeraldoLike_chromosomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/tcruziEsmeraldoLikeISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">3665810</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="TcruziEsmeraldoLikeMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziEsmeraldoLike</paramValue>
+    <paramValue name="organismFullName">@@TcruziEsmeraldoLikeOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziEsmeraldoLike_chromosomes_RSRC|@@TcruziEsmeraldoLike_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">true</paramValue>
+    <depends name="TcruziEsmeraldoLikeLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziEsmeraldoLikePostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziEsmeraldoLike</paramValue>
+    <paramValue name="organismFullName">@@TcruziEsmeraldoLikeOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">TcruziEsmeraldoLike</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziEsmeraldoLike_chromosomes_RSRC|@@TcruziEsmeraldoLike_chromosomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName">TcruziEsmeraldoLike_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@TcruziEsmeraldoLike_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">TcruziEsmeraldoLike_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">Tcruzi_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Tcruzi_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
+    <paramValue name="ncbiTaxonId">3665810</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">30161380</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
+    <paramValue name="makeAssemblySeqs">true</paramValue>
+    <paramValue name="makeAssemblies">true</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">tritrypdb/tcruziEsmeraldoLikeMassSpecResource.xml</paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">tritrypdb/tcruziEsmeraldoLikeProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <depends name="TcruziEsmeraldoLikeLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziEsmeraldoLikeSpecificWorkflow" xmlFile="tritrypdb/tcruziEsmeraldoLikeSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="TcruziEsmeraldoLikeLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziEsmeraldoLikeLoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziEsmeraldoLike</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">tritrypdb/tcruziEsmeraldoLikeGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <depends name="TcruziEsmeraldoLikeLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziEsmeraldoLikeLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TcruziEsmeraldoLike</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">tritrypdb/tcruziEsmeraldoLikeDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <depends name="TcruziEsmeraldoLikeLoadGeneAliases"/>
+  </subgraph>
+
+  <subgraph name="TcruziEsmeraldoLikeMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TcruziEsmeraldo-Like</paramValue>
+    <paramValue name="organismFullName">@@TcruziEsmeraldoLikeOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">3665810</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="genomeSource">@@TcruziEsmeraldoLikeGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Tcruzi_dbEST_RSRC|@@Tcruzi_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziEsmeraldoLike_chromosomes_RSRC|@@TcruziEsmeraldoLike_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TcruziEsmeraldoLikePostLoadGenome"/>
+    <depends name="TcruziEsmeraldoLikeMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+
+<!--TcruziNonEsmeraldoLike-->
+
+  <subgraph name="TcruziNonEsmeraldoLikeLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziNonEsmeraldoLike</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziNonEsmeraldoLike_genome_RSRC|@@TcruziNonEsmeraldoLike_genome_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/tcruziNonEsmeraldoLikeISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">36658100</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="TcruziNonEsmeraldoLikeMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziNonEsmeraldoLike</paramValue>
+    <paramValue name="organismFullName">@@TcruziNonEsmeraldoLikeOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziNonEsmeraldoLike_genome_RSRC|@@TcruziNonEsmeraldoLike_genome_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">true</paramValue>
+    <depends name="TcruziNonEsmeraldoLikeLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziNonEsmeraldoLikePostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziNonEsmeraldoLike</paramValue>
+    <paramValue name="organismFullName">@@TcruziNonEsmeraldoLikeOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">TcruziNonEsmeraldoLike</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziNonEsmeraldoLike_genome_RSRC|@@TcruziNonEsmeraldoLike_genome_VER@@</paramValue>
+    <paramValue name="iedbResourceName">TcruziNonEsmeraldoLike_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@TcruziNonEsmeraldoLike_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">TcruziNonEsmeraldoLike_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">Tcruzi_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Tcruzi_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">36658100</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">31266041</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">tritrypdb/tcruziNonEsmeraldoLikeMassSpecResource.xml</paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">tritrypdb/tcruziNonEsmeraldoLikeProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <depends name="TcruziNonEsmeraldoLikeLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziNonEsmeraldoLikeSpecificWorkflow" xmlFile="tritrypdb/tcruziNonEsmeraldoLikeSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="TcruziNonEsmeraldoLikeLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziNonEsmeraldoLikeLoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziNonEsmeraldoLike</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">tritrypdb/tcruziNonEsmeraldoLikeGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <depends name="TcruziNonEsmeraldoLikeLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziNonEsmeraldoLikeLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TcruziNonEsmeraldoLike</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">tritrypdb/tcruziNonEsmeraldoLikeDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <depends name="TcruziNonEsmeraldoLikeLoadGeneAliases"/>
+  </subgraph>
+
+  <subgraph name="TcruziNonEsmeraldoLikeMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TcruziNonEsmeraldo-Like</paramValue>
+    <paramValue name="organismFullName">@@TcruziNonEsmeraldoLikeOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">36658100</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="genomeSource">@@TcruziNonEsmeraldoLikeGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Tcruzi_dbEST_RSRC|@@Tcruzi_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziNonEsmeraldoLike_genome_RSRC|@@TcruziNonEsmeraldoLike_genome_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TcruziNonEsmeraldoLikePostLoadGenome"/>
+    <depends name="TcruziNonEsmeraldoLikeMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziUnassignedContigsMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TcruziUnassignedContigs</paramValue>
+    <paramValue name="organismFullName">Trypanosoma cruzi strain CL Brener</paramValue>
+    <paramValue name="ncbiTaxonId">353153</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="genomeSource">@@TcruziNonEsmeraldoLikeGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Tcruzi_dbEST_RSRC|@@Tcruzi_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziUnassigned_contigs_RSRC|@@TcruziNonEsmeraldoLike_genome_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">contig</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TcruziNonEsmeraldoLikePostLoadGenome"/>
+    <depends name="TcruziNonEsmeraldoLikeMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--TcruziEsmeraldo-->
+
+  <subgraph name="TcruziEsmeraldoLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziEsmeraldo</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziEsmeraldo_scaffold_RSRC|@@TcruziEsmeraldo_scaffold_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/tcruziEsmeraldoISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">366581</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">false</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="TcruziEsmeraldoMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziEsmeraldo</paramValue>
+    <paramValue name="organismFullName">@@TcruziEsmeraldoOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziEsmeraldo_scaffold_RSRC|@@TcruziEsmeraldo_scaffold_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">false</paramValue>
+    <depends name="TcruziEsmeraldoLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziEsmeraldoPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziEsmeraldo</paramValue>
+    <paramValue name="organismFullName">@@TcruziEsmeraldoOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">TcruziEsmeraldo</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziEsmeraldo_scaffold_RSRC|@@TcruziEsmeraldo_scaffold_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName">Tcruzi_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Tcruzi_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">366581</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">26577339</paramValue>
+    <paramValue name="skipProteomeAnalysis">true</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruzi.xml</paramValue>
+    <depends name="TcruziEsmeraldoLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziEsmeraldoMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TcruziEsmeraldo</paramValue>
+    <paramValue name="organismFullName">@@TcruziEsmeraldoOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">366581</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="genomeSource">@@TcruziEsmeraldoGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Tcruzi_dbEST_RSRC|@@Tcruzi_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziEsmeraldo_scaffold_RSRC|@@TcruziEsmeraldo_scaffold_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">supercontig</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">false</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TcruziEsmeraldoPostLoadGenome"/>
+    <depends name="TcruziEsmeraldoMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+
+<!--TbGambiense-->
+
+  <subgraph name="TbruceigambienseLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbruceigambiense</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tbruceigambiense_chromosomes_RSRC|@@Tbruceigambiense_chromosomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/tbruceigambienseISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">31285</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="TbruceigambienseMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbruceigambiense</paramValue>
+    <paramValue name="organismFullName">@@TbruceigambienseOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tbruceigambiense_chromosomes_RSRC|@@Tbruceigambiense_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">true</paramValue>
+    <depends name="TbruceigambienseLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TbruceigambiensePostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbruceigambiense</paramValue>
+    <paramValue name="organismFullName">@@TbruceigambienseOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">TbGam</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tbruceigambiense_chromosomes_RSRC|@@Tbruceigambiense_chromosomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName">Tbruceigambiense_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@Tbruceigambiense_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">Tbruceigambiense_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">Tbrucei_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Tbrucei_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">31285</paramValue>
+    <paramValue name="parentNcbiTaxonId">5691</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">22148088</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">tritrypdb/tbruceigambienseProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <depends name="TbruceigambienseLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TbruceigambienseSpecificWorkflow" xmlFile="tritrypdb/tbruceigambienseSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <depends name="TbruceigambienseLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TbruceigambienseLoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbruceigambiense</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">tritrypdb/tbruceigambienseGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <depends name="TbruceigambienseLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TbruceigambienseLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Tbruceigambiense</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">tritrypdb/tbruceigambienseDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tbrucei.xml</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <depends name="TbruceigambienseLoadGeneAliases"/>
+  </subgraph>
+
+  <subgraph name="TbruceigambienseMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TbruceiGambiense</paramValue>
+    <paramValue name="organismFullName">@@TbruceigambienseOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">31285</paramValue>
+    <paramValue name="parentNcbiTaxonId">5691</paramValue>
+    <paramValue name="genomeSource">@@TbruceigambienseGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Tbrucei_dbEST_RSRC|@@Tbrucei_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Tbruceigambiense_chromosomes_RSRC|@@Tbruceigambiense_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TbruceigambiensePostLoadGenome"/>
+    <depends name="TbruceigambienseMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--Lbraziliensis-->
+
+  <subgraph name="LbraziliensisLoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lbraziliensis</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lbraziliensis_chromosomes_RSRC|@@Lbraziliensis_chromosomes_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lbraziliensis.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/lbraziliensisISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">5660</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">true</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="LbraziliensisMakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lbraziliensis</paramValue>
+    <paramValue name="organismFullName">@@LbraziliensisOrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lbraziliensis_chromosomes_RSRC|@@Lbraziliensis_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lbraziliensis.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">true</paramValue>
+    <depends name="LbraziliensisLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LbraziliensisPostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lbraziliensis</paramValue>
+    <paramValue name="organismFullName">@@LbraziliensisOrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">Lbraziliensis</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lbraziliensis_chromosomes_RSRC|@@Lbraziliensis_chromosomes_VER@@</paramValue>
+    <paramValue name="iedbResourceName">Lbraziliensis_IEDB_Epitopes_RSRC</paramValue>
+    <paramValue name="iedbVersion">@@Lbraziliensis_IEDB_Epitopes_VER@@</paramValue>
+    <paramValue name="iedbDbRefResourceName">Lbraziliensis_IEDB_Epitopes_DBxRefs_RSRC</paramValue>
+    <paramValue name="dbESTResourceName">Lbraziliensis_dbEST_RSRC</paramValue>
+    <paramValue name="dbESTVersion">@@Lbraziliensis_dbEST_VER@@</paramValue>
+    <paramValue name="loadDbest">true</paramValue>
+    <paramValue name="ncbiTaxonId">5660</paramValue>
+    <paramValue name="parentNcbiTaxonId">5660</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">32088851</paramValue>
+    <paramValue name="skipProteomeAnalysis">false</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">true</paramValue>
+    <paramValue name="makeAssemblySeqs">true</paramValue>
+    <paramValue name="makeAssemblies">true</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">true</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference">tritrypdb/lbraziliensisMassSpecResource.xml</paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference">tritrypdb/lbraziliensisProductNameResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lbraziliensis.xml</paramValue>
+    <depends name="LbraziliensisLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LbraziliensisSpecificWorkflow" xmlFile="tritrypdb/lbraziliensisSpecific.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lbraziliensis.xml</paramValue>
+    <depends name="LbraziliensisLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LbraziliensisLoadGeneAliases" xmlFile="loadGeneAliases.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">Lbraziliensis</paramValue>
+    <paramValue name="organismSpecificGeneAliasesReference">tritrypdb/lbraziliensisGeneAliasesResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lbraziliensis.xml</paramValue>
+    <depends name="LbraziliensisLoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LbraziliensisLoadDbxRefs" xmlFile="loadDbxRefs.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Lbraziliensis</paramValue>
+    <paramValue name="organismSpecificDbxRefsReference">tritrypdb/lbraziliensisDbxRefsResource.xml</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lbraziliensis.xml</paramValue>
+    <depends name="LbraziliensisLoadGeneAliases"/>
+  </subgraph>
+
+  <subgraph name="LbraziliensisMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">Lbraziliensis</paramValue>
+    <paramValue name="organismFullName">@@LbraziliensisOrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">5660</paramValue>
+    <paramValue name="parentNcbiTaxonId">5660</paramValue>
+    <paramValue name="genomeSource">@@LbraziliensisGenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">Lbraziliensis_dbEST_RSRC|@@Lbraziliensis_dbEST_VER@@</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">Lbraziliensis_chromosomes_RSRC|@@Lbraziliensis_chromosomes_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">chromosome</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="LbraziliensisPostLoadGenome"/>
+    <depends name="LbraziliensisMakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--TcruziTC1-->
+
+  <subgraph name="TcruziTC1LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziTC1</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziTC1_contigs_RSRC|@@TcruziTC1_contigs_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruziTC1.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/tcruziTC1ISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">5693000</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">false</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="TcruziTC1MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziTC1</paramValue>
+    <paramValue name="organismFullName">@@TcruziTC1OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziTC1_contigs_RSRC|@@TcruziTC1_contigs_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruziTC1.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">false</paramValue>
+    <depends name="TcruziTC1LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziTC1PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziTC1</paramValue>
+    <paramValue name="organismFullName">@@TcruziTC1OrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">TcruziTC1</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziTC1_contigs_RSRC|@@TcruziTC1_contigs_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName"></paramValue>
+    <paramValue name="dbESTVersion"></paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">5693000</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">24781921</paramValue>
+    <paramValue name="skipProteomeAnalysis">true</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruziTC1.xml</paramValue>
+    <depends name="TcruziTC1LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziTC1MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TcruziSylvioX10/1</paramValue>
+    <paramValue name="organismFullName">Trypanosoma cruzi Sylvio X10/1</paramValue>
+    <paramValue name="ncbiTaxonId">5693000</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="genomeSource">@@TcruziTC1GenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec"></paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziTC1_contigs_RSRC|@@TcruziTC1_contigs_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">contig</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">false</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TcruziTC1PostLoadGenome"/>
+    <depends name="TcruziTC1MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--TcruziJRcl4-->
+
+  <subgraph name="TcruziJRcl4LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziJRcl4</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziJRcl4_contigs_RSRC|@@TcruziJRcl4_contigs_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruziJRcl4.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/tcruziJRcl4ISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">914063</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">false</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="TcruziJRcl4MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziJRcl4</paramValue>
+    <paramValue name="organismFullName">@@TcruziJRcl4OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziJRcl4_contigs_RSRC|@@TcruziJRcl4_contigs_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruziJRcl4.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">false</paramValue>
+    <depends name="TcruziJRcl4LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziJRcl4PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">TcruziJRcl4</paramValue>
+    <paramValue name="organismFullName">@@TcruziJRcl4OrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">TcruziJRcl4</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziJRcl4_contigs_RSRC|@@TcruziJRcl4_contigs_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName"></paramValue>
+    <paramValue name="dbESTVersion"></paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">914063</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">38238704</paramValue>
+    <paramValue name="skipProteomeAnalysis">true</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tcruziJRcl4.xml</paramValue>
+    <depends name="TcruziJRcl4LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="TcruziJRcl4MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">TcruziJRcl4</paramValue>
+    <paramValue name="organismFullName">@@TcruziJRcl4OrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">914063</paramValue>
+    <paramValue name="parentNcbiTaxonId">5693</paramValue>
+    <paramValue name="genomeSource">@@TcruziJRcl4GenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec"></paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">TcruziJRcl4_contigs_RSRC|@@TcruziJRcl4_contigs_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">supercontig</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">false</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="TcruziJRcl4PostLoadGenome"/>
+    <depends name="TcruziJRcl4MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+<!--LbraziliensisM2903-->
+
+  <subgraph name="LbraziliensisM2903LoadGenome" xmlFile="loadGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LbraziliensisM2903</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LbraziliensisM2903_contigs_RSRC|@@LbraziliensisM2903_contigs_VER@@</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lbraziliensis.xml</paramValue>
+    <paramValue name="organismSpecificISFReference">tritrypdb/lbraziliensisM2903ISFResource.xml</paramValue>
+    <paramValue name="ncbiTaxonId">4202450</paramValue>
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="extractProteins">false</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="haveOrganelleGenomeSequence">false</paramValue>
+    <paramValue name="organelleInitDownloadDirSubgraph">initMitoAndApicoplastDownloadDirs.xml</paramValue>
+    <depends name="common"/>
+    <dependsGlobal name="taxonomy_RSRC"/> 
+    <dependsGlobal name="SO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="LbraziliensisM2903MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LbraziliensisM2903</paramValue>
+    <paramValue name="organismFullName">@@LbraziliensisM2903OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LbraziliensisM2903_contigs_RSRC|@@LbraziliensisM2903_contigs_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFileResourceName"></paramValue>
+    <paramValue name="insertVirtualSeqFromAgpFile">false</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lbraziliensis.xml</paramValue>
+    <paramValue name="comparativeGenomicsFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="comparativeGenomicsGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="runComparativeGenomics">false</paramValue>
+    <depends name="LbraziliensisM2903LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LbraziliensisM2903PostLoadGenome" xmlFile="postLoadGenome.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="organismName">LbraziliensisM2903</paramValue>
+    <paramValue name="organismFullName">@@LbraziliensisM2903OrganismFullName@@</paramValue>
+    <paramValue name="organismAbbrev">LbraziliensisM2903</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LbraziliensisM2903_contigs_RSRC|@@LbraziliensisM2903_contigs_VER@@</paramValue>
+    <paramValue name="iedbResourceName"></paramValue>
+    <paramValue name="iedbVersion"></paramValue>
+    <paramValue name="iedbDbRefResourceName"></paramValue>
+    <paramValue name="dbESTResourceName"></paramValue>
+    <paramValue name="dbESTVersion"></paramValue>
+    <paramValue name="loadDbest">false</paramValue>
+    <paramValue name="ncbiTaxonId">4202450</paramValue>
+    <paramValue name="parentNcbiTaxonId">5660</paramValue>
+    <paramValue name="usePredictedTranscripts">false</paramValue>
+    <paramValue name="predictedTranscriptsExtDbRlsSpec"></paramValue>
+    <paramValue name="runtRNAScan">false</paramValue>
+    <paramValue name="runExportPred">false</paramValue>
+    <paramValue name="maxIntronSize">2000</paramValue>
+    <paramValue name="taxonHierarchyForBlastxFilter">Eukaryota, Kinetoplastida, Trypanosoma</paramValue>
+    <paramValue name="repeatMaskSpecies">-species Trypanosoma</paramValue>
+    <paramValue name="genomeSize">38238704</paramValue>
+    <paramValue name="skipProteomeAnalysis">true</paramValue>
+    <paramValue name="skipGenomeAnalysis">false</paramValue>
+    <paramValue name="loadEpitope">false</paramValue>
+    <paramValue name="makeAssemblySeqs">false</paramValue>
+    <paramValue name="makeAssemblies">false</paramValue>
+    <paramValue name="mapAssemblySeqsAndAssemblies">true</paramValue>
+    <paramValue name="loadOrganismSpecificESTResource">false</paramValue>
+    <paramValue name="loadOrganismSpecificMassSpecResource">false</paramValue>
+    <paramValue name="distanceBetweenStartsForAlignmentsInSameCluster">20000</paramValue>
+    <paramValue name="organismSpecificESTResourcesReference"></paramValue>
+    <paramValue name="organismSpecificMassSpecResourcesReference"></paramValue>
+    <paramValue name="organismSpecificProductNameResourcesReference"></paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/lbraziliensis.xml</paramValue>
+    <depends name="LbraziliensisM2903LoadGenome"/>
+  </subgraph>
+
+  <subgraph name="LbraziliensisM2903MakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="organismName">LbraziliensisM2903</paramValue>
+    <paramValue name="organismFullName">@@LbraziliensisM2903OrganismFullName@@</paramValue>
+    <paramValue name="ncbiTaxonId">4202450</paramValue>
+    <paramValue name="parentNcbiTaxonId">5660</paramValue>
+    <paramValue name="genomeSource">@@LbraziliensisM2903GenomeSource@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec"></paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">LbraziliensisM2903_contigs_RSRC|@@LbraziliensisM2903_contigs_VER@@</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="soTermIdsOrNames">supercontig</paramValue>
+    <paramValue name="makeESTDownloadFile">false</paramValue>
+    <paramValue name="makeProteomeDownloadFile">false</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="LbraziliensisM2903PostLoadGenome"/>
+    <depends name="LbraziliensisM2903MakeAndMaskTopLevelGenome"/>
+  </subgraph>
+
+  <subgraph name="ComparativeGenomics" xmlFile="comparativeGenomics.xml">
+    <paramValue name="parentDataDir">common/comparativeGenomics/</paramValue>
+    <paramValue name="mercatorDraftGenomes">@@mercatorDraftGenomes@@</paramValue>
+    <paramValue name="mercatorNonDraftGenomes">@@mercatorNonDraftGenomes@@</paramValue>
+    <paramValue name="mercatorDraftExternalDbSpec">@@mercatorDraftExternalDbSpec@@</paramValue>
+    <paramValue name="mercatorNonDraftExternalDbSpec">@@mercatorNonDraftExternalDbSpec@@</paramValue>
+    <paramValue name="mercatorDraftSeqTables">@@mercatorDraftSeqTables@@</paramValue>
+    <paramValue name="mercatorNonDraftSeqTables">@@mercatorNonDraftSeqTables@@</paramValue>
+    <paramValue name="cndSrcBin">@@cndSrcBin@@</paramValue>
+    <paramValue name="mavidExe">@@mavidExe@@</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="mercatorFastaDir">$$comparativeGenomicsFastaDir$$</paramValue>
+    <paramValue name="mercatorGffDir">$$comparativeGenomicsGffDir$$</paramValue>
+    <paramValue name="webServicesDataDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersion$$/</paramValue>
+    <paramValue name="organismResourceXmlFile">tritrypdb/tritrypdbCommon.xml</paramValue>
+    <paramValue name="commonResourceXmlFile">tritrypdb/tritrypdbCommon.xml</paramValue>
+    <paramValue name="createGenesForGeneFeatures">true</paramValue>
+    <paramValue name="organismSpecificCreateGenesForGeneFeatures">tritrypdb/trypCreateGenesForGeneFeatures.xml</paramValue>
+    <paramValue name="organism">TriTryp</paramValue>
+    <depends name="Tbrucei927MakeAndMaskTopLevelGenome"/>
+    <depends name="Tbrucei427MakeAndMaskTopLevelGenome"/>
+    <depends name="TbruceigambienseMakeAndMaskTopLevelGenome"/>
+    <depends name="TcruziEsmeraldoLikeMakeAndMaskTopLevelGenome"/>
+    <depends name="TcruziNonEsmeraldoLikeMakeAndMaskTopLevelGenome"/>
+    <depends name="TcongolenseMakeAndMaskTopLevelGenome"/>
+    <depends name="TvivaxMakeAndMaskTopLevelGenome"/>
+    <depends name="LbraziliensisMakeAndMaskTopLevelGenome"/>
+    <depends name="LinfantumMakeAndMaskTopLevelGenome"/>
+    <depends name="LmajorFriedlinMakeAndMaskTopLevelGenome"/>
+    <depends name="LmexicanaMakeAndMaskTopLevelGenome"/>
+    <depends name="Tbrucei927LoadGeneAliases"/>
+    <depends name="Tbrucei427LoadGeneAliases"/>
+    <depends name="TbruceigambienseLoadGeneAliases"/>
+    <depends name="TcruziEsmeraldoLikeLoadGeneAliases"/>
+    <depends name="TcruziNonEsmeraldoLikeLoadGeneAliases"/>
+    <depends name="TcongolenseLoadGeneAliases"/>
+    <depends name="TvivaxLoadGeneAliases"/>
+    <depends name="LbraziliensisLoadGeneAliases"/>
+    <depends name="LinfantumLoadGeneAliases"/>
+    <depends name="LmajorFriedlinLoadGeneAliases"/>
+    <depends name="LmexicanaLoadGeneAliases"/>
+  </subgraph>
+
+</workflowGraph>

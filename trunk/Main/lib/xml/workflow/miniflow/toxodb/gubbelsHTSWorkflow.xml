@@ -1,0 +1,247 @@
+<workflowGraph name="gubbelsHTSWorkflow">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+
+
+  <step name="tgME49ExtractGenomicSeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+      <paramValue name="extDbRlsSpec">T.gondii ME49 contigs from Genbank|@@Tgondii_ME49_contigs_from_Genbank_VER@@</paramValue>
+      <paramValue name="table">ExternalNASequence</paramValue>
+      <paramValue name="alternateDefline"></paramValue>
+      <paramValue name="outputFile">tgME49GenomicSeqs.fsa</paramValue>
+      <paramValue name="separateFastaFiles">false</paramValue>
+      <paramValue name="outputDirForSeparateFiles"></paramValue>
+    </step>
+
+    <step name="tgME49CreateBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">tgME49GenomicSeqs.fsa</paramValue>
+      <paramValue name="outputIndexDir">tgME49GenomicSeqsIndexes</paramValue>
+      <depends name="tgME49ExtractGenomicSeqs"/>
+    </step>
+
+    <step name="tgME49CreateBWAIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBWAIndexes">
+      <paramValue name="inputFile">tgME49GenomicSeqs.fsa</paramValue>
+      <paramValue name="outputIndexDir">tgME49GenomicSeqs_bwa_indices</paramValue>
+      <depends name="tgME49ExtractGenomicSeqs"/>
+     </step>
+
+  <step name="tgGT1ExtractGenomicSeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+      <paramValue name="extDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
+      <paramValue name="table">ExternalNASequence</paramValue>
+      <paramValue name="alternateDefline"></paramValue>
+      <paramValue name="outputFile">tgGT1GenomicSeqs.fsa</paramValue>
+      <paramValue name="separateFastaFiles">false</paramValue>
+      <paramValue name="outputDirForSeparateFiles"></paramValue>
+    </step>
+
+    <step name="tgGT1CreateBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">tgGT1GenomicSeqs.fsa</paramValue>
+      <paramValue name="outputIndexDir">tgGT1GenomicSeqsIndexes</paramValue>
+      <depends name="tgGT1ExtractGenomicSeqs"/>
+    </step>
+
+    <step name="tgGT1CreateBWAIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBWAIndexes">
+      <paramValue name="inputFile">tgGT1GenomicSeqs.fsa</paramValue>
+      <paramValue name="outputIndexDir">tgGT1GenomicSeqs_bwa_indices</paramValue>
+      <depends name="tgGT1ExtractGenomicSeqs"/>
+     </step>
+
+    <subgraph name="TgRH_HTS_Gubbels_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TgRH_HTS_Gubbels_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">toxodb/gubbelsHTSResources.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+     </subgraph>
+
+  <subgraph name="tgME49GubbelsHTS" xmlFile="miniflow/toxodb/tgME49GubbelsHTS.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <depends name="tgME49CreateBWAIndices"/> 
+    <depends name="TgRH_HTS_Gubbels_RSRC"/> 
+  </subgraph>
+
+  <subgraph name="tgGT1GubbelsHTS" xmlFile="miniflow/toxodb/tgGT1GubbelsHTS.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <depends name="tgGT1CreateBWAIndices"/> 
+    <depends name="TgRH_HTS_Gubbels_RSRC"/> 
+  </subgraph>
+
+  <subgraph name="Tg_Matrajt_GSE23174_Bz_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Tg_Matrajt_GSE23174_Bz_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">toxodb/tgSullivanArrayResources.xml</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+  </subgraph>
+
+  <subgraph name="Tg_Matrajt_GSE23174_Bz_analyzeMicroarrayExpression" xmlFile="analyzeMicroarrayExpression_modify.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="experimentResourceName">Tg_Matrajt_GSE23174_Bz_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tg_array_Affy-Amit_NuclearCoding_RSRC|@@Tg_array_Affy-Amit_NuclearCoding_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">Tg_Matrajt_GSE23174_Bz_RSRC|@@Tg_Matrajt_GSE23174_Bz_VER@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">T.gondii ME49 contigs from Genbank|@@Tgondii_ME49_contigs_from_Genbank_VER@@</paramValue>
+    <paramValue name="insertAnalysisResult">true</paramValue>
+    <paramValue name="probeGenesMappingFile">getAndMap_Tg_array_Affy-Amit_NuclearCoding_RSRC/Tg_array_Affy-Amit_NuclearCoding_RSRC/final/Tgondiia520372.cdf</paramValue>
+    <paramValue name="profileSetSpecs"></paramValue>
+    <paramValue name="isLogged">true</paramValue>
+    <paramValue name="mappingFileForExpressionStats"></paramValue>
+    <paramValue name="calculateExpressionStats">false</paramValue>
+    <paramValue name="downloadSiteTranscriptExpressionDataDir">Tg_Matrajt_GSE23174_Bz</paramValue>
+    <depends name="Tg_Matrajt_GSE23174_Bz_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Tg_Hakimi_ChIP_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="probeResourceName">Tg_Hakimi_ChIP_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tg_Hakimi_ChIP_RSRC|@@Tg_Hakimi_ChIP_VER@@</paramValue>
+    <paramValue name="isOneChannel">false</paramValue>
+    <paramValue name="organismResourceXmlFile">toxodb/tgSullivanArrayResources.xml</paramValue>
+    <paramValue name="ssaGeneModelFile">tgGT1LoadGenome/geneModelForSsa.txt</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">tgGT1LoadGenome/genomicSeqsForSsa.fsa</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">tgGT1LoadGenome/transcriptSeqsForSsa.fsa</paramValue>
+    <paramValue name="limitNU">30</paramValue>
+    <paramValue name="numInsertions">1</paramValue>
+    <paramValue name="dnaHybridazation">true</paramValue>
+    <paramValue name="pairedReadFilePath"></paramValue>
+    <paramValue name="countMismatches">false</paramValue>
+    <paramValue name="cdfFileName"></paramValue>
+    <paramValue name="isNimbleGen">false</paramValue>
+    <paramValue name="ndfFileName"></paramValue>
+    <paramValue name="SNPs"></paramValue>
+    <paramValue name="reference_strain"></paramValue>
+    <paramValue name="organismFullName"></paramValue>
+    <paramValue name="strandSpecific"></paramValue>
+    <paramValue name="variableLengthReads"></paramValue>
+  </subgraph>
+
+
+    <subgraph name="ChIP_Chip_RH_Hakimi_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">ChIP_Chip_RH_Hakimi_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">toxodb/tgSullivanArrayResources.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+    </subgraph>
+
+  <subgraph name="Hakimi_AnalyzeChipChip_RPB9_RNA_pol_II_2691502_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_RH_Hakimi_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tg_Hakimi_ChIP_RSRC|@@Tg_Hakimi_ChIP_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_RH_Hakimi_RSRC|@@ChIP_Chip_RH_Hakimi_VER@@</paramValue>
+    <paramValue name="inputSampleFile">RPB9_RNA_pol_II_2691502_ratio.txt</paramValue>
+    <paramValue name="sampleName">RPB9_RNA_pol_II_2691502</paramValue>
+    <paramValue name="sampleOrder">hakimiRH1</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@TgGT1OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
+    <depends name="ChIP_Chip_RH_Hakimi_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Hakimi_AnalyzeChipChip_RPB9_RNA_pol_II_2696302_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_RH_Hakimi_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tg_Hakimi_ChIP_RSRC|@@Tg_Hakimi_ChIP_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_RH_Hakimi_RSRC|@@ChIP_Chip_RH_Hakimi_VER@@</paramValue>
+    <paramValue name="inputSampleFile">RPB9_RNA_pol_II_2696302_ratio.txt</paramValue>
+    <paramValue name="sampleName">RPB9_RNA_pol_II_2696302</paramValue>
+    <paramValue name="sampleOrder">hakimiRH2</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@TgGT1OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
+    <depends name="ChIP_Chip_RH_Hakimi_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Hakimi_AnalyzeChipChip_SET8_89193_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_RH_Hakimi_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tg_Hakimi_ChIP_RSRC|@@Tg_Hakimi_ChIP_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_RH_Hakimi_RSRC|@@ChIP_Chip_RH_Hakimi_VER@@</paramValue>
+    <paramValue name="inputSampleFile">SET8_89193_ratio.txt</paramValue>
+    <paramValue name="sampleName">SET8_89193</paramValue>
+    <paramValue name="sampleOrder">hakimiRH3</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@TgGT1OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
+    <depends name="ChIP_Chip_RH_Hakimi_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Hakimi_AnalyzeChipChip_SET8_89420_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_RH_Hakimi_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tg_Hakimi_ChIP_RSRC|@@Tg_Hakimi_ChIP_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_RH_Hakimi_RSRC|@@ChIP_Chip_RH_Hakimi_VER@@</paramValue>
+    <paramValue name="inputSampleFile">SET8_89420_ratio.txt</paramValue>
+    <paramValue name="sampleName">SET8_89420</paramValue>
+    <paramValue name="sampleOrder">hakimiRH4</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@TgGT1OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
+    <depends name="ChIP_Chip_RH_Hakimi_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Hakimi_AnalyzeChipChip_TBP1_89169_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_RH_Hakimi_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tg_Hakimi_ChIP_RSRC|@@Tg_Hakimi_ChIP_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_RH_Hakimi_RSRC|@@ChIP_Chip_RH_Hakimi_VER@@</paramValue>
+    <paramValue name="inputSampleFile">TBP1_89169_ratio.txt</paramValue>
+    <paramValue name="sampleName">TBP1_89169</paramValue>
+    <paramValue name="sampleOrder">hakimiRH5</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@TgGT1OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
+    <depends name="ChIP_Chip_RH_Hakimi_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Hakimi_AnalyzeChipChip_TBP1_95391_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_RH_Hakimi_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tg_Hakimi_ChIP_RSRC|@@Tg_Hakimi_ChIP_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_RH_Hakimi_RSRC|@@ChIP_Chip_RH_Hakimi_VER@@</paramValue>
+    <paramValue name="inputSampleFile">TBP1_95391_ratio.txt</paramValue>
+    <paramValue name="sampleName">TBP1_95391</paramValue>
+    <paramValue name="sampleOrder">hakimiRH6</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@TgGT1OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
+    <depends name="ChIP_Chip_RH_Hakimi_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Hakimi_AnalyzeChipChip_TBP2_2696202_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_RH_Hakimi_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tg_Hakimi_ChIP_RSRC|@@Tg_Hakimi_ChIP_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_RH_Hakimi_RSRC|@@ChIP_Chip_RH_Hakimi_VER@@</paramValue>
+    <paramValue name="inputSampleFile">TBP2_2696202_ratio.txt</paramValue>
+    <paramValue name="sampleName">TBP2_2696202</paramValue>
+    <paramValue name="sampleOrder">hakimiRH7</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@TgGT1OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
+    <depends name="ChIP_Chip_RH_Hakimi_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Hakimi_AnalyzeChipChip_TBP2_2736002_sample" xmlFile="analyzeChipChip.xml">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="ChipChipResourceName">ChIP_Chip_RH_Hakimi_RSRC</paramValue>
+    <paramValue name="chipProbeExtDbRlsSpec">Tg_Hakimi_ChIP_RSRC|@@Tg_Hakimi_ChIP_VER@@</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">ChIP_Chip_RH_Hakimi_RSRC|@@ChIP_Chip_RH_Hakimi_VER@@</paramValue>
+    <paramValue name="inputSampleFile">TBP2_2736002_ratio.txt</paramValue>
+    <paramValue name="sampleName">TBP2_2736002</paramValue>
+    <paramValue name="sampleOrder">hakimiRH8</paramValue>
+    <paramValue name="peakFinderArgs">0.5 4 100 200</paramValue>
+    <paramValue name="runPeakCalls">true</paramValue>
+    <paramValue name="organismFullName">@@TgGT1OrganismFullName@@</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
+    <depends name="ChIP_Chip_RH_Hakimi_RSRC"/>
+  </subgraph>
+
+</workflowGraph>
+

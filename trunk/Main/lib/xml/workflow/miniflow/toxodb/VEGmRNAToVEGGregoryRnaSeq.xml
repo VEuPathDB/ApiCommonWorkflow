@@ -1,0 +1,62 @@
+<workflowGraph name="VEGmRNAToVEGGregoryRnaSeq">
+    <param name="parentDataDir"/>
+    <param name="resourceXmlFileName"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+
+    <constant name="dataDir">$$parentDataDir$$/VEGmRNAToVEGGregoryRnaSeq</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+    <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSeqCoverageAndIntensityDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="TgVEG_mRNA_Gregory_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">TgVEG_mRNA_Gregory_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$resourceXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+     </subgraph>
+
+     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="TgVEG_mRNA_Gregory_RSRC"/>
+    </step>
+ 
+    <subgraph name="analyzeVEGmRNA" xmlFile="analyzeRnaSeqOrChipSeqSample_modify.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">VEGmRNA</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/TgVEG_mRNA_Gregory_RSRC/final/HWI-ST431_53_4_1.export.txt.qc.fq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeVEGmRNA/VEGmRNA.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/VEGmRNA.int</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>     
+      <paramValue name="rnaSeqExtDbRlsSpec">TgVEG_mRNA_Gregory_RSRC|@@TgVEG_mRNA_Gregory_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">T.gondii VEG contigs from Genbank|@@Tgondii_VEG_contigs_from_Genbank_VER@@</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath"></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <paramValue name="SNPs">false</paramValue>
+      <paramValue name="strandSpecific">true</paramValue>
+      <paramValue name="variableLengthReads">true</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="TgVEG_mRNA_Gregory_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+</workflowGraph>

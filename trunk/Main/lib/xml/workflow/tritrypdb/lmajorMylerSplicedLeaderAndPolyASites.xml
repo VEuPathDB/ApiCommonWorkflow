@@ -1,0 +1,109 @@
+<workflowGraph name="lmajorMylerSplicedLeaderAndPolyASites">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="genomicSeqsFile"/>
+    <param name="genomeExtDbRlsSpec"/>
+
+    <constant name="dataDir">$$parentDataDir$$/lmajorMylerSplicedLeaderAndPolyASites</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="outputIndexDir">$$dataDir$$/indexes</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="runBowtie_ah016" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC/final/ah016.seqs</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-r</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/ah016.bt</paramValue>
+      <depends name="Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+    <step name="runBowtie_ah017" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC/final/ah017.seqs</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-r</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/ah017.bt</paramValue>
+      <depends name="Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+    <step name="runBowtie_ah047" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC/final/ah047.seqs</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-r</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/ah047.bt</paramValue>
+      <depends name="Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+     <step name="insertSpliceSiteFeatures_Splice_Site" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSpliceSiteFeatures" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC/final/config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC|@@Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_VER@@</paramValue>
+      <paramValue name="type">Splice Site</paramValue>
+      <paramValue name="fileNames">ah016.bt,ah017.bt</paramValue>
+      <depends name="runBowtie_ah016"/>
+      <depends name="runBowtie_ah017"/>
+    </step>
+
+     <step name="insertSpliceSiteFeatures_PolyA" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSpliceSiteFeatures" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC/final/config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC|@@Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_VER@@</paramValue>
+      <paramValue name="type">Poly A</paramValue>
+      <paramValue name="fileNames">ah047.bt</paramValue>
+      <depends name="runBowtie_ah047"/>
+    </step>
+
+     <step name="runTuningManager"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager">
+      <depends name="insertSpliceSiteFeatures_Splice_Site"/> 
+      <depends name="insertSpliceSiteFeatures_PolyA"/> 
+  </step>
+
+     <step name="extractSpliceSiteGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSpliceSiteGenes">
+      <paramValue name="configFile">$$dataDir$$/Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC/final/config.txt</paramValue>
+      <paramValue name="outputUniqFile">$$dataDir$$/uniqProfile.out</paramValue>
+      <paramValue name="outputNonUniqFile">$$dataDir$$/nonUniqProfile.out</paramValue>
+      <depends name="runTuningManager"/>
+    </step>
+
+    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$dataDir$$/uniqProfile.out</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/minPercents.txt</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="extractSpliceSiteGenes"/>
+    </step>
+
+    <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC/final/profile_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_RSRC|@@Lmajor_RNASeq_Spliced_Leader_And_Poly_A_Sites_Myler_VER@@</paramValue>
+      <depends name="makeMinPercentileProfile"/>
+    </step>
+
+</workflowGraph>

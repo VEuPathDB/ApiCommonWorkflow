@@ -1,0 +1,39 @@
+<workflowGraph name="pfalciparumISFResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="dataDir"/>
+
+    <constant name="dataDir">$$dataDir$$/pfalciparumISFResource</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+  <subgraph name="Pfalciparum_chromosomes_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pfalciparum_chromosomes_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="Pfalciparum_annotations_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pfalciparum_annotations_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="Pfalciparum_chromosomes_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Pfalciparum_mito_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pfalciparum_mito_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="Pfalciparum_chromosomes_RSRC"/>
+  </subgraph>
+
+  <subgraph name="Pfalciparum_apicoplast_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pfalciparum_apicoplast_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="Pfalciparum_chromosomes_RSRC"/>
+  </subgraph>
+
+</workflowGraph>

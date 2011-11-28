@@ -1,0 +1,61 @@
+<workflowGraph name="makeAndFormatDownloadFiles">
+    <param name="relativeDownloadSiteDir"/>
+    <param name="relativeWebServicesDir"/>
+    <param name="organismAbbrev"/>
+    <param name="genomeSource"/>
+    <param name="projectName"/>
+    <param name="projectVersionForWebsiteFiles"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="minOrfLength"/>
+    <param name="hasDeprecatedGenes"/>
+    <param name="isAnnotatedGenome"/>
+    <param name="skipGenomeAnalysis"/>
+    <param name="hasMitochondrialGenomeSequence"/>
+    <param name="hasPlastidGenomeSequence"/>
+
+
+    <subgraph name="makeNuclearWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml">
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomeSource">$$genomeSource$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="minOrfLength">50</paramValue>
+      <paramValue name="cellularLocationSoTerms">chromosome,supercontig,contig</paramValue>
+      <paramValue name="isAnnotatedGenome">$$isAnnotatedGenome$$</paramValue>
+      <paramValue name="skipGenomeAnalysis">$$skipGenomeAnalysis$$</paramValue>
+      <paramValue name="hasDeprecatedGenes">$$hasDeprecatedGenes$$</paramValue>
+    </subgraph>
+
+    <subgraph name="makeMitoWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml" includeIf="$$hasMitochondrialGenomeSequence$$">
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomeSource">$$genomeSource$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="minOrfLength">50</paramValue>
+      <paramValue name="cellularLocationSoTerms">mitochondrial_chromosome</paramValue>
+      <paramValue name="isAnnotatedGenome">$$isAnnotatedGenome$$</paramValue>
+      <paramValue name="skipGenomeAnalysis">$$skipGenomeAnalysis$$</paramValue>
+      <paramValue name="hasDeprecatedGenes">$$hasDeprecatedGenes$$</paramValue>
+    </subgraph>
+
+    <subgraph name="makePlastidWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml" includeIf="$$hasPlastidGenomeSequence$$">
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomeSource">$$genomeSource$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="minOrfLength">50</paramValue>
+      <paramValue name="cellularLocationSoTerms">apicoplast_chromosome</paramValue>
+      <paramValue name="isAnnotatedGenome">$$isAnnotatedGenome$$</paramValue>
+      <paramValue name="skipGenomeAnalysis">$$skipGenomeAnalysis$$</paramValue>
+      <paramValue name="hasDeprecatedGenes">$$hasDeprecatedGenes$$</paramValue>
+    </subgraph>
+</workflowGraph>

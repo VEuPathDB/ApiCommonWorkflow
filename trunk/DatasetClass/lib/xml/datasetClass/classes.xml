@@ -1,0 +1,1683 @@
+<datasetClasses>
+
+  <defaultPropertyDescriptions>
+    <prop name="organismAbbrev">The standard abbreviation for this organism.  For example TgonME49 for T. gondii ME49.  This abbreviation is like a "primary key" for the organism.  It must be unique to this organism, and may never change for the lifetime of the workflow.</prop>
+    <prop name="projectName"/>
+    <prop name="publicOrganismAbbrev"/>
+    <prop name="organismFullName"/>
+    <prop name="organismNameForFiles"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="speciesNcbiTaxonId"/>
+    <prop name="isReferenceStrain"/>
+    <prop name="referenceStrainOrganismAbbrev"/>
+    <prop name="isAnnotatedGenome"/>
+    <prop name="isDraftGenome"/>
+    <prop name="hasTemporaryNcbiTaxonId"/>
+    <prop name="orthomclAbbrev"/>
+    <prop name="strainAbbrev"/>
+  </defaultPropertyDescriptions>
+
+  <datasetClass class="organism" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev"/>
+    <prop name="projectName"/>
+    <prop name="publicOrganismAbbrev"/>
+    <prop name="organismFullName"/>
+    <prop name="organismNameForFiles"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="speciesNcbiTaxonId"/>
+    <prop name="isReferenceStrain"/>
+    <prop name="referenceStrainOrganismAbbrev"/>
+    <prop name="isAnnotatedGenome"/>
+    <prop name="isDraftGenome"/>
+    <prop name="hasTemporaryNcbiTaxonId"/>
+    <prop name="orthomclAbbrev"/>
+    <prop name="strainAbbrev"/>
+    <prop name="hasPlastidGenomeSequence"/>
+    <prop name="hasMitochondrialGenomeSequence"/>
+    <prop name="isHaploid"/>
+    <prop name="hasDeprecatedGenes"/>
+    <prop name="genomeSource"/>
+    <prop name="genomeVersion"/>
+    <prop name="runtRNAScan"/>
+    <prop name="runExportPred"/>
+    <prop name="taxonHierarchyForBlastxFilter"/>
+    <prop name="skipGenomeAnalysis"/>
+
+    <prop name="maxIntronSize"/>
+    <prop name="genomeSize"/>
+
+    <graphPlanFile name="project.xml"/>
+
+  </datasetClass>
+
+  <datasetClass class="validateOrganismInfo" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev"/>
+    <prop name="strainAbbrev"/>
+    <prop name="projectName"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="speciesNcbiTaxonId"/>
+  </datasetClass>
+
+
+  <!-- an instance of this class is needed if and only if an organism is a -->
+  <!-- reference strain.  it is used by the strain comparison machinery -->
+  <datasetClass class="referenceStrain" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev"/>
+    <prop name="isAnnotatedGenome"/>
+
+    <graphPlanFile name="project.xml"/>
+
+  </datasetClass>
+
+
+
+  <!-- Category: genome -->
+
+  <datasetClass class="genbank_primary_genome" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="soTerm"/>
+    <prop name="mapFile"/>
+
+    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_primary_genome_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_genbank/${version}/final/genome.gbf">
+        <dir name="final">
+           <descrip>description would go here</descrip>
+           <dir name="someSubDir">
+             <descrip>subdir's descrip</descrip>
+           </dir>
+           <file name="*.fasta">more descrip</file>
+           <file name="anotherFile">more descrip</file>
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.gbf --fileFormat genbank --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out --validationLog @@dataDir@@/validation.log</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="genbank_secondary_genome" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="soTerm"/>
+    <prop name="mapFile"/>
+
+    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_genbank/${version}/final/genome.gbf">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.gbf --fileFormat genbank --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out --validationLog @@dataDir@@/validation.log</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="embl_primary_genome" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="soTerm"/>
+    <prop name="mapFile"/>
+
+    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_primary_genome_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_embl/${version}/final/genome.embl">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.embl --fileFormat embl --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out --validationLog @@dataDir@@/validation.log</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="embl_secondary_genome" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="soTerm"/>
+    <prop name="mapFile"/>
+
+    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_embl/${version}/final/genome.embl">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.embl --fileFormat embl --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out--validationLog @@dataDir@@/validation.log</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="GeneDB_GFF_primary_genome_sequence" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="version"/>
+    <prop name="soTerm"/>
+    <prop name="regex"/>
+
+    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_primary_genome_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/GeneDB_GFF/${version}/final">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <unpack>splitGff3FilesIntoFastaAndCustomGff3 --input_dir @@dataDir@@/final --output_fasta @@dataDir@@/genome.fasta --output_gff @@dataDir@@/genome.gff3</unpack>
+
+      <unpack>preprocessGFF3 --input_gff @@dataDir@@/genome.gff3 --output_gff @@dataDir@@/genome.gff</unpack>
+
+      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --ncbiTaxId ${ncbiTaxonId} --externalDatabaseVersion %RESOURCE_VERSION% --sequenceFile @@dataDir@@/genome.fasta --SOTermName '${soTerm}'  --regexSourceId  '${regex}' --tableName "DoTS::ExternalNASequence"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <datasetClass class="GeneDB_GFF_primary_genome_features" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="version"/>
+    <prop name="soTerm"/>
+    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_primary_genome_features_RSRC"
+              version="${version}"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/geneDBGFF2Gus.xml --inputFileOrDir @@dataDir@@/../${organismAbbrev}_primary_genome_RSRC/genome.gff --inputFileExtension "gff"  --fileFormat gff3 --soCvsVersion @@SO_VER@@ --defaultOrganism ${ncbiTaxonId}  --seqSoTerm '${soTerm}' --validationLog @@dataDir@@/validation.log --bioperlTreeOutput @@dataDir@@/bioperlTree.out --seqIdColumn source_id --naSequenceSubclass ExternalNASequence</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="Broad_GFF_primary_genome_features" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="version"/>
+    <prop name="soTerm"/>
+
+    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_primary_genome_features_RSRC"
+              version="${version}"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_Broad_gff3/${version}/final/genome.gtf">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <unpack>convertGTFToGFF3 @@dataDir@@/genome.gtf > @@dataDir@@/genome.gff3</unpack>
+
+      <unpack>preprocessGFF3 --input_gff @@dataDir@@/genome.gff3 --output_gff @@dataDir@@/genome.gff</unpack>    
+
+      <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/broadGFF32Gus.xml --inputFileOrDir @@dataDir@@/genome.gff --inputFileExtension "gff"  --fileFormat gff3 --soCvsVersion @@SO_VER@@ --defaultOrganism ${ncbiTaxonId}  --seqSoTerm '${soTerm}' --validationLog @@dataDir@@/validation.log --bioperlTreeOutput @@dataDir@@/bioperlTree.out --seqIdColumn source_id --naSequenceSubclass ExternalNASequence</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="fasta_primary_genome" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="table"/>  <!-- example:  DoTS::NASequence -->
+    <prop name="soTerm"/>
+    <prop name="regexSourceId"/>
+ 
+    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_primary_genome_RSRC" version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_fasta/${version}/final/genome.fasta">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTerm} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="fasta_secondary_genome" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="table"/>  <!-- example:  DoTS::NASequence -->
+    <prop name="soTerm"/>
+    <prop name="regexSourceId"/>
+ 
+    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC" version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              parentResource="${organismAbbrev}_primary_genome_RSRC"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_fasta/${version}/final/genome.fasta">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--externalDatabaseName %PARENT_RESOURCE_NAME% --externalDatabaseVersion %PARENT_RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTerm} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="genome_virtual_sequence_agp" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="version"/>
+    <prop name="virtualSeqSOTerm"/>
+    <prop name="sourceIdPrefix"/>  <!-- optional.  add this prefix to the source ID -->
+    <prop name="genomeVersion"/>
+
+    <graphPlanFile name="primaryVirtualGenome.xml"/>
+
+    <resource resource="${organismAbbrev}_primary_virtual_genome_RSRC"
+              version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertVirtualSeqFromAgpFile"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+      
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${virtualSeqSOTerm}_assembly_agp/${version}/final/assembly.agp">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--agpFile @@dataDir@@/assembly.agp --seqPieceExtDbName ${organismAbbrev}_primary_genome_RSRC --seqPieceExtDbRlsVer ${genomeVersion} --virSeqExtDbName %RESOURCE_NAME% --virSeqExtDbRlsVer %RESOURCE_VERSION% --virtualSeqSOTerm ${virtualSeqSOTerm}  --ncbiTaxId ${ncbiTaxonId} --soVer @@SO_VER@@ --sourceIdPrefix ${sourceIdPrefix}</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <!-- Category: genomeFeature -->
+
+  <datasetClass class="genomeFeatures_GFF2" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="mapFile"/>
+    <prop name="gff2GroupTag"/>
+    <prop name="genomeVersion"/>
+
+
+    <graphPlanFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_genomeFeature_${name}_GFF2_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genomeFeature/${name}_GFF/${version}/final/features.gff">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --seqExtDbName ${organismAbbrev}_primary_genome_RSRC --seqExtDbRlsVer ${genomeVersion} --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/features.gff --fileFormat gff2  --gff2GroupTag "${gff2GroupTag}" --soCvsVersion @@SO_VER@@ --defaultOrganism ${ncbiTaxonId} --naSequenceSubclass ExternalNASequence --seqIdColumn source_id  --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <!-- Category: ESTs -->
+
+  <!-- NOTE: this dataset class only gets the sequences, it does not map
+       them to the genome.  See transcriptsFromReferenceStrain
+       ONLY INCLUDE IF A REFERENCE STRAIN
+  -->
+
+  <datasetClass class="dbEST" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="speciesNcbiTaxonId"/>
+
+    <graphPlanFile name="ESTs.xml"/>
+
+    <resource resource="${organismAbbrev}_dbEST_RSRC" version="@@${organismAbbrev}_dbEST_VER@@"
+	      plugin="GUS::Supported::Plugin::dbEST"
+              scope="species"
+              organismAbbrev="${organismAbbrev}">
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <unpack>getSubTaxa --ncbiTaxId ${speciesNcbiTaxonId} --outputFile @@dataDir@@/taxonIdFile</unpack>
+
+      <unpack>createPropFile --file @@dataDir@@/dbestProp --propList "dbestLogin:@@dbestLogin@@,dbestPswd:@@dbestPswd@@"</unpack>
+
+      <pluginArgs>--span 500 --taxonFile @@dataDir@@/taxonIdFile --extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --soVer @@SO_VER@@ --dbestLoginFile @@dataDir@@/dbestProp --dbestConnect "@@dbestConnect@@" </pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <!-- NOTE: this dataset class only gets the sequences, it does not map
+       them to the genome.  See transcriptsFromReferenceStrain
+       ONLY INCLUDE IF A REFERENCE STRAIN
+  -->
+
+  <datasetClass class="ESTsFromFasta" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="version"/>
+    <prop name="name"/>
+    <prop name="sourceIdRegex"/>
+    <prop name="soTerm"/>
+    <prop name="isPutativeFullLength"/> <!-- true or false -->
+    <prop name="libraryVector"/>
+    <prop name="libraryStage"/>
+    <prop name="libraryName"/>
+    <prop name="libraryDesc"/>
+    <prop name="contactName"/>
+    <prop name="contactAddress1"/>
+    <prop name="contactAddress2"/>
+
+    <graphPlanFile name="ESTs.xml"/>
+
+    <resource resource="${organismAbbrev}_EST_${name}_sequences_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadEstsFromFastaFile"
+              scope="species"
+              organismAbbrev="${organismAbbrev}">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/EST/${name}/${version}/final/ests.fasta">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <pluginArgs>--sourceIdRegex "${sourceIdRegex}" --fastaFile @@dataDir@@/ests.fasta --externalDatabaseName %RESOURCE_NAME% --externalDatabaseVer %RESOURCE_VERSION%  --SOTermName '${soTerm}' --ncbiTaxId ${ncbiTaxonId} --libraryVector '${libraryVector}' --contactName '${contactName}' --contactAddress1 "${contactAddress1}" --contactAddress2 "${contactAddress2}" --isPutativeFullLength ${isPutativeFullLength} --libraryStage '${libraryStage}' --libraryName '${libraryName}' --libraryDesc "${libraryDesc}"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <!-- This class gets its data from ESTs and transcripts loaded by the
+       reference strain.  It finds all of them in the database and maps them to
+       our genome.  The reference strain DOES need to include an instance
+       of this class so that its transcripts get mapped to its genome  -->
+
+  <datasetClass class="transcriptsFromReferenceStrain" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="referenceStrainOrganismAbbrev"/>
+
+    <graphPlanFile name="mapTranscriptsToGenome.xml"/>
+
+  </datasetClass>
+
+
+  <!-- Category: IEDB epitopes -->
+
+  <!--  get the epitope sequences. 
+        (this class does not map epitopes. see epitopesFromReferenceStrain)
+        ONLY INCLUDE IF A REFERENCE STRAIN
+ -->
+  <datasetClass class="epitope_sequences_IEDB" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev"/>
+    <prop name="speciesNcbiTaxonId"/>
+
+    <graphPlanFile name="epitopes.xml"/>
+
+    <resource resource="${organismAbbrev}_epitope_IEDB_RSRC"
+              version="@@${organismAbbrev}_epitope_IEDB_VER@@"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              scope="species"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <!-- validate that IEDB knows about this taxon id.  this unpack just greps IEDB's taxon list -->
+      <unpack><![CDATA[unzip -p @@manualDeliveryDir@@/common/epitope/IEDB/@@${organismAbbrev}_epitope_IEDB_VER@@/fromProvider/OrganismList.zip | grep "<TaxId>${speciesNcbiTaxonId}<"]]></unpack>
+
+      <unpack>iedbMakeTabFileFromXml --input_dir @@manualDeliveryDir@@/common/epitope/IEDB/@@${organismAbbrev}_epitope_IEDB_VER@@/final/iedb_export_fixed --outputfile @@dataDir@@/oneOrganism.txt --NCBITaxId ${speciesNcbiTaxonId} --organismListFile @@manualDeliveryDir@@/common/epitope/IEDB/@@${organismAbbrev}_epitope_IEDB_VER@@/fromProvider/OrganismList.xml</unpack>
+
+      <unpack>mkdir -p @@dataDir@@/fasta</unpack>
+
+      <!-- not clear why we need this step.  should modify iedbMakeTabFileFromXml
+           to produce the simplified tab file, since oneOrganism.txt is never
+           consumed besides right here -->
+      <unpack>iedbSimplifyTabFile --inputFile @@dataDir@@/oneOrganism.txt --outputFile @@dataDir@@/oneOrganismSimplified.txt </unpack>
+
+      <unpack>generateEpitopeFastaFile --inputFile @@dataDir@@/oneOrganismSimplified.txt --outputFile @@dataDir@@/fasta/IEDBExport.fsa </unpack>
+
+      <getAndUnpackOutput file="@@dataDir@@/oneOrganismSimplified.txt"/>
+
+      <!-- sourceId|name|ncbiTaxId|accession -->
+      <pluginArgs><![CDATA[--seqFileDir @@dataDir@@/fasta --externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --soTermName "epitope" --regexNcbiTaxId  ">[^|]*\|[^|]*\|([^|]*)" --regexSourceId ">(\d+)|" --tableName "DoTS::MotifAASequence" --logFrequency 100 --regexDesc ">(.+)" ]]></pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <!-- This class gets its data from Epitopes loaded by the
+       reference strain.  It finds all of them in the database and maps them to
+       our genome.  The reference strain DOES need to include an instance
+       of this class so that its transcripts get mapped to its genome  -->
+
+  <datasetClass class="epitopesFromReferenceStrain" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="referenceStrainOrganismAbbrev"/>
+
+    <graphPlanFile name="mapEpitopes.xml"/>
+
+  </datasetClass>
+
+
+  <datasetClass class="IEDB_dbxrefs" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev"/>
+
+    <graphPlanFile name="dbXRefs.xml"/>
+
+    <resource resource="${organismAbbrev}_dbxref_epitope_IEDB_RSRC"
+	      version="@@${organismAbbrev}_epitope_IEDB_VER@@"
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <unpack>createEpitopeDbRefFile --inputDir @@manualDeliveryDir@@/common/epitope/IEDB/@@${organismAbbrev}_epitope_IEDB_VER@@/final/iedb_export_fixed --outputFile @@dataDir@@/dbRefs.txt</unpack>
+
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/dbRefs.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier, remark" --tableName "AASequenceDbRef"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <!-- Category: gene aliases -->
+
+  <datasetClass class="geneAliases" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="version"/>
+    <prop name="name"/>
+    <prop name="idType"/>  <!-- previous id, alternate id -->
+
+    <graphPlanFile name="geneAliases.xml"/>
+
+    <resource resource="${organismAbbrev}_${name}_gene_aliases_RSRC"
+	      version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/${name}_gene_aliases/${version}/final/geneAliases.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/mapping.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier" --tableName DBRefNAFeature --idType '${idType}'</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <!-- Category: dbxrefs -->
+  <datasetClass class="dbxref_simple" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="columnSpec"/>
+    <prop name="type"/>  <!-- DBRefNASequence, AASequenceDBRef, DBRefAAFeature, DBRefNAFeature -->
+
+    <graphPlanFile name="dbXRefs.xml"/>
+
+    <resource resource="${organismAbbrev}_dbxref_${name}_RSRC"
+	      version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/${name}/${version}/final/mapping.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/mapping.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "${columnSpec}" --tableName ${type} --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <datasetClass class="dbxref_gene2ApiLoc" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev"/>
+    <prop name="projectName"/>
+    <prop name="ApiLocOrganism"/>   <!-- organism name as found on the ApiLoc site -->
+
+
+    <graphPlanFile name="dbXRefs.xml"/>
+
+    <resource resource="${organismAbbrev}_dbxref_ApiLoc_RSRC"
+	      version="@@${organismAbbrev}_dbxref_ApiLoc_VER@@"
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/gene2ApiLoc/@@${organismAbbrev}_dbxref_ApiLoc_VER@@/final/${organismAbbrev}.html">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <unpack>makeDbxRefsFromApiLocHtml @@dataDir@@/${organismAbbrev}.html "${ApiLocOrganism}" > @@dataDir@@/dbxrefs.txt</unpack>
+
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/dbxrefs.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "remark" --tableName "DbRefNAFeature"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <!-- ONLY INCLUDE IF THIS ORGANISM'S GENOME IS IN GENBANK -->
+  <datasetClass class="dbxref_gene2Entrez" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="genomeVersion"/>
+
+    <graphPlanFile name="dbXRefs.xml"/>
+
+    <resource resource="${organismAbbrev}_dbxref_gene2Entrez_RSRC"
+	      version="@@${organismAbbrev}_dbxref_gene2Entrez_VER@@"
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+
+      <manualGet fileOrDir="common/dbxref/gene2Entrez/@@${organismAbbrev}_dbxref_gene2Entrez_VER@@/final/gene_info.gz">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <unpack>ncbiGeneInfo2DbRefsFile @@dataDir@@/gene_info.gz ${ncbiTaxonId} > @@dataDir@@/gene2entrez.tab</unpack>
+
+      <unpack>rm -f @@dataDir@@/gene_info.gz</unpack>
+
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2entrez.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'  --idType 'alternate id'</pluginArgs>
+
+    </resource>
+  </datasetClass>
+
+  <!-- depends on dbxref_gene2Entrez -->
+  <datasetClass class="dbxref_gene2Uniprot" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="genomeVersion"/>
+
+    <graphPlanFile name="dbXRefs.xml"/>
+
+    <resource resource="${organismAbbrev}_dbxref_gene2Uniprot_RSRC"
+	      version="@@${organismAbbrev}_dbxref_gene2Uniprot_VER@@"
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/dbxref/gene2Uniprot/@@${organismAbbrev}_dbxref_gene2Uniprot_VER@@/final/idmapping_selected.tab.gz">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <!-- need to use the gene2entrez file to get map of NCBI ids -->
+      <unpack>uniprotIdMap2DbRefsFile @@dataDir@@/idmapping_selected.tab.gz @@dataDir@@/../${organismAbbrev}_dbxref_gene2Entrez_RSRC/gene2entrez.tab > @@dataDir@@/gene2uniprot.tab</unpack>
+
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2uniprot.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --idType 'alternate id'</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <!-- Category: SNPs -->
+
+  <!-- FIX WORKFLOW: need to change getAndAnalyzeSnps to use SNPs.gff -->
+  <datasetClass class="SNPs_GFF" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+
+    <graphPlanFile name="SNPs.xml"/>
+
+    <resource resource="${organismAbbrev}_SNP_${name}_gff_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/SNP/${name}/${version}/final/SNPs.gff">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <getAndUnpackOutput file="@@dataDir@@/SNPs.gff"/>
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="SNPs_HTS" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="snpStrainAbbrev"/>
+    <prop name="hasPairedReads"/>
+    <prop name="name"/>
+    <prop name="version"/>
+
+    <graphPlanFile name="SNPs.xml"/>
+
+    <resource resource="${organismAbbrev}_SNP_${name}_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <unpack>ln -s @@manualDeliveryDir@@/${projectName}/${organismAbbrev}/SNPs/${name}/%RESOURCE_VERSION%/final/ @@dataDir@@/final</unpack>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final" />
+      <getAndUnpackOutput file="@@dataDir@@/final/reads.txt"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/readsPaired.txt"/>
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <!-- Category: microarrayPlatform -->
+
+  <datasetClass class="microarrayPlatform" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="isAffymetrixGeneArray"/>
+    <prop name="isNimbleGenGeneArray"/>
+    <prop name="limitNU"/>
+    <prop name="variableLengthReads"/>
+    <prop name="numInsertions"/>
+
+    <graphPlanFile name="arrayStudies.xml"/>
+
+    <resource resource="${organismAbbrev}_microarrayPlatform_${name}_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}"
+	      >
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/microarrayPlatform/${name}/${version}/final">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <unpack>probeFasta2Tab @@dataDir@@/final/probes.fsa > @@dataDir@@/probes.tab</unpack>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/probes.fsa"/>
+      <getAndUnpackOutput file="@@dataDir@@/probes.tab"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/geneProbeMapping.cdf"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/geneProbeMapping.ndf"/>
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="chipChipPlatform" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="limitNU"/>
+    <prop name="numInsertions"/>
+
+    <graphPlanFile name="arrayStudies.xml"/>
+
+    <resource resource="${organismAbbrev}_chipChipPlatform_${name}_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}"
+	      >
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/microarrayPlatform/${name}/${version}/final/probes.fsa">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <unpack>probeFasta2Tab @@dataDir@@/final/probes.fsa > @@dataDir@@/probes.tab</unpack>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/probes.fsa"/>
+      <getAndUnpackOutput file="@@dataDir@@/probes.tab"/>
+
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <!-- Category: microarrayExpression -->
+
+  <!-- FIX: needs an analysis config file -->
+  <!-- manual delivery and plugin or step class must be upgraded see redmine #4257 -->
+  <datasetClass class="microarrayExpressionExperiment" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
+    <prop name="microarrayPlatformName"/>
+    <prop name="microarrayPlatformVersion"/>
+    <prop name="doExpressionAnalysis"/>
+    <prop name="hasTimeSeries"/>
+    <prop name="usesAffymetrixGeneArray"/>
+    <prop name="usesNimbleGenGeneArray"/>
+
+    <graphPlanFile name="arrayStudies.xml"/>
+
+    <resource resource="${organismAbbrev}_microarrayExpression_${experimentName}_RSRC" version="${experimentVersion}"
+	      plugin="ApiCommonData::Load::Plugin::DoNothing"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}"
+	      >
+      
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/microarrayExpression/${experimentName}/${experimentVersion}/final">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/analysis_result_config.txt"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/expression_profile_config.txt"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/analysisConfig.xml"/>
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+
+    </resource>
+  </datasetClass>
+
+
+  <!-- Category: ChIP Chip-->
+
+  <datasetClass class="chipChipExperiment" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
+    <prop name="chipChipPlatformName"/>
+    <prop name="chipChipPlatformVersion"/>
+    <prop name="peakFinderArgs"/>
+    <prop name="loadPeakCalls"/>
+
+    <graphPlanFile name="arrayStudies.xml"/>
+
+    <resource resource="${organismAbbrev}_chipChipExper_${experimentName}_RSRC" version="${experimentVersion}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}"
+	      >
+
+     <manualGet fileOrDir="${projectName}/${organismAbbrev}/chipChip/${experimentName}/${experimentVersion}/final">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+     <getAndUnpackOutput dir="@@dataDir@@/final" />
+
+     <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+
+    </resource>
+  </datasetClass>
+
+
+  <!-- the files containing the sample data are assumed to be normalized -->
+  <datasetClass class="chipChipSample" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="sampleName"/>
+ 
+    <graphPlanFile name="chipChipSamples.xml"/>
+
+      <!-- we load a fake resource here so we can make a getAndUnpackOutput -->
+      <!-- to declare existence of sample file that is acquired by experiment, for test mode -->
+    <resource resource="${organismAbbrev}_${experimentName}_${sampleName}_chipChipSample_RSRC" version="dontcare"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_chipChipExper_${experimentName}_RSRC/final/${sampleName}_smoothed_config.txt" />
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_chipChipExper_${experimentName}_RSRC/final/${sampleName}_peak_config.txt" />
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_chipChipExper_${experimentName}_RSRC/final/${sampleName}.txt" />
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <!-- NOTE:  because the data files are so large, we don't copy into our
+       workflow data dir, but use a symlink into manual deliv instead -->
+
+  <!-- final/ dir must have a file per sample, with name identical to the 
+       sample name.  if there are paired ends reads, each sample will also
+       have a samplename.paired file -->
+  <datasetClass class="rnaSeqExperiment" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="limitNU"/>
+    <prop name="hasVariableLengthReads"/> 
+    <prop name="numInsertions"/>
+    <prop name="hasOnlyOneSample"/>
+    <prop name="hasPairedEnds"/>
+    <prop name="isStrandSpecific"/>
+
+    <graphPlanFile name="organismSpecificOnTopLevelGenome.xml"/>
+
+    <resource resource="${organismAbbrev}_${name}_rnaSeq_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <unpack>ln -s @@manualDeliveryDir@@/${projectName}/${organismAbbrev}/rnaSeq/${name}/${version}/final/ @@dataDir@@/final</unpack>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final" />
+      <getAndUnpackOutput file="@@dataDir@@/final/analysisConfig.xml"/>
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+
+  </datasetClass>
+
+  <datasetClass class="rnaSeqSample" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="sampleName"/>
+ 
+    <graphPlanFile name="rnaSeqSamples.xml"/>
+
+      <!-- we load a fake resource here so we can make a getAndUnpackOutput -->
+      <!-- to declare existence of sample file that is acquired by experiment, for test mode -->
+    <resource resource="${organismAbbrev}_${experimentName}_${sampleName}_rnaSeqSample_RSRC" version="dontcare"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_${experimentName}_rnaSeq_RSRC/final/${sampleName}" />
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+
+
+  </datasetClass>
+
+  <!-- NOTE: this dataset class only gets the sequences, it does not map
+       them to the genome.  For that use clonedInsertEndsFromReferenceStrain
+       ONLY INCLUDE IF A REFERENCE STRAIN
+  -->
+
+  <datasetClass class="clonedInsertEnds" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="soTermName"/>
+    <prop name="regexSourceId"/>
+
+    <graphPlanFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_${name}_clonedInsertEnds_RSRC" version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              scope="species"
+              organismAbbrev="${organismAbbrev}"
+	      >
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/dnaSeq/${name}/${version}/final/seqs.fasta">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/seqs.fasta --soTermName ${soTermName} --regexSourceId "${regexSourceId}" --tableName "DoTS::ExternalNaSequence"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <!-- This class gets its data from cloned insert ends loaded by the
+       reference strain.  It finds them in the database and maps them to
+       our genome.  The reference strain DOES need to include an instance
+       of this class for each dataset, so that it gets mapped  -->
+
+  <datasetClass class="clonedInsertEndsFromReferenceStrain" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="referenceStrainOrganismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+
+    <graphPlanFile name="organismSpecific.xml"/>
+
+  </datasetClass>
+
+
+  <!-- GOT TO HERE -->
+
+
+  <!-- Category: SAGE tags -->
+
+  <datasetClass class="sageTagSequences" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="isMissingCATG"/>
+    <prop name="bowtieParams"/>
+ 
+    <graphPlanFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_sageTag_${name}_RSRC" version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadSagePrimers"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/sageTag/${name}/${version}/final/primers.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--primers_file @@dataDir@@/primers.txt</pluginArgs>
+
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="sageTagFrequencies" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="normalizeFrequencies"/>
+ 
+    <graphPlanFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_sageTag_${name}_frequencies_RSRC" version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadSageFrequencies"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}"
+	      >
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/sageTag/${name}/${version}/final/freqs.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--freq_file @@dataDir@@/freqs.txt</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <!-- Category: product names -->
+
+  <datasetClass class="productNames" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+ 
+    <graphPlanFile name="productNames.xml"/>
+
+    <resource resource="${organismAbbrev}_function_${name}_product_names_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertGeneFeatProductFromTabFile"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/function/${name}_product_names/${version}/final/products.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--file @@dataDir@@/products.txt  --productDbName %PARENT_RESOURCE_NAME% --productDbVer %PARENT_RESOURCE_VERSION%</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="GeneOntologyAssociations" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="version"/>
+    <prop name="name"/>
+
+    <graphPlanFile name="organismSpecific.xml"/>
+
+    <resource plugin="ApiCommonData::Load::Plugin::InsertGOAssociationsSimple"
+              resource="${organismAbbrev}_${name}_GOAssociations_RSRC"
+              version="${version}"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/function/${name}_GOAssociations/${version}/final/associations.gas">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--externalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%" --inputFile @@dataDir@@/Linfantum.gas --goExternalDatabaseSpec "GO_RSRC|@@GO_VER@@" --seqIdSql "SELECT g.source_id, taf.aa_sequence_id FROM dots.genefeature g, dots.transcript t, dots.translatedAAFeature taf WHERE g.na_feature_id = t.parent_id AND t.na_feature_id = taf.na_feature_id UNION SELECT taf.source_id, taf.aa_sequence_id FROM dots.translatedAAFeature taf" --targetTable "DoTS::TranslatedAASequence" --lineOfEvidence "${name}" --inputIdColumn id --tolerateMissingSeqs --skipBadGOTerms @@dataDir@@/badGOTerms.log</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="EnzymeCommissionAssociations" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="version"/>
+    <prop name="name"/>
+
+    <graphPlanFile name="organismSpecific.xml"/>
+
+    <resource plugin="GUS::Community::Plugin::InsertECMapping"
+              resource="${organismAbbrev}_${name}_ECAssociations_RSRC"
+              version="${version}"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/function/${name}_ECAssociations/${version}/final/ec.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--ECMappingFile @@dataDir@@/ec.txt --evidenceCode "${name}" --aaSeqLocusTagMappingSql "SELECT aa_sequence_id FROM dots.GeneFeature g, dots.Transcript t, dots.TranslatedAAFeature taf WHERE g.source_id = ? AND g.na_feature_id = t.parent_id AND t.na_feature_id = taf.na_feature_id"</pluginArgs>
+    </resource>
+
+  </datasetClass>
+
+
+
+  <!-- Category: comments -->
+
+  <datasetClass class="comments" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+ 
+    <graphPlanFile name="comments.xml"/>
+
+    <resource resource="${organismAbbrev}_function_${name}_comments_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertNaFeatCommentFromTabFile"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/comment/${name}_comments/${version}/final/comments.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--file @@dataDir@@/comments.txt  --genomeDbName %PARENT_RESOURCE_NAME% --genomeDbVer %PARENT_RESOURCE_VERSION%</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <!-- Category: isolatesg -->
+
+  <!-- NOTE: this dataset class only gets the isolates, it does not map
+       them to the genome.  See isolatesFromReferenceStrain
+       ONLY INCLUDE IF A REFERENCE STRAIN
+  -->
+
+  <datasetClass class="isolatesGenbank" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev"/>
+    <prop name="speciesNcbiTaxonId"/>
+ 
+    <graphPlanFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_isolates_genbank_RSRC" version="TODAY"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+              scope="species"
+              organismAbbrev="${organismAbbrev}"
+	      >
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <!-- get the file from genbank, querying by ncbiTaxonId -->
+      <unpack>getIsolatesFromGenbank ${speciesNcbiTaxonId} @@dataDir@@/isolates.gb</unpack>
+
+      <unpack>fixIsolateSequences --seq_file @@dataDir@@/isolates.gb --fixed_seq_file @@dataDir@@/isolates_fixed_1.gb --removed_seq_file @@dataDir@@/isolates_excluded.gb</unpack>
+
+      <unpack>sed "s/SOURCE\tplastid/SOURCE\t/" @@dataDir@@/isolates_fixed_1.gb | sed "s/SOURCE\tapicoplast/SOURCE\t/" | sed "s/SOURCE\tmitochondrion/SOURCE\t/" > @@dataDir@@/isolates_fixed_2.gb</unpack>
+
+      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/isolatesGenbank2gus.xml --inputFileOrDir @@dataDir@@/isolates_fixed_2.gb --fileFormat genbank --soCvsVersion @@SO_VER@@ --defaultOrganism ${speciesNcbiTaxonId}  --seqSoTerm "region" --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <!-- NOTE: this dataset class only gets the isolates, it does not map
+       them to the genome.  See isolatesFromReferenceStrain
+       ONLY INCLUDE IF A REFERENCE STRAIN
+
+  -->
+
+  <datasetClass class="isolateSequencesFasta" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="regexSourceId"/>
+
+    <resource resource="${organismAbbrev}_isolates_${name}_RSRC" version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              scope="species"
+              organismAbbrev="${organismAbbrev}"
+	      >
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/isolate/${name}/${version}/final/isolates.fasta">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/seqs.fasta --soTermName region --regexSourceId "${regexSourceId}" --tableName "DoTS::ExternalNaSequence"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <!-- the ncbi taxon ID is not important.  isolate strain info is provided by dedicated isolate info tables -->
+  <datasetClass class="isolateFeaturesGFF2" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="mapFile"/>
+ 
+    <graphPlanFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_isolates_${name}_features_RSRC" version="${version}"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+              scope="species"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/isolate/${name}/${version}/final/isolates.gff">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs> --extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/isolates.gff --fileFormat gff2 --gff2GroupTag locus_tag --naSequenceSubclass ExternalNASequence --seqIdColumn source_id  --soCvsVersion @SO_VER@ --defaultOrganism ${ncbiTaxonId} --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <!-- NOTE: this dataset does not get the isolates, but it does map
+       them to the genome.  It extracts the sequences from the database
+  -->
+
+  <datasetClass class="isolatesFromReferenceStrain" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="referenceStrainOrganismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+ 
+    <graphPlanFile name="organismSpecific.xml"/>
+  </datasetClass>
+
+  <datasetClass class="massSpecPreprocessed" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="flag"/>
+    <prop name="genomeVersion"/>
+ 
+    <graphPlanFile name="massSpec.xml"/>
+
+    <resource resource="${organismAbbrev}_massSpec_${name}_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertMassSpecPreprocessed"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}"
+	      >
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/massSpec/${name}/${version}/final">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--inputDir @@dataDir@@/final --externalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%" --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' ${flag} </pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="orthomclPhyletic" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+
+    <graphPlanFile name="comparativeGenomics.xml"/>
+
+    <resource resource="OrthoMCL_Phyletic_RSRC" version="@@OrthoMCL_VER@@"
+	      plugin="ApiCommonData::Load::Plugin::InsertPhylogeneticProfile"
+              scope="global"
+              >
+
+      <manualGet fileOrDir="common/orthology/orthoMCL/@@OrthoMCL_VER@@/orthomclGroups.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <pluginArgs>--projectName ${projectName} --groupsFile @@dataDir@@/orthomclGroups.txt</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="orthomcl" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+
+    <graphPlanFile name="comparativeGenomics.xml"/>
+
+    <resource resource="OrthoMCL_RSRC" version="@@OrthoMCL_VER@@"
+	      plugin="ApiCommonData::Load::Plugin::InsertOrthologousGroups"
+              scope="global"
+              >
+
+      <manualGet fileOrDir="common/orthology/orthoMCL/@@OrthoMCL_VER@@/orthomclGroups.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <pluginArgs>--projectName ${projectName} --OrthologFile @@dataDir@@/orthomclGroups.txt --AnalysisName 'OrthoMCL-based Orthology Predictions' --AnalysisDescription 'OrthoMCL-based Orthology Predictions' --ElementResultTable "DoTS::GeneFeature"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="orthomclTree" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+
+    <graphPlanFile name="comparativeGenomics.xml"/>
+
+    <resource resource="OrthoMCLTree_RSRC" version="@@OrthoMCL_VER@@"
+	      plugin="ApiCommonData::Load::Plugin::InsertOrthomclTaxon"
+              scope="global"
+              >
+
+      <!-- use non-standard approach here to get two individual files rather
+           than the whole dir, which has some very large files we don't need -->
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <unpack>cp @@manualDeliveryDir@@/common/orthology/orthoMCL/%RESOURCE_VERSION%/orthomclClades.txt @@dataDir@@</unpack>
+      <unpack>cp @@manualDeliveryDir@@/common/orthology/orthoMCL/%RESOURCE_VERSION%/orthomclTaxons.txt @@dataDir@@</unpack>
+
+      <pluginArgs>--cladeFile @@dataDir@@/orthomclClades.txt --speciesFile @@dataDir@@/orthomclTaxons.txt</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <datasetClass class="geneOntology" category="" datasetFileHint="">
+    <purpose></purpose>
+    <resource resource="GO_RSRC" version="@@GO_VER@@"
+      plugin="GUS::Supported::Plugin::InsertGeneOntology"
+              scope="global"
+              >
+    <manualGet fileOrDir="common/ontology/geneOntology/@@GO_VER@@/final/gene_ontology.obo">
+        <dir name="final">
+        </dir>
+      </manualGet>
+    <pluginArgs>--oboFile @@dataDir@@/gene_ontology.obo --extDbRlsName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --calcTransitiveClosure</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="enzymeDB" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="version"/>
+    <resource resource="enzymeDB_RSRC" version="${version}"
+      plugin="GUS::Community::Plugin::LoadEnzymeDatabase"
+              scope="global"
+              >
+    <wgetArgs url="ftp://ftp.expasy.org/databases/enzyme/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=3 --include list  --accept=enzclass.txt,enzyme.dat</wgetArgs>
+    <pluginArgs>--InPath @@dataDir@@ --enzymeDbName %RESOURCE_NAME% --enzymeDbRlsVer %RESOURCE_VERSION%</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="PDBProteinSequences" category="" datasetFileHint="">
+    <purpose></purpose>
+    <resource resource="PDBProteinSequences_RSRC" version="@@PDBProteinSequences_VER@@"
+      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              scope="global"
+              >
+    <wgetArgs url="ftp://ftp.wwpdb.org/pub/pdb/derived_data/pdb_seqres.txt.gz">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=3 --output-document=@@dataDir@@/pdb_seqres.txt.gz</wgetArgs>
+    <unpack>gunzip @@dataDir@@/pdb_seqres.txt.gz</unpack>
+    <unpack>filterPdbFile --inputFile @@dataDir@@/pdb_seqres.txt --outputFile  @@dataDir@@/pdb.fsa.tmp</unpack>
+    <unpack><![CDATA[cat @@dataDir@@/pdb.fsa.tmp | perl -e 'while(<>) { s/J|O/X/g;print}' > @@dataDir@@/pdb.fsa]]></unpack>
+    <unpack>rm @@dataDir@@/pdb.fsa.tmp</unpack>
+    <unpack>xdformat -p @@dataDir@@/pdb.fsa</unpack>
+    <getAndUnpackOutput file="@@dataDir@@/pdb.fsa"/>   
+    <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --sequenceFile  @@dataDir@@/pdb.fsa --SOTermName 'polypeptide'  --noSequence --regexSourceId  '>(\w+)\s+mol:protein' --regexDesc 'length:\d+\s+(.+)$' --tableName "DoTS::ExternalAASequence"</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="taxonomy" category="" datasetFileHint="">
+    <purpose></purpose>
+  <resource resource="taxonomy_RSRC" version="@@taxonomy_VER@@"
+      plugin="GUS::Supported::Plugin::LoadTaxon"
+              scope="global"
+              >
+    <wgetArgs url="ftp://ftp.ncbi.nih.gov/pub/taxonomy/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=2 --include list --accept=gi_taxid_prot.dmp.gz,taxdump.tar.gz</wgetArgs>
+    <unpack>gunzip @@dataDir@@/gi_taxid_prot.dmp.gz</unpack>
+    <unpack>$currDir=`pwd`; cd @@dataDir@@ ; tar -xzf taxdump.tar.gz ; rm -f taxdump.tar ; cd $currDir</unpack>
+    <pluginArgs>--names @@dataDir@@/names.dmp --nodes @@dataDir@@/nodes.dmp --gencode @@dataDir@@/gencode.dmp --merged @@dataDir@@/merged.dmp --verbose</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="updatePDBTaxon" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="version"/>
+  <resource resource="updatePDBTaxon_RSRC" version="${version}"
+      plugin="ApiCommonData::Load::Plugin::UpdateTaxonFieldFromFile"
+              scope="global"
+              >
+    <wgetArgs url="ftp://ftp.wwpdb.org/pub/pdb/derived_data/index/source.idx">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=4 --output-document=@@dataDir@@/source.idx</wgetArgs>
+    <unpack>processSourceIdxFile --inFile @@dataDir@@/source.idx --outFile @@dataDir@@/source.idx.processed</unpack>
+    <pluginArgs>--fileName @@dataDir@@/source.idx.processed --sourceIdRegex  '^(\w+)' --taxonNameRegex '^\w+\s+(.+)' --idSql 'select substr(lower(source_id),0,4),aa_sequence_id from dots.externalaasequence' --extDbRelSpec 'PDBProteinSequences_RSRC|@@PDBProteinSequences_VER@@'  --tableName 'DoTS::ExternalAASequence'</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="sequenceOntology" category="" datasetFileHint="">
+    <purpose></purpose>
+  <resource resource="SO_RSRC" version="@@SO_VER@@"
+      plugin="GUS::Supported::Plugin::InsertSequenceOntologyOBO"
+              scope="global"
+              >
+    <wgetArgs url="http://song.cvs.sourceforge.net/viewvc/song/ontology/so.obo">--tries=5 --output-document=@@dataDir@@/so.obo</wgetArgs>
+    <pluginArgs>--inputFile @@dataDir@@/so.obo --soVersion @@SO_VER@@ --soCvsVersion @@SO_VER@@</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="mgedOntologyTermTypes" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="version"/>   
+  <resource resource="Mged_Ontology_Term_Types_RSRC" version="${version}"
+      plugin="GUS::Supported::Plugin::InsertOntologyTermType"
+              scope="global"
+              >
+    <manualGet fileOrDir="common/ontology/Mged/${version}/final/MgedOntologyTermTypes.tab">
+        <dir name="final">
+        </dir>
+      </manualGet>
+    <pluginArgs>--inputFile @@dataDir@@/MgedOntologyTermTypes.tab</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="mgedOntologyRelationshipTypes" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="version"/>   
+  <resource resource="Mged_Ontology_Relationship_Types_RSRC" version="${version}"
+      plugin="GUS::Supported::Plugin::InsertOntologyRelationshipType"
+              scope="global"
+              >
+    <manualGet fileOrDir="common/ontology/Mged/${version}/final/MgedOntologyRelationshipTypes.tab">
+        <dir name="final">
+        </dir>
+      </manualGet>
+    <pluginArgs>--inputFile @@dataDir@@/MgedOntologyRelationshipTypes.tab</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="mgedOntology" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="version"/>   
+  <resource resource="MGED_Ontology_RSRC" version="${version}"
+      plugin="GUS::Supported::Plugin::InsertOntologyTermsAndRelationships"
+              scope="global"
+              >
+    <wgetArgs url="http://mged.sourceforge.net/ontologies/MGEDOntology.owl">--tries=5 --no-directories --no-host-directories --accept=@@dataDir@@/MGEDOntology.owl </wgetArgs>
+    <pluginArgs>--inFile @@dataDir@@/MGEDOntology.owl --extDbName %RESOURCE_NAME% --extDbVersion %RESOURCE_VERSION% --uri 'http://mged.sourceforge.net/ontologies/MGEDontology.php' --parserType MgedRdfRow</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <!-- this should probably be just a step in the flow, not a dataset class -->
+  <datasetClass class="mgedOntologyEntry" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="version"/>
+  <resource resource="Mged_Ontology_Entry_RSRC" version="${version}"
+      plugin="GUS::Community::Plugin::LoadOntologyEntryFromMO"
+              scope="global"
+              >
+    <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+    <pluginArgs>--externalDatabase MGED_Ontology_RSRC --externalDatabaseRls %RESOURCE_VERSION%</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="geneOntologyEvidenceCodes" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="version"/>
+  <resource resource="GO_evidence_codes_RSRC" version="${version}"
+      plugin="ApiCommonData::Load::Plugin::InsertGOEvidenceCodesFromObo"
+              scope="global"
+              >
+    <wgetArgs url="http://obo.cvs.sourceforge.net/*checkout*/obo/obo/ontology/evidence_code.obo">--tries=5 --output-document=@@dataDir@@/evidence_code.obo</wgetArgs>
+    <pluginArgs>--oboFile @@dataDir@@/evidence_code.obo</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="interproscanData" category="" datasetFileHint="">
+    <purpose></purpose>
+  <resource resource="InterproscanData_RSRC" version="@@InterproscanData_VER@@"
+      plugin="ApiCommonData::Load::Plugin::InsertInterproDomainDbs"
+              scope="global"
+              >
+
+    <manualGet fileOrDir="common/domain/iprscanData/@@InterproscanData_VER@@/iprscan">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+    <unpack>fixSuperfamily @@dataDir@@/iprscan/data/</unpack>
+    <pluginArgs>--inPath @@dataDir@@/iprscan/data/</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="NRDB" category="" datasetFileHint="">
+    <purpose></purpose>
+  <resource resource="NRDB_RSRC" version="@@NRDB_VER@@"
+      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="global"
+              >
+    <wgetArgs url="ftp://ftp.ncbi.nih.gov/blast/db/FASTA/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=3 --accept=nr.gz </wgetArgs>
+    <unpack>gunzip @@dataDir@@/nr.gz </unpack>
+    <unpack>shortenDefLine --inputFile @@dataDir@@/nr --outputFile @@dataDir@@/nrdb-short-defline.fsa.tmp --taxonIdMappingFile @@dataDir@@/../taxonomy_RSRC/gi_taxid_prot.dmp</unpack>
+    <unpack><![CDATA[cat @@dataDir@@/nrdb-short-defline.fsa.tmp | perl -e 'while(<>) { s/J|O/X/g;print}' > @@dataDir@@/nrdb-short-defline.fsa]]></unpack>
+    <unpack>rm @@dataDir@@/nrdb-short-defline.fsa.tmp</unpack>
+    <unpack>xdformat -p @@dataDir@@/nrdb-short-defline.fsa</unpack>
+    <getAndUnpackOutput file="@@dataDir@@/nrdb-short-defline.fsa"/>
+    <getAndUnpackOutput file="@@dataDir@@/nr"/>
+    <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="dbxref_NRDB" category="" datasetFileHint="">
+    <purpose></purpose>
+    <graphPlanFile name="dbXRefs.xml"/>
+  </datasetClass>
+
+  <datasetClass class="blatAlignmentQuality" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="version"/>
+  <resource resource="blatAlignmentQuality_RSRC" version="${version}"
+      plugin="GUS::Supported::Plugin::LoadGusXml"
+              scope="global"
+              >
+    <manualGet fileOrDir="common/ontology/alignmentQuality/${version}/final/blatalignmentquality.xml">
+        <dir name="final">
+        </dir>
+      </manualGet>
+    <pluginArgs>--filename @@dataDir@@/blatalignmentquality.xml</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="isolateVocabulary" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="version"/>
+
+    <graphPlanFile name="project.xml"/>
+
+  <resource resource="isolateVocabulary_RSRC" version="${version}"
+      plugin="ApiCommonData::Load::Plugin::InsertIsolateVocabulary"
+              scope="global"
+              >
+    <manualGet fileOrDir="common/ontology/isolateVocabulary/${version}/final/isolateVocabulary.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+    <pluginArgs>--isolateVocabularyFile @@dataDir@@/isolateVocabulary.txt</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="continents" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="version"/>
+  <resource resource="Continents_RSRC" version="${version}"
+      plugin="ApiCommonData::Load::Plugin::InsertContinents"
+              scope="global"
+              >
+    <manualGet fileOrDir="common/ontology/Continents/${version}/final/continents.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+    <pluginArgs>--continentsFile @@dataDir@@/continents.txt</pluginArgs>
+  </resource>
+  </datasetClass>
+
+  <datasetClass class="isolateQualifierToVocabMapping" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="version"/>
+
+    <resource plugin="ApiCommonData::Load::Plugin::InsertIsolateVocabMapping"
+              resource="isolateVocabularyMap_RSRC"
+              version="${version}"
+              scope="global"
+              >
+      <manualGet fileOrDir="common/ontology/isolateVocabulary/${version}/final/qualifierToVocabMapping/">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--geographicXmlFile @@dataDir@@/qualifierToVocabMapping/geographicLocation.xml  --sourceXmlFile @@dataDir@@/qualifierToVocabMapping/isolationSource.xml --hostXmlFile @@dataDir@@/qualifierToVocabMapping/specificHost.xml --productXmlFile @@dataDir@@/qualifierToVocabMapping/products.xml</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+  <datasetClass class="bibRefType" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="version"/>
+  <resource resource="BibRefType_RSRC" version="${version}"
+      plugin="GUS::Supported::Plugin::LoadGusXml"
+              scope="global"
+              >
+    <manualGet fileOrDir="common/ontology/bibliographicReferenceType/${version}/final/ncbiPublicationTypes.xml">
+        <dir name="final">
+        </dir>
+      </manualGet>
+    <pluginArgs>--filename @@dataDir@@/ncbiPublicationTypes.xml</pluginArgs>
+  </resource>
+  </datasetClass>
+
+</datasetClasses>

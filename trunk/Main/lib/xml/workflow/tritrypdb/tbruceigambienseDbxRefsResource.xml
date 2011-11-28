@@ -1,0 +1,21 @@
+<workflowGraph name="tbruceigambienseDbxRefsResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+      <param name="projectVersion"/>
+      <param name="projectName"/>
+      <param name="downloadSiteDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/tbruceigambienseDbxRefsResources</constant>
+  <constant name="geneAliasesMappingDownloadFile">$$downloadSiteDataDir$$/Tbruceigambiense/txt/TbruceigambienseGeneAlias_$$projectName$$-$$projectVersion$$.txt</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
+     <paramValue name="genomeExtDbRlsSpec">Tbruceigambiense_chromosomes_RSRC|@@Tbruceigambiense_chromosomes_VER@@</paramValue>
+     <paramValue name="dbRefNAFeatureExtDbSpec">Tbruceigambiense_previds_dbxref_RSRC|@@Tbruceigambiense_chromosomes_VER@@</paramValue>
+     <paramValue name="outputFile">$$geneAliasesMappingDownloadFile$$</paramValue>
+  </step>
+
+</workflowGraph>

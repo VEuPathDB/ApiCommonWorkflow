@@ -1,0 +1,49 @@
+<workflowGraph name="trypCreateGenesForGeneFeatures">
+      <param name="mercatorDataDir"/>
+      <param name="parentDataDir"/>
+      <param name="cndSrcBin"/>
+
+  <constant name="dataDir">$$parentDataDir$$/trypCreateGenesForGeneFeatures</constant>
+  <constant name="tbruceiDataDir">$$dataDir$$/Tbrucei927-Tbrucei427</constant>
+  <constant name="tcruzidataDir">$$dataDir$$/TcruziEsmeraldoLike-TcruziNonEsmeraldoLike</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeTbruceiDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$tbruceiDataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="makeTcruzidataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$tcruzidataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+    <step name="tbruceiMakeGenesFileFromMercator" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenesFileFromMercator" >
+      <paramValue name="mercatorDataDir">$$mercatorDataDir$$/Tbrucei927-Tbrucei427/mercator-output/</paramValue>
+      <paramValue name="cndSrcBin">$$cndSrcBin$$</paramValue>
+      <paramValue name="outputFile">$$tbruceiDataDir$$/allGenes.txt</paramValue>
+      <paramValue name="extDbRlsSpec">Tbrucei927_genome_RSRC|@@Tbrucei927_genome_VER@@,Tbrucei427_chromosomes_RSRC|@@Tbrucei427_chromosomes_VER@@</paramValue>
+      <depends name="makeTbruceiDataDir"/>
+    </step>
+
+    <step name="tbruceiCreateGenesForGeneFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateGenesForGeneFeatures" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$tbruceiDataDir$$/allGenes.txt</paramValue>   
+      <depends name="tbruceiMakeGenesFileFromMercator"/>
+    </step>
+
+    <step name="tcruziMakeGenesFileFromMercator" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenesFileFromMercator" >
+      <paramValue name="mercatorDataDir">$$mercatorDataDir$$/TcruziEsmeraldoLike-TcruziNonEsmeraldoLike/mercator-output/</paramValue>
+      <paramValue name="cndSrcBin">$$cndSrcBin$$</paramValue>
+      <paramValue name="outputFile">$$tcruzidataDir$$/allGenes.txt</paramValue>
+      <paramValue name="extDbRlsSpec">TcruziEsmeraldoLike_chromosomes_RSRC|@@TcruziEsmeraldoLike_chromosomes_VER@@,TcruziNonEsmeraldoLike_genome_RSRC|@@TcruziNonEsmeraldoLike_genome_VER@@</paramValue>
+      <depends name="makeTcruzidataDir"/>
+    </step>
+
+    <step name="tcruziCreateGenesForGeneFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateGenesForGeneFeatures" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$tcruzidataDir$$/allGenes.txt</paramValue>   
+      <depends name="tcruziMakeGenesFileFromMercator"/>
+    </step>
+</workflowGraph>

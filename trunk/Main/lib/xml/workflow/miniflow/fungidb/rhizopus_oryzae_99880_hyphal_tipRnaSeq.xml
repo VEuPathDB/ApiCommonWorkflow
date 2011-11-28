@@ -1,0 +1,160 @@
+<workflowGraph name="rhizopus_oryzae_99880_hyphal_tipRnaSeq">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+    <param name="downloadSiteTranscriptExpressionDataDir"/>
+    <param name="genomeExtDbRlsSpec"/>
+
+    <constant name="dataDir">$$parentDataDir$$/rhizopus_oryzae_99880_hyphal_tipRnaSeq</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+    <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSeqCoverageAndIntensityDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesDataDir"/>
+      <depends name="rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC"/>
+    </step>
+
+    <subgraph name="analyzeRO3HSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">RO3H</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC/hyphal_tip/RO3H_1.fq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeRO3H/RO3H.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/RO3H.int</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC|@@rhizopus_oryzae_99880_RNASeq_hyphal_tip_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath">$$dataDir$$/rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC/hyphal_tip/RO3H_2.fq</paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+     <subgraph name="analyzeRO5HSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">RO5H</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC/hyphal_tip/RO5H_1.fq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeRO5H/RO5H.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/RO5H.int</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC|@@rhizopus_oryzae_99880_RNASeq_hyphal_tip_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath">$$dataDir$$/rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC/hyphal_tip/RO5H_2.fq</paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <subgraph name="analyzeRO20HSample" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="sampleName">RO20H</paramValue>
+      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="shortSeqsFile">$$dataDir$$/rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSR/Chyphal_tip/RO20H_1.fq</paramValue>
+      <paramValue name="outputCoverageFile">$$samplesDataDir$$/analyzeRO20H/RO20H.cov</paramValue>
+      <paramValue name="outputIntensityFile">$$samplesDataDir$$/RO20H.int</paramValue>
+      <paramValue name="makeIntensityFile">true</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC|@@rhizopus_oryzae_99880_RNASeq_hyphal_tip_VER@@</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="pairedReadFilePath">$$dataDir$$/rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC/hyphal_tip/RO20H_2.fq</paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">30</paramValue>
+      <depends name="rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="mergeMinIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">RO3H.int.min,RO5H.int.min,RO20H.int.min</paramValue>
+      <depends name="makeSeqCoverageAndIntensityDataDir"/>
+      <depends name="analyzeRO3HSample"/>
+      <depends name="analyzeRO5HSample"/>
+      <depends name="analyzeRO20HSample"/>
+    </step>
+
+    <step name="mergeMaxIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MergeIntensityFiles">
+      <paramValue name="inputFilesDir">$$samplesDataDir$$</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="profileElementOrder">RO3H.int.max,RO5H.int.max,RO20H.int.max</paramValue>
+      <depends name="makeSeqCoverageAndIntensityDataDir"/>
+      <depends name="analyzeRO3HSample"/>
+      <depends name="analyzeRO5HSample"/>
+      <depends name="analyzeRO20HSample"/>
+    </step>
+
+    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt.pct</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+    </step>
+
+    <step name="makeMaxPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt.pct</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+    </step>
+
+    <step name="makeDiffProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProfileDiff">
+      <paramValue name="maxInputFile">$$seqCoverageAndIntensityDataDir$$/maxProfiles.txt</paramValue>
+      <paramValue name="minInputFile">$$seqCoverageAndIntensityDataDir$$/minProfiles.txt</paramValue>     
+      <paramValue name="outputFile">$$seqCoverageAndIntensityDataDir$$/diffProfiles.txt</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
+    </step>
+
+    <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC/config.txt</paramValue>
+      <paramValue name="inputDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC|@@rhizopus_oryzae_99880_RNASeq_hyphal_tip_VER@@</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="makeMinPercentileProfile"/>
+      <depends name="makeDiffProfile"/>
+    </step>
+
+    <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
+      <paramValue name="copyFromDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <paramValue name="configFile">$$dataDir$$/rhizopus_oryzae_99880_RNASeq_hyphal_tip_RSRC/config.txt</paramValue>
+      <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
+      <depends name="mergeMinIntensityFiles"/>
+      <depends name="mergeMaxIntensityFiles"/>
+    </step>
+
+</workflowGraph>

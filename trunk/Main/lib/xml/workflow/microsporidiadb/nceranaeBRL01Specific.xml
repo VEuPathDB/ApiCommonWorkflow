@@ -1,0 +1,44 @@
+<workflowGraph name="nceranaeBRL01SpecificAnalysis">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/NceranaeBRL01Specific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/NceranaeBRL01</constant>
+
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+
+    <subgraph name="NceranaeBRL01_Comment_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">NceranaeBRL01_Comment_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="NceranaeBRL01_altids_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">NceranaeBRL01_altids_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="NceranaeBRL01_gi_dbxref_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">NceranaeBRL01_gi_dbxref_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+</workflowGraph>
+
+
+

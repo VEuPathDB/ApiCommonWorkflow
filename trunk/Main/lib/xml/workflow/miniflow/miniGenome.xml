@@ -1,0 +1,43 @@
+ <workflowGraph name="genomeAnalysis">
+  <param name="parentDataDir"/>
+  <param name="organismName"/>
+  <param name="organismFullName"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="ncbiTaxonId"/>
+  <param name="parentNcbiTaxonId"/>
+  <param name="usePredictedTranscripts"/>
+  <param name="predictedTranscriptsExtDbRlsSpec"/>
+  <param name="maxIntronSize"/>
+  <param name="distanceBetweenStartsForAlignmentsInSameCluster"/>
+  <param name="taxonHierarchyForBlastxFilter"/>
+  <param name="organismAbbrev"/>
+  <param name="repeatMaskSpecies"/>
+  <param name="genomeSize"/>
+  <param name="runtRNAScan"/>
+  <param name="makeAssemblySeqs"/>
+  <param name="makeAssemblies"/>
+  <param name="mapAssemblySeqsAndAssemblies"/>
+  <param name="loadOrganismSpecificESTResource"/>
+  <param name="loadOrganismSpecificMassSpecResource"/>
+  <param name="organismSpecificESTResourcesReference"/>
+  <param name="organismSpecificMassSpecResourcesReference"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomicSeqsDir"/>
+  <param name="dbESTResourceName"/>
+  <param name="loadDbest"/>
+
+  <constant name="dataDir">$$parentDataDir$$/genome</constant>
+  <constant name="blastxArgs">-cpus=4 -topcomboN=1 W=4 T=18 V=100 B=1000000 -hspmax=1000000 -gi E=1e-3 -wordmask=seg+xnu -hspsepQmax=4000 -span1</constant>
+  <constant name="trfArgs">2 7 7 80 20 50 500</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+ 
+ <subgraph name="organismSpecificMassSpecResource" xmlFile="$$organismSpecificMassSpecResourcesReference$$" includeIf="$$loadOrganismSpecificMassSpecResource$$">
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+  </subgraph>
+</workflowGraph>
+

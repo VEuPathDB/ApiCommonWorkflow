@@ -1,0 +1,29 @@
+<workflowGraph name="tbruceiRnaSeqAndChipSeqWorkflow">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="ssaGeneModelFile"/>
+  <param name="genomicSeqsFileForSsa"/>
+  <param name="transcriptSeqsFileForSsa"/>
+  <param name="samHeaderFile"/>
+  <param name="downloadSiteTranscriptExpressionDataDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+
+  <constant name="dataDir">$$parentDataDir$$/tbruceiRnaSeqAndChipSeq</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+   <templateInstance name="CrossRnaSeq" xmlFile="rnaSeqAndChipSeqWorkflowTemplate.xml" rtcFile="tritrypdb.rtc"/>
+
+   <templateInstance name="ClaytonRnaSeq" xmlFile="rnaSeqAndChipSeqWorkflowTemplate.xml" rtcFile="tritrypdb.rtc"/>
+
+   <templateInstance name="CrossChipSeq" xmlFile="rnaSeqAndChipSeqWorkflowTemplate.xml" rtcFile="tritrypdb.rtc"/>
+
+</workflowGraph>
+

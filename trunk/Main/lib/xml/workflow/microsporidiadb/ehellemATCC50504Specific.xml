@@ -1,0 +1,32 @@
+<workflowGraph name="ehellemATCC50504SpecificAnalysis">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/EhellemATCC50504Specific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDataDir$$/EhellemATCC50504</constant>
+
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+
+    <subgraph name="EhellemATCC50504_Comment_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">EhellemATCC50504_Comment_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+
+
+</workflowGraph>
+
+
+

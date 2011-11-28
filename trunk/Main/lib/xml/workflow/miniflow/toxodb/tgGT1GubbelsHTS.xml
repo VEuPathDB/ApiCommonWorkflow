@@ -1,0 +1,44 @@
+<workflowGraph name="tgGT1GubbelsHTS">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+  <param name="parentDataDir"/>
+
+
+  <constant name="dataDir">$$parentDataDir$$/tgGT1GubbelsHTS</constant>
+  <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+  <constant name="seqCoverageAndIntensityDataDir">$$dataDir$$/seqCoverageAndIntensity</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/tgGT1GenomicSeqs.fsa</constant>
+  <constant name="BwaIndexDir">$$parentDataDir$$/tgGT1GenomicSeqs_bwa_indices</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="makeSeqCoverageAndIntensityDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$seqCoverageAndIntensityDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="analyzeTgGT1GubbelsHTS" xmlFile="analyzeNGSSNPByBWA.xml">
+       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+       <paramValue name="sampleName">combined</paramValue>
+       <paramValue name="shortSeqsFile">$$parentDataDir$$/TgRH_HTS_Gubbels_RSRC/final//PARENT-302WB_combined_mate1.fq</paramValue>
+       <paramValue name="rnaSeqExtDbRlsSpec">TgRH_HTS_Gubbels_RSRC|@@TgRH_HTS_Gubbels_VER@@</paramValue>
+       <paramValue name="genomeExtDbSpec">T.gondii GT1 contigs from Genbank|@@Tgondii_GT1_contigs_from_Genbank_VER@@</paramValue>
+       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+       <paramValue name="pairedReadFile">$$parentDataDir$$/TgRH_HTS_Gubbels_RSRC/final//PARENT-302WB_combined_mate2.fq</paramValue>
+       <paramValue name="reference_strain">GT1</paramValue>
+       <paramValue name="SNP_strain">RH</paramValue>
+       <paramValue name="BWAIndexDir">$$BwaIndexDir$$</paramValue>
+       <paramValue name="organismFullName">Toxoplasma gondii GT1</paramValue>
+       <paramValue name="percentCutoff">80</paramValue>
+       <paramValue name="minPercentCutoff">51</paramValue>
+       <depends name="makeSamplesDataDir"/>
+     </subgraph>
+
+</workflowGraph>

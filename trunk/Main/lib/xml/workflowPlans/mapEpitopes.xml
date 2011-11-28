@@ -1,0 +1,46 @@
+<workflowGraph name="epitopesWorkflow">
+    <param name="proteinsFileWithBlastDb"/>
+    <param name="parentDataDir"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="organismAbbrev"/>
+
+    <constant name="dataDir">$$parentDataDir$$/iedb</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+  <!-- NOTE:
+       this file was made from a static file into a plan file so we can have
+       this one template.  Its purpose is to allow us to use an externalDepends
+       which only work inside a plan file.  this is not actually a dataset
+  -->
+  <datasetTemplate class="epitopesFromReferenceStrain">
+    <prop name="referenceStrainOrganismAbbrev"/>
+
+   <step name="extractEpitopeTabFile"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractEpitopeTabFile">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/epitopes.tab</paramValue>
+      <depends name="makeDataDir"/>
+      <dependsExternal name="${referenceStrainOrganismAbbrev}_epitope_IEDB_RSRC"/>
+    </step>
+  </datasetTemplate>
+
+    <step name="doMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MapEpitopesToProteins">
+      <paramValue name="inputTabFile">$$dataDir$$/epitopes.tab</paramValue>
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <paramValue name="proteinsFileWithBlastDb">$$proteinsFileWithBlastDb$$</paramValue>
+      <paramValue name="outputMappingFile">$$dataDir$$/mapping.txt</paramValue>
+      <paramValue name="idRegex">(\\S+)</paramValue>
+      <depends name="extractEpitopeTabFile"/>
+    </step>
+
+    <step name="insertEpitopeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertEpitopeMapping" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/mapping.txt</paramValue>
+      <paramValue name="iedbExtDbRlsSpec">$$organismAbbrev$$_epitope_IEDB_RSRC|@@$$organismAbbrev$$_epitope_IEDB_VER@@</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="doMapping"/>
+    </step>
+
+</workflowGraph>

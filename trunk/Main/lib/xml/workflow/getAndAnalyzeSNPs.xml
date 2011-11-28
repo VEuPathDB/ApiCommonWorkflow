@@ -1,0 +1,71 @@
+<workflowGraph name="getAndAnalyzeSNPs.xml">
+    <param name="snpExtDbRlsSpec"/>
+    <param name="snpResourceName"/>
+    <param name="genomicSeqsFile"/>
+    <param name="parentDataDir"/>
+    <param name="organismAbbrev"/>
+    <param name="isNextGenSeq"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="organismResourceXmlFile"/>
+
+    <constant name="dataDir">$$parentDataDir$$/getAndAnalyze_$$snpResourceName$$</constant>
+    <constant name="fastaOutPutDir">$$parentDataDir$$/getAndAnalyze_$$snpResourceName$$/fasta</constant>
+
+   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makefastaOutPutDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$fastaOutPutDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+    <subgraph name="snpResource" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$snpResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="snpGffToFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpGffToFasta">
+      <paramValue name="inputFile">$$dataDir$$/$$snpResourceName$$/SNPs.gff</paramValue>
+      <paramValue name="outputFile">$$fastaOutPutDir$$/SNPs.fasta</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <depends name="snpResource"/>
+      <depends name="makefastaOutPutDir"/>
+    </step>
+
+    <step name="runMummer" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMummer">
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="inputDir">$$fastaOutPutDir$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SNPsMummer.out</paramValue>
+      <depends name="snpGffToFasta"/>
+    </step>
+
+    <step name="snpMummerToGff" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpMummerToGff">
+      <paramValue name="inputFile">$$dataDir$$/SNPsMummer.out</paramValue>
+      <paramValue name="gffFile">$$dataDir$$/$$snpResourceName$$/SNPs.gff</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SNPsMummer.gff</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <depends name="runMummer"/>
+    </step>
+
+    <step name="insertSnpMummer" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="loadSnpFeature,plugin">
+      <paramValue name="inputFile">$$dataDir$$/SNPsMummer.gff</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <paramValue name="isNextGenSeq">$$isNextGenSeq$$</paramValue>
+      <depends name="snpMummerToGff"/>
+    </step>
+
+    <step name="document-snps-mummer"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">snps_mummer_MTHD</paramValue>
+      <paramValue name="version">3.20</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="insertSnpMummer"/>
+    </step>
+
+</workflowGraph>

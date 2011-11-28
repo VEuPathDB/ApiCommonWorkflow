@@ -1,0 +1,25 @@
+<workflowGraph name="linfantumISFResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="dataDir"/>
+
+    <constant name="dataDir">$$dataDir$$/linfantumISFResource</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+  <subgraph name="Linfantum_chromosomes_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Linfantum_chromosomes_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="Linfantum_annotations_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Linfantum_annotations_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="Linfantum_chromosomes_RSRC"/>
+  </subgraph>
+
+</workflowGraph>

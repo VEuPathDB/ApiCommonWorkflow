@@ -1,0 +1,67 @@
+#!/usr/bin/perl
+
+use strict;
+
+use XML::Simple;
+use Data::Dumper;
+
+my $xmlFile = @ARGV[0];
+my $xmlString;
+open(FILE, $xmlFile) || die "Cannot open resources XML file '$xmlFile'\n";
+while (<FILE>) {
+  $xmlString .= $_;
+}
+
+
+my $xml = new XML::Simple();
+my $d = eval{ $xml->XMLin($xmlString, SuppressEmpty => undef, ForceArray=>['publication','unpack']) };
+#  print STDERR Dumper $self->{data};
+
+print "<resources>";
+foreach my $r (@{$d->{resource}}) {
+  my $parentResource;
+  $parentResource = qq{ parentResource="$r->{parentResource}"} if $r->{parentResource};
+  my $unpacks;
+  foreach my $unpack (@{$r->{unpack}}) {
+    $unpacks .= "\n    <unpack>$unpack</unpack>";
+  }
+  my $publications;
+  foreach my $p (@{$r->{publication}}) {
+    $publications .= qq{\n    <publication pmid="$p->{pmid}"/>};
+  }
+  my $get;
+  if ($r->{wgetArgs}) {
+    $get = qq{
+    <wgetArgs url="$r->{url}">$r->{wgetArgs}</wgetArgs>};
+  } else {
+    $get=qq{
+    <manualGet fileOrDir="$r->{manualGet}->{fileOrDir}"/>};
+  }
+  my $descrip = $r->{description};
+  $descrip =~ s/^\s+//;
+  $descrip =~ s/\s+$//;
+  print qq{
+  <resource resource="$r->{resource}" version="$r->{version}"$parentResource
+      plugin="$r->{plugin}">$get$unpacks
+    <pluginArgs>$r->{pluginArgs}</pluginArgs>
+    <info
+        displayName="$r->{displayName}"
+        project="$r->{project}"
+        organisms="$r->{organisms}"
+        category="$r->{category}"
+        publicUrl="$r->{publicUrl}"
+        contact="$r->{manualGet}->{contact}"
+        email="$r->{manualGet}->{email}"
+        institution="$r->{manualGet}->{institution}">
+      <description>
+        <![CDATA[
+         $descrip
+        ]]>
+      </description>$publications
+    </info>
+  </resource>
+}
+}
+print "</resources>\n";
+
+

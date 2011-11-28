@@ -1,0 +1,56 @@
+<workflowGraph name="pknowlesiDbxRefsResource">
+      <param name="organismResourceXmlFile"/>
+      <param name="parentDataDir"/>
+      <param name="projectVersion"/>
+      <param name="projectName"/>
+      <param name="downloadSiteDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/pknowlesiDbxRefsResources</constant>
+  <constant name="euPathUniProtLinkDownloadFile">$$downloadSiteDir$$/PknowlesiEuPathUniProtLinks_$$projectName$$-$$projectVersion$$.txt</constant>
+  <constant name="geneAliasesMappingDownloadFile">$$downloadSiteDir$$/txt/PknowlesiGeneAlias_$$projectName$$-$$projectVersion$$.txt</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeGeneAliasesMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesMappingFile">
+     <paramValue name="genomeExtDbRlsSpec">Pknowlesi_chromosomes_RSRC|@@Pknowlesi_chromosomes_VER@@</paramValue>
+     <paramValue name="outputFile">$$geneAliasesMappingDownloadFile$$</paramValue>
+  </step>
+
+  <subgraph name="Pk_Pubmed_DBRefs_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pk_Pubmed_DBRefs_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="Pk_Entrez_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pk_Entrez_Gene_dbxref_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <subgraph name="Pk_Uniprot_Gene_dbxref_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pk_Uniprot_Gene_dbxref_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+    <step name="makeEuPathUniProtLinkFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEuPathUniProtLinkFile">
+      <paramValue name="dbrefExtDbRlsSpec">Pk_Uniprot_Gene_dbxref_RSRC|@@Pk_Uniprot_Gene_dbxref_VER@@</paramValue>
+      <paramValue name="outputFile">$$euPathUniProtLinkDownloadFile$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="Pk_Uniprot_Gene_dbxref_RSRC"/>
+    </step>
+
+  <subgraph name="Pk_ApiLoc_EupathDB_Dbrefs_RSRC" xmlFile="loadResource.xml">
+    <paramValue name="resourceName">Pk_ApiLoc_EupathDB_Dbrefs_RSRC</paramValue>
+    <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+</workflowGraph>

@@ -1,0 +1,33 @@
+<workflowGraph name="preichenowiSpecific">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="downloadSiteDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/PreichenowiSpecific</constant>
+  <constant name="downloadSiteDataDir">$$downloadSiteDir$$/Preichenowi</constant>
+  <constant name="genomicSeqsFile">$$parentDataDir$$/PreichenowiLoadGenome/genomicSeqs.fsa</constant>
+
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="plasmodiumGenbankIsolates_mapToGenome" xmlFile="mapIsolatesToGenome.xml">
+      <paramValue name="dataDir">$$dataDir$$/plasmodiumGenbankIsolates_mapToGenome</paramValue>
+      <paramValue name="organismName">Preichenowi</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">Preichenowi_Contigs_RSRC|@@Preichenowi_Contigs_VER@@</paramValue>
+      <paramValue name="isolateExtDbRlsSpec">PlasmodiumGenbankIsolates_RSRC|@@PlasmodiumGenbankIsolates_VER@@</paramValue>
+      <paramValue name="idRegex">(\\S+)</paramValue>
+      <depends name="mirrorToCluster"/>
+      <dependsGlobal name="isolatesResource"/>
+    </subgraph>
+
+</workflowGraph>

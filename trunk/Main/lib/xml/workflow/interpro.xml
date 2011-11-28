@@ -1,0 +1,45 @@
+<workflowGraph name="interproWorkflow">
+
+    <param name="proteinsFile"/>
+    <param name="parentDataDir"/>
+
+    <constant name="dataDir">$$parentDataDir$$/interpro</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeInterproTaskInputDir">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeClusterTaskInputDir"/>
+    </step>
+
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="numNodes">20</paramValue>
+      <paramValue name="processorsPerNode">1</paramValue>
+      <depends name="mirrorToCluster"/>
+    </step>
+
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/master/mainresult/</paramValue>
+      <paramValue name="outputFiles"></paramValue>
+      <depends name="runClusterTask"/>
+    </step>
+
+    <step name="insert" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertInterpro" stepLoadTypes="plugin">
+      <paramValue name="inputDir">$$dataDir$$/master/mainresult/</paramValue>
+      <paramValue name="interproExtDbRlsSpec">InterproscanData_RSRC|@@InterproscanData_VER@@</paramValue>
+      <paramValue name="configFile">global/InterproscanData_RSRC/iprscan/data/insertInterpro-config.xml</paramValue>
+      <paramValue name="goVersion">@@GO_VER@@</paramValue>
+      <depends name="mirrorFromCluster"/>
+    </step>
+
+</workflowGraph>

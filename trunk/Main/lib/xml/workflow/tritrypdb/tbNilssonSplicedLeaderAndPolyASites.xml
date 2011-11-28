@@ -1,0 +1,173 @@
+<workflowGraph name="tbNilssonSplicedLeaderAndPolyASites">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="genomicSeqsFile"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="downloadSiteTranscriptExpressionDataDir"/>
+
+    <constant name="dataDir">$$parentDataDir$$/tbNilssonSplicedLeaderAndPolyASites</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="outputIndexDir">$$dataDir$$/indexes</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="runBowtie_SRR058969" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/SRR058969.fasta</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-f</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SRR058969.bt</paramValue>
+      <depends name="Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+    <step name="runBowtie_SRR058970" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/SRR058970.fasta</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-f</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SRR058970.bt</paramValue>
+      <depends name="Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+    <step name="runBowtie_SRR058971" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/SRR058971.fasta</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-f</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SRR058971.bt</paramValue>
+      <depends name="Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+    <step name="runBowtie_SRR058972" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/SRR058972.fasta</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-f</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SRR058972.bt</paramValue>
+      <depends name="Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+    <step name="runBowtie_SRR058973" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/SRR058973.fasta</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-f</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SRR058973.bt</paramValue>
+      <depends name="Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+    <step name="runBowtie_SRR058974" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/SRR058974.fasta</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-f</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SRR058974.bt</paramValue>
+      <depends name="Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+    <step name="runBowtie_SRR058975" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/SRR058975.fasta</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-f</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SRR058975.bt</paramValue>
+      <depends name="Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+    <step name="runBowtie_SRR058976" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/SRR058976.fasta</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-f</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SRR058976.bt</paramValue>
+      <depends name="Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+    <step name="runBowtie_SRR058977" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/SRR058977.fasta</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-f</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SRR058977.bt</paramValue>
+      <depends name="Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+     <step name="insertSpliceSiteFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSpliceSiteFeatures" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC|@@Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_VER@@</paramValue>
+      <paramValue name="type">Splice Site</paramValue>
+      <depends name="runBowtie_SRR058969"/>
+      <depends name="runBowtie_SRR058970"/>
+      <depends name="runBowtie_SRR058971"/>
+      <depends name="runBowtie_SRR058972"/>
+      <depends name="runBowtie_SRR058973"/>
+      <depends name="runBowtie_SRR058974"/>
+      <depends name="runBowtie_SRR058975"/>
+      <depends name="runBowtie_SRR058976"/>
+      <depends name="runBowtie_SRR058977"/>
+    </step>
+
+    <step name="runTuningManager"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager">
+      <depends name="insertSpliceSiteFeatures"/> 
+  </step>
+
+     <step name="extractSpliceSiteGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSpliceSiteGenes">
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/config.txt</paramValue>
+      <paramValue name="outputUniqFile">$$dataDir$$/uniqProfile.out</paramValue>
+      <paramValue name="outputNonUniqFile">$$dataDir$$/nonUniqProfile.out</paramValue>
+      <depends name="runTuningManager"/>
+    </step>
+
+    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$dataDir$$/uniqProfile.out</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/minPercents.txt</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="extractSpliceSiteGenes"/>
+    </step>
+
+    <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/profile_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC|@@Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_VER@@</paramValue>
+      <depends name="makeMinPercentileProfile"/>
+    </step>
+
+<step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
+      <paramValue name="copyFromDir">$$dataDir$$</paramValue>
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_And_Poly_A_Sites_Nilsson_RSRC/final/profile_config.txt</paramValue>
+      <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
+      <depends name="insertExpressionProfile"/>
+</step>
+
+</workflowGraph>

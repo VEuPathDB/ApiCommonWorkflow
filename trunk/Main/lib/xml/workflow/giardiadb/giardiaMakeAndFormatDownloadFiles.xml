@@ -1,0 +1,127 @@
+<workflowGraph name="giardiaMakeAndFormatDownloadFilesWorkflow">
+  <param name="interproVersion"/>
+  <param name="dbESTVersion"/>
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+  <param name="genbankIsolateExtDbRlsSpec"/>
+  <param name="GlambliaExtDbRlsSpec"/>
+  <param name="GlambliaGenomeSource"/>
+  <param name="GlambliaVirtualSeqsExtDbRlsSpec"/>
+  <param name="GlambliaDeprecatedGenesExtDbRlsSpec"/>
+
+  <constant name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</constant>
+  <constant name="webServicesDataDir">webServices/$$projectName$$/release-$$projectVersion$$</constant>
+
+  <step name="makeDownloadSiteDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeApiSiteFilesDir">
+    <paramValue name="apiSiteFilesDir">$$downloadSiteDataDir$$</paramValue>
+  </step>
+
+  <subgraph name="GlambliaMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$</paramValue>
+    <paramValue name="organismName">Glamblia</paramValue>
+    <paramValue name="organismFullName">Giardia lamblia ATCC 50803</paramValue>
+    <paramValue name="ncbiTaxonId">184922</paramValue>
+    <paramValue name="parentNcbiTaxonId">5741</paramValue>
+    <paramValue name="interproVersion">$$interproVersion$$</paramValue>
+    <paramValue name="genomeSource">$$GlambliaGenomeSource$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">dbEST:$$dbESTVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$GlambliaExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec">$$GlambliaVirtualSeqsExtDbRlsSpec$$</paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="makeDownloadSiteDataDir"/>
+  </subgraph>
+
+  <subgraph name="DeprecatedMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$</paramValue>
+    <paramValue name="organismName">GlambliaDeprecatedGenes</paramValue>
+    <paramValue name="organismFullName">Giardia lamblia ATCC 50803</paramValue>
+    <paramValue name="ncbiTaxonId">184922</paramValue>
+    <paramValue name="parentNcbiTaxonId">5741</paramValue>
+    <paramValue name="interproVersion">$$interproVersion$$</paramValue>
+    <paramValue name="genomeSource"></paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">dbEST:$$dbESTVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$GlambliaDeprecatedGenesExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec">$$GlambliaExtDbRlsSpec$$</paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">true</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">false</paramValue>
+    <depends name="makeDownloadSiteDataDir"/>
+  </subgraph>
+
+  <subgraph name="GintestinalisAssemblageBMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$</paramValue>
+    <paramValue name="organismName">GintestinalisAssemblageB</paramValue>
+    <paramValue name="organismFullName">Giardia intestinalis ATCC 50581</paramValue>
+    <paramValue name="ncbiTaxonId">598745</paramValue>
+    <paramValue name="parentNcbiTaxonId">5741</paramValue>
+    <paramValue name="interproVersion">$$interproVersion$$</paramValue>
+    <paramValue name="genomeSource">$$GintestinalisAssemblageBGenomeSource$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">dbEST:$$dbESTVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$GintestinalisAssemblageBExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="makeDownloadSiteDataDir"/>
+  </subgraph>
+
+  <subgraph name="GintestinalisAssemblageEMakeAndFormatDownloadFiles" xmlFile="makeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">$$downloadSiteDataDir$$</paramValue>
+    <paramValue name="organismName">GintestinalisAssemblageE</paramValue>
+    <paramValue name="organismFullName">Giardia lamblia P15</paramValue>
+    <paramValue name="ncbiTaxonId">658858</paramValue>
+    <paramValue name="parentNcbiTaxonId">5741</paramValue>
+    <paramValue name="interproVersion">$$interproVersion$$</paramValue>
+    <paramValue name="genomeSource">$$GintestinalisAssemblageEGenomeSource$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="dbESTExtDbRlsSpec">dbEST:$$dbESTVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$GintestinalisAssemblageEExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeVirtualSeqsExtDbRlsSpec"></paramValue>
+    <paramValue name="minOrfLength">50</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <paramValue name="makeESTDownloadFile">true</paramValue>
+    <paramValue name="makeProteomeDownloadFile">true</paramValue>
+    <paramValue name="makeGenomicDownloadFile">true</paramValue>
+    <depends name="makeDownloadSiteDataDir"/>
+  </subgraph>
+
+  <subgraph name="giardiaSpecificMakeAndFormatDownloadFiles" xmlFile="giardiadb/giardiaSpecificMakeAndFormatDownloadFiles.xml">
+    <paramValue name="downloadSiteDataDir">downloadSite/$$projectName$$/release-$$projectVersion$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="projectVersion">$$projectVersion$$</paramValue>
+    <paramValue name="webServicesDataDir">$$webServicesDataDir$$</paramValue>
+    <paramValue name="genbankIsolateExtDbRlsSpec">$$genbankIsolateExtDbRlsSpec$$</paramValue>
+    <paramValue name="deprecated">false</paramValue>
+    <depends name="makeDownloadSiteDataDir"/>
+  </subgraph>
+
+</workflowGraph>
+
+
+
+
+
+
+
+
+
+ 

@@ -1,0 +1,34 @@
+<workflowGraph name="tgME49GregorySpecific">
+  <param name="projectName"/>
+  <param name="projectVersion"/>
+  <param name="parentDataDir"/>
+  <param name="resourceXmlFileName"/>
+
+  <constant name="dataDir">$$parentDataDir$$/tgME49GregorySpecific</constant>
+  <constant name="genomicSeqsFileForSsa">$$parentDataDir$$/tgME49LoadGenome/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$parentDataDir$$/tgME49LoadGenome/transcriptSeqsForSsa.fsa</constant>
+  <constant name="ssaGeneModelFile">$$parentDataDir$$/tgME49LoadGenome/geneModelForSsa.txt</constant>
+  <constant name="downloadSiteDataDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersion$$/</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+
+  <subgraph name="tgME49GregoryRnaSeq" xmlFile="miniflow/toxodb/tgME49GregoryRnaSeq.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="resourceXmlFileName">$$resourceXmlFileName$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+
+
+</workflowGraph>

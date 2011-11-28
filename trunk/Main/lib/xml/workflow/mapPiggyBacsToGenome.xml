@@ -1,0 +1,46 @@
+<workflowGraph name="mapPiggyBacsToGenome">
+  <param name="dataDir"/>
+  <param name="genomicSeqsFile"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="piggyBacResourceName"/>
+  <param name="piggyBacExtDbRlsSpec"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="organismFullName"/>
+  <param name="idRegex"/>
+
+  <constant name="blastArgs">-nogaps V=1 E=1e-10 B=1 hspsepQmax=50000 hspsepSmax=50000 -span1 -topcomboN=1</constant>
+
+    <subgraph name="loadPiggyBacResource" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$piggyBacResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/$$piggyBacResourceName$$</paramValue>
+      <depends name="loadPiggyBacResource"/>
+    </step>
+
+    <subgraph name="runBlastAndLoadFeatures" xmlFile="runBlastAndLoadFeatures.xml">
+      <paramValue name="dataDir">$$dataDir$$/$$piggyBacResourceName$$/mapPiggyBacsToGenome</paramValue>
+      <paramValue name="queryFile">$$dataDir$$/$$piggyBacResourceName$$/piggyBac.fsa</paramValue>
+      <paramValue name="subjectFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="blastArgs">$$blastArgs$$</paramValue>
+      <paramValue name="idRegex">$$idRegex$$</paramValue>
+      <paramValue name="blastType">blastn</paramValue>
+      <paramValue name="vendor">wu</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$piggyBacExtDbRlsSpec$$</paramValue>
+      <paramValue name="organismFullName">$$organismFullName$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="document-mapPiggyBacsToGenome"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">blast_piggy_bacs_to_genome_MTHD</paramValue>
+      <paramValue name="version">2.0</paramValue>
+      <paramValue name="parameters">$$blastArgs$$</paramValue>
+      <depends name="runBlastAndLoadFeatures"/>
+    </step>
+
+</workflowGraph>

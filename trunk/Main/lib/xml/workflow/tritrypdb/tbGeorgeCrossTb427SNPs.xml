@@ -1,0 +1,52 @@
+<workflowGraph name="tbGeorgeCrossTb427SNPs">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="genomicSeqsFile"/>
+    <param name="genomeExtDbRlsSpec"/>
+
+    <constant name="dataDir">$$parentDataDir$$/tbGeorgeCrossTb427SNPs</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+
+    <step name="makeDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="createBWAIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBWAIndexes">
+      <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="outputIndexDir">$$dataDir$$/bwa_indices</paramValue>
+      <depends name="makeDataDir"/>
+     </step>
+
+
+    <subgraph name="Tb427_SNPs_George_Cross_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tb427_SNPs_George_Cross_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="analyzeCombinedSamples" xmlFile="analyzeNGSSNPByBWA.xml">
+       <paramValue name="parentDataDir">$$samplesDataDir$$</paramValue>
+       <paramValue name="sampleName">combined</paramValue>
+       <paramValue name="shortSeqsFile">$$dataDir$$/Tb427_SNPs_George_Cross_RSRC/final/Input_gDNA_Combined.fq</paramValue>
+       <paramValue name="rnaSeqExtDbRlsSpec">Tb427_SNPs_George_Cross_RSRC|@@Tb427_SNPs_George_Cross_VER@@</paramValue>
+       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+       <paramValue name="pairedReadFile"></paramValue>
+       <paramValue name="reference_strain">927</paramValue>
+       <paramValue name="SNP_strain">427</paramValue>
+       <paramValue name="BWAIndexDir">$$dataDir$$/bwa_indices</paramValue>
+       <paramValue name="organismFullName">Trypanosoma brucei TREU927</paramValue>
+       <paramValue name="percentCutoff">40</paramValue>
+       <paramValue name="minPercentCutoff">34</paramValue>
+       <depends name="makeSamplesDataDir"/>
+       <depends name="createBWAIndices"/>
+       <depends name="Tb427_SNPs_George_Cross_RSRC"/>
+     </subgraph>
+
+</workflowGraph>
