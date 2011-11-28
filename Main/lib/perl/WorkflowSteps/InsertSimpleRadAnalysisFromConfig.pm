@@ -9,7 +9,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $analysisWorkingDir = $self->getParamValue('analysisWorkingDir');
+  my $analysisWorkingDir = $self->getParamValue('inputDir');
 
   my $configFile = $self->getParamValue('configFile');
 
@@ -29,7 +29,7 @@ sub run {
   $args.=" --useSqlLdr" if($useSqlLdr eq "true"); 
 
   if ($test) {
-    $self->testInputFile('analysisWorkingDir', "$workflowDataDir/$analysisWorkingDir");
+    $self->testInputFile('inputDir', "$workflowDataDir/$analysisWorkingDir");
     $self->testInputFile('configFile', "$workflowDataDir/$configFile");
   }
 
