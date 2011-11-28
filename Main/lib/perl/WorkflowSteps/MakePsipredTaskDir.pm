@@ -14,7 +14,7 @@ sub run {
 
   # get step properties
   my $clusterServer = $self->getSharedConfig('clusterServer');
-  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $taskSize = $self->getConfig("taskSize");
   my $psipredPath = $self->getConfig("$clusterServer.clusterpath");
   my $ncbiBinPath = $self->getConfig("$clusterServer.ncbiBinPath");
 

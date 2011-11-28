@@ -16,7 +16,7 @@ sub run {
 
   # get properties
   my $clusterServer = $self->getSharedConfig('clusterServer');
-  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $taskSize = $self->getConfig("taskSize");
   my $applications = $self->getConfig("applications");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();

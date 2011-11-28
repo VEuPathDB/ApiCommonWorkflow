@@ -28,7 +28,7 @@ sub run {
   my $variableLengthReads = $self->getParamValue("variableLengthReads");
 
   my $clusterServer = $self->getSharedConfig('clusterServer');
-  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $taskSize = $self->getConfig("taskSize");
   my $bowtieBinDir = $self->getConfig("$clusterServer.bowtieBinDir");
   my $blatExec = $self->getConfig("$clusterServer.blatExec");
   my $mdustExec = $self->getConfig("$clusterServer.mdustExec");

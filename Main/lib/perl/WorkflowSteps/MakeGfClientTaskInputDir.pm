@@ -15,7 +15,7 @@ sub run {
     my $targetDir = $self->getParamValue("targetDir");
 
     my $clusterServer = $self->getSharedConfig('clusterServer');
-    my $taskSize = $self->getConfig("$clusterServer.taskSize");
+    my $taskSize = $self->getConfig("taskSize");
     my $gaBinPath = $self->getConfig("$clusterServer.gaBinPath");
 
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();

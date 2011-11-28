@@ -17,7 +17,7 @@ sub run {
 
   # get step properties
   my $clusterServer = $self->getSharedConfig('clusterServer');
-  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $taskSize = $self->getConfig("taskSize");
   my $rmPath = $self->getConfig("$clusterServer.rmPath");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();

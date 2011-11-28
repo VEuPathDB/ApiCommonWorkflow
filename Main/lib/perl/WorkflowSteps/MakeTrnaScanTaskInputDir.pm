@@ -13,7 +13,7 @@ sub run {
   my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
 
   my $clusterServer = $self->getSharedConfig('clusterServer');
-  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $taskSize = $self->getConfig("taskSize");
   my $tRNAscanDir = $self->getConfig("$clusterServer.tRNAscanDir");
 
 

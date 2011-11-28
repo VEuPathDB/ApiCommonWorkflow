@@ -18,7 +18,7 @@ sub run {
   my $vendor = $self->getParamValue("vendor");
 
   my $clusterServer = $self->getSharedConfig('clusterServer');
-  my $taskSize = $self->getConfig("$clusterServer.taskSize");
+  my $taskSize = $self->getConfig("taskSize");
   my $wuBlastBinPathCluster = $self->getConfig("$clusterServer.wuBlastBinPathCluster");
   my $ncbiBlastBinPathCluster = $self->getConfig("$clusterServer.ncbiBlastBinPathCluster");
 
