@@ -29,7 +29,8 @@ sub run {
                 AND x.na_sequence_id = f.na_sequence_id 
                 AND f.na_feature_id = a.na_feature_id
                 AND a.aa_sequence_id = t.aa_sequence_id
-                AND a.na_feature_id = tx.na_feature_id";
+                AND a.na_feature_id = tx.na_feature_id
+                AND t.length > 9";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
