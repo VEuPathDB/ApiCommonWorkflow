@@ -25,7 +25,8 @@ sub run {
 
   my $speciesName = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesName();
 
-  my $localRmParamsFile = "$workflowDataDir/$taskInputDir/rmParams";
+  my $rmParamsFile = 'rmParams';
+  my $localRmParamsFile = "$workflowDataDir/$taskInputDir/$rmParamsFile";
   
   $options .= " -species '$speciesName' -dir .";
 
@@ -50,7 +51,7 @@ sub run {
 inputFilePath=$clusterWorkflowDataDir/$seqsFile
 trimDangling=$trimDangling
 dangleMax=$dangleMax
-rmParamsFile=$localRmParamsFile
+rmParamsFile=$rmParamsFile
 ";
       close(F);
 
@@ -61,12 +62,6 @@ rmParamsFile=$localRmParamsFile
 
   }
 
-}
-
-sub getParamsDeclaration {
-  return (
-          'taskInputDir',
-         );
 }
 
 sub getConfigDeclaration {
