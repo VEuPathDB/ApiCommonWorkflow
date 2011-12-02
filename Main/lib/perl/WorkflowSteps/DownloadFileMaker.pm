@@ -44,6 +44,7 @@ sub run {
   my $fileType = $self->getParamValue('fileType');
   my $dataName = $self->getParamValue('dataName');
   my $descripString= $self->getParamValue('descripString');
+  $projectVersion  = 'CURRENT' if ($projectVersion eq 'FungiDB'); #patch
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
