@@ -65,6 +65,8 @@ sub run {
     $self->runCmd(0, "rm -f $downloadFile") unless $downloadFileCmd eq 'NONE';
     $self->runCmd(0, "rm -f $descripFile");
   }else {
+      $self->error("Output file '$downloadFile' already exists") if -e $downloadFile;
+      $self->error("Output file '$descripFile' already exists") if -e $descripFile;
       if ($test) {
 	  $self->runCmd(0, "echo test > $downloadFile") unless $downloadFileCmd eq 'NONE';
 	  $self->runCmd(0, "echo test > $descripFile");
