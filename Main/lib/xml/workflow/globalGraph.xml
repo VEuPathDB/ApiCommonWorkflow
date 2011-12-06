@@ -7,6 +7,8 @@
     <globalConstant name="global_PDBOutputFile">global/PDBProteinSequences_RSRC/pdb.fsa</globalConstant>
     <globalConstant name="global_NRDBOutputFile_shortDefline">global/NRDB_RSRC/nrdb-short-defline.fsa</globalConstant>
     <globalConstant name="global_NRDBOutputFile">global/NRDB_RSRC/nr</globalConstant>
+    <globalConstant name="global_NRDBOutputFile_pfilt">global/NRDB_RSRC/nrdb-pfilt.fsa</globalConstant>
+
 
     <constant name="dataDir">global</constant>
 
@@ -118,6 +120,12 @@
     <depends name="initUserGroupProject"/>
   </subgraph>
 
+    <step name="runPfiltNrdb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPfilt">
+      <paramValue name="inputFile">$$global_NRDBOutputFile_shortDefline$$</paramValue>
+      <paramValue name="outputFile">$$global_NRDBOutputFile_pfilt$$</paramValue>
+      <depends name="NRDB_RSRC"/>
+    </step>
+
   <subgraph name="blatAlignmentQuality_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">blatAlignmentQuality_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
@@ -139,13 +147,20 @@
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="initClusterHomeDir"/>
-      <depends name="NRDB_RSRC"/>
+      <depends name="runPfiltNrdb"/>
       <depends name="PDBProteinSequences_RSRC"/>
     </step>
 
     <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster">
       <paramValue name="inputFile">$$global_NRDBOutputFile_shortDefline$$</paramValue>
       <paramValue name="vendor">wu</paramValue>
+      <paramValue name="seqType">p</paramValue>
+      <depends name="mirrorToCluster"/>
+    </step>
+
+    <step name="makeNrdbPfiltBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster">
+      <paramValue name="inputFile">$$global_NRDBOutputFile_pfilt$$</paramValue>
+      <paramValue name="vendor">ncbi</paramValue>
       <paramValue name="seqType">p</paramValue>
       <depends name="mirrorToCluster"/>
     </step>

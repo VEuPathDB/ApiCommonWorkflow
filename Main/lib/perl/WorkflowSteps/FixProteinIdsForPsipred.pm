@@ -20,6 +20,8 @@ sub run {
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputProteinsFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputProteinsFile.d*");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputProteinsFile.pag");
   } else {
       if ($test){
 	  $self->testInputFile('inputProteinsFile', "$workflowDataDir/$inputProteinsFile");
