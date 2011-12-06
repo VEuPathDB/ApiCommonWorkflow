@@ -12,7 +12,6 @@
   <param name="isReferenceStrain"/>
   <param name="organismResourceXmlFile"/>
   <param name="genomicSeqsFile"/>
-  <param name="genomicSeqsListFile"/>
   <param name="genomicSeqsDir"/>
   <param name="relativeDownloadSiteDir"/>
   <param name="relativeWebServicesDir"/>
@@ -30,11 +29,6 @@
       <depends name="makeDataDir"/>
     </step>
 
-  <step name="runNibOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNibOnCluster">
-    <paramValue name="inputFile">$$genomicSeqsListFile$$</paramValue>
-    <paramValue name="outputDir">$$genomicSeqsDir$$</paramValue>
-  </step>
-
   <subgraph name="blatNrdbAgainstGenome" xmlFile="blatProteinAgainstGenome.xml">
     <paramValue name="dataDir">$$dataDir$$/blatNrdbAgainstGenome</paramValue>
     <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
@@ -49,8 +43,6 @@
     <paramValue name="filterByTaxon">true</paramValue>
     <paramValue name="taxonHierarchyForFilter">$$taxonHierarchyForBlastxFilter$$</paramValue>
     <paramValue name="shortenSubjectSourceIdTo"></paramValue>
-
-    <depends name="runNibOnCluster"/>
     <depends name="mirrorToCluster"/>
     <dependsGlobal name="mirrorToCluster"/>
   </subgraph>
