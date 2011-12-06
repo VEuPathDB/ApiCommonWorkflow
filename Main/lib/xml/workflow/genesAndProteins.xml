@@ -29,7 +29,7 @@
       <paramValue name="idSql">select taas.aa_sequence_id, taas.sequence from DoTS.TranslatedAASequence taas, DoTs.AAFeature af, DOTS.NAFeature nf where taas.aa_sequence_id=af.aa_sequence_id and af.na_feature_id=nf.na_feature_id and nf.name not in ('ORF') and taas.external_database_release_id = ?</paramValue>
     </step>
 
-  <subgraph name="loadProductName" xmlFile="$$projectName$$/$$organismAbbrev$$/productNames.xml" excludeIfXmlFileDoesNotExist="true">
+  <subgraph name="loadProductName" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/productNames.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
@@ -128,7 +128,7 @@
       <paramValue name="formatterArgs">T</paramValue>
     </step>
 
-    <subgraph name="epitopes" xmlFile="$$projectName$$/$$organismAbbrev$$/epitopes.xml" excludeIfXmlFileDoesNotExist="true">
+    <subgraph name="epitopes" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/epitopes.xml" excludeIfXmlFileDoesNotExist="true">
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -137,7 +137,7 @@
 
     <!-- a step in this subgraph uses a dependsExternal to depend on the
          reference strain loading of epitopes -->
-    <subgraph name="mapEpitopesToProteins" xmlFile="$$projectName$$/$$organismAbbrev$$/mapEpitopes.xml" excludeIfXmlFileDoesNotExist="true">
+    <subgraph name="mapEpitopesToProteins" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/mapEpitopes.xml" excludeIfXmlFileDoesNotExist="true">
       <paramValue name="proteinsFileWithBlastDb">$$proteinsFile$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
