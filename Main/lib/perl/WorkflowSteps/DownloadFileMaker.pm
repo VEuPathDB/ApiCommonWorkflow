@@ -44,6 +44,7 @@ sub run {
   my $fileType = $self->getParamValue('fileType');
   my $dataName = $self->getParamValue('dataName');
   my $descripString= $self->getParamValue('descripString');
+  my $organelle= $self->getParamValue('organelle');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
@@ -52,9 +53,10 @@ sub run {
   my $outputDir = "$websiteFilesDir/$relativeDir/$nameForFiles/$fileType";
 
   $dataName = "_$dataName" if $dataName; # gff does not use $dataName, so allow it to be empty
+  $organelle = "-$organelle" if $organelle;  # empty for nuclear
 
-  my $downloadFile = "$outputDir/$projectName-${projectVersion}_${nameForFiles}$dataName.$fileType";
-  my $descripFile = "$outputDir/.$projectName-${projectVersion}_${nameForFiles}$dataName.$fileType.desc";
+  my $downloadFile = "$outputDir/$projectName-${projectVersion}_${nameForFiles}${organelle}$dataName.$fileType";
+  my $descripFile = "$outputDir/.$projectName-${projectVersion}_${nameForFiles}${organelle}$dataName.$fileType.desc";
 
   my $downloadFileCmd =  $self->getDownloadFileCmd($downloadFile, $test);
 
