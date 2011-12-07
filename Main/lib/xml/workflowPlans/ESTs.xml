@@ -36,7 +36,7 @@
 
   <datasetTemplate class="dbEST">
     <prop name="organismAbbrev"/>
-    <subgraph name="${organismAbbrev}_dbEST_RSRC" xmlFile="loadResource.xml" externalName="${organismAbbrev}_dbEST_RSRC" stepLoadTypes="dbEST">
+    <subgraph name="${organismAbbrev}_dbEST_RSRC" xmlFile="loadResource.xml"  stepLoadTypes="dbEST">
       <paramValue name="resourceName">${organismAbbrev}_dbEST_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -52,6 +52,7 @@
     <paramValue name="fileType">fasta</paramValue>
     <paramValue name="dataName">ESTs</paramValue>
     <paramValue name="descripString">$$ESTDescripString$$</paramValue>
+    <paramValue name="organelle"></paramValue>
     <dependsPattern name="*_dbEST_RSRC"/>
   </step>
 
@@ -66,5 +67,24 @@
     <paramValue name="args">-n</paramValue>
     <depends name="makeESTDownloadFile"/>
   </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <dependsPattern name="*_dbEST_RSRC"/>
+    </step>
+
+    <subgraph name="makeAndBlockAssemblySeqs" xmlFile="makeAndBlockAssemblySeqs.xml" externalName="$$organismAbbrev$$_makeAndBlockAssemblySeqs">
+      <paramValue name="dataDir">$$dataDir$$/assemblySeqs</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="document-maskAssemblySeqs"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">repeatmask_assemblyseqs_MTHD</paramValue>
+      <paramValue name="version">1.214</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="makeAndBlockAssemblySeqs"/>
+    </step>
 
 </workflowGraph>
