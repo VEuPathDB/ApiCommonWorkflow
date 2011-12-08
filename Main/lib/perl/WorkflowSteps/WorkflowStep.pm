@@ -170,9 +170,11 @@ sub runPlugin {
 	  }else {
 	      $cmd = "ga $undoPlugin --algInvocationId '$algInvIds' --workflowContext --commit";
 	  }
+      } else {
+	$self->log("No algorithm invocation IDs found for this plugin step.  The plugin must have been manually undone.  Exiting");
       }
+
     } else {
-;
       $cmd = "ga $plugin --workflowstepid $self->{id} $commit --comment \"$comment\"";
     }
     my $msgForError=
