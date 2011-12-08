@@ -55,22 +55,27 @@
       <depends name="blatNrdbAgainstGenome"/>
     </step>
 
-    <!-- this step creates the tRNA scan resource.  it is not an external dataset -->
-    <subgraph name="tRNAScan" xmlFile="trnaScan.xml" includeIf="$$runtRNAScan$$">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="tRNAExtDbRlsSpec">$$organismAbbrev$$_TRNAscan_RSRC|dontcare</paramValue>
-      <paramValue name="soVersion">@@SO_VER@@</paramValue>
-      <depends name="mirrorToCluster"/>
-    </subgraph>
+    <step name="runTRNAScan"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTRNAScan" includeIf="$$runtRNAScan$$">
+      <paramValue name="seqFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/tRNAScan.out</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
 
     <step name="document-tRNAScan"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="$$runtRNAScan$$">
       <paramValue name="method">tRNAscan_MTHD</paramValue>
       <paramValue name="version">1.4</paramValue>
-      <paramValue name="parameters">trainingOption=C</paramValue>
-      <depends name="tRNAScan"/>
+      <paramValue name="parameters"></paramValue>
+      <depends name="runTRNAScan"/>
+    </step>
+
+    <step name="loadTRNAScan" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTRNAScan" stepLoadTypes="plugin" includeIf="$$runtRNAScan$$">
+      <paramValue name="inputFile">$$dataDir$$/tRNAScan.out</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="tRNAExtDbRlsSpec">$$organismAbbrev$$TRNAscan-SE|1.3</paramValue>
+      <paramValue name="soVersion">@@SO_VER@@</paramValue>
+      <depends name="runTRNAScan"/>
     </step>
 
     <step name="makeOrfFile"
