@@ -13,6 +13,7 @@ sub run {
   my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
   my $useSpeciesName = $self->getBooleanParamValue('useSpeciesName');
   my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  my $dataName = $self->getParamValue('dataName');
+  $projectVersion  = 'CURRENT' if ($projectVersion eq 'FungiDB'); #patch
 
   # extra params for this step
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
