@@ -6,22 +6,35 @@
   <param name="genomeExtDbRlsSpec"/>
   <param name="maxIntronSize"/>
   <param name="relativeDownloadSiteDir"/>
-  <param name="genomicSeqsFileForSsa"/>
-  <param name="transcriptSeqsFileForSsa"/>
-  <param name="geneModelFileForSsa"/>
-  <param name="cdsModelFileForSsa"/>    <!-- for future use for one particular rnaseq dataset -->
   <param name="genomicSeqsFile"/>
   <param name="genomicSeqsDir"/>
+  <param name="isAnnotatedGenome"/>
 
   <constant name="dataDir">$$parentDataDir$$/organismSpecificTopLevel</constant>
+  <constant name="genomicSeqsFileForSsa">$$dataDir$$/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$dataDir$$/transcriptSeqsForSsa.fsa</constant>
+  <constant name="geneModelFileForSsa">$$dataDir$$/geneModelForSsa.txt</constant>
+  <constant name="cdsModelFileForSsa">$$dataDir$$/cdsModelForSsa.txt</constant>
+
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+  <subgraph name="extractFilesForSsa" xmlFile="extractFilesForSsa.xml">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="useTopLevel">true</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="cdsModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="isAnnotatedGenome">$$isAnnotatedGenome$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="extractFilesForSsa"/>
   </step>
 
   <datasetTemplate class="rnaSeqExperiment">
@@ -33,9 +46,9 @@
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="experimentName">${name}</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="experimentResourceName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
       <paramValue name="experimentResourceVersion">${version}</paramValue>
@@ -46,7 +59,6 @@
       <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
       <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
       <paramValue name="numInsertions">${numInsertions}</paramValue>
-
       <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>

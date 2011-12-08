@@ -10,6 +10,7 @@ sub run {
 
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $useTopLevel = $self->getParamValue('useTopLevel');
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 

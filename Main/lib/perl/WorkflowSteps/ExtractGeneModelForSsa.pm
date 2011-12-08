@@ -11,6 +11,7 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $outputFile = $self->getParamValue('outputFile');
   my $useCDSCoordinates = $self->getParamValue('useCDSCoordinates');
+  my $useTopLevel = $self->getParamValue('useTopLevel');
 
   my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
 

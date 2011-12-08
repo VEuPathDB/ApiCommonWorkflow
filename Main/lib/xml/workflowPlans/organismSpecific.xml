@@ -12,16 +12,32 @@
   <param name="genomicSeqsFile"/>
   <param name="genomicSeqsDir"/>
   <param name="isHaploid"/>
+  <param name="isAnnotatedGenome"/>
 
   <constant name="dataDir">$$parentDataDir$$/organismSpecific</constant>
+  <constant name="genomicSeqsFileForSsa">$$dataDir$$/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$dataDir$$/transcriptSeqsForSsa.fsa</constant>
+  <constant name="geneModelFileForSsa">$$dataDir$$/geneModelForSsa.txt</constant>
+  <constant name="cdsModelFileForSsa">$$dataDir$$/cdsModelForSsa.txt</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+  <subgraph name="extractFilesForSsa" xmlFile="extractFilesForSsa.xml">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="useTopLevel">false</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="cdsModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="isAnnotatedGenome">$$isAnnotatedGenome$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="extractFilesForSsa"/>
   </step>
 
   <datasetTemplate class="isolatesGenbank">
@@ -81,11 +97,11 @@
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="ssaGeneModelFile">$$geneModelFileForSsa$$</paramValue>
     <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="mirrorToCluster"/>
   </subgraph>
 
   <datasetTemplate class="clonedInsertEnds">
