@@ -22,8 +22,12 @@ sub run {
       my $mapFile = $1 if ($pluginArgs =~ m/mapFile\s+(\S+)\s+/);
 
       my $algInvIds = $self->getAlgInvIds();
-	
-      $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $mapFile --algInvocationId $algInvIds --workflowContext --commit");
+      
+      if ($algInvIds) {
+	  $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $mapFile --algInvocationId $algInvIds --workflowContext --commit");
+      } else {
+	$self->log("No algorithm invocation IDs found for this plugin step.  The plugin must have been manually undone.  Exiting");
+      }
 	
     }else{
 
