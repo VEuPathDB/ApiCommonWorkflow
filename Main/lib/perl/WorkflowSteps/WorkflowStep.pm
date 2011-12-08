@@ -164,12 +164,13 @@ sub runPlugin {
     my $undoPlugin = $self->getUndoPlugin($plugin);
     if ($undo) {
       my $algInvIds = $self->getAlgInvIds();
-      if($commit =~ /undoTables/){
-	  $cmd = "ga $undoPlugin --algInvocationId '$algInvIds' --workflowContext $commit";
-      }else {
-	  $cmd = "ga $undoPlugin --algInvocationId '$algInvIds' --workflowContext --commit";
+      if ($algInvIds) {    # may have been undone manually, so might not be any alg inv ids
+	  if($commit =~ /undoTables/){
+	      $cmd = "ga $undoPlugin --algInvocationId '$algInvIds' --workflowContext $commit";
+	  }else {
+	      $cmd = "ga $undoPlugin --algInvocationId '$algInvIds' --workflowContext --commit";
+	  }
       }
-
     } else {
 ;
       $cmd = "ga $plugin --workflowstepid $self->{id} $commit --comment \"$comment\"";
