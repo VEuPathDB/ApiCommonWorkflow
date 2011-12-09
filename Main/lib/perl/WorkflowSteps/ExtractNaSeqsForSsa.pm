@@ -19,7 +19,7 @@ sub run {
              where ns.taxon_id = t.taxon_id
                and t.ncbi_tax_id = $ncbiTaxonId
                and ns.sequence_ontology_id = so.sequence_ontology_id
-               and so.term_name in ('mitochondrial_chromosome','contig','chromosome','apicoplast_chromosome','genomic_DNA')";
+               and so.term_name in ('mitochondrial_chromosome','contig','chromosome','apicoplast_chromosome','supercontig')";
 
   if ($useTopLevel) {
     $sql = "select sa.source_id||':1-'||ns.length||'_strand=+', ns.sequence
