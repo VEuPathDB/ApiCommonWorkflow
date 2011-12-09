@@ -24,6 +24,8 @@ sub run {
  
   $self->error("Parameter queryType=$queryType is invalid.  It must be either dna or protein") unless $queryType eq 'dna' || $queryType eq 'protein';
 
+  $queryType = 'prot' if $queryType eq 'protein';
+
   if ($undo) {
     $self->runCmd(0,"rm -rf $workflowDataDir/$taskInputDir");
   }else {
@@ -42,7 +44,7 @@ sub run {
     my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
     open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
 
-   my $blatParams = $queryType eq 'protein' ? 'blatParams=-minScore=25 -minIdentity=20' : '';
+   my $blatParams = $queryType eq 'prot' ? 'blatParams=-minScore=25 -minIdentity=20' : '';
     print F
 "gaBinPath=$gaBinPath
 targetDirPath=$clusterWorkflowDataDir/$targetDir/nib
