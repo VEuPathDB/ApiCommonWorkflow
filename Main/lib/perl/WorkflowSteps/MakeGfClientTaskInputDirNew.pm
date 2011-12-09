@@ -42,6 +42,7 @@ sub run {
     my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
     open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
 
+   my $blatParams = $queryType eq 'protein' ? 'blatParams=-minScore=25 -minIdentity=20' : '';
     print F
 "gaBinPath=$gaBinPath
 targetDirPath=$clusterWorkflowDataDir/$targetDir/nib
@@ -49,6 +50,7 @@ queryPath=$clusterWorkflowDataDir/$queryFile
 nodePort=5550
 maxIntron=$maxIntronSize
 queryType=$queryType
+$blatParams
 ";
   close(F);
  }
