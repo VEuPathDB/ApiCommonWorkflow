@@ -18,7 +18,7 @@ sub run {
   my $queryExtDbRlsSpec = $self->getParamValue('queryExtDbRlsSpec');
   my $queryTable = $self->getParamValue('queryTable');
   my $queryFile = $self->getParamValue('queryFile');
-  my $regex = $self->getParamValue('regex');
+  my $queryRegex = $self->getParamValue('queryIdRegex');
   my $action = $self->getParamValue('action');
   my $percentTop = $self->getParamValue('percentTop');
   my $blatFile = $self->getParamValue('blatFile');
