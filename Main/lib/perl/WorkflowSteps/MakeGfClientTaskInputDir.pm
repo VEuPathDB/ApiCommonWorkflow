@@ -22,7 +22,7 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
  
-  $self->error("Parameter queryType=$queryType is invalid.  It must be either dna or protein") unless $queryType eq 'dna' || $queryType eq 'protein';
+  $self->error("Parameter queryType=$queryType is invalid.  It must be either dna or protein") unless $queryType eq 'dna' || $queryType eq 'prot';
 
   if ($undo) {
     $self->runCmd(0,"rm -rf $workflowDataDir/$taskInputDir");
@@ -40,7 +40,7 @@ sub run {
 				       "DJob::DistribJobTasks::GenomeAlignWithGfClientTask");
     # make task.prop file
     my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
-    my $blatParams = $queryType eq 'protein' ? 'blatParams=-minScore=25 -minIdentity=20' : '';
+    my $blatParams = $queryType eq 'prot' ? 'blatParams=-minScore=25 -minIdentity=20' : '';
 
     open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
 
