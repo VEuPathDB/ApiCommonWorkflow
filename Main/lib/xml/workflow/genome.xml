@@ -8,7 +8,7 @@
   <param name="maxIntronSize"/>
   <param name="taxonHierarchyForBlastxFilter"/>
   <param name="genomeSize"/>
-  <param name="runtRNAScan"/>
+  <param name="annotationIncludestRNAs"/>
   <param name="isReferenceStrain"/>
   <param name="organismResourceXmlFile"/>
   <param name="genomicSeqsFile"/>
@@ -56,21 +56,21 @@
     </step>
 
     <step name="runTRNAScan"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTRNAScan" includeIf="$$runtRNAScan$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTRNAScan" excludeIf="$$annotationIncludestRNAs$$">
       <paramValue name="seqFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/tRNAScan.out</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
     <step name="document-tRNAScan"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="$$runtRNAScan$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" excludeIf="$$annotationIncludestRNAs$$">
       <paramValue name="method">tRNAscan_MTHD</paramValue>
       <paramValue name="version">1.4</paramValue>
       <paramValue name="parameters"></paramValue>
       <depends name="runTRNAScan"/>
     </step>
 
-    <step name="loadTRNAScan" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTRNAScan" stepLoadTypes="plugin" includeIf="$$runtRNAScan$$">
+    <step name="loadTRNAScan" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTRNAScan" stepLoadTypes="plugin" excludeIf="$$annotationIncludestRNAs$$">
       <paramValue name="inputFile">$$dataDir$$/tRNAScan.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="tRNAExtDbRlsSpec">$$organismAbbrev$$TRNAscan-SE|1.3</paramValue>
