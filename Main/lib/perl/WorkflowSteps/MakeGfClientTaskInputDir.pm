@@ -48,7 +48,6 @@ sub run {
 "gaBinPath=$gaBinPath
 targetDirPath=$clusterWorkflowDataDir/$targetDir/nib
 queryPath=$clusterWorkflowDataDir/$queryFile
-nodePort=5550
 maxIntron=$maxIntronSize
 queryType=$queryType
 $blatParams
