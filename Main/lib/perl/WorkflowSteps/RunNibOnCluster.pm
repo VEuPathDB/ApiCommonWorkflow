@@ -4,26 +4,30 @@ package ApiCommonWorkflow::Main::WorkflowSteps::RunNibOnCluster;
 
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use File::Basename;
 
+####################################################################################################################
+###convert from Fasta to .nib format, which is a somewhat less dense randomly accessible format that predates .2bit.  
+###Note each .nib file can only contain a single sequence.
+####################################################################################################################
 
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $inputFile = $self->getParamValue('inputFile');
-  my $outputDir = $self->getParamValue('outputDir');
+  my $inputTargetListFile = $self->getParamValue('inputTargetListFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
+  my $dirname = dirname($inputTargetListFile);
 
-  my $cmd = "runFaToNib --filesFile $clusterWorkflowDataDir/$inputFile";
+  my $cmd = "runFaToNib --filesFile $clusterWorkflowDataDir/$inputTargetListFile";
 
   if ($undo) {
-    $self->runCmdOnCluster(0,"rm -f $clusterWorkflowDataDir/$outputDir/test.nib");
+    $self->runCmdOnCluster(0,"rm -r $clusterWorkflowDataDir/$dirname/nib/");
   } else {
       if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-	  $self->testInputFile('outputDir', "$workflowDataDir/$outputDir");
-	  $self->runCmdOnCluster(0,"echo test > $clusterWorkflowDataDir/$outputDir/test.nib") unless $undo;
+	  $self->testInputFile('inputTargetListFile', "$workflowDataDir/$inputTargetListFile");
+	  $self->runCmdOnCluster(0,"mkdir $clusterWorkflowDataDir/$dirname/nib") unless $undo;
       }else{
 	  $self->runCmdOnCluster($test,$cmd);
       }
@@ -32,8 +36,7 @@ sub run {
 
 sub getParamDeclaration {
   return (
-     'inputFile',
-     'outputDir',
+     'inputTargetListFile',
     );
 }
 
