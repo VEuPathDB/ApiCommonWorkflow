@@ -10,7 +10,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $tables = "GeneId";
-  my $prefix = $self->getParamValue('prefix');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
   my $gusHome = $self->getSharedConfig('gusHome');
   my $email = $self->getSharedConfig('email');
@@ -30,8 +30,7 @@ sub run {
   close F;
   my $cmd;
 
-      $cmd = "tuningManager -prefix '$prefix' --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail '$email' --tables $tables";
-
+      $cmd = "tuningManager -prefix '${organismAbbrev}_' --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail '$email' --tables $tables";
 
   if ($undo){
      $self->runCmd(0, "echo Doing nothing for \"undo\" Tuning Manager.\n");  
@@ -46,7 +45,7 @@ sub run {
 }
 
 sub getParamsDeclaration {
-  return (
+  return ('organismAbbrev',
 	 );
 }
 

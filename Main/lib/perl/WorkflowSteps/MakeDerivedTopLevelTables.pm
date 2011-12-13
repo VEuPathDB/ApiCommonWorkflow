@@ -9,7 +9,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $prefix = $self->getParamValue('prefix');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
   my $tables = "GeneAttributes,SequenceAttributes,FeatureLocation";
 
@@ -32,7 +32,7 @@ sub run {
   close F;
   my $cmd;
 
-      $cmd = "tuningManager -prefix '$prefix' --instance '$instance' --propFile $stepDir/$xmlConfigFileName --doUpdate --notifyEmail '$email' --tables $tables";
+      $cmd = "tuningManager -prefix '${organismAbbrev}_' --instance '$instance' --propFile $stepDir/$xmlConfigFileName --doUpdate --notifyEmail '$email' --tables $tables";
 
 
   if ($undo){
@@ -48,7 +48,7 @@ sub run {
 }
 
 sub getParamsDeclaration {
-  return (
+  return ('organismAbbrev',
 	 );
 }
 
