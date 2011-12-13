@@ -107,6 +107,34 @@
     </resource>
   </datasetClass>
 
+  <datasetClass class="genbank_secondary_genome" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="soTerm"/>
+    <prop name="mapFile"/>
+
+    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_genbank/${version}/final/genome.gbf">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.gbf --fileFormat genbank --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out --validationLog @@dataDir@@/validation.log</pluginArgs>
+    </resource>
+  </datasetClass>
+
   <datasetClass class="genbank_organelle_genome" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
@@ -161,6 +189,34 @@
       </manualGet>
 
       <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.embl --fileFormat embl --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out --validationLog @@dataDir@@/validation.log</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="embl_secondary_genome" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="soTerm"/>
+    <prop name="mapFile"/>
+
+    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_embl/${version}/final/genome.embl">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.embl --fileFormat embl --soCvsVersion @@SO_VER@@ --organism ${ncbiTaxonId} --seqSoTerm ${soTerm} --bioperlTreeOutput @@dataDir@@/bioperlTree.out--validationLog @@dataDir@@/validation.log</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -316,6 +372,34 @@
     <prop name="organelle"/>
 
     <graphPlanFile name="makeOrganelleWebsiteFiles.xml"/> 
+    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC" version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              parentResource="${organismAbbrev}_primary_genome_RSRC"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_fasta/${version}/final/genome.fasta">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--externalDatabaseName %PARENT_RESOURCE_NAME% --externalDatabaseVersion %PARENT_RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTerm} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="fasta_secondary_genome" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="table"/>  <!-- example:  DoTS::NASequence -->
+    <prop name="soTerm"/>
+    <prop name="regexSourceId"/>
+
     <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
 
     <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC" version="${version}"
