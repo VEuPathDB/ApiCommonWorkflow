@@ -10,6 +10,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $tables = "GeneId";
+  my $prefix = $self->getParamValue('prefix');
 
   my $gusHome = $self->getSharedConfig('gusHome');
   my $email = $self->getSharedConfig('email');
@@ -29,7 +30,7 @@ sub run {
   close F;
   my $cmd;
 
-      $cmd = "tuningManager --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail '$email' --tables $tables";
+      $cmd = "tuningManager -prefix '$prefix' --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail '$email' --tables $tables";
 
 
   if ($undo){

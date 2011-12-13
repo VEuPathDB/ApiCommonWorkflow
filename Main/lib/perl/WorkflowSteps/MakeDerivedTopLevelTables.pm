@@ -9,6 +9,8 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  my $prefix = $self->getParamValue('prefix');
+
   my $tables = "GeneAttributes,SequenceAttributes,FeatureLocation";
 
   my $gusHome = $self->getSharedConfig('gusHome');
@@ -30,7 +32,7 @@ sub run {
   close F;
   my $cmd;
 
-      $cmd = "tuningManager --instance '$instance' --propFile $stepDir/$xmlConfigFileName --doUpdate --notifyEmail '$email' --tables $tables";
+      $cmd = "tuningManager -prefix '$prefix' --instance '$instance' --propFile $stepDir/$xmlConfigFileName --doUpdate --notifyEmail '$email' --tables $tables";
 
 
   if ($undo){
