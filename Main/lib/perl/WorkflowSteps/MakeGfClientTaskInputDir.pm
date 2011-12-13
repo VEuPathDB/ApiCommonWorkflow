@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDirNew;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDir;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
