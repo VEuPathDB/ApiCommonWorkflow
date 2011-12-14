@@ -10,8 +10,8 @@ sub run {
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $outputFile = $self->getParamValue('outputFile');
-  my $useCDSCoordinates = $self->getParamValue('useCDSCoordinates');
-  my $useTopLevel = $self->getParamValue('useTopLevel');
+  my $useCDSCoordinates = $self->getBooleanParamValue('useCDSCoordinates');
+  my $useTopLevel = $self->getBooleanParamValue('useTopLevel');
 
   my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
 
@@ -19,7 +19,9 @@ sub run {
 
   my $cmd = "extractGeneModelForSsa --outputFile $workflowDataDir/$outputFile --taxonId $taxonId";
   
-  $cmd .= " --coordinates CDS" if (lc $useCDSCoordinates eq 'true');
+  $cmd .= " --coordinates CDS" if ($useCDSCoordinates);
+
+  $cmd .= " --topLevel" if ($useTopLevel);
 
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
