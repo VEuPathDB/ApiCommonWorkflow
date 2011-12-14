@@ -20,6 +20,8 @@ use ApiCommonWorkflow::Main::Util::OrganismInfo;
 sub getExtDbRlsId {
   my ($self, $test, $extDbRlsSpec) = @_;
 
+  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
+
   my ($extDbName, $extDbRlsVer) = $self->getExtDbInfo($test,$extDbRlsSpec);
 
   my $sql = "select external_database_release_id from sres.externaldatabaserelease d, sres.externaldatabase x where x.name = '${extDbName}' and x.external_database_id = d.external_database_id and d.version = '${extDbRlsVer}'";
@@ -36,6 +38,8 @@ sub getExtDbRlsId {
 
 sub getExtDbRlsId {
   my ($self, $test, $extDbRlsSpec) = @_;
+
+  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
 
   my ($extDbName, $extDbRlsVer) = $self->getExtDbInfo($test,$extDbRlsSpec);
 
@@ -54,6 +58,7 @@ sub getExtDbRlsId {
 sub getExtDbVersion {
   my ($self, $test, $extDbName) = @_;
 
+  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
 
   my $sql = "select version from sres.externaldatabaserelease edr, sres.externaldatabase ed
              where ed.name = '$extDbName'
@@ -73,6 +78,8 @@ sub getExtDbVersion {
 sub getExtDbInfo {
     my ($self,$test, $extDbRlsSpec) = @_;
 
+  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
+
     if ($test) {
       return ("UNKNOWN_DbName","UNKNOWN_DbVer");
     } elsif ($extDbRlsSpec =~ /(.+)\|(.+)/) {
@@ -87,6 +94,8 @@ sub getExtDbInfo {
 sub getTableId {
   my ($self, $test, $tableName) = @_;
 
+  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
+
   return "UNKNOWN_table_name" if $test;
 
   my $sql = "select table_id from core.tableinfo where name = '$tableName'";
@@ -100,6 +109,8 @@ sub getTableId {
 # when all api workflows use organismAbbrev as key for an organism
 sub getTaxonIdFromNcbiTaxId {
   my ($self, $test, $taxId) = @_;
+
+  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
 
   my $sql = "select taxon_id from sres.taxon where ncbi_tax_id = $taxId";
 
@@ -117,6 +128,8 @@ sub getTaxonIdFromNcbiTaxId {
 
 sub getSoIds {
   my ($self,  $test,$soTermIdsOrNames) = @_;
+
+  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
 
   my ($soTermIds,$soTerms);
 
@@ -240,6 +253,8 @@ sub getOrganismInfo {
 # if in test mode, files go into test/ dir to keep separate from real files
 sub getWebsiteFilesDir {
     my ($self, $test) = @_;
+
+  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
 
     my $websiteFilesDir = $self->getSharedConfig('websiteFilesDir');
     return $test? "$websiteFilesDir/test" : $websiteFilesDir;
