@@ -9,12 +9,14 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputFile = $self->getParamValue('inputFile');
-  my $epiExtDbSpecs = $self->getParamValue('iedbExtDbRlsSpec');
+  my $epiExtDbName = $self->getParamValue('iedbExtDbName');
   my $seqExtDbSpecs = $self->getParamValue('genomeExtDbRlsSpec');
+
+  my $epiExtDbVersion = $self->getExtDbVersion($test,$epiExtDbName );
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args =" --inputFile $workflowDataDir/$inputFile --extDbRelSpec '$epiExtDbSpecs' --seqExtDbRelSpec '$seqExtDbSpecs'";
+  my $args =" --inputFile $workflowDataDir/$inputFile --extDbRelSpec '$epiExtDbName|$epiExtDbVersion' --seqExtDbRelSpec '$seqExtDbSpecs'";
 
     if ($test) {
       $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");

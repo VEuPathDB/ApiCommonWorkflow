@@ -14,7 +14,7 @@ sub run {
 
   my $tRNAExtDbRlsSpec = $self->getParamValue('tRNAExtDbRlsSpec');
 
-  my $soVersion = $self->getParamValue('soVersion');
+  my $soVersion = $self->getExtDbVersion($test, 'SO_RSRC');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -30,14 +30,6 @@ sub run {
    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadTRNAScan", $args);
 
 
-}
-sub getParamsDeclaration {
-  return (
-          'inputFile',
-          'genomeExtDbRlsSpec',
-          'tRNAExtDbRlsSpec',
-	  'soVersion',
-         );
 }
 
 sub getConfigDeclaration {

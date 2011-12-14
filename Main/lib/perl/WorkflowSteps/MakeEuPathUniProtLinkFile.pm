@@ -9,11 +9,10 @@ sub getDownloadFileCmd {
   my ($self, $downloadFileName, $test) = @_;
 
 
-  my $dbrefExtDbRlsSpec = $self->getParamValue('dbrefExtDbRlsSpec');
+  my $dbrefExtDbName = $self->getParamValue('dbrefExtDbName');
   my $projectName = $self->getParamValue('projectName');
 
-  my $arg = ($dbrefExtDbRlsSpec =~ /\|/)? 'dbrefExtDbSpec' : 'dbrefExtDbName';
-  my $cmd = "dumpEuPath-UniProtLinks --dbrefExtDbSpec '$dbrefExtDbRlsSpec' --outfile $downloadFileName --projectName $projectName";
+  my $cmd = "dumpEuPath-UniProtLinks --dbrefExtDbName $dbrefExtDbName --outfile $downloadFileName --projectName $projectName";
   return $cmd;
 }
 

@@ -3,10 +3,10 @@
   <param name="maxIntronSize"/>       <!-- ??? -->
   <param name="organismAbbrev"/>      <!-- ${organismAbbrev} -->
   <param name="targetSeqsDir"/>       <!-- genomeSeqsDir -->
-  <param name="targetExtDbRlsSpec"/>  <!-- ${organismAbbrev}_primary_genome_RSRC|${genomeVersion} -->
+  <param name="targetExtDbName"/>     <!-- ${organismAbbrev}_primary_genome_RSRC -->
   <param name="queryFile"/>           <!-- nrdb proteins file -->
   <param name="queryTable"/>          <!-- DoTS::ExternalAASequence -->
-  <param name="queryExtDbRlsSpec"/>   <!-- NRDB_RSRC|@@NRDB_VER@@-->
+  <param name="queryExtDbName"/>      <!-- NRDB_RSRC-->
   <param name="queryIdRegex"/>        <!-- gi\\|(\\d+)\\| -->
   <param name="loadSubjectSubset"/>   <!-- true -->
   <param name="filterByTaxon"/>       <!-- true -->
@@ -73,14 +73,14 @@
 
   <!-- this step needs a loadBalance=1 to avoid a race condition -->
   <step name="loadQuerySubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertFastaSubset" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin">
-    <paramValue name="extDbRlsSpec">$$queryExtDbRlsSpec$$</paramValue>
+    <paramValue name="extDbName">$$queryExtDbName$$</paramValue>
     <paramValue name="fastaFile">$$queryFile$$</paramValue>
     <paramValue name="idsFile">$$dataDir$$/similarityIds.out</paramValue>
     <depends name="extractIdsFromBlatResult"/>
   </step>
 
   <step name="updateTaxonFieldForQuerySubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateTaxonFieldFromFile" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin" undoRoot="loadQuerySubset">
-    <paramValue name="extDbRlsSpec">$$queryExtDbRlsSpec$$</paramValue>
+    <paramValue name="extDbName">$$queryExtDbName$$</paramValue>
     <paramValue name="taxIdFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
     <paramValue name="shortenSubjectSourceIdTo">$$shortenSubjectSourceIdTo$$</paramValue>
     <depends name="loadQuerySubset"/>
@@ -89,9 +89,9 @@
   <step name="insertBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
 
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="targetExtDbRlsSpec">$$targetExtDbRlsSpec$$</paramValue>
+    <paramValue name="targetExtDbName">$$targetExtDbName$$</paramValue>
     <paramValue name="targetTable">ExternalNASequence</paramValue>
-    <paramValue name="queryExtDbRlsSpec">$$queryExtDbRlsSpec$$</paramValue>
+    <paramValue name="queryExtDbName">$$queryExtDbName$$</paramValue>
     <paramValue name="queryTable">$$queryTable$$</paramValue>
     <paramValue name="queryIdRegex">$$queryIdRegex$$</paramValue>
     <paramValue name="action">load</paramValue>

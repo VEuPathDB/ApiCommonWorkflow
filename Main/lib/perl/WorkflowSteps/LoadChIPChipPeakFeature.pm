@@ -11,11 +11,9 @@ sub run {
 
   my $inputFile = $self->getParamValue('inputFile');
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
-  my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $substepClass = $self->getParamValue('substepClass');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $isfMappingFile = $self->getParamValue('isfMappingFile');
-  my $soVersion = $self->getParamValue('soVersion');
 
   my $gusHome = $self->getSharedConfig('gusHome');
 
@@ -28,6 +26,8 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
   
   my $algInvIds = $self->getAlgInvIds();
+
+  my $soVersion = $self->getExtDbVersion('SO_RSRC');
 
   my $args = <<"EOF";
 --extDbName '$extDbName'  \\

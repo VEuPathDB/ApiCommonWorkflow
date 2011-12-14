@@ -9,7 +9,9 @@ sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
   my $genomeDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
-  my $interproDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('interproExtDbRlsSpec'));
+  my $interproExtDbName = $self->getParamValue('interproExtDbName');
+  my $interproExtDbVersion = $self->getExtDbVersion($test,$interproExtDbName);
+  my $interproDbRlsId = $self->getExtDbRlsId($test,"$interproExtDbName|$interproExtDbVersion");
   my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
 
   my $sql = <<"EOF";

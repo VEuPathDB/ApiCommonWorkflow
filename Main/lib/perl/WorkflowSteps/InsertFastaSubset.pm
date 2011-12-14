@@ -9,11 +9,12 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
+  my $extDbName = $self->getParamValue('extDbName');
   my $fastaFile = $self->getParamValue('fastaFile');
   my $idsFile = $self->getParamValue('idsFile');
 
-  my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$extDbRlsSpec);
+  my $extDbVer = $self->getExtDbVersion($test, $extDbName);
+
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -28,14 +29,6 @@ my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbRl
 
   $self->runPlugin($test,$undo, "GUS::Supported::Plugin::LoadFastaSequences",$args);
 
-}
-
-sub getParamDeclaration {
-  return (
-	  'idsFile',
-	  'extDbRlsSpec',
-	  'fastaFile',
-	 );
 }
 
 

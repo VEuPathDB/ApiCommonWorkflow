@@ -10,11 +10,12 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $inputDir = $self->getParamValue('inputDir');
-    my $interproExtDbRlsSpec = $self->getParamValue('interproExtDbRlsSpec');
+    my $interproExtDbName = $self->getParamValue('interproExtDbName');
     my $configFile = $self->getParamValue('configFile');
-    my $goVersion = $self->getParamValue('goVersion');
-    my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$interproExtDbRlsSpec);
+
+    my $interproExtDbVer = $self->getExtDbVersion($test,$interproExtDbName);
     my $aaSeqTable = 'TranslatedAASequence';
+    my $goVersion = $self->getExtDbVersion($test, 'GO_RSRC');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
   
@@ -22,8 +23,8 @@ sub run {
 --resultFileDir=$workflowDataDir/$inputDir \\
 --confFile=$workflowDataDir/$configFile \\
 --aaSeqTable=$aaSeqTable \\
---extDbName='$extDbName' \\
---extDbRlsVer='$extDbRlsVer' \\
+--extDbName='$interproExtDbName' \\
+--extDbRlsVer='$interproExtDbVer' \\
 --goVersion=\'$goVersion\' \\
 EOF
 
@@ -33,14 +34,6 @@ EOF
 
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertInterproscanResults", $args);
 
-}
-
-
-sub getParamsDeclaration {
-    return ('inputDir',
-            'interproExtDbRlsSpec',
-            'configFile'
-           );
 }
 
 

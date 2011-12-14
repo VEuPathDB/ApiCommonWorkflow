@@ -22,11 +22,6 @@ sub run {
 
 
 }
-sub getParamsDeclaration {
-  return (
-          'xrefsFile',
-         );
-}
 
 sub getConfigDeclaration {
   return (

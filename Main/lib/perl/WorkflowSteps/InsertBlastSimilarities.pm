@@ -11,10 +11,10 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
   my $queryTable = $self->getParamValue('queryTable');
   my $queryTableSrcIdCol = $self->getParamValue('queryTableIdCol');
-  my $queryExtDbRlsSpec = $self->getParamValue('queryExtDbRlsSpec');
+  my $queryExtDbName = $self->getParamValue('queryExtDbName');
   my $subjectTable = $self->getParamValue('subjectTable');
   my $subjectTableSrcIdCol = $self->getParamValue('subjectTableIdCol');
-  my $subjectExtDbRlsSpec = $self->getParamValue('subjectExtDbRlsSpec');
+  my $subjectExtDbName = $self->getParamValue('subjectExtDbName');
   my $options = $self->getParamValue('options');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -24,15 +24,15 @@ sub run {
   my $subjectColArg = "--subjectTableSrcIdCol $subjectTableSrcIdCol" if $subjectTableSrcIdCol;
 
   my $queryExtDbArg = "";
-  if ($queryExtDbRlsSpec) {
-    my ($queryDbName, $queryDbRlsVer) = $self->getExtDbInfo($test,$queryExtDbRlsSpec);
-    $queryExtDbArg = " --queryExtDbName '$queryDbName' --queryExtDbRlsVer '$queryDbRlsVer'";
+  if ($queryExtDbName) {
+    my $queryExtDbVer = $self->getExtDbVersion($test,$queryExtDbName);
+    $queryExtDbArg = " --queryExtDbName '$queryExtDbName' --queryExtDbRlsVer '$queryExtDbVer'";
   }
 
   my $subjectExtDbArg = "";
-  if ($subjectExtDbRlsSpec) {
-    my ($subjectDbName, $subjectDbRlsVer) = $self->getExtDbInfo($test,$subjectExtDbRlsSpec);
-    $subjectExtDbArg = " --subjectExtDbName '$subjectDbName' --subjectExtDbRlsVer '$subjectDbRlsVer'";
+  if ($subjectExtDbName) {
+    my $subjectExtDbVer = $self->getExtDbVersion($test,$subjectExtDbName);
+    $subjectExtDbArg = " --subjectExtDbName '$subjectExtDbName' --subjectExtDbRlsVer '$subjectExtDbVer'";
   }
 
   $self->runCmd(0, "gunzip $workflowDataDir/$inputFile.gz") if (-e "$workflowDataDir/$inputFile.gz");
@@ -46,18 +46,6 @@ sub run {
   $self->runPlugin($test,$undo, "GUS::Supported::Plugin::InsertBlastSimilarities", $args);
 }
 
-sub getParamsDeclaration {
-  return (
-	  'inputFile',
-	  'queryTable',
-	  'queryTableSrcIdCol',
-	  'queryExtDbRlsSpec',
-	  'subjectTable',
-	  'subjectTableSrcIdCol',
-	  'subjectExtDbRlsSpec',
-	  'options',
-	);
-}
 
 sub getConfigurationDeclaration {
   return ();

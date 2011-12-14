@@ -3,10 +3,10 @@
     <param name="nickName"/>
     <param name="queryFile"/>
     <param name="queryTable"/>
-    <param name="queryExtDbRlsSpec"/>
+    <param name="queryExtDbName"/>
     <param name="subjectFile"/>
     <param name="subjectTable"/>
-    <param name="subjectExtDbRlsSpec"/>
+    <param name="subjectExtDbName"/>
     <param name="blastArgs"/>
     <param name="idRegex"/>
     <param name="blastType"/>
@@ -71,14 +71,14 @@
 
     <!-- this step needs a loadBalance=1 to avoid a race condition -->
     <step name="loadSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertFastaSubset" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin">
-      <paramValue name="extDbRlsSpec">$$subjectExtDbRlsSpec$$</paramValue>
+      <paramValue name="extDbName">$$subjectExtDbName$$</paramValue>
       <paramValue name="fastaFile">$$subjectFile$$</paramValue>
       <paramValue name="idsFile">$$dataDir$$/blastSimIds.out</paramValue>
       <depends name="extractIdsFromBlastResult"/>
     </step>
 
     <step name="updateTaxonFieldForSubjectSubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateTaxonFieldFromFile" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin" undoRoot="loadSubjectSubset">
-      <paramValue name="extDbRlsSpec">$$subjectExtDbRlsSpec$$</paramValue>
+      <paramValue name="extDbName">$$subjectExtDbName$$</paramValue>
       <paramValue name="shortenSubjectSourceIdTo">$$shortenSubjectSourceIdTo$$</paramValue>
       <paramValue name="taxIdFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
       <depends name="loadSubjectSubset"/>
@@ -88,10 +88,10 @@
       <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
       <paramValue name="queryTable">$$queryTable$$</paramValue>
       <paramValue name="queryTableIdCol">source_id</paramValue>
-      <paramValue name="queryExtDbRlsSpec">$$queryExtDbRlsSpec$$</paramValue>
+      <paramValue name="queryExtDbName">$$queryExtDbName$$</paramValue>
       <paramValue name="subjectTable">$$subjectTable$$</paramValue>
       <paramValue name="subjectTableIdCol">source_id</paramValue>
-      <paramValue name="subjectExtDbRlsSpec">$$subjectExtDbRlsSpec$$</paramValue>
+      <paramValue name="subjectExtDbName">$$subjectExtDbName$$</paramValue>
       <paramValue name="options">$$loadOptions$$</paramValue>
       <depends name="loadSubjectSubset"/>
     </step>

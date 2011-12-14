@@ -486,10 +486,11 @@
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
     <prop name="speciesNcbiTaxonId"/>
+    <prop name="version"/>
 
     <graphPlanFile name="ESTs.xml"/>
 
-    <resource resource="${organismAbbrev}_dbEST_RSRC" version="@@${organismAbbrev}_dbEST_VER@@"
+    <resource resource="${organismAbbrev}_dbEST_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::dbEST"
               scope="species"
               organismAbbrev="${organismAbbrev}">
@@ -568,12 +569,13 @@
   <datasetClass class="referenceStrain-epitope_sequences_IEDB" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="organismAbbrev"/>
+    <prop name="version"/>
     <prop name="speciesNcbiTaxonId"/>
 
     <graphPlanFile name="epitopes.xml"/>
 
     <resource resource="${organismAbbrev}_epitope_IEDB_RSRC"
-              version="@@${organismAbbrev}_epitope_IEDB_VER@@"
+              version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
               scope="species"
               organismAbbrev="${organismAbbrev}">
@@ -584,9 +586,9 @@
       </manualGet>
 
       <!-- validate that IEDB knows about this taxon id.  this unpack just greps IEDB's taxon list -->
-      <unpack><![CDATA[unzip -p @@manualDeliveryDir@@/common/epitope/IEDB/@@${organismAbbrev}_epitope_IEDB_VER@@/fromProvider/OrganismList.zip | grep "<TaxId>${speciesNcbiTaxonId}<"]]></unpack>
+      <unpack><![CDATA[unzip -p @@manualDeliveryDir@@/common/epitope/IEDB/${version}/fromProvider/OrganismList.zip | grep "<TaxId>${speciesNcbiTaxonId}<"]]></unpack>
 
-      <unpack>iedbMakeTabFileFromXml --input_dir @@manualDeliveryDir@@/common/epitope/IEDB/@@${organismAbbrev}_epitope_IEDB_VER@@/final/iedb_export_fixed --outputfile @@dataDir@@/oneOrganism.txt --NCBITaxId ${speciesNcbiTaxonId} --organismListFile @@manualDeliveryDir@@/common/epitope/IEDB/@@${organismAbbrev}_epitope_IEDB_VER@@/fromProvider/OrganismList.xml</unpack>
+      <unpack>iedbMakeTabFileFromXml --input_dir @@manualDeliveryDir@@/common/epitope/IEDB/%RESOURCE_VERSION%/final/iedb_export_fixed --outputfile @@dataDir@@/oneOrganism.txt --NCBITaxId ${speciesNcbiTaxonId} --organismListFile @@manualDeliveryDir@@/common/epitope/IEDB/%RESOURCE_VERSION%/fromProvider/OrganismList.xml</unpack>
 
       <unpack>mkdir -p @@dataDir@@/fasta</unpack>
 
@@ -733,17 +735,18 @@
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
     <prop name="genomeVersion"/>
+    <prop name="version"/>
 
     <graphPlanFile name="dbXRefs.xml"/>
 
     <resource resource="${organismAbbrev}_dbxref_gene2Entrez_RSRC"
-	      version="@@${organismAbbrev}_dbxref_gene2Entrez_VER@@"
+	      version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
               scope="organism"
               organismAbbrev="${organismAbbrev}">
 
 
-      <manualGet fileOrDir="common/dbxref/gene2Entrez/@@${organismAbbrev}_dbxref_gene2Entrez_VER@@/final/gene_info.gz">
+      <manualGet fileOrDir="common/dbxref/gene2Entrez/${version}/final/gene_info.gz">
         <dir name="final">
         </dir>
       </manualGet>
@@ -764,16 +767,17 @@
     <prop name="organismAbbrev"/>
     <prop name="ncbiTaxonId"/>
     <prop name="genomeVersion"/>
+    <prop name="version"/>
 
     <graphPlanFile name="dbXRefs.xml"/>
 
     <resource resource="${organismAbbrev}_dbxref_gene2Uniprot_RSRC"
-	      version="@@${organismAbbrev}_dbxref_gene2Uniprot_VER@@"
+	      version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
               scope="organism"
               organismAbbrev="${organismAbbrev}">
 
-      <manualGet fileOrDir="common/dbxref/gene2Uniprot/@@${organismAbbrev}_dbxref_gene2Uniprot_VER@@/final/idmapping_selected.tab.gz">
+      <manualGet fileOrDir="common/dbxref/gene2Uniprot/${version}/final/idmapping_selected.tab.gz">
         <dir name="final">
         </dir>
       </manualGet>
@@ -1448,15 +1452,16 @@
   <datasetClass class="orthomcl" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
+    <prop name="version"/>
 
     <graphPlanFile name="comparativeGenomics.xml"/>
 
-    <resource resource="OrthoMCL_RSRC" version="@@OrthoMCL_VER@@"
+    <resource resource="OrthoMCL_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertOrthologousGroups"
               scope="global"
               >
 
-      <manualGet fileOrDir="common/orthology/orthoMCL/@@OrthoMCL_VER@@/orthomclGroups.txt">
+      <manualGet fileOrDir="common/orthology/orthoMCL/${version}/orthomclGroups.txt">
         <dir name="final">
         </dir>
       </manualGet>
@@ -1467,10 +1472,11 @@
   <datasetClass class="orthomclTree" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
+    <prop name="version"/>
 
     <graphPlanFile name="comparativeGenomics.xml"/>
 
-    <resource resource="OrthoMCLTree_RSRC" version="@@OrthoMCL_VER@@"
+    <resource resource="OrthoMCLTree_RSRC" version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertOrthomclTaxon"
               scope="global"
               >
@@ -1491,11 +1497,12 @@
 
   <datasetClass class="geneOntology" category="" datasetFileHint="">
     <purpose></purpose>
-    <resource resource="GO_RSRC" version="@@GO_VER@@"
+    <prop name="version"/>
+    <resource resource="GO_RSRC" version="${version}"
       plugin="GUS::Supported::Plugin::InsertGeneOntology"
               scope="global"
               >
-    <manualGet fileOrDir="common/ontology/geneOntology/@@GO_VER@@/final/gene_ontology.obo">
+    <manualGet fileOrDir="common/ontology/geneOntology/${version}/final/gene_ontology.obo">
         <dir name="final">
         </dir>
     </manualGet>
@@ -1517,7 +1524,8 @@
 
   <datasetClass class="PDBProteinSequences" category="" datasetFileHint="">
     <purpose></purpose>
-    <resource resource="PDBProteinSequences_RSRC" version="@@PDBProteinSequences_VER@@"
+    <prop name="version"/>
+    <resource resource="PDBProteinSequences_RSRC" version="${version}"
       plugin="GUS::Supported::Plugin::LoadFastaSequences"
               scope="global"
               >
@@ -1534,7 +1542,8 @@
 
   <datasetClass class="taxonomy" category="" datasetFileHint="">
     <purpose></purpose>
-  <resource resource="taxonomy_RSRC" version="@@taxonomy_VER@@"
+    <prop name="version"/>
+  <resource resource="taxonomy_RSRC" version="${version}"
       plugin="GUS::Supported::Plugin::LoadTaxon"
               scope="global"
               >
@@ -1560,15 +1569,16 @@
 
   <datasetClass class="sequenceOntology" category="" datasetFileHint="">
     <purpose></purpose>
-  <resource resource="SO_RSRC" version="@@SO_VER@@"
+    <prop name="version"/>
+  <resource resource="SO_RSRC" version="${version}"
       plugin="GUS::Supported::Plugin::InsertSequenceOntologyOBO"
               scope="global"
               >
-    <manualGet fileOrDir="common/ontology/sequenceOntology/@@SO_VER@@/final/so.obo">
+    <manualGet fileOrDir="common/ontology/sequenceOntology/${version}/final/so.obo">
         <dir name="final">
         </dir>
     </manualGet>
-    <pluginArgs>--inputFile @@dataDir@@/so.obo --soVersion @@SO_VER@@ --soCvsVersion @@SO_VER@@</pluginArgs>
+    <pluginArgs>--inputFile @@dataDir@@/so.obo --soVersion  --soCvsVersion %RESOURCE_VERSION%</pluginArgs>
   </resource>
   </datasetClass>
 
@@ -1632,11 +1642,12 @@
 
   <datasetClass class="geneOntologyEvidenceCodes" category="" datasetFileHint="">
     <purpose></purpose>
-  <resource resource="GO_evidence_codes_RSRC" version="@@GO_evidence_codes_VER@@"
+    <prop name="version"/>
+  <resource resource="GO_evidence_codes_RSRC" version="${version}"
       plugin="ApiCommonData::Load::Plugin::InsertGOEvidenceCodesFromObo"
               scope="global"
               >
-    <manualGet fileOrDir="common/ontology/goEvidenceCodes/@@GO_evidence_codes_VER@@/final/evidence_code.obo">
+    <manualGet fileOrDir="common/ontology/goEvidenceCodes/${version}/final/evidence_code.obo">
         <dir name="final">
         </dir>
     </manualGet>
@@ -1646,12 +1657,13 @@
 
   <datasetClass class="interproscanData" category="" datasetFileHint="">
     <purpose></purpose>
-  <resource resource="InterproscanData_RSRC" version="@@InterproscanData_VER@@"
+    <prop name="version"/>
+  <resource resource="InterproscanData_RSRC" version="${version}"
       plugin="ApiCommonData::Load::Plugin::InsertInterproDomainDbs"
               scope="global"
               >
 
-    <manualGet fileOrDir="common/domain/iprscanData/@@InterproscanData_VER@@/iprscan">
+    <manualGet fileOrDir="common/domain/iprscanData/${version}/iprscan">
         <dir name="final">
         </dir>
       </manualGet>
@@ -1663,7 +1675,8 @@
 
   <datasetClass class="NRDB" category="" datasetFileHint="">
     <purpose></purpose>
-  <resource resource="NRDB_RSRC" version="@@NRDB_VER@@"
+    <prop name="version"/>
+  <resource resource="NRDB_RSRC" version="${version}"
       plugin="ApiCommonData::Load::Plugin::LoadNothing"
               scope="global"
               >

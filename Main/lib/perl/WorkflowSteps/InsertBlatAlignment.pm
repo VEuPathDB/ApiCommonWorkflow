@@ -13,9 +13,9 @@ sub run {
   # for taxon IDs at all, which will involve changing the plugin. see redmine #5520
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $targetExtDbRlsSpec = $self->getParamValue('targetExtDbRlsSpec');
+  my $targetExtDbName = $self->getParamValue('targetExtDbName');
   my $targetTable = $self->getParamValue('targetTable');
-  my $queryExtDbRlsSpec = $self->getParamValue('queryExtDbRlsSpec');
+  my $queryExtDbName = $self->getParamValue('queryExtDbName');
   my $queryTable = $self->getParamValue('queryTable');
   my $queryFile = $self->getParamValue('queryFile');
   my $queryRegex = $self->getParamValue('queryIdRegex');
@@ -27,9 +27,14 @@ sub run {
   my $queryTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
 
   my $targetTableId = $self->getTableId($test, $targetTable);
-  my $targetExtDbRlsId = $self->getExtDbRlsId($test, $targetExtDbRlsSpec);
+  my $targetExtDbVer = $self->getExtDbVersion($test,$targetExtDbName);
+  my $targetExtDbRlsId = $self->getExtDbRlsId($test, "$targetExtDbName|$targetExtDbVer");
   my $queryTableId = $self->getTableId($test, $queryTable);
-  my $queryExtDbRlsId = $self->getExtDbRlsId($test, $queryExtDbRlsSpec) if $queryExtDbRlsSpec;
+  my $queryExtDbRlsId;
+  if ($queryExtDbName) {
+      my $queryExtDbVer = $self->getExtDbVersion($test,$queryExtDbName);
+      my $queryExtDbRlsId = $self->getExtDbRlsId($test, "$queryExtDbName|$queryExtDbVer");
+  }
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
