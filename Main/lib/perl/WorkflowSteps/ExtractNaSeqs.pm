@@ -9,20 +9,21 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $table = $self->getParamValue('table');
-  my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
+  my $extDbName = $self->getParamValue('extDbName');
   my $alternateDefline = $self->getParamValue('alternateDefline');
   my $outputFile = $self->getParamValue('outputFile');
   my $separateFastaFiles = $self->getParamValue('separateFastaFiles');
   my $outputDirForSeparateFiles = $self->getParamValue('outputDirForSeparateFiles');
 
 
-  my @extDbRlsSpecList = split(/,/, $extDbRlsSpec);
+  my @extDbNameList = split(/,/, $extDbName);
 
   my $dbRlsIds;
 
-  foreach my $db (@extDbRlsSpecList){
+  foreach my $dbName (@extDbNameList){
         
-     $dbRlsIds .= $self->getExtDbRlsId($test, $db).",";
+      my $dbVer = $self->getExtDbVersion($test, $dbname);
+     $dbRlsIds .= $self->getExtDbRlsId($test, "$dbName|$dbVersion").",";
 
   }
 
