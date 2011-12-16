@@ -728,7 +728,6 @@
     </resource>
   </datasetClass>
 
-
   <!-- ONLY INCLUDE IF THIS ORGANISM'S GENOME IS IN GENBANK -->
   <datasetClass class="dbxref_gene2Entrez" category="" datasetFileHint="">
     <purpose></purpose>
@@ -787,6 +786,34 @@
       <unpack>uniprotIdMap2DbRefsFile @@dataDir@@/idmapping_selected.tab.gz @@dataDir@@/../${organismAbbrev}_dbxref_gene2Entrez_RSRC/gene2entrez.tab > @@dataDir@@/gene2uniprot.tab</unpack>
 
       <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2uniprot.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --idType 'alternate id'</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <!-- depends on dbxref_gene2Entrez -->
+  <datasetClass class="dbxref_gene2entrezUrl" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="genomeVersion"/>
+    <prop name="version"/>
+
+    <graphPlanFile name="dbXRefs.xml"/>
+
+    <resource resource="${organismAbbrev}_dbxref_gene2entrezUrl_RSRC"
+	      version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <!-- need to use the gene2entrez file to get Url of entrez gene-->
+      <unpack>gene2entrezUrlFile --inputFile @@dataDir@@/../${organismAbbrev}_dbxref_gene2Entrez_RSRC/gene2entrez.tab > @@dataDir@@/gene2entrezUrl.tab</unpack>
+
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2entrezUrl.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'</pluginArgs>
     </resource>
   </datasetClass>
 
