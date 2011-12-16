@@ -22,8 +22,8 @@ sub run {
 
   foreach my $dbName (@extDbNameList){
         
-      my $dbVer = $self->getExtDbVersion($test, $dbname);
-     $dbRlsIds .= $self->getExtDbRlsId($test, "$dbName|$dbVersion").",";
+      my $dbVer = $self->getExtDbVersion($test, $dbName);
+     $dbRlsIds .= $self->getExtDbRlsId($test, "$dbName|$dbVer").",";
 
   }
 
