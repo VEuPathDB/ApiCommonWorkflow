@@ -622,13 +622,13 @@
 
 
   <datasetClass class="IEDB_dbxrefs" category="" datasetFileHint="">
-    <purpose></purpose>
+    <purpose>Note: the version must be the same as those for the IEDB epitopes</purpose>
     <prop name="organismAbbrev"/>
 
     <graphPlanFile name="dbXRefs.xml"/>
 
     <resource resource="${organismAbbrev}_dbxref_epitope_IEDB_RSRC"
-	      version="@@${organismAbbrev}_epitope_IEDB_VER@@"
+	      version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
               scope="organism"
               organismAbbrev="${organismAbbrev}">
@@ -638,7 +638,7 @@
         </dir>
       </manualGet>
 
-      <unpack>createEpitopeDbRefFile --inputDir @@manualDeliveryDir@@/common/epitope/IEDB/@@${organismAbbrev}_epitope_IEDB_VER@@/final/iedb_export_fixed --outputFile @@dataDir@@/dbRefs.txt</unpack>
+      <unpack>createEpitopeDbRefFile --inputDir @@manualDeliveryDir@@/common/epitope/IEDB/${version}/final/iedb_export_fixed --outputFile @@dataDir@@/dbRefs.txt</unpack>
 
       <pluginArgs>--DbRefMappingFile @@dataDir@@/dbRefs.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier, remark" --tableName "AASequenceDbRef"</pluginArgs>
     </resource>
@@ -705,18 +705,19 @@
     <purpose></purpose>
     <prop name="organismAbbrev"/>
     <prop name="projectName"/>
+    <prop name="version"/>
     <prop name="ApiLocOrganism"/>   <!-- organism name as found on the ApiLoc site -->
 
 
     <graphPlanFile name="dbXRefs.xml"/>
 
     <resource resource="${organismAbbrev}_dbxref_ApiLoc_RSRC"
-	      version="@@${organismAbbrev}_dbxref_ApiLoc_VER@@"
+	      version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
               scope="organism"
               organismAbbrev="${organismAbbrev}">
 
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/gene2ApiLoc/@@${organismAbbrev}_dbxref_ApiLoc_VER@@/final/${organismAbbrev}.html">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/gene2ApiLoc/${version}/final/${organismAbbrev}.html">
         <dir name="final">
         </dir>
       </manualGet>
