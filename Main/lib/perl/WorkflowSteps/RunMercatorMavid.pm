@@ -69,9 +69,10 @@ sub findOrganismAbbrevs {
 
   opendir(INPUT, $mercatorInputsDir) or $self->error("Could not open mercator inputs dir '$mercatorInputsDir' for reading.\n");
 
+  my @files = readdir INPUT;
   my %hash;
   my $gffCount;
-  foreach my $file (readdir INPUT) {
+  foreach my $file (sort(@files)) {
     next if ($file =~ m/^\./);
     if ($file =~ /(\S+)\.fasta$/) {
       $hash{$1} = 1;		# remember this orgAbbrev
