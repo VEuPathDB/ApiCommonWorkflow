@@ -11,7 +11,9 @@ sub run {
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
-  my $tables = "GeneAttributes,SequenceAttributes,FeatureLocation";
+  #my $tables = "GeneAttributes,SequenceAttributes,FeatureLocation";
+
+  my $tables = "SequencePieceClosure,FeatureLocation,GeneId,GeneAttributes,GenomicSequence,SequenceAttributes,TaxonSpecies";
 
   my $gusHome = $self->getSharedConfig('gusHome');
   my $email = $self->getSharedConfig('email');
@@ -32,7 +34,7 @@ sub run {
   close F;
   my $cmd;
 
-      $cmd = "tuningManager -prefix '${organismAbbrev}_' --instance '$instance' --propFile $stepDir/$xmlConfigFileName --doUpdate --notifyEmail '$email' --tables $tables";
+      $cmd = "tuningManager -prefix '${organismAbbrev}_' --instance '$instance' --propFile $stepDir/$xmlConfigFileName --doUpdate --notifyEmail none --tables $tables";
 
 
   if ($undo){
