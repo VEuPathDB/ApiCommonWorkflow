@@ -702,6 +702,39 @@
     </resource>
   </datasetClass>
 
+  <datasetClass class="dbxref_gene2PubmedFromNcbi" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="genomeVersion"/>
+    <prop name="version"/>
+
+    <graphPlanFile name="dbXRefs.xml"/>
+
+    <resource resource="${organismAbbrev}_dbxref_gene2PubmedFromNcbi_RSRC"
+	      version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+
+      <manualGet fileOrDir="common/dbxref/gene2PubmedFromNcbi/${version}/final/">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <unpack>ncbiGenePubmed2DbRefsFile --gene2pubmedFile @@dataDir@@/gene2pubmed.gz --geneInfoFile @@dataDir@@/All_Protozoa.gene_info.gz --taxId ${ncbiTaxonId} > @@dataDir@@/gene2PubmedFromNcbi.tab</unpack>
+
+      <unpack>rm -f @@dataDir@@/All_Protozoa.gene_info.gz</unpack>
+
+      <unpack>rm -f @@dataDir@@/gene2pubmed.gz</unpack>
+
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2PubmedFromNcbi.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' </pluginArgs>
+
+    </resource>
+  </datasetClass>
+
   <!-- ONLY INCLUDE IF THIS ORGANISM'S GENOME IS IN GENBANK -->
   <datasetClass class="dbxref_gene2Entrez" category="" datasetFileHint="">
     <purpose></purpose>
