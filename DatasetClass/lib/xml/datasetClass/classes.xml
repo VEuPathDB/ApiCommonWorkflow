@@ -247,33 +247,6 @@
     </resource>
   </datasetClass>
 
-  <datasetClass class="GeneDB_GFF_primary_genome_sequence" category="" datasetFileHint="">
-    <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="version"/>
-    <prop name="soTerm"/>
-    <prop name="regex"/>
-    <prop name="chromNumRegex"/>
-
-    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
-
-    <resource resource="${organismAbbrev}_primary_genome_RSRC"
-              version="${version}"
-	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
-
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/GeneDB_GFF/${version}/final/genome.fasta">
-        <dir name="final">
-        </dir>
-      </manualGet>
-
-      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --ncbiTaxId ${ncbiTaxonId} --externalDatabaseVersion %RESOURCE_VERSION% --sequenceFile @@dataDir@@/genome.fasta --SOTermName '${soTerm}'  --regexSourceId  '${regex}' --regexChromosome '${chromNumRegex}' --tableName "DoTS::ExternalNASequence"</pluginArgs>
-    </resource>
-  </datasetClass>
-
 
   <datasetClass class="GeneDB_GFF_primary_genome_features" category="" datasetFileHint="">
     <purpose></purpose>
@@ -339,7 +312,8 @@
     <prop name="version"/>
     <prop name="table"/>  <!-- example:  DoTS::NASequence -->
     <prop name="soTerm"/>
-    <prop name="regexSourceId"/>
+    <prop name="sourceIdRegex"/>
+    <prop name="chromNumRegex"/>
  
     <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
 
@@ -353,7 +327,7 @@
         </dir>
       </manualGet>
 
-      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTerm} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
+      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTerm} --regexSourceId "${sourceIdRegex}" --chromNumRegex ${chromNumRegex}--tableName "${table}"</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -366,7 +340,7 @@
     <prop name="version"/>
     <prop name="table"/>  <!-- example:  DoTS::NASequence -->
     <prop name="soTerm"/>
-    <prop name="regexSourceId"/>
+    <prop name="sourceIdRegex"/>
     <prop name="organelle"/>
 
     <graphPlanFile name="makeOrganelleWebsiteFiles.xml"/> 
@@ -383,7 +357,7 @@
         </dir>
       </manualGet>
 
-      <pluginArgs>--externalDatabaseName %PARENT_RESOURCE_NAME% --externalDatabaseVersion %PARENT_RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTerm} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
+      <pluginArgs>--externalDatabaseName %PARENT_RESOURCE_NAME% --externalDatabaseVersion %PARENT_RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTerm} --regexSourceId "${sourceIdRegex}" --tableName "${table}"</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -396,7 +370,7 @@
     <prop name="version"/>
     <prop name="table"/>  <!-- example:  DoTS::NASequence -->
     <prop name="soTerm"/>
-    <prop name="regexSourceId"/>
+    <prop name="sourceIdRegex"/>
 
     <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
 
@@ -411,7 +385,7 @@
         </dir>
       </manualGet>
 
-      <pluginArgs>--externalDatabaseName %PARENT_RESOURCE_NAME% --externalDatabaseVersion %PARENT_RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTerm} --regexSourceId "${regexSourceId}" --tableName "${table}"</pluginArgs>
+      <pluginArgs>--externalDatabaseName %PARENT_RESOURCE_NAME% --externalDatabaseVersion %PARENT_RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/genome.fasta --soTermName ${soTerm} --regexSourceId "${sourceIdRegex}" --tableName "${table}"</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -1132,7 +1106,7 @@
     <prop name="name"/>
     <prop name="version"/>
     <prop name="soTermName"/>
-    <prop name="regexSourceId"/>
+    <prop name="sourceIdRegex"/>
 
     <graphPlanFile name="organismSpecific.xml"/>
 
@@ -1147,7 +1121,7 @@
         </dir>
       </manualGet>
 
-      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/seqs.fasta --soTermName ${soTermName} --regexSourceId "${regexSourceId}" --tableName "DoTS::ExternalNaSequence"</pluginArgs>
+      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/seqs.fasta --soTermName ${soTermName} --regexSourceId "${sourceIdRegex}" --tableName "DoTS::ExternalNaSequence"</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -1375,7 +1349,7 @@
     <prop name="ncbiTaxonId"/>
     <prop name="name"/>
     <prop name="version"/>
-    <prop name="regexSourceId"/>
+    <prop name="sourceIdRegex"/>
 
     <resource resource="${organismAbbrev}_isolates_${name}_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
@@ -1388,7 +1362,7 @@
         </dir>
       </manualGet>
 
-      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/seqs.fasta --soTermName region --regexSourceId "${regexSourceId}" --tableName "DoTS::ExternalNaSequence"</pluginArgs>
+      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/seqs.fasta --soTermName region --regexSourceId "${sourceIdRegex}" --tableName "DoTS::ExternalNaSequence"</pluginArgs>
     </resource>
   </datasetClass>
 
