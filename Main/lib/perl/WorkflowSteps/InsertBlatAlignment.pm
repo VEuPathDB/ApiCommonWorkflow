@@ -28,8 +28,13 @@ sub run {
 
   my $targetTableId = $self->getTableId($test, $targetTable);
   my $targetExtDbRlsId = $self->getExtDbRlsId($test, $targetExtDbRlsSpec);
+
+  $queryTable = 'ExternalAASequence' if $queryTable eq 'DoTS::ExternalAASequence';  #patch for branch 101
+
+
   my $queryTableId = $self->getTableId($test, $queryTable);
   my $queryExtDbRlsId = $self->getExtDbRlsId($test, $queryExtDbRlsSpec) if $queryExtDbRlsSpec;
+
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
