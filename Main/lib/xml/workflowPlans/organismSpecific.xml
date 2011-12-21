@@ -32,6 +32,8 @@
       <depends name="makeDataDir"/>
   </subgraph>
 
+  <!-- this must happen before all the rest of the steps in this file so that all that is 
+       mirrored is the ssa files, and no other extraneous (and possibly large) data -->
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="extractFilesForSsa"/>
@@ -110,7 +112,7 @@
       <paramValue name="resourceName">${organismAbbrev}_${name}_clonedInsertEnds_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -138,7 +140,7 @@
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="isHaploid">$$isHaploid$$</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="mirrorToCluster"/>
   </subgraph>
 
   <datasetTemplate class="sageTagSequences">
@@ -152,7 +154,7 @@
       <paramValue name="resourceName">${organismAbbrev}_sageTag_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <subgraph name="${name}_mapSageTags" xmlFile="mapSageTags.xml">
@@ -200,7 +202,7 @@
       <paramValue name="resourceName">${organismAbbrev}_genomeFeature_${name}_GFF2_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -211,7 +213,7 @@
       <paramValue name="resourceName">${organismAbbrev}_${name}_GOAssociations_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
       <dependsGlobal name="GO_RSRC"/>
       <dependsGlobal name="GO_evidence_codes_RSRC"/>
     </subgraph>
@@ -224,7 +226,7 @@
       <paramValue name="resourceName">${organismAbbrev}_${name}_ECAssociations_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="mirrorToCluster"/>
       <dependsGlobal name="enzymeDB_RSRC"/>
     </subgraph>
   </datasetTemplate>
