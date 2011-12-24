@@ -2,6 +2,8 @@ package ApiCommonWorkflow::Main::WorkflowSteps::FixGenomicSeqsSeparateFastaFileN
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
+# replace . in file base names with #,  because blat chokes on . for some reason
+
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 use File::Basename;
