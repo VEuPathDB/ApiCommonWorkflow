@@ -38,7 +38,15 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--blat_files '$workflowDataDir/$blatFile' --query_file $workflowDataDir/$queryFile --action '$action' --queryRegex '$queryRegex' --query_table_id $queryTableId --query_taxon_id $queryTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId --max_query_gap 5 --min_pct_id 95 --max_end_mismatch 10 --end_gap_factor 10 --min_gap_pct 90  --ok_internal_gap 15 --ok_end_gap 50 --min_query_pct 10";
+  my $plugin = "GUS::Community::Plugin::LoadBLATAlignments";
+  my $dnaArgs = "--max_query_gap 5 --min_pct_id 95 --max_end_mismatch 10 --end_gap_factor 10 --min_gap_pct 90  --ok_internal_gap 15 --ok_end_gap 50 --min_query_pct 10";
+
+  if ($queryTable =~ /aasequence/i) {
+      $dnaArgs = "";
+      $plugin = "ApiCommonData::Load::Plugin::LoadBLATProteinAlignments"
+  }
+      
+  my $args = "--blat_files '$workflowDataDir/$blatFile' --query_file $workflowDataDir/$queryFile --action '$action' --queryRegex '$queryRegex' --query_table_id $queryTableId --query_taxon_id $queryTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId $dnaArgs";
 
   $args .= " --query_db_rel_id $queryExtDbRlsId" if $queryExtDbRlsId;
 
@@ -49,7 +57,7 @@ sub run {
     $self->testInputFile('blatFile', "$workflowDataDir/$blatFile");
   }
 
-  $self->runPlugin($test, $undo,"GUS::Community::Plugin::LoadBLATAlignments", $args);
+  $self->runPlugin($test, $undo, $plugin, $args);
 }
 
 sub getConfigDeclaration {
