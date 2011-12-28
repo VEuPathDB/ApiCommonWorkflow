@@ -49,7 +49,7 @@ sub run {
 	}else{
 	  $self->error("Output file '$mappingFile' already exists") if -e $mappingFile;
 	  $self->error("Output file '$fastaFile' already exists") if -e $fastaFile;
-	  if (-s $tabFile) {
+	  if (-s $tabFile || $test) {
 	      $self->runCmd($test, $cmd1);
 	      $self->runCmd($test, $cmd2);
 	      $self->runCmd($test, $cmd3);

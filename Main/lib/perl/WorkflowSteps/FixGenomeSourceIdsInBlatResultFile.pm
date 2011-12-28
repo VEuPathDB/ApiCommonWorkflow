@@ -10,6 +10,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputFile = $self->getParamValue('inputFile');
+  my $queryFile = $self->getParamValue('queryFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -20,7 +21,11 @@ sub run {
       if ($test) {
 	  $self->testInputFile('seqFile', "$workflowDataDir/$inputFile");
       }else{
-	  $self->runCmd($test,$cmd);
+	  if (-s "$workflowDataDir/$queryFile" || $test) {
+	      $self->runCmd($test,$cmd);
+	  } else {
+	      $self->log("queryFile '$workflowDataDir/$queryFile' is empty.  Doing nothing.");
+	  }
       }
   }
 }

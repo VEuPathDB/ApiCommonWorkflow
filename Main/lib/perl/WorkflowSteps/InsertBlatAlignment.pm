@@ -57,7 +57,11 @@ sub run {
     $self->testInputFile('blatFile', "$workflowDataDir/$blatFile");
   }
 
-  $self->runPlugin($test, $undo, $plugin, $args);
+  if (-s "$workflowDataDir/$queryFile" || $test) {
+      $self->runPlugin($test, $undo, $plugin, $args);
+  } else {
+      $self->log("queryFile '$workflowDataDir/$queryFile' is empty.  Doing nothing.");      
+  }
 }
 
 sub getConfigDeclaration {
