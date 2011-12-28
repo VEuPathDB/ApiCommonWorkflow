@@ -20,7 +20,11 @@ sub run {
       if ($test) {
 	  $self->testInputFile('seqFile', "$workflowDataDir/$inputFile");
       }else{
-	  $self->runCmd($test,$cmd);
+	  if (-e "$workflowDataDir/$inputFile") { 
+	      $self->runCmd($test,$cmd);
+	  } else {
+	      $self->log("input file '$workflowDataDir/$inputFile' doesn't exist.  Doing nothing.");
+	  }
       }
   }
 }
