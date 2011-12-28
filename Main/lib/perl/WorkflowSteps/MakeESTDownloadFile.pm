@@ -36,7 +36,7 @@ sub getDownloadFileCmd {
 	AND so.term_name = 'EST'
 EOF
 
-    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"";
+    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\"";
     return $cmd;
 }
 
