@@ -49,9 +49,15 @@ sub run {
 	}else{
 	  $self->error("Output file '$mappingFile' already exists") if -e $mappingFile;
 	  $self->error("Output file '$fastaFile' already exists") if -e $fastaFile;
-	  $self->runCmd($test, $cmd1);
-	  $self->runCmd($test, $cmd2);
-	  $self->runCmd($test, $cmd3);
+	  if (-s $tabFile) {
+	      $self->runCmd($test, $cmd1);
+	      $self->runCmd($test, $cmd2);
+	      $self->runCmd($test, $cmd3);
+	  } else {
+	      $self->log("Input file '$tabFile' is epmty.  No epitopes to map. Writing empty output files");
+	      open(F1, ">$mappingFile") || die "Can't write to '$mappingFile'\n";
+	      open(F2, ">$fastaFile") || die "Can't write to '$fastaFile'\n";
+	  }
 	}
     }
 }
