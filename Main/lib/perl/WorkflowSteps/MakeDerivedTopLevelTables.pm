@@ -34,7 +34,7 @@ sub run {
   close F;
   my $cmd;
 
-      $cmd = "tuningManager -prefix '${organismAbbrev}_' --instance '$instance' --propFile $stepDir/$xmlConfigFileName --doUpdate --notifyEmail none --tables $tables";
+      $cmd = "tuningManager -prefix '${organismAbbrev}_' --instance '$instance' --propFile $stepDir/$xmlConfigFileName --doUpdate --notifyEmail none --tables $tables --configFile ${gusHome}/lib/xml/tuningManager.xml";
 
 
   if ($undo){
