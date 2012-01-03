@@ -14,6 +14,10 @@ sub run {
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
+  my $dbName = "${organismAbbrev}_primary_genome_RSRC";
+
+  my $dbVersion = $self->getExtDbVersion($test,$dbName);
+
   my $sql = "select gf.source_id || ':'
                     || substr(ns.source_id, 1, 50) ||':'
                     ||(nl.start_min - 1)||'-'||nl.end_max||'_'||(decode(nl.is_reversed, 1, '-', '+')),
@@ -21,7 +25,7 @@ sub run {
                           from dots.Transcript t, dots.SplicedNaSequence snas,
                                dots.GeneFeature gf, dots.NaLocation nl,
                                dots.NaSequence ns, sres.Taxon ta, sres.SequenceOntology so,
-                               apidbtuning.geneattributes ga
+                               sres.externaldatabase db, sres.externaldatabaserelease dbr
                           where gf.na_sequence_id = ns.na_sequence_id
                             and gf.na_feature_id = t.parent_id
                             and t.na_sequence_id = snas.na_sequence_id
@@ -30,7 +34,9 @@ sub run {
                             and snas.taxon_id = ta.taxon_id
                             and ta.ncbi_tax_id = $ncbiTaxonId
                             and nl.na_feature_id = gf.na_feature_id
-                            and gf.source_id = ga.source_id";
+                            and db.name = $dbName
+                            and dbr.version = $dbVersion
+                            and gf.external_database_release_id = dbr.external_database_release_id";
 
 
   if ($useTopLevel) {
