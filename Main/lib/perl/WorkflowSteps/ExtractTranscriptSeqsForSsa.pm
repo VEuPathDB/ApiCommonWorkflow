@@ -18,6 +18,9 @@ sub run {
 
   my $dbVersion = $self->getExtDbVersion($test,$dbName);
 
+  my $organismId = $self->getOrganismInfo($test, $organismAbbrev)->getOrganismId();
+  my $tuningTablePrefix = "P${organismId}_";
+
   my $sql = "select gf.source_id || ':'
                     || substr(ns.source_id, 1, 50) ||':'
                     ||(nl.start_min - 1)||'-'||nl.end_max||'_'||(decode(nl.is_reversed, 1, '-', '+')),
@@ -43,7 +46,7 @@ sub run {
     $sql = "SELECT ga.source_id||':'||ga.sequence_id||':'||(ga.start_min - 1)||'-'||ga.end_max||'_'||(decode(ga.is_reversed, 1, '-', '+')), snas.sequence
              FROM dots.transcript t,
                   dots.splicednasequence snas,
-                  apidbtuning.geneattributes ga
+                  ${tuningTablePrefix}geneattributes ga
              WHERE ga.na_feature_id = t.parent_id
               AND t.na_sequence_id = snas.na_sequence_id
               AND ga.so_term_name != 'repeat_region'
