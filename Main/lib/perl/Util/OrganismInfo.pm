@@ -51,6 +51,7 @@ sub new {
 
     $self->{fullName} = $fullName;
     $self->{nameForFiles} = $nameForFiles;
+    $self->{organismId} = $organismId;
     $self->{strainAbbrev} = $strainAbbrev;
     $self->{publicAbbrev} = $publicAbbrev;
     $self->{ncbiTaxonId} = $ncbiTaxonId;
