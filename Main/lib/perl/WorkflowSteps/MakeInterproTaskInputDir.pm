@@ -11,9 +11,6 @@ sub run {
   my $taskInputDir = $self->getParamValue('taskInputDir');
   my $proteinsFile = $self->getParamValue('proteinsFile');
 
-  # get global properties
-  my $email = $self->getSharedConfig('email');
-
   # get properties
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $taskSize = $self->getConfig("taskSize");
@@ -41,7 +38,7 @@ sub run {
 outputfile=iprscan_out.xml
 seqtype=p
 appl=$applications
-email=$email
+email=dontcare@dontcare.com
 crc=false
 ";
 
