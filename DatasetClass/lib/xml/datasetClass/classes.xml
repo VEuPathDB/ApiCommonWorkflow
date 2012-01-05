@@ -675,7 +675,7 @@
 
       <unpack>createEpitopeDbRefFile --inputDir @@manualDeliveryDir@@/common/epitope/IEDB/${version}/final/iedb_export_fixed --outputFile @@dataDir@@/dbRefs.txt</unpack>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/dbRefs.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier, remark" --tableName "AASequenceDbRef"</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/dbRefs.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier, remark" --tableName "AASequenceDbRef"  --organismAbbrev ${organismAbbrev}</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -703,7 +703,7 @@
         </dir>
       </manualGet>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/mapping.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier" --tableName DBRefNAFeature --idType '${idType}'</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/mapping.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier" --tableName DBRefNAFeature --idType '${idType}'  --organismAbbrev ${organismAbbrev}</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -731,7 +731,7 @@
         </dir>
       </manualGet>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/mapping.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "${columnSpec}" --tableName ${type} --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/mapping.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "${columnSpec}" --tableName ${type} --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'  --organismAbbrev ${organismAbbrev}</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -759,7 +759,7 @@
 
       <unpack>makeDbxRefsFromApiLocHtml @@dataDir@@/${organismAbbrev}.html "${ApiLocOrganism}" > @@dataDir@@/dbxrefs.txt</unpack>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/dbxrefs.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "remark" --tableName "DbRefNAFeature"</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/dbxrefs.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "remark" --tableName "DbRefNAFeature"  --organismAbbrev ${organismAbbrev}</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -791,7 +791,7 @@
 
       <unpack>rm -f @@dataDir@@/gene2pubmed.gz</unpack>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2PubmedFromNcbi.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' </pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2PubmedFromNcbi.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'   --organismAbbrev ${organismAbbrev}</pluginArgs>
 
     </resource>
   </datasetClass>
@@ -823,7 +823,7 @@
 
       <unpack>rm -f @@dataDir@@/gene_info.gz</unpack>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2entrez.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'  --idType 'alternate id'</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2entrez.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'  --idType 'alternate id'  --organismAbbrev ${organismAbbrev}</pluginArgs>
 
     </resource>
   </datasetClass>
@@ -853,7 +853,7 @@
       <!-- need to use the gene2entrez file to get map of NCBI ids -->
       <unpack>uniprotIdMap2DbRefsFile @@dataDir@@/idmapping_selected.tab.gz @@dataDir@@/../${organismAbbrev}_dbxref_gene2Entrez_RSRC/gene2entrez.tab > @@dataDir@@/gene2uniprot.tab</unpack>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2uniprot.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --idType 'alternate id'</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2uniprot.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --idType 'alternate id'  --organismAbbrev ${organismAbbrev}</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -881,7 +881,7 @@
       <!-- need to use the gene2entrez file to get Url of entrez gene-->
       <unpack>gene2entrezUrlFile --inputFile @@dataDir@@/../${organismAbbrev}_dbxref_gene2Entrez_RSRC/gene2entrez.tab > @@dataDir@@/gene2entrezUrl.tab</unpack>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2entrezUrl.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2entrezUrl.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'  --organismAbbrev ${organismAbbrev}</pluginArgs>
     </resource>
   </datasetClass>
 
