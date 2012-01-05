@@ -21,7 +21,11 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "extractGeneModelForSsa --outputFile $workflowDataDir/$outputFile --taxonId $taxonId --dbName $dbName --dbVersion $dbVersion";
+  my $organismId = $self->getOrganismInfo($test, $organismAbbrev)->getOrganismId();
+
+  my $tuningTablePrefix = "P${organismId}_";
+
+  my $cmd = "extractGeneModelForSsa --outputFile $workflowDataDir/$outputFile --taxonId $taxonId --dbName $dbName --dbVersion $dbVersion --tuningTablePrefix $tuningTablePrefix";
   
   $cmd .= " --coordinates CDS" if ($useCDSCoordinates);
 

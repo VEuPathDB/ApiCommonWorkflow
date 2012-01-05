@@ -37,8 +37,8 @@ sub run {
                             and snas.taxon_id = ta.taxon_id
                             and ta.ncbi_tax_id = $ncbiTaxonId
                             and nl.na_feature_id = gf.na_feature_id
-                            and db.name = $dbName
-                            and dbr.version = $dbVersion
+                            and db.name = '$dbName'
+                            and dbr.version = '$dbVersion'
                             and gf.external_database_release_id = dbr.external_database_release_id";
 
 
