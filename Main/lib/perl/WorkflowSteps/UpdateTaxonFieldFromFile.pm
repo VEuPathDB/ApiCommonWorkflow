@@ -12,8 +12,6 @@ sub run {
   my $extDbName = $self->getParamValue('extDbName');
   my $taxIdFile = $self->getParamValue('taxIdFile');
 
-  my $extDbVersion = $self->getExtDbVersion($test, $extDbName);
-
 
   # this param is really just for PDB which has truncated source ids for
   # some reason.  this is the number of chars to shorten to,  or null to 
@@ -26,7 +24,7 @@ sub run {
   $sourceIdSubstringLength = "--sourceIdSubstringLength $shortenSourceIdTo" 
       if $shortenSourceIdTo;
 
-  my $args = "--fileName $workflowDataDir/$taxIdFile  --sourceIdRegex  '^(\\d+)' --ncbiTaxIdRegex '^\\d+\\s(\\d+)' $sourceIdSubstringLength  --extDbRelSpec '$extDbName|$extDbVersion'  --tableName 'DoTS::ExternalAASequence'";
+  my $args = "--fileName $workflowDataDir/$taxIdFile  --sourceIdRegex  '^(\\d+)' --ncbiTaxIdRegex '^\\d+\\s(\\d+)' $sourceIdSubstringLength  --extDbRlsName '$extDbName'  --tableName 'DoTS::ExternalAASequence'";
 
 
   if($undo){
