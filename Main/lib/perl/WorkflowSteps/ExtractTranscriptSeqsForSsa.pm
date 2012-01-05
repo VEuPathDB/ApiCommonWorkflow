@@ -46,7 +46,7 @@ sub run {
     $sql = "SELECT ga.source_id||':'||ga.sequence_id||':'||(ga.start_min - 1)||'-'||ga.end_max||'_'||(decode(ga.is_reversed, 1, '-', '+')), snas.sequence
              FROM dots.transcript t,
                   dots.splicednasequence snas,
-                  ${tuningTablePrefix}geneattributes ga
+                  ApidbTuning.${tuningTablePrefix}geneattributes ga
              WHERE ga.na_feature_id = t.parent_id
               AND t.na_sequence_id = snas.na_sequence_id
               AND ga.so_term_name != 'repeat_region'

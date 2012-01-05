@@ -22,6 +22,7 @@ sub run {
   #4_char_prefix + 4_char_suffix --> table name <= 22 
   #table name must start w/ a letter, for example "p21_".
   my $organismId = $self->getOrganismInfo($test, $organismAbbrev)->getOrganismId();
+
   my $tuningTablePrefix = "P${organismId}_";
 
   my $apidbTuningPassword = $self->getConfig('apidbTuningPassword');
