@@ -16,7 +16,6 @@ sub run {
   my $tables = "SequencePieceClosure,FeatureLocation,GeneId,GeneAttributes,GenomicSequence,SequenceAttributes,TaxonSpecies";
 
   my $gusHome = $self->getSharedConfig('gusHome');
-  my $email = $self->getSharedConfig('email');
   my $instance = $self->getSharedConfig('instance');
 
   my $apidbTuningPassword = $self->getConfig('apidbTuningPassword');
