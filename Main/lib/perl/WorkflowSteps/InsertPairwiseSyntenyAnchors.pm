@@ -35,11 +35,21 @@ sub run {
 	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
 	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 	} else {
+	    my $sql = "select count(*)
+                       from dots.nasequence sa, apidb.organism o, sres.sequenceontology so
+                       where so.term_name IN ('chromosome', 'supercontig')
+                       and sa.sequence_ontology_id = so.sequence_ontology_id
+                       and sa.taxon_id = o.taxon_id
+                       and o.abbrev = '$orgAbbrevB'";
+	    my $cmd = "getValueFromTable --idSQL \"$sql\"";
+	    my $isNotDraftGenome = $self->runCmd($test, $cmd);
+
 	    # reformat .align file
 	    my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align";
 	    my $outputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny";
 	    my $formatCmd = "reformatMercatorAlignFile --inputFile $inputFile --outputFile $outputFile";
-	    if ($self->getOrganismInfo($test, $orgAbbrevB)->getIsDraftGenome()) {
+	    
+	    if (!$isNotDraftGenome) {
 		$formatCmd .= " --agpFile $workflowDataDir/$mercatorOutputsDir/$pair/$orgAbbrevB.agp";
 	    }
 

@@ -144,11 +144,4 @@ sub getTaxonIdList {
     }
 }
 
-#sub getIsDraftGenome {
-#    my ($self) = @_;
-#    return "$self->{organismAbbrev}_IS_DRAFT_GENOME" if $self->{test};
-#    return $self->{isDraftGenome};
-#}
-
-
 1;
