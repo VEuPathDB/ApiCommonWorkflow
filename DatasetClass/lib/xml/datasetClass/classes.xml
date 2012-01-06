@@ -279,6 +279,36 @@
       <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/genericGFF2Gus.xml --inputFileOrDir @@dataDir@@/genome.gff --inputFileExtension "gff"  --fileFormat gff3 --soCvsVersion @@SO_VER@@ --defaultOrganism ${ncbiTaxonId}  --seqSoTerm '${soTerm}' --validationLog @@dataDir@@/validation.log --bioperlTreeOutput @@dataDir@@/bioperlTree.out --seqIdColumn source_id --naSequenceSubclass ExternalNASequence</pluginArgs>
     </resource>
   </datasetClass>
+  
+  <datasetClass class="GFF_primary_genome_features" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="version"/>
+    <prop name="soTerm"/>
+    <prop name="source"/>
+    <prop name="mapFile"/>
+
+    <graphPlanFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_primary_genome_features_RSRC"
+              version="${version}"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${source}_gff3/${version}/final/genome.gtf">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <unpack>preprocessGFF3 --input_gff @@dataDir@@/genome.gff --output_gff @@dataDir@@/genome.gff</unpack>    
+
+      <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.gff --inputFileExtension "gff"  --fileFormat gff3 --soCvsVersion @@SO_VER@@ --defaultOrganism ${ncbiTaxonId}  --seqSoTerm '${soTerm}' --validationLog @@dataDir@@/validation.log --bioperlTreeOutput @@dataDir@@/bioperlTree.out --seqIdColumn source_id --naSequenceSubclass ExternalNASequence</pluginArgs>
+    </resource>
+  </datasetClass>
 
   <datasetClass class="Broad_GFF_primary_genome_features" category="" datasetFileHint="">
     <purpose></purpose>
