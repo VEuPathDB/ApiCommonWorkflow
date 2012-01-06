@@ -125,8 +125,10 @@ sub getIsDraftHash {
 
     my $hash = {};
     foreach my $organismAbbrev (@$organismAbbrevs) {
+	my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+
 	my $sql = "select count(*)
-                       from dots.nasequence sa, apidb.organism o, sres.sequenceontology so
+                       from apidbtuning.${tmPrefix}sequenceattributes sa, apidb.organism o, sres.sequenceontology so
                        where so.term_name IN ('chromosome', 'supercontig')
                        and sa.sequence_ontology_id = so.sequence_ontology_id
                        and sa.taxon_id = o.taxon_id

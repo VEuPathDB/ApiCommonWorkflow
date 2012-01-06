@@ -27,10 +27,8 @@ sub run {
   open(F,">$xmlConfigFileName");
   print F $xmlConfigFileString;
   close F;
-  my $cmd;
-
-      $cmd = "tuningManager -prefix '${organismAbbrev}_' --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail none --tables $tables";
-              tuningManager -prefix {organism_abbrev}  -tables SequencePieceClosure,FeatureLocation,GeneId,GeneAttributes,GenomicSequence,SequenceAttributes,TaxonSpecies -filterValue 821459 -doUpdate -configFile {XML file} -instance {instance} -propfile ~/tm.props -notifyEmail none
+  my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $cmd = "tuningManager -prefix ${tmPrefix} --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail none --tables $tables";
   if ($undo){
      $self->runCmd(0, "echo Doing nothing for \"undo\" Tuning Manager.\n");  
   }else{

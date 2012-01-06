@@ -17,13 +17,8 @@ sub run {
 
   my $gusHome = $self->getSharedConfig('gusHome');
   my $instance = $self->getSharedConfig('instance');
-  #Oracle table names can be no longer than 30 characters
-  #instead of using the organismAbbrev for the prefix, we might need to use the primary key of that organism in the organism table, ie, organism_id. that should be no more than three characters.
-  #4_char_prefix + 4_char_suffix --> table name <= 22 
-  #table name must start w/ a letter, for example "p21_".
-  my $organismId = $self->getOrganismInfo($test, $organismAbbrev)->getOrganismId();
 
-  my $tuningTablePrefix = "P${organismId}_";
+  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $apidbTuningPassword = $self->getConfig('apidbTuningPassword');
   my $xmlConfigFileName="tmpConfigFile.xml";

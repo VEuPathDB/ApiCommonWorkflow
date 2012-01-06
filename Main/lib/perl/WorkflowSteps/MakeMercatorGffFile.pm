@@ -27,10 +27,8 @@ sub run {
  
 
     my $workflowDataDir = $self->getWorkflowDataDir();
- 
-    my $organismId = $self->getOrganismInfo($test, $organismAbbrev)->getOrganismId();
 
-    my $tuningTablePrefix = "P${organismId}_";
+    my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
     my $cmd = "mercatorGffDump.pl  --outputFile $workflowDataDir/$outputFile --organism '$organism' --tuningTablePrefix '$tuningTablePrefix'";
 

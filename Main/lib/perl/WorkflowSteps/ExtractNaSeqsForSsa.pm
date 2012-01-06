@@ -13,8 +13,7 @@ sub run {
   my $useTopLevel = $self->getBooleanParamValue('useTopLevel');
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
-  my $organismId = $self->getOrganismInfo($test, $organismAbbrev)->getOrganismId();
-  my $tuningTablePrefix = "P${organismId}_";
+  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $sql = "select ns.source_id||':1-'||ns.length||'_strand=+', ns.sequence
              from dots.ExternalNaSequence ns, sres.Taxon t, sres.SequenceOntology so

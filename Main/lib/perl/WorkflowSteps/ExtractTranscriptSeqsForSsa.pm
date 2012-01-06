@@ -18,8 +18,7 @@ sub run {
 
   my $dbVersion = $self->getExtDbVersion($test,$dbName);
 
-  my $organismId = $self->getOrganismInfo($test, $organismAbbrev)->getOrganismId();
-  my $tuningTablePrefix = "P${organismId}_";
+  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $sql = "select gf.source_id || ':'
                     || substr(ns.source_id, 1, 50) ||':'

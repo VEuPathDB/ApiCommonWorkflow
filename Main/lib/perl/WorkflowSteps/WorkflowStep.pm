@@ -260,5 +260,15 @@ sub getWebsiteFilesDir {
     return $test? "$websiteFilesDir/test" : $websiteFilesDir;
 }
 
+# Oracle table names can be no longer than 30 characters
+# instead of using the organismAbbrev for the prefix, we use the primary key of that organism in the organism table, ie, organism_id. 
+# that should be no more than three characters. 4_char_prefix + 4_char_suffix --> table name <= 22 
+# a table name must start w/ a letter, for example "p21_".
+sub getTuningTablePrefix {
+    my ($self, $organismAbbrev, $test) = @_;
+    my $organismId = $self->getOrganismInfo($test, $organismAbbrev)->getOrganismId();
+    return "P${organismId}_";
+}
+
 1;
 

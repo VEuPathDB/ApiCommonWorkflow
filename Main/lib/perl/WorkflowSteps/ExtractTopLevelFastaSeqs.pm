@@ -10,8 +10,7 @@ sub run {
 
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $organismId = $self->getOrganismInfo($test, $organismAbbrev)->getOrganismId();
-  my $tuningTablePrefix = "P${organismId}_";
+  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
   my $sql = 
