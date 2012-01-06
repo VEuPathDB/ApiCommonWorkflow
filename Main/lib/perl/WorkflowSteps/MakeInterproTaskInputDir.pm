@@ -38,7 +38,7 @@ sub run {
 outputfile=iprscan_out.xml
 seqtype=p
 appl=$applications
-email=dontcare@dontcare.com
+email=dontcare\@dontcare.com
 crc=false
 ";
 
