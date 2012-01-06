@@ -28,7 +28,7 @@ sub run {
   print F $xmlConfigFileString;
   close F;
   my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
-  my $cmd = "tuningManager -prefix ${tmPrefix} --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail none --tables $tables";
+  my $cmd = "tuningManager -prefix ${tmPrefix} --instance '$instance' --propFile $stepDir/$xmlConfigFileName --doUpdate --notifyEmail none --tables $tables -configFile ${gusHome}/lib/xml/tuningManager.xml";
   if ($undo){
      $self->runCmd(0, "echo Doing nothing for \"undo\" Tuning Manager.\n");  
   }else{
