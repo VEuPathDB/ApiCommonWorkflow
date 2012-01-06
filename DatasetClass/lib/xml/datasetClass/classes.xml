@@ -1908,4 +1908,26 @@
      <pluginArgs>--data_file @@dataDir@@/antiCodons.txt --genomeDbName '${organismAbbrev}_primary_genome_RSRC' --genomeDbVer '${genomeVersion}' </pluginArgs>
     </resource>
   </datasetClass>
+
+
+  <datasetClass class="relatedNaFeature" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <graphPlanFile name="organismSpecific.xml"/>
+   
+    <resource resource="${organismAbbrev}_interaction_${name}_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertRelatedNaFeature "
+	      scope="organism"
+	      organismAbbrev="${organismAbbrev}">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/interaction/${name}/${version}/final/above-2-links">
+	<dir name="final">
+	</dir>
+      </manualGet>
+      <pluginArgs>--interactionFile @@dataDir@@/above-2-links --extDbName %RESOURCE_NAME% --extDbVersion %RESOURCE_VERSION%</pluginArgs>
+    </resource>
+  </datasetClass>
+
 </datasetClasses>
