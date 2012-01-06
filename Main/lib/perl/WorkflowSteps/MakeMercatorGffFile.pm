@@ -28,8 +28,11 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
  
-  
-    my $cmd = "mercatorGffDump.pl  --outputFile $workflowDataDir/$outputFile --organism '$organism'";
+    my $organismId = $self->getOrganismInfo($test, $organismAbbrev)->getOrganismId();
+
+    my $tuningTablePrefix = "P${organismId}_";
+
+    my $cmd = "mercatorGffDump.pl  --outputFile $workflowDataDir/$outputFile --organism '$organism' --tuningTablePrefix '$tuningTablePrefix'";
 
 
 
