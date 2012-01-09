@@ -2015,4 +2015,50 @@
     </resource>
   </datasetClass>
 
+
+  <datasetClass class="geneFeatureLODScores" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <graphPlanFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_eQTL_${name}_RSRC" version="${version}"
+              plugin="ApiCommonData::Load::Plugin::InsertGeneFeatureLODScores"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/eQTL/${name}/${version}/final/All_LODscores.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <pluginArgs>--file @@dataDir@@/All_LODscores.txt   --extDbName  "%PARENT_RESOURCE_NAME%" --extDbVer "%PARENT_RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+
+  <datasetClass class="InsertGFF3" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="soTerm"/>    <prop name="name"/>
+    <prop name="version"/>
+    <graphPlanFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_${name}_${soTerm}_RSRC" version="${version}"
+              plugin="ApiCommonData::Load::Plugin::InsertGFF3"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/${soTerm}/${name}/${version}/final/${organismAbbrev}_${name}_${soTerm}.gff">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <pluginArgs>--file @@dataDir@@/${organismAbbrev}_${name}_${soTerm}.gff  --gff3DbName  "%RESOURCE_NAME%" --gff3DbVe "%RESOURCE_VERSION%"  --gf
+fFormat 2</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+
 </datasetClasses>
