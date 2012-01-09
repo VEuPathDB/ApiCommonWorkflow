@@ -1919,7 +1919,7 @@
     <graphPlanFile name="organismSpecific.xml"/>
    
     <resource resource="${organismAbbrev}_interaction_${name}_RSRC" version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::InsertRelatedNaFeature "
+	      plugin="ApiCommonData::Load::Plugin::InsertRelatedNaFeature"
 	      scope="organism"
 	      organismAbbrev="${organismAbbrev}">
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/interaction/${name}/${version}/final/above-2-links">
@@ -1970,5 +1970,27 @@
       <pluginArgs>--extDbName %EXT_DB_NAME% --extDbRlsVer %EXT_DB_RLS_VER% --inputFile @@dataDir@@/broad_barcode_plasmodb.txt</pluginArgs>
     </resource>
   </datasetClass> 
+
+
+  <datasetClass class="predictedAAFeature" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="genomeVersion"/>
+    <graphPlanFile name="organismSpecific.xml"/>
+   
+    <resource resource="${organismAbbrev}_cellularLocation_${name}_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertPredictedAAFeature"
+	      scope="organism"
+	      organismAbbrev="${organismAbbrev}">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/cellularLocation/${name}/${version}/final/apFile.txt">
+	<dir name="final">
+	</dir>
+      </manualGet>
+      <pluginArgs>--inputFile @@dataDir@@/apFile.txt --extDbRelSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%" --seqExtDbRelSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --category "secretome"</pluginArgs>
+    </resource>
+  </datasetClass>
 
 </datasetClasses>
