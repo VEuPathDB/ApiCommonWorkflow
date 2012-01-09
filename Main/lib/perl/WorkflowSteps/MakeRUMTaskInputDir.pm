@@ -50,7 +50,7 @@ sub run {
 
       # make controller.prop file
       $self->makeDistribJobControllerPropFile($taskInputDir, 1, $taskSize,
-				       "DJob::DistribJobTasks::RUMTask", $keepNode); 
+				       "DJob::DistribJobTasks::RUMTask", $keepNode, 1); 
       # make task.prop file
       my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
