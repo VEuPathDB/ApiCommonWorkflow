@@ -1993,4 +1993,26 @@
     </resource>
   </datasetClass>
 
+  <datasetClass class="singleMotifMultMappings" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="motif"/>
+    <prop name="motifName"/>
+    <graphPlanFile name="organismSpecific.xml"/>
+   
+    <resource resource="${organismAbbrev}_cellularLocation_${name}_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertSingleMotifMultMappings"
+	      scope="organism"
+	      organismAbbrev="${organismAbbrev}">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/cellularLocation/${name}/${version}/final/PEXEL_MOTIF_AND_POSITION">
+	<dir name="final">
+	</dir>
+      </manualGet>
+      <pluginArgs>--inputFile @@dataDir@@/PEXEL_MOTIF_AND_POSITION --motif "${motif}" --motifName "${motifName}" --description "motif" --category "secretome" --extDbRelSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%" --seqExtDbRelSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'</pluginArgs>
+    </resource>
+  </datasetClass>
+
 </datasetClasses>
