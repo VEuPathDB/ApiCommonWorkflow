@@ -68,6 +68,7 @@ numInsertions=$numInsertions
 minBlatIdentity=93
 createSAMFile=$createSAMFile
 countMismatches=$countMismatches
+postProcess=false
 ";
 
       $taskPropFileContent .= "pairedReadFilePath=$clusterWorkflowDataDir/$readFilePath.paired\n" if $hasPairedEnds;
