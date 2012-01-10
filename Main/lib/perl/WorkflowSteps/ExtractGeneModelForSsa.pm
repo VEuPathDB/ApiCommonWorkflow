@@ -15,9 +15,13 @@ sub run {
 
   my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
 
+  my $dbName = "${organismAbbrev}_primary_genome_RSRC";
+
+  my $dbVersion = $self->getExtDbVersion($test,$dbName);
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "extractGeneModelForSsa --outputFile $workflowDataDir/$outputFile --taxonId $taxonId";
+  my $cmd = "extractGeneModelForSsa --outputFile $workflowDataDir/$outputFile --taxonId $taxonId --dbName $dbName --dbVersion $dbVersion ";
   
   $cmd .= " --coordinates CDS" if ($useCDSCoordinates);
 
