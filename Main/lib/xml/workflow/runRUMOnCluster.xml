@@ -12,7 +12,6 @@
       <param name="countMismatches"/>
       <param name="isSNPs"/>
       <param name="strandSpecific"/>
-      <param name="keepNode"/>
       <param name="createJunctionsFile"/>
       <param name="variableLengthReads"/>
 
@@ -36,7 +35,7 @@
       <paramValue name="masterdir">$$dataDir$$/master</paramValue>
       <paramValue name="SNPs">$$isSNPs$$</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
-      <paramValue name="keepNode">$$keepNode$$</paramValue>
+      <paramValue name="keepNode">no</paramValue>
       <paramValue name="createJunctionsFile">$$createJunctionsFile$$</paramValue>
       <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
     </step>
@@ -58,6 +57,16 @@
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">junctions_all.rum,RUM_NU.normalized.cov,RUM_NU.plus.normalized.cov,RUM_NU.minus.normalized.cov,RUM_Unique.normalized.cov,RUM_Unique.plus.normalized.cov,RUM_Unique.minus.normalized.cov,RUM_Unique.all,RUM_NU.all,RUM_Unique.sorted,RUM_NU.sorted</paramValue>
       <depends name="runClusterTask"/>
+    </step>
+
+    <step name="postProcess" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunRUMPostprocessing" undoRoot="runClusterTask">
+      <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
+      <paramValue name="geneAnnotationFile">$$geneAnnotationFile$$</paramValue>
+      <paramValue name="transcriptFastaFile">$$transcriptFastaFile$$</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
+      <paramValue name="createJunctionsFile">$$createJunctionsFile$$</paramValue>
+      <paramValue name="mainResultDir">$$dataDir$$/master/mainresult</paramValue>
+      <depends name="mirrorFromCluster"/>
     </step>
 
 
