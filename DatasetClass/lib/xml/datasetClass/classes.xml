@@ -2080,25 +2080,24 @@ fFormat 2</pluginArgs>
     </resource>
   </datasetClass>
 
-  <datasetClass class="mutualInformationScores" category="" datasetFileHint="">
+  <datasetClass class="phylogeneticProfiles" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
-    <prop name="name"/>
     <prop name="version"/>
+    <prop name="threshold"/>
     <graphPlanFile name="organismSpecific.xml"/>
-    
-    <resource resource="${organismAbbrev}_phylogeny_${name}_RSRC" version="${version}"
-        plugin="GUS::Community::Plugin::LoadMutualInformationScores"
-        scope="organism"
-        organismAbbrev="${organismAbbrev}">
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/phylogeny/${name}/${version}/pfalciparum/pp-any-and-pfal.noHomologs.mi">
-      <dir name="final">
-      </dir>
+    <resource resource="${organismAbbrev}_phylogeny_phylogeneticProfiles_RSRC" version="{$version}"
+            plugin="GUS::Community::Plugin::InsertPhylogeneticProfiles"
+            scope="organism"
+            organismAbbrev="${organismAbbrev}">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/phylogeny/phylogeneticProfiles/${version}/final">
+        <dir name="final">
+        </dir>
       </manualGet>
-      <pluginArgs>--ProfileSetDescription 'The phylogenetic profiles for P. falciparum' --threshold "0.558" --dataFile @@dataDir@@/pp-any-and-pfal.noHomologs.mi --tolerateMissingIds 1</pluginArgs>
+      <pluginArgs>--ProfileSetDescription 'the phylogenetic profiles for ${organismAbbrev}' --headerFile @@dataDir@@/TaxonNameHeaders --profilesDataFile @@dataDir@@/phylogenetic-profiles-any-and-target-organism.gz --mutualInformationScoreDataFile @@dataDir@@/phylogenetic-profiles-any-and-target-organism.muinfo.gz --tolerateMissingIds 1 --dontLoadScores --threshold "${threshold}"</pluginArgs>
     </resource>
-  </datasetClass> 
+  </datasetClass>
 
 
   <datasetClass class="UpdateRodentPlasmodiumChromosomes" category="" datasetFileHint="">
