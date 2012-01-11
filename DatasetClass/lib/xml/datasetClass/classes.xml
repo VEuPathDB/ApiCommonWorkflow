@@ -1158,13 +1158,16 @@
 
   </datasetClass>
 
+
+
+
   <datasetClass class="rnaSeqSample" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="organismAbbrev"/>
     <prop name="experimentName"/>
     <prop name="sampleName"/>
  
-    <graphPlanFile name="rnaSeqSamples.xml"/>
+    <graphPlanFile name="rnaSeqOrChipSeqSamples.xml"/>
 
       <!-- we load a fake resource here so we can make a getAndUnpackOutput -->
       <!-- to declare existence of sample file that is acquired by experiment, for test mode -->
@@ -1185,6 +1188,71 @@
 
 
   </datasetClass>
+
+
+  <datasetClass class="chipSeqExperiment" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="limitNU"/>
+    <prop name="hasVariableLengthReads"/> 
+    <prop name="numInsertions"/>
+    <!-- is this specific to rnaseq? -->
+    <prop name="hasPairedEnds"/>
+    <!-- is this specific to rnaseq? -->
+    <prop name="isStrandSpecific"/>
+
+    <graphPlanFile name="organismSpecificOnTopLevelGenome.xml"/>
+   <!-- Inquiry: Always follow naming convention -->
+    <resource resource="${organismAbbrev}_${name}_chipSeq_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <unpack>ln -s @@manualDeliveryDir@@/${projectName}/${organismAbbrev}/chipSeq/${name}/${version}/final/ @@dataDir@@/final</unpack>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final" />
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
+
+
+  <datasetClass class="chipSeqSample" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="sampleName"/>
+ 
+    <graphPlanFile name="rnaSeqOrChipSeqSamples.xml"/>
+
+      <!-- we load a fake resource here so we can make a getAndUnpackOutput -->
+      <!-- to declare existence of sample file that is acquired by experiment, for test mode -->
+    <resource resource="${organismAbbrev}_${experimentName}_${sampleName}_chipSeqSample_RSRC" version="dontcare"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_${experimentName}_chipSeq_RSRC/final/${sampleName}" />
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+
+
+  </datasetClass>
+
 
   <!-- NOTE: this dataset class only gets the sequences, it does not map
        them to the genome.  For that use clonedInsertEndsFromReferenceStrain

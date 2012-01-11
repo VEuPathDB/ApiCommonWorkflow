@@ -40,7 +40,7 @@
   <datasetTemplate class="rnaSeqExperiment">
     <prop name="organismAbbrev"/>
 
-    <subgraph name="${organismAbbrev}_${name}_rnaSeq_experiment" xmlFile="rnaSeqExperiment.xml">
+    <subgraph name="${name}_rnaSeq_experiment" xmlFile="rnaSeqOrChipSeqExperiment.xml">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
@@ -52,15 +52,51 @@
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="experimentResourceName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
       <paramValue name="experimentResourceVersion">${version}</paramValue>
-      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="limitNU">${limitNU}$</paramValue>
       <paramValue name="variableLengthReads">${hasVariableLengthReads}</paramValue>
-      <paramValue name="hasOnlyOneSample">${hasOnlyOneSample}</paramValue>
       <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
       <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
       <paramValue name="numInsertions">${numInsertions}</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
+
+    <subgraph name="${name}_analyze_rnaSeq_experiment" xmlFile="analyzeRnaSeqExperiment.xml" excludeIf="${hasOnlyOneSample}">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="experimentName">${name}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="experimentResourceName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
+      <paramValue name="experimentResourceVersion">${version}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <depends name="${name}_rnaSeq_experiment"/>
+    </subgraph>
+
+
+  </datasetTemplate>
+
+  <datasetTemplate class="chipSeqExperiment">
+    <prop name="organismAbbrev"/>
+
+    <subgraph name="${name}_chipSeq_experiment" xmlFile="rnaSeqOrChipSeqExperiment.xml">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="experimentName">${name}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa"></paramValue>
+      <paramValue name="experimentResourceName">${organismAbbrev}_${name}_chipSeq_RSRC</paramValue>
+      <paramValue name="experimentResourceVersion">${version}</paramValue>
+      <paramValue name="limitNU">${limitNU}$</paramValue>
+      <paramValue name="variableLengthReads">${hasVariableLengthReads}</paramValue>
+      <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
+      <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
+      <paramValue name="numInsertions">${numInsertions}</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
   </datasetTemplate>
 
 </workflowGraph>

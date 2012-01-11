@@ -6,7 +6,6 @@
   <param name="geneModelFileForSsa"/>
   <param name="genomicSeqsFileForSsa"/>
   <param name="transcriptSeqsFileForSsa"/>
-  <param name="relativeDownloadSiteDir"/>
   <param name="genomeExtDbRlsSpec"/>
   <param name="experimentResourceName"/>
   <param name="experimentResourceVersion"/>
@@ -35,7 +34,7 @@
       <paramValue name="sampleName">${sampleName}</paramValue>
       <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
       <paramValue name="shortSeqsFile">$$experimentResourcesDataDir$$/final/${sampleName}</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
       <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
@@ -52,6 +51,42 @@
    <!-- might have to reformat the count and mapping stats files made by RUM -->
 
   </datasetTemplate>
+
+  <datasetTemplate class="chipSeqSample">
+    <prop name="experimentName"/>
+    <prop name="sampleName"/>
+
+    <subgraph name="${sampleName}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$organismAbbrev$$_${experimentName}_${sampleName}_chipSeqSample_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+    </subgraph>
+
+
+    <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="outputDir">$$outputDir$$</paramValue>
+      <paramValue name="sampleName">${sampleName}</paramValue>
+      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="shortSeqsFile">$$experimentResourcesDataDir$$/final/${sampleName}</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$></paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <paramValue name="SNPs">false</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
+      <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
+      <paramValue name="isRnaSeq">false</paramValue>
+      <depends name="${sampleName}_RSRC"/>
+    </subgraph>
+
+   <!-- might have to reformat the count and mapping stats files made by RUM -->
+
+  </datasetTemplate>
+
 
 </workflowGraph>
 
