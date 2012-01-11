@@ -24,7 +24,8 @@ sub run {
 <schema>ApiDBTuning</schema>
 </property>
 ";
-  open(F,">$xmlConfigFileName");
+  my $stepDir = $self->getStepDir();
+  open(F,">$stepDir/$xmlConfigFileName");
   print F $xmlConfigFileString;
   close F;
   my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);

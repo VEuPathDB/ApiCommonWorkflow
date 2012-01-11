@@ -3,7 +3,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeAnnotatedProteinsDownloadFil
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
-
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
@@ -19,7 +19,7 @@ sub getDownloadFileCmd {
     $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
     my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
-
+    my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $sql = <<"EOF";
     SELECT '$organismSource'
@@ -42,8 +42,8 @@ sub getDownloadFileCmd {
             taas.length
             as defline,
             taas.sequence
-           FROM ApidbTuning.FeatureLocation fl,
-                ApidbTuning.GeneAttributes gf,
+           FROM ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
+                ApidbTuning.${tuningTablePrefix}GeneAttributes gf,
                 dots.transcript t,
                 dots.splicednasequence snas,
                 dots.translatedaafeature taaf,

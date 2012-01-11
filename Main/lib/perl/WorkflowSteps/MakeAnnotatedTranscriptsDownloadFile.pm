@@ -3,7 +3,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeAnnotatedTranscriptsDownload
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
-
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
 sub getDownloadFileCmd {
@@ -19,6 +19,7 @@ sub getDownloadFileCmd {
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
   my $soIds =  $self->getSoIds($test, $soTerms);
+  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $sql = <<"EOF";
      SELECT '$organismSource'
@@ -41,10 +42,10 @@ sub getDownloadFileCmd {
             snas.length
             as defline,
             snas.sequence
-           FROM ApidbTuning.GeneAttributes gf,
+           FROM ApidbTuning.${tuningTablePrefix}GeneAttributes gf,
                 dots.transcript t,
                 dots.splicednasequence snas,
-                ApidbTuning.FeatureLocation fl,
+                ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
                 dots.nasequence ns,
                 (select gf.na_feature_id,
                         substr(coalesce(preferred_product.product, any_product.product, gf.product, 'unspecified product'),

@@ -3,7 +3,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeAnnotatedCDSDownloadFile;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
-
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
@@ -15,7 +15,8 @@ sub getDownloadFileCmd {
     my $ncbiTaxonId = $self->getOrganismInfo($test,$organismAbbrev)->getNcbiTaxonId();
     $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
+    my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
+    my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
     my $sql = <<"EOF";
      select '$organismSource' || '|' || gf.source_id
@@ -31,8 +32,8 @@ sub getDownloadFileCmd {
            substr(snas.sequence,
                   taaf.translation_start,
                   taaf.translation_stop - taaf.translation_start + 1) as sequence
-           from ApidbTuning.FeatureLocation fl,
-                ApidbTuning.GeneAttributes gf,
+           from ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
+                ApidbTuning.${tuningTablePrefix}GeneAttributes gf,
                 dots.transcript t,
                 dots.splicednasequence snas,
                 dots.translatedaafeature taaf,

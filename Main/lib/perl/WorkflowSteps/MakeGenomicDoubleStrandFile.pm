@@ -3,7 +3,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomicDoubleStrandFile;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
-
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
@@ -15,6 +15,7 @@ sub getDownloadFileCmd {
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
   my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
+   my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $sql = <<"EOF";
       SELECT '$organismSource'
@@ -30,7 +31,7 @@ sub getDownloadFileCmd {
                as defline,
                ns.sequence
            FROM dots.nasequence ns,
-                ApidbTuning.SequenceAttributes sa
+                ApidbTuning.${tuningTablePrefix}SequenceAttributes sa
           WHERE ns.na_sequence_id = sa.na_sequence_id
             AND sa.ncbi_tax_id = $ncbiTaxonId
             AND sa.is_top_level = 1 

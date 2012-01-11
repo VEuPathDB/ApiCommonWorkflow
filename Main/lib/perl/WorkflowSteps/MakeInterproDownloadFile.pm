@@ -3,16 +3,18 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeInterproDownloadFile;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
-
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub getDownloadFileCmd {
-    my ($self, $downloadFileName, $test) = @_;
 
+  my ($self, $downloadFileName, $test) = @_;
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $genomeDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
   my $interproExtDbName = $self->getParamValue('interproExtDbName');
   my $interproExtDbVersion = $self->getExtDbVersion($test,$interproExtDbName);
   my $interproDbRlsId = $self->getExtDbRlsId($test,"$interproExtDbName|$interproExtDbVersion");
   my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
+  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $sql = <<"EOF";
   SELECT gf.source_id
@@ -40,7 +42,7 @@ sub getDownloadFileCmd {
     sres.externaldatabase xd1,
     sres.externaldatabaserelease xdr1,
     dots.nasequence ns,
-    ApidbTuning.FeatureLocation fl
+    ApidbTuning.${tuningTablePrefix}FeatureLocation fl
   WHERE
    gf.external_database_release_id = $genomeDbRlsId
      AND gf.na_feature_id = t.parent_id 
