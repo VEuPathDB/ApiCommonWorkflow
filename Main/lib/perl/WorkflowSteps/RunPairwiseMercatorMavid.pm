@@ -52,7 +52,7 @@ sub run {
     foreach my $orgA (@organismAbbrevs) {
 	foreach my $orgB (@organismAbbrevs) {
 
-	    next unless $orgA > $orgB;  # only do each pair once, and don't do self-self
+	    next unless $orgA gt $orgB;  # only do each pair once, and don't do self-self
 
 	    my $pairOutputDir = "$workflowDataDir/$mercatorOutputsDir/${orgA}-${orgB}";
 
