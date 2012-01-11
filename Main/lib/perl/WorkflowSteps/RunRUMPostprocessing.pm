@@ -20,8 +20,8 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $haveTranscripts = -e "$workflowDataDir/$transcriptsFastaFile"? "--haveTranscripts" : "";
-  my $createJunctions = $createJuctionsFile? "--createJuctions" : "";
+  my $haveTranscripts = -e "$workflowDataDir/$transcriptFastaFile"? "--haveTranscripts" : "";
+  my $createJunctions = $createJunctionsFile? "--createJuctions" : "";
   my $ss = $strandSpecific? "--strandSpecific" : "";
 
   my $cmd= "postProcessRUMTask --genomeFastaFile $workflowDataDir/$genomeFastaFile --geneAnnotationFile $workflowDataDir/$geneAnnotationFile --mainResultDir $workflowDataDir/$mainResultDir $haveTranscripts $createJunctions $ss";
