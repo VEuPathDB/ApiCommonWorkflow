@@ -62,7 +62,7 @@ sub run {
 		next;
 	    } 
 
-	    if ($self->cacheHit("$orgA, orgB, $workflowDataDir/$mercatorInputsDir, $cacheDir")) {
+	    if ($self->cacheHit($orgA, $orgB, $cacheDir, $workflowDataDir/$mercatorInputsDir, $test)) {
 		$self->runCmd($test, "cp $cacheDir/${orgA}-${orgB} $pairOutputDir");
 	    } else {
 
