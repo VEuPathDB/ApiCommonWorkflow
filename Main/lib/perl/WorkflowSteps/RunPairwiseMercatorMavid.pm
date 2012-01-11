@@ -62,9 +62,11 @@ sub run {
 		next;
 	    } 
 
-	    if ($self->cacheHit($orgA, $orgB, $cacheDir, $workflowDataDir/$mercatorInputsDir, $test)) {
+	    if ($self->cacheHit($orgA, $orgB, $cacheDir, "$workflowDataDir/$mercatorInputsDir", $test)) {
 		$self->runCmd($test, "cp $cacheDir/${orgA}-${orgB} $pairOutputDir");
 	    } else {
+
+		mkdir("$pairOutputDir") || $self->error("Failed making dir $pairOutputDir");
 
 		#  set up tmp dir with input files
 		my $pairTmpDir = "$workflowDataDir/$mercatorTmpDir/${orgA}-${orgB}";
@@ -85,14 +87,14 @@ sub run {
 
 		# move selected output from tmp dir to the real output dir
 		$self->runCmd($test,"cp $pairTmpDir/*.align $pairOutputDir");
-		$self->runCmd($test,"cp $pairTmpDir/*.agp $pairOutputDir");
-		$self->runCmd($test,"cp -r $pairTmpDir/alignments $pairOutputDir");
+		$self->runCmd($test,"cp $pairTmpDir/mercator-output/*.agp $pairOutputDir");
+		$self->runCmd($test,"cp -r $pairTmpDir/mercator-output/alignments $pairOutputDir");
 
 		# delete tmp dir
 		$self->runCmd($test,"rm -r $pairTmpDir");
 
 		# and copy real output dir to cache
-		$self->runCmd($test, "cp $pairOutputDir $cacheDir");
+		$self->runCmd($test, "cp -r $pairOutputDir $cacheDir");
 	    }
 	}
     }
@@ -137,12 +139,12 @@ sub cacheHit {
     my $pairName = "${orgA}-${orgB}";
 
     # -M is a perl built-in function to return a file's age
-    my $cacheIsCurrent = -e "$cacheDir/$pairName" 
+    my $cacheIsCurrent = -e "$cacheDir/$pairName"
 	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgA.fasta" # cache is younger 
 	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgA.gff"
 	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgB.fasta"
 	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgB.gff";
-    $self->runCmd($test,"rm -r $cacheDir/$pairName") if !$cacheIsCurrent;
+    $self->runCmd($test,"rm -r $cacheDir/$pairName") if (!$cacheIsCurrent && -e "$cacheDir/$pairName");
     return $cacheIsCurrent;
 }
 
