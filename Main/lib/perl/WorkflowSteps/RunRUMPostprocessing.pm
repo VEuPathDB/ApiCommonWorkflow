@@ -12,7 +12,7 @@ sub run {
   # reads files in mainResultDir and produces more files in there (and deletes some too).
 
   my $genomeFastaFile = $self->getParamValue('genomeFastaFile');
-  my $transcriptFastaFile = $self->getParamValue('transcriptFastaFile');
+  my $transcriptsFastaFile = $self->getParamValue('transcriptFastaFile');
   my $geneAnnotationFile = $self->getParamValue('geneAnnotationFile');
   my $mainResultDir = $self->getParamValue('mainResultDir');
   my $createJunctionsFile = $self->getBooleanParamValue('createJunctionsFile');
@@ -21,7 +21,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $haveTranscripts = -e "$workflowDataDir/$transcriptsFastaFile"? "--haveTranscripts" : "";
-  my $createJunctions = $createJuctionsFile? "--createJuctions" : "";
+  my $createJunctions = $createJunctionsFile? "--createJuctions" : "";
   my $ss = $strandSpecific? "--strandSpecific" : "";
 
   my $cmd= "postProcessRUMTask --genomeFastaFile $workflowDataDir/$genomeFastaFile --geneAnnotationFile $workflowDataDir/$geneAnnotationFile --mainResultDir $workflowDataDir/$mainResultDir $haveTranscripts $createJunctions $ss";
