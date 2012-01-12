@@ -28,24 +28,28 @@ sub run {
 	my $databaseName = "${pair}_Mercator_synteny";
 	my $dbPluginArgs = "--name '$databaseName' ";
 	my $releasePluginArgs = "--databaseName '$databaseName' --databaseVersion dontcare";
-	my $insertPluginArgs = "--mercatorDir $workflowDataDir/$mercatorOutputsDir/$pair --syntenyDbRlsSpec $databaseName|dontcare";
+
+	my $insertPluginArgs = "--inputFile $workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny --syntenyDbRlsSpec '$databaseName|dontcare'";
+
+	# command to reformat .align file
+	my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align";
+	my $reformattedFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny";
+	my $formatCmd = "reformatMercatorAlignFile --inputFile $inputFile --outputFile $reformattedFile";
 
 	if ($undo) {
+	    unlink($reformattedFile);
 	    $self->runPlugin($test, 1, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $insertPluginArgs);
 	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
 	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 	} else {
-	    # reformat .align file
-	    my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align";
-	    my $outputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny";
-	    my $formatCmd = "reformatMercatorAlignFile --inputFile $inputFile --outputFile $outputFile";
 	    if ($self->getOrganismInfo($test, $orgAbbrevB)->getIsDraftGenome()) {
 		$formatCmd .= " --agpFile $workflowDataDir/$mercatorOutputsDir/$pair/$orgAbbrevB.agp";
 	    }
 
+	    $self->runCmd($test, $formatCmd);
 	    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 	    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
-	    $self->runPlugin($test, 0, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $insertPluginArgs);
+	    $self->runPlugin($test, 0, "ApiCommonData::Load::Plugin::InsertSyntenySpans", $insertPluginArgs);
 	}
     }
 }
