@@ -29,10 +29,7 @@ sub run {
 	my $dbPluginArgs = "--name '$databaseName' ";
 	my $releasePluginArgs = "--databaseName '$databaseName' --databaseVersion dontcare";
 
-	my $extDbVerA = $self->getExtDbVersion($test, "${orgAbbrevA}_primary_genome_RSRC");
-	my $extDbVerB = $self->getExtDbVersion($test, "${orgAbbrevB}_primary_genome_RSRC");
-
-	my $insertPluginArgs = "--inputFile $workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny --extDbRlsSpecA '${orgAbbrevA}_primary_genome_RSRC|$extDbVerA' --extDbRlsSpecB '${orgAbbrevB}_primary_genome_RSRC|$extDbVerB' --syntenyDbRlsSpec '$databaseName|dontcare'";
+	my $insertPluginArgs = "--inputFile $workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny --syntenyDbRlsSpec '$databaseName|dontcare'";
 
 	# command to reformat .align file
 	my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align";
