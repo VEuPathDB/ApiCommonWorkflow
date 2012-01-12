@@ -29,18 +29,15 @@ sub run {
 	my $dbPluginArgs = "--name '$databaseName' ";
 	my $releasePluginArgs = "--databaseName '$databaseName' --databaseVersion dontcare";
 
-	my $extDbVerA = $self->getExtDbVersion($test, "$orgAbbrevA_primary_genome_RSRC");
-	my $extDbVerB = $self->getExtDbVersion($test, "$orgAbbrevB_primary_genome_RSRC");
+	my $extDbVerA = $self->getExtDbVersion($test, "${orgAbbrevA}_primary_genome_RSRC");
+	my $extDbVerB = $self->getExtDbVersion($test, "${orgAbbrevB}_primary_genome_RSRC");
 
-	my $insertPluginArgs = "--inputFile $workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny --extDbRlsSpecA '$orgAbbrevA_primary_genome_RSRC|$extDbVerA' --extDbRlsSpecB '$orgAbbrevB_primary_genome_RSRC|$extDbVerB' --syntenyDbRlsSpec '$databaseName|dontcare'";
+	my $insertPluginArgs = "--inputFile $workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny --extDbRlsSpecA '${orgAbbrevA}_primary_genome_RSRC|$extDbVerA' --extDbRlsSpecB '${orgAbbrevB}_primary_genome_RSRC|$extDbVerB' --syntenyDbRlsSpec '$databaseName|dontcare'";
 
 	# command to reformat .align file
 	my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align";
 	my $outputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny";
 	my $formatCmd = "reformatMercatorAlignFile --inputFile $inputFile --outputFile $outputFile";
-	if (!$isNotDraftGenome) {
-	    $formatCmd .= " --agpFile $workflowDataDir/$mercatorOutputsDir/$pair/$orgAbbrevB.agp";
-	}
 
 	if ($undo) {
 	    unlink($outputFile);
@@ -57,6 +54,9 @@ sub run {
                        and o.abbrev = '$orgAbbrevB'";
 	    my $cmd = "getValueFromTable --idSQL \"$sql\"";
 	    my $isNotDraftGenome = $self->runCmd($test, $cmd);
+	    if (!$isNotDraftGenome) {
+	      $formatCmd .= " --agpFile $workflowDataDir/$mercatorOutputsDir/$pair/$orgAbbrevB.agp";
+	    }
 
 	    $self->runCmd($test, $formatCmd);
 	    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
