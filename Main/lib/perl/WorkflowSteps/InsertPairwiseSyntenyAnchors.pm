@@ -28,9 +28,18 @@ sub run {
 	my $databaseName = "${pair}_Mercator_synteny";
 	my $dbPluginArgs = "--name '$databaseName' ";
 	my $releasePluginArgs = "--databaseName '$databaseName' --databaseVersion dontcare";
-	my $insertPluginArgs = "--mercatorDir $workflowDataDir/$mercatorOutputsDir/$pair --syntenyDbRlsSpec $databaseName|dontcare";
+	my $insertPluginArgs = "--mercatorDir $workflowDataDir/$mercatorOutputsDir/$pair --syntenyDbRlsSpec '$databaseName|dontcare'";
+
+	# command to reformat .align file
+	my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align";
+	my $outputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny";
+	my $formatCmd = "reformatMercatorAlignFile --inputFile $inputFile --outputFile $outputFile";
+	if (!$isNotDraftGenome) {
+	    $formatCmd .= " --agpFile $workflowDataDir/$mercatorOutputsDir/$pair/$orgAbbrevB.agp";
+	}
 
 	if ($undo) {
+	    unlink($outputFile);
 	    $self->runPlugin($test, 1, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $insertPluginArgs);
 	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
 	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
@@ -45,15 +54,7 @@ sub run {
 	    my $cmd = "getValueFromTable --idSQL \"$sql\"";
 	    my $isNotDraftGenome = $self->runCmd($test, $cmd);
 
-	    # reformat .align file
-	    my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align";
-	    my $outputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny";
-	    my $formatCmd = "reformatMercatorAlignFile --inputFile $inputFile --outputFile $outputFile";
-	    
-	    if (!$isNotDraftGenome) {
-		$formatCmd .= " --agpFile $workflowDataDir/$mercatorOutputsDir/$pair/$orgAbbrevB.agp";
-	    }
-
+	    $self->runCmd($test, $formatCmd);
 	    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 	    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
 	    $self->runPlugin($test, 0, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $insertPluginArgs);
