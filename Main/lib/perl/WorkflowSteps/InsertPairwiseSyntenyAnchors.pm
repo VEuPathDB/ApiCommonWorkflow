@@ -46,7 +46,7 @@ sub run {
 	    my $sql = "select count(*)
                        from apidbtuning.${tmPrefix}sequenceattributes sa, apidb.organism o, sres.sequenceontology so
                        where so.term_name IN ('chromosome', 'supercontig')
-                       and sa.sequence_ontology_id = so.sequence_ontology_id
+                       and sa.so_id = so.so_id
                        and sa.taxon_id = o.taxon_id
                        and o.abbrev = '$orgAbbrevB'";
 	    my $cmd = "getValueFromTable --idSQL \"$sql\"";
