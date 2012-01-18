@@ -16,7 +16,12 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "cat $workflowDataDir/$inputProteinsFile | perl -pe '$fix' > $workflowDataDir/$outputProteinsFile";
+  my $cmd = "shortenFastaSeqs --finalLength 9999 --inputFile $workflowDataDir/$inputProteinsFile --outputFile $workflowDataDir/${inputProteinsFile}_temp";
+
+  my $cmd2 = "cat $workflowDataDir/${inputProteinsFile}_temp | perl -pe '$fix' > $workflowDataDir/$outputProteinsFile";
+
+  my $cmd3 = "rm -f $workflowDataDir/${inputProteinsFile}_temp";
+
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputProteinsFile");
@@ -28,6 +33,8 @@ sub run {
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputProteinsFile");
       }else{
 	  $self->runCmd($test,$cmd);
+          $self->runCmd($test,$cmd2);
+          $self->runCmd($test,$cmd3);
       }
   }
 }
