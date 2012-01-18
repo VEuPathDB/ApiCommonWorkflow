@@ -28,8 +28,9 @@ sub run {
 
     # otherwise insert this ext db rls
     else {
-
-      my $releasePluginArgs = "--databaseName '$dataSourceName' --databaseVersion '$dataSourceVersion'";
+      my $idType = $dataSource->getExternalDbIdType();
+      $idType = $idType? "--idType '$idType'" : "";
+      my $releasePluginArgs = "--databaseName '$dataSourceName' --databaseVersion '$dataSourceVersion' $idType";
 
       $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
     }

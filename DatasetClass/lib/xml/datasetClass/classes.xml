@@ -695,6 +695,7 @@
     <resource resource="${organismAbbrev}_${name}_gene_aliases_RSRC"
 	      version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              externalDbIdType="${idType}"
               scope="organism"
               organismAbbrev="${organismAbbrev}">
 
@@ -703,7 +704,7 @@
         </dir>
       </manualGet>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/geneAliases.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier" --tableName "DbRefNAFeature" --idType '${idType}' --organismAbbrev ${organismAbbrev}</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/geneAliases.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier" --tableName "DbRefNAFeature" --organismAbbrev ${organismAbbrev}</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -811,6 +812,7 @@
     <resource resource="${organismAbbrev}_dbxref_gene2Entrez_RSRC"
 	      version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              externalDbIdType="alternate id"
               scope="organism"
               organismAbbrev="${organismAbbrev}">
 
@@ -824,7 +826,7 @@
 
       <unpack>rm -f @@dataDir@@/gene_info.gz</unpack>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2entrez.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'  --idType 'alternate id' --organismAbbrev ${organismAbbrev}</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2entrez.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --organismAbbrev ${organismAbbrev}</pluginArgs>
 
     </resource>
   </datasetClass>
@@ -843,6 +845,7 @@
     <resource resource="${organismAbbrev}_dbxref_gene2Uniprot_RSRC"
 	      version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              externalDbIdType="alternate id"
               scope="organism"
               organismAbbrev="${organismAbbrev}">
 
@@ -854,7 +857,7 @@
       <!-- need to use the gene2entrez file to get map of NCBI ids -->
       <unpack>uniprotIdMap2DbRefsFile @@dataDir@@/idmapping_selected.tab.gz @@dataDir@@/../${organismAbbrev}_dbxref_gene2Entrez_RSRC/gene2entrez.tab > @@dataDir@@/gene2uniprot.tab</unpack>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2uniprot.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --idType 'alternate id' --organismAbbrev ${organismAbbrev}</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2uniprot.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}'  --organismAbbrev ${organismAbbrev}</pluginArgs>
     </resource>
   </datasetClass>
 
