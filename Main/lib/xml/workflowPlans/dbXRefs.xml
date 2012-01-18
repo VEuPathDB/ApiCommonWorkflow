@@ -14,23 +14,6 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <datasetTemplate class="dbxref_NRDB">
-    <step name="findNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindNrdbXrefs">
-      <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
-      <paramValue name="nrdbFile">$$global_NRDBOutputFile$$</paramValue>
-      <paramValue name="proteinsFileRegex">^([\\w\\.]+)</paramValue>
-      <paramValue name="nrdbFileRegex">^\\|\\d+\\|(?:emb|gb|dbj|ref|sp|pdb)\\|([\\w\\.]+)\\|</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/nrdbXrefs.txt</paramValue>
-       <depends name="makeDataDir"/>
-      <dependsGlobal name="NRDB_RSRC"/>
-    </step>
-
-    <step name="loadNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadNrdbXrefs" stepLoadTypes="plugin">
-      <paramValue name="xrefsFile">$$dataDir$$/nrdbXrefs.txt</paramValue>
-      <depends name="findNrdbXrefs"/>
-    </step>
-  </datasetTemplate>
-
   <datasetTemplate class="dbxref_simple">
     <prop name="name"/>
     <prop name="organismAbbrev"/>
