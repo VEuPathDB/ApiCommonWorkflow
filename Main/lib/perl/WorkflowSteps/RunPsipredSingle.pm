@@ -9,8 +9,8 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputFile = $self->getParamValue('inputFile');
-  my $psipredPath = $self->getParamValue('psipredPath');
 
+  my $psipredPath = $self->getSharedConfig("psipredPath");
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
