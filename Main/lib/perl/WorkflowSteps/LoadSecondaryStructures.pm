@@ -19,7 +19,8 @@ sub run {
 
     my $setPercent=$self->getParamValue('setPercent');
 
-    my $algImpVer = "2.5";
+    my $algImpVer=$self->getParamValue('algImpVer');
+
     my $algInvStart = "2000-01-01";
     my $algInvEnd = "2000-01-01";
     $algName =~ s/\s//g;
