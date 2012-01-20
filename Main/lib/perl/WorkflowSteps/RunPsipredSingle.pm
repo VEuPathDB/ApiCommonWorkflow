@@ -34,12 +34,6 @@ sub run {
 }
 
 
-sub getParamsDeclaration {
-  return ('inputFile',
-	  'outputDir'
-	 );
-}
-
 
 sub getConfigDeclaration {
   return (
