@@ -10,20 +10,22 @@ sub run {
 
   my $inputFile = $self->getParamValue('inputFile');
 
+  my $outputDir = $self->getParamValue('outputDir');
+
   my $psipredPath = $self->getSharedConfig("psipredPath");
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd1 = "mkdir -p $workflowDataDir/result";
+  my $cmd1 = "mkdir -p $workflowDataDir/$outputDir";
 
-  my $cmd2 = "psipredRun --inputFile $inputProteinsFile --outputDir $workflowDataDir/result --psipredPath $psipredPath";
+  my $cmd2 = "psipredRun --inputFile $workflowDataDir/$inputFile --outputDir $workflowDataDir/$outputDir --psipredPath $psipredPath";
 
   if ($undo) {
-    $self->runCmd(0, "rm -rf $workflowDataDir/result");
+    $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir");
   } else {
       if ($test){
 	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+	  $self->runCmd(0,"mkdir -p $workflowDataDir/$outputDir");
       }else{
 	  $self->runCmd($test,$cmd1);
           $self->runCmd($test,$cmd2);
@@ -34,7 +36,7 @@ sub run {
 
 sub getParamsDeclaration {
   return ('inputFile',
-	  'psipredPath'
+	  'outputDir'
 	 );
 }
 
