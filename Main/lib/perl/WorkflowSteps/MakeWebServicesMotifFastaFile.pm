@@ -11,7 +11,8 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $projectName = $self->getParamValue('projectName');
   my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
-  my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  my $dataName = $self->getParamValue('dataName');
+  my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  
+  my $dataName = $self->getParamValue('dataName');
 
   # extra params for this step
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
@@ -25,7 +26,7 @@ sub run {
   my $inputDownloadFile = "$downloadFileDir/$fileName";
 
   # outputFile
-  my $outputFile = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/motif/$fileName";
+  my $outputFile = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/motif/$dataName.fasta";
 
   if($undo) {
     $self->runCmd(0, "rm -f $outputFile*");
