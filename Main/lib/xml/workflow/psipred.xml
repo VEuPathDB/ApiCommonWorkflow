@@ -1,6 +1,5 @@
 <workflowGraph name="psipredWorkflow">
 
-    <param name="nrdbFilePfilt"/>
     <param name="proteinsFile"/>
     <param name="parentDataDir"/>
 
@@ -12,57 +11,35 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-
     <step name="fixProteinIds" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixProteinIdsForPsipred">
       <paramValue name="inputProteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputProteinsFile">$$psipredProteinsFile$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="createTaskDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePsipredTaskDir">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="proteinsFile">$$psipredProteinsFile$$</paramValue>
-      <paramValue name="nrdbFile">$$nrdbFilePfilt$$</paramValue>
+    <step name="runPsipredSingle" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPsipredSingle">
+      <paramValue name="inputFile">$$psipredProteinsFile$$</paramValue>
       <depends name="fixProteinIds"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="createTaskDir"/>
-    </step>
-
-    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="numNodes">20</paramValue>
-      <paramValue name="processorsPerNode">1</paramValue>
-      <depends name="mirrorToCluster"/>
-    </step>
-
-    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
-      <paramValue name="outputFiles"></paramValue>
-      <depends name="runClusterTask"/>
-    </step>
-
     <step name="fixFileNames" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixPsipredFileNames">
-      <paramValue name="inputDir">$$dataDir$$/master/mainresult</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/master/mainresult_fixed</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/result</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/result_fixed</paramValue>
       <depends name="mirrorFromCluster"/>
      </step>
 
     <step name="makeAlgInv" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAlgInv" stepLoadTypes="makeAlgInv,plugin">
       <paramValue name="algName">Psipred</paramValue>
-      <paramValue name="algVersion">2.5</paramValue>
-      <paramValue name="algDesc">Psipred method for protein secondary structure prediction</paramValue>
-      <paramValue name="algResult">Secondary_Structure_prediction_for_all_annotated_proteins</paramValue>
+      <paramValue name="algVersion">dontcare</paramValue>
+      <paramValue name="algDesc">dontcare</paramValue>
+      <paramValue name="algResult">dontcare</paramValue>
       <depends name="fixFileNames"/>
     </step>
 
     <step name="insertPsipred" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadSecondaryStructures" stepLoadTypes="plugin">
       <paramValue name="algName">Psipred</paramValue>
-      <paramValue name="inputDir">$$dataDir$$/master/mainresult_fixed</paramValue>
-      <paramValue name="algInvResult">Secondary Structure prediction for all annotated proteins</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/result_fixed</paramValue>
+      <paramValue name="algInvResult">dontcare</paramValue>
       <paramValue name="setPercent">true</paramValue>
       <depends name="makeAlgInv"/>
     </step>
