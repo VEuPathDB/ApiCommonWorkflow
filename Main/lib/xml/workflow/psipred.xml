@@ -19,13 +19,14 @@
 
     <step name="runPsipredSingle" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPsipredSingle">
       <paramValue name="inputFile">$$psipredProteinsFile$$</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/result</paramValue>
       <depends name="fixProteinIds"/>
     </step>
 
     <step name="fixFileNames" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixPsipredFileNames">
       <paramValue name="inputDir">$$dataDir$$/result</paramValue>
       <paramValue name="outputDir">$$dataDir$$/result_fixed</paramValue>
-      <depends name="mirrorFromCluster"/>
+      <depends name="runPsipredSingle"/>
      </step>
 
     <step name="makeAlgInv" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAlgInv" stepLoadTypes="makeAlgInv,plugin">
