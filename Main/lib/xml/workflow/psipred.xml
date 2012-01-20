@@ -23,12 +23,6 @@
       <depends name="fixProteinIds"/>
     </step>
 
-    <step name="fixFileNames" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixPsipredFileNames">
-      <paramValue name="inputDir">$$dataDir$$/result</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/result_fixed</paramValue>
-      <depends name="runPsipredSingle"/>
-     </step>
-
     <step name="makeAlgInv" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAlgInv" stepLoadTypes="makeAlgInv,plugin">
       <paramValue name="algName">Psipred</paramValue>
       <paramValue name="algVersion">dontcare</paramValue>
@@ -39,7 +33,7 @@
 
     <step name="insertPsipred" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadSecondaryStructures" stepLoadTypes="plugin">
       <paramValue name="algName">Psipred</paramValue>
-      <paramValue name="inputDir">$$dataDir$$/result_fixed</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/result</paramValue>
       <paramValue name="algInvResult">dontcare</paramValue>
       <paramValue name="setPercent">true</paramValue>
       <depends name="makeAlgInv"/>
