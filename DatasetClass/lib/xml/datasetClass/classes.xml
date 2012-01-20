@@ -2085,7 +2085,7 @@
 	<dir name="final">
 	</dir>
       </manualGet>
-      <pluginArgs>--inputFile @@dataDir@@/apFile.txt --extDbRelSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%" --seqExtDbRelSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --category "secretome"</pluginArgs>
+      <pluginArgs>--inputFile @@dataDir@@/apFile.txt --extDbRelSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%" --seqExtDbRelSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --category "secretome" --organismAbbrev ${organismAbbrev}</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -2128,7 +2128,7 @@
         <dir name="final">
         </dir>
       </manualGet>
-      <pluginArgs>--file @@dataDir@@/All_LODscores.txt   --extDbName  "%PARENT_RESOURCE_NAME%" --extDbVer "%PARENT_RESOURCE_VERSION%"</pluginArgs>
+      <pluginArgs>--file @@dataDir@@/All_LODscores.txt   --extDbName  "%RESOURCE_NAME%" --extDbVer "%RESOURCE_VERSION%"</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -2187,11 +2187,11 @@ fFormat 2</pluginArgs>
             plugin="GUS::Community::Plugin::InsertPhylogeneticProfiles"
             scope="organism"
             organismAbbrev="${organismAbbrev}">
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/phylogeny/phylogeneticProfiles/${version}/final">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/phylogeny/PhylogeneticProfiles/${version}/final">
         <dir name="final">
         </dir>
       </manualGet>
-      <pluginArgs>--ProfileSetDescription 'the phylogenetic profiles for ${organismAbbrev}' --headerFile @@dataDir@@/TaxonNameHeaders --profilesDataFile @@dataDir@@/phylogenetic-profiles-any-and-target-organism.gz --mutualInformationScoreDataFile @@dataDir@@/phylogenetic-profiles-any-and-target-organism.muinfo.gz --tolerateMissingIds 1 --dontLoadScores --threshold "${threshold}"</pluginArgs>
+      <pluginArgs>--ProfileSetDescription 'the phylogenetic profiles for ${organismAbbrev}' --headerFile @@dataDir@@/final/TaxonNameHeaders --profilesDataFile @@dataDir@@/final/phylogenetic-profiles-any-and-target-organism.gz --mutualInformationScoreDataFile @@dataDir@@/final/phylogenetic-profiles-any-and-target-organism.muinfo.gz --tolerateMissingIds 1 --dontLoadScores --threshold "${threshold}"</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -2204,7 +2204,7 @@ fFormat 2</pluginArgs>
     <graphPlanFile name="organismSpecific.xml"/>
     
     <resource resource="${organismAbbrev}_UpdtRodentPlasmoChr_${name}_RSRC" version="${version}"
-        plugin="GUS::Community::Plugin::UpdateRodentPlasmodiumChromosomes"
+        plugin="ApiCommonData::Load::Plugin::UpdateRodentPlasmodiumChromosomes"
         scope="organism"
         organismAbbrev="${organismAbbrev}">
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/comparativeGenomics/${name}/${version}/final/RMP_Pf_fromKooij.txt">
@@ -2225,7 +2225,7 @@ fFormat 2</pluginArgs>
     <graphPlanFile name="organismSpecific.xml"/>
     
     <resource resource="${organismAbbrev}_LocMapSqlLdr_${name}_RSRC" version="${version}"
-        plugin="GUS::Community::Plugin::InsertPlasmoPfalLocationsWithSqlLdr6"
+        plugin="ApiCommonData::Load::Plugin::InsertPlasmoPfalLocationsWithSqlLdr"
         scope="organism"
         organismAbbrev="${organismAbbrev}">
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/SNP/${name}/${version}/final/map_v6.0.sql">
