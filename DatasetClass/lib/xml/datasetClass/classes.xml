@@ -2289,4 +2289,28 @@ fFormat 2</pluginArgs>
       </resource>
     </datasetClass> 
 
-</datasetClasses>
+
+    <datasetClass class="geneName" category="" datasetFileHint="">
+      <purpose></purpose>
+      <prop name="projectName"/>
+      <prop name="organismAbbrev"/>
+      <prop name="name"/>
+      <prop name="version"/>
+      <prop name="genomeVersion"/>
+
+      <graphPlanFile name="organismSpecific.xml"/>
+
+      <resource resource="${organismAbbrev}_genome_${name}_RSRC" version="${version}" 
+		plugin="ApiCommonData::Load::Plugin::InsertGeneNamesFromTabFile"
+		scope="organism"
+		organismAbbrev="${organismAbbrev}">
+
+	<manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${name}/${version}/final/genename.txt">
+	  <dir name="final">
+	  </dir>
+	</manualGet>
+	<pluginArgs>--file @@dataDir@@/genename.txt --geneNameDbName '${organismAbbrev}_primary_genome_RSRC' --geneNameDbVer '${genomeVersion}'</pluginArgs>
+      </resource>
+    </datasetClass>
+    
+  </datasetClasses>
