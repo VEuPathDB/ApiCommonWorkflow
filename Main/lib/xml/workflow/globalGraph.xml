@@ -137,12 +137,18 @@
           stepClass="ReFlow::StepClasses::InitClusterHomeDir">
     </step>
 
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="initClusterHomeDir"/>
+      <depends name="NRDB_RSRC"/>
+      <depends name="PDBProteinSequences_RSRC"/>
+    </step>
 
     <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster">
       <paramValue name="inputFile">$$global_NRDBOutputFile_shortDefline$$</paramValue>
       <paramValue name="vendor">wu</paramValue>
       <paramValue name="seqType">p</paramValue>
-      <depends name="initClusterHomeDir"/>
+      <depends name="mirrorToCluster"/>
     </step>
 
 
@@ -150,7 +156,7 @@
       <paramValue name="inputFile">$$global_PDBOutputFile$$</paramValue>
       <paramValue name="vendor">wu</paramValue>
       <paramValue name="seqType">p</paramValue>
-      <depends name="initClusterHomeDir"/>
+      <depends name="mirrorToCluster"/>
     </step>
 
 </workflowGraph>
