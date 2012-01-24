@@ -10,9 +10,11 @@ sub run {
   # get parameters
   my $xrefsFile = $self->getParamValue('xrefsFile');
 
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--DbRefMappingFile '$workflowDataDir/$xrefsFile' --columnSpec \"secondary_identifier,primary_identifier\"";
+  my $args = "--DbRefMappingFile '$workflowDataDir/$xrefsFile' --columnSpec \"secondary_identifier,primary_identifier\" --organismAbbrev $organismAbbrev";
 
     if ($test) {
       $self->testInputFile('xrefsFile', "$workflowDataDir/$xrefsFile");

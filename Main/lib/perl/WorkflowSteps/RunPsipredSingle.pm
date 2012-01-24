@@ -12,7 +12,7 @@ sub run {
 
   my $outputDir = $self->getParamValue('outputDir');
 
-  my $psipredPath = $self->getSharedConfig("psipredPath");
+  my $psipredPath = $self->getConfig("psipredPath");
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
