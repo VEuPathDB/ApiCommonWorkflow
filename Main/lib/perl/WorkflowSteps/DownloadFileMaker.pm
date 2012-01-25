@@ -53,10 +53,9 @@ sub run {
   my $outputDir = "$websiteFilesDir/$relativeDir/$nameForFiles/$fileType";
   
   $dataName = "_$dataName" if $dataName; # gff does not use $dataName, so allow it to be empty
-  $prefix = "-$specialCasePrefix" if $specialCasePrefix;  # empty for nuclear
 
-  my $downloadFile = "$outputDir/$projectName-${projectVersion}_${nameForFiles}${prefix}_$dataName.$fileType";
-  my $descripFile = "$outputDir/.$projectName-${projectVersion}_${nameForFiles}${prefix}_$dataName.$fileType.desc";
+  my $downloadFile = "$outputDir/$projectName-${projectVersion}_${nameForFiles}_$dataName.$fileType";
+  my $descripFile = "$outputDir/.$projectName-${projectVersion}_${nameForFiles}_$dataName.$fileType.desc";
   my $descripFileCmd =  "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
 
   my $downloadFileCmd =  $self->getDownloadFileCmd($downloadFile, $test);
