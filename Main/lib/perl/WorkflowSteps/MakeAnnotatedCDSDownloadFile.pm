@@ -9,13 +9,10 @@ sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
     my $organismSource = $self->getParamValue('organismSource');
-    my $deprecated = ($self->getParamValue('hasDeprecatedGenes') eq 'true') ? 1 :0;
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $ncbiTaxonId = $self->getOrganismInfo($test,$organismAbbrev)->getNcbiTaxonId();
-    $downloadFileName =~ s/\.fasta/-deprecatedGenes.fasta/ if $deprecated;
 
-    my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
     my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
     my $sql = <<"EOF";
@@ -80,9 +77,7 @@ sub getDownloadFileCmd {
         AND gf.ncbi_tax_id = $ncbiTaxonId 
         AND t.na_feature_id = taaf.na_feature_id
         AND fl.is_top_level = 1
-        AND gf.is_deprecated = $deprecated
         and gf.na_feature_id = product_name.na_feature_id
-        AND ns.sequence_ontology_id in ($soIds)
 EOF
 
     my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"  --verbose";

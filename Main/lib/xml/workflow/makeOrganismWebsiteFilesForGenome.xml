@@ -1,0 +1,118 @@
+<workflowGraph name="makeAndFormatDownloadFiles">
+    <param name="relativeDownloadSiteDir"/>
+    <param name="relativeWebServicesDir"/>
+    <param name="organismAbbrev"/>
+    <param name="genomeSource"/>
+    <param name="projectName"/>
+    <param name="projectVersionForWebsiteFiles"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="minOrfLength"/>
+    <param name="skipGenomeAnalysis"/>
+    <param name="cellularLocationSoTerms"/>
+
+    <constant name="mixedGenomicDescripString">Genomic DNA sequences (NT)</constant>
+    <constant name="orfDescripString">Translated open reading frames from genomic sequences (AA)</constant>
+    <constant name="orfNADescripString">Open reading frames on genomic sequences (NT)</constant>
+    <constant name="sequenceDescripString">Genomic DNA sequence statistics and information in detail</constant>
+
+    <step name="makeMixedGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMixedGenomicDownloadFile" excludeIf="$$skipGenomeAnalysis$$">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">fasta</paramValue>
+      <paramValue name="dataName">Genome</paramValue>
+      <paramValue name="descripString">$$mixedGenomicDescripString$$</paramValue>
+      <paramValue name="organismSource">$$genomeSource$$</paramValue>
+    </step>
+
+    <step name="formatMixedGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" excludeIf="$$skipGenomeAnalysis$$">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="useSpeciesName">false</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="dataName">Genome</paramValue>
+      <paramValue name="args">-n</paramValue>
+      <depends name="makeMixedGenomicDownloadFile"/>
+    </step>
+
+    <step name="makeOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfDownloadFile" excludeIf="$$skipGenomeAnalysis$$">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">fasta</paramValue>
+      <paramValue name="dataName">ORFs_AA</paramValue>
+      <paramValue name="descripString">$$orfDescripString$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="minOrfLength">$$minOrfLength$$</paramValue>
+    </step>
+
+    <step name="formatOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" excludeIf="$$skipGenomeAnalysis$$">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="useSpeciesName">false</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="dataName">ORFs_AA</paramValue>
+      <paramValue name="args">-p -C X</paramValue>
+      <depends name="makeOrfDownloadFile"/>
+    </step>
+
+    <step name="copyOrfsMotifFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesMotifFastaFile" excludeIf="$$skipGenomeAnalysis$$">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="dataName">ORFs_AA</paramValue>
+      <depends name="makeOrfDownloadFile"/>
+    </step>
+
+    <step name="makeOrfNADownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfNADownloadFile" excludeIf="$$skipGenomeAnalysis$$">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">fasta</paramValue>
+      <paramValue name="dataName">ORFs_NA</paramValue>
+      <paramValue name="descripString">$$orfNADescripString$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="minOrfLength">$$minOrfLength$$</paramValue>
+    </step>
+
+    <step name="makeDoubleStrandGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomicDoubleStrandFile" excludeIf="$$skipGenomeAnalysis$$">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">fasta</paramValue>
+      <paramValue name="dataName">GenomeDoubleStrand</paramValue>
+      <paramValue name="descripString">$$mixedGenomicDescripString$$</paramValue>
+      <paramValue name="organismSource">$$genomeSource$$</paramValue>
+    </step>
+
+    <step name="copyDoubleStrandGenomicMotifFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesMotifFastaFile" excludeIf="$$skipGenomeAnalysis$$">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="dataName">GenomeDoubleStrand</paramValue>
+      <depends name="makeDoubleStrandGenomicDownloadFile"/>
+    </step>
+
+    <step name="makeSequenceDescripFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDescripFile">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">txt</paramValue>
+      <paramValue name="dataName">Sequences</paramValue>
+      <paramValue name="descripString">$$sequenceDescripString$$</paramValue>
+    </step>
+
+</workflowGraph>

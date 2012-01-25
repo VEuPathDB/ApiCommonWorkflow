@@ -20,7 +20,7 @@ sub run {
 
   # get parameters
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $organelleName = $self->getParamValue('organelleName');
+
   # this is relative to the website files dir.
   # it will look something like downloadSite/ToxoDB/release-6.3
   my $relativeDir = $self->getParamValue('relativeDir');
@@ -34,10 +34,6 @@ sub run {
   if ($useSpeciesName) {
     $organismNameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
-  }
-
-  if ($organelleName) {
-      $organismNameForFiles .= "-$organelleName";
   }
 
   # not using restricted access.  set up dir the old way
@@ -84,15 +80,6 @@ sub _parseXmlFile {
   $self->{methods} = eval{ $xml->XMLin($methodsXmlFile, SuppressEmpty => undef, KeyAttr => 'organism', ForceArray=>['organism']) };
 #  print STDERR Dumper $self->{data};
   $self->error("Error parsing '$methodsXmlFile': \n$@\n") if($@);
-}
-
-
-sub getParamsDeclaration {
-    return (
-	'organismAbbrev',
-	'relativeDir',
-	'organelleName',
-	);
 }
 
 sub getConfigDeclaration {

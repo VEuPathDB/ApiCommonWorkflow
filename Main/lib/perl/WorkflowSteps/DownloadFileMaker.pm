@@ -44,23 +44,22 @@ sub run {
   my $fileType = $self->getParamValue('fileType');
   my $dataName = $self->getParamValue('dataName');
   my $descripString= $self->getParamValue('descripString');
-  my $organelle= $self->getParamValue('organelle');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+  
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
   my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
   my $nameForFiles = $self->getIsSpeciesLevel()?  $speciesNameForFiles:  $organismNameForFiles;
   my $outputDir = "$websiteFilesDir/$relativeDir/$nameForFiles/$fileType";
-
+  
   $dataName = "_$dataName" if $dataName; # gff does not use $dataName, so allow it to be empty
-  $organelle = "-$organelle" if $organelle;  # empty for nuclear
+  $prefix = "-$specialCasePrefix" if $specialCasePrefix;  # empty for nuclear
 
-  my $downloadFile = "$outputDir/$projectName-${projectVersion}_${nameForFiles}${organelle}$dataName.$fileType";
-  my $descripFile = "$outputDir/.$projectName-${projectVersion}_${nameForFiles}${organelle}$dataName.$fileType.desc";
+  my $downloadFile = "$outputDir/$projectName-${projectVersion}_${nameForFiles}${prefix}_$dataName.$fileType";
+  my $descripFile = "$outputDir/.$projectName-${projectVersion}_${nameForFiles}${prefix}_$dataName.$fileType.desc";
+  my $descripFileCmd =  "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
 
   my $downloadFileCmd =  $self->getDownloadFileCmd($downloadFile, $test);
-
-  my $descripFileCmd =  "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
 
   if($undo){
     $self->runCmd(0, "rm -f $downloadFile") unless $downloadFileCmd eq 'NONE';
@@ -70,7 +69,7 @@ sub run {
       $self->error("Output file '$descripFile' already exists") if -e $descripFile;
       if ($test) {
 	  $self->runCmd(0, "echo test > $downloadFile") unless $downloadFileCmd eq 'NONE';
-	  $self->runCmd(0, "echo test > $descripFile");
+	  $self->runCmd(0, "echo test > $descripFile")
       }else {
 	  $self->runCmd($test, $downloadFileCmd) unless $downloadFileCmd eq 'NONE';
 	  $self->runCmd($test, $descripFileCmd);

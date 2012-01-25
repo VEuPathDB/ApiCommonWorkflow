@@ -26,7 +26,7 @@ sub run {
   my $inputDownloadFile = "$downloadFileDir/$fileName";
 
   # outputFile
-  my $outputFile = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/motif/$dataName.fasta";
+  my $outputFile = "$websiteFilesDir/$webServicesRelativeDir/$organismAbbrev/motif/$dataName.fasta";
 
   if($undo) {
     $self->runCmd(0, "rm -f $outputFile*");
