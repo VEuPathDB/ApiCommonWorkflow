@@ -22,12 +22,13 @@ sub run {
   my $isAnnotatedGenome = $self->getBooleanParamValue('isAnnotatedGenome');
   my $isReferenceStrain = $self->getBooleanParamValue('isReferenceStrain');
   my $hasTemporaryNcbiTaxonId = $self->getBooleanParamValue('hasTemporaryNcbiTaxonId');
+  my $genomeSource = $self->getParamValue('genomeSource');
 
   my $ag = $isAnnotatedGenome? '--isAnnotatedGenome' : '';
   my $rs = $isReferenceStrain? '--isReferenceStrain' : '';
   my $tnt = $hasTemporaryNcbiTaxonId? '--hasTemporaryNcbiTaxonId' : '';
 
-  my $args = "--fullName '$fullName' --projectName $project --ncbiTaxonId $ncbiTaxonId --speciesNcbiTaxonId $speciesNcbiTaxonId --abbrev $abbrev --abbrevPublic $abbrevPublic --nameForFilenames $nameForFilenames --abbrevOrthomcl $abbrevOrthomcl --abbrevStrain  $abbrevStrain --abbrevRefStrain  $abbrevRefStrain $ag $rs $tnt";
+  my $args = "--fullName '$fullName' --projectName $project --ncbiTaxonId $ncbiTaxonId --speciesNcbiTaxonId $speciesNcbiTaxonId --abbrev $abbrev --abbrevPublic $abbrevPublic --nameForFilenames $nameForFilenames --genomeSource $genomeSource --abbrevOrthomcl $abbrevOrthomcl --abbrevStrain  $abbrevStrain --abbrevRefStrain  $abbrevRefStrain $ag $rs $tnt";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertOrganism", $args);
 
