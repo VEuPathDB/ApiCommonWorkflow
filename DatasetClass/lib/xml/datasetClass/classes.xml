@@ -1046,7 +1046,6 @@
 
   <!-- Category: microarrayExpression -->
 
-  <!-- FIX: needs an analysis config file -->
   <!-- manual delivery and plugin or step class must be upgraded see redmine #4257 -->
   <datasetClass class="microarrayExpressionExperiment" category="" datasetFileHint="">
     <purpose></purpose>
@@ -1056,6 +1055,43 @@
     <prop name="experimentVersion"/>
     <prop name="microarrayPlatformName"/>
     <prop name="microarrayPlatformVersion"/>
+    <prop name="doExpressionAnalysis"/>
+    <prop name="hasTimeSeries"/>
+    <prop name="usesAffymetrixGeneArray"/>
+    <prop name="usesNimbleGenGeneArray"/>
+
+    <graphPlanFile name="arrayStudies.xml"/>
+
+    <resource resource="${organismAbbrev}_microarrayExpression_${experimentName}_RSRC" version="${experimentVersion}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}"
+	      >
+      
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/microarrayExpression/${experimentName}/${experimentVersion}/final">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/analysisConfig.xml"/>
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+
+    </resource>
+  </datasetClass>
+
+  <!-- Category: microarrayExpression -->
+
+  <!-- manual delivery must include two files:   -->
+  <!--   geneProbeMapping.txt (an empty file)  -->
+  <!--   geneProbeMappingVendor (the cdf or ndf file)   -->
+  <datasetClass class="microarrayExpressionExperimentWithProviderProbeMapping" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
     <prop name="doExpressionAnalysis"/>
     <prop name="hasTimeSeries"/>
     <prop name="usesAffymetrixGeneArray"/>

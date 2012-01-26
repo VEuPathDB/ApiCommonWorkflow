@@ -60,7 +60,6 @@
     <prop name="experimentVersion"/>
     <prop name="experimentDisplayName"/>
     <prop name="microarrayPlatformName"/>
-    <prop name="microarrayPlatformVersion"/>
     <prop name="doExpressionAnalysis"/>
     <prop name="hasTimeSeries"/>
     <prop name="usesAffymetrixGeneArray"/>
@@ -77,7 +76,6 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="experimentResourceName">${organismAbbrev}_microarrayExpression_${experimentName}_RSRC</paramValue>
       <paramValue name="experimentResourceVersion">${experimentVersion}</paramValue>
-      <paramValue name="chipProbeExtDbRlsSpec">${organismAbbrev}_microarrayPlatform_${microarrayPlatformName}_RSRC|${microarrayPlatformVersion}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="doExpressionAnalysis">${doExpressionAnalysis}</paramValue>
       <paramValue name="hasTimeSeries">${hasTimeSeries}</paramValue>
@@ -85,6 +83,40 @@
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="geneProbeMappingTabFile">$$dataDir$$/${microarrayPlatformName}/geneProbeMapping.tab</paramValue>
       <paramValue name="geneProbeMappingVendorFile">$$dataDir$$/${microarrayPlatformName}/geneProbeMappingVendor</paramValue>
+      <paramValue name="expectCdfFile">${usesAffymetrixGeneArray}</paramValue>
+      <paramValue name="expectNdfFile">${usesNimbleGenGeneArray}</paramValue>
+
+      <depends name="${experimentName}"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="microarrayExpressionExperimentWithProviderProbeMapping">
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
+    <prop name="experimentDisplayName"/>
+    <prop name="doExpressionAnalysis"/>
+    <prop name="hasTimeSeries"/>
+    <prop name="usesAffymetrixGeneArray"/>
+    <prop name="usesNimbleGenGeneArray"/>
+
+    <subgraph name="${experimentName}" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_microarrayExpression_${experimentName}_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+
+    <subgraph name="${experimentName}_analyzeMicroarrayExperiment" xmlFile="analyzeMicroarrayExperiment.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="experimentResourceName">${organismAbbrev}_microarrayExpression_${experimentName}_RSRC</paramValue>
+      <paramValue name="experimentResourceVersion">${experimentVersion}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="doExpressionAnalysis">${doExpressionAnalysis}</paramValue>
+      <paramValue name="hasTimeSeries">${hasTimeSeries}</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="geneProbeMappingTabFile">$$dataDir$$/$$experimentResourceName$$/final/geneProbeMapping.tab</paramValue>
+      <paramValue name="geneProbeMappingVendorFile">$$dataDir$$/$$experimentResourceName$$/final/geneProbeMappingVendor</paramValue>
       <paramValue name="expectCdfFile">${usesAffymetrixGeneArray}</paramValue>
       <paramValue name="expectNdfFile">${usesNimbleGenGeneArray}</paramValue>
 
