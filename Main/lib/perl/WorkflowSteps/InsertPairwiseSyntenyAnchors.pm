@@ -10,6 +10,7 @@ sub run {
 
     # the directory that has mercator output.  this is our input
     my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir');
+    my $mercatorInputsDir = $self->getParamValue('mercatorInputsDir'); # holds lots of .gff and .fasta files
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -25,11 +26,14 @@ sub run {
 	next if ($pair =~ m/^\./);
 	my ($orgAbbrevA, $orgAbbrevB) = split(/\-/, $pair);
 
+        my $gffFileA = "$workflowDataDir/$mercatorInputsDir/${orgAbbrevA}.gff";
+        my $gffFileB = "$workflowDataDir/$mercatorInputsDir/${orgAbbrevB}.gff";
+
 	my $databaseName = "${pair}_Mercator_synteny";
 	my $dbPluginArgs = "--name '$databaseName' ";
 	my $releasePluginArgs = "--databaseName '$databaseName' --databaseVersion dontcare";
 
-	my $insertPluginArgs = "--inputFile $workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny --syntenyDbRlsSpec '$databaseName|dontcare'";
+	my $insertPluginArgs = "--inputFile $workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny --syntenyDbRlsSpec '$databaseName|dontcare' --gffFileA $gffFileA --gffFileB $gffFileB";
 
 	# command to reformat .align file
 	my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align";
