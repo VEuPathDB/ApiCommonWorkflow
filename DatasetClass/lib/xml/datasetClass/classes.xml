@@ -973,6 +973,43 @@
 
   <!-- Category: microarrayPlatform -->
 
+  <datasetClass class="microarrayPlatform" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/> 
+    <prop name="version"/>
+    <prop name="isAffymetrixGeneArray"/>
+    <prop name="isNimbleGenGeneArray"/>
+    <prop name="limitNU"/>
+    <prop name="variableLengthReads"/>
+    <prop name="numInsertions"/>
+
+    <graphPlanFile name="arrayStudies.xml"/>
+
+    <resource resource="${organismAbbrev}_microarrayPlatform_${name}_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              organismAbbrev="${organismAbbrev}"
+	      >
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/microarrayPlatform/${name}/${version}/final">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <unpack>probeFasta2Tab @@dataDir@@/final/probes.fsa > @@dataDir@@/probes.tab</unpack>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/probes.fsa"/>
+      <getAndUnpackOutput file="@@dataDir@@/probes.tab"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/geneProbeMapping.cdf"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/geneProbeMapping.ndf"/>
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+  </datasetClass>
+
   <datasetClass class="microarrayPlatformWithProviderMapping" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
@@ -994,8 +1031,6 @@
         <dir name="final">
         </dir>
       </manualGet>
-
-      <unpack>probeFasta2Tab @@dataDir@@/final/probes.fsa > @@dataDir@@/probes.tab</unpack>
 
       <getAndUnpackOutput dir="@@dataDir@@/final"/>
       <getAndUnpackOutput file="@@dataDir@@/final/geneProbeMapping.txt"/>
