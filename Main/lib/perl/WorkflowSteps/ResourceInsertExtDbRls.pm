@@ -14,10 +14,16 @@ sub run {
 
     my $dataSourceVersion =  $dataSource->getVersion();
     my $parentDatasource = $dataSource->getParentResource();
+    my $idType = $dataSource->getExternalDbIdType();
+    my $idIsAlias = $dataSource->getExternalDbIdIsAlias();
+    my $idUrl = $dataSource->getExternalDbIdUrl();
+    my $idUrlUseSecondary = $dataSource->getExternalDbIdUrlUseSecondaryId();
 
     # if has a parentResource, validate that the resource exists
     # and, if not in test mode, that it is in the database
     if ($parentDatasource) {
+      $self->error("Resource $dataSourceName declares a parentResource=$parentName.  It is therefore not allowed to use any of these attribues:  externalDbIdType, externalDbIdIsAlias, externalDbIdUrl, externalDbIdUrlUseSecondaryId")
+	  if ($idType || $idIsAlias || $idUrl || $idUrlUseSecondary);
       my $parentVersion = $parentDatasource->getVersion();
       my $parentName = $parentDatasource->getName();
       if (!$test) {
@@ -28,9 +34,16 @@ sub run {
 
     # otherwise insert this ext db rls
     else {
-      my $idType = $dataSource->getExternalDbIdType();
       $idType = $idType? "--idType '$idType'" : "";
-      my $releasePluginArgs = "--databaseName '$dataSourceName' --databaseVersion '$dataSourceVersion' $idType";
+      $idIsAlias = $idIsAlias eq 'true'? "--idIsAlias" : "";
+      if ($idUrl) {
+	  $self->error("Resource $dataSourceName declares an externalDbIdUrl so must provide an externalDbIdUrlUseSecondaryId that is either 'true' or 'false'") unless $idUrlUseSecondary =~ /true|false/;
+	  $idUrl = $idUrlUseSecondary? "--secondaryIdUrl '$idUrl'" : "--idUrl '$idUrl'";
+      } else {
+	  $idUrl = "";
+      }
+
+      my $releasePluginArgs = "--databaseName '$dataSourceName' --databaseVersion '$dataSourceVersion' $idType $idIsAlias $idUrl";
 
       $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
     }
