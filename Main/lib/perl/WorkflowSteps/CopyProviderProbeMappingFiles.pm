@@ -24,10 +24,12 @@ sub run {
   my $cmd2;
   if ($makeCdfFile) {
       $self->error("Input cdf file '$inputCdfFile' does not exist") unless -e $inputCdfFile;
-      $cmd2 = "cp $workflowDataDir/$inputCdfFile $workflowDataDir/$outputCdfFile";
+      $cmd2 = "cp $workflowDataDir/$inputCdfFile $workflowDataDir/$outputVendorFile";
   } elsif ($makeNdfFile) {
       $self->error("Input ndf file '$inputNdfFile' does not exist") unless -e $inputNdfFile;
-      $cmd2 = "cp $workflowDataDir/$inputNdfFile $workflowDataDir/$outputNdfFile";
+      $cmd2 = "cp $workflowDataDir/$inputNdfFile $workflowDataDir/$outputVendorFile";
+  } else {
+    $cmd2 = "touch $workflowDataDir/$outputVendorFile";
   }
 
   if ($test) {
@@ -35,17 +37,15 @@ sub run {
     $self->testInputFile('inputCdfFile', "$inputCdfFile");
     $self->testInputFile('inputNdfFile', "$inputNdfFile");
     $self->runCmd(0, "echo test > $workflowDataDir/$outputTabFile");
-    $self->runCmd(0, "echo test > $workflowDataDir/$outputCdfFile") if $makeCdfFile;
-    $self->runCmd(0, "echo test > $workflowDataDir/$outputNdfFile") if $makeNdfFile;
+    $self->runCmd(0, "echo test > $workflowDataDir/$outputVendorFile");
   }
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputTabFile");
-    $self->runCmd(0, "rm -f $workflowDataDir/$outputCdfFile") if $makeCdfFile;
-    $self->runCmd(0, "rm -f $workflowDataDir/$outputNdfFile") if $makeNdfFile;
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputVendorFile");
   } else {
     $self->runCmd($test, $cmd1);
-    $self->runCmd($test, $cmd2) if $cmd2;
+    $self->runCmd($test, $cmd2);
   }
 
 }
