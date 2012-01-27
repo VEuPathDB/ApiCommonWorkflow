@@ -33,7 +33,8 @@ sub getDownloadFileCmd {
                 ||'('||
             decode(fl.is_reversed, 1, '-', '+')
                 ||') | length='||
-            taas.length
+            taas.length || ' | sequence_SO=' || soseq.term_name
+                || ' | SO=' || gf.so_term_name
             as defline,
             taas.sequence
            FROM ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
@@ -42,6 +43,7 @@ sub getDownloadFileCmd {
                 dots.splicednasequence snas,
                 dots.translatedaafeature taaf,
                 dots.translatedaasequence taas,
+                sres.sequenceontology soseq,
                 dots.nasequence ns,
                 (select gf.na_feature_id,
                         substr(coalesce(preferred_product.product, any_product.product, gf.product, 'unspecified product'),
@@ -86,6 +88,7 @@ sub getDownloadFileCmd {
         AND t.na_feature_id = taaf.na_feature_id
         AND taaf.aa_sequence_id = taas.aa_sequence_id
         AND fl.is_top_level = 1
+        AND ns.sequence_ontology_id = soseq.sequence_ontology_id
         and gf.na_feature_id = product_name.na_feature_id
 
 EOF

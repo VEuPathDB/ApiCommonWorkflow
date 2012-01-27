@@ -24,7 +24,8 @@ sub getDownloadFileCmd {
             || least(gf.coding_start,gf.coding_end) ||'-'
             || greatest(gf.coding_start,gf.coding_end)
             || '('|| decode(fl.is_reversed, 1, '-', '+') || ') | length='
-            || (abs(gf.coding_start - gf.coding_end) + 1)
+            || (abs(gf.coding_start - gf.coding_end) + 1) || ' | sequence_SO=' || soseq.term_name
+            || ' | SO=' || gf.so_term_name
             as defline,
            substr(snas.sequence,
                   taaf.translation_start,
@@ -35,6 +36,7 @@ sub getDownloadFileCmd {
                 dots.splicednasequence snas,
                 dots.translatedaafeature taaf,
                 dots.nasequence ns,
+                sres.sequenceontology soseq,
                 (select gf.na_feature_id,
                         substr(coalesce(preferred_product.product, any_product.product, gf.product, 'unspecified product'),
                                1, 300)
@@ -77,6 +79,7 @@ sub getDownloadFileCmd {
         AND gf.ncbi_tax_id = $ncbiTaxonId 
         AND t.na_feature_id = taaf.na_feature_id
         AND fl.is_top_level = 1
+        AND ns.sequence_ontology_id = soseq.sequence_ontology_id
         and gf.na_feature_id = product_name.na_feature_id
 EOF
 

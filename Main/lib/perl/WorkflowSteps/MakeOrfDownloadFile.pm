@@ -6,13 +6,13 @@ use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
 
 
 sub getDownloadFileCmd {
-    my ($self, $downloadFileName, $test) = @_;
-
+  my ($self, $downloadFileName, $test) = @_;
+  
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
   my $length = $self->getParamValue('minOrfLength');
 
   my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
+  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
    my $sql = <<"EOF";
     SELECT
@@ -28,14 +28,15 @@ sub getDownloadFileCmd {
         ||'('||
        decode(fl.is_reversed, 1, '-', '+')
         ||') | length='||
-       taas.length as defline,
+       taas.length || ' | sequence_SO=' || soseq.term_name as defline,
        taas.sequence
        FROM dots.miscellaneous m,
             dots.translatedaafeature taaf,
             dots.translatedaasequence taas,
             sres.taxonname tn,
             sres.sequenceontology so,
-            ApidbTuning.FeatureLocation fl,
+            sres.sequenceontology soseq,
+            ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
             dots.nasequence enas
       WHERE m.na_feature_id = taaf.na_feature_id
         AND taaf.aa_sequence_id = taas.aa_sequence_id
@@ -44,11 +45,11 @@ sub getDownloadFileCmd {
         AND enas.na_sequence_id = fl.na_sequence_id 
         AND enas.taxon_id = $taxonId
         AND enas.taxon_id = tn.taxon_id
+        AND enas.sequence_ontology_id = soseq.sequence_ontology_id
         AND tn.name_class = 'scientific name'
         AND m.sequence_ontology_id = so.sequence_ontology_id
         AND so.term_name = 'ORF'
         AND taas.length >= $length
-        AND enas.sequence_ontology_id in ($soIds)
 EOF
 
     my $cmd = <<"EOF";

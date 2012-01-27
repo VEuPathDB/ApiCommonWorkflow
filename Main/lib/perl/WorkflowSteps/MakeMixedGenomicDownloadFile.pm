@@ -25,14 +25,15 @@ sub getDownloadFileCmd {
                 ||' | version='||
                sa.database_version
                 ||' | length=' ||
-               sa.length
+               sa.length || ' | SO=' || so.term_name
                as defline,
                ns.sequence
-           FROM dots.nasequence ns,
+           FROM dots.nasequence ns, sres.sequenceontology so,
                 ApidbTuning.${tuningTablePrefix}SequenceAttributes sa
           WHERE ns.na_sequence_id = sa.na_sequence_id
             AND sa.ncbi_tax_id = $ncbiTaxonId
             AND sa.is_top_level = 1
+            AND so.so_id = sa.so_id
 EOF
 
     my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" ";
