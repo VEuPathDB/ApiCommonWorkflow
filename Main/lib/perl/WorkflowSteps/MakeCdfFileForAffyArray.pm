@@ -14,13 +14,18 @@ sub run {
   my $probename2sequenceInputFile = $self->getParamValue('probename2sequenceInputFile');
   my $inputCdfFile = $self->getParamValue('inputCdfFile');
   my $outputCdfFile = $self->getParamValue('outputCdfFile');
-
+  my $name = $self->getParamValue('mappingVendorFileName');
+  my $rows = $self->getParamValue('probeRows');
+  my $cols = $self->getParamValue('probeCols');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cmd1 = "get_pbase-tbase.pl $workflowDataDir/$probename2sequenceInputFile 1 > $workflowDataDir/pbase-tbase.out";
 
+  # builds the header for the .cdf file
+  my $cmd2 = "makeCdfHeader.pl  $workflowDataDir/$outputCdfFile $workflowDataDir/$gene2probesInputFile $name $rows $cols";
+
   # overwrites the provided .cdf file
-  my $cmd2 = "create_cdf.pl $workflowDataDir/$outputCdfFile $workflowDataDir/$gene2probesInputFile $workflowDataDir/pbase-tbase.out";
+  my $cmd3 = "create_cdf.pl $workflowDataDir/$outputCdfFile $workflowDataDir/$gene2probesInputFile $workflowDataDir/pbase-tbase.out";
 
 
   if ($undo) {
@@ -39,6 +44,7 @@ sub run {
     if (!$test) {
       $self->runCmd($test,$cmd1);
       $self->runCmd($test,$cmd2);
+      $self->runCmd($test,$cmd3);
     }
   }
 }
@@ -48,6 +54,9 @@ sub getParamDeclaration {
 	  'gene2probesInputFile',
 	  'probename2sequenceInputFile',
 	  'gene2probesInputFile',
+          'mappingVendorFileName',
+          'probeRows',
+          'probeCols',
 	 );
 }
 
