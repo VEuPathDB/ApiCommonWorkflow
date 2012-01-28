@@ -26,7 +26,7 @@
   <datasetTemplate class="referenceStrain-ESTsFromFasta">
     <prop name="name"/>
     <prop name="organismAbbrev"/>
-    <subgraph name="${organismAbbrev}_EST_${name}_sequences_RSRC" xmlFile="loadResource.xml">
+    <subgraph name="EST_${name}_sequences_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">${organismAbbrev}_EST_${name}_sequences_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -36,7 +36,7 @@
 
   <datasetTemplate class="referenceStrain-dbEST">
     <prop name="organismAbbrev"/>
-    <subgraph name="${organismAbbrev}_dbEST_RSRC" xmlFile="loadResource.xml" stepLoadTypes="runPlugin:dbEST">
+    <subgraph name="dbEST_RSRC" xmlFile="loadResource.xml" stepLoadTypes="runPlugin:dbEST">
       <paramValue name="resourceName">${organismAbbrev}_dbEST_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -52,7 +52,7 @@
     <paramValue name="fileType">fasta</paramValue>
     <paramValue name="dataName">ESTs</paramValue>
     <paramValue name="descripString">$$ESTDescripString$$</paramValue>
-    <dependsPattern name="*_dbEST_RSRC"/>
+    <depends name="dbEST_RSRC"/>
   </step>
 
   <step name="formatESTDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles">
@@ -69,7 +69,7 @@
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <dependsPattern name="*_dbEST_RSRC"/>
+      <depends name="dbEST_RSRC"/>
     </step>
 
     <subgraph name="makeAndBlockAssemblySeqs" xmlFile="makeAndBlockAssemblySeqs.xml" externalName="$$organismAbbrev$$_makeAndBlockAssemblySeqs">

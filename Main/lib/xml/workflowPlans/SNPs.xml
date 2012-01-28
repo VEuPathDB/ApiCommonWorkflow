@@ -24,7 +24,7 @@
     <prop name="isNextGenSeq"/>
     <prop name="organismAbbrev"/>
 
-    <subgraph name="${organismAbbrev}_SNP_${name}_gff_RSRC" xmlFile="getAndAnalyzeSNPs.xml">
+    <subgraph name="SNP_${name}_gff_RSRC" xmlFile="getAndAnalyzeSNPs.xml">
       <paramValue name="snpExtDbRlsSpec">${organismAbbrev}_SNP_${name}_gff_RSRC|${version}</paramValue>
       <paramValue name="snpResourceName">${organismAbbrev}_SNP_${name}_gff_RSRC</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
@@ -44,14 +44,14 @@
     <prop name="organismAbbrev"/>
     <prop name="hasPairedReads"/>
 
-    <subgraph name="${organismAbbrev}_${name}_SNPs_RSRC" xmlFile="loadResource.xml">
+    <subgraph name="${name}_SNPs_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">${organismAbbrev}_SNP_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <subgraph name="map_${organismAbbrev}_${name}_SNPs" xmlFile="mapHtsSNPsWithBWA.xml">
+    <subgraph name="map_${name}_SNPs" xmlFile="mapHtsSNPsWithBWA.xml">
        <paramValue name="parentDataDir">$$dataDir$$</paramValue>
        <paramValue name="name">${name}</paramValue>
        <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -64,7 +64,7 @@
        <paramValue name="snpStrain">${snpStrainAbbrev}</paramValue>
        <paramValue name="BWAIndexDir">$$dataDir$$/bwa_index</paramValue>
        <paramValue name="isHaploid">$$isHaploid$$</paramValue>
-       <depends name="${organismAbbrev}_${name}_SNPs_RSRC"/>
+       <depends name="${name}_SNPs_RSRC"/>
        <depends name="createBWAIndices"/>
      </subgraph>
 
