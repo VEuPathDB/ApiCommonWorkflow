@@ -122,7 +122,7 @@
     <prop name="isMissingCATG"/>
     <prop name="bowtieParams"/>
 
-    <subgraph name="${organismAbbrev}_sageTag_${name}_RSRC" xmlFile="loadResource.xml">
+    <subgraph name="sageTag_${name}_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">${organismAbbrev}_sageTag_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -136,7 +136,7 @@
       <paramValue name="isMissingCATG">${isMissingCATG}</paramValue>
       <paramValue name="name">${name}</paramValue>   
       <paramValue name="bowtieParams">${bowtieParams}</paramValue>   
-      <depends name="${organismAbbrev}_sageTag_${name}_RSRC"/>
+      <depends name="sageTag_${name}_RSRC"/>
     </subgraph>
 
   </datasetTemplate>
@@ -157,7 +157,7 @@
     <step name="${name}_createSageTagNormFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSageTagNormFile" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">
       <paramValue name="studyName">${name}</paramValue>
       <paramValue name="outputDir">$$dataDir$$</paramValue>
-      <depends name="${organismAbbrev}_sageTag_${name}_frequencies_RSRC"/>
+      <depends name="sageTag_${name}_frequencies_RSRC"/>
     </step>
 
     <step name="${name}_insertNormSageTagFreqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNormSageTagFreqs" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">
