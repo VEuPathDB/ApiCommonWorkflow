@@ -22,10 +22,10 @@ sub run {
     # if has a parentResource, validate that the resource exists
     # and, if not in test mode, that it is in the database
     if ($parentDatasource) {
-      $self->error("Resource $dataSourceName declares a parentResource=$parentName.  It is therefore not allowed to use any of these attribues:  externalDbIdType, externalDbIdIsAlias, externalDbIdUrl, externalDbIdUrlUseSecondaryId")
-	  if ($idType || $idIsAlias || $idUrl || $idUrlUseSecondary);
       my $parentVersion = $parentDatasource->getVersion();
       my $parentName = $parentDatasource->getName();
+      $self->error("Resource $dataSourceName declares a parentResource=$parentName.  It is therefore not allowed to use any of these attribues:  externalDbIdType, externalDbIdIsAlias, externalDbIdUrl, externalDbIdUrlUseSecondaryId")
+	  if ($idType || $idIsAlias || $idUrl || $idUrlUseSecondary);
       if (!$test) {
 	my $parentExtDbRlsId = $self->getExtDbRlsId($test, "$parentName|$parentVersion");
 	$self->error("Resource $dataSourceName declares a parentResource=$parentName.  But the parent is not found in the database (with version $parentVersion)") unless $parentExtDbRlsId;

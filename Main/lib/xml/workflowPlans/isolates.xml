@@ -4,15 +4,23 @@
   <param name="organismResourceXmlFile"/>
   <param name="parentDataDir"/>
   <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="projectVersionForWebsiteFiles"/>
 
- <datasetTemplate class="referenceStrain-isolatesGenbank">
+  <constant name="dataDir">$$parentDataDir$$/isolates</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="referenceStrain-isolatesGenbank">
     <prop name="organismAbbrev"/>
 
     <subgraph name="isolates_genbank" xmlFile="loadResource.xml"  externalName="${organismAbbrev}_isolates_genbank">
       <paramValue name="resourceName">${organismAbbrev}_isolates_genbank_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
+      <depends name="makeDataDir"/>
     </subgraph>
   </datasetTemplate>
 
@@ -25,7 +33,7 @@
       <paramValue name="resourceName">${organismAbbrev}_isolates_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
+      <depends name="makeDataDir"/>
     </subgraph>
   </datasetTemplate>
 
@@ -52,7 +60,7 @@
     <paramValue name="descripString">Isolate sequences (NT)</paramValue>
     <paramValue name="extDbNameLikeString">%_GBIsolates_%</paramValue>
     <paramValue name="isWebServiceFile">false</paramValue>
-    <depends name="isolates_${name}"/>
+<!--    <depends name="isolates_${name}"/> -->
   </step>
 
   <step name="formatIsolatesDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles">
