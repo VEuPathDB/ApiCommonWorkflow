@@ -31,7 +31,7 @@ sub run {
   my $inputDownloadFile = "$downloadFileDir/$projectName-${projectVersion}_${organismNameForFiles}_$dataName.fasta";
 
   # get web services dir
-  my $outputWebservicesFileDir = "$websiteFilesDir/$webServicesRelativeDir/$organismAbbrev/blast";
+  my $outputWebservicesFileDir = "$websiteFilesDir/$webServicesRelativeDir/${organismNameForFiles}/blast";
 
   my $blastPath = $self->getConfig("wuBlastPath");
   my $cmd = "$blastPath/xdformat $args -o $outputWebservicesFileDir/$dataName $inputDownloadFile";
