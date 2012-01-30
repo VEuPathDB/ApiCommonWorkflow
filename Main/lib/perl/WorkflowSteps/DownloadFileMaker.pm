@@ -60,8 +60,8 @@ sub run {
       
       $dataName = "_$dataName" if $dataName; # gff does not use $dataName, so allow it to be empty
 
-      $downloadFile = "$outputDir/$projectName-${projectVersion}_${nameForFiles}_$dataName.$fileType";
-      $descripFile = "$outputDir/.$projectName-${projectVersion}_${nameForFiles}_$dataName.$fileType.desc";
+      $downloadFile = "$outputDir/$projectName-${projectVersion}_${nameForFiles}$dataName.$fileType";
+      $descripFile = "$outputDir/.$projectName-${projectVersion}_${nameForFiles}$dataName.$fileType.desc";
       $descripFileCmd =  "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
   }
 
