@@ -29,7 +29,7 @@
     <prop name="name"/>
     <prop name="version"/>
 
-    <subgraph name="isolates_${name}" xmlFile="loadResource.xml" externalName="${organismAbbrev}_isolates_${name}">
+    <subgraph name="isolates_${name}_sequences" xmlFile="loadResource.xml" externalName="${organismAbbrev}_isolates_${name}">
       <paramValue name="resourceName">${organismAbbrev}_isolates_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -43,7 +43,7 @@
     <prop name="version"/>
 
     <subgraph name="isolates_${name}_features" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">${organismAbbrev}_GBIsolates_${name}_features_RSRC</paramValue>
+      <paramValue name="resourceName">${organismAbbrev}_isolates_${name}_features_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="isolates_${name}"/>
@@ -58,9 +58,9 @@
     <paramValue name="fileType">fasta</paramValue>
     <paramValue name="dataName">Isolates</paramValue>
     <paramValue name="descripString">Isolate sequences (NT)</paramValue>
-    <paramValue name="extDbNameLikeString">%_GBIsolates_%</paramValue>
     <paramValue name="isWebServiceFile">false</paramValue>
-<!--    <depends name="isolates_${name}"/> -->
+    <dependsPattern name="isolates_%_features"/> 
+    <dependsPattern name="isolates_genbank"/> 
   </step>
 
   <step name="formatIsolatesDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles">
