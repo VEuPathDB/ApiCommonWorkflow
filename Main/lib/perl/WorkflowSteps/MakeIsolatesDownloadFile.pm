@@ -18,7 +18,6 @@ sub getDownloadFileCmd {
   my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
   my $taxonId = $organismInfo->getSpeciesTaxonId();
   my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
-  my $extDbNameLike =  $self->getParamValue('extDbNameLikeString');
 
     my $sql = <<"EOF";
         SELECT
@@ -42,7 +41,8 @@ sub getDownloadFileCmd {
             AND tn.name_class = 'scientific name'
             AND enas.external_database_release_id = edr.external_database_release_id
             AND edr.external_database_id = ed.external_database_id
-            AND ed.name like '$extDbNameLike'
+            AND edr.data_type = 'isolates'
+            AND edr.data_subtype = 'Sequencing Typed'
             AND enas.na_sequence_id = i.na_sequence_id
             AND so.sequence_ontology_id = enas.sequence_ontology_id
 EOF
