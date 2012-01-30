@@ -1576,6 +1576,8 @@
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
               scope="species"
               organismAbbrev="${organismAbbrev}"
+              extDbDataType="isolates"
+              extDbDataSubtype="Sequencing Typed"
 	      >
 
       <manualGet fileOrDir="common/empty">
@@ -1616,6 +1618,8 @@
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
               scope="species"
               organismAbbrev="${organismAbbrev}"
+              extDbDataType="isolates"
+              extDbDataSubtype="Sequencing Typed"
 	      >
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/isolate/${name}/${version}/final/isolates.fasta">
@@ -1643,6 +1647,7 @@
     <resource resource="${organismAbbrev}_isolates_${name}_features_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
               scope="species"
+	      parentResource="${organismAbbrev}_isolates_${name}_RSRC"
               organismAbbrev="${organismAbbrev}">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/isolate/${name}/${version}/final/isolates.gff">
@@ -1650,7 +1655,7 @@
         </dir>
       </manualGet>
 
-      <pluginArgs> --extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/isolates.gff --fileFormat gff2 --gff2GroupTag locus_tag --naSequenceSubclass ExternalNASequence --seqIdColumn source_id  --soExtDbRlsName "SO_RSRC" --defaultOrganism ${ncbiTaxonId} --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
+      <pluginArgs> --extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/isolates.gff --fileFormat gff2 --gff2GroupTag locus_tag --naSequenceSubclass ExternalNASequence --seqIdColumn source_id  --soExtDbRlsName "SO_RSRC" --defaultOrganism ${ncbiTaxonId} --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -2118,23 +2123,26 @@
   </datasetClass>
 
 
-  <datasetClass class="isolateBarcodeChip" category="" datasetFileHint="">
+  <datasetClass class="isolateSNPsFromChip" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
     <prop name="name"/>
     <prop name="version"/>
+    <prop name="isolateType"/>
     <graphPlanFile name="organismSpecific.xml"/>
     
     <resource resource="${organismAbbrev}_SNP_${name}_RSRC" version="${version}"
         plugin="ApiCommonData::Load::Plugin::InsertIsolateBarcodeChip"
         scope="organism"
+        extDbDataType="isolates"
+        extDbDataSubtype="${isolateType}"
         organismAbbrev="${organismAbbrev}">
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/SNP/${name}/${version}/final/isolateBarcode.txt">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/SNP/${name}/${version}/final/isolateSNPs.txt">
       <dir name="final">
       </dir>
       </manualGet>
-      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --inputFile @@dataDir@@/isolateBarcode.txt --SOTermName 'SNP'</pluginArgs>
+      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --inputFile @@dataDir@@/isolateSNPs.txt --SOTermName 'SNP'</pluginArgs>
     </resource>
   </datasetClass> 
 
