@@ -16,18 +16,17 @@ sub run {
     push (@configLines,$_)
   }
 
-  unless ($configLines[0] eq "NOT_A_TIME_SERIES") {
-    my $profileSetSpecs = $configLines[1]; 
+  my $mappingFile = @configLines[0];
 
-    my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
+  my $profileSetSpecs = $configLines[1]; 
 
-    my $mappingFile = @configLines[0];
+  my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
 
-    my $workflowDataDir = $self->getWorkflowDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
+ 
+  my $args = "--externalDatabaseSpec '$extDbRlsSpec'  --profileSetSpecs '$profileSetSpecs'";
 
-    my $args = "--externalDatabaseSpec '$extDbRlsSpec'  --profileSetSpecs '$profileSetSpecs'";
-
-    $args .= " --timePointsMappingFile '$workflowDataDir/$mappingFile'" unless ($mappingFile eq "NO_MAPPING_FILE");
+  $args .= " --timePointsMappingFile '$workflowDataDir/$mappingFile'" unless ($mappingFile eq "NO_MAPPING_FILE");
 
 
 
