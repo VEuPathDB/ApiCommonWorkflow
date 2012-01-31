@@ -11,6 +11,7 @@ sub run {
 
   # get parameters
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $useSpeciesName = $self->getBooleanParamValue('useSpeciesName');
 
   # this is relative to the website files dir.
   # it will look something like webServices/ToxoDB/release-6.3
@@ -18,7 +19,12 @@ sub run {
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-  my $fullPath = "$websiteFilesDir/$relativeDir/$organismAbbrev";
+  my $organismNameForFiles = $useSpeciesName?
+      $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles() :
+      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+
+  my $fullPath = "$websiteFilesDir/$relativeDir/$organismNameForFiles";
+
   if ($undo) {
       # should be empty because dependent steps removed their files
       $self->runCmd(0, "rmdir $fullPath");
