@@ -119,31 +119,36 @@
     <depends name="mirrorToCluster"/>
   </subgraph>
 
+
+
+
   <datasetTemplate class="sageTagSequences">
     <prop name="name"/>
     <prop name="version"/>
     <prop name="organismAbbrev"/>
-    <prop name="isMissingCATG"/>
+    <prop name="sequencePrefix"/>
     <prop name="bowtieParams"/>
 
+
+<!-- do we need this to depend on mirrorToCluster?? -->
     <subgraph name="sageTag_${name}_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">${organismAbbrev}_sageTag_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
+      <depends name="makeDataDir"/>
     </subgraph>
 
     <subgraph name="${name}_mapSageTags" xmlFile="mapSageTags.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="sageTagExtDbRlsSpec">${organismAbbrev}_sageTag_${name}_RSRC|${version}</paramValue>
-      <paramValue name="isMissingCATG">${isMissingCATG}</paramValue>
+      <paramValue name="sequencePrefix">${sequencePrefix}</paramValue>
       <paramValue name="name">${name}</paramValue>   
       <paramValue name="bowtieParams">${bowtieParams}</paramValue>   
       <depends name="sageTag_${name}_RSRC"/>
     </subgraph>
-
   </datasetTemplate>
+
 
   <datasetTemplate class="sageTagFrequencies">
     <prop name="name"/>
@@ -155,7 +160,7 @@
       <paramValue name="resourceName">${organismAbbrev}_sageTag_${name}_frequencies_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="${name}_mapSageTags"/>
+      <depends name="sageTagSequences"/>
     </subgraph>
 
     <step name="${name}_createSageTagNormFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSageTagNormFile" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">
@@ -375,16 +380,6 @@
     </step>
   </datasetTemplate>
 
-  <datasetTemplate class="arrayDesign">
-    <prop name="name"/>
-    <prop name="organismAbbrev"/>
-    <subgraph name="sageTag_${name}_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">${organismAbbrev}_sageTag_${name}_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
-    </subgraph>
-  </datasetTemplate>
 
 
   <datasetTemplate class="geneName">

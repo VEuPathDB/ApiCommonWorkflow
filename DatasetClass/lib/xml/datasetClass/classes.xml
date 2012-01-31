@@ -1402,31 +1402,36 @@
 
   <!-- Category: SAGE tags -->
 
+
   <datasetClass class="sageTagSequences" category="" datasetFileHint="">
-    <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
-    <prop name="isMissingCATG"/>
-    <prop name="bowtieParams"/>
- 
-    <graphPlanFile name="organismSpecific.xml"/>
+     <purpose></purpose>
+     <prop name="projectName"/>
+     <prop name="organismAbbrev"/>
+     <prop name="name"/>
+     <prop name="version"/>
+     <prop name="contactName"/>
+     <prop name="sequencePrefix"/>
+     <prop name="bowtieParams"/>
 
-    <resource resource="${organismAbbrev}_sageTag_${name}_RSRC" version="${version}"
-	      plugin="GUS::Supported::Plugin::LoadSagePrimers"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
-
+     <graphPlanFile name="organismSpecific.xml"/>
+    
+     <resource resource="${organismAbbrev}_sageTag_${name}_RSRC" version="${version}"
+               plugin="GUS::Supported::Plugin::LoadArrayDesign"
+               scope="organism"
+               organismAbbrev="${organismAbbrev}">
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/sageTag/${name}/${version}/final/primers.txt">
-        <dir name="final">
-        </dir>
-      </manualGet>
+         <dir name="final">
+         </dir>
+       </manualGet> 
 
-      <pluginArgs>--primers_file @@dataDir@@/primers.txt</pluginArgs>
+       <unpack>echo -e "ArrayDesign.name\t${organismAbbrev}_sageTag_${name}_RSRC\nArrayDesign.version\t${version}\nCompositeElementImp.subclass_view\tSAGETag\nCompositeElementImp.tag\ttag" > @@dataDir@@/sageArray.config</unpack> 
+        
+       <unpack>preLoadArrayDesign --category TechnologyType --value 'user_defined' --manufacturer ${contactName}</unpack> 
+       <unpack>awk -F:::: 'x++; x==1{print "tag\n" $1}' @@dataDir@@/primers.txt > @@dataDir@@/distinct_sage_tags_with_header.txt</unpack> 
+       <pluginArgs>-cfg_file @@dataDir@@/sageArray.config --data_file @@dataDir@@/distinct_sage_tags_with_header.txt --manufacturer ${contactName} --technology_type 'user_defined'</pluginArgs> 
+      </resource>
+    </datasetClass> 
 
-    </resource>
-  </datasetClass>
 
   <datasetClass class="sageTagFrequencies" category="" datasetFileHint="">
     <purpose></purpose>
@@ -2338,34 +2343,6 @@ fFormat 2</pluginArgs>
 
     </resource>
   </datasetClass>
-
-  <datasetClass class="arrayDesign" category="" datasetFileHint="">
-     <purpose></purpose>
-     <prop name="projectName"/>
-     <prop name="organismAbbrev"/>
-     <prop name="name"/>
-     <prop name="version"/>
-     <prop name="contactName"/>
-     <prop name="ontologyEntryValue"/>
-     <prop name="numberOfElements"/>
-     <graphPlanFile name="organismSpecific.xml"/>
-    
-     <resource resource="${organismAbbrev}_sageTag_${name}_RSRC" version="${version}"
-               plugin="GUS::Supported::Plugin::LoadArrayDesign"
-               scope="organism"
-               organismAbbrev="${organismAbbrev}">
-       <manualGet fileOrDir="${projectName}/${organismAbbrev}/sageTag/${name}/${version}/final/array">
-         <dir name="final">
-         </dir>
-       </manualGet> 
-
-       <unpack>echo -e "ArrayDesign.name\t${organismAbbrev}_sageTag_${name}_RSRC\nArrayDesign.version\t${version}\nArrayDesign.number_of_elements\t${numberOfElements}\nCompositeElementImp.subclass_view\tSAGETag\nCompositeElementImp.tag\ttag" > @@dataDir@@/array/sageArray.config</unpack> 
-        
-       <unpack>preLoadArrayDesign --category TechnologyType --value ${ontologyEntryValue} --manufacturer ${contactName}</unpack> 
-       <unpack>awk -F:::: 'x++; x==1{print "tag\n" $1}' @@dataDir@@/array/distinct_sage_tags.txt > @@dataDir@@/array/distinct_sage_tags_header.txt</unpack> 
-       <pluginArgs>-cfg_file @@dataDir@@/array/sageArray.config --data_file @@dataDir@@/array/distinct_sage_tags_header.txt --manufacturer ${contactName} --technology_type ${ontologyEntryValue}</pluginArgs> 
-      </resource>
-    </datasetClass> 
 
 
     <datasetClass class="geneName" category="" datasetFileHint="">
