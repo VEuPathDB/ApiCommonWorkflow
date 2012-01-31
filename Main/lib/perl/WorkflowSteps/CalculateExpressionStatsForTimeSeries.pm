@@ -23,7 +23,7 @@ sub run {
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
- 
+
   my $args = "--externalDatabaseSpec '$extDbRlsSpec'  --profileSetSpecs '$profileSetSpecs'";
 
   $args .= " --timePointsMappingFile '$workflowDataDir/$mappingFile'" unless ($mappingFile eq "NO_MAPPING_FILE");
@@ -37,8 +37,8 @@ sub run {
 
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CalculateProfileSummaryStats", $args);
 
-  }
 }
+
 
 sub getConfigDeclaration {
   return (
