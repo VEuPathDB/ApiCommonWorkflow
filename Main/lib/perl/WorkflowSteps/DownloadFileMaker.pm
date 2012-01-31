@@ -50,14 +50,14 @@ sub run {
   
   my ($outputDir, $downloadFile, $descripFile, $descripFileCmd);
 
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+  my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
+  my $nameForFiles = $self->getIsSpeciesLevel()?  $speciesNameForFiles:  $organismNameForFiles;
+  my $outputDir = "$websiteFilesDir/$relativeDir/$nameForFiles/$fileType";
+ 
   if ($isWebServiceFile) {
-      $downloadFile = "$websiteFilesDir/$relativeDir/$organismAbbrev/$fileType/$dataName.$fileType";
+      $downloadFile = "$outputDir/$dataName.$fileType";
   } else {
-      my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
-      my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
-      my $nameForFiles = $self->getIsSpeciesLevel()?  $speciesNameForFiles:  $organismNameForFiles;
-      my $outputDir = "$websiteFilesDir/$relativeDir/$nameForFiles/$fileType";
-      
       $dataName = "_$dataName" if $dataName; # gff does not use $dataName, so allow it to be empty
 
       $downloadFile = "$outputDir/$projectName-${projectVersion}_${nameForFiles}$dataName.$fileType";
