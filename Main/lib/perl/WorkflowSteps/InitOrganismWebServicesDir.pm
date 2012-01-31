@@ -11,7 +11,6 @@ sub run {
 
   # get parameters
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $useSpeciesName = $self->getBooleanParamValue('useSpeciesName');
 
   # this is relative to the website files dir.
   # it will look something like webServices/ToxoDB/release-6.3
@@ -19,11 +18,7 @@ sub run {
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-  my $organismNameForFiles = $useSpeciesName?
-      $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles() :
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
-
-  my $fullPath = "$websiteFilesDir/$relativeDir/$organismNameForFiles";
+  my $fullPath = "$websiteFilesDir/$relativeDir/$organismAbbrev";
   if ($undo) {
       # should be empty because dependent steps removed their files
       $self->runCmd(0, "rmdir $fullPath");
@@ -32,13 +27,6 @@ sub run {
       # also, this validates that the dir doesn't already exist
       $self->runCmd(0, "mkdir $fullPath");
   }
-}
-
-sub getParamsDeclaration {
-    return (
-	'organismAbbrev',
-	'relativeDir',
-	);
 }
 
 sub getConfigDeclaration {
