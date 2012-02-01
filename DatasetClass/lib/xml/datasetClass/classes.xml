@@ -677,32 +677,6 @@
   </datasetClass>
 
 
-  <!-- this class should be removed.  brian states that we do not need it.  it is not working anyway -->
-  <datasetClass class="IEDB_dbxrefs" category="" datasetFileHint="">
-    <purpose>Note: the version must be the same as those for the IEDB epitopes</purpose>
-    <prop name="organismAbbrev"/>
-    <prop name="version"/>
-
-    <graphPlanFile name="dbXRefs.xml"/>
-
-    <resource resource="${organismAbbrev}_dbxref_epitope_IEDB_RSRC"
-	      version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
-
-      <manualGet fileOrDir="common/empty">
-        <dir name="final">
-        </dir>
-      </manualGet>
-
-      <unpack>createEpitopeDbRefFile --inputDir @@manualDeliveryDir@@/common/epitope/IEDB/${version}/final/iedb_export_fixed --outputFile @@dataDir@@/dbRefs.txt</unpack>
-
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/dbRefs.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier, remark" --tableName "AASequenceDbRef" --organismAbbrev ${organismAbbrev}</pluginArgs>
-    </resource>
-  </datasetClass>
-
-
   <!-- Category: dbxrefs -->
   <datasetClass class="dbxref_simple" category="" datasetFileHint="">
     <purpose></purpose>
@@ -712,6 +686,8 @@
     <prop name="version"/>
     <prop name="columnSpec"/>
     <prop name="type"/>  <!-- DBRefNASequence, AASequenceDBRef, DBRefAAFeature, DBRefNAFeature -->
+    <prop name="url"/>
+    <prop name="urlUsesSecondaryId"/>  <!-- true or false -->
     <prop name="genomeVersion"/>
 
     <graphPlanFile name="dbXRefs.xml"/>
@@ -720,6 +696,8 @@
 	      version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
               scope="organism"
+              externalDbIdUrl="${url}"
+              externalDbIdUrlUsesSecondarId="${urlUsesSecondaryId}"
               organismAbbrev="${organismAbbrev}">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/${name}/${version}/final/mapping.txt">
@@ -871,6 +849,7 @@
 	      version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
               externalDbIdType="${idType}"
+              externalDbIdIsAnAlias="true"
               scope="organism"
               organismAbbrev="${organismAbbrev}">
 
