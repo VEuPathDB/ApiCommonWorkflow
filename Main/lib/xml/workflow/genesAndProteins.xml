@@ -263,15 +263,13 @@
       <depends name="blastpPdb"/>
     </step>
 
-
     <step name="findNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindNrdbXrefs">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="nrdbFile">$$global_NRDBOutputFile$$</paramValue>
       <paramValue name="proteinsFileRegex">^([\\w\\.]+)</paramValue>
       <paramValue name="nrdbFileRegex">^\\|\\d+\\|(?:emb|gb|dbj|ref|sp|pdb)\\|([\\w\\.]+)\\|</paramValue>
       <paramValue name="outputFile">$$dataDir$$/nrdbXrefs.txt</paramValue>
-       <depends name="makeDataDir"/>
-      <dependsGlobal name="NRDB_RSRC"/>
+      <depends name="blastpNrdb"/>
     </step>
 
     <step name="loadNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadNrdbXrefs" stepLoadTypes="plugin">
@@ -279,6 +277,5 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <depends name="findNrdbXrefs"/>
     </step>
-
 
 </workflowGraph>
