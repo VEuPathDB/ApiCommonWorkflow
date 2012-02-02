@@ -19,14 +19,16 @@
     <prop name="organismAbbrev"/>
     <prop name="version"/>
     <prop name="name"/>
-    <subgraph name="${name}_gene_aliases_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">${organismAbbrev}_${name}_gene_aliases_RSRC</paramValue>
+    <prop name="target"/>
+    <subgraph name="${name}_${target}_aliases_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_${name}_${target}_aliases_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
   </datasetTemplate>
 
+  <!-- This step depends on all gene alias files which are of target type NAFeature -->
   <step name="makeGeneAliasesDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesDownloadFile">
     <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
@@ -37,7 +39,7 @@
     <paramValue name="descripString">$$geneAliasDescripString$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="isWebServiceFile">false</paramValue>
-    <dependsPattern name="%_gene_aliases_RSRC"/> 
+    <dependsPattern name="%_NAFeature_aliases_RSRC"/> 
   </step>
 
 </workflowGraph>
