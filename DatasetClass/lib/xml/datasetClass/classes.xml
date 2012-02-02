@@ -850,7 +850,7 @@
 
   <!-- Category: gene aliases -->
 
-  <datasetClass class="geneAliases" category="" datasetFileHint="">
+  <datasetClass class="aliases" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
@@ -859,11 +859,12 @@
     <prop name="columnSpec"/>
     <prop name="url"/>
     <prop name="urlUsesSecondaryId"/>  <!-- true or false -->
+    <prop name="target"/>  <!-- NASequence, AAFeature, NAFeature -->
     <prop name="idType"/>  <!-- previous id, alternate id -->
 
-    <graphPlanFile name="geneAliases.xml"/>
+    <graphPlanFile name="aliases.xml"/>
 
-    <resource resource="${organismAbbrev}_${name}_gene_aliases_RSRC"
+    <resource resource="${organismAbbrev}_${name}_${target}_aliases_RSRC"
 	      version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
               externalDbIdType="${idType}"
@@ -874,12 +875,12 @@
               organismAbbrev="${organismAbbrev}">
 
       <externalDbIdUrl><![CDATA[${url}]]></externalDbIdUrl>
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/alias/${name}/${version}/final/geneAliases.txt">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/alias/${name}/${version}/final/aliases.txt">
         <dir name="final">
         </dir>
       </manualGet>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/geneAliases.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "${columnSpec}" --tableName "DbRefNAFeature" --organismAbbrev ${organismAbbrev}</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/aliases.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "${columnSpec}" --tableName DBRef${target} --organismAbbrev ${organismAbbrev}</pluginArgs>
     </resource>
   </datasetClass>
 
