@@ -687,33 +687,6 @@
   </datasetClass>
 
 
-  <!-- this class should be removed.  brian states that we do not need it.  it is not working anyway -->
-  <datasetClass class="IEDB_dbxrefs" category="" datasetFileHint="">
-    <purpose>Note: the version must be the same as those for the IEDB epitopes</purpose>
-    <prop name="organismAbbrev"/>
-    <prop name="version"/>
-
-    <graphPlanFile name="dbXRefs.xml"/>
-
-    <resource resource="${organismAbbrev}_dbxref_epitope_IEDB_RSRC"
-	      version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
-              scope="organism"
-              type="epitope"
-              organismAbbrev="${organismAbbrev}">
-
-      <manualGet fileOrDir="common/empty">
-        <dir name="final">
-        </dir>
-      </manualGet>
-
-      <unpack>createEpitopeDbRefFile --inputDir @@manualDeliveryDir@@/common/epitope/IEDB/${version}/final/iedb_export_fixed --outputFile @@dataDir@@/dbRefs.txt</unpack>
-
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/dbRefs.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier, remark" --tableName "AASequenceDbRef" --organismAbbrev ${organismAbbrev}</pluginArgs>
-    </resource>
-  </datasetClass>
-
-
   <!-- Category: dbxrefs -->
   <datasetClass class="dbxref_simple" category="" datasetFileHint="">
     <purpose></purpose>
@@ -722,7 +695,7 @@
     <prop name="name"/>
     <prop name="version"/>
     <prop name="columnSpec"/>
-    <prop name="type"/>  <!-- DBRefNASequence, AASequenceDBRef, DBRefAAFeature, DBRefNAFeature -->
+    <prop name="target"/>  <!-- NASequence, AAFeature, NAFeature -->
     <prop name="url"/>
     <prop name="urlUsesSecondaryId"/>  <!-- true or false -->
     <prop name="genomeVersion"/>
@@ -734,6 +707,8 @@
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
               scope="organism"
               type="dbxref"
+              externalDbIdUrl="${url}"
+              externalDbIdUrlUseSecondaryId="${urlUsesSecondaryId}"
               organismAbbrev="${organismAbbrev}">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/${name}/${version}/final/mapping.txt">
@@ -741,7 +716,7 @@
         </dir>
       </manualGet>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/mapping.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "${columnSpec}" --tableName ${type} --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --organismAbbrev ${organismAbbrev}</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/mapping.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "${columnSpec}" --tableName DBRef${target} --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --organismAbbrev ${organismAbbrev}</pluginArgs>
     </resource>
   </datasetClass>
 
