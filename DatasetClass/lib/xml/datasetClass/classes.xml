@@ -707,10 +707,10 @@
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
               scope="organism"
               type="dbxref"
-              externalDbIdUrl="${url}"
               externalDbIdUrlUseSecondaryId="${urlUsesSecondaryId}"
               organismAbbrev="${organismAbbrev}">
 
+      <externalDbIdUrl><![CDATA[${url}]]></externalDbIdUrl>
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/${name}/${version}/final/mapping.txt">
         <dir name="final">
         </dir>
@@ -738,6 +738,7 @@
               type="dbxref"
               organismAbbrev="${organismAbbrev}">
 
+      <externalDbIdUrl><![CDATA[TODO: apiloc url here]]></externalDbIdUrl>
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/dbxref/gene2ApiLoc/${version}/final/${organismAbbrev}.html">
         <dir name="final">
         </dir>
@@ -766,6 +767,7 @@
               type="dbxref"
               organismAbbrev="${organismAbbrev}">
 
+      <externalDbIdUrl><![CDATA[TODO: url here]]></externalDbIdUrl>
 
       <manualGet fileOrDir="common/dbxref/gene2PubmedFromNcbi/${version}/final/">
         <dir name="final">
@@ -783,41 +785,8 @@
     </resource>
   </datasetClass>
 
-  <!-- ONLY INCLUDE IF THIS ORGANISM'S GENOME IS IN GENBANK -->
-  <datasetClass class="dbxref_gene2Entrez" category="" datasetFileHint="">
-    <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="genomeVersion"/>
-    <prop name="version"/>
 
-    <graphPlanFile name="dbXRefs.xml"/>
-
-    <resource resource="${organismAbbrev}_dbxref_gene2Entrez_RSRC"
-	      version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
-              externalDbIdType="alternate id"
-              scope="organism"
-              type="dbxref"
-              organismAbbrev="${organismAbbrev}">
-
-
-      <manualGet fileOrDir="common/dbxref/gene2Entrez/${version}/final/gene_info.gz">
-        <dir name="final">
-        </dir>
-      </manualGet>
-
-      <unpack>ncbiGeneInfo2DbRefsFile @@dataDir@@/gene_info.gz ${ncbiTaxonId} > @@dataDir@@/gene2entrez.tab</unpack>
-
-      <unpack>rm -f @@dataDir@@/gene_info.gz</unpack>
-
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2entrez.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --organismAbbrev ${organismAbbrev}</pluginArgs>
-
-    </resource>
-  </datasetClass>
-
-  <!-- depends on dbxref_gene2Entrez -->
+  <!-- depends on gene2Entrez -->
   <datasetClass class="dbxref_gene2Uniprot" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
@@ -835,6 +804,8 @@
               scope="organism"
               type="dbxref"
               organismAbbrev="${organismAbbrev}">
+
+      <externalDbIdUrl><![CDATA[TODO: url here]]></externalDbIdUrl>
 
       <manualGet fileOrDir="common/dbxref/gene2Uniprot/${version}/final/idmapping_selected.tab.gz">
         <dir name="final">
@@ -856,6 +827,9 @@
     <prop name="organismAbbrev"/>
     <prop name="version"/>
     <prop name="name"/>
+    <prop name="columnSpec"/>
+    <prop name="url"/>
+    <prop name="urlUsesSecondaryId"/>  <!-- true or false -->
     <prop name="idType"/>  <!-- previous id, alternate id -->
 
     <graphPlanFile name="geneAliases.xml"/>
@@ -867,45 +841,54 @@
               externalDbIdIsAnAlias="true"
               scope="organism"
               type="alias"
+              externalDbIdUrlUseSecondaryId="${urlUsesSecondaryId}"
               organismAbbrev="${organismAbbrev}">
 
+      <externalDbIdUrl><![CDATA[${url}]]></externalDbIdUrl>
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/alias/${name}/${version}/final/geneAliases.txt">
         <dir name="final">
         </dir>
       </manualGet>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/geneAliases.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier" --tableName "DbRefNAFeature" --organismAbbrev ${organismAbbrev}</pluginArgs>
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/geneAliases.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "${columnSpec}" --tableName "DbRefNAFeature" --organismAbbrev ${organismAbbrev}</pluginArgs>
     </resource>
   </datasetClass>
 
-  <!-- depends on dbxref_gene2Entrez -->
-  <datasetClass class="dbxref_gene2entrezUrl" category="" datasetFileHint="">
+  <!-- ONLY INCLUDE IF THIS ORGANISM'S GENOME IS IN GENBANK -->
+  <datasetClass class="gene2Entrez" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
     <prop name="genomeVersion"/>
     <prop name="version"/>
 
-    <graphPlanFile name="dbXRefs.xml"/>
+    <graphPlanFile name="aliases.xml"/>
 
-    <resource resource="${organismAbbrev}_dbxref_gene2entrezUrl_RSRC"
+    <resource resource="${organismAbbrev}_dbxref_gene2Entrez_RSRC"
 	      version="${version}"
 	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              externalDbIdType="alternate id"
+              externalDbIdIsAnAlias="true"
               scope="organism"
               type="dbxref"
               organismAbbrev="${organismAbbrev}">
 
-      <manualGet fileOrDir="common/empty">
+      <externalDbIdUrl><![CDATA[http://www.ncbi.nlm.nih.gov/sites/entrez?db=gene&cmd=search&term=EXTERNAL_ID_HERE]]></externalDbIdUrl>
+      <manualGet fileOrDir="common/alias/gene2Entrez/${version}/final/gene_info.gz">
         <dir name="final">
         </dir>
       </manualGet>
 
-      <!-- need to use the gene2entrez file to get Url of entrez gene-->
-      <unpack>gene2entrezUrlFile --inputFile @@dataDir@@/../${organismAbbrev}_dbxref_gene2Entrez_RSRC/gene2entrez.tab > @@dataDir@@/gene2entrezUrl.tab</unpack>
+      <unpack>ncbiGeneInfo2DbRefsFile @@dataDir@@/gene_info.gz ${ncbiTaxonId} > @@dataDir@@/gene2entrez.tab</unpack>
 
-      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2entrezUrl.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --organismAbbrev ${organismAbbrev}</pluginArgs>
+      <unpack>rm -f @@dataDir@@/gene_info.gz</unpack>
+
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/gene2entrez.tab --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier,secondary_identifier,remark" --tableName "DbRefNAFeature"  --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --organismAbbrev ${organismAbbrev}</pluginArgs>
+
     </resource>
   </datasetClass>
+
 
   <!-- Category: SNPs -->
 
@@ -1506,7 +1489,7 @@
         </dir>
       </manualGet>
 
-      <pluginArgs>--file @@dataDir@@/products.txt  --productDbName %PARENT_RESOURCE_NAME% --productDbVer %PARENT_RESOURCE_VERSION%</pluginArgs>
+      <pluginArgs>--file @@dataDir@@/products.txt  --productDbName %RESOURCE_NAME% --productDbVer %RESOURCE_VERSION%</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -1997,11 +1980,6 @@
     <getAndUnpackOutput file="@@dataDir@@/nr"/>
     <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
   </resource>
-  </datasetClass>
-
-  <datasetClass class="dbxref_NRDB" category="" datasetFileHint="">
-    <purpose></purpose>
-    <graphPlanFile name="dbXRefs.xml"/>
   </datasetClass>
 
   <datasetClass class="blatAlignmentQuality" category="" datasetFileHint="">
