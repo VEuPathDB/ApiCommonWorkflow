@@ -721,6 +721,35 @@
   </datasetClass>
 
 
+  <datasetClass class="dbxref_unity" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="url"/>
+    <prop name="genomeVersion"/>
+
+    <graphPlanFile name="dbXRefs.xml"/>
+
+    <resource resource="${organismAbbrev}_dbxref_unity_${name}_RSRC"
+	      version="TODAY"
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              scope="organism"
+              type="dbxref"
+              organismAbbrev="${organismAbbrev}">
+      <externalDbIdUrl><![CDATA[${url}]]></externalDbIdUrl>
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <unpack>makeSrcIdFile --organismAbbrev "${organismAbbrev}" --outputFile @@dataDir@@/mapping.txt</unpack>
+
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/mapping.txt --extDbName %RESOURCE_NAME% --extDbReleaseNumber %RESOURCE_VERSION% --columnSpec "primary_identifier" --tableName DBRefNAFeature --geneExternalDatabaseSpec '${organismAbbrev}_primary_genome_RSRC|${genomeVersion}' --organismAbbrev ${organismAbbrev}</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
   <datasetClass class="dbxref_gene2ApiLoc" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="organismAbbrev"/>
