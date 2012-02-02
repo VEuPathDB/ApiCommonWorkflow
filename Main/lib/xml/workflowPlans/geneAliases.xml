@@ -27,27 +27,18 @@
     </subgraph>
   </datasetTemplate>
 
-  <step name="makeDerivedGeneIdTable"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedGeneIdTable" stepLoadTypes="tuningManager">
-      <paramValue name="tables">GeneId</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <dependsPattern name="%_gene_aliases_RSRC"/> 
+  <step name="makeGeneAliasesDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesDownloadFile">
+    <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="fileType">txt</paramValue>
+    <paramValue name="dataName">GeneAliases</paramValue>
+    <paramValue name="descripString">$$geneAliasDescripString$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="isWebServiceFile">false</paramValue>
+    <dependsPattern name="%_gene_aliases_RSRC"/> 
   </step>
-
-
-    <step name="makeGeneAliasesDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneAliasesDownloadFile">
-      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
-      <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="fileType">txt</paramValue>
-      <paramValue name="dataName">GeneAliases</paramValue>
-      <paramValue name="descripString">$$geneAliasDescripString$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="dbRefNAFeatureExtDbSpec"></paramValue>
-      <paramValue name="isWebServiceFile">false</paramValue>
-      <depends name="makeDerivedGeneIdTable"/>
-    </step>
 
 </workflowGraph>
 

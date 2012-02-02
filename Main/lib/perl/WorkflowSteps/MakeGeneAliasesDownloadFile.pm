@@ -9,9 +9,8 @@ sub getDownloadFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
-  my $dbRefNAFeatureExtDbSpec = $self->getParamValue('dbRefNAFeatureExtDbSpec');
 
-  my $cmd = "getGeneAliases --extDbSpec '$genomeExtDbRlsSpec' --outfile $downloadFileName --dbRefNAFeatureExtDbSpec '$dbRefNAFeatureExtDbSpec'";
+  my $cmd = "getGeneAliases --genomeExtDbSpec '$genomeExtDbRlsSpec' --outfile $downloadFileName";
 
   return $cmd;   
 }
