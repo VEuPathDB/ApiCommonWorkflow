@@ -25,13 +25,13 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
+  </datasetTemplate>
 
-  <!-- GeneId -->
   <step name="makeDerivedGeneIdTable"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedGeneIdTable" stepLoadTypes="tuningManager">
       <paramValue name="tables">GeneId</paramValue>
-      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-      <depends name="${name}_gene_aliases_RSRC"/> 
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <dependsPattern name="%_gene_aliases_RSRC"/> 
   </step>
 
 
@@ -44,11 +44,10 @@
       <paramValue name="dataName">GeneAliases</paramValue>
       <paramValue name="descripString">$$geneAliasDescripString$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="dbRefNAFeatureExtDbSpec">${organismAbbrev}_GeneDB_GFF_gene_aliases_RSRC|${version}</paramValue>
+      <paramValue name="dbRefNAFeatureExtDbSpec"></paramValue>
       <paramValue name="isWebServiceFile">false</paramValue>
       <depends name="makeDerivedGeneIdTable"/>
     </step>
-  </datasetTemplate>
 
 </workflowGraph>
 
