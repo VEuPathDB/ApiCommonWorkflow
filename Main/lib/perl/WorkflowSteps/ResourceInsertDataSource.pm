@@ -12,7 +12,12 @@ sub run {
     my $dataDirPath = $self->getParamValue('dataDir');
 
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
-    
+
+    if ($dataSource->getParentResource()) {
+	$self->log("This data source has a parent resource.  Exiting without writing to ApiDB.DataSource");
+	return;
+    }
+
     my $version = $dataSource->getVersion();
     my $organismAbbrev = $dataSource->getOrganismAbbrev();
     my $scope = $dataSource->getScope();
