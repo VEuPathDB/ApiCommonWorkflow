@@ -54,7 +54,10 @@ sub run {
   my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
   my $nameForFiles = $self->getIsSpeciesLevel()?  $speciesNameForFiles:  $organismNameForFiles;
   my $outputDir = "$websiteFilesDir/$relativeDir/$nameForFiles/$fileType";
- 
+
+  # if this dir has a data/ dir to enable a data usage policy page 
+  $outputDir = "$outputDir/data" if -d "$outputDir/data";   
+  
   if ($isWebServiceFile) {
       $downloadFile = "$outputDir/$dataName.$fileType";
   } else {

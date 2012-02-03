@@ -21,6 +21,7 @@ sub run {
   # it will look something like downloadSite/ToxoDB/release-6.3
   my $relativeDir = $self->getParamValue('relativeDir');
   my $subDir = $self->getParamValue('subDir');
+  my $needsDataSubDir = $self->getBooleanParamValue('needsDataSubDir');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
@@ -36,10 +37,12 @@ sub run {
 
   if ($undo){
       # it should be empty because child steps remove their files
+      $self->runCmd(0, "rmdir $dir/data") if $needsDataSubDir;  
       $self->runCmd(0, "rmdir $dir");  
 
   } else {
       $self->runCmd(0, "mkdir $dir");
+      $self->runCmd(0, "mkdir $dir/data") if $needsDataSubDir;
       # go to root of local path to avoid skipping intermediate dirs
       #my @path = split(/\//,$apiSiteFilesDir);
       #$self->runCmd(0, "chmod -R g+w $baseDir/$path[0]");
