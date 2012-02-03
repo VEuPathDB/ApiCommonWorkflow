@@ -1,38 +1,43 @@
 <workflowGraph name="">
-      <param name="parentDataDir"/>
-      <param name="resourceXmlFile"/>
+  <param name="parentDataDir"/>
 
-    <constant name="dataDir">$$parentDataDir$$/isolatesVocabulary</constant>
+  <constant name="dataDir">$$parentDataDir$$/isolatesVocabulary</constant>
 
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-    </step>
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
 
-    <step name="manuallyImproveIsolatesVocabulary" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
-       <depends name="makeDataDir"/>
-    </step>
+  <step name="manuallyImproveIsolatesVocabulary" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+    <depends name="makeDataDir"/>
+  </step>
 
-  <subgraph name="isolateVocabulary_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">isolateVocabulary_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$resourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="manuallyImproveIsolatesVocabulary"/>
-  </subgraph>
+  <datasetTemplate class="isolateVocabulary">
+    <subgraph name="isolateVocabulary_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">isolateVocabulary_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$resourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="manuallyImproveIsolatesVocabulary"/>
+    </subgraph>
+  </datasetTemplate>
 
-  <subgraph name="Continents_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">Continents_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$resourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="manuallyImproveIsolatesVocabulary"/>
-  </subgraph>
+  <datasetTemplate class="isolatesGeographicLocationVocabulary">
+    <subgraph name="geographicLocations_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">geographicLocations_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$resourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="manuallyImproveIsolatesVocabulary"/>
+    </subgraph>
+  </datasetTemplate>
 
-  <subgraph name="isolateVocabularyMap_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">isolateVocabularyMap_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$resourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="isolateVocabulary_RSRC"/>
-    <depends name="Continents_RSRC"/>
-  </subgraph>
+  <datasetTemplate class="isolateQualifierToVocabMapping">
+    <subgraph name="isolateVocabularyMap_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">isolateVocabularyMap_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$resourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="isolateVocabulary_RSRC"/>
+      <depends name="geographicLocations_RSRC"/>
+    </subgraph>
+  </datasetTemplate>
 
 
 </workflowGraph>
