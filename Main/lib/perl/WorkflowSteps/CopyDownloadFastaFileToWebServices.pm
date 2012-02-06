@@ -14,6 +14,7 @@ sub run {
   my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
   my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  
   my $dataName = $self->getParamValue('dataName');
+  my $service = $self->getParamValue('service');
 
   # extra params for this step
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
@@ -24,7 +25,7 @@ sub run {
 
   my $inputDownloadFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getDownloadFileName($websiteFilesDir, $downloadSiteRelativeDir, $organismNameForFiles, undef, 0, $projectName, $projectVersion, 'fasta', $dataName);
 
-  my $outputFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceFileName($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, undef, 0, 'fasta', $dataName);
+  my $outputFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceFileName($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, undef, 0, 'fasta', $dataName, $service);
 
   if($undo) {
     $self->runCmd(0, "rm -f $outputFile*");
