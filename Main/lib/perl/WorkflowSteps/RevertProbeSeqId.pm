@@ -26,9 +26,9 @@ sub run {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputNonUniqueFile");
   } else {
     if ($test) {
-      $self->testInputFile('shortSeqsFile', "$workflowDataDir/$inputUniqueFile");
-      $self->testInputFile('inputUniqueFile', "$workflowDataDir/$inputNonUniqueFile");
-      $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$shortSeqsFile");
+      $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$inputUniqueFile");
+      $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$inputNonUniqueFile");
+      $self->testInputFile('shortSeqsFile', "$workflowDataDir/$shortSeqsFile");
       $self->runCmd(0,"echo test > $workflowDataDir/$outputUniqueFile");
       $self->runCmd(0,"echo test > $workflowDataDir/$outputNonUniqueFile");
     } else {
