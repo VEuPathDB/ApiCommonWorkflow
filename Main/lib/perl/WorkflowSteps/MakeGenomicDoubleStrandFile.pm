@@ -1,8 +1,8 @@
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomicDoubleStrandFile;
 
-@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker);
 use strict;
-use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
+use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub getDownloadFileCmd {

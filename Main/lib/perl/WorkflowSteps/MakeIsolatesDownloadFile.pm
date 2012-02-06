@@ -3,9 +3,9 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeIsolatesDownloadFile;
 ## NOTE: this stepclass is specifically extracting the isolates from GenBank
 ##       If we want another data source, we'll need to extend this step class and add an externaldb param.
 
-@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker);
 use strict;
-use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
+use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
 sub getIsSpeciesLevel {
     return 1;

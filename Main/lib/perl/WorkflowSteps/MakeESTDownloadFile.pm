@@ -1,8 +1,8 @@
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeESTDownloadFile;
 
-@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker);
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker);
 use strict;
-use ApiCommonWorkflow::Main::WorkflowSteps::DownloadFileMaker;
+use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
 sub getIsSpeciesLevel {
     return 1;
