@@ -83,17 +83,17 @@ sub run {
 
 # static method
 sub getWebServiceDir {
-    my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $fileType) = @_;
+    my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $serviceName) = @_;
 
     my $nameForFiles = $isSpeciesLevel?  $speciesNameForFiles:  $organismNameForFiles;
-    return "$websiteFilesDir/$relativeDir/$nameForFiles/$fileType";
+    return "$websiteFilesDir/$relativeDir/$nameForFiles/$serviceName";
 }
 
 # static method
 sub getWebServiceFileName {
-    my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $fileType, $dataName) = @_;
+    my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $fileType, $dataName, $serviceName) = @_;
 
-    my $dir = getWebServiceDir($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $fileType);
+    my $dir = getWebServiceDir($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $serviceName);
     return "$dir/$dataName.$fileType";
 }
 
