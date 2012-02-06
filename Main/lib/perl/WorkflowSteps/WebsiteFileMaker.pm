@@ -98,7 +98,7 @@ sub getWebServiceFileName {
 }
 
 # static method
-sub makeDownloadFileName {
+sub getDownloadFileName {
     my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $projectName, $projectVersion, $fileType, $dataName) = @_;
 
     my $nameForFiles = $isSpeciesLevel?  $speciesNameForFiles:  $organismNameForFiles;
@@ -112,7 +112,7 @@ sub makeDownloadFileName {
 }
 
 # static method
-sub makeDescripFileName {
+sub getDescripFileName {
     my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $projectName, $projectVersion, $fileType, $dataName) = @_;
 
     my $nameForFiles = $isSpeciesLevel?  $speciesNameForFiles:  $organismNameForFiles;
