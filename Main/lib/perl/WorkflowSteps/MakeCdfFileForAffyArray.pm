@@ -37,6 +37,7 @@ sub run {
       $self->testInputFile('probename2sequenceInputFile', "$workflowDataDir/$probename2sequenceInputFile");
       $self->testInputFile('inputCdfFile', "$workflowDataDir/$inputCdfFile");
       $self->runCmd(0,"echo test > $workflowDataDir/pbase-tbase.out");
+      $self->runCmd(0,"echo test > $workflowDataDir/$outputCdfFile");
 
     }
     copy("$workflowDataDir/$inputCdfFile", "$workflowDataDir/$outputCdfFile") || $self->error("Can't copy inputCdfFile to outputCdfFile $workflowDataDir/$outputCdfFile");

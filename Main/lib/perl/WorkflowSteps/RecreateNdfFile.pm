@@ -23,6 +23,7 @@ sub run {
       if ($test) {
 	  $self->testInputFile('originalNdfFile', "$workflowDataDir/$ndfFile");
 	  $self->testInputFile('gene2probesInputFile', "$workflowDataDir/$gene2probesInputFile");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }else{
 	  $self->runCmd($test,$cmd);
       }
