@@ -1,8 +1,9 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesMotifFastaFile;
+package ApiCommonWorkflow::Main::WorkflowSteps::CopyDownloadFastaFileToWebServices;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
 sub run {
   my ($self, $test, $undo) = @_;
@@ -19,14 +20,11 @@ sub run {
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-  # get download site file
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
-  my $downloadFileDir = "$websiteFilesDir/$downloadSiteRelativeDir/$organismNameForFiles/fasta";
-  my $fileName = "$projectName-${projectVersion}_${organismNameForFiles}_$dataName.fasta";
-  my $inputDownloadFile = "$downloadFileDir/$fileName";
 
-  # outputFile
-  my $outputFile = "$websiteFilesDir/$webServicesRelativeDir/$organismAbbrev/motif/$dataName.fasta";
+  my $inputDownloadFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getDownloadFileName($websiteFilesDir, $downloadSiteRelativeDir, $organismNameForFiles, undef, 0, $projectName, $projectVersion, 'fasta', $dataName);
+
+  my $outputFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceFileName($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, undef, 0, 'fasta', $dataName);
 
   if($undo) {
     $self->runCmd(0, "rm -f $outputFile*");

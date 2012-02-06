@@ -3,6 +3,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
 sub run {
   my ($self, $test, $undo) = @_;
@@ -19,19 +20,12 @@ sub run {
   my $args = $self->getParamValue('args');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
+  my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
 
-  # get download site file
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
-  if ($useSpeciesName) {
-    $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
-  }
+  my $inputDownloadFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getDownloadFileName($websiteFilesDir, $downloadSiteRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, $projectName, $projectVersion, 'fasta', $dataName);
 
-  my $downloadFileDir = "$websiteFilesDir/$downloadSiteRelativeDir/$organismNameForFiles/fasta";
-
-  my $inputDownloadFile = "$downloadFileDir/$projectName-${projectVersion}_${organismNameForFiles}_$dataName.fasta";
-
-  # get web services dir
-  my $outputWebservicesFileDir = "$websiteFilesDir/$webServicesRelativeDir/${organismNameForFiles}/blast";
+  my $outputWebservicesFileDir = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceDir($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, 'blast');
 
   my $blastPath = $self->getConfig("wuBlastPath");
   my $cmd = "$blastPath/xdformat $args -o $outputWebservicesFileDir/$dataName $inputDownloadFile";
