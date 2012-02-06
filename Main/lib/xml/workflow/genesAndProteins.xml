@@ -29,12 +29,6 @@
       <paramValue name="idSql">select taas.aa_sequence_id, taas.sequence from DoTS.TranslatedAASequence taas, DoTs.AAFeature af, DOTS.NAFeature nf where taas.aa_sequence_id=af.aa_sequence_id and af.na_feature_id=nf.na_feature_id and nf.name not in ('ORF') and taas.external_database_release_id = ?</paramValue>
     </step>
 
-  <subgraph name="loadProductName" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/productNames.xml" excludeIfXmlFileDoesNotExist="true">
-    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </subgraph>
-
     <step name="document-isoelectricPoint"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
       <paramValue name="method">isoelectric_point_MTHD</paramValue>
@@ -50,6 +44,12 @@
       <paramValue name="parameters"></paramValue>
       <depends name="calcAASequenceAttributes"/>
     </step>
+
+  <subgraph name="loadProductName" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/productNames.xml" excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
 
     <step name="InsertGeneGenomicSequenceWithSql" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadGeneGenomicSequenceByQuery" >
       <paramValue name="genomeExtDbRlsSpecList">$$genomeExtDbRlsSpec$$</paramValue>
@@ -114,7 +114,7 @@
       <depends name="runSignalP"/>
     </step>
 
-    <step name="document-insertSignalP"
+    <step name="document-SignalP"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
       <paramValue name="method">SignalP_MTHD</paramValue>
       <paramValue name="version">3.0</paramValue>
