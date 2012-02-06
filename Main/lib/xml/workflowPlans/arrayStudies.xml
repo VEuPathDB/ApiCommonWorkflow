@@ -74,6 +74,11 @@
       <depends name="mirrorToCluster"/>
     </subgraph>
 
+    <step name="${name}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/${name}</paramValue>
+      <depends name="${name}_probe_RSRC"/>
+    </step>
+
     <step name="${name}_getAndMapProbes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyProviderProbeMappingFiles">
       <paramValue name="inputTabFile">$$dataDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC/final/geneProbeMapping.tab</paramValue>
       <paramValue name="inputCdfFile">$$dataDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC/final/geneProbeMapping.ndf</paramValue>
@@ -82,7 +87,7 @@
       <paramValue name="outputGeneProbeMappingVendorFile">$$dataDir$$/${name}/geneProbeMappingVendor</paramValue>
       <paramValue name="makeCdfFile">${isAffymetrixGeneArray}</paramValue>
       <paramValue name="makeNdfFile">${isNimbleGenGeneArray}</paramValue>
-      <depends name="${name}_probe_RSRC"/>
+      <depends name="${name}_makeDataDir"/>
     </step>
 
    </datasetTemplate>
