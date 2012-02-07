@@ -23,7 +23,7 @@ sub run {
   my $cmd = "runFaToNib --filesFile $clusterWorkflowDataDir/$inputTargetListFile";
 
   if ($undo) {
-    $self->runCmdOnCluster(0,"rm -r $clusterWorkflowDataDir/$dirname/nib/");
+    #$self->runCmdOnCluster(0,"rm -r $clusterWorkflowDataDir/$dirname/nib/");
   } else {
       if ($test) {
 	  $self->testInputFile('inputTargetListFile', "$workflowDataDir/$inputTargetListFile");
