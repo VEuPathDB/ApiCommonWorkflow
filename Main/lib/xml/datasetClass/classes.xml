@@ -154,6 +154,7 @@
               version="${version}"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
               scope="organism"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
               type="organellar_genome"
               organismAbbrev="${organismAbbrev}">
 
@@ -242,6 +243,7 @@
     <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC"
               version="${version}"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
               scope="organism"
               type="organellar_genome"
               organismAbbrev="${organismAbbrev}">
@@ -320,7 +322,7 @@
 
     <resource resource="${organismAbbrev}_${soTerm}_GeneDB_features_RSRC"
               version="${version}"
-	      parentResource="${organismAbbrev}_${soTerm}_GeneDB_RSRC"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
 	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
               scope="organism"
               organismAbbrev="${organismAbbrev}">
@@ -469,6 +471,7 @@
 
     <resource resource="${organismAbbrev}_${soTerm}_${name}_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+	      parentResource="${organismAbbrev}_primary_genome_RSRC"
               scope="organism"
               type="organellar_genome"
               organismAbbrev="${organismAbbrev}">
@@ -539,7 +542,7 @@
   </datasetClass>
 
   <!-- Category: genomeFeature -->
-
+  <!-- NOTE: THIS CLASS IS NOT TO BE USED FOR THE PRIMARY ANNOTATION -->
   <datasetClass class="genomeFeatures_GFF2" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
@@ -1288,6 +1291,7 @@
     <resource resource="${organismAbbrev}_${experimentName}_${sampleName}_chipChipSample_RSRC" version="dontcare"
 	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
               scope="organism"
+	      parentResource="${organismAbbrev}_chipChipExper_${experimentName}_RSRC"
               type="transcript_expression"
               subType="chip_chip"
               organismAbbrev="${organismAbbrev}">
@@ -1301,7 +1305,7 @@
       <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_chipChipExper_${experimentName}_RSRC/final/${sampleName}_peak_config.txt" />
       <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_chipChipExper_${experimentName}_RSRC/final/${sampleName}.txt" />
 
-      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+      <pluginArgs>--dbRefExternalDatabaseSpec "%PARENT_RESOURCE_NAME%|%PARENT_RESOURCE_VERSION%"</pluginArgs>
     </resource>
   </datasetClass>
 
@@ -1363,6 +1367,7 @@
     <resource resource="${organismAbbrev}_${experimentName}_${sampleName}_rnaSeqSample_RSRC" version="dontcare"
 	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
               scope="organism"
+	      parentResource="${organismAbbrev}_${experimentName}_rnaSeq_RSRC"
               type="transcript_expression"
               subType="rnaseq"
               organismAbbrev="${organismAbbrev}">
@@ -1374,7 +1379,7 @@
 
       <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_${experimentName}_rnaSeq_RSRC/final/${sampleName}" />
 
-      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+      <pluginArgs>--dbRefExternalDatabaseSpec "%PARENT_RESOURCE_NAME%|%PARENT_RESOURCE_VERSION%"</pluginArgs>
     </resource>
 
 
@@ -1431,6 +1436,7 @@
     <resource resource="${organismAbbrev}_${experimentName}_${sampleName}_chipSeqSample_RSRC" version="dontcare"
 	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
               scope="organism"
+	      parentResource="${organismAbbrev}_${experimentName}_chipSeq_RSRC"
               type="transcript_expression"
               subType="chipseq"
               organismAbbrev="${organismAbbrev}">
@@ -1442,7 +1448,7 @@
 
       <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_${experimentName}_chipSeq_RSRC/final/${sampleName}" />
 
-      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+      <pluginArgs>--dbRefExternalDatabaseSpec "%PARENT_RESOURCE_NAME%|%PARENT_RESOURCE_VERSION%"</pluginArgs>
     </resource>
 
 
@@ -1549,6 +1555,7 @@
     <resource resource="${organismAbbrev}_sageTag_${name}_frequencies_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadSageFrequencies"
               scope="organism"
+	      parentResource="${organismAbbrev}_sageTag_${name}_RSRC"
               type="transcript_expression"
               subType="sage_tag"
               organismAbbrev="${organismAbbrev}"
