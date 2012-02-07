@@ -8,7 +8,7 @@ sub getIsSpeciesLevel {
     return 1;
 }
 
-sub getDownloadFileCmd { 
+sub getWebsiteFileCmd { 
   my ($self, $downloadFileName, $test) = @_;
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');

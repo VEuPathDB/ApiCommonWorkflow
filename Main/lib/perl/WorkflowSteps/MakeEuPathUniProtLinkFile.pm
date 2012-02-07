@@ -5,7 +5,7 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
 
-sub getDownloadFileCmd {
+sub getWebsiteFileCmd {
   my ($self, $downloadFileName, $test) = @_;
 
 
