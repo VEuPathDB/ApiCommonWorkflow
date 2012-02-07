@@ -34,8 +34,10 @@ sub run {
     if ($test) {
       $self->testInputFile('inputDir', "$workflowDataDir/$mappingFile") if $mappingFile;
     }
-
-    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CalculateProfileSummaryStats", $args);
+    if ($undo){
+    }else{
+	$self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CalculateProfileSummaryStats", $args);
+    }
 
 }
 
