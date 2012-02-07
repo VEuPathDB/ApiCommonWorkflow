@@ -13,10 +13,7 @@ sub run {
 
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
-    if ($dataSource->getParentResource()) {
-	$self->log("This data source has a parent resource.  Exiting without writing to ApiDB.DataSource");
-	return;
-    }
+    my $extDbName = $dataSource->getParentResource()? $dataSource->getParentResource() : $dataSourceName;
 
     my $version = $dataSource->getVersion();
     my $organismAbbrev = $dataSource->getOrganismAbbrev();
@@ -34,7 +31,7 @@ sub run {
 	$taxonId = "--taxonId $t";
     }
 
-    my $dbPluginArgs = "--dataSourceName '$dataSourceName' --version '$version' $isSpeciesScope $taxonId $tp $stp";
+    my $dbPluginArgs = "--dataSourceName '$dataSourceName' --version '$version' --externalDatabaseName $extDbName $isSpeciesScope $taxonId $tp $stp";
 
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertDataSource", $dbPluginArgs);
 
