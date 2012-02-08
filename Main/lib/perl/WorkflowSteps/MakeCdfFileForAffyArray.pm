@@ -12,7 +12,6 @@ sub run {
 
   my $gene2probesInputFile = $self->getParamValue('gene2probesInputFile');
   my $probename2sequenceInputFile = $self->getParamValue('probename2sequenceInputFile');
-  my $inputCdfFile = $self->getParamValue('inputCdfFile');
   my $outputCdfFile = $self->getParamValue('outputCdfFile');
   my $name = $self->getParamValue('mappingVendorFileName');
   my $rows = $self->getParamValue('probeRows');
@@ -35,12 +34,10 @@ sub run {
     if ($test) {
       $self->testInputFile('gene2probesInputFile', "$workflowDataDir/$gene2probesInputFile");
       $self->testInputFile('probename2sequenceInputFile', "$workflowDataDir/$probename2sequenceInputFile");
-      $self->testInputFile('inputCdfFile', "$workflowDataDir/$inputCdfFile");
       $self->runCmd(0,"echo test > $workflowDataDir/pbase-tbase.out");
       $self->runCmd(0,"echo test > $workflowDataDir/$outputCdfFile");
 
     }
-    copy("$workflowDataDir/$inputCdfFile", "$workflowDataDir/$outputCdfFile") || $self->error("Can't copy inputCdfFile to outputCdfFile $workflowDataDir/$outputCdfFile");
 
     if (!$test) {
       $self->runCmd($test,$cmd1);
