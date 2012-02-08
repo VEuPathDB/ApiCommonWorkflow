@@ -52,7 +52,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <prop name="hasDeprecatedGenes"/>
     <prop name="genomeSource"/>
     <prop name="genomeVersion"/>
-    <prop name="annotationIncludestRNAs"/>
+    <prop name="annotationIncludesTRNAs"/>
     <prop name="runExportPred"/>
     <prop name="taxonHierarchyForBlastxFilter"/>
     <prop name="skipGenomeAnalysis"/>
@@ -129,7 +129,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <paramValue name="annotationIncludestRNAs">${annotationIncludestRNAs}</paramValue>
+      <paramValue name="annotationIncludestRNAs">${annotationIncludesTRNAs}</paramValue>
       <paramValue name="runExportPred">${runExportPred}</paramValue>
       <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
       <paramValue name="taxonHierarchyForBlastxFilter">${taxonHierarchyForBlastxFilter}</paramValue>
@@ -142,23 +142,6 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
       <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
       <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
-      <depends name="${organismAbbrev}_LoadGenome"/>
-    </subgraph>
-
-    <subgraph name="${organismAbbrev}_specific" xmlFile="generated/${projectName}/${organismAbbrev}/organismSpecific.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
-      <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-      <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
-      <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
-      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
-      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
-      <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
-      <paramValue name="isHaploid">${isHaploid}</paramValue>
-      <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
@@ -185,6 +168,23 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
+    </subgraph>
+
+    <subgraph name="${organismAbbrev}_specific" xmlFile="generated/${projectName}/${organismAbbrev}/organismSpecific.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="organismResourceXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fsa</paramValue>
+      <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
+      <paramValue name="isHaploid">${isHaploid}</paramValue>
+      <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
+      <depends name="${organismAbbrev}_LoadAliases"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_dbXRefs" xmlFile="generated/${projectName}/${organismAbbrev}/dbXRefs.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
