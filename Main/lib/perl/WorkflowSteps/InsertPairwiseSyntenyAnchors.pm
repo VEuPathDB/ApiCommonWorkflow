@@ -42,7 +42,7 @@ sub run {
 
 	if ($undo) {
 	    unlink($outputFile);
-	    $self->runPlugin($test, 1, "ApiCommonData::Load::Plugin::InsertPairwiseSyntenySpans", $insertPluginArgs);
+	    $self->runPlugin($test, 1, "ApiCommonData::Load::Plugin::InsertSyntenySpans", $insertPluginArgs);
 	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
 	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 	} else {
