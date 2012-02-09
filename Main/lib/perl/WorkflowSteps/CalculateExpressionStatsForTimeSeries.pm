@@ -10,19 +10,19 @@ sub run {
   my ($self, $test, $undo) = @_;
   my @configLines;
   my $configFile = $self->getParamValue('configFile');
-  open (cf, "< $configFile");
+  my $workflowDataDir = $self->getWorkflowDataDir();
+
+  open (cf, "< $workflowDataDir/$configFile");
   while (<cf>) {
     chomp;
     push (@configLines,$_)
   }
 
-  my $mappingFile = @configLines[0];
+  my $mappingFile = $configLines[0];
 
   my $profileSetSpecs = $configLines[1]; 
 
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
-
-  my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $args = "--externalDatabaseSpec '$extDbRlsSpec'  --profileSetSpecs '$profileSetSpecs'";
 
