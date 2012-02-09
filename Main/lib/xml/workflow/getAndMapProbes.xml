@@ -5,7 +5,7 @@
     <param name="probeResourceVersion"/>
     <param name="makeCdfFile"/>
     <param name="makeNdfFile"/>
-    <param name="mappingVendorFileName"/>
+    <param name="vendorMappingFileName"/>
     <param name="probeRows"/>
     <param name="probeCols"/>
     <param name="outputGeneProbeMappingTabFile"/>
@@ -109,17 +109,17 @@
     <step name="makeCdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$makeCdfFile$$">
       <paramValue name="gene2probesInputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
       <paramValue name="probename2sequenceInputFile">$$dataDir$$/$$probeResourceName$$/probes.tab</paramValue>
-      <paramValue name="mappingVendorFileName">$$mappingVendorFileName$$</paramValue>
+      <paramValue name="vendorMappingFileName">$$vendorMappingFileName$$</paramValue>
       <paramValue name="probeRows">$$probeRows$$</paramValue>
       <paramValue name="probeCols">$$probeCols$$</paramValue>
-      <paramValue name="outputCdfFile">$$dataDir$$/$$mappingVendorFileName$$</paramValue>
+      <paramValue name="outputCdfFile">$$dataDir$$/$$vendorMappingFileName$$</paramValue>
       <depends name="makeProbeGeneMappingFile"/>
     </step>
 
     <step name="fixNdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RecreateNdfFile" includeIf="$$makeNdfFile$$">
       <paramValue name="gene2probesInputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
       <paramValue name="inputNdfFile">$$dataDir$$/$$probeResourceName$$/input/geneProbeMapping.ndf</paramValue>
-      <paramValue name="outputNdfFile">$$dataDir$$/$$mappingVendorFileName$$</paramValue>
+      <paramValue name="outputNdfFile">$$dataDir$$/$$vendorMappingFileName$$</paramValue>
       <depends name="makeProbeGeneMappingFile"/>
     </step>
 
