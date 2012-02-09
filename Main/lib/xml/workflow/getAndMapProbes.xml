@@ -19,6 +19,7 @@
     <param name="numInsertions"/>
     <param name="countMismatches"/>
     <param name="variableLengthReads"/>
+    <param name="makeGeneProbeMappingFile"/>
 
     <!-- parent defines name of data dir so we can pass it our output files -->
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -98,7 +99,7 @@
     <!-- always output this file, even when we are making a vendor-specific -->
     <!-- file, in which case outputting this file is not really useful -->
     <!-- but output it anyway for simplicity -->
-    <step name="makeProbeGeneMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProbeGeneMappingFile">
+    <step name="makeProbeGeneMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProbeGeneMappingFile" includeIf="$$makeGeneProbeMappingFile$$">
       <paramValue name="outputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
       <paramValue name="probeExtDbSpec">$$probeResourceName$$|$$probeResourceVersion$$</paramValue>
       <paramValue name="geneExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
