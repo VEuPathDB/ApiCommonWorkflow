@@ -44,7 +44,7 @@ sub run {
 
   # mapping file is optional.  not used for rna seq
   my $input_file = -e $mappingFile?
-      "--input_file $$mappingFile" : "";
+      "--input_file $mappingFile" : "";
 
   my $cmd = "doTranscriptExpression.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir $input_file";
 
