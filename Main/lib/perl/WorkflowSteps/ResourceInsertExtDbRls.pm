@@ -15,7 +15,7 @@ sub run {
     my $dataSourceVersion =  $dataSource->getVersion();
     my $parentDatasource = $dataSource->getParentResource();
     my $idType = $dataSource->getExternalDbIdType();
-    my $idIsAlias = $dataSource->getExternalDbIdIsAlias();
+    my $idIsAlias = $dataSource->getExternalDbIdIsAnAlias();
     my $idUrl = $dataSource->getExternalDbIdUrl();
     my $idUrlUseSecondary = $dataSource->getExternalDbIdUrlUseSecondaryId();
 
