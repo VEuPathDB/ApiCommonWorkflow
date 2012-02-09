@@ -37,9 +37,11 @@ sub run {
     my $fwdSeqsArg = $isPairedEnds? '-1 ' : '';
     my $fwdQualsArg = $isPairedEnds? '--Q1 ' : '-Q';
 
-    my $cmd = "bowtie $bowtieParams --best --strata $workflowDataDir/$inputIndexesDir/genomicIndexes $colorSpaceArg $fwdSeqsArg $workflowDataDir/$inputFwdSeqsFile";
+    my $cmd = "bowtie $bowtieParams --best --strata $workflowDataDir/$inputIndexesDir/genomicIndexes $colorSpaceArg $fwdSeqsArg $fileTypeArg $workflowDataDir/$inputFwdSeqsFile";
 
-    $cmd .= "$fwdQualsArg $workflowDataDir/$inputFwdQualsFile" if $haveQuals;
+    $cmd .= "$fwdQualsArg $fileTypeArg $workflowDataDir/$inputFwdQualsFile" if $haveQuals;
+
+    $cmd .= ">$workflowDataDir/$outputFile";
 
     $self->testInputFile('inputFwdSeqsFile', "$workflowDataDir/$inputFwdSeqsFile");
     $self->testInputFile('inputFwdQualsSeqsFile', "$workflowDataDir/$inputFwdQualsFile") if $haveQuals;
