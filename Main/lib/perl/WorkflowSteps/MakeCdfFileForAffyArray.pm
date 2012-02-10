@@ -13,7 +13,7 @@ sub run {
   my $gene2probesInputFile = $self->getParamValue('gene2probesInputFile');
   my $probename2sequenceInputFile = $self->getParamValue('probename2sequenceInputFile');
   my $outputCdfFile = $self->getParamValue('outputCdfFile');
-  my $name = $self->getParamValue('mappingVendorFileName');
+  my $name = $self->getParamValue('vendorMappingFileName');
   my $rows = $self->getParamValue('probeRows');
   my $cols = $self->getParamValue('probeCols');
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -52,7 +52,7 @@ sub getParamDeclaration {
 	  'gene2probesInputFile',
 	  'probename2sequenceInputFile',
 	  'gene2probesInputFile',
-          'mappingVendorFileName',
+          'vendorMappingFileName',
           'probeRows',
           'probeCols',
 	 );
