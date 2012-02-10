@@ -18,7 +18,7 @@ sub run {
   my $orgInfo = $self->getOrganismInfo($test, $organismAbbrev);
 
   if (!$test) {
-      $db = $orgInfo->getStrainAbbrev();
+      my $db = $orgInfo->getStrainAbbrev();
       $self->error("strainAbbrev '$strainAbbrev' does not match the value in the database: '$db'") unless $strainAbbrev eq $db;
 
       $db = $orgInfo->getNcbiTaxonId();
