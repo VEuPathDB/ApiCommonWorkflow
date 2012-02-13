@@ -6,6 +6,7 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 use File::Copy;
 
+my $MIN_PROBES = 3;
 
 sub run {
   my ($self, $test, $undo) = @_;
@@ -21,10 +22,10 @@ sub run {
   my $cmd1 = "get_pbase-tbase.pl $workflowDataDir/$probename2sequenceInputFile 1 > $workflowDataDir/pbase-tbase.out";
 
   # builds the header for the .cdf file
-  my $cmd2 = "makeCdfHeader.pl  $workflowDataDir/$outputCdfFile $workflowDataDir/$gene2probesInputFile $name $rows $cols";
+  my $cmd2 = "makeCdfHeader.pl  --gene2probes $workflowDataDir/$outputCdfFile --outputFilePath $workflowDataDir/$gene2probesInputFile --name $name --rows $rows --cols $cols --minProbes $MIN_PROBES";
 
   # overwrites the provided .cdf file
-  my $cmd3 = "create_cdf.pl $workflowDataDir/$outputCdfFile $workflowDataDir/$gene2probesInputFile $workflowDataDir/pbase-tbase.out";
+  my $cmd3 = "create_cdf.pl $workflowDataDir/$outputCdfFile $workflowDataDir/$gene2probesInputFile $workflowDataDir/pbase-tbase.out $MIN_PROBES";
 
 
   if ($undo) {
