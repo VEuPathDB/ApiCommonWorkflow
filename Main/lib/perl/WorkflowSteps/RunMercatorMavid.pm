@@ -59,6 +59,7 @@ sub run {
   # remove input dirs from output dir
   $self->runCmd($test,"rm $workflowDataDir/$mercatorOutputDir/gff/*.gff");
   $self->runCmd($test,"rm $workflowDataDir/$mercatorOutputDir/fasta/*.fasta");
+  $self->runCmd($test,"rm $workflowDataDir/$mercatorOutputDir/fasta/*.sdb");
   $self->runCmd($test,"rmdir $workflowDataDir/$mercatorOutputDir/gff");
   $self->runCmd($test,"rmdir $workflowDataDir/$mercatorOutputDir/fasta");
 
