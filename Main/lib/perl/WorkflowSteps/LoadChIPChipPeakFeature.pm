@@ -28,7 +28,7 @@ sub run {
   
   my $algInvIds = $self->getAlgInvIds();
 
-  my $soVersion = $self->getExtDbVersion('SO_RSRC');
+  my $soVersion = $self->getExtDbVersion($test, 'SO_RSRC');
 
   my $args = <<"EOF";
 --extDbName '$extDbName'  \\
