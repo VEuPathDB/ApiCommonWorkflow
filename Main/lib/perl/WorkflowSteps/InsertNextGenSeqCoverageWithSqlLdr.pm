@@ -11,29 +11,23 @@ sub run {
 
   my $inputFile = $self->getParamValue('inputFile');
 
-  my $isReversed = $self->getParamValue('isReversed');
+  my $isReversed = $self->getBooleanParamValue('isReversed');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--dataFile $workflowDataDir/$inputFile";
+  my $args = "--dataFile $workflowDataDir/$inputFile --isReversed $isReversed";
 
-  if ($isReversed eq "yes"){
+  if ($test) {
+      $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+      $self->runCmd(0,"echo test > $workflowDataDir/$inputFile.ctrl") unless $undo;
+  }
 
-      $args .= " --isReversed 1";
-
-  }else{
-
-      $args .= " --isReversed 0";
+  if ($undo) {
+      $self->runCmd(0, "rm $workflowDataDir/$inputFile.ctrl");
   }
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertNextGenSeqCoverageWithSqlLdr", $args);
 
-}
-
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	 );
 }
 
 sub getConfigDeclaration {
