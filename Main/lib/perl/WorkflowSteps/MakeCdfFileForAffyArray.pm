@@ -22,7 +22,7 @@ sub run {
   my $cmd1 = "get_pbase-tbase.pl $workflowDataDir/$probename2sequenceInputFile 1 > $workflowDataDir/pbase-tbase.out";
 
   # builds the header for the .cdf file
-  my $cmd2 = "makeCdfHeader.pl  --gene2probes $workflowDataDir/$outputCdfFile --outputFilePath $workflowDataDir/$gene2probesInputFile --name $name --rows $rows --cols $cols --minProbes $MIN_PROBES";
+  my $cmd2 = "makeCdfHeader.pl  --outPutFile $workflowDataDir/$outputCdfFile --gene2probes $workflowDataDir/$gene2probesInputFile --name $name --rows $rows --cols $cols --minProbes $MIN_PROBES";
 
   # overwrites the provided .cdf file
   my $cmd3 = "create_cdf.pl $workflowDataDir/$outputCdfFile $workflowDataDir/$gene2probesInputFile $workflowDataDir/pbase-tbase.out $MIN_PROBES";
