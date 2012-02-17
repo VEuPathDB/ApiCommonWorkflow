@@ -10,6 +10,13 @@
     <param name="loadPeakCalls"/>
     <param name="organismAbbrev"/>
     <param name="configFilesDir"/>
+    <prop name="LifeCycleStage"/>
+    <prop name="Antibody"/>
+    <prop name="Genotype"/>
+    <prop name="Replicate"/>
+    <prop name="Strain"/>
+    <prop name="Treatment"/>
+    <prop name="CellType"/>
 
     <constant name="dataDir">$$parentDataDir$$/analyze_ChIP_Chip_$$sampleName$$</constant>
     <constant name="peakFinderDataDir">$$dataDir$$/smoothedDataAndPeaks</constant>
@@ -56,6 +63,22 @@
       <depends name="runChIPChipPeakFinderAndSmoother"/>
     </step>
 
+    <step name="writeSmoothedConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteChipChipSampleConfig">
+      <paramValue name="configOutputFile">$$configFilesDir$$/$$sampleName$$_smoothed_config.txt</paramValue>
+      <paramValue name="file">smoothedProfiles_reformated.txt</paramValue>
+      <paramValue name="analysisName">$$sampleName$$</paramValue>
+      <paramValue name="protocolName">ChIP chip Smoothed</paramValue>
+      <paramValue name="LifeCycleStage">$$LifeCycleStage$$</paramValue>
+      <paramValue name="Antibody">$$Antibody$$</paramValue>
+      <paramValue name="Genotype">$$Genotype$$</paramValue>
+      <paramValue name="Replicate">$$Replicate$$</paramValue>
+      <paramValue name="Strain">$$Strain$$</paramValue>
+      <paramValue name="Treatment">$$Treatment$$</paramValue>
+      <paramValue name="CellType">$$CellType$$</paramValue>
+      <depends name="reformatChIPChipSmoothedProfiles"/>
+    </step>
+
+
     <step name="loadChIPChipSmoothedProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin">
       <paramValue name="analysisWorkingDir">$$dataDir$$/smoothedDataAndPeaks</paramValue>
       <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_smoothed_config.txt</paramValue>
@@ -91,6 +114,24 @@
       <paramValue name="experimentName">$$experimentName$$</paramValue>
       <depends name="runChIPChipPeakFinderAndSmoother"/>
     </step>
+
+
+    <step name="writePeaksConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteChipChipSampleConfig">
+      <paramValue name="configOutputFile">$$configFilesDir$$/$$sampleName$$_peak_config.txt</paramValue>
+      <paramValue name="file">peak_scores.txt</paramValue>
+      <paramValue name="analysisName">$$sampleName$$</paramValue>
+      <paramValue name="protocolName">ChIP chip Smoothed</paramValue>
+      <paramValue name="LifeCycleStage">$$LifeCycleStage$$</paramValue>
+      <paramValue name="Antibody">$$Antibody$$</paramValue>
+      <paramValue name="Genotype">$$Genotype$$</paramValue>
+      <paramValue name="Replicate">$$Replicate$$</paramValue>
+      <paramValue name="Strain">$$Strain$$</paramValue>
+      <paramValue name="Treatment">$$Treatment$$</paramValue>
+      <paramValue name="CellType">$$CellType$$</paramValue>
+      <depends name="reformatChIPChipSmoothedProfiles"/>
+    </step>
+
+
 
     <step name="loadChIPChipPeakScoreFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin" includeIf="$$loadPeakCalls$$">
       <paramValue name="analysisWorkingDir">$$dataDir$$/smoothedDataAndPeaks</paramValue>
