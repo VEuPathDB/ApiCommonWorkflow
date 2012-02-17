@@ -6,7 +6,7 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
 
-sub getDownloadFileCmd {
+sub getWebsiteFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
@@ -20,6 +20,7 @@ sub getDownloadFileCmd {
     my $inputDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/fasta";
 
     my $inputDownloadFile = "$inputDir/$projectName-${projectVersion}_${organismNameForFiles}_$inputDataName.fasta";
+
 
     my $cmd = "makeCodonUsage  --outFile $downloadFileName  --inFile $inputDownloadFile  --verbose";
 
