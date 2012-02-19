@@ -85,7 +85,7 @@
       <paramValue name="analysisResultView">DataTransformationResult</paramValue>
       <paramValue name="naFeatureView">ArrayElementFeature</paramValue>
       <paramValue name="useSqlLdr">true</paramValue>
-      <depends name="reformatChIPChipSmoothedProfiles"/>
+      <depends name="writeSmoothedConfig"/>
     </step>
 
     <step name="generateChIPChipPeakFeatureGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateChIPChipPeakFeatureGff" includeIf="$$loadPeakCalls$$">
@@ -128,6 +128,7 @@
       <paramValue name="Strain">$$Strain$$</paramValue>
       <paramValue name="Treatment">$$Treatment$$</paramValue>
       <paramValue name="CellType">$$CellType$$</paramValue>
+      <depends name="loadChIPChipPeakFeature"/>
       <depends name="reformatChIPChipPeakScoreFile"/>
     </step>
 
@@ -139,8 +140,7 @@
       <paramValue name="analysisResultView">DataTransformationResult</paramValue>
       <paramValue name="naFeatureView">BindingSiteFeature</paramValue>
       <paramValue name="useSqlLdr">false</paramValue>
-      <depends name="reformatChIPChipPeakScoreFile"/>
-      <depends name="loadChIPChipPeakFeature"/>
+      <depends name="writePeaksConfig"/>
     </step>
 
 </workflowGraph>
