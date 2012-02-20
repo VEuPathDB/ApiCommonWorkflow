@@ -13,7 +13,7 @@ sub run {
   my $configFile = $self->getParamValue('configFile');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  open (cf, "< $workflowDataDir/$dataDair/$configFile");
+  open (cf, "< $workflowDataDir/$dataDir/$configFile");
   while (<cf>) {
     chomp;
     push (@configLines,$_)
