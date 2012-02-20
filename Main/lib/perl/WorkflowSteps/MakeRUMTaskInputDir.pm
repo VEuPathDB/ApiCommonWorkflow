@@ -71,7 +71,7 @@ countMismatches=$countMismatches
 postProcess=false
 ";
 
-      $taskPropFileContent .= "pairedReadFilePath=$clusterWorkflowDataDir/$readFilePath.paired\n" if $hasPairedEnds;
+      $taskPropFileContent .= "pairedReadFilePath=$clusterWorkflowDataDir/$readFilePath.paired\n" if($hasPairedEnds && uc($hasPairedEnds) eq 'TRUE');
       $taskPropFileContent .= "transcriptFastaFile=$clusterWorkflowDataDir/$transcriptFastaFile\n" if $transcriptFastaFile;
       $taskPropFileContent .= "transcriptBowtieIndex=$clusterWorkflowDataDir/$transcriptBowtieIndex\n" if $transcriptBowtieIndex;
       $taskPropFileContent .= "genomeBowtieIndex=$clusterWorkflowDataDir/$genomeBowtieIndex\n" if $genomeBowtieIndex;
