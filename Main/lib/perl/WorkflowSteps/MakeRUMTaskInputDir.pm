@@ -15,7 +15,7 @@ sub run {
   my $transcriptBowtieIndex = $self->getParamValue("transcriptBowtieIndex");
   my $geneAnnotationFile = $self->getParamValue("geneAnnotationFile");
   my $transcriptFastaFile = $self->getParamValue("transcriptFastaFile");
-  my $hasPairedEnds = $self->getParamValue("hasPairedEnds");
+  my $hasPairedEnds = $self->getBooleanParamValue("hasPairedEnds");
   my $limitNU = $self->getParamValue("limitNU");
   my $numInsertions = $self->getParamValue("numInsertions");
   my $createSAMFile = $self->getParamValue("createSAMFile");
@@ -71,7 +71,7 @@ countMismatches=$countMismatches
 postProcess=false
 ";
 
-      $taskPropFileContent .= "pairedReadFilePath=$clusterWorkflowDataDir/$readFilePath.paired\n" if($hasPairedEnds && uc($hasPairedEnds) eq 'TRUE');
+      $taskPropFileContent .= "pairedReadFilePath=$clusterWorkflowDataDir/$readFilePath.paired\n" if($hasPairedEnds);
       $taskPropFileContent .= "transcriptFastaFile=$clusterWorkflowDataDir/$transcriptFastaFile\n" if $transcriptFastaFile;
       $taskPropFileContent .= "transcriptBowtieIndex=$clusterWorkflowDataDir/$transcriptBowtieIndex\n" if $transcriptBowtieIndex;
       $taskPropFileContent .= "genomeBowtieIndex=$clusterWorkflowDataDir/$genomeBowtieIndex\n" if $genomeBowtieIndex;
