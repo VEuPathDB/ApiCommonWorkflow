@@ -14,7 +14,7 @@ sub run {
   my $attributesTable = $self->getParamValue('attributesTable');
   my $cacheTable = $self->getParamValue('cacheTable');
   my $model = $self->getParamValue('model');
-  my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
+  my $deprecated = $self->getBooleanParamValue('deprecated');
 
   my $sqlFile="all_PKs.sql";
 

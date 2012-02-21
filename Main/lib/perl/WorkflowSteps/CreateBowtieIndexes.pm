@@ -13,7 +13,7 @@ sub run {
 
   my $outputIndexDir = $self->getParamValue('outputIndexDir');
 
-  my $colorspace = $self->getParamValue('colorspace');
+  my $colorspace = $self->getBooleanParamValue('colorspace');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -21,7 +21,7 @@ sub run {
 
   my $cmd= "createBowtieIndexes --inputFile $workflowDataDir/$inputFile --outputIndexDir $workflowDataDir/$outputIndexDir/genomicIndexes";
 
-  $cmd .= " --colorspace" if $colorspace eq 'true';
+  $cmd .= " --colorspace" if $colorspace;
 
   if($undo){
 

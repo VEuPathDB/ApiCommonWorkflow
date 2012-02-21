@@ -11,14 +11,14 @@ sub run {
     my $maxFile = $self->getParamValue('maxInputFile');
     my $minFile = $self->getParamValue('minInputFile');
     my $outputFile = $self->getParamValue('outputFile');
-    my $hasHeader = $self->getParamValue('hasHeader');
+    my $hasHeader = $self->getBooleanParamValue('hasHeader');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
     my $cmd = "profileDifference.pl --minuend_file $workflowDataDir/$maxFile --subtrahend_file $workflowDataDir/$minFile --output_file $workflowDataDir/$outputFile";
 
-    $cmd .= " --hasHeader" if ($hasHeader eq 'true');
+    $cmd .= " --hasHeader" if ($hasHeader);
 
 
     if ($undo) {

@@ -13,14 +13,14 @@ sub run {
     my $outputUFile = $self->getParamValue('outputUniqueFile');
     my $outputNuFile = $self->getParamValue('outputNonUniqueFile');
     my $genomicSeqsFile = $self->getParamValue('genomicSeqsFile');
-    my $reportMismatches = $self->getParamValue('reportMismatches');
+    my $reportMismatches = $self->getBooleanParamValue('reportMismatches');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
     my $cmd = "RUM_finalcleanup.pl $workflowDataDir/$inputUFile $workflowDataDir/$inputNuFile $workflowDataDir/$outputUFile $workflowDataDir/$outputNuFile  $workflowDataDir/$genomicSeqsFile";
 
-    $cmd .= " -countmismatches" if ($reportMismatches eq 'true');
+    $cmd .= " -countmismatches" if ($reportMismatches);
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputUFile");

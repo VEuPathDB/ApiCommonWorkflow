@@ -17,7 +17,7 @@ sub run {
   my $geneProbeMappingTabFile = $self->getParamValue('geneProbeMappingTabFile'); 
   my $platformDirectory = $self->getParamValue('platformDirectory'); 
 
-  my $passPlatformMappingFile = $self->getParamValue('passPlatformMappingFile');
+  my $passPlatformMappingFile = $self->getBooleanParamValue('passPlatformMappingFile');
 
   my $expectCdfFile = $self->getBooleanParamValue('expectCdfFile');
   my $expectNdfFile = $self->getBooleanParamValue('expectNdfFile');
@@ -26,7 +26,7 @@ sub run {
   $platformDirectory = "$workflowDataDir/$platformDirectory";
 
   my ($input_file, $mappingFile);
-  if($passPlatformMappingFile eq 'true') {
+  if($passPlatformMappingFile) {
     opendir(DIR, $platformDirectory); 
     my @files = readdir(DIR);
     closedir DIR;
@@ -56,7 +56,7 @@ sub run {
       $self->runCmd(0, "mkdir $workflowDataDir/$outputDir");
       if ($test) {
 	  $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-	  $self->testInputFile('geneProbeMappingFile', "$mappingFile") if $passPlatformMappingFile eq 'true';
+	  $self->testInputFile('geneProbeMappingFile', "$mappingFile") if $passPlatformMappingFile;
 	  $self->testInputFile('analysisConfigFile', "$workflowDataDir/$analysisConfigFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/expression_profile_config.txt");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/analysis_result_config.txt **optional**");

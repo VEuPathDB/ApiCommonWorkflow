@@ -12,7 +12,7 @@ sub run {
   my $extDbName = $self->getParamValue('extDbName');
   my $alternateDefline = $self->getParamValue('alternateDefline');
   my $outputFile = $self->getParamValue('outputFile');
-  my $separateFastaFiles = $self->getParamValue('separateFastaFiles');
+  my $separateFastaFiles = $self->getBooleanParamValue('separateFastaFiles');
   my $outputDirForSeparateFiles = $self->getParamValue('outputDirForSeparateFiles');
 
 
@@ -39,7 +39,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  if ($separateFastaFiles eq 'true') {
+  if ($separateFastaFiles) {
 
     $self ->runCmd(0,"mkdir -p $workflowDataDir/$outputDirForSeparateFiles");
 

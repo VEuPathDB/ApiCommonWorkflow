@@ -12,7 +12,7 @@ sub run {
   my $organismFullName = $self->getParamValue('organismFullName');
   my $outputFile = $self->getParamValue('outputFile');
   my $model = $self->getParamValue('model');
-  my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
+  my $deprecated = $self->getBooleanParamValue('deprecated');
 
   my $cmd = "gffDump -model $model -organism '$organismFullName'  --gffFile $outputFile>> GffCacheAndFileDetails.out 2>> GffCacheAndFileDetails.err &";
 

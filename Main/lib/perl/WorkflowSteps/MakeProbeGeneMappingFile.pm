@@ -12,8 +12,8 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $probeExtDbSpec = $self->getParamValue('probeExtDbSpec');
   my $geneExtDbSpec = $self->getParamValue('geneExtDbSpec');
-  my $aefSense = ($self->getParamValue('isOneChannel') eq 'true') ? 'sense':'either';
-  my $delimiter = ($self->getParamValue('isOneChannel') eq 'true') ? '\\t':',';
+  my $aefSense = $self->getBooleanParamValue('isOneChannel')? 'sense' : 'either';
+  my $delimiter = $self->getBooleanParamValue('isOneChannel')? '\\t' : ',';
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cmd = "mapArrayElementsToGenes.pl --aefExtDbSpec '$probeExtDbSpec' --geneExtDbSpec  '$geneExtDbSpec' --aefSense '$aefSense' --outputFile $workflowDataDir/$outputFile --delimiter '$delimiter'";

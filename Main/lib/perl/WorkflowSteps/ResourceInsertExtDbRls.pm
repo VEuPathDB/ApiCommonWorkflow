@@ -35,9 +35,8 @@ sub run {
     # otherwise insert this ext db rls
     else {
       $idType = $idType? "--idType '$idType'" : "";
-      $idIsAlias = $idIsAlias eq 'true'? "--idIsAlias" : "";
+      $idIsAlias = $idIsAlias? "--idIsAlias" : "";
       if ($idUrl) {
-	  $self->error("Resource $dataSourceName declares an externalDbIdUrl so must provide an externalDbIdUrlUseSecondaryId that is either 'true' or 'false'") unless $idUrlUseSecondary =~ /true|false/;
 	  $idUrl = $idUrlUseSecondary? "--secondaryIdUrl '$idUrl'" : "--idUrl '$idUrl'";
       } else {
 	  $idUrl = "";

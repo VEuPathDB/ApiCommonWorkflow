@@ -11,7 +11,7 @@ sub run {
 
   my $cacheTable = $self->getParamValue('cacheTable');
   my $organismFullName = $self->getParamValue('organismFullName');
-  my $deprecated = ($self->getParamValue('deprecated') eq 'true') ? 1 :0;
+  my $deprecated = $self->getBooleanParamValue('deprecated');
   my $attributesTable = $self->getParamValue('attributesTable');
 
   my $sql = "delete from $cacheTable where source_id in (select distinct source_id from $attributesTable";
