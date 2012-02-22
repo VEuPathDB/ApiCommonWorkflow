@@ -15,7 +15,7 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $GFF_VERSION = 2;
+    my $GFF_VERSION = 3;
 
     if ($undo) {
 	$self->runCmd(0, "rm -fr $workflowDataDir/$outputFile");
