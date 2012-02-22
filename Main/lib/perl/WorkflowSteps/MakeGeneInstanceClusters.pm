@@ -15,6 +15,8 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
+    my $GFF_VERSION = 2;
+
     if ($undo) {
 	$self->runCmd(0, "rm -fr $workflowDataDir/$outputFile");
 	return;
@@ -36,10 +38,10 @@ sub run {
 	return;
     }    
  
-    my @gffParams = map {"--gffFile $_"} @gffFiles;
+    my @gffParams = map {"--gff_file $_"} @gffFiles;
     my $gffFileString = join(" ", @gffParams);
 
-    my $cmd = "makeGenesFromMercator --mercatorOutputDir $workflowDataDir/$mercatorOutputDir --cndSrcBin $cndSrcBin  $gffFileString --verbose > $workflowDataDir/$outputFile.Clusters";
+    my $cmd = "makeGenesFromMercator --mercatorOutputDir $workflowDataDir/$mercatorOutputDir --cndSrcBin $cndSrcBin  $gffFileString --verbose --gff_version $GFF_VERSION > $workflowDataDir/$outputFile.Clusters";
     $self->runCmd($test, $cmd);
 
     $cmd = "grep ^cluster_ $workflowDataDir/$outputFile.Clusters >$workflowDataDir/$outputFile";
