@@ -37,7 +37,11 @@ sub run {
 	$self->log("Only found 1 organism in input dir $inputsDir.  No comparision needed.  Exiting.");
 	return;
     }    
- 
+
+    if ($test) {
+	$self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+    }
+
     my @gffParams = map {"--gff_file $_"} @gffFiles;
     my $gffFileString = join(" ", @gffParams);
 
