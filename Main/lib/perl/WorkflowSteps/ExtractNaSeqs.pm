@@ -48,9 +48,8 @@ sub run {
     } else {
 	if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputDirForSeparateFiles/IndividualSeqTest.out");
-	}else{
-	    $self->runCmd($test,"gusExtractIndividualSequences --outputDir $workflowDataDir/$outputDirForSeparateFiles --idSQL \"$sql\" --verbose");
 	}
+	$self->runCmd($test,"gusExtractIndividualSequences --outputDir $workflowDataDir/$outputDirForSeparateFiles --idSQL \"$sql\" --verbose");
     }
 
   } else {
