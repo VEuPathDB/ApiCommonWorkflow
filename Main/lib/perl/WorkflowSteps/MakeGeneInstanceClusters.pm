@@ -38,6 +38,10 @@ sub run {
 	return;
     }    
  
+    if ($test) {
+	$self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+    }
+
     my @gffParams = map {"--gff_file $_"} @gffFiles;
     my $gffFileString = join(" ", @gffParams);
 
