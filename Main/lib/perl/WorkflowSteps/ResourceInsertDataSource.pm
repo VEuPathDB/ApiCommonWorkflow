@@ -31,7 +31,7 @@ sub run {
 	$taxonId = "--taxonId $t";
     }
 
-    my $dbPluginArgs = "--dataSourceName '$dataSourceName' --version '$version' --externalDatabaseName '$extDbName' '$isSpeciesScope' $taxonId $tp $stp";
+    my $dbPluginArgs = "--dataSourceName '$dataSourceName' --version '$version' --externalDatabaseName '$extDbName' $isSpeciesScope $taxonId $tp $stp";
 
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertDataSource", $dbPluginArgs);
 

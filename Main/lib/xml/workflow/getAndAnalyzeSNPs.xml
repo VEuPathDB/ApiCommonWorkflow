@@ -9,14 +9,14 @@
     <param name="organismResourceXmlFile"/>
 
     <constant name="dataDir">$$parentDataDir$$/getAndAnalyze_$$snpResourceName$$</constant>
-    <constant name="fastaOutPutDir">$$parentDataDir$$/getAndAnalyze_$$snpResourceName$$/fasta</constant>
+    <constant name="fastaOutputDir">$$parentDataDir$$/getAndAnalyze_$$snpResourceName$$/fasta</constant>
 
    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <step name="makefastaOutPutDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$fastaOutPutDir$$</paramValue>
+  <step name="makefastaOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$fastaOutputDir$$</paramValue>
     <depends name="makeDataDir"/>
   </step>
 
@@ -29,15 +29,15 @@
 
     <step name="snpGffToFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpGffToFasta">
       <paramValue name="inputFile">$$dataDir$$/$$snpResourceName$$/SNPs.gff</paramValue>
-      <paramValue name="outputFile">$$fastaOutPutDir$$/SNPs.fasta</paramValue>
+      <paramValue name="outputFastaDir">$$fastaOutputDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <depends name="snpResource"/>
-      <depends name="makefastaOutPutDir"/>
+      <depends name="makefastaOutputDir"/>
     </step>
 
     <step name="runMummer" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMummer">
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="inputDir">$$fastaOutPutDir$$</paramValue>
+      <paramValue name="inputFastaDir">$$fastaOutputDir$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/SNPsMummer.out</paramValue>
       <depends name="snpGffToFasta"/>
     </step>

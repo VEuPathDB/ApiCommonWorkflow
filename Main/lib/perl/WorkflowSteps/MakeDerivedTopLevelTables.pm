@@ -33,21 +33,17 @@ sub run {
   open(F,">$stepDir/$xmlConfigFileName");
   print F $xmlConfigFileString;
   close F;
-  my $cmd;
 
-      $cmd = "tuningManager -prefix '$tuningTablePrefix' -instance '$instance' -propFile $stepDir/$xmlConfigFileName -doUpdate -notifyEmail none -tables $tables -configFile ${gusHome}/lib/xml/tuningManager.xml";
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
+
+  my $cmd = "tuningManager -prefix '$tuningTablePrefix' -instance '$instance' -propFile $stepDir/$xmlConfigFileName -doUpdate -notifyEmail none -tables $tables -configFile ${gusHome}/lib/xml/tuningManager.xml -filterValue $taxonId ";
 
 
-  if ($undo){
+  if ($undo) {
      $self->runCmd(0, "echo Doing nothing for \"undo\" Tuning Manager.\n");  
-  }else{
-      if ($test) {
-      }else {
-	  $self->runCmd($test, $cmd);
-      }
+  } else {
+      $self->runCmd($test, $cmd);
   }
-
-
 }
 
 sub getParamsDeclaration {

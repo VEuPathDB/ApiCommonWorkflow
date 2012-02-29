@@ -23,16 +23,6 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <datasetTemplate class="referenceStrain-dbEST">
-    <prop name="organismAbbrev"/>
-    <subgraph name="dbEST_RSRC" xmlFile="loadResource.xml" stepLoadTypes="runPlugin:dbEST">
-      <paramValue name="resourceName">${organismAbbrev}_dbEST_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
-  </datasetTemplate>
-
   <datasetTemplate class="referenceStrain-ESTsFromFasta">
     <prop name="name"/>
     <prop name="organismAbbrev"/>
@@ -40,7 +30,17 @@
       <paramValue name="resourceName">${organismAbbrev}_EST_${name}_sequences_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="dbEST_RSRC"/>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="referenceStrain-dbEST">
+    <prop name="organismAbbrev"/>
+    <subgraph name="dbEST_RSRC" xmlFile="loadResource.xml" stepLoadTypes="runPlugin:dbEST">
+      <paramValue name="resourceName">${organismAbbrev}_dbEST_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
     </subgraph>
   </datasetTemplate>
 

@@ -4,8 +4,7 @@
     <param name="experimentResourceVersion"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="doExpressionAnalysis"/>
-    <param name="geneProbeMappingTabFile"/>
-    <param name="geneProbeMappingVendorFile"/>
+    <param name="platform"/>
     <param name="hasTimeSeries"/>
     <param name="relativeDownloadSiteDir"/>
     <param name="organismAbbrev"/>
@@ -20,12 +19,13 @@
 -->
     <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
       <paramValue name="analysisConfigFile">$$parentDataDir$$/$$experimentResourceName$$/final/analysisConfig.xml</paramValue>
-      <paramValue name="inputDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/final</paramValue>
       <paramValue name="outputDir">$$dataDir$$/doTranscriptExpression</paramValue>
-      <paramValue name="geneProbeMappingTabFile">$$geneProbeMappingTabFile$$</paramValue>
-      <paramValue name="geneProbeMappingVendorFile">$$geneProbeMappingVendorFile$$</paramValue>
+      <paramValue name="geneProbeMappingTabFile">geneProbeMapping.tab</paramValue>
+      <paramValue name="platformDirectory">$$parentDataDir$$/$$platform$$</paramValue>
       <paramValue name="expectCdfFile">$$expectCdfFile$$</paramValue>
       <paramValue name="expectNdfFile">$$expectNdfFile$$</paramValue>
+      <paramValue name="passPlatformMappingFile">true</paramValue>
     </step>
 
     <step name="loadExpressionProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
@@ -45,7 +45,8 @@
 
     <step name="calculateExpressionStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateExpressionStatsForTimeSeries" stepLoadTypes="plugin" includeIf="$$hasTimeSeries$$" undoRoot="loadExpressionProfilesFromConfig">
       <paramValue name="extDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
-      <paramValue name="configFile">$$dataDir$$/doTranscriptExpression/time_series_stats_config.txt</paramValue>
+      <paramValue name="configFile">time_series_stats_config.txt</paramValue>
+      <paramValue name="doTranscriptExpressionDir">$$dataDir$$/doTranscriptExpression</paramValue>
       <depends name="loadExpressionProfilesFromConfig"/>
     </step>
 

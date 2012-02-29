@@ -17,7 +17,7 @@ sub run {
 
   my $outputNonUniqueFile = $self->getParamValue('outputNonUniqueFile');
 
-  my $excludeMultiExonsIf = $self->getParamValue('excludeMultiExonsIf');
+  my $excludeMultiExonsIf = $self->getBooleanParamValue('excludeMultiExonsIf');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -35,7 +35,7 @@ sub run {
       $self->runCmd(0,"echo test > $workflowDataDir/$outputNonUniqueFile");
 
     } else {
-      my $command = ($excludeMultiExonsIf eq 'true')? "grep -v ','" : "cat";
+      my $command = ($excludeMultiExonsIf)? "grep -v ','" : "cat";
       $self->runCmd($test,"$command $workflowDataDir/$inputUniqueFile > $workflowDataDir/$outputUniqueFile");
       $self->runCmd($test,"$command $workflowDataDir/$inputNonUniqueFile > $workflowDataDir/$outputNonUniqueFile");
     }

@@ -15,7 +15,7 @@ sub run {
     my $dataSourceVersion =  $dataSource->getVersion();
     my $parentDatasource = $dataSource->getParentResource();
     my $idType = $dataSource->getExternalDbIdType();
-    my $idIsAlias = $dataSource->getExternalDbIdIsAlias();
+    my $idIsAlias = $dataSource->getExternalDbIdIsAnAlias();
     my $idUrl = $dataSource->getExternalDbIdUrl();
     my $idUrlUseSecondary = $dataSource->getExternalDbIdUrlUseSecondaryId();
 
@@ -35,9 +35,8 @@ sub run {
     # otherwise insert this ext db rls
     else {
       $idType = $idType? "--idType '$idType'" : "";
-      $idIsAlias = $idIsAlias eq 'true'? "--idIsAlias" : "";
+      $idIsAlias = $idIsAlias? "--idIsAlias" : "";
       if ($idUrl) {
-	  $self->error("Resource $dataSourceName declares an externalDbIdUrl so must provide an externalDbIdUrlUseSecondaryId that is either 'true' or 'false'") unless $idUrlUseSecondary =~ /true|false/;
 	  $idUrl = $idUrlUseSecondary? "--secondaryIdUrl '$idUrl'" : "--idUrl '$idUrl'";
       } else {
 	  $idUrl = "";

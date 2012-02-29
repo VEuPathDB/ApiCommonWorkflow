@@ -9,10 +9,11 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
   my @configLines;
+  my $dataDir = $self->getParamValue('doTranscriptExpressionDir');
   my $configFile = $self->getParamValue('configFile');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  open (cf, "< $workflowDataDir/$configFile");
+  open (cf, "< $workflowDataDir/$dataDir/$configFile");
   while (<cf>) {
     chomp;
     push (@configLines,$_)
@@ -26,13 +27,13 @@ sub run {
 
   my $args = "--externalDatabaseSpec '$extDbRlsSpec'  --profileSetSpecs '$profileSetSpecs'";
 
-  $args .= " --timePointsMappingFile '$workflowDataDir/$mappingFile'" unless ($mappingFile eq "NO_MAPPING_FILE");
+  $args .= " --timePointsMappingFile '$workflowDataDir/$dataDir/$mappingFile'" unless ($mappingFile eq "NO_MAPPING_FILE");
 
 
 
 
     if ($test) {
-      $self->testInputFile('inputDir', "$workflowDataDir/$mappingFile") if $mappingFile;
+      $self->testInputFile('inputDir', "$workflowDataDir/$dataDir/$mappingFile") if $mappingFile;
     }
     if ($undo){
     }else{

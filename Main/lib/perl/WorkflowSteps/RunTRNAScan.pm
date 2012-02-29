@@ -12,9 +12,10 @@ sub run {
   my $seqFile = $self->getParamValue('seqFile');
   my $outputFile = $self->getParamValue('outputFile');
 
+  my $binPath = $self->getConfig('tRNAscanBinDir');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "tRNAscan-SE $workflowDataDir/$seqFile -o $workflowDataDir/$outputFile";
+  my $cmd = "$binPath/tRNAscan-SE -o $workflowDataDir/$outputFile $workflowDataDir/$seqFile";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
@@ -26,13 +27,6 @@ sub run {
 	  $self->runCmd($test,$cmd);
       }
   }
-}
-
-sub getParamDeclaration {
-  return (
-     'seqFile',
-     'outputFile',
-    );
 }
 
 sub getConfigDeclaration {

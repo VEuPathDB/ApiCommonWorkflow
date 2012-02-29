@@ -5,7 +5,7 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
-sub getDownloadFileCmd {
+sub getWebsiteFileCmd {
 
   my ($self, $downloadFileName, $test) = @_;
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
@@ -13,7 +13,6 @@ sub getDownloadFileCmd {
   my $interproExtDbName = $self->getParamValue('interproExtDbName');
   my $interproExtDbVersion = $self->getExtDbVersion($test,$interproExtDbName);
   my $interproDbRlsId = $self->getExtDbRlsId($test,"$interproExtDbName|$interproExtDbVersion");
-  my $soIds =  $self->getSoIds($test, $self->getParamValue('cellularLocationSoTerms'));
   my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $sql = <<"EOF";
@@ -41,13 +40,11 @@ sub getDownloadFileCmd {
     dots.translatedaasequence tas,
     sres.externaldatabase xd1,
     sres.externaldatabaserelease xdr1,
-    dots.nasequence ns,
     ApidbTuning.${tuningTablePrefix}FeatureLocation fl
   WHERE
    gf.external_database_release_id = $genomeDbRlsId
      AND gf.na_feature_id = t.parent_id 
      AND gf.na_feature_id = fl.na_feature_id
-     AND fl.na_sequence_id = ns.na_sequence_id
      AND t.na_feature_id = taf.na_feature_id 
      AND taf.aa_sequence_id = tas.aa_sequence_id 
      AND tas.aa_sequence_id = df.aa_sequence_id 
@@ -57,7 +54,6 @@ sub getDownloadFileCmd {
      AND df.external_database_release_id =  $interproDbRlsId
      AND xdr1.external_database_id = xd1.external_database_id 
      AND xdr1.external_database_release_id =  $interproDbRlsId
-     AND ns.sequence_ontology_id in ($soIds)
 EOF
 
     my $cmd = " makeFileWithSql --outFile $downloadFileName --sql \"$sql\" ";

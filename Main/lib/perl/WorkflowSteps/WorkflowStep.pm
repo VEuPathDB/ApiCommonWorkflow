@@ -20,7 +20,7 @@ use ApiCommonWorkflow::Main::Util::OrganismInfo;
 sub getExtDbRlsId {
   my ($self, $test, $extDbRlsSpec) = @_;
 
-  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
+  die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '0' || $test eq '1');
 
   my ($extDbName, $extDbRlsVer) = $self->getExtDbInfo($test,$extDbRlsSpec);
 
@@ -39,7 +39,7 @@ sub getExtDbRlsId {
 sub getExtDbVersion {
   my ($self, $test, $extDbName) = @_;
 
-  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
+  die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
   my $sql = "select version from sres.externaldatabaserelease edr, sres.externaldatabase ed
              where ed.name = '$extDbName'
@@ -59,7 +59,7 @@ sub getExtDbVersion {
 sub getExtDbInfo {
     my ($self,$test, $extDbRlsSpec) = @_;
 
-  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
+  die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
     if ($test) {
       return ("UNKNOWN_DbName","UNKNOWN_DbVer");
@@ -75,7 +75,7 @@ sub getExtDbInfo {
 sub getTableId {
   my ($self, $test, $tableName) = @_;
 
-  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
+  die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
   return "UNKNOWN_table_name" if $test;
 
@@ -91,7 +91,7 @@ sub getTableId {
 sub getTaxonIdFromNcbiTaxId {
   my ($self, $test, $taxId) = @_;
 
-  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
+  die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
   my $sql = "select taxon_id from sres.taxon where ncbi_tax_id = $taxId";
 
@@ -110,7 +110,7 @@ sub getTaxonIdFromNcbiTaxId {
 sub getSoIds {
   my ($self,  $test,$soTermIdsOrNames) = @_;
 
-  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
+  die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
   my ($soTermIds,$soTerms);
 
@@ -219,7 +219,7 @@ sub getAlgInvIds {
 sub getOrganismInfo {
     my ($self, $test, $organismAbbrev) = @_;
 
-    $self->error("The first argument to getOrganismInfo() must be \$test") unless $test == 0 || $test == 1;
+  die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
     if (!$self->{organismInfo}->{$organismAbbrev}) {
 	$self->{organismInfo}->{$organismAbbrev} =
@@ -235,7 +235,7 @@ sub getOrganismInfo {
 sub getWebsiteFilesDir {
     my ($self, $test) = @_;
 
-  die "'test' arg '$test' must be a 0 or 1" unless  ($test == 1 || $test == 0);
+  die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
     my $websiteFilesDir = $self->getSharedConfig('websiteFilesDir');
     return $test? "$websiteFilesDir/test" : $websiteFilesDir;

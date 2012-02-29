@@ -28,6 +28,14 @@ sub run {
   my $rs = $isReferenceStrain? '--isReferenceStrain' : '';
   my $tnt = $hasTemporaryNcbiTaxonId? '--hasTemporaryNcbiTaxonId' : '';
 
+  # validate temp ncbi taxon id
+  if ($hasTemporaryNcbiTaxonId && $ncbiTaxonId < 9000000000) {
+      $self->error("hasTemporaryNcbiTaxonId is true but the provided ncbi taxon ID does not look like a temporary one.  (It must be greater than 9000000000 to be a temp ID)");
+  }
+  if (!$hasTemporaryNcbiTaxonId && $ncbiTaxonId >= 9000000000) {
+      $self->error("hasTemporaryNcbiTaxonId is false but the provided ncbi taxon ID looks like a temporary one.  (It must be greater than 9000000000 to be a temp ID)");
+  }
+
   my $args = "--fullName '$fullName' --projectName $project --ncbiTaxonId $ncbiTaxonId --speciesNcbiTaxonId $speciesNcbiTaxonId --abbrev $abbrev --abbrevPublic $abbrevPublic --nameForFilenames $nameForFilenames --genomeSource $genomeSource --abbrevOrthomcl $abbrevOrthomcl --abbrevStrain  $abbrevStrain --abbrevRefStrain  $abbrevRefStrain $ag $rs $tnt";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertOrganism", $args);

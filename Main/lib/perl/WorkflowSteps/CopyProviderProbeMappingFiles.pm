@@ -8,44 +8,43 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   # get parameters
-  my $inputTabFile = $self->getParamValue('inputTabFile');
-  my $inputCdfFile = $self->getParamValue('inputCdfFile');
-  my $inputNdfFile = $self->getParamValue('inputNdfFile');
+  my $inputDir = $self->getParamValue('inputDir');
+  my $outputDir = $self->getParamValue('outputDir');
+  my $providedMappingFileName = $self->getParamValue('providedMappingFileName');
   my $outputTabFile = $self->getParamValue('outputGeneProbeMappingTabFile');
-  my $outputVendorFile = $self->getParamValue('outputGeneProbeMappingVendorFile');
   my $makeCdfFile = $self->getBooleanParamValue('makeCdfFile');
   my $makeNdfFile = $self->getBooleanParamValue('makeNdfFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   $self->error("Error:  parameters makeCdfFile and makeCdfFile cannot both be true") if $makeCdfFile && $makeNdfFile;
-  $self->error("Input tab file '$workflowDataDir/$inputTabFile' does not exist") unless (-e "$workflowDataDir/$inputTabFile");
+  $self->error("Input dir '$workflowDataDir/$inputDir' does not exist") unless (-d "$workflowDataDir/$inputDir");
 
-  my $cmd1 = "cp $workflowDataDir/$inputTabFile $workflowDataDir/$outputTabFile";
-  my $cmd2;
-  if ($makeCdfFile) {
-      $self->error("Input cdf file '$workflowDataDir/$inputCdfFile' does not exist") unless (-e "$workflowDataDir/$inputCdfFile");
-      $cmd2 = "cp $workflowDataDir/$inputCdfFile $workflowDataDir/$outputVendorFile";
-  } elsif ($makeNdfFile) {
-      $self->error("Input ndf file '$workflowDataDir/$inputNdfFile' does not exist") unless (-e "$workflowDataDir/$inputNdfFile");
-      $cmd2 = "cp $workflowDataDir/$inputNdfFile $workflowDataDir/$outputVendorFile";
+  my $inputFile = "$workflowDataDir/$inputDir/$providedMappingFileName";
+
+  my $cmd;
+  if ($makeCdfFile || $makeNdfFile) {
+      $self->error("Input provider file '$inputFile' does not exist") unless (-e "$inputFile");
+      $cmd = "cp $inputFile $workflowDataDir/$providedMappingFileName";
   } else {
-    $cmd2 = "touch $workflowDataDir/$outputVendorFile";
+      $cmd = "cp $inputFile $workflowDataDir/$outputTabFile";
   }
 
   if ($test) {
-    $self->testInputFile('inputTabFile', "$workflowDataDir/$inputTabFile");
-    $self->testInputFile('inputCdfFile', "$workflowDataDir/$inputCdfFile");
-    $self->testInputFile('inputNdfFile', "$workflowDataDir/$inputNdfFile");
-    $self->runCmd(0, "echo test > $workflowDataDir/$outputTabFile");
-    $self->runCmd(0, "echo test > $workflowDataDir/$outputVendorFile");
+      if ($makeCdfFile || $makeNdfFile) {
+	  $self->runCmd(0, "echo test > $workflowDataDir/$providedMappingFileName");
+      } else {
+	  $self->runCmd(0, "echo test > $workflowDataDir/$outputTabFile");
+      }
   }
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/$outputTabFile");
-    $self->runCmd(0, "rm -f $workflowDataDir/$outputVendorFile");
+      if ($makeCdfFile || $makeNdfFile) {
+	  $self->runCmd(0, "rm -f $workflowDataDir/$providedMappingFileName");
+      } else {
+	  $self->runCmd(0, "rm -f $workflowDataDir/$outputTabFile");
+      }
   } else {
-    $self->runCmd($test, $cmd1);
-    $self->runCmd($test, $cmd2);
+    $self->runCmd($test, $cmd);
   }
 
 }

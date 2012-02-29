@@ -15,15 +15,14 @@ sub run {
     my $uFile = $self->getParamValue('outputUniqueFile');
     my $nuFile = $self->getParamValue('outputNonUniqueFile');
     my $readLength = $self->getParamValue('readLength');
-    my $isChipSeq = $self->getParamValue('isChipSeq');
+    my $isChipSeq = $self->getBooleanParamValue('isChipSeq');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
     my $chipseqFlag;
-    if ($isChipSeq eq 'true') {$chipseqFlag = '-chipseq'}
-    elsif ($isChipSeq eq 'false') {$chipseqFlag = ''}
-    else { $self->error("Invalid value '$isChipSeq' for isChipSeq param. Must be 'true' or 'false'");}
+    if ($isChipSeq) {$chipseqFlag = '-chipseq'}
+    else {$chipseqFlag = ''}
 
     my $cmd = "parse_blat_out.pl $workflowDataDir/$shortSeqsFile $workflowDataDir/$blatFile $workflowDataDir/$mdustFile $workflowDataDir/$uFile $workflowDataDir/$nuFile $readLength $chipseqFlag";
 

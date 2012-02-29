@@ -56,9 +56,12 @@ sub run {
   my $command = "runMercator  -t '($t);' -p $workflowDataDir/$mercatorOutputDir -c $cndSrcBin -m $mavid $dn";
   $self->runCmd($test,$command);
 
+  $self->runCmd(0, "mkdir $workflowDataDir/$mercatorOutputDir/mercator-output") if $test;
+
   # remove input dirs from output dir
   $self->runCmd($test,"rm $workflowDataDir/$mercatorOutputDir/gff/*.gff");
   $self->runCmd($test,"rm $workflowDataDir/$mercatorOutputDir/fasta/*.fasta");
+  $self->runCmd($test,"rm $workflowDataDir/$mercatorOutputDir/fasta/*.sdb");
   $self->runCmd($test,"rmdir $workflowDataDir/$mercatorOutputDir/gff");
   $self->runCmd($test,"rmdir $workflowDataDir/$mercatorOutputDir/fasta");
 

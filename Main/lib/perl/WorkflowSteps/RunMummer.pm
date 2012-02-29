@@ -10,7 +10,7 @@ sub run {
 
 
     my $genomicSeqsFile = $self->getParamValue('genomicSeqsFile');
-    my $inputDir = $self->getParamValue('inputDir');
+    my $inputDir = $self->getParamValue('inputFastaDir');
     my $outputFile = $self->getParamValue('outputFile');
 
     my $workflowDataDir = $self->getWorkflowDataDir();

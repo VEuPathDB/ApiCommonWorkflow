@@ -5,11 +5,10 @@
     <param name="probeResourceVersion"/>
     <param name="makeCdfFile"/>
     <param name="makeNdfFile"/>
-    <param name="mappingVendorFileName"/>
+    <param name="vendorMappingFileName"/>
     <param name="probeRows"/>
     <param name="probeCols"/>
     <param name="outputGeneProbeMappingTabFile"/>
-    <param name="outputGeneProbeMappingVendorFile"/>
     <param name="organismResourceXmlFile"/>
     <param name="ssaGeneModelFile"/>
     <param name="genomeExtDbRlsSpec"/>
@@ -20,6 +19,7 @@
     <param name="numInsertions"/>
     <param name="countMismatches"/>
     <param name="variableLengthReads"/>
+    <param name="makeGeneProbeMappingFile"/>
 
     <!-- parent defines name of data dir so we can pass it our output files -->
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -99,7 +99,7 @@
     <!-- always output this file, even when we are making a vendor-specific -->
     <!-- file, in which case outputting this file is not really useful -->
     <!-- but output it anyway for simplicity -->
-    <step name="makeProbeGeneMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProbeGeneMappingFile">
+    <step name="makeProbeGeneMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProbeGeneMappingFile" includeIf="$$makeGeneProbeMappingFile$$">
       <paramValue name="outputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
       <paramValue name="probeExtDbSpec">$$probeResourceName$$|$$probeResourceVersion$$</paramValue>
       <paramValue name="geneExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -107,21 +107,20 @@
       <depends name="loadProbeGenomeMapping"/>
     </step>
 
-    <step name="fixCdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$makeCdfFile$$">
+    <step name="makeCdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$makeCdfFile$$">
       <paramValue name="gene2probesInputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
       <paramValue name="probename2sequenceInputFile">$$dataDir$$/$$probeResourceName$$/probes.tab</paramValue>
-      <paramValue name="inputCdfFile">$$dataDir$$/$$probeResourceName$$/final/geneProbeMapping.cdf</paramValue>
-      <paramValue name="mappingVendorFileName">$$mappingVendorFileName$$</paramValue>
+      <paramValue name="vendorMappingFileName">$$vendorMappingFileName$$</paramValue>
       <paramValue name="probeRows">$$probeRows$$</paramValue>
       <paramValue name="probeCols">$$probeCols$$</paramValue>
-      <paramValue name="outputCdfFile">$$outputGeneProbeMappingVendorFile$$</paramValue>
+      <paramValue name="outputCdfFile">$$dataDir$$/$$vendorMappingFileName$$</paramValue>
       <depends name="makeProbeGeneMappingFile"/>
     </step>
 
     <step name="fixNdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RecreateNdfFile" includeIf="$$makeNdfFile$$">
       <paramValue name="gene2probesInputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
       <paramValue name="inputNdfFile">$$dataDir$$/$$probeResourceName$$/input/geneProbeMapping.ndf</paramValue>
-      <paramValue name="outputNdfFile">$$outputGeneProbeMappingVendorFile$$</paramValue>
+      <paramValue name="outputNdfFile">$$dataDir$$/$$vendorMappingFileName$$</paramValue>
       <depends name="makeProbeGeneMappingFile"/>
     </step>
 

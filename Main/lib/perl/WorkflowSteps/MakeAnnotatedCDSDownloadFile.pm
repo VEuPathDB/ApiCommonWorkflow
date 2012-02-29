@@ -5,7 +5,7 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
-sub getDownloadFileCmd {
+sub getWebsiteFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
     my $organismSource = $self->getParamValue('organismSource');

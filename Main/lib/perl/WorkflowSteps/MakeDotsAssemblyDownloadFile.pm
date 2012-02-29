@@ -4,7 +4,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeDotsAssemblyDownloadFile;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
-sub getDownloadFileCmd {
+sub getWebsiteFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');

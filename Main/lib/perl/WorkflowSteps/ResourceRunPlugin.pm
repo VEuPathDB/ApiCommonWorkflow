@@ -14,7 +14,7 @@ sub run {
 
     my $plugin =  $dataSource->getPlugin();
     my $pluginArgs =  $dataSource->getPluginArgs();
-    $pluginArgs =~ s/DBRefNAFeature/DbRefNAFeature/;
+
     _formatForCLI($pluginArgs);
 
     if ($plugin =~ m/InsertSequenceFeatures/ && $undo){
@@ -22,7 +22,7 @@ sub run {
       my $mapFile = $1 if ($pluginArgs =~ m/mapFile\s+(\S+)\s+/);
 
       my $algInvIds = $self->getAlgInvIds();
-     
+      
       if ($algInvIds) {
 	  $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $mapFile --algInvocationId $algInvIds --workflowContext --commit");
       } else {

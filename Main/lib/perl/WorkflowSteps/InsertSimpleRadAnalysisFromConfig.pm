@@ -17,7 +17,7 @@ sub run {
 
   my $naFeatureView =  $self->getParamValue('naFeatureView');
 
-  my $useSqlLdr =  $self->getParamValue('useSqlLdr');
+  my $useSqlLdr =  $self->getBooleanParamValue('useSqlLdr');
 
 #  my $profileSetNames =  $self->getParamValue('profileSetNames'); # see redmine issue 4257
   my $profileSetNames =  "";
@@ -26,7 +26,7 @@ sub run {
       
   my $args = "--inputDir '$workflowDataDir/$analysisWorkingDir' --configFile '$workflowDataDir/$configFile' --analysisResultView $analysisResultView  --naFeatureView $naFeatureView";
 
-  $args.=" --useSqlLdr" if($useSqlLdr eq "true"); 
+  $args.=" --useSqlLdr" if($useSqlLdr); 
 
   if ($test) {
     $self->testInputFile('inputDir', "$workflowDataDir/$analysisWorkingDir");

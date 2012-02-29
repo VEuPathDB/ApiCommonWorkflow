@@ -12,21 +12,41 @@ sub run {
   my $analysisConfigFile = $self->getParamValue('analysisConfigFile');
   my $inputDir = $self->getParamValue('inputDir');
   my $outputDir = $self->getParamValue('outputDir');
-  my $geneProbeMappingTabFile = $self->getParamValue('geneProbeMappingTabFile');
-  my $geneProbeMappingVendorFile = $self->getParamValue('geneProbeMappingVendorFile');
+
+  # geneProbeMapping.tab
+  my $geneProbeMappingTabFile = $self->getParamValue('geneProbeMappingTabFile'); 
+  my $platformDirectory = $self->getParamValue('platformDirectory'); 
+
+  my $passPlatformMappingFile = $self->getBooleanParamValue('passPlatformMappingFile');
+
   my $expectCdfFile = $self->getBooleanParamValue('expectCdfFile');
   my $expectNdfFile = $self->getBooleanParamValue('expectNdfFile');
 
-  my $mappingFile = ($expectCdfFile || $expectNdfFile)?
-      $geneProbeMappingVendorFile : $geneProbeMappingTabFile;
-
   my $workflowDataDir = $self->getWorkflowDataDir();
+  $platformDirectory = "$workflowDataDir/$platformDirectory";
 
-  # mapping file is optional.  not used for rna seq
-  my $input_file = $mappingFile?
-      "--input_file $workflowDataDir/$mappingFile" : "";
+  my ($input_file, $mappingFile);
+  if($passPlatformMappingFile) {
+    opendir(DIR, $platformDirectory); 
+    my @files = readdir(DIR);
+    closedir DIR;
 
-  my $workflowDataDir = $self->getWorkflowDataDir();
+
+    if($expectCdfFile) {
+      my @cdfs = grep { /\.cdf$/} @files;
+      $self->error("cdf file error in directory $platformDirectory") if(scalar(@cdfs) != 1);
+      $mappingFile = "$platformDirectory/$cdfs[0]"
+    }
+    elsif($expectNdfFile) {
+      my @ndfs = grep { /\.ndf$/} @files;
+      $self->error("ndf file error in directory $platformDirectory") if(scalar(@ndfs) != 1);
+      $mappingFile = "$platformDirectory/$ndfs[0]"
+    }
+    else {
+      $mappingFile = "$platformDirectory/$geneProbeMappingTabFile";
+    }
+    $input_file = "--input_file $mappingFile";
+  }
 
   my $cmd = "doTranscriptExpression.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir $input_file";
 
@@ -36,11 +56,10 @@ sub run {
       $self->runCmd(0, "mkdir $workflowDataDir/$outputDir");
       if ($test) {
 	  $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-	  $self->testInputFile('geneProbeMappingFile', "$workflowDataDir/$mappingFile") if $mappingFile;
+	  $self->testInputFile('geneProbeMappingFile', "$mappingFile") if $passPlatformMappingFile;
 	  $self->testInputFile('analysisConfigFile', "$workflowDataDir/$analysisConfigFile");
-	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/profiles.txt");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/expression_profile_config.txt");
-	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/analysis_result_config.txt");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/analysis_result_config.txt **optional**");
       } else {
 	  $self->makeSymLinks($inputDir, $outputDir);
 	  $self->runCmd($test,$cmd);
