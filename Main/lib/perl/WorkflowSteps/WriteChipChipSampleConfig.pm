@@ -11,7 +11,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $file = $self->getParamValue('file');
-  my $configFile = $workflowDataDir . "/" . $file;
+  my $configOutputFile = $self->getParamValue('configOutputFile');
 
   my $analysisName = $self->getParamValue('analysisName');
   my $protocolName = $self->getParamValue('protocolName');
@@ -23,15 +23,15 @@ sub run {
   my $treatment = $self->getParamValue('Treatment');
   my $cellType = $self->getParamValue('CellType');
 
-  my $paramValues = "--file $file --outputFile $workflowDataDir/$configFile --name '$analysisName' --protocol '$protocolName' --protocolParam 'Life Cycle Stage|$lifeCycleStage' --protocolParam 'Antibody|$antibody' --protocolParam 'Genotype|$genotype' --protocolParam 'Replicate|$replicate' --protocolParam 'Strain|$strain' --protocolParam 'Treatment|$treatment' --protocolParam 'Cell Type|$cellType'";
+  my $paramValues = "--file $file --outputFile $workflowDataDir/$configOutputFile --name '$analysisName' --protocol '$protocolName' --protocolParam 'Life Cycle Stage|$lifeCycleStage' --protocolParam 'Antibody|$antibody' --protocolParam 'Genotype|$genotype' --protocolParam 'Replicate|$replicate' --protocolParam 'Strain|$strain' --protocolParam 'Treatment|$treatment' --protocolParam 'Cell Type|$cellType'";
 
   my $cmd = "writeRadAnalysisConfig $paramValues";
 
   if ($undo) {
-    $self->runCmd(0, "rm $configFile");
+    $self->runCmd(0, "rm $workflowDataDir/$configOutputFile");
   } else {
       if ($test) {
-	  $self->runCmd(0,"echo test > $configFile");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$configOutputFile");
       } else {
 	  $self->runCmd($test, $cmd);
       }
