@@ -4,11 +4,6 @@
       <param name="projectName"/>
       <param name="projectVersionForDatabase"/>
 
-    <globalConstant name="global_PDBOutputFile">global/PDBProteinSequences_RSRC/pdb.fsa</globalConstant>
-    <globalConstant name="global_NRDBOutputFile_shortDefline">global/NRDB_RSRC/nrdb-short-defline.fsa</globalConstant>
-    <globalConstant name="global_NRDBOutputFile">global/NRDB_RSRC/nr</globalConstant>
-
-
     <constant name="dataDir">global</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -44,13 +39,6 @@
   </subgraph>
 
 
-  <subgraph name="PDBProteinSequences_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">PDBProteinSequences_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="SO_RSRC"/>
-  </subgraph>
-
   <subgraph name="taxonomy_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">taxonomy_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
@@ -66,97 +54,11 @@
     <depends name="taxonomy_RSRC"/>
   </subgraph>
 
-
-  <subgraph name="Mged_Ontology_Term_Types_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">Mged_Ontology_Term_Types_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
-  </subgraph>
-
-  <subgraph name="Mged_Ontology_Relationship_Types_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">Mged_Ontology_Relationship_Types_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
-    <depends name="Mged_Ontology_Term_Types_RSRC"/>
-  </subgraph>
-
-  <subgraph name="MGED_Ontology_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">MGED_Ontology_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
-    <depends name="Mged_Ontology_Term_Types_RSRC"/>
-  </subgraph>
-
-  <subgraph name="Mged_Ontology_Entry_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">Mged_Ontology_Entry_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
-    <depends name="MGED_Ontology_RSRC"/>
-  </subgraph>
-
   <subgraph name="GO_evidence_codes_RSRC" xmlFile="loadResource.xml">
     <paramValue name="resourceName">GO_evidence_codes_RSRC</paramValue>
     <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
-
-  <subgraph name="interproscanData_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">InterproscanData_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
-  </subgraph>
-
-  <subgraph name="NRDB_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">NRDB_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
-  </subgraph>
-
-  <subgraph name="blatAlignmentQuality_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">blatAlignmentQuality_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
-  </subgraph>
-
-  <subgraph name="BibRefType_RSRC" xmlFile="loadResource.xml">
-    <paramValue name="resourceName">BibRefType_RSRC</paramValue>
-    <paramValue name="resourceXmlFileName">$$globalResourceXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
-  </subgraph>
-
-    <step name="initClusterHomeDir"
-          stepClass="ReFlow::StepClasses::InitClusterHomeDir">
-    </step>
-
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="initClusterHomeDir"/>
-      <depends name="NRDB_RSRC"/>
-      <depends name="PDBProteinSequences_RSRC"/>
-    </step>
-
-    <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster">
-      <paramValue name="inputFile">$$global_NRDBOutputFile_shortDefline$$</paramValue>
-      <paramValue name="vendor">wu</paramValue>
-      <paramValue name="seqType">p</paramValue>
-      <depends name="mirrorToCluster"/>
-    </step>
-
-
-    <step name="makePdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster">
-      <paramValue name="inputFile">$$global_PDBOutputFile$$</paramValue>
-      <paramValue name="vendor">wu</paramValue>
-      <paramValue name="seqType">p</paramValue>
-      <depends name="mirrorToCluster"/>
-    </step>
 
 </workflowGraph>
