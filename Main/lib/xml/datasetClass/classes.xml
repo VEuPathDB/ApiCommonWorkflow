@@ -1912,6 +1912,38 @@
     <graphTemplateFile name="organismSpecific.xml"/>
   </datasetClass>
 
+
+
+  <!-- NOTE: this class is specific to Crypto and is used to assign "is_reference" status to some isolates  -->
+
+  <datasetClass class="isolatesUpdateIsReference" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+
+    <graphTemplateFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_isolateIsReference_RSRC"
+              version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="species"
+              type="isolates"
+              subType="sequencing_typed"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/isolate/${name}/${version}/final/reference_isolates.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+     <unpack>addIsReferenceToIsolateSource.pl --file @@dataDir@@/reference_isolates.txt --gus_Config @@gusHome@@/config/gus.config  --extDbName %RESOURCE_NAME% --extDbVer %RESOURCE_VERSION%</unpack>
+     <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
   <datasetClass class="massSpecPreprocessed" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
