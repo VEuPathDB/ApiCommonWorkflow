@@ -32,7 +32,6 @@ sub run {
   my $bowtieBinDir = $self->getConfig("$clusterServer.bowtieBinDir");
   my $blatExec = $self->getConfig("$clusterServer.blatExec");
   my $mdustExec = $self->getConfig("$clusterServer.mdustExec");
-  my $perlScriptsDir = $self->getConfig("$clusterServer.perlScriptsDir");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -62,7 +61,6 @@ geneAnnotationFile=$clusterWorkflowDataDir/$geneAnnotationFile
 bowtieBinDir=$bowtieBinDir
 blatExec=$blatExec
 mdustExec=$mdustExec
-perlScriptsDir=$perlScriptsDir
 limitNU=$limitNU
 numInsertions=$numInsertions
 minBlatIdentity=93
