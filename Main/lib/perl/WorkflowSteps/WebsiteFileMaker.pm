@@ -31,6 +31,11 @@ sub getIsSpeciesLevel {
     return 0;
 }
 
+# optional.  return a file name to touch if the produced download file is empty
+sub getSkipIfFile {
+    return undef;
+}
+
 ##############################################################
 
 sub run {
@@ -77,6 +82,10 @@ sub run {
       }else {
 	  $self->runCmd($test, $websiteFileCmd) unless $websiteFileCmd eq 'NONE';
 	  $self->runCmd($test, $descripFileCmd)  unless $isWebServiceFile;
+	  my $skipIfFile = $self->getSkipIfFile();
+	  if ($skipIfFile && (-s $websiteFile == 0)) {
+	      $self->runCmd(0, "touch $skipIfFile");	      
+	  }
       }
   }
 }

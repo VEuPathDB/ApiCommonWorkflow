@@ -6,6 +6,7 @@
   <param name="projectName"/>
   <param name="relativeDownloadSiteDir"/>
   <param name="relativeWebServicesDir"/>
+  <param name="skipIfFile"/>
 
   <constant name="dataDir">$$parentDataDir$$/ESTs</constant>
   <constant name="ESTDescripString">EST sequences (NT)</constant>
@@ -53,10 +54,11 @@
     <paramValue name="dataName">ESTs</paramValue>
     <paramValue name="descripString">$$ESTDescripString$$</paramValue>
     <paramValue name="isWebServiceFile">false</paramValue>
+    <paramValue name="skipIfFile">$$skipIfFile$$</paramValue>
     <depends name="dbEST_RSRC"/>
   </step>
 
-  <step name="formatESTDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles">
+  <step name="formatESTDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" skipIfFile="$$skipIfFile$$">
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
@@ -68,19 +70,19 @@
     <depends name="makeESTDownloadFile"/>
   </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$skipIfFile$$">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="dbEST_RSRC"/>
     </step>
 
-    <subgraph name="makeAndBlockAssemblySeqs" xmlFile="makeAndBlockAssemblySeqs.xml" externalName="$$organismAbbrev$$_makeAndBlockAssemblySeqs">
+    <subgraph name="makeAndBlockAssemblySeqs" xmlFile="makeAndBlockAssemblySeqs.xml" externalName="$$organismAbbrev$$_makeAndBlockAssemblySeqs" skipIfFile="$$skipIfFile$$">
       <paramValue name="dataDir">$$dataDir$$/assemblySeqs</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="document-maskAssemblySeqs"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" skipIfFile="$$skipIfFile$$">
       <paramValue name="method">repeatmask_assemblyseqs_MTHD</paramValue>
       <paramValue name="version">1.214</paramValue>
       <paramValue name="parameters"></paramValue>

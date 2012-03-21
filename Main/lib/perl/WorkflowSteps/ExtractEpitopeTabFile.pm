@@ -10,6 +10,7 @@ sub run {
 
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $foundZeroFile = $self->getParamValue('foundZeroFile');
 
   my $speciesTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
 
@@ -24,6 +25,9 @@ sub run {
       $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
     }
     $self->runCmd($test,"extractEpitopesTabFile $workflowDataDir/$outputFile $taxonIdList");
+    if (!$test && (-s $workflowDataDir/$outputFile == 0)) {
+	$self->runCmd(0, "touch $foundZeroFile");	      
+    }
   }
 }
 

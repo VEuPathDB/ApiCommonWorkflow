@@ -21,7 +21,7 @@
     <prop name="referenceStrainOrganismAbbrev"/>
 
   
-    <subgraph name="mapAssemblySeqsToGenome" xmlFile="blatDnaAgainstGenome.xml">
+    <subgraph name="mapAssemblySeqsToGenome" xmlFile="blatDnaAgainstGenome.xml" skipIfFile="${referenceStrainOrganismAbbrev}/foundZeroESTs">
       <paramValue name="dataDir">$$parentDataDir$$/mapTranscriptsToGenome</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -34,7 +34,7 @@
     </subgraph>
 
     <step name="document-mapAssemblySeqsToGenome"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" skipIfFile="${referenceStrainOrganismAbbrev}/foundZeroESTs">
       <paramValue name="method">blat_assembly_seqs_MTHD</paramValue>
       <paramValue name="version">31</paramValue>
       <paramValue name="parameters"></paramValue>
