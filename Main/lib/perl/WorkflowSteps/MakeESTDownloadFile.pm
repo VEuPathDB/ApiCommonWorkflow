@@ -9,7 +9,8 @@ sub getIsSpeciesLevel {
 }
 
 sub getSkipIfFile {
-    return $self->getParamValue('skipIfFile');
+  my ($self) = @_;
+  return $self->getParamValue('skipIfFile');
 }
 
 sub getWebsiteFileCmd { 
