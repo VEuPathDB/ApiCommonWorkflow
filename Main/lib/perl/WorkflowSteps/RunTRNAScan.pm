@@ -23,9 +23,8 @@ sub run {
       if ($test) {
 	  $self->testInputFile('proteinsFile', "$workflowDataDir/$seqFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-      }else{
-	  $self->runCmd($test,$cmd);
       }
+      $self->runCmd($test,$cmd);
   }
 }
 
