@@ -1,0 +1,57 @@
+<workflowGraph name="makeOrthologGroups">
+  <param name="parentDataDir"/>
+  <param name="proteinFile"/>
+
+  <subgraph name="blast" xmlFile="blast.xml">
+    <!-- params: orthoAnalysis said "my $blastParams = "-F 'm S' -v 100000 -b 100000 -z 1300000 -e 1e-5"; -->
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="nickName"></paramValue>
+    <paramValue name="queryFile"></paramValue>
+    <paramValue name="queryTable"></paramValue>
+    <paramValue name="queryExtDbName"></paramValue>
+    <paramValue name="subjectFile"></paramValue>
+    <paramValue name="subjectTable"></paramValue>
+    <paramValue name="subjectExtDbName"></paramValue>
+    <paramValue name="blastArgs"></paramValue>
+    <paramValue name="idRegex"></paramValue>
+    <paramValue name="blastType"></paramValue>
+    <paramValue name="vendor"></paramValue>
+    <paramValue name="loadSubjectSubset"></paramValue>
+    <paramValue name="shortenSubjectSourceIdTo"></paramValue>
+    <paramValue name="filterByTaxon"></paramValue>
+    <paramValue name="taxonHierarchyForFilter"></paramValue>
+    <paramValue name="loadOptions"></paramValue>
+    <paramValue name="maxMemoryGigs"></paramValue>
+  </subgraph>
+
+  <!-- &updateBlastEval($mgr,"ProteinSeqs-ProteinSeqs", "blastSimilarity.out.gz","blastSimilarity.out_modified"); -->
+  <step name="updateBlastEval" stepClass="updateBlastEval">
+    <depends name="blast"/>
+  </step>
+
+  <!-- #&loadBlastWithSqlldr($mgr,"ProteinSeqs-ProteinSeqs",0,"blastSimilarity.out_modified", "simSeq.ctl"); -->
+  <step name="loadBlast" stepClass="loadBlastWithSqlldr">
+    <depends name="updateBlastEval"/>
+  </step>
+
+  <!-- run the orthomclPairs program to compute pairwise relationships.  -->
+  <step name="orthomclPairs" stepClass="???">
+    <depends name="updateBlastEval"/>
+  </step>
+
+  <!-- &makeOrthoPairsFiles ($mgr); -->
+  <step name="makePairsFiles" stepClass="???">
+    <depends name="orthomclPairs"/>
+  </step>
+
+  <!-- &runMcl ($mgr, '1.5'); -->
+  <step name="runMcl" stepClass="???">
+    <depends name="makePairsFiles"/>
+  </step>
+
+  <!-- &mclOutToGroupsFile ($mgr, "OG5_", 10000);   ##change the startWith number to the largest in the previous build plus 1 -->
+  <step name="mclOutToGroupsFile" stepClass="???">
+    <depends name="runMcl"/>
+  </step>
+
+</workflowGraph>
