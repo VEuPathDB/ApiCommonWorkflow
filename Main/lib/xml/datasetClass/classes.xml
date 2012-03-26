@@ -701,6 +701,36 @@
     </resource>
   </datasetClass>
 
+  <!-- Category: genomeFeature -->
+  <datasetClass class="genomeFeatures_GFF3" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="mapFile"/>
+    <prop name="genomeVersion"/>
+
+
+    <graphTemplateFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_genomeFeature_${name}_GFF3_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+              scope="organism"
+              type="feature"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genomeFeature/${name}_GFF/${version}/final/features.gff">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --seqExtDbName ${organismAbbrev}_primary_genome_RSRC --seqExtDbRlsVer ${genomeVersion} --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/features.gff --fileFormat gff3   --soExtDbRlsName "SO_RSRC" --defaultOrganism ${ncbiTaxonId} --naSequenceSubclass ExternalNASequence --seqIdColumn source_id  --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
+    </resource>
+  </datasetClass>
+
   <datasetClass class="updateEviganSecondaryScore" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
