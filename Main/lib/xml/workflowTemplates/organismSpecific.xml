@@ -124,6 +124,33 @@
     </subgraph>
   </datasetTemplate>
 
+  <datasetTemplate class="transcript_sequences">
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="soTermName"/>
+    <prop name="sourceIdRegex"/>
+
+    <subgraph name="${organismAbbrev}_${name}_transcript_sequences" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_${name}_transcript_sequences_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="${name}_mapTranscript_sequences" xmlFile="mapTranscriptSeqs.xml">
+      <paramValue name="dataDir">$$dataDir$$/${name}_transcript_sequences</paramValue>
+      <paramValue name="resourceName">${organismAbbrev}_${name}_transcript_sequences_RSRC</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <depends name="mirrorToCluster"/>
+      <depends name="${organismAbbrev}_${name}_transcript_sequences"/>
+    </subgraph>
+  </datasetTemplate>
+
+
   <subgraph name="snps" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/SNPs.xml"  excludeIfXmlFileDoesNotExist="true">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
@@ -132,9 +159,6 @@
     <paramValue name="isHaploid">$$isHaploid$$</paramValue>
     <depends name="mirrorToCluster"/>
   </subgraph>
-
-
-
 
   <datasetTemplate class="sageTagSequences">
     <prop name="name"/>
