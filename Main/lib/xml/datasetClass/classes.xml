@@ -1660,6 +1660,35 @@
   </datasetClass>
 
 
+  <datasetClass class="transcript_sequences" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="soTermName"/>
+    <prop name="sourceIdRegex"/>
+
+    <graphTemplateFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_${name}_transcript_sequences_RSRC" version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              scope="species"
+              type="aligned_sequence"
+              organismAbbrev="${organismAbbrev}"
+	      >
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/dnaSeq/${name}/${version}/final/seqs.fasta">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--externalDatabaseName %RESOURCE_NAME% --externalDatabaseVersion %RESOURCE_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/seqs.fasta --soTermName ${soTermName} --regexSourceId "${sourceIdRegex}" --tableName "DoTS::ExternalNASequence"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+
   <!-- GOT TO HERE -->
 
 
