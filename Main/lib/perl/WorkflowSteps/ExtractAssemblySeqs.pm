@@ -26,10 +26,8 @@ sub run {
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
-  } else {
-    $self->runPlugin($test, $undo, "DoTS::DotsBuild::Plugin::ExtractAndBlockAssemblySequences", $args);
-  }
-
+  } 
+  $self->runPlugin($test, $undo, "DoTS::DotsBuild::Plugin::ExtractAndBlockAssemblySequences", $args);
 }
 
 
