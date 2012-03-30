@@ -7,7 +7,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeIsolatesDownloadFile;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
-sub getIsSpeciesLevel {
+sub getIsFamilyLevel {
     return 1;
 }
 
@@ -16,13 +16,33 @@ sub getSkipIfFile {
   return $self->getParamValue('skipIfFile');
 }
 
-sub getWebsiteFileCmd { 
-  my ($self, $downloadFileName, $test) = @_;
+sub getFamilyTaxonIdList {
+  my ($self, $test) = @_;
+
+  return "dontcare" if $test;
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
-  my $taxonId = $organismInfo->getSpeciesTaxonId();
-  my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
+  my $familyNcbiTaxonIds = $organismInfo->getFamilyNcbiTaxonIds();
+
+  my $ids;
+  foreach my $parentNcbiTaxonId (@$familyNcbiTaxonIds) {
+      my $parentTaxonId = $self->getTaxonIdFromNcbiTaxonId($parentNcbiTaxonId);
+      push(@$ids, $parentTaxonId);
+      my $idList = $self->runCmd(0, "getSubTaxaList --taxon_id $parentTaxonId");
+      chomp $idList;
+      my @children = split(/,/, $idList);
+      push(@$ids, @children);
+  }
+  return $ids;
+}
+
+
+sub getWebsiteFileCmd { 
+  my ($self, $downloadFileName, $test) = @_;
+
+
+  my $taxonIdList = $self->getFamilyTaxonIdList($test);
 
     my $sql = <<"EOF";
         SELECT

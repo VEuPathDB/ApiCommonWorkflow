@@ -25,7 +25,9 @@ sub run {
   # it will look something like downloadSite/ToxoDB/release-6.3
   my $relativeDir = $self->getParamValue('relativeDir');
   my $useSpeciesName = $self->getBooleanParamValue('useSpeciesName');
+  my $useFamilyName = $self->getBooleanParamValue('useFamilyName');
 
+  $self->error("Parameters useFamilyName and useSpeciesName cannot both be 'true'") if $useFamilyName && $useSpeciesName;
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $organismNameForFiles =
@@ -34,6 +36,10 @@ sub run {
   if ($useSpeciesName) {
     $organismNameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
+  }
+  if ($useFamilyName) {
+    $organismNameForFiles =
+      $self->getOrganismInfo($test, $organismAbbrev)->getFamilyNameForFiles();
   }
 
   # not using restricted access.  set up dir the old way

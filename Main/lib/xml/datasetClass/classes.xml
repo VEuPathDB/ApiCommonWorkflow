@@ -27,6 +27,10 @@
     <prop name="speciesNcbiTaxonId"/>
     <prop name="isReferenceStrain"/>
     <prop name="referenceStrainOrganismAbbrev"/>
+    <prop name="isFamilyRepresentative">This organism acts as a representative for its taxonomic family </prop>
+    <prop name="familyRepOrganismAbbrev">Organism abbrev of the organism that, for this organism, acts as representative for its family.  All organisms must provide this value, even if self</prop>
+    <prop name="familyNcbiTaxonIds">Only needed if this organism is a family representative.  One or more NCBI taxonomy IDs that are the root IDs for this family.  This is a flexible mechanism to steer around imperfections in the NCBI taxonomy at the family level.</prop>
+    <prop name="familyNameForFiles">Only needed if this organism is an family representative.  The taxon name to use in download files for this family.</prop>
     <prop name="isAnnotatedGenome"/>
     <prop name="hasTemporaryNcbiTaxonId"/>
     <prop name="orthomclAbbrev"/>
@@ -1860,14 +1864,13 @@
   <!-- Category: isolates -->
 
   <!-- NOTE: this dataset class only gets the isolates, it does not map
-       them to the genome.  See isolatesFromReferenceStrain
+       them to the genome.  See isolatesFromFamilyRepresentative
        ONLY INCLUDE IF A REFERENCE STRAIN
   -->
 
-  <datasetClass class="referenceStrain-isolatesGenbank" category="" datasetFileHint="">
+  <datasetClass class="familyRepresentative-isolatesGenbank" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="organismAbbrev"/>
-    <prop name="speciesNcbiTaxonId"/>
  
     <graphTemplateFile name="isolatesFromNonHtsSequencing.xml"/>
 
@@ -1884,8 +1887,8 @@
         </dir>
       </manualGet>
 
-      <!-- get the file from genbank, querying by ncbiTaxonId -->
-      <unpack>getIsolatesFromGenbank ${speciesNcbiTaxonId} @@dataDir@@/isolates.gb</unpack>
+      <!-- get the file from genbank, using organismAbbrev to find familyNcbiTaxonIds in Organism table -->
+      <unpack>getIsolatesFromGenbank @@dataDir@@/isolates.gb "${organismAbbrev}"</unpack>
 
       <unpack>fixIsolateSequences --seq_file @@dataDir@@/isolates.gb --fixed_seq_file @@dataDir@@/isolates_fixed_1.gb --removed_seq_file @@dataDir@@/isolates_excluded.gb</unpack>
 
@@ -1897,12 +1900,12 @@
 
 
   <!-- NOTE: this dataset class only gets the isolates, it does not map
-       them to the genome.  See isolatesFromReferenceStrain
-       ONLY INCLUDE IF A REFERENCE STRAIN
+       them to the genome.  See isolatesFromFamilyRepresentative
+       ONLY INCLUDE IF A FAMILY REPRESENTATIVE
 
   -->
 
-  <datasetClass class="referenceStrain-isolateSequencesFasta" category="" datasetFileHint="">
+  <datasetClass class="familyRepresentative-isolateSequencesFasta" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
@@ -1932,7 +1935,7 @@
 
 
   <!-- the ncbi taxon ID is not important.  isolate strain info is provided by dedicated isolate info tables -->
-  <datasetClass class="referenceStrain-isolateFeaturesGFF2" category="" datasetFileHint="">
+  <datasetClass class="familyRepresentative-isolateFeaturesGFF2" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
@@ -1962,9 +1965,9 @@
        them to the genome.  It extracts the sequences from the database
   -->
 
-  <datasetClass class="isolatesFromReferenceStrain" category="" datasetFileHint="">
+  <datasetClass class="isolatesFromFamilyRepresentative" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="referenceStrainOrganismAbbrev"/>
+    <prop name="familyRepresentativeOrganismAbbrev"/>
     <prop name="name"/>
  
     <graphTemplateFile name="organismSpecific.xml"/>

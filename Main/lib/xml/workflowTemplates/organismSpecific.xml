@@ -53,18 +53,17 @@
     <depends name="mirrorToCluster"/>
   </subgraph>
 
-  <datasetTemplate class="isolatesFromReferenceStrain">
-    <prop name="referenceStrainOrganismAbbrev"/>
+  <datasetTemplate class="isolatesFromFamilyRepresentative">
+    <prop name="familyRepresentativeOrganismAbbrev"/>
     <prop name="name"/>
-    <prop name="version"/>
 
-    <subgraph name="map_${name}_IsolatesToGenome" xmlFile="mapIsolatesToGenome.xml" skipIfFile="${referenceStrainOrganismAbbrev}/foundZeroIsolates">
+    <subgraph name="map_${name}_IsolatesToGenome" xmlFile="mapIsolatesToGenome.xml" skipIfFile="${familyRepresentativeOrganismAbbrev}/foundZeroIsolates">
       <paramValue name="dataDir">$$dataDir$$/${name}_mapIsolatesToGenome</paramValue>
-      <paramValue name="isolatesExtDbName">${referenceStrainOrganismAbbrev}_isolates_${name}_RSRC</paramValue>
+      <paramValue name="isolatesExtDbName">${familyRepresentativeOrganismAbbrev}_isolates_${name}_RSRC</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <depends name="mirrorToCluster"/> 
-      <dependsExternal name="${referenceStrainOrganismAbbrev}_isolates_${name}"/>
+      <dependsExternal name="${familyRepresentativeOrganismAbbrev}_isolates_${name}"/>
     </subgraph>
   </datasetTemplate>
 
@@ -78,8 +77,6 @@
       <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
-
-
 
   <subgraph name="arrayResources" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/arrayStudies.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>

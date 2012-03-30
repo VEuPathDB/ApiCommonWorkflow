@@ -16,6 +16,7 @@ sub run {
   # get parameters
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $useSpeciesName = $self->getBooleanParamValue('useSpeciesName');
+  my $useFamilyName = $self->getBooleanParamValue('useFamilyName');
 
   # this is relative to the website files dir.
   # it will look something like downloadSite/ToxoDB/release-6.3
@@ -25,15 +26,20 @@ sub run {
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-  my $organismNameForFiles =
+  $self->error("Parameters useFamilyName and useSpeciesName cannot both be 'true'") if $useFamilyName && $useSpeciesName;
+  my $nameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
 
   if ($useSpeciesName) {
-    $organismNameForFiles =
+    $nameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
   }
+  if ($useFamilyName) {
+    $nameForFiles =
+      $self->getOrganismInfo($test, $organismAbbrev)->getFamilyNameForFiles();
+  }
 
-  my $dir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/$subDir";
+  my $dir = "$websiteFilesDir/$relativeDir/$nameForFiles/$subDir";
 
   if ($undo){
       # it should be empty because child steps remove their files

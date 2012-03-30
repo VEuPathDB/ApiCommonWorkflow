@@ -13,6 +13,10 @@ sub run {
   my $projectName = $self->getParamValue('projectName');
   my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
   my $useSpeciesName = $self->getBooleanParamValue('useSpeciesName');
+  my $useFamilyName = $self->getBooleanParamValue('useFamilyName');
+
+  $self->error("Parameters useFamilyName and useSpeciesName cannot both be 'true'") if $useFamilyName && $useSpeciesName;
+
   my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  my $dataName = $self->getParamValue('dataName');
 
   # extra params for this step
@@ -25,7 +29,7 @@ sub run {
 
   my $inputDownloadFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getDownloadFileName($websiteFilesDir, $downloadSiteRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, $projectName, $projectVersion, 'fasta', $dataName);
 
-  my $outputWebservicesFileDir = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceDir($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, 'blast');
+  my $outputWebservicesFileDir = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceDir($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, $familyNameForFiles, $useFamilyName, 'blast');
 
   my $blastPath = $self->getConfig("wuBlastPath");
   my $cmd = "$blastPath/xdformat $args -o $outputWebservicesFileDir/$dataName $inputDownloadFile";
@@ -48,17 +52,6 @@ sub run {
 	   }
        }
   }
-}
-
-sub getParamsDeclaration {
-     return (
-	'organismAbbrev',
-	'projectName',
-	'projectVersion',
-	'downloadSiteRelativeDir',
-	'useServicesRelativeDir',
-	'dataName',
-	);
 }
 
 sub getConfigDeclaration {

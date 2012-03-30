@@ -13,12 +13,13 @@ sub new {
 
     return $self if $test;
 
-    my $sql = "select organism_id, name_for_filenames, abbrev_strain, abbrev_public
+    my $sql = "select organism_id, name_for_filenames, abbrev_strain, abbrev_public,
+                      is_family_representative, family_ncbi_taxon_ids, family_name_for_files
              from apidb.organism
              where abbrev = '$organismAbbrev'";
 
     my $stmt = $workflowStep->runSql($sql);
-    my ($organismId, $nameForFiles, $strainAbbrev, $publicAbbrev) = $stmt->fetchrow_array(); 
+    my ($organismId, $nameForFiles, $strainAbbrev, $publicAbbrev, $isFamilyRepresentative, $familyNcbiTaxonIds, $familyNameForFiles) = $stmt->fetchrow_array(); 
 
     $sql = "select tn.name, t.ncbi_tax_id, o.taxon_id
              from sres.taxonname tn, sres.taxon t, apidb.organism o
@@ -59,6 +60,9 @@ sub new {
     $self->{speciesNcbiTaxonId} = $speciesNcbiTaxonId;
     $self->{speciesTaxonId} = $speciesTaxonId;
     $self->{speciesName} = $speciesName;
+    $self->{isFamilyRepresentative} = $isFamilyRepresentative;
+    $self->{familyNcbiTaxonIds} = $familyNcbiTaxonIds;
+    $self->{familyNameForFiles} = $familyNameForFiles;
 
     return $self;
 }
@@ -142,6 +146,24 @@ sub getTaxonIdList {
       chomp($idList);
       return  $idList;
     }
+}
+
+sub getIsFamilyRepresentative{
+    my ($self) = @_;
+    return "$self->{organismAbbrev}_IS_FAMILY_REP" if $self->{test};
+    return $self->{isFamilyRepresentative};
+}
+
+sub getFamilyNcbiTaxonIds {
+    my ($self) = @_;
+    return "$self->{organismAbbrev}_FAMILY_NCBI_TAXON_ID" if $self->{test};
+    return $self->{famiyNcbiTaxonIds};
+}
+
+sub getFamilyNameForFiles {
+    my ($self) = @_;
+    return "$self->{organismAbbrev}_FAMIL_NAME_FOR_FILES" if $self->{test};
+    return $self->{familyNameForFiles};
 }
 
 1;
