@@ -162,7 +162,7 @@ sub getFamilyNcbiTaxonIds {
 
 sub getFamilyNameForFiles {
     my ($self) = @_;
-    return "$self->{organismAbbrev}_FAMIL_NAME_FOR_FILES" if $self->{test};
+    return "$self->{organismAbbrev}_FAMILY_NAME_FOR_FILES" if $self->{test};
     return $self->{familyNameForFiles};
 }
 

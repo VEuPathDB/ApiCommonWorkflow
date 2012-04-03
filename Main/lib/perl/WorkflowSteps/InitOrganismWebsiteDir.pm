@@ -28,23 +28,24 @@ sub run {
   my $useFamilyName = $self->getBooleanParamValue('useFamilyName');
 
   $self->error("Parameters useFamilyName and useSpeciesName cannot both be 'true'") if $useFamilyName && $useSpeciesName;
-  my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-  my $organismNameForFiles =
+  my $nameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
 
   if ($useSpeciesName) {
-    $organismNameForFiles =
+    $nameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
   }
   if ($useFamilyName) {
-    $organismNameForFiles =
+    $nameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getFamilyNameForFiles();
   }
 
+  my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+
   # not using restricted access.  set up dir the old way
   if ($relativeDir !~ /Restricted/) {
-      my $fullPath = "$websiteFilesDir/$relativeDir/$organismNameForFiles";
+      my $fullPath = "$websiteFilesDir/$relativeDir/$nameForFiles";
       if ($undo) {
 	  $self->runCmd(0, "rm -rf $fullPath");
       } else {
@@ -61,8 +62,8 @@ sub run {
 	  $self->error("Can't find organism 'name' in xml file '$xmlFile'");
       }
       
-      my $fullPathRestricted = "$websiteFilesDir/$relativeDir/$organismNameForFiles";
-      my $fullPathPublic = "downloadSite/$relativeDir/$organismNameForFiles";
+      my $fullPathRestricted = "$websiteFilesDir/$relativeDir/$nameForFiles";
+      my $fullPathPublic = "downloadSite/$relativeDir/$nameForFiles";
       if ($undo) {
 	  $self->runCmd(0, "rm -rf $fullPathPublic");
 	  $self->runCmd(0, "rm -rf $fullPathRestricted");
@@ -73,7 +74,7 @@ sub run {
 	      $self->runCmd(0, "mkdir -p $fullPathPublic");
 	      writeIndexFile($fullPathPublic, $restrictionText);
 	  } else {
-	      $self->runCmd(0, "ln -s $fullPathRestricted $fullPathPublic");  
+	      $self->runCmd(0, "ln -s $fullPathRestricted $fullPathPublic");
 	  }
       }
   }

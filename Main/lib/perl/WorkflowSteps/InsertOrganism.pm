@@ -23,7 +23,7 @@ sub run {
   my $isReferenceStrain = $self->getBooleanParamValue('isReferenceStrain');
   my $hasTemporaryNcbiTaxonId = $self->getBooleanParamValue('hasTemporaryNcbiTaxonId');
   my $genomeSource = $self->getParamValue('genomeSource');
-  my $isFamilyRepresentative = $self->getParamValue('isFamilyRepresentative');
+  my $isFamilyRepresentative = $self->getBooleanParamValue('isFamilyRepresentative');
   my $familyRepOrganismAbbrev = $self->getParamValue('familyRepOrganismAbbrev');
   my $familyNcbiTaxonIds = $self->getParamValue('familyNcbiTaxonIds');
   my $familyNameForFiles = $self->getParamValue('familyNameForFiles');
