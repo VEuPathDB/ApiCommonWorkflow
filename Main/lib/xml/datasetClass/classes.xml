@@ -1930,6 +1930,36 @@
   </datasetClass>
 
 
+
+  <!-- NOTE: update isolates loaded from Genbank files with additional information provided by provider -->
+
+  <datasetClass class="updateIsolatesInfo" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+
+    <graphTemplateFile name="isolatesFromNonHtsSequencing.xml"/>
+
+    <resource resource="${organismAbbrev}_updateIsolatesInfo_RSRC"
+              version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::UpdateIsolates"
+              scope="species"
+              type="isolates"
+              subType="sequencing_typed"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/isolate/${name}/${version}/final/updates.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+     <pluginArgs>--extDbRlsSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%" --inputFile @@dataDir@@/updates.txt </pluginArgs>
+    </resource>
+  </datasetClass>
+
+
   <!-- NOTE: this dataset class only gets the isolates, it does not map
        them to the genome.  See isolatesFromFamilyRepresentative
        ONLY INCLUDE IF A FAMILY REPRESENTATIVE
@@ -2019,7 +2049,7 @@
 
     <resource resource="${organismAbbrev}_isolateIsReference_RSRC"
               version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+             plugin="ApiCommonData::Load::Plugin::LoadNothing"
               scope="species"
               type="isolates"
               subType="sequencing_typed"
