@@ -237,8 +237,11 @@ sub getWebsiteFilesDir {
 
   die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
+    my $workflowName = $self->getWorkflowConfig('name');
+    my $workflowVersion = $self->getWorkflowConfig('version');
     my $websiteFilesDir = $self->getSharedConfig('websiteFilesDir');
-    return $test? "$websiteFilesDir/test" : $websiteFilesDir;
+    my $path = "$websiteFilesDir/$workflowName/$workflowVersion";
+    return $test? "$path/test" : "$path/real";
 }
 
 # Oracle table names can be no longer than 30 characters
