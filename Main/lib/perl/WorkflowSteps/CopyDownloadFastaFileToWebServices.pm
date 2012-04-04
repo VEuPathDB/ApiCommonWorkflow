@@ -23,7 +23,7 @@ sub run {
 
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
 
-  my $inputDownloadFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getDownloadFileName($websiteFilesDir, $downloadSiteRelativeDir, $organismNameForFiles, undef, 0, $projectName, $projectVersion, 'fasta', $dataName);
+  my $inputDownloadFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getDownloadFileName($websiteFilesDir, $downloadSiteRelativeDir, $organismNameForFiles, undef, 0, undef, 0, $projectName, $projectVersion, 'fasta', $dataName);
 
   my $outputFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceFileName($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, undef, 0, undef, 0, 'fasta', $dataName, $service);
 
