@@ -47,7 +47,7 @@ sub run {
       $self->error("Parameter isFamilyRepresentative is 'true'.  Parameter familyNcbiTaxonIds must not be empty") unless $familyNcbiTaxonIds;
       $self->error("Parameter isFamilyRepresentative is 'true'.  Parameter familyNameForFiles must not be empty") unless $familyNameForFiles;
       $self->error("Parameter isFamilyRepresentative is 'true'.  Parameter familyRepOrganismAbbrev must be the same as property organismAbbrev") unless $familyRepOrganismAbbrev eq $abbrev;
-      $fnti = " --familyNcbiTaxonIds '$familyNcbiTaxonIds";
+      $fnti = " --familyNcbiTaxonIds '$familyNcbiTaxonIds'";
       $fnff = " --familyNameForFiles $familyNameForFiles";
       
       my @ids = split(/,\s*/, $familyNcbiTaxonIds);
@@ -59,7 +59,7 @@ sub run {
       $self->error("Parameter isFamilyRepresentative is 'false'.  Parameter familyRepOrganismAbbrev must not be the same as property organismAbbrev") if $familyRepOrganismAbbrev eq $abbrev;
   }
 
-  my $args = "--fullName '$fullName' --projectName $project --ncbiTaxonId $ncbiTaxonId --speciesNcbiTaxonId $speciesNcbiTaxonId --abbrev $abbrev --publicAbbrev $abbrevPublic --nameForFilenames $nameForFilenames --genomeSource $genomeSource --orthomclAbbrev $abbrevOrthomcl --strainAbbrev  $abbrevStrain --refStrainAbbrev  $abbrevRefStrain $ag $rs $tnt $fnti $fnff";
+  my $args = "--fullName '$fullName' --projectName $project --ncbiTaxonId $ncbiTaxonId --speciesNcbiTaxonId $speciesNcbiTaxonId --abbrev $abbrev --publicAbbrev $abbrevPublic --nameForFilenames $nameForFilenames --genomeSource $genomeSource --orthomclAbbrev $abbrevOrthomcl --strainAbbrev  $abbrevStrain --refStrainAbbrev  $abbrevRefStrain --familyRepOrganismAbbrev $familyRepOrganismAbbrev $ag $rs $tnt $fnti $fnff";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertOrganism", $args);
 

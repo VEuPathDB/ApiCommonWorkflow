@@ -13,7 +13,7 @@ sub new {
 
     return $self if $test;
 
-    my $sql = "select organism_id, name_for_filenames, abbrev_strain, abbrev_public,
+    my $sql = "select organism_id, name_for_filenames, strain_abbrev, public_abbrev,
                       is_family_representative, family_ncbi_taxon_ids, family_name_for_files
              from apidb.organism
              where abbrev = '$organismAbbrev'";
