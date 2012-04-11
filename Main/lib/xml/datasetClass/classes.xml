@@ -2385,7 +2385,6 @@
     <unpack>shortenDefLine --inputFile @@dataDir@@/nr --outputFile @@dataDir@@/nrdb-short-defline.fsa.tmp</unpack>
     <unpack><![CDATA[cat @@dataDir@@/nrdb-short-defline.fsa.tmp | perl -e 'while(<>) { s/J|O/X/g;print}' > @@dataDir@@/nrdb-short-defline.fsa]]></unpack>
     <unpack>rm @@dataDir@@/nrdb-short-defline.fsa.tmp</unpack>
-    <unpack>xdformat -p @@dataDir@@/nrdb-short-defline.fsa</unpack>
     <getAndUnpackOutput file="@@dataDir@@/nrdb-short-defline.fsa"/>
     <getAndUnpackOutput file="@@dataDir@@/nr"/>
     <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
@@ -2402,7 +2401,6 @@
     <wgetArgs url="ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=5 --accept=uniprot_sprot.fasta.gz </wgetArgs>
     <unpack>gunzip @@dataDir@@/uniprot_sprot.fasta.gz </unpack>
     <unpack><![CDATA[cat @@dataDir@@/uniprot_sprot.fasta | perl -e 'while(<>) { if(m/>/){print;} else {s/J|O/X/g;print}}' > @@dataDir@@/]]>uniprot_sprot_modJO.fsa</unpack>
-    <unpack>xdformat -p @@dataDir@@/>uniprot_sprot_modJO.fsa</unpack>
     <getAndUnpackOutput file="@@dataDir@@/uniprot_sprot_modJO.fsa"/>
     <getAndUnpackOutput file="@@dataDir@@/uniprot_sprot.fasta"/>
     <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
