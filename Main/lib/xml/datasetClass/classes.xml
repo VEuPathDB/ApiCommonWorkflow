@@ -2846,4 +2846,32 @@
       </resource>
     </datasetClass>
     
+
+  <!-- This dataset class load old sequences of genes in ApiDB.OldCodingSequence and old GO ids, EC numbers and product in ApiDB.OldAnnotation-->
+  <datasetClass class="insertOldAnnotation" category="" datasetFileHint="">
+    <purpose>Gene features that are not provided by the annotation center</purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+
+
+    <graphTemplateFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_InsertOldAnnotation_${name}_RSRC"
+              version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertOldAnnotation"
+              scope="organism"
+              type="feature"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/gff/${name}_GFF/${version}/final/features.gff">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION%  --gffFile @@dataDir@@/features.gff</pluginArgs>
+    </resource>
+  </datasetClass>
+
 </datasetClasses>
