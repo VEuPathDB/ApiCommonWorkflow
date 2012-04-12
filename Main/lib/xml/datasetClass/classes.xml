@@ -2385,6 +2385,8 @@
     <unpack>shortenDefLine --inputFile @@dataDir@@/nr --outputFile @@dataDir@@/nrdb-short-defline.fsa.tmp</unpack>
     <unpack><![CDATA[cat @@dataDir@@/nrdb-short-defline.fsa.tmp | perl -e 'while(<>) { s/J|O/X/g;print}' > @@dataDir@@/nrdb-short-defline.fsa]]></unpack>
     <unpack>rm @@dataDir@@/nrdb-short-defline.fsa.tmp</unpack>
+    <unpack><![CDATA[cat @@dataDir@@/nrdb-short-defline.fsa | perl -e '$flag=0; while(<>){if ($_ =~ />/){if ($_ =~ /sp\|/){$flag=1;}else{$flag=0;}} if ($flag == 1){ print;}}'> @@dataDir@@/nrdb-short-defline-sp.fsa]]></unpack>
+    <getAndUnpackOutput file="@@dataDir@@/nrdb-short-defline-sp.fsa"/>
     <getAndUnpackOutput file="@@dataDir@@/nrdb-short-defline.fsa"/>
     <getAndUnpackOutput file="@@dataDir@@/nr"/>
     <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
