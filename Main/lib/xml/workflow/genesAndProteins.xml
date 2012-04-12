@@ -8,7 +8,7 @@
   <param name="proteinsFile"/>
 
   <constant name="dataDir">$$parentDataDir$$/proteome</constant>
-  <constant name="blastpSwissprotArgs">-topcomboN=1 V=100 B=20 -hspmax=1000000 -gi E=1e-3 -wordmask=seg -hspsepQmax=4000 -span1 W=3 T=1000</constant>
+  <constant name="blastpNrdbArgs">-topcomboN=1 V=100 B=20 -hspmax=1000000 -gi E=1e-3 -wordmask=seg -hspsepQmax=4000 -span1 W=3 T=1000</constant>
   <constant name="blastpPdbArgs">-topcomboN=1 V=100 B=20 -hspmax=1000000 -gi E=1e-3 -wordmask=seg -hspsepQmax=4000 -span1</constant>
   <constant name="signalpArgs">-t euk -f short -m nn+hmm -q -trunc 70</constant>
 
@@ -202,21 +202,22 @@
       <depends name="psipred"/>
     </step>
 
-    <subgraph name="blastpSwissprot" xmlFile="blast.xml">
+    <subgraph name="blastpNrdb" xmlFile="blast.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="nickName">blastpSwissprot</paramValue>
+      <paramValue name="nickName">blastpNrdb</paramValue>
       <paramValue name="queryFile">$$proteinsFile$$</paramValue>
       <paramValue name="queryTable">DoTS::TranslatedAASequence</paramValue>
       <paramValue name="queryExtDbName">$$organismAbbrev$$_primary_genome_RSRC</paramValue>
-      <paramValue name="subjectFile">$$global_SwissprotOutputFile$$</paramValue>
+      <paramValue name="subjectFile">$$global_NRDBOutputFile_shortDefline$$</paramValue>
       <paramValue name="subjectTable">DoTS::ExternalAASequence</paramValue>
-      <paramValue name="subjectExtDbName">swissprot_RSRC</paramValue>
-      <paramValue name="blastArgs">$$blastpSwissprotArgs$$</paramValue>
-      <paramValue name="idRegex">sp\\|(\\w+)\\|</paramValue>
+      <paramValue name="subjectExtDbName">NRDB_RSRC</paramValue>
+      <paramValue name="blastArgs">$$blastpNrdbArgs$$</paramValue>
+      <paramValue name="idRegex">gi\\|(\\d+)\\|</paramValue>
       <paramValue name="blastType">blastp</paramValue>
       <paramValue name="vendor">wu</paramValue>
       <paramValue name="loadSubjectSubset">true</paramValue>
       <paramValue name="shortenSubjectSourceIdTo"></paramValue>
+      <paramValue name="">true</paramValue>
       <paramValue name="filterByTaxon">false</paramValue>
       <paramValue name="taxonHierarchyForFilter"></paramValue>
       <paramValue name="loadOptions">--subjectsLimit 50</paramValue>
@@ -225,11 +226,11 @@
       <dependsGlobal name="makeNrdbBlastDbOnCluster"/>
     </subgraph>
 
-   <step name="document-blastpSwissprot"
+   <step name="document-blastpNrdb"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">BLASTP_translated_proteins_Swissprot_MTHD</paramValue>
+      <paramValue name="method">BLASTP_translated_proteins_NRDB_MTHD</paramValue>
       <paramValue name="version">2.0 [06-Apr-2005]</paramValue>
-      <paramValue name="parameters">$$blastpSwissprotArgs$$</paramValue>
+      <paramValue name="parameters">$$blastpNrdbArgs$$</paramValue>
       <depends name="blastpNrdb"/>
     </step>
 
