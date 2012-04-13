@@ -16,7 +16,8 @@ sub run {
   my $tables = "SequencePieceClosure,FeatureLocation,GeneId,GeneAttributes,GenomicSequence,SequenceAttributes,TaxonSpecies";
 
   my $gusHome = $self->getSharedConfig('gusHome');
-  my $instance = $self->getSharedConfig('instance');
+
+  my $instance = $self->getGusInstanceName();
 
   my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 

@@ -13,9 +13,11 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
   my $gusHome = $self->getSharedConfig('gusHome');
-  my $instance = $self->getSharedConfig('instance');
 
   my $apidbTuningPassword = $self->getConfig('apidbTuningPassword');
+
+  my $instance = $self->getGusInstanceName();
+
   my $xmlConfigFileName="tmpConfigFile.xml";
   my $xmlConfigFileString=
 "<?xml version='1.0'?>

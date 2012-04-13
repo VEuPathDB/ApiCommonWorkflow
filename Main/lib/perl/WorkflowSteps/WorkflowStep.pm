@@ -11,7 +11,23 @@ use Carp;
 
 use ReFlow::Controller::WorkflowStepInvoker;
 use ApiCommonWorkflow::Main::Util::OrganismInfo;
+use CBIL::Util::PropertySet;
 
+
+sub getGusInstanceName {
+  my ($self) = @_;
+
+  if (!$self->{gusInstanceName}) {
+
+    my $gusconfig = CBIL::Util::PropertySet->new("$ENV{GUS_HOME}/config/gus.config", [], 1);
+
+    my $dbiDsn = $gusconfig->getProp('dbiDsn');
+    my @dd = split(/:/,$dbiDsn);
+    $self->{gusInstanceName} = pop(@dd);
+  }
+
+  return $self->{gusInstanceName};
+}
 
 # avoid using this subroutine!
 # it is provided for backward compatibility.  plugins and commands that
