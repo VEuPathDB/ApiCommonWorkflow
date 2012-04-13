@@ -16,35 +16,17 @@ sub getSkipIfFile {
   return $self->getParamValue('skipIfFile');
 }
 
-sub getFamilyTaxonIdList {
-  my ($self, $test) = @_;
 
-  return "dontcare" if $test;
-
-  my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
-  my $familyNcbiTaxonIds = $organismInfo->getFamilyNcbiTaxonIds();
-
-  my $ids;
-  foreach my $parentNcbiTaxonId (@$familyNcbiTaxonIds) {
-      my $parentTaxonId = $self->getTaxonIdFromNcbiTaxonId($parentNcbiTaxonId);
-      push(@$ids, $parentTaxonId);
-      my $idList = $self->runCmd(0, "getSubTaxaList --taxon_id $parentTaxonId");
-      chomp $idList;
-      my @children = split(/,/, $idList);
-      push(@$ids, @children);
-  }
-  return $ids;
-}
-
-
-sub getWebsiteFileCmd { 
+sub getWebsiteFileCmd {
   my ($self, $downloadFileName, $test) = @_;
 
+  # we load isolates using the family representative's taxon id, so use that to extract
+  # only the family rep calls this step class, so we can just use our org abbrev.
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
+  my $taxonId = $organismInfo->getTaxonId();
 
-  my $taxonIdList = $self->getFamilyTaxonIdList($test);
-
-    my $sql = <<"EOF";
+  my $sql = <<"EOF";
         SELECT
         enas.source_id
         ||' | organism='|| 
@@ -62,7 +44,7 @@ sub getWebsiteFileCmd {
              sres.externaldatabaserelease edr,
              apidb.datasource ds,
              dots.isolatesource i
-        Where tn.taxon_id in ($taxonIdList)
+        Where tn.taxon_id = $taxonId
             AND enas.taxon_id = tn.taxon_id
             AND tn.name_class = 'scientific name'
             AND enas.external_database_release_id = edr.external_database_release_id
@@ -73,8 +55,8 @@ sub getWebsiteFileCmd {
             AND so.sequence_ontology_id = enas.sequence_ontology_id
 EOF
 
-    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\"";
-    return $cmd;
+  my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\"";
+  return $cmd;
 }
 
 1;
