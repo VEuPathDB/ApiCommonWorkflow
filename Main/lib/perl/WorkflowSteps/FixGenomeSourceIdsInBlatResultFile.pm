@@ -14,7 +14,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "replace.pl --old '#' --new '.' --file_or_dir $workflowDataDir/$inputFile";
+  my $cmd = "fgpReplace '#' '.' $workflowDataDir/$inputFile";
 
   if ($undo) {
   } else {
