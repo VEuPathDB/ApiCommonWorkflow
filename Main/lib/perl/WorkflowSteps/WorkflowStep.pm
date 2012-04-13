@@ -160,9 +160,9 @@ sub runPlugin {
       my $algInvIds = $self->getAlgInvIds();
       if ($algInvIds) {    # may have been undone manually, so might not be any alg inv ids
 	  if($commit =~ /undoTables/){
-	      $cmd = "ga $undoPlugin --algInvocationId '$algInvIds' --workflowContext $commit";
+	      $cmd = "ga $undoPlugin --workflowContext --algInvocationId '$algInvIds' $commit";
 	  }else {
-	      $cmd = "ga $undoPlugin --algInvocationId '$algInvIds' --workflowContext --commit";
+	      $cmd = "ga $undoPlugin --workflowContext --algInvocationId '$algInvIds' --commit";
 	  }
       } else {
 	$self->log("No algorithm invocation IDs found for this plugin step.  The plugin must have been manually undone.  Exiting");
