@@ -2084,7 +2084,7 @@
         </dir>
       </manualGet>
 
-     <unpack>addIsReferenceToIsolateSource.pl --file @@dataDir@@/reference_isolates.txt --gus_Config @@gusHome@@/config/gus.config  --extDbName %RESOURCE_NAME% --extDbVer %RESOURCE_VERSION%</unpack>
+     <unpack>addIsReferenceToIsolateSource.pl --file @@dataDir@@/reference_isolates.txt --gus_Config @@gusHome@@/config/gus.config  --extDbName ${organismAbbrev}_isolates_genbank_RSRC --extDbVer 'TODAY'</unpack>
      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
     </resource>
   </datasetClass>
@@ -2873,6 +2873,60 @@
       </manualGet>
 
       <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION%  --gffFile @@dataDir@@/features.gff</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <!-- NOTE: this class is specific to Crypto and is used to populate apidb.continents  -->
+  <datasetClass class="updateIsolatesByContinents" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="version"/>
+
+    <graphTemplateFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_updateIsolatesByContinents_RSRC"
+              version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              type="isolates"
+              subType=""
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/isolate/updateIsolatesByContinents/${version}/final/continents.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+     <unpack>updateContinents.pl --file @@dataDir@@/continents.txt </unpack>
+     <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <!-- NOTE: this class is specific to Crypto and is used to update product and product_alias in dots.isolatefeature -->
+  <datasetClass class="updateIsolateFeaturesByProductAlias" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="version"/>
+
+    <graphTemplateFile name="organismSpecific.xml"/>
+
+    <resource resource="${organismAbbrev}_updateIsolateFeaturesByProductAlias_RSRC"
+              version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              type="isolates"
+              subType=""
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/isolate/updateIsolateFeaturesByProductAlias/${version}/final/productAlias.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+     <unpack>addProductAliasToIsolateFeature.pl --file @@dataDir@@/productAlias.txt --extDbName ${organismAbbrev}_isolates_genbank_RSRC --extDbVer 'TODAY'</unpack>
+     <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
     </resource>
   </datasetClass>
 
