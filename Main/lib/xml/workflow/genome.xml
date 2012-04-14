@@ -76,6 +76,12 @@
       <depends name="runTRNAScan"/>
     </step>
 
+    <subgraph name="unofficialGeneResources" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/unofficialGeneFeatures.xml">
+     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+     <paramValue name="parentDataDir">$$dataDir$$</paramValue> 
+     <depends name="makeDataDir"/> 
+    </subgraph> 
+
     <step name="makeOrfFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfFile">
       <paramValue name="seqFile">$$genomicSeqsFile$$</paramValue>
@@ -106,6 +112,7 @@
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="loadOrfFile"/>
+    <depends name="unofficialGeneResources"/>
   </subgraph>
 
     <step name="findTandemRepeats"
@@ -149,7 +156,7 @@
       <depends name="runLowComplexityFilter"/>
     </step>
 
-    <step name="loadLowComplexityFile"
+I    <step name="loadLowComplexityFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertLowComplexitySequences" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$genomicSeqsFile$$.dust</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
