@@ -1887,7 +1887,31 @@
 
   </datasetClass>
 
+  <datasetClass class="ECAssocFromUniprot" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev"/>
+    <prop name="version"/>
+    <prop name="speciesNcbiTaxonId"/>
+    <prop name="name"/>
 
+    <graphTemplateFile name="organismSpecific.xml"/>
+
+    <resource plugin="GUS::Community::Plugin::InsertECMapping"
+              resource="${organismAbbrev}_${name}_ECAssociations_RSRC"
+              version="${version}"
+              scope="species"
+              organismAbbrev="${organismAbbrev}">
+  
+     <wgetArgs url="www.uniprot.org/uniprot/?query=taxonomy%3a${speciesNcbiTaxonId}+AND+keyword%3a181&force=yes&format=tab&columns=id,genes,organism,ec"> --output-document=@@dataDir@@/ecAssocFromUniprot.tab --content-disposition </wgetArgs>
+ 
+     <unpack>printUniprotGeneToECFile --infile @@dataDir@@/ecAssocFromUniprot.tab --outfile @@dataDir@@/locusTagToEC.tab</unpack>
+     
+
+      <pluginArgs>--ECMappingFile @@dataDir@@/locusTagToEC.tab --evidenceCode "${name}" --aaSeqLocusTagMappingSql "SELECT aa_sequence_id FROM dots.Transcript t, dots.TranslatedAAFeature taf WHERE t.parent_id =? AND t.na_feature_id = taf.na_feature_id"</pluginArgs>
+    </resource>
+
+  </datasetClass>
+  
 
   <!-- Category: comments -->
 
