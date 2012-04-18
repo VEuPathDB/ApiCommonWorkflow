@@ -1892,12 +1892,11 @@
     <prop name="organismAbbrev"/>
     <prop name="version"/>
     <prop name="speciesNcbiTaxonId"/>
-    <prop name="name"/>
 
     <graphTemplateFile name="organismSpecific.xml"/>
 
     <resource plugin="GUS::Community::Plugin::InsertECMapping"
-              resource="${organismAbbrev}_${name}_ECAssociations_RSRC"
+              resource="${organismAbbrev}_Uniprot_ECAssociations_RSRC"
               version="${version}"
               scope="organism"
               organismAbbrev="${organismAbbrev}">
@@ -1906,7 +1905,7 @@
      
      <unpack>printOrgSpecificGeneToEC --infile @@dataDir@@/ecAssocFromUniprot.tab --outfile @@dataDir@@/${organismAbbrev}LocTagToEC.tab --organismAbbrev ${organismAbbrev}</unpack>     
 
-      <pluginArgs>--ECMappingFile @@dataDir@@/${organismAbbrev}LocusTagToEC.tab --evidenceCode "${name}" --aaSeqLocusTagMappingSql "SELECT aa_sequence_id FROM dots.Transcript t, dots.TranslatedAAFeature taf WHERE t.parent_id =? AND t.na_feature_id = taf.na_feature_id"</pluginArgs>
+      <pluginArgs>--ECMappingFile @@dataDir@@/${organismAbbrev}LocusTagToEC.tab --evidenceCode "Uniprot" --aaSeqLocusTagMappingSql "SELECT aa_sequence_id FROM dots.Transcript t, dots.TranslatedAAFeature taf WHERE t.parent_id =? AND t.na_feature_id = taf.na_feature_id"</pluginArgs>
     </resource>
 
   </datasetClass>
