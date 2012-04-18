@@ -16,7 +16,6 @@ sub getSkipIfFile {
   return $self->getParamValue('skipIfFile');
 }
 
-
 sub getWebsiteFileCmd {
   my ($self, $downloadFileName, $test) = @_;
 

@@ -92,7 +92,8 @@ sub run {
 	  $self->runCmd($test, $descripFileCmd)  unless $isWebServiceFile;
 	  my $skipIfFile = $self->getSkipIfFile();
 	  if ($skipIfFile && (-s $websiteFile == 0)) {
-	      $self->runCmd(0, "touch $skipIfFile");	      
+	    my $wfDataDir = $self->getWorkflowDataDir();
+	    $self->runCmd(0, "touch $wfDataDir/$skipIfFile");
 	  }
       }
   }

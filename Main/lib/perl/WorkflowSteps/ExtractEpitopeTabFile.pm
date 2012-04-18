@@ -26,7 +26,7 @@ sub run {
     }
     $self->runCmd($test,"extractEpitopesTabFile $workflowDataDir/$outputFile $taxonIdList");
     if (!$test && (-s "$workflowDataDir/$outputFile" == 0)) {
-	$self->runCmd(0, "touch $skipIfFile");
+	$self->runCmd(0, "touch $workflowDataDir/$skipIfFile");
     }
   }
 }
