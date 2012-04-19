@@ -14,7 +14,7 @@ sub run {
   my $wfVersion = $self->getWorkflowConfig('version');
 
   $self->error("Error: in rootParams.prop projectName=$projectName but in workflow.prop name=$wfName. These two must be equal.") unless $projectName eq $wfName;
-  $self->error("Error: in rootParams.prop projectVersionForDatabase=$projectVersion but in workflow.prop version=$wfPathVersion. These two must be equal.") unless $projectVersion eq $wfPathVersion;
+  $self->error("Error: in rootParams.prop projectVersionForDatabase=$projectVersion but in workflow.prop version=$wfVersion. These two must be equal.") unless $projectVersion eq $wfVersion;
 
   if ($undo) {
   } else {
