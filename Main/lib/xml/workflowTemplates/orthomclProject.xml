@@ -17,8 +17,15 @@
   <datasetTemplate class="orthomclClade">
     <prop name="cladeAbbrev"/>
 
+    <subgraph name="${cladeAbbrev}_clade_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${cladeAbbrev}_orthomclClade_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">OrthoMCL.xml</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
     <step name="${cladeAbbrev}_makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteinsFile">
-      <paramValue name="proteomesDir">$$dataDir$$/${cladeAbbrev}/</paramValue>
+      <paramValue name="proteomesDir">$$dataDir$$/${cladeAbbrev}/final</paramValue>
       <paramValue name="outputGoodProteinsFile">$$dataDir$$/${cladeAbbrev}_good.fasta</paramValue>
       <paramValue name="outputBadProteinsFile">$$dataDir$$/${cladeAbbrev}_bad.fasta</paramValue>
     </step>
