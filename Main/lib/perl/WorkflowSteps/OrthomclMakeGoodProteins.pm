@@ -19,7 +19,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
 
-  my $cmd = "orthomclFilterFasta '$workflowDataDir/$proteomesDir' minLength $maxStopPercent $workflowDataDir/$outputGoodProteinsFile $workflowDataDir/$outputBadProteinsFile";
+  my $cmd = "orthomclFilterFasta '$workflowDataDir/$proteomesDir' $minLength $maxStopPercent $workflowDataDir/$outputGoodProteinsFile $workflowDataDir/$outputBadProteinsFile";
 
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputGoodProteinsFile");
