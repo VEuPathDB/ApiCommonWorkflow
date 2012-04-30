@@ -1904,7 +1904,7 @@
      
      <unpack>printOrgSpecificGeneToEC --infile @@dataDir@@/ecAssocFromUniprot.tab --outfile @@dataDir@@/${organismAbbrev}LocTagToEC.tab --orgAbbrev ${organismAbbrev}</unpack>     
 
-      <pluginArgs>--ECMappingFile @@dataDir@@/${organismAbbrev}LocusTagToEC.tab --evidenceCode "Uniprot" --aaSeqLocusTagMappingSql "SELECT aa_sequence_id FROM dots.Transcript t, dots.TranslatedAAFeature taf WHERE t.parent_id =? AND t.na_feature_id = taf.na_feature_id"</pluginArgs>
+      <pluginArgs>--ECMappingFile @@dataDir@@/${organismAbbrev}LocTagToEC.tab --evidenceCode "Uniprot" --aaSeqLocusTagMappingSql "SELECT aa_sequence_id FROM dots.Transcript t, dots.TranslatedAAFeature taf WHERE t.parent_id =? AND t.na_feature_id = taf.na_feature_id"</pluginArgs>
     </resource>
 
   </datasetClass>
@@ -2908,7 +2908,7 @@
 
     <resource resource="${organismAbbrev}_updateIsolatesByContinents_RSRC"
               version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+	      plugin="ApiCommonData::Load::Plugin::InsertContinents"
               scope="organism"
               type="isolates"
               subType=""
@@ -2919,8 +2919,7 @@
         </dir>
       </manualGet>
 
-     <unpack>updateContinents.pl --file @@dataDir@@/continents.txt </unpack>
-     <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+     <pluginArgs>--continentsFile @@dataDir@@/continents.txt</pluginArgs>
     </resource>
   </datasetClass>
 
