@@ -60,5 +60,44 @@
     <depends name="makeNrdbBlastDbOnCluster"/>
   </subgraph>
 
+  <!-- &updateBlastEval($mgr,"ProteinSeqs-ProteinSeqs", "blastSimilarity.out.gz","blastSimilarity.out_modified"); -->
+  <step name="updateBlastEval" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateBlastEval">
+    <paramValue name="inputFile">blastSimilarity.out.gz</paramValue>
+    <paramValue name="outputFile">blastSimilarity.out_modified</paramValue>
+    <depends name="blast"/>
+  </step>
+
+  <!-- #&loadBlastWithSqlldr($mgr,"ProteinSeqs-ProteinSeqs",0,"blastSimilarity.out_modified", "simSeq.ctl"); -->
+  <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr">
+    <paramValue name="inputFile">blastSimilarity.out_modified</paramValue>
+    <depends name="updateBlastEval"/>
+  </step>
+
+  <!-- run the orthomclPairs program to compute pairwise relationships.  -->
+  <step name="orthomclPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindOrthomclPairs">
+    <depends name="updateBlastEval"/>
+  </step>
+
+  <!-- &makeOrthoPairsFiles ($mgr); -->
+  <step name="makePairsFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoPairsFiles">
+    <depends name="orthomclPairs"/>
+  </step>
+
+  <!-- &runMcl ($mgr, '1.5'); -->
+  <step name="runMcl" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMcl">
+    <paramValue name="mainInflation"></paramValue>
+    <paramValue name="inputFile"></paramValue>
+    <paramValue name="outputFile"></paramValue>
+    <depends name="makePairsFiles"/>
+  </step>
+
+  <!-- &mclOutToGroupsFile ($mgr, "OG5_", 10000);   ##change the startWith number to the largest in the previous build plus 1 -->
+  <step name="mclOutToGroupsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteOrthologGroupsFiles">
+    <paramValue name="orthomclIdPrefix"></paramValue>
+    <paramValue name="inputFile"></paramValue>
+    <paramValue name="outputFile"></paramValue>
+    <paramValue name="startingOrthologGroupNumber"></paramValue>
+    <depends name="runMcl"/>
+  </step>
 
 </workflowGraph>
