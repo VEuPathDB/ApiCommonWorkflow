@@ -13,6 +13,7 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
   my $outputFile = $self->getParamValue('outputFile');
   my $startingOrthologGroupNumber = $self->getParamValue('startingOrthologGroupNumber');
+  my $includeSingletons = $self->getParamValue('includeSingletons');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

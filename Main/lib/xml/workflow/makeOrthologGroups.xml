@@ -62,7 +62,7 @@
 
   <!-- &updateBlastEval($mgr,"ProteinSeqs-ProteinSeqs", "blastSimilarity.out.gz","blastSimilarity.out_modified"); -->
   <step name="updateBlastEval" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateBlastEval">
-    <paramValue name="inputFile">blastSimilarity.out.gz</paramValue>
+    <paramValue name="inputFile">$$localDataDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="outputFile">blastSimilarity.out_modified</paramValue>
     <depends name="blast"/>
   </step>
@@ -86,17 +86,18 @@
   <!-- &runMcl ($mgr, '1.5'); -->
   <step name="runMcl" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMcl">
     <paramValue name="mainInflation"></paramValue>
-    <paramValue name="inputFile"></paramValue>
-    <paramValue name="outputFile"></paramValue>
+    <paramValue name="inputFile">mclInput</paramValue>
+    <paramValue name="outputFile">mcl.out</paramValue>
     <depends name="makePairsFiles"/>
   </step>
 
   <!-- &mclOutToGroupsFile ($mgr, "OG5_", 10000);   ##change the startWith number to the largest in the previous build plus 1 -->
   <step name="mclOutToGroupsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteOrthologGroupsFiles">
-    <paramValue name="orthomclIdPrefix"></paramValue>
-    <paramValue name="inputFile"></paramValue>
-    <paramValue name="outputFile"></paramValue>
-    <paramValue name="startingOrthologGroupNumber"></paramValue>
+    <paramValue name="orthomclIdPrefix">OG6_</paramValue>
+    <paramValue name="inputFile">mcl.out</paramValue>
+    <paramValue name="outputFile">orthomclGroups.txt</paramValue>
+    <paramValue name="startingOrthologGroupNumber">400000</paramValue>
+    <paramValue name="includeSingletons">true</paramValue>
     <depends name="runMcl"/>
   </step>
 

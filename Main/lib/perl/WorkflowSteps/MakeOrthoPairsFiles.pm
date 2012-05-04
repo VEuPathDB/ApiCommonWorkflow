@@ -9,15 +9,16 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $config = $self->getConfig('orthoMclPairsConfig');
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $configFile = "$workflowDataDir/orthomclPairs.config";
 
-  my $cmd = "orthomclDumpPairsFiles $config";
+  my $cmd = "orthomclDumpPairsFiles $configFile";
 
   if ($undo) {
   } else {
       if ($test) {
-	  $self->testInputFile('configFile', "$config");
+	  $self->testInputFile('configFile', "$configFile");
+	  $self->runCmd(0,"echo test > $workflowDataDir/mclInput");
       }
       $self->runCmd($test,$cmd);
   }

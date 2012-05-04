@@ -9,14 +9,13 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $binPath = $self->getConfig('binPath');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
 
   my $configFile = "$workflowDataDir/orthomclPairs.config";
   my $logfile = "orthomclPairs.log";
 
-  my $cmd = "$binPath/orthomclPairs $configFile $logfile cleanup=no";
+  my $cmd = "orthomclPairs $configFile $logfile cleanup=no";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$logfile");
