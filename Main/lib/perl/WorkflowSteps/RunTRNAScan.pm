@@ -15,6 +15,8 @@ sub run {
   my $binPath = $self->getConfig('tRNAscanBinDir');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  $self->error("Output file '$workflowDataDir/$outputFile' already exists") if -e $workflowDataDir/$outputFile;
+
   my $cmd = "$binPath/tRNAscan-SE -o $workflowDataDir/$outputFile $workflowDataDir/$seqFile";
 
   if ($undo) {
