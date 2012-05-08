@@ -13,20 +13,24 @@ sub run {
   my $inputGroupsDir = $self->getParamValue('inputGroupsDir');
   my $inputProteinFile = $self->getParamValue('inputProteinFile');
   my $outputRepresentativeProteinsFile = $self->getParamValue('outputRepresentativeProteinsFile');
-  my $outputSecondaryProteinsFile = $self->getParamValue('outputSecondaryProteinsFile');
+#  my $outputSecondaryProteinsFile = $self->getParamValue('outputSecondaryProteinsFile');
+  my $outputGroupsFile = $self->getParamValue('outputGroupsFile');
+  my $proteinIdPrefix = $self->getParamValue('proteinIdPrefix');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
 
-  my $cmd = "orthomclFindCentralProteins '$workflowDataDir/$inputGroupsDir' $workflowDataDir/$inputProteinFile $workflowDataDir/$outputRepresentativeProteinsFile $workflowDataDir/$outputSecondaryProteinsFile";
+  my $cmd = "orthomclFindCentralProteins '$workflowDataDir/$inputGroupsDir' $workflowDataDir/$inputProteinFile $workflowDataDir/$outputRepresentativeProteinsFile $workflowDataDir/$outputGroupsFile $proteinIdPrefix";
 
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputRepresentativeProteinsFile");
-      $self->runCmd(0, "rm -f $workflowDataDir/$outputSecondaryProteinsFile");
+#      $self->runCmd(0, "rm -f $workflowDataDir/$outputSecondaryProteinsFile");
+      $self->runCmd(0, "rm -f $workflowDataDir/$outputGroupsFile");
   }else {
       if ($test){
 	  $self->runCmd(0, "echo test> $workflowDataDir/$outputRepresentativeProteinsFile");
-	  $self->runCmd(0, "echo test> $workflowDataDir/$outputSecondaryProteinsFile");
+#	  $self->runCmd(0, "echo test> $workflowDataDir/$outputSecondaryProteinsFile");
+	  $self->runCmd(0, "echo test> $workflowDataDir/$outputGroupsFile");
       }else{
 	  $self->runCmd($test, $cmd);
       }
