@@ -2,6 +2,7 @@
   <param name="parentDataDir"/>
   <param name="proteinFile"/>
   <constant name="localDataDir">$$parentDataDir$$/makeGroups</constant>
+  <constant name="goodProteinFile">$$localDataDir$$/protein.fa</constant>
 
   <!-- create cluster home dir (in normal use, this will happen elsewhere) -->
   <step name="initClusterHomeDir"
@@ -17,7 +18,7 @@
   <!-- as a top-level graph (for development) this will fail. Copy to workflow's data dir, and set step to ready -->
   <step name="copyProteinFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
     <paramValue name="fromFile">$$proteinFile$$</paramValue>
-    <paramValue name="toFile">$$localDataDir$$/protein.fa</paramValue>
+    <paramValue name="toFile">$$goodProteinFile$$</paramValue>
     <depends name="makeLocalDataDir"/>
   </step>
 
@@ -30,7 +31,7 @@
 
   <!-- format the blast database on the cluster -->
   <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster">
-    <paramValue name="inputFile">$$localDataDir$$/protein.fa</paramValue>
+    <paramValue name="inputFile">$$goodProteinFile$$</paramValue>
     <paramValue name="vendor">ncbi</paramValue>
     <paramValue name="seqType">p</paramValue>
     <depends name="mirrorToCluster"/>
@@ -40,7 +41,7 @@
     <!-- params: orthoAnalysis said "my $blastParams = "-F 'm S' -v 100000 -b 100000 -z 1300000 -e 1e-5"; -->
     <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
     <paramValue name="nickName">blast</paramValue>
-    <paramValue name="queryFile">$$localDataDir$$/protein.fa</paramValue>
+    <paramValue name="queryFile">$$goodProteinFile$$</paramValue>
     <paramValue name="queryTable"></paramValue>
     <paramValue name="queryExtDbName"></paramValue>
     <paramValue name="subjectFile"></paramValue>
@@ -95,6 +96,7 @@
   <step name="mclOutToGroupsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteOrthologGroupsFiles">
     <paramValue name="orthomclIdPrefix">OG6_</paramValue>
     <paramValue name="inputFile">mcl.out</paramValue>
+    <paramValue name="proteinFile">$$goodProteinFile$$</paramValue>
     <paramValue name="outputFile">orthomclGroups.txt</paramValue>
     <paramValue name="startingOrthologGroupNumber">400000</paramValue>
     <paramValue name="includeSingletons">true</paramValue>
