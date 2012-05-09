@@ -54,6 +54,7 @@ sub run {
   my $relativeDir = $self->getParamValue('relativeDir');
   my $fileType = $self->getParamValue('fileType');
   my $dataName = $self->getParamValue('dataName');
+  my $serviceName = $self->getParamValue('serviceName');
   my $descripString = $self->getParamValue('descripString');
   my $isWebServiceFile = $self->getBooleanParamValue('isWebServiceFile');
 
@@ -68,7 +69,7 @@ sub run {
   my $isFamilyLevel = $self->getIsFamilyLevel();
   
   if ($isWebServiceFile) {
-      $websiteFile = getWebServiceFileName($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $fileType, $dataName);
+      $websiteFile = getWebServiceFileName($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $fileType, $dataName,$serviceName);
   } else {
       $websiteFile = getDownloadFileName($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $projectName, $projectVersion, $fileType, $dataName);
 
