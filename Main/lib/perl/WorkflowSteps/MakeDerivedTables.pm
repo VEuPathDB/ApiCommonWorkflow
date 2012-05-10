@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedTopLevelTables;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedTables;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -10,10 +10,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-
-  #my $tables = "GeneAttributes,SequenceAttributes,FeatureLocation";
-
-  my $tables = "SequencePieceClosure,FeatureLocation,GeneId,GeneAttributes,GenomicSequence,SequenceAttributes,TaxonSpecies";
+  my $tables = $self->getParamValue('tables');
 
   my $gusHome = $self->getSharedConfig('gusHome');
 
@@ -47,15 +44,5 @@ sub run {
   }
 }
 
-sub getParamsDeclaration {
-  return ('organismAbbrev',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
 
 

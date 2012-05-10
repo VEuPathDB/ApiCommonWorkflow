@@ -21,10 +21,10 @@
     <depends name="makeDataDir"/> 
   </subgraph>
 
-  <!-- FeatureLocation, GeneAttributes and SequenceAttributes (for top level) -->
-  <step name="makeDerivedTopLevelTables"
-        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedTopLevelTables" stepLoadTypes="tuningManager">
+  <step name="makeDerivedTables"
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedTables" stepLoadTypes="tuningManager">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="tables">SequencePieceClosure,FeatureLocation,GeneId,GeneAttributes,GenomicSequence,SequenceAttributes,TaxonSpecies</paramValue>
     <depends name="insertPrimaryVirtualGenome"/> 
   </step>
 
@@ -33,7 +33,7 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTopLevelFastaSeqs">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="outputFile">$$topLevelFastaFile$$</paramValue>
-      <depends name="makeDerivedTopLevelTables"/> 
+      <depends name="makeDerivedTables"/> 
     </step>
 
     <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomeRepeatMaskTaskInputDir" includeIf="$$isAnnotatedGenome$$">
@@ -83,7 +83,7 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMercatorGffFile" includeIf="$$isAnnotatedGenome$$">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/$$organismAbbrev$$.gff</paramValue>
-       <depends name="makeDerivedTopLevelTables"/> 
+       <depends name="makeDerivedTables"/> 
     </step>
 
   <step name="correctReadingFrameInMercatorGffFile"
