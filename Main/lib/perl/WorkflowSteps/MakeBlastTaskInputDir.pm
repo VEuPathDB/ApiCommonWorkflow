@@ -17,6 +17,8 @@ sub run {
   my $blastType = $self->getParamValue("blastType");
   my $vendor = $self->getParamValue("vendor");
 
+  $self->error("Vendor must be either 'ncbi' or 'wu'") unless ($vendor eq 'ncbi' || $vendor eq 'wu');
+
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $taskSize = $self->getConfig("taskSize");
   my $wuBlastBinPathCluster = $self->getConfig("$clusterServer.wuBlastBinPathCluster");
@@ -30,7 +32,8 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cpus = 1;  # this should not be hard coded
-  $self->error("Please do not include the '-cpus' option in the blastArgs parameter.  This is taken care of automatically") if $blastArgs =~ /cpus/;
+  my $cpusArg = $vendor eq 'ncbi'? '-a ' : '-cpus='
+  $self->error("Please do not include the '$cpusArg' option in the blastArgs parameter.  It is taken care of automatically") if $blastArgs =~ /$cpusArg/;
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
@@ -67,30 +70,10 @@ $vendorString
 
        # make blastParams file
        open(F, ">$localBlastParamsFile") || die "Can't open blast params file '$localBlastParamsFile' for writing";;
-       print F "-cpus=$cpus $blastArgs\n";
+       print F "$cpusArg$cpus $blastArgs\n";
        close(F);
        #&runCmd($test, "chmod -R g+w $workflowDataDir/similarity/$queryName-$subjectName");
       
   }
-}
-
-sub getParamsDeclaration {
-  return ('taskInputDir',
-	  'queryFile',
-	  'subjectFile',
-	  'blastArgs',
-	  'idRegex',
-	  'blastType',
-	  'vendor',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['taskSize', "", ""],
-	  ['wuBlastBinPathCluster', "", ""],
-	  ['ncbiBlastBinPathCluster', "", ""],
-	 );
 }
 
