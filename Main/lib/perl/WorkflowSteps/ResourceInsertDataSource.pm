@@ -13,7 +13,8 @@ sub run {
 
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
 
-    my $extDbName = $dataSource->getParentResource()? $dataSource->getParentResource() : $dataSourceName;
+    my $extDbName = $dataSource->getParentResource()?
+	$dataSource->getParentResource()->getName() : $dataSourceName;
 
     my $version = $dataSource->getVersion();
     my $organismAbbrev = $dataSource->getOrganismAbbrev();
