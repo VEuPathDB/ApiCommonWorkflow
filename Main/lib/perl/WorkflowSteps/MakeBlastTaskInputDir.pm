@@ -17,6 +17,8 @@ sub run {
   my $blastType = $self->getParamValue("blastType");
   my $vendor = $self->getParamValue("vendor");
 
+  $self->error("Vendor must be either 'ncbi' or 'wu'") unless ($vendor eq 'ncbi' || $vendor eq 'wu');
+
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $taskSize = $self->getConfig("taskSize");
   my $wuBlastBinPathCluster = $self->getConfig("$clusterServer.wuBlastBinPathCluster");
@@ -67,7 +69,7 @@ $vendorString
 
        # make blastParams file
        open(F, ">$localBlastParamsFile") || die "Can't open blast params file '$localBlastParamsFile' for writing";;
-       print F "-cpus=$cpus $blastArgs\n";
+       print F "-cpus=$cpus $blastArgs\n" if $vendor eq 'wu';
        close(F);
        #&runCmd($test, "chmod -R g+w $workflowDataDir/similarity/$queryName-$subjectName");
       
