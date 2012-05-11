@@ -12,12 +12,14 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
 
   my $sqlldrBinPath = $self->getConfig('sqlldrBinPath');
+  my $oracleInstance = $self->getConfig('oracleInstance');
+  my $oracleLogin = $self->getConfig('oracleLogin');
   my $oraclePassword = $self->getConfig('oraclePassword');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $ctlFile = "$workflowDataDir/blast.ctl";
   my $logFile = "$workflowDataDir/sqlldr.log";
-  my $cmd = "$sqlldrBinPath/sqlldr $oraclePassword data=$workflowDataDir/$inputFile control=$ctlFile log=$logFile rows=25000 direct=TRUE";
+  my $cmd = "$sqlldrBinPath/sqlldr $oracleLogin/$oraclePassword\@$oracleInstance data=$workflowDataDir/$inputFile control=$ctlFile log=$logFile rows=25000 direct=TRUE";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $ctlFile");

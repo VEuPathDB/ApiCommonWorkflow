@@ -14,7 +14,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "modifyExpToMin -o $workflowDataDir/$outputFile $workflowDataDir/$inputFile";
+  my $cmd = "modifyExpToMin $workflowDataDir/$inputFile $workflowDataDir/$outputFile";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");

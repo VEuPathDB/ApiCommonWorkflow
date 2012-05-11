@@ -16,6 +16,7 @@ sub run {
   my $idRegex = $self->getParamValue("idRegex");
   my $blastType = $self->getParamValue("blastType");
   my $vendor = $self->getParamValue("vendor");
+  my $makeSimSeqsFile = $self->getParamValue("makeSimSeqsFile");
 
   $self->error("Vendor must be either 'ncbi' or 'wu'") unless ($vendor eq 'ncbi' || $vendor eq 'wu');
 
@@ -32,7 +33,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cpus = 1;  # this should not be hard coded
-  my $cpusArg = $vendor eq 'ncbi'? '-a ' : '-cpus='
+  my $cpusArg = $vendor eq 'ncbi'? '-a ' : '-cpus=';
   $self->error("Please do not include the '$cpusArg' option in the blastArgs parameter.  It is taken care of automatically") if $blastArgs =~ /$cpusArg/;
 
   if ($undo) {
@@ -52,6 +53,7 @@ sub run {
       my $ccBlastParamsFile = "blastParams";
       my $localBlastParamsFile = "$workflowDataDir/$taskInputDir/blastParams";
       my $vendorString = $vendor? "blastVendor=$vendor" : "";
+      my $simSeqs = $makeSimSeqsFile ? "printSimSeqsFile=yes" : "";
 
       my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
@@ -65,6 +67,7 @@ regex='$idRegex'
 blastProgram=$blastType
 blastParamsFile=$ccBlastParamsFile
 $vendorString
+$simSeqs
 ";
        close(F);
 
