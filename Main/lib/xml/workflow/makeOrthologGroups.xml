@@ -1,6 +1,7 @@
 <workflowGraph name="makeOrthologGroups">
   <param name="parentDataDir"/>
   <param name="proteinFile"/>
+  <param name="suffix"/>
   <constant name="localDataDir">$$parentDataDir$$/makeGroups</constant>
   <constant name="goodProteinFile">$$localDataDir$$/protein.fa</constant>
 
@@ -75,16 +76,19 @@
   <!-- #&loadBlastWithSqlldr($mgr,"ProteinSeqs-ProteinSeqs",0,"blastSimilarity.out_modified", "simSeq.ctl"); -->
   <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr">
     <paramValue name="inputFile">blastSimilarity.out_modified</paramValue>
+    <paramValue name="suffix">$$suffix$$</paramValue>
     <depends name="updateBlastEval"/>
   </step>
 
   <!-- run the orthomclPairs program to compute pairwise relationships.  -->
   <step name="orthomclPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindOrthomclPairs">
+    <paramValue name="suffix">$$suffix$$</paramValue>
     <depends name="loadBlast"/>
   </step>
 
   <!-- &makeOrthoPairsFiles ($mgr); -->
   <step name="makePairsFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoPairsFiles">
+    <paramValue name="suffix">$$suffix$$</paramValue>
     <depends name="orthomclPairs"/>
   </step>
 

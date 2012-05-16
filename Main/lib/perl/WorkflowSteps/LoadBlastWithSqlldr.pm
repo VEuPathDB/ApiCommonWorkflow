@@ -10,6 +10,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputFile = $self->getParamValue('inputFile');
+  my $suffix = $self->getParamValue('prefix');
 
   my $sqlldrBinPath = $self->getConfig('sqlldrBinPath');
   my $oracleInstance = $self->getConfig('oracleInstance');
@@ -18,29 +19,63 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $ctlFile = "$workflowDataDir/blast.ctl";
-  my $logFile = "$workflowDataDir/sqlldr.log";
-  my $cmd = "$sqlldrBinPath/sqlldr $oracleLogin/$oraclePassword\@$oracleInstance data=$workflowDataDir/$inputFile control=$ctlFile log=$logFile rows=25000 direct=TRUE";
+  my $sqlldrLog = "$workflowDataDir/sqlldr.log";
+  my $cmd = "$sqlldrBinPath/sqlldr $oracleLogin/$oraclePassword\@$oracleInstance data=$workflowDataDir/$inputFile control=$ctlFile log=$sqlldrLog rows=25000 direct=TRUE";
+  my $configFile = "$workflowDataDir/orthomclPairs.config";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $ctlFile");
+    $self->runCmd($test, "orthomclDropSchema $configFile /dev/null $suffix");
+    $self->runCmd(0, "rm -f $configFile");
+
   } else {
       if ($test) {
 	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       }
 
-      writeControlFile($ctlFile);
+      # make OrthoMCL config file
+      writeConfigFile($configFile, $oracleInstance, $oracleLogin, $oraclePassword);
+
+      # create tables
+      $self->runCmd($test, "orthomclInstallSchema $configFile $workflowDataDir/orthomclInstallSchema.log $suffix");
+
+      # run sqlldr (after writing its control file)
+      writeControlFile($ctlFile, $suffix);
       $self->runCmd($test, $cmd);
   }
 }
 
+sub writeConfigFile {
+  my ($configFile, $instance, $login, $password) = @_;
+
+  my $dsn = "dbi:Oracle:$instance";
+  open(CONFIG, ">$configFile") || die "Can't open '$configFile' for writing";
+  print CONFIG <<"EOF";
+dbConnectString=$dsn
+dbLogin=$login
+dbPassword=$password
+dbVendor=oracle
+similarSequencesTable=apidb.SimilarSequences
+orthologTable=apidb.Ortholog
+inParalogTable=apidb.InParalog
+coOrthologTable=apidb.CoOrtholog
+interTaxonMatchView=apidb.InterTaxonMatch
+oracleIndexTablespace=indx
+percentMatchCutoff=50
+evalueExponentCutoff=-5
+EOF
+
+  close(CONFIG);
+}
+
 sub writeControlFile {
-  my ($ctlFile) = @_;
+  my ($ctlFile, $suffix) = @_;
 
   open(CTL, ">$ctlFile") || die "Can't open '$ctlFile' for writing";
   print CTL <<"EOF";
      LOAD DATA
      INFILE *
-     INTO TABLE apidb.similarsequences
+     INTO TABLE apidb.similarsequences$suffix
      FIELDS TERMINATED BY " " OPTIONALLY ENCLOSED BY '"'
      TRAILING NULLCOLS
     (query_id,
