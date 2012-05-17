@@ -16,7 +16,7 @@ sub run {
   my $configFile = "$workflowDataDir/orthomclPairs.config";
   my $logfile = "orthomclPairs.log";
 
-  my $cmd = "orthomclPairs $configFile $logfile cleanup=no suffix";
+  my $cmd = "orthomclPairs $configFile $logfile cleanup=no suffix=$suffix";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$logfile");
