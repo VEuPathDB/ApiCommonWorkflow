@@ -12,15 +12,15 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
   my $suffix = $self->getParamValue('prefix');
 
-  my $sqlldrBinPath = $self->getConfig('sqlldrBinPath');
-  my $oracleInstance = $self->getConfig('oracleInstance');
-  my $oracleLogin = $self->getConfig('oracleLogin');
-  my $oraclePassword = $self->getConfig('oraclePassword');
+  my $gusInstance = $self->getGusInstanceName();
+  my $gusLogin = $self->getGusDatabaseLogin();
+  my $gusPassword = $self->getGusDatabasePassword();
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $ctlFile = "$workflowDataDir/blast.ctl";
   my $sqlldrLog = "$workflowDataDir/sqlldr.log";
-  my $cmd = "$sqlldrBinPath/sqlldr $oracleLogin/$oraclePassword\@$oracleInstance data=$workflowDataDir/$inputFile control=$ctlFile log=$sqlldrLog rows=25000 direct=TRUE";
+  my $cmd = "sqlldr $gusLogin/$gusPassword\@$gusInstance data=$workflowDataDir/$inputFile control=$ctlFile log=$sqlldrLog rows=25000 direct=TRUE";
   my $configFile = "$workflowDataDir/orthomclPairs.config";
 
   if ($undo) {
@@ -34,7 +34,7 @@ sub run {
       }
 
       # make OrthoMCL config file
-      writeConfigFile($configFile, $oracleInstance, $oracleLogin, $oraclePassword);
+      writeConfigFile($configFile, $gusInstance, $gusLogin, $gusPassword);
 
       # create tables
       $self->runCmd($test, "orthomclInstallSchema $configFile $workflowDataDir/orthomclInstallSchema.log $suffix");
@@ -92,6 +92,8 @@ EOF
   close(CTL);
 }
 
+=head1
+
 # predecessor from Steps.pm
 sub loadBlastWithSqlldr {
   my ($mgr,$blastName,$restart,$file, $ctl) = @_;
@@ -131,3 +133,5 @@ sub loadBlastWithSqlldr {
 
 
 }
+
+=cut
