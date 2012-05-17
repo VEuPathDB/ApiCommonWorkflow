@@ -17,9 +17,10 @@ sub run {
   my $proteinFile = $self->getParamValue('proteinFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $mclDir = "$workflowDataDir/mcl";
 
-  my $cmd = "orthomclMclToGroups $orthomclIdPrefix $startingOrthologGroupNumber < $workflowDataDir/$inputFile > $workflowDataDir/$outputFile";
-  my $singletonCmd = "orthomclSingletons $proteinFile $orthomclIdPrefix >> $workflowDataDir/$outputFile";
+  my $cmd = "orthomclMclToGroups $orthomclIdPrefix $startingOrthologGroupNumber < $mclDir/$inputFile > $workflowDataDir/$outputFile";
+  my $singletonCmd = "orthomclSingletons $workflowDataDir/$proteinFile $workflowDataDir/$outputFile $orthomclIdPrefix >> $workflowDataDir/$outputFile";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");

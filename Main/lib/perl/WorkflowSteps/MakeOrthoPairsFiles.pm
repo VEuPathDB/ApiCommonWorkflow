@@ -9,18 +9,24 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  my $suffix = $self->getParamValue('suffix');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $configFile = "$workflowDataDir/orthomclPairs.config";
+  my $mclDir = "$workflowDataDir/mcl";
+  $self->runCmd(0,"mkdir -p $mclDir");
+  chdir $mclDir;
 
-  my $cmd = "orthomclDumpPairsFiles $configFile";
+  my $cmd = "orthomclDumpPairsFiles $configFile $suffix";
 
   if ($undo) {
+    $self->runCmd($test, "rm -rf pairs");
   } else {
       if ($test) {
 	  $self->testInputFile('configFile', "$configFile");
-	  $self->runCmd(0,"echo test > $workflowDataDir/mclInput");
+	  $self->runCmd(0, "echo test > $workflowDataDir/mclInput");
       }
-      $self->runCmd($test,$cmd);
+      $self->runCmd($test, $cmd);
   }
 }
 

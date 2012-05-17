@@ -14,7 +14,7 @@ sub run {
 
 
   my $configFile = "$workflowDataDir/orthomclPairs.config";
-  my $logfile = "orthomclPairs.log";
+  my $logfile = "$workflowDataDir/orthomclPairs.log";
 
   my $cmd = "orthomclPairs $configFile $logfile cleanup=no suffix=$suffix";
 

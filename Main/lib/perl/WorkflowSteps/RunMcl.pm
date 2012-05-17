@@ -13,17 +13,17 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
   my $outputFile = $self->getParamValue('outputFile');
 
-  my $binPath = $self->getConfig('binPath');
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $mclDir = "$workflowDataDir/mcl";
 
-  my $cmd = "$binPath/mcl $workflowDataDir/$inputFile --abc -I $workflowDataDir/$mainInflation -o $workflowDataDir/$outputFile ";
+  my $cmd = "mcl $mclDir/$inputFile --abc -I $mclDir/$mainInflation -o $mclDir/$outputFile ";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $mclDir/$outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+	  $self->testInputFile('inputFile', "$mclDir/$inputFile");
+	  $self->runCmd(0,"echo test > $mclDir/$outputFile");
       }
       $self->runCmd($test,$cmd);
   }
