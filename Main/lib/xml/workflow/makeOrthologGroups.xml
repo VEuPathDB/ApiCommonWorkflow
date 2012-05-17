@@ -1,6 +1,7 @@
 <workflowGraph name="makeOrthologGroups">
   <param name="parentDataDir"/>
-  <param name="proteinFile"/>
+  <param name="inputProteinFile"/>
+  <param name="outputGroupsDir"/>
   <param name="suffix"/>
   <constant name="localDataDir">$$parentDataDir$$/makeGroups</constant>
   <constant name="goodProteinFile">$$localDataDir$$/protein.fa</constant>
@@ -18,7 +19,7 @@
   <!-- copy protein file to our data dir -->
   <!-- as a top-level graph (for development) this will fail. Copy to workflow's data dir, and set step to ready -->
   <step name="copyProteinFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
-    <paramValue name="fromFile">$$proteinFile$$</paramValue>
+    <paramValue name="fromFile">$$inputProteinFile$$</paramValue>
     <paramValue name="toFile">$$goodProteinFile$$</paramValue>
     <depends name="makeLocalDataDir"/>
   </step>
