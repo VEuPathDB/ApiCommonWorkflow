@@ -10,7 +10,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputFile = $self->getParamValue('inputFile');
-  my $suffix = $self->getParamValue('prefix');
+  my $suffix = $self->getParamValue('suffix');
 
   my $gusInstance = $self->getGusInstanceName();
   my $gusLogin = $self->getGusDatabaseLogin();
