@@ -14,19 +14,41 @@ use ApiCommonWorkflow::Main::Util::OrganismInfo;
 use CBIL::Util::PropertySet;
 
 
-sub getGusInstanceName {
+sub getGusConnectInfo {
   my ($self) = @_;
 
-  if (!$self->{gusInstanceName}) {
+  if (!$self->{gusConnectInfo}) {
 
     my $gusconfig = CBIL::Util::PropertySet->new("$ENV{GUS_HOME}/config/gus.config", [], 1);
 
     my $dbiDsn = $gusconfig->getProp('dbiDsn');
     my @dd = split(/:/,$dbiDsn);
-    $self->{gusInstanceName} = pop(@dd);
+    $self->{gusConnectInfo}->{instanceName} = pop(@dd);
+    $self->{gusConnectInfo}->{dbiDsn} = $dbiDsn;
+    $self->{gusConnectInfo}->{databaseLogin} = $gusconfig->getProp('databaseLogin');
+    $self->{gusConnectInfo}->{databasePassword} = $gusconfig->getProp('databasePassword');
   }
+  return $self->{gusConnectInfo};
+}
 
-  return $self->{gusInstanceName};
+sub getGusInstanceName {
+  my ($self) = @_;
+  return $self->getGusConnectInfo()->{instanceName};
+}
+
+sub getGusDbiDsn {
+  my ($self) = @_;
+  return $self->getGusConnectInfo()->{dbiDsn};
+}
+
+sub getGusDatabaseLogin {
+  my ($self) = @_;
+  return $self->getGusConnectInfo()->{databaseLogin};
+}
+
+sub getGusDatabasePassword {
+  my ($self) = @_;
+  return $self->getGusConnectInfo()->{databasePassword};
 }
 
 # avoid using this subroutine!
@@ -154,11 +176,11 @@ sub runPlugin {
     my $className = ref($self);
 
     if ($test != 1 && $test != 0) {
-	$self->error("illegal 'test' arg passed to runPlugin() in step class '$className'");
+	$self->error("Illegal 'test' arg passed to runPlugin() in step class '$className'");
     }
 
     if ($plugin !~ /\w+\:\:\w+/) {
-	$self->error("illegal 'plugin' arg passed to runPlugin() in step class '$className'");
+	$self->error("Illegal 'plugin' arg passed to runPlugin() in step class '$className'");
     }
 
     my $comment = $args;
