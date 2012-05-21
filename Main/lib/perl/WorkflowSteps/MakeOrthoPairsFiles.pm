@@ -10,12 +10,12 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $suffix = $self->getParamValue('suffix');
+  my $orthmclGroupsDir = $self->getParamValue('outputGroupsDir');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $configFile = "$workflowDataDir/orthomclPairs.config";
-  my $mclDir = "$workflowDataDir/mcl";
-  $self->runCmd(0,"mkdir -p $mclDir");
-  chdir $mclDir;
+  my $outDir = "$workflowDataDir/$orthmclGroupsDir";
+  chdir $outDir;
 
   my $cmd = "orthomclDumpPairsFiles $configFile $suffix";
 
@@ -24,11 +24,13 @@ sub run {
   } else {
       if ($test) {
 	  $self->testInputFile('configFile', "$configFile");
-	  $self->runCmd(0, "echo test > $workflowDataDir/mclInput");
+	  $self->runCmd(0, "echo test > $outDir/mclInput");
       }
       $self->runCmd($test, $cmd);
   }
 }
+
+=head1
 
 # predecessor from Steps.pm:
 sub makeOrthoPairsFiles {
@@ -58,3 +60,5 @@ sub makeOrthoPairsFiles {
 
   $mgr->endStep($signal);
 }
+
+=cut

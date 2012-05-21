@@ -4,64 +4,74 @@
 
   <step name="makeRepProteinsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$/representativeProteomes</paramValue>
-    <depends name="makeDataDir"/>
   </step>
 
   <step name="makeSecProteinsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$/secondaryProteins</paramValue>
-    <depends name="makeDataDir"/>
   </step>
 
   <step name="makeTierOneGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$/tierOneGroups</paramValue>
-    <depends name="makeDataDir"/>
   </step>
 
   <datasetTemplate class="orthomclClade">
     <prop name="cladeAbbrev"/>
 
-    <step name="makeCladeDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <step name="${cladeAbbrev}_makeCladeDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$/${cladeAbbrev}</paramValue>
-      <depends name="makeDataDir"/>
+    </step>
+
+     <step name="${cladeAbbrev}_makeGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/${cladeAbbrev}/groups</paramValue>
+      <depends name="${cladeAbbrev}_makeCladeDir"/>
+    </step>
+
+   <step name="${cladeAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/${cladeAbbrev}</paramValue>
+      <depends name="${cladeAbbrev}_makeCladeDir"/>
     </step>
 
     <subgraph name="${cladeAbbrev}_clade_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">${cladeAbbrev}_orthomclClade_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">OrthoMCL.xml</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
+      <paramValue name="parentDataDir">$$dataDir$$/${cladeAbbrev}</paramValue>
+      <depends name="${cladeAbbrev}_makeCladeDir"/>
     </subgraph>
 
-    <step name="${cladeAbbrev}_makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteinsFile">
+    <step name="${cladeAbbrev}_makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
       <paramValue name="proteomesDir">$$dataDir$$/${cladeAbbrev}_orthomclClade_RSRC/final</paramValue>
       <paramValue name="outputGoodProteinsFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
       <paramValue name="outputBadProteinsFile">$$dataDir$$/${cladeAbbrev}/bad.fasta</paramValue>
       <paramValue name="minLength">10</paramValue>
       <paramValue name="maxStopPercent">20</paramValue>
+      <depends name="${cladeAbbrev}_clade_RSRC"/>
     </step>
 
-    <subgraph name="${cladeAbbrev}_clade" xmlFile="makeOrthologGroups.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <subgraph name="${cladeAbbrev}_makeGroups" xmlFile="makeOrthologGroups.xml">
+      <paramValue name="parentDataDir">$$dataDir$$/${cladeAbbrev}</paramValue>
       <paramValue name="inputProteinFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
       <paramValue name="outputGroupsDir">$$dataDir$$/${cladeAbbrev}/groups</paramValue>
-      <depends name="makeGoodProteinsFile"/>
+      <paramValue name="suffix">${cladeAbbrev}</paramValue>
+      <depends name="${cladeAbbrev}_makeGoodProteinsFile"/>
+      <depends name="${cladeAbbrev}_makeGroupsDir"/>
     </subgraph>
 
     <!-- adds cladeAbbrev as prefix to all protein ids -->
     <step name="${cladeAbbrev}_makeRepresentativeProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeRepresentativeProteinsFile">
       <paramValue name="inputGroupsDir">$$dataDir$$/${cladeAbbrev}/groups</paramValue>
       <paramValue name="inputProteinFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
-      <paramValue name="outputRepresentativeProteinsFile">$$dataDir$$/representativeProteins/${cladeAbbrev}.fasta</paramValue>
-      <paramValue name="outputRepresentativeProteinsFile">$$dataDir$$/representativeProteins/${cladeAbbrev}.fasta</paramValue>
-      <paramValue name="outputSecondaryProteinsFile">$$dataDir$$/secondaryProteins/${cladeAbbrev}.fasta</paramValue>
+      <paramValue name="outputRepresentativeProteinsFile">$$dataDir$$/representativeProteomes/${cladeAbbrev}.fasta</paramValue>
       <paramValue name="outputGroupsFile">$$dataDir$$/tierOneGroups/${cladeAbbrev}_groupsWithRepFirst</paramValue>
+      <paramValue name="outputGroupsFile">$$dataDir$$/tierOneGroups/${cladeAbbrev}_groupsWithRepFirst</paramValue>
+      <paramValue name="proteinIdPrefix">${cladeAbbrev}</paramValue>
       <depends name="makeRepProteinsDataDir"/>
       <depends name="makeSecProteinsDataDir"/>
+      <depends name="${cladeAbbrev}_makeGroups"/>
     </step>
   </datasetTemplate>
 
-  <step name="makeFinalGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteinsFile">
-    <paramValue name="proteomesDir">$$dataDir$$/representativeProteins/</paramValue>
+  <step name="makeFinalGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
+    <paramValue name="proteomesDir">$$dataDir$$/representativeProteomes/</paramValue>
     <paramValue name="outputGoodProteinsFile">$$dataDir$$/good.fasta</paramValue>
     <paramValue name="outputBadProteinsFile">$$dataDir$$/bad.fasta</paramValue>
     <dependsPattern name="*_makeRepresentativeProteinsFile"/>
@@ -71,7 +81,8 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="inputProteinFile">$$dataDir$$/good.fasta</paramValue>
     <paramValue name="outputGroupsDir">$$dataDir$$/groups</paramValue>
-      <depends name="makeFinalGoodProteinsFile"/>
+    <paramValue name="suffix"></paramValue>
+    <depends name="makeFinalGoodProteinsFile"/>
   </subgraph>
 
   <step name="mergeSecondaryProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMergeSecondaryProteins">

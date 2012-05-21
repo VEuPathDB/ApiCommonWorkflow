@@ -9,25 +9,26 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $mainInflation = $self->getParamValue('mainInflation');
+  my $inflation = $self->getParamValue('inflation');
   my $inputFile = $self->getParamValue('inputFile');
   my $outputFile = $self->getParamValue('outputFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $mclDir = "$workflowDataDir/mcl";
 
-  my $cmd = "mcl $mclDir/$inputFile --abc -I $mclDir/$mainInflation -o $mclDir/$outputFile ";
+  my $cmd = "mcl $workflowDataDir/$inputFile --abc -I $inflation -o $workflowDataDir/$outputFile ";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $mclDir/$outputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('inputFile', "$mclDir/$inputFile");
-	  $self->runCmd(0,"echo test > $mclDir/$outputFile");
+	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }
       $self->runCmd($test,$cmd);
   }
 }
+
+=head1
 
 # predecessor from Steps.pm:
 sub runMcl{
@@ -53,3 +54,5 @@ sub runMcl{
 
   $mgr->endStep($signal);
 }
+
+=cut

@@ -52,7 +52,7 @@ sub run {
     $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop view InterTaxonMatch$suffix\" ");
   } else {
       if ($test) {
-	  $self->runCmd(0,"echo test > $workflowDataDir/$logfile");
+	  $self->runCmd(0,"echo test > $logfile");
       }
 
       $self->runCmd($test,$cmd);
