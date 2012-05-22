@@ -70,6 +70,10 @@
     </step>
   </datasetTemplate>
 
+  <step name="makeFinalGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$/finalGroups</paramValue>
+  </step>
+
   <step name="makeFinalGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
     <paramValue name="proteomesDir">$$dataDir$$/representativeProteomes/</paramValue>
     <paramValue name="outputGoodProteinsFile">$$dataDir$$/good.fasta</paramValue>
@@ -82,15 +86,16 @@
   <subgraph name="makeFinalGroups" xmlFile="makeOrthologGroups.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="inputProteinFile">$$dataDir$$/good.fasta</paramValue>
-    <paramValue name="outputGroupsDir">$$dataDir$$/groups</paramValue>
+    <paramValue name="outputGroupsDir">$$dataDir$$/finalGroups</paramValue>
     <paramValue name="suffix"></paramValue>
     <depends name="makeFinalGoodProteinsFile"/>
+    <depends name="makeFinalGroupsDir"/>
   </subgraph>
 
   <step name="mergeSecondaryProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMergeSecondaryProteins">
     <paramValue name="inputRepGroupsFile">$$dataDir$$/groups/repGroups.txt</paramValue>
     <paramValue name="inputTierOneGroupsDir">$$dataDir$$/tierOneGroups</paramValue>
-    <paramValue name="outputMergedGroupsFile">$$dataDir$$/groups/finalGroups.txt</paramValue>
+    <paramValue name="outputMergedGroupsFile">$$dataDir$$/finalGroups/finalGroups.txt</paramValue>
     <depends name="makeFinalGroups"/>
   </step>
 
