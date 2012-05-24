@@ -37,9 +37,9 @@ sub run {
     $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table CoOrthologTemp$suffix\" ");
     $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InParalog2Way$suffix\" ");
     $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InParalogAvgScore$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InParalogOrthologInParalog$suffix\" ");
+    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InplgOrthoInplg$suffix\" ");
     $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InParalogOrtholog$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InParalogOrthologTaxonAvg$suffix\" ");
+    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InplgOrthTaxonAvg$suffix\" ");
     $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InParalogTaxonAvg$suffix\" ");
     $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InParalogTemp$suffix\" ");
     $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table Ortholog2Way$suffix\" ");
