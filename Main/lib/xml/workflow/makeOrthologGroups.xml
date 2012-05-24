@@ -41,7 +41,6 @@
   </step>
 
   <subgraph name="blast" xmlFile="blast.xml">
-    <!-- params: orthoAnalysis said "my $blastParams = "-F 'm S' -v 100000 -b 100000 -z 1300000 -e 1e-5"; -->
     <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
     <paramValue name="nickName">blast</paramValue>
     <paramValue name="queryFile">$$goodProteinFile$$</paramValue>
@@ -68,12 +67,17 @@
     <depends name="makeNrdbBlastDbOnCluster"/>
   </subgraph>
 
+  <!-- create tables (SimilarSequences, Ortholog, CoOrtholog, InParalog) -->
+  <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
+    <paramValue name="suffix">$$suffix$$</paramValue>
+    <depends name="blast"/>
+  </step>
 
-   <!-- #&loadBlastWithSqlldr($mgr,"ProteinSeqs-ProteinSeqs",0,"blastSimilarity.out_modified", "simSeq.ctl"); -->
+  <!-- load BLAST results into SimilarSequences table -->
   <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr">
     <paramValue name="inputFile">$$localDataDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
-    <depends name="blast"/>
+    <depends name="installSchema"/>
   </step>
 
   <!-- run the orthomclPairs program to compute pairwise relationships.  -->
@@ -82,14 +86,14 @@
     <depends name="loadBlast"/>
   </step>
 
-  <!-- &makeOrthoPairsFiles ($mgr); -->
+  <!-- write pairs out to a file -->
   <step name="makePairsFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoPairsFiles">
     <paramValue name="suffix">$$suffix$$</paramValue>
     <paramValue name="outputGroupsDir">$$outputGroupsDir$$</paramValue>
     <depends name="orthomclPairs"/>
   </step>
 
-  <!-- &runMcl ($mgr, '1.5'); -->
+  <!-- run MCL to make groups -->
   <step name="runMcl" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMcl">
     <paramValue name="inflation">1.5</paramValue>
     <paramValue name="inputFile">$$outputGroupsDir$$/mclInput</paramValue>
@@ -97,7 +101,7 @@
     <depends name="makePairsFiles"/>
   </step>
 
-  <!-- &mclOutToGroupsFile ($mgr, "OG5_", 10000);   ##change the startWith number to the largest in the previous build plus 1 -->
+  <!-- write groups out to file -->
   <step name="mclOutToGroupsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteOrthologGroupsFiles">
     <paramValue name="orthomclIdPrefix">OG6_</paramValue>
     <paramValue name="inputFile">$$outputGroupsDir$$/mcl.out</paramValue>
