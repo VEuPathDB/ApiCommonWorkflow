@@ -9,20 +9,20 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $inflation = $self->getParamValue('inflation');
-  my $inputFile = $self->getParamValue('inputFile');
-  my $outputFile = $self->getParamValue('outputFile');
-
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "mcl $workflowDataDir/$inputFile --abc -I $inflation -o $workflowDataDir/$outputFile ";
+  my $inflation = $self->getParamValue('inflation');
+  my $inputFile = "$workflowDataDir/" . $self->getParamValue('inputFile');
+  my $outputFile = "$workflowDataDir/" . $self->getParamValue('outputFile');
+
+  my $cmd = "mcl $inputFile --abc -I $inflation -o $outputFile ";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+	  $self->testInputFile('inputFile', "$inputFile");
+	  $self->runCmd(0,"echo test > $outputFile");
       }
       $self->runCmd($test,$cmd);
   }

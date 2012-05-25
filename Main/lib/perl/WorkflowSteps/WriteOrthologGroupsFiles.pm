@@ -9,25 +9,24 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  my $workflowDataDir = $self->getWorkflowDataDir();
+
   my $orthomclIdPrefix = $self->getParamValue('orthomclIdPrefix');
-  my $inputFile = $self->getParamValue('inputFile');
-  my $outputFile = $self->getParamValue('outputFile');
+  my $inputFile = "$workflowDataDir/" . $self->getParamValue('inputFile');
+  my $outputFile = "$workflowDataDir/" . $self->getParamValue('outputFile');
   my $startingOrthologGroupNumber = $self->getParamValue('startingOrthologGroupNumber');
   my $includeSingletons = $self->getParamValue('includeSingletons');
-  my $proteinFile = $self->getParamValue('proteinFile');
+  my $proteinFile = "$workflowDataDir/" . $self->getParamValue('proteinFile');
 
-  my $workflowDataDir = $self->getWorkflowDataDir();
-  my $mclDir = "$workflowDataDir/mcl";
-
-  my $cmd = "orthomclMclToGroups $orthomclIdPrefix $startingOrthologGroupNumber < $mclDir/$inputFile > $workflowDataDir/$outputFile";
-  my $singletonCmd = "orthomclSingletons $workflowDataDir/$proteinFile $workflowDataDir/$outputFile $orthomclIdPrefix >> $workflowDataDir/$outputFile";
+  my $cmd = "orthomclMclToGroups $orthomclIdPrefix $startingOrthologGroupNumber < $inputFile > $outputFile";
+  my $singletonCmd = "orthomclSingletons $proteinFile $outputFile $orthomclIdPrefix >> $outputFile";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
+    $self->runCmd(0, "rm -f $outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+	  $self->testInputFile('inputFile', "$inputFile");
+	  $self->runCmd(0,"echo test > $outputFile");
       }
 
       $self->runCmd($test, $cmd);
