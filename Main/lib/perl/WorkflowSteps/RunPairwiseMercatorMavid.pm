@@ -63,7 +63,7 @@ sub run {
 	    } 
 
 	    if ($self->cacheHit($orgA, $orgB, $cacheDir, "$workflowDataDir/$mercatorInputsDir", $test)) {
-		$self->runCmd($test, "cp $cacheDir/${orgA}-${orgB} $pairOutputDir");
+		$self->runCmd($test, "cp -r $cacheDir/${orgA}-${orgB} $pairOutputDir");
 	    } else {
 
 		mkdir("$pairOutputDir") || $self->error("Failed making dir $pairOutputDir");
@@ -148,12 +148,12 @@ sub cacheHit {
     my ($self, $orgA, $orgB, $cacheDir, $mercatorInputDir, $test) = @_;
     my $pairName = "${orgA}-${orgB}";
 
-    # -M is a perl built-in function to return a file's age
+    # -M is a perl built-in function to return a file's relative age.  Smaller is younger.
     my $cacheIsCurrent = -e "$cacheDir/$pairName" 
-	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgA.fasta" # cache is younger 
-	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgA.gff"
-	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgB.fasta"
-	&& -M "$cacheDir/$pairName" < "$mercatorInputDir/$orgB.gff";
+	&& -M "$cacheDir/$pairName" < -M "$mercatorInputDir/$orgA.fasta" # cache is younger 
+	&& -M "$cacheDir/$pairName" < -M "$mercatorInputDir/$orgA.gff"
+	&& -M "$cacheDir/$pairName" < -M "$mercatorInputDir/$orgB.fasta"
+	&& -M "$cacheDir/$pairName" < -M "$mercatorInputDir/$orgB.gff";
     $self->runCmd($test,"rm -r $cacheDir/$pairName") if (!$cacheIsCurrent && -e "$cacheDir/$pairName");
     return $cacheIsCurrent;
 }
