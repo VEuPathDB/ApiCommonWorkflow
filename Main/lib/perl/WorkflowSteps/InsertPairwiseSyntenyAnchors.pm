@@ -46,6 +46,10 @@ sub run {
 	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
 	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 	} else {
+	    # allow for restart; skip those already in db.   any partially done pair needs to be fully backed out before restart.
+	    my $stmt = $workflowStep->runSql("select name from sres.externaldatabase where name = '$databaseName'");
+	    next if $stmt->fetchrow_array(); 
+
 	    my $tmPrefix = $self->getTuningTablePrefix($orgAbbrevB, $test);
 	    my $sql = "select count(*)
                        from apidbtuning.${tmPrefix}sequenceattributes sa, apidb.organism o, sres.sequenceontology so
@@ -55,6 +59,7 @@ sub run {
                        and o.abbrev = '$orgAbbrevB'";
 	    my $cmd = "getValueFromTable --idSQL \"$sql\"";
 	    my $isNotDraftGenome = $self->runCmd($test, $cmd);
+	    $isNotDraftGenome = 0 if $orgAbbrevB eq 'PhycaLT1534';  # hack
 	    if (!$isNotDraftGenome) {
 	      $formatCmd .= " --agpFile $workflowDataDir/$mercatorOutputsDir/$pair/$orgAbbrevB.agp";
 	    }
