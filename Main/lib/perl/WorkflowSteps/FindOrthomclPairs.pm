@@ -4,6 +4,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::FindOrthomclPairs;
 
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use OrthoMCLEngine::Main::Base;
 
 
 sub run {
@@ -19,12 +20,15 @@ sub run {
   my $cmd = "orthomclPairs $configFile $logfile cleanup=no suffix=$suffix";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/$logfile");
-    $self->runCmd(0, "rm -f $workflowDataDir/$configFile");
+    my $base = OrthoMCLEngine::Main::Base->new($configFile);
 
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"truncate table CoOrtholog$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"truncate table Ortholog$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"truncate table Inparalog$suffix\" ");
+    my $inParalogTable = $base->getConfig("inParalogTable") . $suffix;
+    my $orthologTable = $base->getConfig("orthologTable") . $suffix;
+    my $coOrthologTable = $base->getConfig("coOrthologTable") . $suffix;
+
+    $self->runCmd($test, "executeIdSQL.pl --idSQL \"truncate table $inParalogTable\" ");
+    $self->runCmd($test, "executeIdSQL.pl --idSQL \"truncate table $orthologTable\" ");
+    $self->runCmd($test, "executeIdSQL.pl --idSQL \"truncate table $coOrthologTable\" ");
 
     $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table BestHit$suffix\" ");
     $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table BestInterTaxonScore$suffix\" ");
@@ -49,7 +53,7 @@ sub run {
     $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table OrthologUniqueId$suffix\" ");
     $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table UniqueSimSeqsQueryId$suffix\" ");
 
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop view InterTaxonMatch$suffix\" ");
+    $self->runCmd(0, "rm -f $logfile");
   } else {
       if ($test) {
 	  $self->runCmd(0,"echo test > $logfile");
