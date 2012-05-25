@@ -63,7 +63,7 @@ sub run {
 	    } 
 
 	    if ($self->cacheHit($orgA, $orgB, $cacheDir, "$workflowDataDir/$mercatorInputsDir", $test)) {
-		$self->runCmd($test, "cp $cacheDir/${orgA}-${orgB} $pairOutputDir");
+		$self->runCmd($test, "cp -r $cacheDir/${orgA}-${orgB} $pairOutputDir");
 	    } else {
 
 		mkdir("$pairOutputDir") || $self->error("Failed making dir $pairOutputDir");
