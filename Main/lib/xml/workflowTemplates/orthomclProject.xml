@@ -17,28 +17,28 @@
   <datasetTemplate class="orthomclClade">
     <prop name="cladeAbbrev"/>
 
-    <step name="${cladeAbbrev}_makeCladeDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <step name="${cladeAbbrev}_makeCladeDir" stepClass="ReFlow::StepClasses::MakeDataDir" excludeIf="${containsOnlyOneOrganism}">
       <paramValue name="dataDir">$$dataDir$$/${cladeAbbrev}</paramValue>
     </step>
 
-    <step name="${cladeAbbrev}_makeGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <step name="${cladeAbbrev}_makeGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir" excludeIf="${containsOnlyOneOrganism}">
       <paramValue name="dataDir">$$dataDir$$/${cladeAbbrev}/groups</paramValue>
       <depends name="${cladeAbbrev}_makeCladeDir"/>
     </step>
 
-    <step name="${cladeAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <step name="${cladeAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" excludeIf="${containsOnlyOneOrganism}">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/${cladeAbbrev}</paramValue>
       <depends name="${cladeAbbrev}_makeCladeDir"/>
     </step>
 
-    <subgraph name="${cladeAbbrev}_clade_RSRC" xmlFile="loadResource.xml">
+    <subgraph name="${cladeAbbrev}_clade_RSRC" xmlFile="loadResource.xml" excludeIf="${containsOnlyOneOrganism}">
       <paramValue name="resourceName">${cladeAbbrev}_orthomclClade_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">OrthoMCL.xml</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$/${cladeAbbrev}</paramValue>
       <depends name="${cladeAbbrev}_makeCladeDir"/>
     </subgraph>
 
-    <step name="${cladeAbbrev}_makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
+    <step name="${cladeAbbrev}_makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins" excludeIf="${containsOnlyOneOrganism}">
       <paramValue name="proteomesDir">$$dataDir$$/${cladeAbbrev}_orthomclClade_RSRC/final</paramValue>
       <paramValue name="outputGoodProteinsFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
       <paramValue name="outputBadProteinsFile">$$dataDir$$/${cladeAbbrev}/bad.fasta</paramValue>
@@ -47,7 +47,7 @@
       <depends name="${cladeAbbrev}_clade_RSRC"/>
     </step>
 
-    <subgraph name="${cladeAbbrev}_makeGroups" xmlFile="makeOrthologGroups.xml">
+    <subgraph name="${cladeAbbrev}_makeGroups" xmlFile="makeOrthologGroups.xml" excludeIf="${containsOnlyOneOrganism}">
       <paramValue name="parentDataDir">$$dataDir$$/${cladeAbbrev}</paramValue>
       <paramValue name="inputProteinFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
       <paramValue name="outputGroupsDir">$$dataDir$$/${cladeAbbrev}/groups</paramValue>
@@ -57,7 +57,7 @@
     </subgraph>
 
     <!-- adds cladeAbbrev as prefix to all protein ids -->
-    <step name="${cladeAbbrev}_makeRepresentativeProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeRepresentativeProteinsFile">
+    <step name="${cladeAbbrev}_makeRepresentativeProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeRepresentativeProteinsFile" excludeIf="${containsOnlyOneOrganism}">
       <paramValue name="inputGroupsDir">$$dataDir$$/${cladeAbbrev}/groups</paramValue>
       <paramValue name="inputProteinFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
       <paramValue name="outputRepresentativeProteinsFile">$$dataDir$$/representativeProteomes/${cladeAbbrev}.fasta</paramValue>
@@ -68,6 +68,15 @@
       <depends name="makeSecProteinsDataDir"/>
       <depends name="${cladeAbbrev}_makeGroups"/>
     </step>
+
+    <!-- if clade contains only one organism add cladeAbbrev as prefix to all protein ids -->
+    <step name="${cladeAbbrev}_makeOrganismProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeOrganismProteinsFile" includeIf="${containsOnlyOneOrganism}">
+      <paramValue name="outputProteinsFile">$$dataDir$$/representativeProteomes/${cladeAbbrev}.fasta</paramValue>
+      <paramValue name="proteinIdPrefix">${cladeAbbrev}</paramValue>
+      <depends name="makeRepProteinsDataDir"/>
+      <depends name="${cladeAbbrev}_makeGroups"/>
+    </step>
+
   </datasetTemplate>
 
   <step name="makeFinalGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
