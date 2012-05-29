@@ -19,11 +19,12 @@ sub run {
 
   my $cmd = "$binPath/tRNAscan-SE -o $workflowDataDir/$outputFile $workflowDataDir/$seqFile";
 
+  $self->testInputFile('proteinsFile', "$workflowDataDir/$seqFile");
+
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('proteinsFile', "$workflowDataDir/$seqFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }
       $self->runCmd($test,$cmd);

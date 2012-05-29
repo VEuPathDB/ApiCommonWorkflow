@@ -31,9 +31,8 @@ sub run {
 	  $self->runCmd(0, "echo test> $workflowDataDir/$outputRepresentativeProteinsFile");
 #	  $self->runCmd(0, "echo test> $workflowDataDir/$outputSecondaryProteinsFile");
 	  $self->runCmd(0, "echo test> $workflowDataDir/$outputGroupsFile");
-      }else{
-	  $self->runCmd($test, $cmd);
       }
+      $self->runCmd($test, $cmd);
   }
 }
 
