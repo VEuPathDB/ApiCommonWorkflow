@@ -11,7 +11,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputGroupsDir = $self->getParamValue('inputGroupsDir');
-  my $inputProteinFile = $self->getParamValue('inputProteinFile');
+  my $inputProteinFile = $self->getParamValue('inputProteinsFile');
   my $outputRepresentativeProteinsFile = $self->getParamValue('outputRepresentativeProteinsFile');
 #  my $outputSecondaryProteinsFile = $self->getParamValue('outputSecondaryProteinsFile');
   my $outputGroupsFile = $self->getParamValue('outputGroupsFile');
