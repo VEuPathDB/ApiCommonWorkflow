@@ -11,45 +11,7 @@ use Carp;
 
 use ReFlow::Controller::WorkflowStepInvoker;
 use ApiCommonWorkflow::Main::Util::OrganismInfo;
-use CBIL::Util::PropertySet;
 
-
-sub getGusConnectInfo {
-  my ($self) = @_;
-
-  if (!$self->{gusConnectInfo}) {
-
-    my $gusconfig = CBIL::Util::PropertySet->new("$ENV{GUS_HOME}/config/gus.config", [], 1);
-
-    my $dbiDsn = $gusconfig->getProp('dbiDsn');
-    my @dd = split(/:/,$dbiDsn);
-    $self->{gusConnectInfo}->{instanceName} = pop(@dd);
-    $self->{gusConnectInfo}->{dbiDsn} = $dbiDsn;
-    $self->{gusConnectInfo}->{databaseLogin} = $gusconfig->getProp('databaseLogin');
-    $self->{gusConnectInfo}->{databasePassword} = $gusconfig->getProp('databasePassword');
-  }
-  return $self->{gusConnectInfo};
-}
-
-sub getGusInstanceName {
-  my ($self) = @_;
-  return $self->getGusConnectInfo()->{instanceName};
-}
-
-sub getGusDbiDsn {
-  my ($self) = @_;
-  return $self->getGusConnectInfo()->{dbiDsn};
-}
-
-sub getGusDatabaseLogin {
-  my ($self) = @_;
-  return $self->getGusConnectInfo()->{databaseLogin};
-}
-
-sub getGusDatabasePassword {
-  my ($self) = @_;
-  return $self->getGusConnectInfo()->{databasePassword};
-}
 
 # avoid using this subroutine!
 # it is provided for backward compatibility.  plugins and commands that
@@ -176,11 +138,11 @@ sub runPlugin {
     my $className = ref($self);
 
     if ($test != 1 && $test != 0) {
-	$self->error("Illegal 'test' arg passed to runPlugin() in step class '$className'");
+	$self->error("illegal 'test' arg passed to runPlugin() in step class '$className'");
     }
 
     if ($plugin !~ /\w+\:\:\w+/) {
-	$self->error("Illegal 'plugin' arg passed to runPlugin() in step class '$className'");
+	$self->error("illegal 'plugin' arg passed to runPlugin() in step class '$className'");
     }
 
     my $comment = $args;
@@ -198,9 +160,9 @@ sub runPlugin {
       my $algInvIds = $self->getAlgInvIds();
       if ($algInvIds) {    # may have been undone manually, so might not be any alg inv ids
 	  if($commit =~ /undoTables/){
-	      $cmd = "ga $undoPlugin --workflowContext --algInvocationId '$algInvIds' $commit";
+	      $cmd = "ga $undoPlugin --algInvocationId '$algInvIds' --workflowContext $commit";
 	  }else {
-	      $cmd = "ga $undoPlugin --workflowContext --algInvocationId '$algInvIds' --commit";
+	      $cmd = "ga $undoPlugin --algInvocationId '$algInvIds' --workflowContext --commit";
 	  }
       } else {
 	$self->log("No algorithm invocation IDs found for this plugin step.  The plugin must have been manually undone.  Exiting");
@@ -275,11 +237,8 @@ sub getWebsiteFilesDir {
 
   die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
-    my $workflowName = $self->getWorkflowConfig('name');
-    my $workflowVersion = $self->getWorkflowConfig('version');
     my $websiteFilesDir = $self->getSharedConfig('websiteFilesDir');
-    my $path = "$websiteFilesDir/$workflowName/$workflowVersion";
-    return $test? "$path/test" : "$path/real";
+    return $test? "$websiteFilesDir/test" : $websiteFilesDir;
 }
 
 # Oracle table names can be no longer than 30 characters
