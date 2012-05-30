@@ -7,6 +7,8 @@
   <constant name="localDataDir">$$parentDataDir$$/makeGroups</constant>
   <constant name="goodProteinFile">$$localDataDir$$/protein.fa</constant>
 
+  <constant name="useExistingSimSeqs">true</constant>
+
   <!-- create cluster home dir (in normal use, this will happen elsewhere) -->
   <step name="initClusterHomeDir"
         stepClass="ReFlow::StepClasses::InitClusterHomeDir">
@@ -26,21 +28,21 @@
   </step>
 
   <!-- mirror our data dir to the cluster -->
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" excludeIf="useExistingSimSeqs">
     <paramValue name="fileOrDirToMirror">$$localDataDir$$</paramValue>
     <depends name="initClusterHomeDir"/>
     <depends name="copyProteinFile"/>
   </step>
 
   <!-- format the blast database on the cluster -->
-  <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster">
+  <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster" excludeIf="useExistingSimSeqs">
     <paramValue name="inputFile">$$goodProteinFile$$</paramValue>
     <paramValue name="vendor">ncbi</paramValue>
     <paramValue name="seqType">p</paramValue>
     <depends name="mirrorToCluster"/>
   </step>
 
-  <subgraph name="blast" xmlFile="blast.xml">
+  <subgraph name="blast" xmlFile="blast.xml" excludeIf="useExistingSimSeqs">
     <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
     <paramValue name="nickName">blast</paramValue>
     <paramValue name="queryFile">$$goodProteinFile$$</paramValue>
@@ -74,8 +76,14 @@
   </step>
 
   <!-- load BLAST results into SimilarSequences table -->
-  <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr">
+  <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr" excludeIf="useExistingSimSeqs">
     <paramValue name="inputFile">$$localDataDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
+    <paramValue name="suffix">$$suffix$$</paramValue>
+    <depends name="installSchema"/>
+  </step>
+
+  <step name="importBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ImportOrthomclTestData" includeIf="useExistingSimSeqs">
+    <paramValue name="taxonDir">$$parentDataDir$$/../${cladeAbbrev}_orthomclClade_RSRC/final</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <depends name="installSchema"/>
   </step>
@@ -84,6 +92,7 @@
   <step name="orthomclPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindOrthomclPairs">
     <paramValue name="suffix">$$suffix$$</paramValue>
     <depends name="loadBlast"/>
+    <depends name="importBlast"/>
   </step>
 
   <!-- write pairs out to a file -->
