@@ -9,7 +9,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $taxonDir = $self->getParamValue('taxonDir');
+  my $taxonDir = $self->getParamValue('taxaDir');
   my $suffix = $self->getParamValue('suffix');
 
   if ($undo) {

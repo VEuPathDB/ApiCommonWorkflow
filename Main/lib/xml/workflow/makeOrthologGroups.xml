@@ -1,18 +1,14 @@
 <workflowGraph name="makeOrthologGroups">
   <param name="parentDataDir"/>
   <param name="inputProteinFile"/>
+  <param name="inputTaxaDir"/>
   <param name="outputGroupsDir"/>
   <param name="suffix"/>
+  <param name="useExistingSimSeqs"/>
 
   <constant name="localDataDir">$$parentDataDir$$/makeGroups</constant>
   <constant name="goodProteinFile">$$localDataDir$$/protein.fa</constant>
 
-  <constant name="useExistingSimSeqs">true</constant>
-
-  <!-- create cluster home dir (in normal use, this will happen elsewhere) -->
-  <step name="initClusterHomeDir"
-        stepClass="ReFlow::StepClasses::InitClusterHomeDir">
-  </step>
 
   <!-- make a data dir  -->
   <step name="makeLocalDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -28,21 +24,20 @@
   </step>
 
   <!-- mirror our data dir to the cluster -->
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" excludeIf="useExistingSimSeqs">
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" excludeIf="$$useExistingSimSeqs$$">
     <paramValue name="fileOrDirToMirror">$$localDataDir$$</paramValue>
-    <depends name="initClusterHomeDir"/>
     <depends name="copyProteinFile"/>
   </step>
 
   <!-- format the blast database on the cluster -->
-  <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster" excludeIf="useExistingSimSeqs">
+  <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster" excludeIf="$$useExistingSimSeqs$$">
     <paramValue name="inputFile">$$goodProteinFile$$</paramValue>
     <paramValue name="vendor">ncbi</paramValue>
     <paramValue name="seqType">p</paramValue>
     <depends name="mirrorToCluster"/>
   </step>
 
-  <subgraph name="blast" xmlFile="blast.xml" excludeIf="useExistingSimSeqs">
+  <subgraph name="blast" xmlFile="blast.xml" excludeIf="$$useExistingSimSeqs$$">
     <paramValue name="parentDataDir">$$localDataDir$$</paramValue>
     <paramValue name="nickName">blast</paramValue>
     <paramValue name="queryFile">$$goodProteinFile$$</paramValue>
@@ -76,14 +71,14 @@
   </step>
 
   <!-- load BLAST results into SimilarSequences table -->
-  <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr" excludeIf="useExistingSimSeqs">
+  <step name="loadBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadBlastWithSqlldr" excludeIf="$$useExistingSimSeqs$$">
     <paramValue name="inputFile">$$localDataDir$$/blast/master/mainresult/blastSimilarity.out</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <depends name="installSchema"/>
   </step>
 
-  <step name="importBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ImportOrthomclTestData" includeIf="useExistingSimSeqs">
-    <paramValue name="taxonDir">$$parentDataDir$$/../${cladeAbbrev}_orthomclClade_RSRC/final</paramValue>
+  <step name="importBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ImportOrthomclTestData" includeIf="$$useExistingSimSeqs$$">
+    <paramValue name="taxaDir">$$inputTaxaDir$$</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <depends name="installSchema"/>
   </step>

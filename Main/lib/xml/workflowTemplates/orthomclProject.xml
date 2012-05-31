@@ -2,6 +2,10 @@
 
   <constant name="dataDir"></constant> <!-- empty on purpose. dataDir is root workflow data/ dir -->
 
+  <step name="initClusterHomeDir"
+        stepClass="ReFlow::StepClasses::InitClusterHomeDir">
+  </step>
+
   <step name="makeRepProteinsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$/representativeProteomes</paramValue>
   </step>
@@ -17,8 +21,24 @@
   <datasetTemplate class="orthomclClade">
     <prop name="cladeAbbrev"/>
 
-    <step name="${cladeAbbrev}_makeCladeDir" stepClass="ReFlow::StepClasses::MakeDataDir" excludeIf="${containsOnlyOneOrganism}">
+    <step name="${cladeAbbrev}_makeCladeDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$/${cladeAbbrev}</paramValue>
+    </step>
+
+    <subgraph name="${cladeAbbrev}_clade_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${cladeAbbrev}_orthomclClade_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">OrthoMCL.xml</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${cladeAbbrev}</paramValue>
+      <depends name="${cladeAbbrev}_makeCladeDir"/>
+    </subgraph>
+
+    <step name="${cladeAbbrev}_makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
+      <paramValue name="proteomesDir">$$dataDir$$/${cladeAbbrev}_orthomclClade_RSRC/final</paramValue>
+      <paramValue name="outputGoodProteinsFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
+      <paramValue name="outputBadProteinsFile">$$dataDir$$/${cladeAbbrev}/bad.fasta</paramValue>
+      <paramValue name="minLength">10</paramValue>
+      <paramValue name="maxStopPercent">20</paramValue>
+      <depends name="${cladeAbbrev}_clade_RSRC"/>
     </step>
 
     <step name="${cladeAbbrev}_makeGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir" excludeIf="${containsOnlyOneOrganism}">
@@ -29,29 +49,15 @@
     <step name="${cladeAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" excludeIf="${containsOnlyOneOrganism}">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/${cladeAbbrev}</paramValue>
       <depends name="${cladeAbbrev}_makeCladeDir"/>
+      <depends name="initClusterHomeDir"/>
     </step>
-
-    <subgraph name="${cladeAbbrev}_clade_RSRC" xmlFile="loadResource.xml" excludeIf="${containsOnlyOneOrganism}">
-      <paramValue name="resourceName">${cladeAbbrev}_orthomclClade_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">OrthoMCL.xml</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$/${cladeAbbrev}</paramValue>
-      <depends name="${cladeAbbrev}_makeCladeDir"/>
-    </subgraph>
-
-    <step name="${cladeAbbrev}_makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins" excludeIf="${containsOnlyOneOrganism}">
-      <paramValue name="proteomesDir">$$dataDir$$/${cladeAbbrev}_orthomclClade_RSRC/final</paramValue>
-      <paramValue name="outputGoodProteinsFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
-      <paramValue name="outputBadProteinsFile">$$dataDir$$/${cladeAbbrev}/bad.fasta</paramValue>
-      <paramValue name="minLength">10</paramValue>
-      <paramValue name="maxStopPercent">20</paramValue>
-      <depends name="${cladeAbbrev}_clade_RSRC"/>
-    </step>
-
     <subgraph name="${cladeAbbrev}_makeGroups" xmlFile="makeOrthologGroups.xml" excludeIf="${containsOnlyOneOrganism}">
       <paramValue name="parentDataDir">$$dataDir$$/${cladeAbbrev}</paramValue>
       <paramValue name="inputProteinFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
+      <paramValue name="inputTaxaDir">$$dataDir$$/${cladeAbbrev}_orthomclClade_RSRC/final</paramValue>
       <paramValue name="outputGroupsDir">$$dataDir$$/${cladeAbbrev}/groups</paramValue>
       <paramValue name="suffix">${cladeAbbrev}</paramValue>
+      <paramValue name="useExistingSimSeqs">true</paramValue>
       <depends name="${cladeAbbrev}_makeGoodProteinsFile"/>
       <depends name="${cladeAbbrev}_makeGroupsDir"/>
     </subgraph>
@@ -59,9 +65,8 @@
     <!-- adds cladeAbbrev as prefix to all protein ids -->
     <step name="${cladeAbbrev}_makeRepresentativeProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeRepresentativeProteinsFile" excludeIf="${containsOnlyOneOrganism}">
       <paramValue name="inputGroupsDir">$$dataDir$$/${cladeAbbrev}/groups</paramValue>
-      <paramValue name="inputProteinFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
+      <paramValue name="inputProteinsFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
       <paramValue name="outputRepresentativeProteinsFile">$$dataDir$$/representativeProteomes/${cladeAbbrev}.fasta</paramValue>
-      <paramValue name="outputGroupsFile">$$dataDir$$/tierOneGroups/${cladeAbbrev}_groupsWithRepFirst</paramValue>
       <paramValue name="outputGroupsFile">$$dataDir$$/tierOneGroups/${cladeAbbrev}_groupsWithRepFirst</paramValue>
       <paramValue name="proteinIdPrefix">${cladeAbbrev}</paramValue>
       <depends name="makeRepProteinsDataDir"/>
@@ -71,10 +76,11 @@
 
     <!-- if clade contains only one organism add cladeAbbrev as prefix to all protein ids -->
     <step name="${cladeAbbrev}_makeOrganismProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeOrganismProteinsFile" includeIf="${containsOnlyOneOrganism}">
+      <paramValue name="inputProteinsFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
       <paramValue name="outputProteinsFile">$$dataDir$$/representativeProteomes/${cladeAbbrev}.fasta</paramValue>
       <paramValue name="proteinIdPrefix">${cladeAbbrev}</paramValue>
       <depends name="makeRepProteinsDataDir"/>
-      <depends name="${cladeAbbrev}_makeGroups"/>
+      <depends name="${cladeAbbrev}_makeGoodProteinsFile"/>
     </step>
 
   </datasetTemplate>
@@ -95,8 +101,10 @@
   <subgraph name="makeFinalGroups" xmlFile="makeOrthologGroups.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="inputProteinFile">$$dataDir$$/good.fasta</paramValue>
+    <paramValue name="inputTaxaDir">$$dataDir$$/representativeProteomes</paramValue>
     <paramValue name="outputGroupsDir">$$dataDir$$/finalGroups</paramValue>
     <paramValue name="suffix"></paramValue>
+    <paramValue name="useExistingSimSeqs">true</paramValue>
     <depends name="makeFinalGoodProteinsFile"/>
     <depends name="makeFinalGroupsDir"/>
   </subgraph>
