@@ -11,9 +11,17 @@ sub run {
     my $dataSourceXmlFile = $self->getParamValue('resourceXmlFileName');
     my $dataDirPath = $self->getParamValue('dataDir');
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
+    my $parentDataSource = $dataSource->getParentResource();
+    
+    # if version is TODAY, get value from db instead
+    my $versionFromDb;
+    my $ds = $parentDataSource? $parentDataSource : $dataSource;
+    if ($ds->getRawVersion() eq 'TODAY') {
+	$versionFromDb = $self->getExtDbVersion($test, $ds->getName());
+    }
 
     my $plugin =  $dataSource->getPlugin();
-    my $pluginArgs =  $dataSource->getPluginArgs();
+    my $pluginArgs = $dataSource->getPluginArgs($versionFromDb);
 
     _formatForCLI($pluginArgs);
 
