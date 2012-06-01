@@ -47,8 +47,8 @@ sub run {
 	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 	} else {
 	    # allow for restart; skip those already in db.   any partially done pair needs to be fully backed out before restart.
-	    my $stmt = $workflowStep->runSql("select name from sres.externaldatabase where name = '$databaseName'");
-	    next if $stmt->fetchrow_array(); 
+	    my $exists = $workflowStep->runSqlFetchOneRow($test,"select name from sres.externaldatabase where name = '$databaseName'");
+	    next if $exists;
 
 	    my $tmPrefix = $self->getTuningTablePrefix($orgAbbrevB, $test);
 	    my $sql = "select count(*)
