@@ -21,6 +21,8 @@ sub run {
 
   my $cmd = "orthomclFilterFasta '$workflowDataDir/$proteomesDir' $minLength $maxStopPercent $workflowDataDir/$outputGoodProteinsFile $workflowDataDir/$outputBadProteinsFile";
 
+  $self->testInputFile('proteomesDir', "$workflowDataDir/$proteomesDir");
+
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputGoodProteinsFile");
       $self->runCmd(0, "rm -f $workflowDataDir/$outputBadProteinsFile");
