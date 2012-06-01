@@ -1,0 +1,108 @@
+<workflowGraph name="">
+    <paramValue name="experimentDataDir"/>
+    <paramValue name="readsFile"/>
+    <paramValue name="pairedReadsFile"/>
+    <paramValue name="snpStrain"/>
+    <paramValue name="genomicSeqsFile"/>
+    <paramValue name="BWAIndexDir"/>
+    <paramValue name="organismAbbrev"/>
+    <paramValue name="experimentName"/>
+    <paramValue name="hasPairedEnds"/>
+    <paramValue name="consPercentCutoff"/>
+    <paramValue name="snpPercentCutoff"/>
+    <paramValue name="editDistance"/>
+    <paramValue name="includeIndels"/>
+    <paramValue name="isHaploid"/>
+    <paramValue name="genomeExtDbRlsSpec"/>
+    <paramValue name="snpExtDbRlsSpec"/>
+
+     <!-- legacy?? -->
+    <paramValue name="outputDir"/>
+
+    <!-- mirror the sample directory over to the cluster
+     This directory will eventually contain the cluster task dir but not the fastq files for the sample
+     Those still live in the experiment directory
+     -->
+    <constant name="dataDir">$$experimentDataDir$$/analyze_$$snpStrain$$</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+
+
+
+<!-- will return
+
+  Wei:  copy these to apiSite Files
+result.bai
+result.bam
+
+ jb will make a new module to load fasta seqs
+result.consensus.fa
+
+ jb will load meta data
+
+ Wei:  write cluster inputTaskDir Step
+result.insertions.gff
+result.SNPs.gff
+-->
+
+    <subgraph name="runBwaOnCluster"  xmlFile="mapHtsSnpsWithBwa.xml">
+      <paramValue name="readsFile">$$readsFile$$</paramValue>
+      <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
+      <paramValue name="hasPairedReads">$$hasPairedEnds$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="bwaIndexDir">$$BWAIndexDir$$</paramValue>
+      <paramValue name="strain">$$snpStrain$$</paramValue>
+      <paramValue name="clusterDataDir">$$dataDir$$</paramValue>
+
+      <!-- These are from Brians 
+      <paramValue name="consPercentCutoff">$$consPercentCutoff$$</paramValue>
+      <paramValue name="snpPercentCutoff">$$snpPercentCutoff$$</paramValue>
+      <paramValue name="editdistance">$$editdistance$$</paramValue>
+      <paramValue name="includeIndels">$$includeIndels$$</paramValue>
+
+      <!-- isHaploid was used to determine the min Percent cutoff; you only need either isHaploid OR consPercentCutoff -->
+      <paramValue name="isHaploid">$$isHaploid$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+    <step name="document-HTS_snps_bwa"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">HTS_snps_bwa_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters">TODO: patch in later</paramValue>
+    </step>
+
+    <step name="insertSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.SNPs.gff</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <paramValue name="isNextGenSeq">true</paramValue>
+      <depends name="runBwaOnCluster"/>
+    </step>
+
+
+    <step name="insertInsertions" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertIndelSeqVar" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.insertions.gff</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <paramValue name="isNextGenSeq">true</paramValue>
+      <depends name="runBwaOnCluster"/>
+    </step>
+
+
+</workflowGraph>
+
+

@@ -1208,7 +1208,7 @@
   <!-- Category: SNPs -->
 
   <!-- FIX WORKFLOW: need to change getAndAnalyzeSnps to use SNPs.gff -->
-  <datasetClass class="SNPs_GFF" category="" datasetFileHint="">
+  <datasetClass class="SNPs_GFF" category="" datasetFileint="">
     <purpose></purpose>
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
@@ -1233,19 +1233,23 @@
     </resource>
   </datasetClass>
 
-  <datasetClass class="SNPs_HTS" category="" datasetFileHint="">
+
+ <datasetClass class="SNPs_HTS_Experiment" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
-    <prop name="snpStrainAbbrev"/>
-    <prop name="hasPairedReads"/>
     <prop name="name"/>
     <prop name="version"/>
+    <prop name="hasPairedEnds"/>
+    <prop name="consPercentCutoff" />
+    <prop name="snpPercentCutoff" />
+    <prop name="editDistance" />
+    <prop name="includeIndels" />
 
     <graphTemplateFile name="SNPs.xml"/>
-
+   
     <resource resource="${organismAbbrev}_SNP_${name}_RSRC" version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+          plugin="ApiCommonData::Load::Plugin::LoadNothing"
               scope="organism"
               type="isolates"
               subType="HTS_SNP"
@@ -1255,11 +1259,38 @@
         <dir name="final">
         </dir>
       </manualGet>
-      <unpack>ln -s @@manualDeliveryDir@@/${projectName}/${organismAbbrev}/SNP/${name}/%RESOURCE_VERSION%/final/ @@dataDir@@/final</unpack>
+      <unpack>ln -s @@manualDeliveryDir@@/${projectName}/${organismAbbrev}/SNP/${name}/${version}/final/ @@dataDir@@/final</unpack>
 
       <getAndUnpackOutput dir="@@dataDir@@/final" />
-      <getAndUnpackOutput file="@@dataDir@@/final/reads.txt"/>
-      <getAndUnpackOutput file="@@dataDir@@/final/readsPaired.txt"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/sampleMetaData.txt"/>
+      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
+    </resource>
+
+  </datasetClass>
+
+
+
+  <datasetClass class="SNPs_HTS_Sample" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="snpStrainAbbrev"/>
+ 
+    <graphTemplateFile name="htsSnpSamples.xml"/>
+
+    <resource resource="${organismAbbrev}_${experimentName}_${snpStrainAbbrev}_SNPSample_RSRC" version="dontcare"
+          plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              type="isolates"
+              subType="HTS_SNP"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_SNP_${name}_RSRC/final/${snpStrainAbbrev}" />
 
       <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
     </resource>

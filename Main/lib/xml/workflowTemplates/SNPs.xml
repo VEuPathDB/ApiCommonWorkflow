@@ -11,7 +11,6 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <!-- only needed by HTS SNPs but we always create it to keep things simple -->
   <step name="createBWAIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBWAIndexes">
     <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
     <paramValue name="outputIndexDir">$$dataDir$$/bwa_index</paramValue>
@@ -37,38 +36,81 @@
     </subgraph>
   </datasetTemplate>
 
-  <datasetTemplate class="SNPs_HTS">
-    <prop name="name"/>
-    <prop name="version"/>
-    <prop name="snpStrainAbbrev"/>
-    <prop name="organismAbbrev"/>
-    <prop name="hasPairedReads"/>
 
-    <subgraph name="${name}_SNPs_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">${organismAbbrev}_SNP_${name}_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+  <datasetTemplate class="SNPs_HTS_Experiment">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="hasPairedEnds"/>
+    <prop name="consPercentCutoff" />
+    <prop name="snpPercentCutoff" />
+    <prop name="editDistance" />
+    <prop name="includeIndels" />
+
+
+    <!-- dataDir eq 'SNPs' directory 
+
+    Make directories for the experiment and output directory for samples
+    mirror over the experiment directory to the cluster
+    want to mirror over the samples individually So We do the mirror before we get the resource
+    -->
+    <constant name="experimentDir">$$dataDir$$/$$name$$</constant>
+    <constant name="samplesOutputDir">$$experimentDir$$/samplesOutput</constant>
+
+    <step name="makeExperimentDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$experimentDir$$</paramValue>
       <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesOutputDir$$</paramValue>
+      <depends name="makeExperimentDir"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$experimentDir$$</paramValue>
+      <depends name="makeSamplesOutputDir"/>
+    </step>
+
+
+
+    <constant name="experimentRSRC">${organismAbbrev}_SNP_${name}_RSRC</constant>
+
+
+    <!--  The resource will ln -S over from manual delivery into the experimentDir -->
+    <subgraph name="${name}_SNPs_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$experimentRSRC$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$experimentDir$$</paramValue>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <subgraph name="map_${name}_SNPs" xmlFile="mapHtsSNPsWithBWA.xml">
-       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-       <paramValue name="name">${name}</paramValue>
-       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-       <paramValue name="shortSeqsFile">$$dataDir$$/${organismAbbrev}_SNP_${name}_RSRC/final/reads.txt</paramValue>
-       <paramValue name="snpExtDbRlsSpec">${organismAbbrev}_SNP_${name}_RSRC|${version}</paramValue>
+
+    <!-- Subgraph here... what I really want is just to nest another dataSetTemplate (this is a workaround
+
+    The xmlFile is generated based on the Dataset which needs it ( ** the path is from EuPathDBDatasets not anything in ApiCommonWorkflow)
+     -->
+    <subgraph name="map_${name}_SNPs" xmlFile="generated/${projectName}/${organismAbbrev}/${name}/htsSnpSamples.xml">
+       <paramValue name="experimentDir">$$experimentDir$$</paramValue>
+       <paramValue name="experimentRSRC">$$experimentRSRC$$</paramValue>
+       <paramValue name="samplesOutputDir">$$samplesOutputDir$$</paramValue>
        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
        <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-       <paramValue name="hasPairedReads">${hasPairedReads}</paramValue>
-       <paramValue name="pairedReadFile">$$dataDir$$/${organismAbbrev}_SNP_${name}_RSRC/final/readsPaired.txt</paramValue>
-       <paramValue name="snpStrain">${snpStrainAbbrev}</paramValue>
-       <paramValue name="BWAIndexDir">$$dataDir$$/bwa_index</paramValue>
+       <paramValue name="BWAIndexDir">$$outputIndexDir$$</paramValue>
+       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+       <paramValue name="experimentName">${name}</paramValue>
+       <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
+       <paramValue name="consPercentCutoff">${consPercentCutoff}</paramValue>
+       <paramValue name="snpPercentCutoff">${snpPercentCutoff}</paramValue>
+       <paramValue name="editDistance">${editDistance}</paramValue>
+       <paramValue name="includeIndels">${includeIndels}</paramValue>
        <paramValue name="isHaploid">$$isHaploid$$</paramValue>
        <depends name="${name}_SNPs_RSRC"/>
        <depends name="createBWAIndices"/>
      </subgraph>
 
   </datasetTemplate>
+
 
 
 </workflowGraph>

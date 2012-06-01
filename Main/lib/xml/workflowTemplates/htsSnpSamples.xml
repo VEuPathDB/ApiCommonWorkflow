@@ -1,0 +1,65 @@
+<workflowGraph name="">
+  <paramValue name="experimentDir"/>
+  <paramValue name="experimentRSRC"/>
+  <paramValue name="samplesOutputDir"/>
+  <paramValue name="genomeExtDbRlsSpec"/>
+  <paramValue name="genomicSeqsFile"/>
+  <paramValue name="BWAIndexDir"/>
+  <paramValue name="organismAbbrev"/>
+  <paramValue name="experimentName"/>
+  <paramValue name="hasPairedEnds"/>
+  <paramValue name="consPercentCutoff"/>
+  <paramValue name="snpPercentCutoff"/>
+  <paramValue name="editDistance"/>
+  <paramValue name="includeIndels"/>
+  <paramValue name="isHaploid"/>
+
+  <datasetTemplate class="SNPs_HTS_Sample">
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="snpStrainAbbrev"/>
+
+    <constant name="readsFile">$$experimentDir$$/$$experimentRSRC$$/$snpStrainAbbrev</constant>
+    <constant name="readsFilePaired">$$experimentDir$$/$$experimentRSRC$$/${snpStrainAbbrev}.paired</constant>
+
+    <step name="mirrorReadsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$readsFile$$</paramValue>
+    </step>
+
+    <!-- Only mirror over the Paired file over if it expected -->
+    <step name="mirrorPairedToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" includeIf="$$hasPairedEnds$$">
+      <paramValue name="fileOrDirToMirror">$$readsFilePaired$$</paramValue>
+    </step>
+
+    <!-- The resource here does not get anything from manual delivery.  It only makes rows in sres.extdb and extdbrls -->
+    <subgraph name="SNP_sample_${snpStrainAbbrev}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_${experimentName}_${snpStrainAbbrev}_SNPSample_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$experimentDir$$</paramValue>
+    </subgraph>
+
+    <subgraph name="${sampleName}" xmlFile="analyzeHtsSnpSample.xml">
+      <paramValue name="experimentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="readsFile">$$readsFile$$</paramValue>
+      <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
+      <paramValue name="outputDir">$$samplesOutputDir$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">${organismAbbrev}_${experimentName}_${snpStrainAbbrev}_SNPSample_RSRC|dontcare</paramValue>
+      <paramValue name="snpStrain">${snpStrainAbbrev}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="BWAIndexDir">$$BWAIndexDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="experimentName">$$experimentName$$</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="consPercentCutoff">$$consPercentCutoff$$</paramValue>
+      <paramValue name="snpPercentCutoff">$$snpPercentCutoff$$</paramValue>
+      <paramValue name="editDistance">$$editDistance$$</paramValue>
+      <paramValue name="includeIndels">$$includeIndels$$</paramValue>
+      <paramValue name="isHaploid">$$isHaploid$$</paramValue>
+      <depends name="SNP_sample_${snpStrainAbbrev}_RSRC"/>
+    </subgraph>
+
+  </datasetTemplate>
+
+
+</workflowGraph>
