@@ -1,0 +1,34 @@
+<workflowGraph name="mogWrapper">
+
+  <!-- A wrapper for makeOrthologGroups.xml. In production, we plan to use that
+       as a subgraph. But we want to run it by itself for testing, and for evaluating
+       algorithms for scaling OrthoMCL to larger input sets. -->
+
+  <param name="parentDataDir"/>
+  <param name="inputProteinFile"/>
+  <param name="inputTaxaDir"/>
+  <param name="outputGroupsDir"/>
+  <param name="suffix"/>
+  <param name="useExistingSimSeqs"/>
+
+  <constant name="localDataDir">$$parentDataDir$$/mogWrapper</constant>
+  <constant name="goodProteinFile">$$localDataDir$$/protein.fa</constant>
+
+  <step name="initClusterHomeDir"
+        stepClass="ReFlow::StepClasses::InitClusterHomeDir">
+  </step>
+
+  <subgraph name="makeOrthologGroups" xmlFile="makeOrthologGroups.xml">
+
+    <paramValue name="parentDataDir"/>$$parentDataDir$$</paramValue>
+    <paramValue name="inputProteinFile"/>$$goodProteinFile$$</paramValue>
+    <paramValue name="inputTaxaDir"/>$$inputTaxaDir$$</paramValue>
+    <paramValue name="outputGroupsDir"/>$$outputGroupsDir$$</paramValue>
+    <paramValue name="suffix"/>$$suffix$$</paramValue>
+    <paramValue name="useExistingSimSeqs"/>$$useExistingSimSeqs$$</paramValue>
+
+    <depends name="makeNrdbBlastDbOnCluster"/>
+
+  </subgraph>
+
+</workflowGraph>
