@@ -176,7 +176,7 @@ sub runPlugin {
     my $className = ref($self);
 
     if ($test != 1 && $test != 0) {
-	$self->error("Illegal 'test' arg passed to runPlugin() in step class '$className'");
+	$self->error("Illegal 'test' arg '$test' passed to runPlugin() in step class '$className'");
     }
 
     if ($plugin !~ /\w+\:\:\w+/) {
@@ -246,7 +246,7 @@ sub getAlgInvIds {
   where workflow_step_id = $self->{id}
 ";
 
-  my $stmt = $self->runSql($sql);
+  my $stmt = $self->_runSql($sql);
   my @algInvIds;
   while (my @row = $stmt->fetchrow_array()) {
     push(@algInvIds, $row[0]);
