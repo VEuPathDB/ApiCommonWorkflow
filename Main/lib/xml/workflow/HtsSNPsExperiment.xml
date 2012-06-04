@@ -1,0 +1,72 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="experimentName"/>
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="genomicSeqsFile"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="experimentResourceName"/>
+    <param name="hasPairedEnds"/>
+    <param name="consPercentCutoff"/>
+    <param name="snpPercentCutoff"/>
+    <param name="editDistance"/>
+    <param name="includeIndels"/>
+
+    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
+    <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesOutputDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesOutputDir"/>
+    </step>
+
+    <!--  The resource will ln -S over from manual delivery into the experimentDir -->
+    <subgraph name="experiment_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">$$experimentResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+    <!-- Subgraph here... what I really want is just to nest another dataSetTemplate (this is a workaround
+
+    The xmlFile is generated based on the Dataset which needs it ( ** the path is from EuPathDBDatasets not anything in ApiCommonWorkflow)
+     -->
+
+    <subgraph name="map_${experimentName}_SNPs" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/htsSnpSamples.xml">
+       <paramValue name="experimentDir">$$dataDir$$/${name}</paramValue>
+       <paramValue name="experimentRSRC">${organismAbbrev}_SNP_${name}_RSRC</paramValue>
+       <paramValue name="samplesOutputDir">$$dataDir$$/${name}/samplesOutput</paramValue>
+       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+       <paramValue name="BWAIndexDir">$$parentDataDir$$/bwa_index</paramValue>
+       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+       <paramValue name="experimentName">${name}</paramValue>
+       <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
+       <paramValue name="consPercentCutoff">${consPercentCutoff}</paramValue>
+       <paramValue name="snpPercentCutoff">${snpPercentCutoff}</paramValue>
+       <paramValue name="editDistance">${editDistance}</paramValue>
+       <paramValue name="includeIndels">${includeIndels}</paramValue>
+       <paramValue name="isHaploid">false</paramValue>
+       <depends name="experiment_RSRC"/>
+     </subgraph>
+
+    <step name="document-hts_snp_experiment"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">hts_snp_experiment_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters">TODO: patch in later</paramValue>
+    </step>
+
+</workflowGraph>
