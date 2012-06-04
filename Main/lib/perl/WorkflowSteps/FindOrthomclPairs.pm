@@ -10,6 +10,9 @@ use OrthoMCLEngine::Main::Base;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  # note: orthomclPairs supports restart.  to enable that we'd need to change it to look for its
+  # restart tag in its config file.   and maybe it would put out an error message suggesting that option.
+
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $suffix = $self->getParamValue('suffix');
 
@@ -20,40 +23,7 @@ sub run {
   my $cmd = "orthomclPairs $configFile $logfile cleanup=no suffix=$suffix";
 
   if ($undo) {
-    my $base = OrthoMCLEngine::Main::Base->new($configFile);
-
-    my $inParalogTable = $base->getConfig("inParalogTable") . $suffix;
-    my $orthologTable = $base->getConfig("orthologTable") . $suffix;
-    my $coOrthologTable = $base->getConfig("coOrthologTable") . $suffix;
-
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"truncate table $inParalogTable\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"truncate table $orthologTable\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"truncate table $coOrthologTable\" ");
-
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table BestHit$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table BestInterTaxonScore$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table BestQueryTaxonScore$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table BetterHit$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table CoOrthologAvgScore$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table CoOrthologCandidate$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table CoOrthologNotOrtholog$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table CoOrthologTaxon$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table CoOrthologTemp$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InParalog2Way$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InParalogAvgScore$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InplgOrthoInplg$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InParalogOrtholog$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InplgOrthTaxonAvg$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InParalogTaxonAvg$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table InParalogTemp$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table Ortholog2Way$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table OrthologAvgScore$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table OrthologTaxon$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table OrthologTemp$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table OrthologUniqueId$suffix\" ");
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"drop table UniqueSimSeqsQueryId$suffix\" ");
-
-    $self->runCmd(0, "rm -f $logfile");
+    $self->runCmd($test, "orthomclPairs $configFile $logfile cleanup=all suffix=$suffix");
   } else {
       if ($test) {
 	  $self->runCmd(0,"echo test > $logfile");

@@ -13,7 +13,7 @@ sub run {
   my $suffix = $self->getParamValue('suffix');
 
   if ($undo) {
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"truncate table apidb.SimilarSequences$suffix\" ");
+    $self->runSqlFetchOneRow($test, "truncate table apidb.SimilarSequences$suffix");
   } else {
 
     chdir $taxonDir;
@@ -30,7 +30,7 @@ sub run {
             and subject_taxon_id in ($taxonList)
 SQL
 
-    $self->runCmd($test, "executeIdSQL.pl --idSQL \"truncate table apidb.SimilarSequences$suffix\" ");
+    $self->runSqlFetchOneRow($test, $sql);
 
   }
 }
