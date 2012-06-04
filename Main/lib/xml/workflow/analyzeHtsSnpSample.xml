@@ -39,16 +39,11 @@
 
 <!-- will return
 
-  Wei:  copy these to apiSite Files
-result.bai
-result.bam
-
  jb will make a new module to load fasta seqs
 result.consensus.fa
 
  jb will load meta data
 
- Wei:  write cluster inputTaskDir Step
 result.insertions.gff
 result.SNPs.gff
 -->
@@ -102,6 +97,25 @@ result.SNPs.gff
       <depends name="runBwaOnCluster"/>
     </step>
 
+    <step name="copyBAMFileToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBAMFileToWebServices">
+      <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.bam</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <paramValue name="isNextGenSeq">true</paramValue>
+      <depends name="runBwaOnCluster"/>
+    </step>
+
+    <step name="copyBAMFileIndexToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBAMFileToWebServices">
+      <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.bai</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <paramValue name="isNextGenSeq">true</paramValue>
+      <depends name="runBwaOnCluster"/>
+    </step>
 
 </workflowGraph>
 
