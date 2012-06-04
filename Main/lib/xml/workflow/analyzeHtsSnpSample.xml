@@ -30,20 +30,6 @@
       <depends name="makeDataDir"/>
     </step>
 
-
-
-
-<!-- will return
-
- jb will make a new module to load fasta seqs
-result.consensus.fa
-
- jb will load meta data
-
-result.insertions.gff
-result.SNPs.gff
--->
-
     <subgraph name="runBwaOnCluster"  xmlFile="mapHtsSNPsWithBWA.xml">
       <paramValue name="readsFile">$$readsFile$$</paramValue>
       <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
@@ -74,6 +60,18 @@ result.SNPs.gff
       <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
       <paramValue name="isNextGenSeq">true</paramValue>
+      <depends name="runBwaOnCluster"/>
+    </step>
+
+   <!--  TODO:  Need to see an example consensus file to fill in the regex here -->
+   <step name="loadConsensus" 
+         stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadFastaSequences">
+      <paramValue name="extDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <paramValue name="ncbiTaxId"></paramValue>
+      <paramValue name="sequenceFile">result.consensus.fa</paramValue>
+      <paramValue name="soTermName">variant_genome</paramValue>
+      <paramValue name="regexSourceId">TODO</paramValue>
+      <paramValue name="tableName">Dots::ExternalNASequence</paramValue>
       <depends name="runBwaOnCluster"/>
     </step>
 
