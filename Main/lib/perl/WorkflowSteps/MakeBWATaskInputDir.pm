@@ -11,15 +11,15 @@ sub run {
   # get parameter values
   my $taskInputDir = $self->getParamValue("taskInputDir");
   my $readsFile = $self->getParamValue("readsFile");
+  my $pairedReadsFile = $self->getParamValue("pairedReadsFile");
   my $hasPairedReads = $self->getBooleanParamValue("hasPairedReads");
   my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
   my $bwaIndexDir = $self->getParamValue("bwaIndexDir");
   my $strain = $self->getParamValue("strain");
   my $consPercentCutoff = $self->getParamValue("consPercentCutoff");
   my $snpPercentCutoff = $self->getParamValue("snpPercentCutoff");
-  my $editdistance = $self->getParamValue("SNPs");
+  my $editdistance = $self->getParamValue("editdistance");
   my $includeIndels = $self->getParamValue("includeIndels");
-
 
   my $taskSize = $self->getConfig("taskSize");
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
@@ -53,7 +53,7 @@ editDistance=$editDistance
 includeIndels=$includeIndels
 ";
 
-      $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$readsFile.paired\n" if($hasPairedReads);
+      $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$pairedReadsFile\n" if($hasPairedReads);
       print F "$taskPropFileContent\n";
        close(F);
   }
