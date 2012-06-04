@@ -1,22 +1,19 @@
 <workflowGraph name="">
-    <paramValue name="experimentDataDir"/>
-    <paramValue name="readsFile"/>
-    <paramValue name="pairedReadsFile"/>
-    <paramValue name="snpStrain"/>
-    <paramValue name="genomicSeqsFile"/>
-    <paramValue name="BWAIndexDir"/>
-    <paramValue name="organismAbbrev"/>
-    <paramValue name="experimentName"/>
-    <paramValue name="hasPairedEnds"/>
-    <paramValue name="consPercentCutoff"/>
-    <paramValue name="snpPercentCutoff"/>
-    <paramValue name="editDistance"/>
-    <paramValue name="includeIndels"/>
-    <paramValue name="genomeExtDbRlsSpec"/>
-    <paramValue name="snpExtDbRlsSpec"/>
-
-     <!-- legacy?? -->
-    <paramValue name="outputDir"/>
+    <param name="experimentDataDir"/>
+    <param name="readsFile"/>
+    <param name="pairedReadsFile"/>
+    <param name="snpStrain"/>
+    <param name="genomicSeqsFile"/>
+    <param name="BWAIndexDir"/>
+    <param name="organismAbbrev"/>
+    <param name="experimentName"/>
+    <param name="hasPairedEnds"/>
+    <param name="consPercentCutoff"/>
+    <param name="snpPercentCutoff"/>
+    <param name="editDistance"/>
+    <param name="includeIndels"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="snpExtDbRlsSpec"/>
 
     <!-- mirror the sample directory over to the cluster
      This directory will eventually contain the cluster task dir but not the fastq files for the sample
@@ -47,7 +44,7 @@ result.insertions.gff
 result.SNPs.gff
 -->
 
-    <subgraph name="runBwaOnCluster"  xmlFile="mapHtsSnpsWithBwa.xml">
+    <subgraph name="runBwaOnCluster"  xmlFile="mapHtsSNPsWithBWA.xml">
       <paramValue name="readsFile">$$readsFile$$</paramValue>
       <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
       <paramValue name="hasPairedReads">$$hasPairedEnds$$</paramValue>
@@ -57,7 +54,7 @@ result.SNPs.gff
       <paramValue name="clusterDataDir">$$dataDir$$</paramValue>
       <paramValue name="consPercentCutoff">$$consPercentCutoff$$</paramValue>
       <paramValue name="snpPercentCutoff">$$snpPercentCutoff$$</paramValue>
-      <paramValue name="editdistance">$$editdistance$$</paramValue>
+      <paramValue name="editdistance">$$editDistance$$</paramValue>
       <paramValue name="includeIndels">$$includeIndels$$</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
