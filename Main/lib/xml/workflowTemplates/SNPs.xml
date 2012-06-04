@@ -17,6 +17,11 @@
     <depends name="makeDataDir"/>
   </step>
 
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="createBWAIndices"/>
+    </step>
+
   <datasetTemplate class="SNPs_GFF">
     <prop name="name"/>
     <prop name="version"/>
@@ -50,7 +55,7 @@
     want to mirror over the samples individually So We do the mirror before we get the resource
     -->
 
-    <subgraph name="${name}_rnaSeq_experiment" xmlFile="HtsSNPsExperiment.xml">
+    <subgraph name="${name}_experiment" xmlFile="HtsSNPsExperiment.xml">
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="experimentName">${name}</paramValue>
