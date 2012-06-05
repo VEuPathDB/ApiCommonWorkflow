@@ -49,7 +49,7 @@ bwaIndex=$clusterWorkflowDataDir/$bwaIndexDir
 strain=$strain
 consPercentCutoff=$consPercentCutoff
 snpPercentCutoff=$snpPercentCutoff
-editDistance=$editDistance
+editDistance=$editdistance
 includeIndels=$includeIndels
 ";
 

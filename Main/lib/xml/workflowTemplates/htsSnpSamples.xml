@@ -14,21 +14,12 @@
   <param name="editDistance"/>
   <param name="includeIndels"/>
 
-  <constant name="readsFilePath">$$experimentDir$$/$$experimentRSRC$$/</constant>
+  <constant name="readsFilePath">$$experimentDir$$/$$experimentRSRC$$/final</constant>
 
   <datasetTemplate class="SNPs_HTS_Sample">
     <prop name="organismAbbrev"/>
     <prop name="experimentName"/>
     <prop name="snpStrainAbbrev"/>
-
-    <step name="mirrorReadsToCluster_${snpStrainAbbrev}" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$readsFilePath$$/${snpStrainAbbrev}</paramValue>
-    </step>
-
-    <!-- Only mirror over the Paired file over if it expected -->
-    <step name="mirrorPairedToCluster_${snpStrainAbbrev}" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" includeIf="$$hasPairedEnds$$">
-      <paramValue name="fileOrDirToMirror">$$readsFilePath$$/${snpStrainAbbrev}.paired</paramValue>
-    </step>
 
     <!-- The resource here does not get anything from manual delivery.  It only makes rows in sres.extdb and extdbrls -->
     <subgraph name="SNP_sample_${snpStrainAbbrev}_RSRC" xmlFile="loadResource.xml">
@@ -36,6 +27,18 @@
       <paramValue name="resourceXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
       <paramValue name="parentDataDir">$$experimentDir$$</paramValue>
     </subgraph>
+<!--FIX: need to mirror or make /gpfs/fs121/eupath/workflows/PlasmoDB/htsSNPTest/data/pfal3D7/organismSpecific/SNPs/Broad_HTS_Isolates/pfal3D7_SNP_Broad_HTS_Isolates_RSRC/ di before mirrorReadstoCluster-->
+    <step name="mirrorReadsToCluster_${snpStrainAbbrev}" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$readsFilePath$$/${snpStrainAbbrev}</paramValue>
+      <depends name="SNP_sample_${snpStrainAbbrev}_RSRC"/>
+    </step>
+
+<!--FIX: need to mirror or make /gpfs/fs121/eupath/workflows/PlasmoDB/htsSNPTest/data/pfal3D7/organismSpecific/SNPs/Broad_HTS_Isolates/pfal3D7_SNP_Broad_HTS_Isolates_RSRC/ di before mirrorReadstoCluster-->
+    <!-- Only mirror over the Paired file over if it expected -->
+    <step name="mirrorPairedToCluster_${snpStrainAbbrev}" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" includeIf="$$hasPairedEnds$$">
+      <paramValue name="fileOrDirToMirror">$$readsFilePath$$/${snpStrainAbbrev}.paired</paramValue>
+      <depends name="SNP_sample_${snpStrainAbbrev}_RSRC"/>
+    </step>
 
     <subgraph name="${snpStrainAbbrev}" xmlFile="analyzeHtsSnpSample.xml">
       <paramValue name="experimentDataDir">$$experimentDir$$</paramValue>
