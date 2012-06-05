@@ -13,6 +13,7 @@
   <param name="snpPercentCutoff"/>
   <param name="editDistance"/>
   <param name="includeIndels"/>
+  <param name="relativeWebServicesDir"/>
 
   <constant name="readsFilePath">$$experimentDir$$/$$experimentRSRC$$/final</constant>
 
@@ -27,13 +28,13 @@
       <paramValue name="resourceXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
       <paramValue name="parentDataDir">$$experimentDir$$</paramValue>
     </subgraph>
-<!--FIX: need to mirror or make /gpfs/fs121/eupath/workflows/PlasmoDB/htsSNPTest/data/pfal3D7/organismSpecific/SNPs/Broad_HTS_Isolates/pfal3D7_SNP_Broad_HTS_Isolates_RSRC/ di before mirrorReadstoCluster-->
+<!--FIX: need to mirror or make /gpfs/fs121/eupath/workflows/PlasmoDB/htsSNPTest/data/pfal3D7/organismSpecific/SNPs/Broad_HTS_Isolates/pfal3D7_SNP_Broad_HTS_Isolates_RSRC/final di before mirrorReadstoCluster-->
     <step name="mirrorReadsToCluster_${snpStrainAbbrev}" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$readsFilePath$$/${snpStrainAbbrev}</paramValue>
       <depends name="SNP_sample_${snpStrainAbbrev}_RSRC"/>
     </step>
 
-<!--FIX: need to mirror or make /gpfs/fs121/eupath/workflows/PlasmoDB/htsSNPTest/data/pfal3D7/organismSpecific/SNPs/Broad_HTS_Isolates/pfal3D7_SNP_Broad_HTS_Isolates_RSRC/ di before mirrorReadstoCluster-->
+<!--FIX: need to mirror or make /gpfs/fs121/eupath/workflows/PlasmoDB/htsSNPTest/data/pfal3D7/organismSpecific/SNPs/Broad_HTS_Isolates/pfal3D7_SNP_Broad_HTS_Isolates_RSRC/final di before mirrorReadstoCluster-->
     <!-- Only mirror over the Paired file over if it expected -->
     <step name="mirrorPairedToCluster_${snpStrainAbbrev}" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" includeIf="$$hasPairedEnds$$">
       <paramValue name="fileOrDirToMirror">$$readsFilePath$$/${snpStrainAbbrev}.paired</paramValue>
@@ -41,6 +42,7 @@
     </step>
 
     <subgraph name="${snpStrainAbbrev}" xmlFile="analyzeHtsSnpSample.xml">
+      <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="experimentDataDir">$$experimentDir$$</paramValue>
       <paramValue name="readsFile">$$readsFilePath$$/${snpStrainAbbrev}</paramValue>
       <paramValue name="pairedReadsFile">$$readsFilePath$$/${snpStrainAbbrev}.paired</paramValue>
@@ -57,7 +59,9 @@
       <paramValue name="snpPercentCutoff">$$snpPercentCutoff$$</paramValue>
       <paramValue name="editDistance">$$editDistance$$</paramValue>
       <paramValue name="includeIndels">$$includeIndels$$</paramValue>
-      <depends name="SNP_sample_${snpStrainAbbrev}_RSRC"/>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="mirrorReadsToCluster_${snpStrainAbbrev}"/>
+      <depends name="mirrorPairedToCluster_${snpStrainAbbrev}"/>
     </subgraph>
 
   </datasetTemplate>

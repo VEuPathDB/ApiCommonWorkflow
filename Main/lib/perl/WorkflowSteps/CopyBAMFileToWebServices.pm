@@ -11,14 +11,9 @@ sub run {
   # standard parameters for making download files
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $projectName = $self->getParamValue('projectName');
-  my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
-  my $dataName = $self->getParamValue('dataName');
-  my $service = $self->getParamValue('service');
   my $inputFile=$self->getParamValue('inputFile');
   my $experimentName=$self->getParamValue('experimentName');
   my $snpStrain=$self->getParamValue('snpStrain');
-
-  # extra params for this step
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
