@@ -18,10 +18,9 @@ sub run {
   my $suffix = $self->getParamValue('suffix');
   my $inputProteinFile = $self->getParamValue('inputProteinFile');
 
+  my $sql;
   my $cacheTableName = "ApiDB.SimilarSequences${suffix}_c"
-  my $sql = "sql to find number of tables";
-  my $cacheTableExists = $taxaDir && $self->runSqlFetchOneRow($test, "$sql");
-
+  ($cacheTableExists) = $self->runSqlFetchOneRow($test, "sql to test cache table existence") if ($taxaDir);
 
   if ($undo) {
       if ($tableExists) {
@@ -44,10 +43,12 @@ sub run {
 }
 
 # Plan A Tier 1
-# drop apidb.SimilarSequences$suffix if it exists
+# drop apidb.SimilarSequences$suffix table if it exists
 # create synonym called "apidb.SimilarSequences$suffix" that points to cache table apidb.SimilarSequences$suffix_c
 sub createSynonym {
     my ($self, $suffix) = @_;
+    my ($simSeqExists) = $self->runSqlFetchOneRow($test, "sql here to test existance of sim seq table");
+
 }
 
 # Plan B Tier 1
