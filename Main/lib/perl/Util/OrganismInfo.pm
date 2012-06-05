@@ -18,8 +18,7 @@ sub new {
              from apidb.organism
              where abbrev = '$organismAbbrev'";
 
-    my $stmt = $workflowStep->runSql($sql);
-    my ($organismId, $nameForFiles, $strainAbbrev, $publicAbbrev, $isFamilyRepresentative, $familyNcbiTaxonIds, $familyNameForFiles) = $stmt->fetchrow_array(); 
+    my ($organismId, $nameForFiles, $strainAbbrev, $publicAbbrev, $isFamilyRepresentative, $familyNcbiTaxonIds, $familyNameForFiles) = $workflowStep->runSqlFetchOneRow($sql);
 
     $sql = "select tn.name, t.ncbi_tax_id, o.taxon_id
              from sres.taxonname tn, sres.taxon t, apidb.organism o
@@ -28,8 +27,8 @@ sub new {
              and tn.taxon_id = t.taxon_id
              and tn.name_class = 'scientific name'";
 
-    my $stmt = $workflowStep->runSql($sql);
-    my ($fullName, $ncbiTaxonId, $taxonId) = $stmt->fetchrow_array(); 
+    my ($fullName, $ncbiTaxonId, $taxonId) = $workflowStep->runSqlFetchOneRow($sql);
+
 
     $sql = "select ncbi_tax_id, taxon_id
    from
@@ -39,16 +38,14 @@ sub new {
    start with taxon_id = $taxonId) t
    where t.rank = 'species'";
 
-    $stmt = $workflowStep->runSql($sql);
-    my ($speciesNcbiTaxonId, $speciesTaxonId) = $stmt->fetchrow_array(); 
+    my ($speciesNcbiTaxonId, $speciesTaxonId) = $workflowStep->runSqlFetchOneRow($sql);
 
     $sql = "select name
             from sres.taxonname
             where taxon_id = $speciesTaxonId
             and name_class = 'scientific name'";
 
-    $stmt = $workflowStep->runSql($sql);
-    my ($speciesName) = $stmt->fetchrow_array(); 
+    my ($speciesName) = $workflowStep->runSqlFetchOneRow($sql);
 
     $self->{fullName} = $fullName;
     $self->{nameForFiles} = $nameForFiles;
