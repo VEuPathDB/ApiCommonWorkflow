@@ -9,20 +9,20 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $extDbRlsSpec = $self->getParam('extDbRlsSpec'); 
-  my $ncbiTaxId = $self->getParam('ncbiTaxId')  
-  my $sequenceFile = $self->getParam('sequenceFile')  
-  my $soTermName = $self->getParam('soTermName');
-  my $regexSourceId = $self->getParam('regexSourceId');
-  my $tableName = $self->getParam('tableName');
+  my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec'); 
+  my $ncbiTaxId = $self->getParamValue('ncbiTaxId'); 
+  my $sequenceFile = $self->getParamValue('sequenceFile');  
+  my $soTermName = $self->getParamValue('soTermName');
+  my $regexSourceId = $self->getParamValue('regexSourceId');
+  my $tableName = $self->getParamValue('tableName');
 
   my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test, $extDbRlsSpec);
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbRlsVer --sequenceFile $workflowDataDir/$sequenceFile --regexSourceId $soTermName --tableName \"$tableName\" ";
+  my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbRlsVer --sequenceFile $workflowDataDir/$sequenceFile --regexSourceId '$regexSourceId' --tableName \"$tableName\" ";
 
-  $args .= "--soTermName $soTermName " if defined $soTermName;
-  $args .= "--ncbiTaxId $ncbiTaxId " if defined $ncbiTaxId;
+  $args .= "--soTermName $soTermName " if ($soTermName);
+  $args .= "--ncbiTaxId $ncbiTaxId " if ($ncbiTaxId);
 
   if ($test) {
     $self->testInputFile('inputFile', "$workflowDataDir/$sequenceFile");
