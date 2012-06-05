@@ -52,8 +52,12 @@ snpPercentCutoff=$snpPercentCutoff
 editDistance=$editdistance
 includeIndels=$includeIndels
 ";
+      if($hasPairedReads){
+	  $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$pairedReadsFile\n";
+      }else {
+	  $taskPropFileContent .= "mateB=none\n";
+      }
 
-      $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$pairedReadsFile\n" if($hasPairedReads);
       print F "$taskPropFileContent\n";
        close(F);
   }
