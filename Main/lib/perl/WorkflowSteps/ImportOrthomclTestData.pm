@@ -18,14 +18,14 @@ sub run {
   my $suffix = $self->getParamValue('suffix');
   my $inputProteinFile = $self->getParamValue('inputProteinFile');
 
-  my $sql;
-  my $cacheTableName = "ApiDB.SimilarSequences${suffix}_c"
-  ($cacheTableExists) = $self->runSqlFetchOneRow($test, "sql to test cache table existence") if ($taxaDir);
+  # cache table is named "ApiDB.SimilarSequences${suffix}_c"
+  my ($cacheTableExists) = $self->runSqlFetchOneRow($test, <<SQL) if ($taxaDir);
+      select count(*) from all_tables
+      where owner = 'APIDB' and table_name = upper('SimilarSequences${suffix}_c')
+SQL
 
   if ($undo) {
-      if ($tableExists) {
-	  $sql = "sql to remove synonym";
-	  $self->runSqlFetchOneRow($test, "$sql");
+      if ($cacheTableExists) {
       } else {
 	  $self->runSqlFetchOneRow($test, "truncate table apidb.SimilarSequences$suffix");
       }
@@ -33,10 +33,10 @@ sub run {
       if (!$taxaDir) {
 	  $self->filterOnProteinIds($suffix, $inputProteinFile);
       } else {
-	  if ($tableExists) {
-	      $self->createSynonym($suffix);
+	  if ($cacheTableExists) {
+	      $self->createSynonym($test, $suffix);
 	  } else {
-	      $self->filterOnTaxa($suffix, $taxaDir);
+	      $self->filterOnTaxa($test, $suffix, $taxaDir);
 	  }
       }
   }
@@ -46,20 +46,33 @@ sub run {
 # drop apidb.SimilarSequences$suffix table if it exists
 # create synonym called "apidb.SimilarSequences$suffix" that points to cache table apidb.SimilarSequences$suffix_c
 sub createSynonym {
-    my ($self, $suffix) = @_;
-    my ($simSeqExists) = $self->runSqlFetchOneRow($test, "sql here to test existance of sim seq table");
+    my ($self, $test, $suffix) = @_;
 
+    my ($simSeqExists) = $self->runSqlFetchOneRow($test, <<SQL);
+      select count(*) from all_tables
+      where owner = 'APIDB' and table_name = upper('SimilarSequences${suffix}')
+SQL
+
+    if ($simSeqExists) {
+      $self->runSqlFetchOneRow($test, <<SQL);
+         drop table apidb.SimilarSequences${suffix}
+SQL
+    }
+
+    $self->runSqlFetchOneRow($test, <<SQL);
+      create or replace synonym apidb.SimilarSequences${suffix} for apidb.SimilarSequences${suffix}_c
+SQL
 }
 
 # Plan B Tier 1
 sub filterOnTaxa {
-    my ($self, $suffix, $taxaDir) = @_;
+    my ($self, $test, $suffix, $taxaDir) = @_;
 
     chdir $taxaDir || die "Can't chdir to '$taxaDir'\n";
     my @taxonNames = map {/(\w+).fasta/; $1; } <*.fasta>;
     my $taxonList = join(', ', @taxonNames);
 
-    $sql = <<"SQL";
+    $self->runSqlFetchOneRow($test, <<SQL);
           insert into apidb.SimilarSequences$suffix
                       (query_id, subject_id, query_taxon_id, subject_taxon_id,
                        evalue_mant, evalue_exp, percent_identity, percent_match)
@@ -70,7 +83,6 @@ sub filterOnTaxa {
             and subject_taxon_id in ($taxonList)
 SQL
 
-    $self->runSqlFetchOneRow($test, $sql);
 }
 
 # Plan A Tier 2 (representatives) and Plan B Tier 2 (residuals)
