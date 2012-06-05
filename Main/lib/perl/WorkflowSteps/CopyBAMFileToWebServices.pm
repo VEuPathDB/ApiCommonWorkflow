@@ -20,17 +20,19 @@ sub run {
 
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
 
+  my $workflowDataDir = $self->getWorkflowDataDir();
+
   my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/bam/$experimentName/$snpStrain/";
 
   if($undo) {
     $self->runCmd(0, "rm -f $copyToDir/*");
   } else{
       if($test){
-	  $self->testInputFile('inputFile', "$inputFile");
+	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 	  $self->runCmd(0, "mkdir -p $copyToDir");
       }else {
 	  $self->runCmd($test, "mkdir -p $copyToDir");
-	  $self->runCmd($test, "cp $inputFile $copyToDir");
+	  $self->runCmd($test, "cp $workflowDataDir/$inputFile $copyToDir");
        }
   }
 }
