@@ -32,26 +32,28 @@ sub run {
       }
   } else {
       if (!$taxaDir) {
-	  $self->filterOnProteinIds($inputProteinFile, $suffix);
+	  $self->filterOnProteinIds($suffix, $inputProteinFile);
       } else {
 	  if ($tableExists) {
 	      $self->createSynonym($suffix);
 	  } else {
-	      $self->filterOnTaxa($taxaDir, $suffix);
+	      $self->filterOnTaxa($suffix, $taxaDir);
 	  }
       }
   }
 }
 
-sub filterOnProteinIds {
-}
-
+# Plan A Tier 1
 # drop apidb.SimilarSequences$suffix if it exists
-# create synonym
+# create synonym called "apidb.SimilarSequences$suffix" that points to cache table apidb.SimilarSequences$suffix_c
 sub createSynonym {
+    my ($self, $suffix) = @_;
 }
 
+# Plan B Tier 1
 sub filterOnTaxa {
+    my ($self, $suffix, $taxaDir) = @_;
+
     chdir $taxaDir || die "Can't chdir to '$taxaDir'\n";
     my @taxonNames = map {/(\w+).fasta/; $1; } <*.fasta>;
     my $taxonList = join(', ', @taxonNames);
@@ -69,3 +71,13 @@ SQL
 
     $self->runSqlFetchOneRow($test, $sql);
 }
+
+# Plan A Tier 2 (representatives) and Plan B Tier 2 (residuals)
+# parse fasta to get protein ids, and write ids to table
+# use table to join for filtering
+# write results to apidb.SimilarSequences$suffix
+sub filterOnProteinIds {
+    my ($self, $suffix, $proteinsFastaFile) = @_;
+}
+
+
