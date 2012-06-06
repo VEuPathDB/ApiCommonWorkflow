@@ -28,6 +28,10 @@ sub run {
 
   my $organismFullName = $self->getOrganismInfo($test, $organismAbbrev)->getFullName();
   my $strainAbbrev = $self->getOrganismInfo($test, $organismAbbrev)->getStrainAbbrev();
+  
+  unless($strainAbbrev) {
+    $self->error("Strain Abbreviation for the reference [$organismAbbrev] was not defined");   
+  }
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
