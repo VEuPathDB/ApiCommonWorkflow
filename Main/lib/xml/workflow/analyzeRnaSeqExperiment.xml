@@ -3,6 +3,7 @@
     <param name="organismAbbrev"/>
     <param name="experimentName"/>
     <param name="parentDataDir"/>
+    <param name="hasTimeSeries"/>
     <param name="relativeDownloadSiteDir"/>
     <param name="experimentResourceName"/>
     <param name="experimentResourceVersion"/>
@@ -45,6 +46,13 @@
       <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="experimentResourceName">$$experimentResourceName$$</paramValue>
       <depends name="doTranscriptExpression"/>
+    </step>
+
+    <step name="calculateExpressionStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateExpressionStatsForTimeSeries" stepLoadTypes="plugin" includeIf="$$hasTimeSeries$$" undoRoot="loadExpressionProfilesFromConfig">
+      <paramValue name="extDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
+      <paramValue name="configFile">time_series_stats_config.txt</paramValue>
+      <paramValue name="doTranscriptExpressionDir">$$dataDir$$/doTranscriptExpression</paramValue>
+      <depends name="loadIntensityProfile"/>
     </step>
 
     <step name="loadAnalysisResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin">
