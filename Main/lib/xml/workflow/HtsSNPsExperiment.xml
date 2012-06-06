@@ -40,10 +40,11 @@
     </subgraph>
 
 
-    <!-- Subgraph here... what I really want is just to nest another dataSetTemplate (this is a workaround
-
-    The xmlFile is generated based on the Dataset which needs it ( ** the path is from EuPathDBDatasets not anything in ApiCommonWorkflow)
-     -->
+  
+  <step name="addStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy">
+    <paramValue name="experimentName">$$experimentName$$</paramValue>
+    <depends name="experiment_RSRC"/>
+  </step>
 
     <subgraph name="map_SNPs" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/htsSnpSamples.xml">
        <paramValue name="projectName">$$projectName$$</paramValue>
@@ -61,9 +62,9 @@
        <paramValue name="editDistance">$$editDistance$$</paramValue>
        <paramValue name="includeIndels">$$includeIndels$$</paramValue>
        <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-       <depends name="experiment_RSRC"/>
+       <depends name="addStudy"/>
      </subgraph>
-
+     
     <step name="document-hts_snp_experiment"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
       <paramValue name="method">hts_snp_experiment_MTHD</paramValue>

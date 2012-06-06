@@ -1,0 +1,43 @@
+<workflowGraph name="getAndAnalyzezConsensusSNPs.xml">
+  <paramValue name="parentDataDir"/>
+  <paramValue name="organismAbbrev"/>
+  <paramValue name="genomicSeqsFile"/>
+  <paramValue name="genomeExtDbRlsSpec"/>
+
+   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$parentDataDir$$/SNPs_HTS_Consensus</paramValue>
+  </step>
+
+  <constant name="coverageExtDbRlsSpec">HTS_consensus_SNPs_$$organismAbbrev$$|dontcare</constant>
+
+    <step name="insertExtDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateExtDbAndDbRls" stepLoadTypes="plugin">
+      <paramValue name="extDbRlsSpec">$$coverageExtDbRlsSpec$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeHtsCoverageSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHtsCoverageSNPs">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="coverageSnpsFile">$$dataDir$$/$$organismAbbrev$$.gff</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="insertCoverageSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="loadSnpFeature,plugin">
+      <paramValue name="inputFile">$$coverageSnpsFile$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$coverageExtDbRlsSpec$$</paramValue>
+      <paramValue name="isNextGenSeq">true</paramValue>
+      <depends name="insertExtDb"/>
+      <depends name="makeHtsCoverageSnps"/>
+    </step>
+
+    <step name="document-coverage-snps-mummer"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">coverage_snps_mummer_MTHD</paramValue>
+      <paramValue name="version">1</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="insertCoverageSnps"/>
+    </step>
+
+</workflowGraph>

@@ -8,8 +8,8 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     # get parameters
-    my $syntenyExtDbRlsSpec = $self->getParamValue('syntenyExtDbRlsSpec');
-    my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$syntenyExtDbRlsSpec);
+    my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
+    my ($extDbName, $extDbRlsVer) = $self->getExtDbInfo($test, $extDbRlsSpec);
 
     my $dbPluginArgs = "--name '$extDbName' ";
     
@@ -23,7 +23,7 @@ sub run {
 
 sub getParamsDeclaration {
     return (
-            'syntenyExtDbRlsSpec'
+            'extDbRlsSpec'
            );
 }
 

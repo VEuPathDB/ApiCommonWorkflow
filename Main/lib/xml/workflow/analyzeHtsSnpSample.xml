@@ -16,6 +16,7 @@
     <param name="genomeExtDbRlsSpec"/>
     <param name="snpExtDbRlsSpec"/>
     <param name="relativeWebServicesDir"/>
+    <param name="sampleMetaDataFile"/>
 
     <!-- mirror the sample directory over to the cluster
      This directory will eventually contain the cluster task dir but not the fastq files for the sample
@@ -31,6 +32,14 @@
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
+    
+  <step name="addMetaData" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSampleMetaData">
+    <paramValue name="experimentName">$$experimentName$$</paramValue>
+    <paramValue name="sampleMetaDataFile">$$sampleMetaDataFile$$</paramValue>
+    <paramValue name="readsFile">$$readsFile$$</paramValue>
+    <paramValue name="snpStrain">$$snpStrain$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </step>
 
     <subgraph name="runBwaOnCluster"  xmlFile="mapHtsSNPsWithBWA.xml">
       <paramValue name="readsFile">$$readsFile$$</paramValue>

@@ -64,7 +64,17 @@
     <depends name="mirrorToCluster"/>
   </subgraph>
 
+
+
   <subgraph name="snps" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/SNPs.xml"  excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="htssnps" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/SNPs_HTS.xml"  excludeIfXmlFileDoesNotExist="true">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
@@ -72,6 +82,15 @@
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
     <depends name="mirrorToCluster"/>
   </subgraph>
+
+  <subgraph name="consensussnps" xmlFile="getAndAnalyzeConsensusSnps.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <depends name="htssnps"/>
+  </subgraph>
+
 
   <subgraph name="misc" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/OrganismSpecificMisc.xml"  excludeIfXmlFileDoesNotExist="true">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
