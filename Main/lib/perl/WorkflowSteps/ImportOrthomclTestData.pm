@@ -25,13 +25,13 @@ sub run {
 SQL
 
   if ($undo) {
-      if ($cacheTableExists) {
-      } else {
+    #no need to drop synonym on undo, because it's created with "create or replace synonym"
+      if (!$cacheTableExists) {
 	  $self->runSqlFetchOneRow($test, "truncate table apidb.SimilarSequences$suffix");
       }
   } else {
       if (!$taxaDir) {
-	  $self->filterOnProteinIds($suffix, $inputProteinFile);
+	  $self->runCmd($test, "filterSimilarSequencesByGeneSet -suffix $suffix -proteinsFile $inputProteinFile");
       } else {
 	  if ($cacheTableExists) {
 	      $self->createSynonym($test, $suffix);
@@ -55,7 +55,7 @@ SQL
 
     if ($simSeqExists) {
       $self->runSqlFetchOneRow($test, <<SQL);
-         drop table apidb.SimilarSequences${suffix}
+         alter table apidb.SimilarSequences${suffix} rename to apidb.SimSeqs${suffix}_sv
 SQL
     }
 
