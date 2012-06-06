@@ -18,10 +18,13 @@ sub run {
   my $suffix = $self->getParamValue('suffix');
   my $inputProteinFile = $self->getParamValue('inputProteinFile');
 
-  # cache table is named "ApiDB.SimilarSequences${suffix}_c"
+  my $workflowDataDir = $self->getWorkflowDataDir();
+
+  my $cacheTableName = "SimSeq_${suffix}_c";
+
   my ($cacheTableExists) = $self->runSqlFetchOneRow($test, <<SQL) if ($taxaDir);
       select count(*) from all_tables
-      where owner = 'APIDB' and table_name = upper('SimilarSequences${suffix}_c')
+      where owner = 'APIDB' and table_name = upper('$cacheTableName')
 SQL
 
   if ($undo) {
@@ -31,12 +34,12 @@ SQL
       }
   } else {
       if (!$taxaDir) {
-	  $self->runCmd($test, "filterSimilarSequencesByGeneSet -suffix $suffix -proteinsFile $inputProteinFile");
+	  $self->runCmd($test, "filterSimilarSequencesByGeneSet -suffix $suffix -proteinsFile $workflowDataDir/$inputProteinFile");
       } else {
 	  if ($cacheTableExists) {
-	      $self->createSynonym($test, $suffix);
+	      $self->createSynonym($test, $suffix, $cacheTableName);
 	  } else {
-	      $self->filterOnTaxa($test, $suffix, $taxaDir);
+	      $self->filterOnTaxa($test, $suffix, "$workflowDataDir/$taxaDir");
 	  }
       }
   }
@@ -46,7 +49,7 @@ SQL
 # drop apidb.SimilarSequences$suffix table if it exists
 # create synonym called "apidb.SimilarSequences$suffix" that points to cache table apidb.SimilarSequences$suffix_c
 sub createSynonym {
-    my ($self, $test, $suffix) = @_;
+    my ($self, $test, $suffix, $cacheTableName) = @_;
 
     my ($simSeqExists) = $self->runSqlFetchOneRow($test, <<SQL);
       select count(*) from all_tables
@@ -55,12 +58,12 @@ SQL
 
     if ($simSeqExists) {
       $self->runSqlFetchOneRow($test, <<SQL);
-         alter table apidb.SimilarSequences${suffix} rename to apidb.SimSeqs${suffix}_sv
+         alter table apidb.SimilarSequences${suffix} rename to SimSeqs${suffix}_sv
 SQL
     }
 
     $self->runSqlFetchOneRow($test, <<SQL);
-      create or replace synonym apidb.SimilarSequences${suffix} for apidb.SimilarSequences${suffix}_c
+      create or replace synonym apidb.SimilarSequences${suffix} for apidb.$cacheTableName
 SQL
 }
 
@@ -69,7 +72,7 @@ sub filterOnTaxa {
     my ($self, $test, $suffix, $taxaDir) = @_;
 
     chdir $taxaDir || die "Can't chdir to '$taxaDir'\n";
-    my @taxonNames = map {/(\w+).fasta/; $1; } <*.fasta>;
+    my @taxonNames = map {/(\w+).fasta/; "'$1'"; } <*.fasta>;
     my $taxonList = join(', ', @taxonNames);
 
     $self->runSqlFetchOneRow($test, <<SQL);
