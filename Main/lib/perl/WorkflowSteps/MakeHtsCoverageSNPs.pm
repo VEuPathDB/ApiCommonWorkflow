@@ -13,8 +13,9 @@ sub run {
 
   my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
   my $referenceOrganism = $organismInfo->getFullName();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
- my $cmd = "generateHtsCoverageSnpsFromDB.pl --referenceOrganism $referenceOrganism --outputFile $coverageSnpsFile";
+ my $cmd = "generateHtsCoverageSnpsFromDB.pl --referenceOrganism '$referenceOrganism' --outputFile $workflowDataDir/$coverageSnpsFile";
 
     if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$coverageSnpsFile");
