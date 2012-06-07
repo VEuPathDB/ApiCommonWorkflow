@@ -51,6 +51,7 @@
       <depends name="${cladeAbbrev}_makeCladeDir"/>
       <depends name="initClusterHomeDir"/>
     </step>
+
     <subgraph name="${cladeAbbrev}_makeGroups" xmlFile="makeOrthologGroups.xml" excludeIf="${containsOnlyOneOrganism}">
       <paramValue name="parentDataDir">$$dataDir$$/${cladeAbbrev}</paramValue>
       <paramValue name="inputProteinFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
@@ -68,7 +69,7 @@
       <paramValue name="inputProteinsFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
       <paramValue name="outputRepresentativeProteinsFile">$$dataDir$$/representativeProteomes/${cladeAbbrev}.fasta</paramValue>
       <paramValue name="outputGroupsFile">$$dataDir$$/tierOneGroups/${cladeAbbrev}_groupsWithRepFirst</paramValue>
-      <paramValue name="proteinIdPrefix">${cladeAbbrev}</paramValue>
+      <paramValue name="proteinIdPrefix">${ncbiTaxonId}</paramValue>
       <depends name="makeRepProteinsDataDir"/>
       <depends name="makeSecProteinsDataDir"/>
       <depends name="${cladeAbbrev}_makeGroups"/>
@@ -78,7 +79,7 @@
     <step name="${cladeAbbrev}_makeOrganismProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeOrganismProteinsFile" includeIf="${containsOnlyOneOrganism}">
       <paramValue name="inputProteinsFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
       <paramValue name="outputProteinsFile">$$dataDir$$/representativeProteomes/${cladeAbbrev}.fasta</paramValue>
-      <paramValue name="proteinIdPrefix">${cladeAbbrev}</paramValue>
+      <paramValue name="proteinIdPrefix">${ncbiTaxonId}</paramValue>
       <depends name="makeRepProteinsDataDir"/>
       <depends name="${cladeAbbrev}_makeGoodProteinsFile"/>
     </step>

@@ -20,7 +20,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
 
-  my $cmd = "orthomclFindCentralProteins '$workflowDataDir/$inputGroupsDir' $workflowDataDir/$inputProteinFile $workflowDataDir/$outputRepresentativeProteinsFile $workflowDataDir/$outputGroupsFile $proteinIdPrefix";
+  my $cmd = "orthomclFindRepresentativeProteins '$workflowDataDir/$inputGroupsDir' $workflowDataDir/$inputProteinFile $workflowDataDir/$outputRepresentativeProteinsFile $workflowDataDir/$outputGroupsFile $proteinIdPrefix";
 
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputRepresentativeProteinsFile");

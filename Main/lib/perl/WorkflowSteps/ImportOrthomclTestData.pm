@@ -34,7 +34,8 @@ SQL
       }
   } else {
       if (!$taxaDir) {
-	  $self->runCmd($test, "filterSimilarSequencesByGeneSet -suffix $suffix -proteinsFile $workflowDataDir/$inputProteinFile");
+	  my $suf = $suffix? "-suffix $suffix" : "";
+	  $self->runCmd($test, "filterSimilarSequencesByGeneSet $suf -proteinsFile $workflowDataDir/$inputProteinFile");
       } else {
 	  if ($cacheTableExists) {
 	      $self->createSynonym($test, $suffix, $cacheTableName);

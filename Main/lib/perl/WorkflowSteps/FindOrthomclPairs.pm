@@ -20,7 +20,9 @@ sub run {
   my $configFile = "$workflowDataDir/orthomclPairs.config";
   my $logfile = "$workflowDataDir/orthomclPairs.log";
 
-  my $cmd = "orthomclPairs $configFile $logfile cleanup=no suffix=$suffix";
+  my $suf = $suffix? "suffix=$suffix" : "";
+
+  my $cmd = "orthomclPairs $configFile $logfile cleanup=no $suf";
 
   if ($undo) {
     $self->runCmd($test, "orthomclPairs $configFile $logfile cleanup=all suffix=$suffix");

@@ -15,16 +15,17 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $configFile = "$workflowDataDir/orthomclPairs.config";
   my $outDir = "$workflowDataDir/$orthmclGroupsDir";
-  $self->runCmd(0, "mkdir -p $outDir");
+  $self->runCmd(0, "mkdir $outDir");
 
   if ($undo) {
     $self->runCmd($test, "rm -rf $outDir/pairs");
     $self->runCmd($test, "rm -rf $outDir/mclInput");
   } else {
+      $self->testInputFile('configFile', "$configFile");
+
       if ($test) {
-	  $self->testInputFile('configFile', "$configFile");
 	  $self->runCmd(0, "echo test > $outDir/mclInput");
       }
-      $self->runCmd($test, "orthomclDumpPairsFiles $configFile $suffix $outDir");
+      $self->runCmd($test, "orthomclDumpPairsFiles $configFile $outDir $suffix");
   }
 }
