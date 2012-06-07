@@ -25,7 +25,7 @@ sub run {
   my $cmd = "orthomclPairs $configFile $logfile cleanup=no $suf";
 
   if ($undo) {
-    $self->runCmd($test, "orthomclPairs $configFile $logfile cleanup=all suffix=$suffix");
+    $self->runCmd($test, "orthomclPairs $configFile $logfile cleanup=all $suf");
   } else {
       if ($test) {
 	  $self->runCmd(0,"echo test > $logfile");
