@@ -12,7 +12,7 @@ sub run {
   my $experimentName = $self->getParamValue("experimentName");
   my $experimentExtDbRlsSpec = $self->getParamValue('experimentExtDbRlsSpec');
 
-  my $args = "--name '$experimentName' --extDbRlsSpec '$experimentExtDbRlsSpec'"
+  my $args = "--name '$experimentName' --extDbRlsSpec '$experimentExtDbRlsSpec'";
 
  unless ($test) {
    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertStudy", $args);
