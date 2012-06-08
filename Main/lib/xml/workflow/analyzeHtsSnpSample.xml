@@ -1,0 +1,123 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="experimentDataDir"/>
+    <param name="readsFile"/>
+    <param name="pairedReadsFile"/>
+    <param name="snpStrain"/>
+    <param name="genomicSeqsFile"/>
+    <param name="BWAIndexDir"/>
+    <param name="organismAbbrev"/>
+    <param name="experimentName"/>
+    <param name="hasPairedEnds"/>
+    <param name="consPercentCutoff"/>
+    <param name="snpPercentCutoff"/>
+    <param name="editDistance"/>
+    <param name="includeIndels"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="snpExtDbRlsSpec"/>
+    <param name="relativeWebServicesDir"/>
+    <param name="sampleMetaDataFile"/>
+
+    <!-- mirror the sample directory over to the cluster
+     This directory will eventually contain the cluster task dir but not the fastq files for the sample
+     Those still live in the experiment directory
+     -->
+    <constant name="dataDir">$$experimentDataDir$$/analyze_$$snpStrain$$</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+    
+  <step name="addMetaData" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSampleMetaData">
+    <paramValue name="experimentName">$$experimentName$$</paramValue>
+    <paramValue name="sampleMetaDataFile">$$sampleMetaDataFile$$</paramValue>
+    <paramValue name="readsFile">$$readsFile$$</paramValue>
+    <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </step>
+
+    <subgraph name="runBwaOnCluster"  xmlFile="mapHtsSNPsWithBWA.xml">
+      <paramValue name="readsFile">$$readsFile$$</paramValue>
+      <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
+      <paramValue name="hasPairedReads">$$hasPairedEnds$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="bwaIndexDir">$$BWAIndexDir$$</paramValue>
+      <paramValue name="strain">$$snpStrain$$</paramValue>
+      <paramValue name="clusterDataDir">$$dataDir$$</paramValue>
+      <paramValue name="consPercentCutoff">$$consPercentCutoff$$</paramValue>
+      <paramValue name="snpPercentCutoff">$$snpPercentCutoff$$</paramValue>
+      <paramValue name="editdistance">$$editDistance$$</paramValue>
+      <paramValue name="includeIndels">$$includeIndels$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+    <step name="document-HTS_snps_bwa"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">HTS_snps_bwa_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters">TODO: patch in later</paramValue>
+    </step>
+
+    <step name="insertSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.SNPs.gff</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <paramValue name="isNextGenSeq">true</paramValue>
+      <paramValue name="isCoverage">false</paramValue>
+      <depends name="runBwaOnCluster"/>
+    </step>
+
+   <!--  TODO:  Need to see an example consensus file to fill in the regex here -->
+   <step name="loadConsensus" 
+         stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadFastaSequences">
+      <paramValue name="extDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <paramValue name="ncbiTaxId"></paramValue>
+      <paramValue name="sequenceFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.consensus.fa</paramValue>
+      <paramValue name="soTermName">variant_genome</paramValue>
+      <paramValue name="regexSourceId">>(\S+)</paramValue>
+      <paramValue name="tableName">DoTS::ExternalNASequence</paramValue>
+      <depends name="runBwaOnCluster"/>
+    </step>
+
+    <step name="insertInsertions" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertIndelSeqVar" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.insertions.gff</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <paramValue name="isNextGenSeq">true</paramValue>
+      <paramValue name="isCoverage">false</paramValue>
+      <depends name="runBwaOnCluster"/>
+    </step>
+
+    <step name="copyBAMFileToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBAMFileToWebServices">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.bam</paramValue>
+      <paramValue name="experimentName">$$experimentName$$</paramValue>
+      <paramValue name="snpStrain">$$snpStrain$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="runBwaOnCluster"/>
+    </step>
+
+    <step name="copyBAMFileIndexToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBAMFileToWebServices">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.bai</paramValue>
+      <paramValue name="experimentName">$$experimentName$$</paramValue>
+      <paramValue name="snpStrain">$$snpStrain$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="runBwaOnCluster"/>
+    </step>
+
+</workflowGraph>
+
+

@@ -1,52 +1,57 @@
-<workflowGraph name="">
-    <param name="parentDataDir"/>
-    <param name="organismAbbrev"/>
-    <param name="name"/>
-    <param name="shortSeqsFile"/>
-    <param name="snpExtDbRlsSpec"/>
-    <param name="genomeExtDbRlsSpec"/>
-    <param name="genomicSeqsFile"/>
-    <param name="hasPairedReads"/>
-    <param name="pairedReadFile"/>
-    <param name="snpStrain"/>
-    <param name="BWAIndexDir"/>
-    <param name="isHaploid"/>
+<workflowGraph name="runRUMOnCluster">
+  <param name="readsFile"/>
+  <param name="pairedReadsFile"/>
+  <param name="hasPairedReads"/>
+  <param name="genomicSeqsFile"/>
+  <param name="bwaIndexDir"/>
+  <param name="strain"/>
+  <param name="consPercentCutoff"/>
+  <param name="snpPercentCutoff"/>
+  <param name="editdistance"/>
+  <param name="includeIndels"/>
+  <param name="clusterDataDir"/>
 
-    <constant name="dataDir">$$parentDataDir$$/$$name$$</constant>
+  <constant name="dataDir">$$clusterDataDir$$</constant>
+  
 
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-    </step>
-
-     <step name="runBWA" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunBWA">
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="inputShortSeqsFile">$$shortSeqsFile$$</paramValue>
-      <paramValue name="pairedReadFile">$$pairedReadFile$$</paramValue>
+     <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBWATaskInputDir">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="readsFile">$$readsFile$$</paramValue>
+      <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
       <paramValue name="hasPairedReads">$$hasPairedReads$$</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/SNPs</paramValue>
-      <paramValue name="inputIndexesDir">$$BWAIndexDir$$</paramValue>
-      <paramValue name="strain">$$snpStrain$$</paramValue>
-      <paramValue name="isHaploid">$$isHaploid$$</paramValue>
-      <depends name="makeDataDir"/>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="bwaIndexDir">$$bwaIndexDir$$</paramValue>
+      <paramValue name="strain">$$strain$$</paramValue>
+      <paramValue name="consPercentCutoff">$$consPercentCutoff$$</paramValue>
+      <paramValue name="snpPercentCutoff">$$snpPercentCutoff$$</paramValue>
+      <paramValue name="editdistance">$$editdistance$$</paramValue>
+      <paramValue name="includeIndels">$$includeIndels$$</paramValue>
+     </step>
+
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/input</paramValue>
+      <depends name="makeTaskInputDir"/>
     </step>
 
-    <step name="document-HTS_snps_bwa"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">HTS_snps_bwa_MTHD</paramValue>
-      <paramValue name="version">1.0</paramValue>
-      <paramValue name="parameters">TODO: patch in later</paramValue>
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="numNodes">1</paramValue>
+      <paramValue name="maxMemoryGigs">5</paramValue>
+      <paramValue name="processorsPerNode">4</paramValue>
+      <depends name="mirrorToCluster"/>
     </step>
 
-    <step name="insertSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$dataDir$$/SNPs.gff</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
-      <paramValue name="isNextGenSeq">true</paramValue>
-      <depends name="runBWA"/>
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputFiles">result.bai,result.bam,result.consensus.fa,result.insertions.gff,result.SNPs.gff</paramValue>
+      <depends name="runClusterTask"/>
     </step>
+
+
 
 </workflowGraph>
+
 
 

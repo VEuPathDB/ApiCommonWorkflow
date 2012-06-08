@@ -1,0 +1,111 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="experimentName"/>
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="genomicSeqsFile"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="experimentResourceName"/>
+    <param name="experimentResourceVersion"/>
+    <param name="hasPairedEnds"/>
+    <param name="consPercentCutoff"/>
+    <param name="snpPercentCutoff"/>
+    <param name="editDistance"/>
+    <param name="includeIndels"/>
+    <param name="relativeWebServicesDir"/>
+
+    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
+    <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
+    <constant name="finalDir">$$dataDir$$/$$experimentResourceName$$/final</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesOutputDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeFinalDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$finalDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesOutputDir"/>
+    </step>
+
+<!-- load resource manually so we can mirror the final dir before filling it with the sample files -->
+
+    <step name="mirrorFinalDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$finalDir$$</paramValue>
+      <depends name="makeFinalDir"/>
+    </step>
+
+
+    <step name="insertDataSource" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertDataSource">
+      <paramValue name="resourceName">$$experimentResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="dataDir">$$finalDir$$</paramValue>
+      <depends name="makeFinalDir"/>
+    </step>
+
+    <step name="getAndUnpack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ResourceGetAndUnpack">
+      <paramValue name="resourceName">$$experimentResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <depends name="mirrorFinalDirToCluster"/>
+    </step>
+
+    <step name="insertExtDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertExtDb" stepLoadTypes="plugin">
+      <paramValue name="resourceName">$$experimentResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="dataDir">$$finalDir$$</paramValue>
+      <depends name="makeFinalDir"/>
+    </step>
+
+    <step name="experiment_RSRC" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertExtDbRls" stepLoadTypes="plugin">
+      <paramValue name="resourceName">$$experimentResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="dataDir">$$finalDir$$</paramValue>
+      <depends name="insertExtDb"/>
+    </step>
+
+    <!-- end resource -->
+
+  <step name="addStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy">
+    <paramValue name="experimentName">$$experimentName$$</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
+    <depends name="experiment_RSRC"/>
+  </step>
+
+    <subgraph name="map_SNPs" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/htsSnpSamples.xml">
+       <paramValue name="projectName">$$projectName$$</paramValue>
+       <paramValue name="experimentDir">$$dataDir$$</paramValue>
+       <paramValue name="experimentRSRC">$$experimentResourceName$$</paramValue>
+       <paramValue name="samplesOutputDir">$$dataDir$$/$$experimentName$$/samplesOutput</paramValue>
+       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+       <paramValue name="BWAIndexDir">$$parentDataDir$$/bwa_index/genomicIndexes</paramValue>
+       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+       <paramValue name="experimentName">$$experimentName$$</paramValue>
+       <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+       <paramValue name="consPercentCutoff">$$consPercentCutoff$$</paramValue>
+       <paramValue name="snpPercentCutoff">$$snpPercentCutoff$$</paramValue>
+       <paramValue name="editDistance">$$editDistance$$</paramValue>
+       <paramValue name="includeIndels">$$includeIndels$$</paramValue>
+       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+       <depends name="addStudy"/>
+     </subgraph>
+     
+    <step name="document-hts_snp_experiment"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">hts_snp_experiment_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters">TODO: patch in later</paramValue>
+    </step>
+
+</workflowGraph>

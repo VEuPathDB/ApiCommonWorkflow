@@ -1,0 +1,59 @@
+<workflowGraph name="">
+  <param name="parentDataDir"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="relativeWebServicesDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/SNPs_HTS</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="createBWAIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBWAIndexes">
+    <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="outputIndexDir">$$dataDir$$/bwa_index</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="createBWAIndices"/>
+    </step>
+
+
+  <datasetTemplate class="SNPs_HTS_Experiment">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="hasPairedEnds"/>
+
+    <!-- dataDir eq 'SNPs' directory 
+
+    Make directories for the experiment and output directory for samples
+    mirror over the experiment directory to the cluster
+    want to mirror over the samples individually So We do the mirror before we get the resource
+    -->
+    <subgraph name="${name}_experiment" xmlFile="HtsSNPsExperiment.xml">
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="experimentName">${name}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="experimentResourceName">${organismAbbrev}_SNP_${name}_RSRC</paramValue>
+      <paramValue name="experimentResourceVersion">${version}</paramValue>
+      <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
+      <paramValue name="consPercentCutoff">60</paramValue>
+      <paramValue name="snpPercentCutoff">20</paramValue>
+      <paramValue name="editDistance">0.04</paramValue>
+      <paramValue name="includeIndels">true</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="createBWAIndices"/>
+    </subgraph>
+  </datasetTemplate>
+
+  </workflowGraph>
