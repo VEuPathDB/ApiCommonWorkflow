@@ -6,6 +6,11 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
+sub getSoTerm {
+  return 'SNP';
+}
+
+
 sub run {
   my ($self, $test, $undo) = @_;
 
@@ -15,6 +20,7 @@ sub run {
   my $transcriptExtDbRlsSpec = $self->getParamValue('transcriptExtDbRlsSpec');
   my $snpExtDbRlsSpec = $self->getParamValue('snpExtDbRlsSpec');
   my $isNextGenSeq = $self->getBooleanParamValue('isNextGenSeq');
+  my $isCoverage = $self->getBooleanParamValue('isCoverage');
 
   my ($genomExtDbName,$genomeExtDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
   my ($snpExtDbName,$snpExtDbRlsVer) = $self->getExtDbInfo($test,$snpExtDbRlsSpec);
@@ -22,13 +28,19 @@ sub run {
 
   my $organismFullName = $self->getOrganismInfo($test, $organismAbbrev)->getFullName();
   my $strainAbbrev = $self->getOrganismInfo($test, $organismAbbrev)->getStrainAbbrev();
+  
+  unless($strainAbbrev) {
+    $self->error("Strain Abbreviation for the reference [$organismAbbrev] was not defined");   
+  }
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--reference '$strainAbbrev' --organism '$organismFullName' --snpExternalDatabaseName '$snpExtDbName' --snpExternalDatabaseVersion '$snpExtDbRlsVer' --naExternalDatabaseName '$genomExtDbName' --naExternalDatabaseVersion '$genomeExtDbRlsVer' --transcriptExternalDatabaseName '$transcriptExtDbName' --transcriptExternalDatabaseVersion '$transcriptExtDbRlsVer' --seqTable 'DoTS::ExternalNASequence' --ontologyTerm 'SNP' --snpFile $workflowDataDir/$inputFile";
+  my $soTerm = $self->getSoTerm();
+
+  my $args = "--reference '$strainAbbrev' --organism '$organismFullName' --snpExternalDatabaseName '$snpExtDbName' --snpExternalDatabaseVersion '$snpExtDbRlsVer' --naExternalDatabaseName '$genomExtDbName' --naExternalDatabaseVersion '$genomeExtDbRlsVer' --transcriptExternalDatabaseName '$transcriptExtDbName' --transcriptExternalDatabaseVersion '$transcriptExtDbRlsVer' --seqTable 'DoTS::ExternalNASequence' --ontologyTerm $soTerm --snpFile $workflowDataDir/$inputFile";
 
   $args .= " --NGS_SNP" if ($isNextGenSeq);
-
+  $args .= " --NgsUpdateSnpFeature" if ($isCoverage);
   if ($test) {
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
   }
