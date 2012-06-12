@@ -11,8 +11,8 @@ sub run {
 
   # three cases:
   # 1) no taxaDir supplied:  filter based on inputProteinFile
-  # 2) taxaDir supplied, and no table called ApiDB.SimilarSequences${suffix}_1 exists:  filter based on taxa in taxaDir
-  # 3) taxaDir supplied, and ApiDB.SimilarSequences${suffix}_1 exists:  use that table (drop ApiDB.SimilarSequences$suffix and use a synonym)
+  # 2) taxaDir supplied, and no table called ApiDB.SimilarSequences${suffix}_c exists:  filter based on taxa in taxaDir
+  # 3) taxaDir supplied, and ApiDB.SimilarSequences${suffix}_c exists:  use that table (drop ApiDB.SimilarSequences$suffix and use a synonym)
 
   my $taxaDir = $self->getParamValue('taxaDir');
   my $suffix = $self->getParamValue('suffix');
