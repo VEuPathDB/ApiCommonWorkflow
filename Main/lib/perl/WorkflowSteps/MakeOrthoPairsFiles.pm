@@ -10,8 +10,8 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $suffix = $self->getParamValue('suffix');
+  my $confFile = $self->getParamValue('configFile');
   my $orthmclGroupsDir = $self->getParamValue('outputGroupsDir');
-  my $confFile = "$workflowDataDir/$confFile";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $configFile = "$workflowDataDir/$confFile";
