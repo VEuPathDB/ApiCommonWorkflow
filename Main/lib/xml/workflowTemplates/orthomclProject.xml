@@ -68,7 +68,7 @@
     <step name="${cladeAbbrev}_makeRepresentativeProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeRepresentativeProteinsFile" excludeIf="${containsOnlyOneOrganism}">
       <paramValue name="inputGroupsDir">$$dataDir$$/${cladeAbbrev}/groups</paramValue>
       <paramValue name="inputProteinsFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
-      <paramValue name="outputRepresentativeProteinsFile">$$dataDir$$/representativeProteomes/${cladeAbbrev}.fasta</paramValue>
+      <paramValue name="outputRepresentativeProteinsFile">$$dataDir$$/representativeProteomes/${ncbiTaxonId}.fasta</paramValue>
       <paramValue name="outputGroupsFile">$$dataDir$$/tierOneGroups/${cladeAbbrev}_groupsWithRepFirst</paramValue>
       <paramValue name="proteinIdPrefix">${ncbiTaxonId}</paramValue>
       <depends name="makeRepProteinsDataDir"/>
@@ -79,7 +79,7 @@
     <!-- if clade contains only one organism add cladeAbbrev as prefix to all protein ids -->
     <step name="${cladeAbbrev}_makeOrganismProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeOrganismProteinsFile" includeIf="${containsOnlyOneOrganism}">
       <paramValue name="inputProteinsFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
-      <paramValue name="outputProteinsFile">$$dataDir$$/representativeProteomes/${cladeAbbrev}.fasta</paramValue>
+      <paramValue name="outputProteinsFile">$$dataDir$$/representativeProteomes/${ncbiTaxonId}.fasta</paramValue>
       <paramValue name="proteinIdPrefix">${ncbiTaxonId}</paramValue>
       <depends name="makeRepProteinsDataDir"/>
       <depends name="${cladeAbbrev}_makeGoodProteinsFile"/>
@@ -113,7 +113,7 @@
   </subgraph>
 
   <step name="mergeSecondaryProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMergeSecondaryProteins">
-    <paramValue name="inputRepGroupsFile">$$dataDir$$/groups/repGroups.txt</paramValue>
+    <paramValue name="inputRepGroupsFile">$$dataDir$$/finalGroups/orthomclGroups.txt</paramValue>
     <paramValue name="inputTierOneGroupsDir">$$dataDir$$/tierOneGroups</paramValue>
     <paramValue name="outputMergedGroupsFile">$$dataDir$$/finalGroups/finalGroups.txt</paramValue>
     <depends name="makeFinalGroups"/>
