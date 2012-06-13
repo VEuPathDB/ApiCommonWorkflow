@@ -11,9 +11,10 @@ sub run {
 
   my $suffix = $self->getParamValue('suffix');
   my $orthmclGroupsDir = $self->getParamValue('outputGroupsDir');
+  my $confFile = "$workflowDataDir/$confFile";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $configFile = "$workflowDataDir/orthomclPairs.config";
+  my $configFile = "$workflowDataDir/$confFile";
   my $outDir = "$workflowDataDir/$orthmclGroupsDir";
 
   if ($undo) {

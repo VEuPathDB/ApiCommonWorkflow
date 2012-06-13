@@ -5,6 +5,7 @@
   <param name="outputGroupsDir"/>
   <param name="suffix"/>
   <param name="useExistingSimSeqs"/>
+  <param name="collapseClades"/>  
 
   <constant name="localDataDir">$$parentDataDir$$/makeGroups</constant>
   <constant name="goodProteinFile">$$localDataDir$$/protein.fa</constant>
@@ -65,7 +66,9 @@
   </subgraph>
 
   <!-- create tables (SimilarSequences, Ortholog, CoOrtholog, InParalog) -->
+  <!-- create config file  -->
   <step name="installSchema" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InstallOrthomclSchema">
+    <paramValue name="configFile">$$localDataDir$$/orthomclPairs.config</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <depends name="blast"/>
   </step>
@@ -80,12 +83,14 @@
   <step name="importBlast" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ImportOrthomclTestData" includeIf="$$useExistingSimSeqs$$">
     <paramValue name="taxaDir">$$inputTaxaDir$$</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
+    <paramValue name="collapseClades">$$collapseClades$$</paramValue>
     <paramValue name="inputProteinFile">$$inputProteinFile$$</paramValue>
     <depends name="installSchema"/>
   </step>
 
   <!-- run the orthomclPairs program to compute pairwise relationships.  -->
   <step name="orthomclPairs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindOrthomclPairs">
+    <paramValue name="configFile">$$localDataDir$$/orthomclPairs.config</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <depends name="loadBlast"/>
     <depends name="importBlast"/>
@@ -93,6 +98,7 @@
 
   <!-- write pairs out to a file -->
   <step name="makePairsFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoPairsFiles">
+    <paramValue name="configFile">$$localDataDir$$/orthomclPairs.config</paramValue>
     <paramValue name="suffix">$$suffix$$</paramValue>
     <paramValue name="outputGroupsDir">$$outputGroupsDir$$</paramValue>
     <depends name="orthomclPairs"/>

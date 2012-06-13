@@ -16,6 +16,7 @@ sub run {
 
   my $taxaDir = $self->getParamValue('taxaDir');
   my $suffix = $self->getParamValue('suffix');
+  my $collapseClades = $self->getBooleanParamValue('collapseClades');
   my $inputProteinFile = $self->getParamValue('inputProteinFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -35,7 +36,8 @@ SQL
   } else {
       if (!$taxaDir) {
 	  my $suf = $suffix? "-suffix $suffix" : "";
-	  $self->runCmd($test, "filterSimilarSequencesByGeneSet $suf -proteinsFile $workflowDataDir/$inputProteinFile");
+	  my $cc = $collapseClades? "-collapseClades" : "";
+	  $self->runCmd($test, "filterSimilarSequencesByGeneSet $suf -proteinsFile $workflowDataDir/$inputProteinFile $cc");
       } else {
 	  if ($cacheTableExists) {
 	      $self->createSynonym($test, $suffix, $cacheTableName);
@@ -70,14 +72,6 @@ SQL
 
 # Plan B Tier 1
 sub filterOnTaxa {
-}
-
-# Plan A Tier 2 (representatives) and Plan B Tier 2 (residuals)
-# parse fasta to get protein ids, and write ids to table
-# use table to join for filtering
-# write results to apidb.SimilarSequences$suffix
-sub filterOnProteinIds {
-    my ($self, $suffix, $proteinsFastaFile) = @_;
 }
 
 

@@ -13,11 +13,12 @@ sub run {
   # note: orthomclPairs supports restart.  to enable that we'd need to change it to look for its
   # restart tag in its config file.   and maybe it would put out an error message suggesting that option.
 
-  my $workflowDataDir = $self->getWorkflowDataDir();
   my $suffix = $self->getParamValue('suffix');
+  my $confFile = $self->getParamValue('configFile');
 
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $configFile = "$workflowDataDir/orthomclPairs.config";
+  my $configFile = "$workflowDataDir/$confFile";
   my $logfile = "$workflowDataDir/orthomclPairs.log";
 
   my $suf = $suffix? "suffix=$suffix" : "";

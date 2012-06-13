@@ -9,6 +9,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  my $confFile = $self->getParamValue('configFile');
   my $suffix = $self->getParamValue('suffix');
 
   my $gusInstance = $self->getGusInstanceName();
@@ -17,7 +18,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $configFile = "$workflowDataDir/orthomclPairs.config";
+  my $configFile = "$workflowDataDir/$confFile";
 
   if ($undo) {
     $self->runCmd($test, "orthomclDropSchema $configFile /dev/null $suffix");
