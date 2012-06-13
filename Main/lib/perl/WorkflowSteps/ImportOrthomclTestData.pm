@@ -40,7 +40,7 @@ SQL
 	  if ($cacheTableExists) {
 	      $self->createSynonym($test, $suffix, $cacheTableName);
 	  } else {
-	      $self->filterOnTaxa($test, $suffix, "$workflowDataDir/$taxaDir");
+	    $self->runCmd($test, "filterSimilarSequencesByTaxon -suffix $suffix -taxaDir $workflowDataDir/$taxaDir");
 	  }
       }
   }
@@ -70,23 +70,6 @@ SQL
 
 # Plan B Tier 1
 sub filterOnTaxa {
-    my ($self, $test, $suffix, $taxaDir) = @_;
-
-    chdir $taxaDir || die "Can't chdir to '$taxaDir'\n";
-    my @taxonNames = map {/(\w+).fasta/; "'$1'"; } <*.fasta>;
-    my $taxonList = join(', ', @taxonNames);
-
-    $self->runSqlFetchOneRow($test, <<SQL);
-          insert into apidb.SimilarSequences$suffix
-                      (query_id, subject_id, query_taxon_id, subject_taxon_id,
-                       evalue_mant, evalue_exp, percent_identity, percent_match)
-          select query_id, subject_id, query_taxon_id, subject_taxon_id,
-                 evalue_mant, evalue_exp, percent_identity, percent_match
-          from apidb.SimilarSequences\@orth500n
-          where query_taxon_id in ($taxonList)
-            and subject_taxon_id in ($taxonList)
-SQL
-
 }
 
 # Plan A Tier 2 (representatives) and Plan B Tier 2 (residuals)
