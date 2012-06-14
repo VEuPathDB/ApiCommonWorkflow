@@ -15,9 +15,12 @@ sub run {
   my $outputMergedGroupsFile = $self->getParamValue('outputMergedGroupsFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  
-  my $cmd = "orthomclMergeSecondaryProteins $workflowDataDir/$inputRepGroupsFile $workflowDataDir/$outputMergedGroupsFile $workflowDataDir/$inputTierOneGroupsDir/*";
-    
+
+  my $cmd = "orthomclMergeSecondaryProteins $workflowDataDir/$inputRepGroupsFile $workflowDataDir/$outputMergedGroupsFile $workflowDataDir/$inputTierOneGroupsDir";
+
+  $self->testInputFile('inputRepGroupsFile', "$workflowDataDir/$inputRepGroupsFile");
+  $self->testInputFile('inputTierOneGroupsDir', "$workflowDataDir/$inputTierOneGroupsDir");
+
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputMergedGroupsFile");
   }else {
@@ -30,9 +33,5 @@ sub run {
 
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+
 
