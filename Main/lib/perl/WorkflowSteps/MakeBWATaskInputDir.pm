@@ -16,10 +16,6 @@ sub run {
   my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
   my $bwaIndexDir = $self->getParamValue("bwaIndexDir");
   my $strain = $self->getParamValue("strain");
-  my $consPercentCutoff = $self->getParamValue("consPercentCutoff");
-  my $snpPercentCutoff = $self->getParamValue("snpPercentCutoff");
-  my $editdistance = $self->getParamValue("editdistance");
-  my $includeIndels = $self->getParamValue("includeIndels");
 
   my $taskSize = $self->getConfig("taskSize");
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
@@ -47,10 +43,6 @@ fastaFile=$clusterWorkflowDataDir/$genomicSeqsFile
 mateA=$clusterWorkflowDataDir/$readsFile
 bwaIndex=$clusterWorkflowDataDir/$bwaIndexDir
 strain=$strain
-consPercentCutoff=$consPercentCutoff
-snpPercentCutoff=$snpPercentCutoff
-editDistance=$editdistance
-includeIndels=$includeIndels
 ";
       if($hasPairedReads){
 	  $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$pairedReadsFile\n";
@@ -70,10 +62,6 @@ sub getParamsDeclaration {
 	  'genomicSeqsFile',
 	  'bwaIndexDir',
 	  'strain',
-	  'consPercentCutoff',
-	  'snpPercentCutoff',
-	  'editdistance',
-	  'includeIndels',
 	 );
 }
 
