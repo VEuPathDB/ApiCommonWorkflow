@@ -46,7 +46,6 @@
       <depends name="makeFinalDir"/>
     </step>
 
-
     <step name="insertDataSource" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertDataSource">
       <paramValue name="resourceName">$$experimentResourceName$$</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
@@ -78,7 +77,7 @@
     <!-- end resource -->
 
   <step name="addStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy">
-    <paramValue name="experimentName">$$experimentName$$</paramValue>
+    <paramValue name="experimentName">$$organismAbbrev$$_$$experimentName$$</paramValue>
     <paramValue name="experimentExtDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
     <depends name="experiment_RSRC"/>
   </step>
@@ -96,6 +95,7 @@
        <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
        <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
        <depends name="addStudy"/>
+       <depends name="getAndUnpack"/>
      </subgraph>
      
     <step name="document-hts_snp_experiment"
