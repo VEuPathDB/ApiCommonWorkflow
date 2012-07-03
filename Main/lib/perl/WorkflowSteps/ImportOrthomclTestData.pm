@@ -37,7 +37,7 @@ SQL
       if (!$taxaDir) {
 	  my $suf = $suffix? "-suffix $suffix" : "";
 	  my $cc = $collapseClades? "-collapseClades" : "";
-	  $self->runCmd($test, "filterSimilarSequencesByGeneSet $suf -proteinsFile $workflowDataDir/$inputProteinFile $cc");
+	  $self->runCmd($test, "filterSimsByProteinIdsInMemory $suf -proteinsFile $workflowDataDir/$inputProteinFile $cc");
       } else {
 	  if ($cacheTableExists) {
 	      $self->createSynonym($test, $suffix, $cacheTableName);
