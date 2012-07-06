@@ -16,7 +16,7 @@ sub getWebsiteFileCmd {
     my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
     my $sql = <<"EOF";
-     select '$organismSource' || '|' || gf.source_id
+     select gf.source_id
             || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
             || ' | organism=' || replace( gf.organism, ' ', '_')
             || ' | product=' || product_name.product || ' | location='

@@ -17,9 +17,7 @@ sub getWebsiteFileCmd {
   my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $sql = <<"EOF";
-      SELECT '$organismSource'
-                ||'|'||
-               sa.source_id
+      SELECT sa.source_id
                 ||' | strand=(+)'
                 ||' | organism='||
                replace(sa.organism, ' ', '_')

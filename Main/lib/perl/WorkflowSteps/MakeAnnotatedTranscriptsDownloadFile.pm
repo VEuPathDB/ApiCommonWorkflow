@@ -18,9 +18,7 @@ sub getWebsiteFileCmd {
   my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $sql = <<"EOF";
-     SELECT '$organismSource'
-                ||'|'||
-            gf.source_id
+     SELECT gf.source_id
                 || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
                 ||' | organism='||
             replace( gf.organism, ' ', '_')
