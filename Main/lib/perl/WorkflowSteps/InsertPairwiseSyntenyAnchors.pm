@@ -20,6 +20,17 @@ sub run {
 	return;
     }
 
+    if ($undo) {
+      my $algInvIds = $self->getAlgInvIds();
+      my $cmd1 = "ga ApiCommonData::Load::Plugin::InsertSyntenySpans --workflowContext --algInvocationId '$algInvIds' --commit";
+      my $cmd2 = "ga GUS::Supported::Plugin::InsertExternalDatabaseRls --workflowContext --algInvocationId '$algInvIds' --commit";
+      my $cmd3 = "ga GUS::Supported::Plugin::InsertExternalDatabase --workflowContext --algInvocationId '$algInvIds' --commit";
+
+      $self->runCmd($test, $cmd1);
+      $self->runCmd($test, $cmd2);
+      $self->runCmd($test, $cmd3);
+    }
+
     opendir(INPUT, "$workflowDataDir/$mercatorOutputsDir") or $self->error("Could not open mercator outputs dir '$mercatorOutputsDir' for reading.\n");
 
     foreach my $pair (readdir INPUT){
@@ -42,13 +53,13 @@ sub run {
 
 	if ($undo) {
 	    unlink($outputFile);
-	    $self->runPlugin($test, 1, "ApiCommonData::Load::Plugin::InsertSyntenySpans", $insertPluginArgs);
-	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
-	    $self->runPlugin($test, 1, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 	} else {
 	    # allow for restart; skip those already in db.   any partially done pair needs to be fully backed out before restart.
 	    my $exists = $workflowStep->runSqlFetchOneRow($test,"select name from sres.externaldatabase where name = '$databaseName'");
-	    next if $exists;
+	    if ($exists) {
+		$self->log("Pair $pair was previously loaded.  Skipping.");
+		next;
+	    }
 
 	    my $tmPrefix = $self->getTuningTablePrefix($orgAbbrevB, $test);
 	    my $sql = "select count(*)
