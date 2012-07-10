@@ -1,10 +1,9 @@
 <workflowGraph name="">
 
-  <constant name="dataDir"></constant> <!-- intentionally empty. dataDir is root workflow data/ dir -->
-  <constant name="tierOneDir">$$dataDir$$/tierOne</constant>
-  <constant name="tierOneRepProteinsDir">$$dataDir$$/tierOne/representativeProteomes</constant>
-  <constant name="tierOneRepFirstGroupsDir">$$dataDir$$/tierOne/groupsWithRepFirst</constant>
-  <constant name="tierTwoDir">$$dataDir$$/tierTwo</constant>
+  <constant name="tierOneDir">tierOne</constant>
+  <constant name="tierOneRepProteinsDir">tierOne/representativeProteomes</constant>
+  <constant name="tierOneRepFirstGroupsDir">tierOne/groupsWithRepFirst</constant>
+  <constant name="tierTwoDir">tierTwo</constant>
 
   <step name="initClusterHomeDir"
         stepClass="ReFlow::StepClasses::InitClusterHomeDir">
@@ -14,12 +13,20 @@
     <paramValue name="dataDir">$$tierOneDir$$</paramValue>
   </step>
 
+  <step name="tierOneDir_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$tierOneDir$$</paramValue>
+    <depends name="makeTierOneDir"/>
+    <depends name="initClusterHomeDir"/>
+  </step>
+
   <step name="makeRepProteinsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$tierOneRepProteinsDir$$</paramValue>
+    <depends name="makeTierOneDir"/>
   </step>
 
   <step name="makeTierOneGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$tierOneRepFirstGroupsDir$$</paramValue>
+    <depends name="makeTierOneDir"/>
   </step>
 
   <datasetTemplate class="orthomclClade">
@@ -46,28 +53,23 @@
       <depends name="${cladeAbbrev}_clade_RSRC"/>
     </step>
 
-    <step name="${cladeAbbrev}_makeGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir" excludeIf="${containsOnlyOneOrganism}">
-      <paramValue name="dataDir">$$tierOneDir$$/${cladeAbbrev}/groupsOutput</paramValue>
-      <depends name="${cladeAbbrev}_makeCladeDir"/>
-    </step>
-
     <step name="${cladeAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" excludeIf="${containsOnlyOneOrganism}">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/${cladeAbbrev}</paramValue>
+      <paramValue name="fileOrDirToMirror">$$tierOneDir$$/${cladeAbbrev}</paramValue>
       <depends name="${cladeAbbrev}_makeCladeDir"/>
-      <depends name="initClusterHomeDir"/>
+      <depends name="tierOneDir_mirrorToCluster"/>
     </step>
 
     <subgraph name="${cladeAbbrev}_makeGroups" xmlFile="makeOrthologGroups.xml" excludeIf="${containsOnlyOneOrganism}">
       <paramValue name="parentDataDir">$$tierOneDir$$/${cladeAbbrev}</paramValue>
-      <paramValue name="inputProteinFile">$$dataDir$$/${cladeAbbrev}/good.fasta</paramValue>
+      <paramValue name="inputProteinFile">$$tierOneDir$$/${cladeAbbrev}/good.fasta</paramValue>
       <paramValue name="inputTaxaDir">$$tierOneDir$$/${cladeAbbrev}/${cladeAbbrev}_orthomclClade_RSRC/final</paramValue>
       <paramValue name="outputGroupsDir">$$tierOneDir$$/${cladeAbbrev}/groupsOutput</paramValue>
       <paramValue name="suffix">${ncbiTaxonId}</paramValue>
       <paramValue name="useExistingSimSeqs">true</paramValue>
       <paramValue name="collapseClades">false</paramValue>
       <paramValue name="includeSingletonGroups">true</paramValue>
+      <depends name="${cladeAbbrev}_mirrorToCluster"/>
       <depends name="${cladeAbbrev}_makeGoodProteinsFile"/>
-      <depends name="${cladeAbbrev}_makeGroupsDir"/>
     </subgraph>
 
     <!-- adds cladeAbbrev as prefix to all protein ids -->
@@ -75,10 +77,10 @@
       <paramValue name="inputGroupsDir">$$tierOneDir$$/${cladeAbbrev}/groupsOutput</paramValue>
       <paramValue name="inputProteinsFile">$$tierOneDir$$/${cladeAbbrev}/good.fasta</paramValue>
       <paramValue name="outputRepresentativeProteinsFile">$$tierOneRepProteinsDir$$/${ncbiTaxonId}.fasta</paramValue>
-      <paramValue name="outputGroupsFile">$$tierOneRepFirstGroupdDir$$/${ncbiTaxonId}_groups.txt</paramValue>
+      <paramValue name="outputGroupsFile">$$tierOneRepFirstGroupsDir$$/${ncbiTaxonId}_groups.txt</paramValue>
       <paramValue name="proteinIdPrefix">${ncbiTaxonId}</paramValue>
-      <depends name="makeTierOneGroupsDir"/>
       <depends name="makeRepProteinsDataDir"/>
+      <depends name="makeTierOneGroupsDir"/>
       <depends name="${cladeAbbrev}_makeGroups"/>
     </step>
 
@@ -97,8 +99,15 @@
     <paramValue name="dataDir">$$tierTwoDir$$</paramValue>
   </step>
 
+  <step name="tierTwoDir_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$tierTwoDir$$</paramValue>
+    <depends name="makeTierTwoDir"/>
+  </step>
+
+  <!-- this step should be removed -->
   <step name="makeTierTwoGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$tierTwoDir$$/groupsOutput</paramValue>
+      <depends name="makeTierTwoDir"/>
   </step>
 
   <step name="makeFinalGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
@@ -112,8 +121,8 @@
   </step>
 
   <subgraph name="makeFinalGroups" xmlFile="makeOrthologGroups.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="inputProteinFile">$$dataDir$$/good.fasta</paramValue>
+    <paramValue name="parentDataDir">$$tierTwoDir$$</paramValue>
+    <paramValue name="inputProteinFile">$$tierTwoDir$$/good.fasta</paramValue>
     <paramValue name="inputTaxaDir"></paramValue>
     <paramValue name="outputGroupsDir">$$tierTwoDir$$/groupsOutput</paramValue>
     <paramValue name="suffix"></paramValue>
@@ -122,6 +131,7 @@
     <paramValue name="includeSingletonGroups">true</paramValue>
     <depends name="makeFinalGoodProteinsFile"/>
     <depends name="makeTierTwoGroupsDir"/>
+    <depends name="tierTwoDir_mirrorToCluster"/>
   </subgraph>
 
   <!-- remove prefixes -->
