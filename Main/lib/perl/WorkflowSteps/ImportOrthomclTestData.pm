@@ -8,11 +8,18 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
   my ($self, $test, $undo) = @_;
+ 
+  # as a preprocess we ran a plsql script to partition the big simseqs table by clade.
+  # these are the "cache" tables and are named ApiDB.SimilarSequences${suffix}_c
+  # where suffix = an ncbi taxon id of clade
 
   # three cases:
-  # 1) no taxaDir supplied:  filter based on inputProteinFile
-  # 2) taxaDir supplied, and no table called ApiDB.SimilarSequences${suffix}_c exists:  filter based on taxa in taxaDir
-  # 3) taxaDir supplied, and ApiDB.SimilarSequences${suffix}_c exists:  use that table (drop ApiDB.SimilarSequences$suffix and use a synonym)
+  # 1) Plan A Tier 1
+  #     - taxaDir supplied, and ApiDB.SimilarSequences${suffix}_c exists:  use that table (drop ApiDB.SimilarSequences$suffix and use a synonym)
+  # 2) Plan B Tier 1
+  #     - taxaDir supplied, and no table called ApiDB.SimilarSequences${suffix}_c exists:  filter based on taxa in taxaDir
+  # 3) Plan A Tier 2 and Plan B Tier 2
+  #     - no taxaDir supplied:  filter based on inputProteinFile (rep proteins for Plan A and residuals for Plan B)
 
   my $taxaDir = $self->getParamValue('taxaDir');
   my $suffix = $self->getParamValue('suffix');
