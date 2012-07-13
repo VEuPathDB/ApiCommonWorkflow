@@ -24,7 +24,7 @@
     <depends name="makeTierOneDir"/>
   </step>
 
-  <step name="makeTierOneGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+  <step name="makeTierOneRepFirstGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$tierOneRepFirstGroupsDir$$</paramValue>
     <depends name="makeTierOneDir"/>
   </step>
@@ -82,7 +82,7 @@
       <paramValue name="outputGroupsFile">$$tierOneRepFirstGroupsDir$$/${ncbiTaxonId}_groups.txt</paramValue>
       <paramValue name="proteinIdPrefix">${ncbiTaxonId}</paramValue>
       <depends name="makeRepProteinsDataDir"/>
-      <depends name="makeTierOneGroupsDir"/>
+      <depends name="makeTierOneRepFirstGroupsDir"/>
       <depends name="${cladeAbbrev}_makeGroups"/>
     </step>
 
@@ -106,12 +106,6 @@
     <depends name="makeTierTwoDir"/>
   </step>
 
-  <!-- this step should be removed -->
-  <step name="makeTierTwoGroupsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$tierTwoDir$$/groupsOutput</paramValue>
-      <depends name="makeTierTwoDir"/>
-  </step>
-
   <step name="makeFinalGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
     <paramValue name="proteomesDir">$$tierOneRepProteinsDir$$</paramValue>
     <paramValue name="outputGoodProteinsFile">$$tierTwoDir$$/good.fasta</paramValue>
@@ -132,11 +126,14 @@
     <paramValue name="collapseClades">true</paramValue>
     <paramValue name="includeSingletonGroups">true</paramValue>
     <depends name="makeFinalGoodProteinsFile"/>
-    <depends name="makeTierTwoGroupsDir"/>
     <depends name="tierTwoDir_mirrorToCluster"/>
   </subgraph>
 
   <!-- remove prefixes -->
+
+  <!-- split groups containing more than one protein from a given clade.  for those proteins,
+       keep in the initial group the one that is closest to the central protein of the group.   put all others
+       in a new group.   if that new group has more than one protein from any clades, repeat the process. -->
 
   <step name="mergeSecondaryProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMergeSecondaryProteins">
     <paramValue name="inputRepGroupsFile">$$tierTwoDir$$/groupsOutput/orthomclGroups.txt</paramValue>
