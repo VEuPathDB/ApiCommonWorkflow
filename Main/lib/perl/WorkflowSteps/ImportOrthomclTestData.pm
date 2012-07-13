@@ -49,7 +49,7 @@ SQL
 	  if ($cacheTableExists) {
 	      $self->createSynonym($test, $suffix, $cacheTableName);
 	  } else {
-	    $self->runCmd($test, "filterSimilarSequencesByTaxon -suffix $suffix -taxaDir $workflowDataDir/$taxaDir");
+	    $self->runCmd($test, "filterSimilarSequencesByTaxon -suffix $suffix -taxaDir $workflowDataDir/$taxaDir -verbose");
 	  }
       }
   }
