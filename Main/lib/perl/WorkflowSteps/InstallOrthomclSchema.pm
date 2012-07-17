@@ -21,7 +21,7 @@ sub run {
   my $configFile = "$workflowDataDir/$confFile";
 
   if ($undo) {
-    $self->runCmd($test, "orthomclDropSchema $configFile /dev/null $suffix");
+    $self->runCmd($test, "orthomclDropSchema $configFile orthomclDropSchema.log $suffix");
     $self->runCmd(0, "rm -f $configFile");
 
   } else {
@@ -32,7 +32,7 @@ sub run {
       writeConfigFile($configFile, $gusInstance, $gusLogin, $gusPassword);
 
       # create tables
-      $self->runCmd($test, "orthomclInstallSchema $configFile $workflowDataDir/orthomclInstallSchema.log $suffix");
+      $self->runCmd($test, "orthomclInstallSchema $configFile orthomclInstallSchema.log $suffix");
   }
 }
 
