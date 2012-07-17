@@ -19,6 +19,7 @@ sub run {
 
     if ($undo) {
 	$self->runCmd(0, "rm -fr $workflowDataDir/$outputFile");
+	$self->runCmd(0, "rm -fr $workflowDataDir/$outputFile.Clusters");
 	return;
     }
 
