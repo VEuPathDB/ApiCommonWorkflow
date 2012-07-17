@@ -19,14 +19,13 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $configFile = "$workflowDataDir/$confFile";
-  my $logfile = "$workflowDataDir/orthomclPairs.log";
 
   my $suf = $suffix? "suffix=$suffix" : "";
 
-  my $cmd = "orthomclPairs $configFile $logfile cleanup=no $suf";
+  my $cmd = "orthomclPairs $configFile orthomclPairs.log cleanup=no $suf";
 
   if ($undo) {
-    $self->runCmd($test, "orthomclPairs $configFile $logfile cleanup=all $suf");
+    $self->runCmd($test, "orthomclPairs $configFile orthomclPairsUndo.log cleanup=all $suf");
   } else {
       if ($test) {
 	  $self->runCmd(0,"echo test > $logfile");
