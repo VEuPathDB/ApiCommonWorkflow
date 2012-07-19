@@ -27,10 +27,6 @@ sub run {
   if ($undo) {
     $self->runCmd($test, "orthomclPairs $configFile orthomclPairsUndo.log cleanup=all $suf");
   } else {
-      if ($test) {
-	  $self->runCmd(0,"echo test > $logfile");
-      }
-
       $self->runCmd($test,$cmd);
   }
 }
