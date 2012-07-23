@@ -28,6 +28,8 @@ sub run {
 
 
   if($undo){
+      # delete from WorkflowStepAlgInvocation because we don't call plugin undo (this step is an update)
+      $self->deleteFromTrackingTable($test);
   }else{
       $self->runPlugin($test,$undo, "ApiCommonData::Load::Plugin::UpdateTaxonFieldFromFile",$args);
   }
@@ -35,16 +37,6 @@ sub run {
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'taxIdFile',
-	  'extDbRlsSpec',
-	 );
-}
 
-
-sub getConfigDeclaration {
-  return ();
-}
 
 
