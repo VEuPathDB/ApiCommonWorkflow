@@ -13,13 +13,18 @@ sub run {
   # these are the "cache" tables and are named ApiDB.SimilarSequences${suffix}_c
   # where suffix = an ncbi taxon id of clade
 
-  # three cases:
+  # four cases:
+
   # 1) Plan A Tier 1
-  #     - taxaDir supplied, and ApiDB.SimilarSequences${suffix}_c exists:  use that table (drop ApiDB.SimilarSequences$suffix and use a synonym)
-  # 2) Plan B Tier 1
-  #     - taxaDir supplied, and no table called ApiDB.SimilarSequences${suffix}_c exists:  filter based on taxa in taxaDir
-  # 3) Plan A Tier 2 and Plan B Tier 2
+  #     - taxaDir supplied. ApiDB.SimilarSequences${suffix}_c might exist or might not.  if so  use that table (drop ApiDB.SimilarSequences$suffix and use a synonym).  in either case, "collapse clades" by prepending clade ID protein ID.
+  # 2) Plan A Tier 2 
+  #     - no taxaDir supplied.  filter based on inputProteinFile (rep proteins)
+
+  # 3) Plan B Tier 1
+  #     - taxaDir supplied and no table called ApiDB.SimilarSequences${suffix}_c exists.  filter based on taxa in taxaDir.  do not "collapse clades"
+  # 4) Plan A Tier 2 and Plan B Tier 2
   #     - no taxaDir supplied:  filter based on inputProteinFile (rep proteins for Plan A and residuals for Plan B)
+
 
   my $taxaDir = $self->getParamValue('taxaDir');
   my $suffix = $self->getParamValue('suffix');
