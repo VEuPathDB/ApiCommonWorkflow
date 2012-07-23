@@ -4,12 +4,12 @@ package ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 ## Super class for ApiDB workflow steps
 ########################################
 
-@ISA = (ReFlow::Controller::WorkflowStepInvoker);
+@ISA = (ReFlow::Controller::WorkflowStepHandle);
 
 use strict;
 use Carp;
 
-use ReFlow::Controller::WorkflowStepInvoker;
+use ReFlow::Controller::WorkflowStepHandle;
 use ApiCommonWorkflow::Main::Util::OrganismInfo;
 use CBIL::Util::PropertySet;
 
