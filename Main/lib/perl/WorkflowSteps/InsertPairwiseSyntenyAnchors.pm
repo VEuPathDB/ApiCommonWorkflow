@@ -67,7 +67,7 @@ sub run {
 	    unlink($outputFile);
 	} else {
 	    # allow for restart; skip those already in db.   any partially done pair needs to be fully backed out before restart.
-	    my $exists = $workflowStep->runSqlFetchOneRow($test,"select name from sres.externaldatabase where name = '$databaseName'");
+	    my $exists = $self->runSqlFetchOneRow($test,"select name from sres.externaldatabase where name = '$databaseName'");
 	    if ($exists) {
 		$self->log("Pair $pair was previously loaded.  Skipping.");
 		next;
