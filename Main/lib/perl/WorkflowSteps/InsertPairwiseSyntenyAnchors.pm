@@ -20,19 +20,26 @@ sub run {
 	return;
     }
 
-    # do this explicitly because if we use the standard plugin undo, the first undo will remove
-    # the alg inv ids from the workflow linking table, and the second and third will not 
-    # be able to find them.
+    # Do this explicitly because if we use the standard plugin undo, the first undo will remove
+    # the alg inv ids from the workflow linking table, and the rest of the plugin undos
+    # will not be able to find them.
+    # Divide into chunks of 100 to avoid overwhelming the command line
     if ($undo) {
-      my $algInvIds = $self->getAlgInvIds();
-      if ($algInvIds) {
-	  my $cmd1 = "ga GUS::Community::Plugin::Undo --plugin ApiCommonData::Load::Plugin::InsertSyntenySpans --workflowContext --algInvocationId '$algInvIds' --commit";
-	  my $cmd2 = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabaseRls --workflowContext --algInvocationId '$algInvIds' --commit";
-	  my $cmd3 = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabase --workflowContext --algInvocationId '$algInvIds' --commit";
+      my $algInvIdsFull = $self->getAlgInvIds();
+      if ($algInvIdsFull) {
+	  my @algInvIdsArray = split(/,/, $algInvIdsFull);
+	  my $count = scalar(@algInvIdsArray);
+	  for (my $i=0; $i<$count; $i+=100) {
+	      my @subArray = splice(@algInvIdsArray, 0, 100);
+	      my $algInvIds = join(",", @subArray);
+	      my $cmd1 = "ga GUS::Community::Plugin::Undo --plugin ApiCommonData::Load::Plugin::InsertSyntenySpans --workflowContext --algInvocationId '$algInvIds' --commit";
+	      my $cmd2 = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabaseRls --workflowContext --algInvocationId '$algInvIds' --commit";
+	      my $cmd3 = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabase --workflowContext --algInvocationId '$algInvIds' --commit";
 
-	  $self->runCmd($test, $cmd1);
-	  $self->runCmd($test, $cmd2);
-	  $self->runCmd($test, $cmd3);
+	      $self->runCmd($test, $cmd1);
+	      $self->runCmd($test, $cmd2);
+	      $self->runCmd($test, $cmd3);
+	  }
       }
     }
 
