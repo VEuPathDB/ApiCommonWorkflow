@@ -246,7 +246,7 @@ sub getAlgInvIds {
   where workflow_step_id = $self->{id}
 ";
 
-  my $stmt = $self->_runSql($sql);
+  my $stmt = $self->{workflow}->_runSql($sql);
   my @algInvIds;
   while (my @row = $stmt->fetchrow_array()) {
     push(@algInvIds, $row[0]);
