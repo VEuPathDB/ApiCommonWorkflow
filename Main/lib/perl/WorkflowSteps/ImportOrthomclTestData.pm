@@ -49,7 +49,7 @@ SQL
       if (!$taxaDir) {
 	  my $suf = $suffix? "-suffix $suffix" : "";
 	  my $cc = $collapseClades? "-collapseClades" : "";
-	  $self->runCmd($test, "filterSimsByProteinIdsInMemory $suf -proteinsFile $workflowDataDir/$inputProteinFile -simsFile /eupath/data/EuPathDB/devWorkflows/OrthoMCL/testdata/SimilarSequences.dat $cc -verbose");
+	  $self->runCmd($test, "filterSimsByProteinIdsInMemory $suf -proteinsFile $workflowDataDir/$inputProteinFile -simsFile /eupath/data/EuPathDB/devWorkflows/OrthoMCL/testdata/SimilarSequences.dat.gz $cc -verbose");
       } else {
 	  if ($cacheTableExists) {
 	      $self->createSynonym($test, $suffix, $cacheTableName);
