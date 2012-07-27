@@ -1,42 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<?xml-stylesheet href="../../xsl/datasetstyle.xsl" type="text/xsl" ?>
+<?xml-stylesheet href="./../../xsl/datasetstyle.xsl" type="text/xsl" ?>
+
+<!-- define here reusable text -->
+<!DOCTYPE datasetClasses [
+  <!ENTITY organismAbbrev "The standard abbreviation for this organism.  For example TgonME49 for T. gondii ME49.  This abbreviation is like a 'primary key' for the organism.  It must be unique to this organism, and may never change for the lifetime of the workflow.  It should only include alpha-numeric characters.">
+  <!ENTITY projectName "The name of the project, eg, PlasmoDB.  This value is used to find graph files that are generated from datasets, so it must be equal to the name of project directory which contains the project's dataset files.  It is stored in in the GUS database in Core.ProjectInfo.name and must agree with the project= (FIX: IS THAT CORRECT?) value in gus.config.  It is also used in the names of website files and directories.">
+  <!ENTITY organismFullName "The full name for this organism.  This must match the scientific name in the NCBI taxonomy for this organism (see ncbiTaxonId).  It is specified redundantly to cross validate the name and ncbiTaxonId.">
+  <!ENTITY ncbiTaxonId "The NCBI Taxonomy ID for this organism.  The scientific name for this entry in the NCBI Taxonomy must match the organismFullName. ">
+  <!ENTITY speciesNcbiTaxonId "The NCBI Taxonomy for the species that this organism is from.  This ID must agree with the ncbiTaxonId:  it must be at or above it in the taxonomy and must have rank = 'species'">
+  <!ENTITY referenceStrainOrganismAbbrev "The organism abbreviation of the reference strain for this organism's species.  If this orgnanism is a reference strain, this value must be equal to its organismAbbrev; otherwise it must be equal to the organism abbreviation of this species' reference strain.  (These rules are validated by the triggers on the ApiDB.Organism table.">
+  <!ENTITY isAnnotatedGenome "[true|false] If true then this organism's genome has been annotated with gene models by the data provider.">
+  <!ENTITY strainAbbrev "The abbreviation to use for this organism's strain.  Should not include the species name.  For example, for the organism 'Plasmodium Falciparum 3D7', this should be set to '3D7'.  It does not need to agree exactly with the organism's name in the NCBI Taxonomy.   This abbreviation should not include FIX: WHAT CHARS GIVE US TROUBLE?">
+  <!ENTITY name "The name of this dataset, typically the provider, for example 'GeneDB.'  This name is used to form the directory name in Manual Delivery where this data will be found, and the name of the resource in the database.  It is not displayed to the end-user.">
+  <!ENTITY version "The version of this dataset, typically a release number or a date in yyyy-mm-dd format. This version is used to find this dataset in Manual Delivery.  It is displayed to end-users.">
+  <!ENTITY soTerm "The Sequence Ontology term that describes the sequence data in this dataset.  It is used as part of the directory name for this dataset in Manual Delivery.">
+  <!ENTITY isfMappingFile "The mapping file required by the GUS InsertSequenceFeatures (ISF) plugin.  See the ISF documentation.">
+
+]>
+
+
 <datasetClasses>
 
   <defaultPropertyDescriptions>
-    <prop name="organismAbbrev">The standard abbreviation for this organism.  For example TgonME49 for T. gondii ME49.  This abbreviation is like a "primary key" for the organism.  It must be unique to this organism, and may never change for the lifetime of the workflow.  It should only include alpha-numeric characters.</prop>
-    <prop name="projectName">The name of the project, eg, PlasmoDB.  This value is used to find graph files that are generated from datasets, so it must be equal to the name of project directory which contains the project's dataset files.  It is stored in in the GUS database in Core.ProjectInfo.name and must agree with the project= (FIX: IS THAT CORRECT?) value in gus.config.  It is also used in the names of website files and directories.</prop>
-    <prop name="publicOrganismAbbrev">The abbreviation for this organism that the end-user will see.   It is used in displays when there is very limited space.</prop>
-    <prop name="organismFullName">The full name for this organism.  This must match the scientific name in the NCBI taxonomy for this organism (see ncbiTaxonId).  It is specified redundantly to cross validate the name and ncbiTaxonId.</prop>
-    <prop name="organismNameForFiles">The name of this organism for use in file and directory names, for example on the download site.  It should not include white space or other characters that are not file friendly.</prop>
-    <prop name="ncbiTaxonId">The NCBI Taxonomy ID for this organism.  The scientific name for this entry in the NCBI Taxonomy must match the organismFullName. </prop>
-    <prop name="speciesNcbiTaxonId">The NCBI Taxonomy for the species that this organism is from.  This ID must agree with the ncbiTaxonId:  it must be at or above it in the taxonomy and must have rank = 'species'</prop>
-    <prop name="isReferenceStrain">[true|false] If true then this organism is the reference strain for its species.  Exactly one organism per species must set this value to "true", and all others must set it to "false".  FIX: NEED TO ADD VALIDATION FOR THIS TO InsertOrganism PLUGIN.  The reference strain for a species has the responsibility for loading species-wide datasets, for example ESTs.  Dataset classes that are intended to be used only by reference strains are typically named with the prefix "referenceStrain-", for example "referenceStrain-dbEST".  Be sure to include these datasets in reference strains, and omit them from other organisms.</prop>
-    <prop name="referenceStrainOrganismAbbrev">The organism abbreviation of the reference strain for this organism's species.  If this orgnanism is a reference strain, this value must be equal to its organismAbbrev; otherwise it must be equal to the organism abbreviation of this species' reference strain.  (These rules are validated by the triggers on the ApiDB.Organism table.</prop>
-    <prop name="isAnnotatedGenome">[true|false] If true then this organism's genome has been annotated with gene models by the data provider.</prop>
-    <prop name="hasTemporaryNcbiTaxonId">[true|false] If true then this organism is not included in the NCBI Taxonomy table and requires a temporary taxon id (see ncbiTaxonId).  FIX: MORE HERE.  </prop>
-    <prop name="orthomclAbbrev">The abbreviation for this organism used by OrthoMCL-DB.  FIX: MORE HERE</prop>
-    <prop name="strainAbbrev">The abbreviation to use for this organism's strain.  Should not include the species name.  For example, for the organism "Plasmodium Falciparum 3D7", this should be set to "3D7".  It does not need to agree exactly with the organism's name in the NCBI Taxonomy.   This abbreviation should not include FIX: WHAT CHARS GIVE US TROUBLE?</prop>
   </defaultPropertyDescriptions>
 
   <datasetClass class="organism" category="" datasetFileHint="">
     <purpose>Add an organism to the workflow.  This "dataset" is not actually a dataset.  Instead, it provides the framework and essential properties of the organism so that real datasets can be added to the organism.  It is critical that every property of this dataset be carefully reviewed for correctness before the workflow runs this organism.   Correcting them after the workflow runs is very expensive.  NOTE: in the datasets file, reference strains must precede secondary strains</purpose>
-    <prop name="organismAbbrev"/>
-    <prop name="projectName"/>
-    <prop name="publicOrganismAbbrev"/>
-    <prop name="organismFullName"/>
-    <prop name="organismNameForFiles"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="speciesNcbiTaxonId"/>
-    <prop name="isReferenceStrain"/>
-    <prop name="referenceStrainOrganismAbbrev"/>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="publicOrganismAbbrev">The abbreviation for this organism that the end-user will see.   It is used in displays when there is very limited space.</prop>
+    <prop name="organismFullName">&organismFullName;<prop>
+    <prop name="organismNameForFiles">The name of this organism for use in file and directory names, for example on the download site.  It should not include white space or other characters that are not file friendly.</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="speciesNcbiTaxonId">&speciesNcbiTaxonId;</prop>
+    <prop name="isReferenceStrain">[true|false] If true then this organism is the reference strain for its species.  Exactly one organism per species must set this value to 'true', and all others must set it to 'false'.  FIX: NEED TO ADD VALIDATION FOR THIS TO InsertOrganism PLUGIN.  The reference strain for a species has the responsibility for loading species-wide datasets, for example ESTs.  Dataset classes that are intended to be used only by reference strains are typically named with the prefix 'referenceStrain-', for example 'referenceStrain-dbEST'.  Be sure to include these datasets in reference strains, and omit them from other organisms.</prop>
+    <prop name="referenceStrainOrganismAbbrev">&referenceStrainOrganismAbbrev;</prop>
     <prop name="isFamilyRepresentative">[true|false] If true this organism acts as a representative for its taxonomic family.  Some dataset classes are designed to be included only for these representatives.  For example, isolates might be loaded only at the family level. </prop>
     <prop name="familyRepOrganismAbbrev">Organism abbreviation of the organism that, for this organism, acts as representative for its family.  All organisms must provide this value, even if self</prop>
     <prop name="familyNcbiTaxonIds">Only needed if this organism is a family representative.  One or more NCBI taxonomy IDs that are the root IDs for this family.  This is a flexible mechanism to steer around imperfections in the NCBI taxonomy at the family level.</prop>
     <prop name="familyNameForFiles">Only needed if this organism is a family representative.  The taxon name to use in download files for this family.</prop>
-    <prop name="isAnnotatedGenome"/>
-    <prop name="hasTemporaryNcbiTaxonId"/>
-    <prop name="orthomclAbbrev"/>
-    <prop name="strainAbbrev"/>
+    <prop name="isAnnotatedGenome">&isAnnotatedGenome;</prop>
+    <prop name="hasTemporaryNcbiTaxonId">[true|false] If true then this organism is not included in the NCBI Taxonomy table and requires a temporary taxon id (see ncbiTaxonId).  FIX: MORE HERE.</prop>
+    <prop name="orthomclAbbrev">The abbreviation for this organism used by OrthoMCL-DB.  FIX: MORE HERE</prop>
+    <prop name="strainAbbrev">&strainAbbrev;</prop>
     <prop name="hasDeprecatedGenes">[true|false] If true this organism has "deprecated" genes in addition to the current genes.  Deprecated genes may be from an earlier annotation effort.  They are included in the database because, while old, researchers still refer to them.  FIX:  WHAT MORE CAN WE SAY ABOUT THEM, EG, HOW THEY ARE PROCESSED</prop>
     <prop name="genomeSource">The name of the provider of this organism's genome data.  For example, "GeneDB."  This value is included in the definition lines of fasta files including the genome and feature sequences, to give credit to the provider.</prop>
     <prop name="genomeVersion">The date or version number for this organism's genome, as determined by its provider.  If a date, typically the date the data was downloaded.   FIX:  WHAT DO WE USE THIS FOR?</prop>
@@ -53,11 +59,11 @@
 
   <datasetClass class="validateOrganismInfo" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="organismAbbrev"/>
-    <prop name="strainAbbrev"/>
-    <prop name="projectName"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="speciesNcbiTaxonId"/>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="strainAbbrev">&strainAbbrev;</prop>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="speciesNcbiTaxonId">&speciesNcbiTaxonId;</prop>
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
 
@@ -67,8 +73,8 @@
   <!-- reference strain.  it is used by the strain comparison machinery -->
   <datasetClass class="referenceStrain" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="organismAbbrev"/>
-    <prop name="isAnnotatedGenome"/>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="isAnnotatedGenome">&isAnnotatedGenome;</prop>
 
     <graphTemplateFile name="project.xml"/>
 
@@ -81,14 +87,13 @@
 <!-- chromosomeMap.txt file with 3 tab delimited columns, source_id,chromosome,chromosome_order_number, must be in final dir for chromosomes -->
   <datasetClass class="genbank_primary_genome" category="" datasetFileHint="">
     <purpose>Load the primary genome sequence and annotation for an organism, when the data is provided in a GenBank format file.  </purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name">The name of this dataset, typically the provider, for example "GeneDB."  This name is used to form the directory name in Manual Delivery where this data will be found, and the name of the resource in the database.  It is not displayed to the end-user.</prop>
-    <prop name="version">The version of this dataset, typically a release number or a date in yyyy-mm-dd format. This version is used to find this dataset in Manual Delivery.   It is displayed to end-users.</prop>
-    <prop name="soTerm">[choromsome, mitochondrial_chromosome, apicoplast_chromosome, supercontig, contig] The Sequence Ontology term that describes the sequence data in this dataset.</prop>
-    <!-- DOCUMENTED SO FAR -->
-    <prop name="mapFile"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="soTerm">[choromsome, mitochondrial_chromosome, apicoplast_chromosome, supercontig, contig] &soTerm;</prop>
+    <prop name="mapFile">&isfMappingFile;</prop>
    
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
@@ -117,9 +122,10 @@
 
   <datasetClass class="insertScaffoldGapFeatures" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="organismAbbrev"/>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="genomeDbName"/>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
+    <!-- DOCUMENTED SO FAR -->
 
     <graphTemplateFile name="primaryVirtualGenome.xml"/>
 
@@ -142,11 +148,11 @@
 <!-- chromosomeMap.txt file with 3 tab delimited columns, source_id,chromosome,chromosome_order_number, must be in final dir for chromosomes -->
   <datasetClass class="genbank_secondary_genome" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
     <prop name="mapFile"/>
     
@@ -171,11 +177,11 @@
 
   <datasetClass class="genbank_organelle_genome" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
     <prop name="mapFile"/>
     <prop name="organelle"/>
@@ -202,11 +208,11 @@
 <!-- chromosomeMap.txt file with 3 tab delimited columns, source_id,chromosome,chromosome_order_number, must be in final dir for chromosomes -->
   <datasetClass class="embl_primary_genome" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
     <prop name="mapFile"/>
  
@@ -232,11 +238,11 @@
 <!-- chromosomeMap.txt file with 3 tab delimited columns, source_id,chromosome,chromosome_order_number, must be in final dir for chromosomes -->
   <datasetClass class="embl_secondary_genome" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
     <prop name="mapFile"/>
    
@@ -261,11 +267,11 @@
 
   <datasetClass class="embl_organelle_genome" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
     <prop name="mapFile"/>
     <prop name="organelle"/>
@@ -292,10 +298,10 @@
 
   <datasetClass class="GeneDB_GFF_primary_genome_features" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
 
@@ -317,10 +323,10 @@
 
   <datasetClass class="GeneDB_GFF_secondary_genome_features" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
@@ -344,10 +350,10 @@
   <!-- must be used in conjunction w/ fasta_organelle_genome with name="GeneDB" -->
   <datasetClass class="GeneDB_GFF_organelle_genome_features" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
@@ -370,10 +376,10 @@
   
   <datasetClass class="GTF_primary_genome_features" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
     <prop name="idPrefix"/>
     <prop name="source"/>
@@ -403,10 +409,10 @@
   
     <datasetClass class="GFF_primary_genome_features" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
     <prop name="source"/>
     <prop name="mapFile"/>
@@ -434,10 +440,10 @@
   
     <datasetClass class="NoPreprocess_primary_genome_features" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
     <prop name="source"/>
     <prop name="mapFile"/>
@@ -464,10 +470,10 @@
 
   <datasetClass class="Broad_GFF_primary_genome_features" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
@@ -494,10 +500,10 @@
 
   <datasetClass class="NoPreprocess_GTF_primary_genome_features" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
@@ -524,10 +530,10 @@
 
   <datasetClass class="VBI_primary_genome_features" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTerm"/>
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
@@ -555,11 +561,11 @@
 <!-- chromosomeMap.txt file with 3 tab delimited columns, source_id,chromosome,chromosome_order_number, must be in final dir for chromosomes -->
   <datasetClass class="fasta_primary_genome_sequence" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="table"/>  <!-- example:  DoTS::NASequence -->
     <prop name="soTerm"/>
     <prop name="sourceIdRegex"/>
@@ -583,11 +589,11 @@
 
   <datasetClass class="fasta_organelle_genome" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="table"/>  <!-- example:  DoTS::NASequence -->
     <prop name="soTerm"/>
     <prop name="sourceIdRegex"/>
@@ -613,11 +619,11 @@
 
   <datasetClass class="fasta_secondary_genome" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="table"/>  <!-- example:  DoTS::NASequence -->
     <prop name="soTerm"/>
     <prop name="sourceIdRegex"/>
@@ -641,10 +647,10 @@
 
   <datasetClass class="primaryVirtualGenome" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="version">&version;</prop>
     <prop name="virtualSeqSOTerm"/>
     <prop name="sourceIdPrefix"/>  <!-- optional.  add this prefix to the source ID. put "" in if the value is null -->
     <prop name="genomeVersion"/>
@@ -671,11 +677,11 @@
   <!-- NOTE: THIS CLASS IS NOT TO BE USED FOR THE PRIMARY ANNOTATION -->
   <datasetClass class="unofficialGeneFeatures_GFF2" category="" datasetFileHint="">
     <purpose>Gene features that are not provided by the annotation center</purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="mapFile"/>
     <prop name="gff2GroupTag"/>
     <prop name="genomeVersion"/>
@@ -701,11 +707,11 @@
 
   <datasetClass class="unofficialGeneFeatures_GFF3" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="mapFile"/>
     <prop name="genomeVersion"/>
 
@@ -733,11 +739,11 @@
   <!-- NOTE: THIS CLASS IS NOT TO BE USED FOR GENES -->
   <datasetClass class="genomeFeatures_GFF2" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="mapFile"/>
     <prop name="gff2GroupTag"/>
     <prop name="genomeVersion"/>
@@ -764,11 +770,11 @@
   <!-- Category: genomeFeature -->
   <datasetClass class="genomeFeatures_GFF3" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="mapFile"/>
     <prop name="genomeVersion"/>
 
@@ -793,10 +799,10 @@
 
   <datasetClass class="updateEviganSecondaryScore" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="organismSpecificMisc.xml"/>
 
@@ -828,9 +834,9 @@
 
   <datasetClass class="referenceStrain-dbEST" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="speciesNcbiTaxonId"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="speciesNcbiTaxonId">&speciesNcbiTaxonId;</prop>
 
     <graphTemplateFile name="ESTs.xml"/>
 
@@ -860,11 +866,11 @@
 
   <datasetClass class="referenceStrain-ESTsFromFasta" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="version"/>
-    <prop name="name"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="name">&name;</prop>
     <prop name="sourceIdRegex"/>
     <prop name="soTerm"/>
     <prop name="isPutativeFullLength"/> <!-- true or false -->
@@ -899,7 +905,7 @@
 
   <datasetClass class="transcriptsFromReferenceStrain" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="referenceStrainOrganismAbbrev"/>
+    <prop name="referenceStrainOrganismAbbrev">&referenceStrainOrganismAbbrev;</prop>
 
     <graphTemplateFile name="mapTranscriptsToGenome.xml"/>
 
@@ -914,9 +920,9 @@
  -->
   <datasetClass class="referenceStrain-epitope_sequences_IEDB" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="organismAbbrev"/>
-    <prop name="version"/>
-    <prop name="speciesNcbiTaxonId"/>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="speciesNcbiTaxonId">&speciesNcbiTaxonId;</prop>
 
     <graphTemplateFile name="epitopes.xml"/>
 
@@ -961,7 +967,7 @@
 
   <datasetClass class="epitopesFromReferenceStrain" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="referenceStrainOrganismAbbrev"/>
+    <prop name="referenceStrainOrganismAbbrev">&referenceStrainOrganismAbbrev;</prop>
 
     <graphTemplateFile name="mapEpitopes.xml"/>
 
@@ -971,10 +977,10 @@
   <!-- Category: dbxrefs -->
   <datasetClass class="dbxref_simple" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="columnSpec"/>
     <prop name="target"/>  <!-- NASequence, AAFeature, NAFeature -->
     <prop name="url"/>  <!-- must use CDATA -->
@@ -1004,9 +1010,9 @@
 
   <datasetClass class="dbxref_unity" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
     <prop name="url"/>   <!-- must use CDATA -->
     <prop name="genomeVersion"/>
 
@@ -1035,9 +1041,9 @@
 
   <datasetClass class="dbxref_gene2ApiLoc" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="organismAbbrev"/>
-    <prop name="projectName"/>
-    <prop name="version"/>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="version">&version;</prop>
     <prop name="ApiLocOrganism"/>   <!-- organism name as found on the ApiLoc site. -->
 
 
@@ -1065,11 +1071,11 @@
 
   <datasetClass class="dbxref_gene2PubmedFromNcbi" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="genomeVersion"/>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="dbXRefs.xml"/>
 
@@ -1103,11 +1109,11 @@
   <!-- depends on gene2Entrez -->
   <datasetClass class="dbxref_gene2Uniprot" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="genomeVersion"/>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="dbXRefs.xml"/>
 
@@ -1138,10 +1144,10 @@
 
   <datasetClass class="aliases" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="version"/>
-    <prop name="name"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="name">&name;</prop>
     <prop name="columnSpec"/>
     <prop name="url"/>
     <prop name="urlUsesSecondaryId"/>  <!-- true or false -->
@@ -1173,11 +1179,11 @@
   <!-- ONLY INCLUDE IF THIS ORGANISM'S GENOME IS IN GENBANK -->
   <datasetClass class="dbxref_gene2Entrez" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="genomeVersion"/>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="aliases.xml"/>
 
@@ -1212,10 +1218,10 @@
   <!-- FIX WORKFLOW: need to change getAndAnalyzeSnps to use SNPs.gff -->
   <datasetClass class="SNPs_GFF" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="SNPs.xml"/>
 
@@ -1238,10 +1244,10 @@
 
  <datasetClass class="SNPs_HTS_Experiment" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="hasPairedEnds"/>
 
     <graphTemplateFile name="SNPs_HTS.xml"/>
@@ -1270,7 +1276,7 @@
 
   <datasetClass class="SNPs_HTS_Sample" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="organismAbbrev"/>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="experimentName"/>
     <prop name="snpStrainAbbrev"/>
  
@@ -1299,10 +1305,10 @@
 
   <datasetClass class="microarrayPlatform" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/> 
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop> 
+    <prop name="version">&version;</prop>
     <prop name="isAffymetrixGeneArray"/>
     <prop name="isNimbleGenGeneArray"/>
     <prop name="vendorMappingFileName"/>
@@ -1339,10 +1345,10 @@
 
   <datasetClass class="microarrayPlatformWithProviderMapping" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/> 
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop> 
+    <prop name="version">&version;</prop>
     <prop name="isAffymetrixGeneArray"/>
     <prop name="isNimbleGenGeneArray"/>
     <prop name="providedMappingFileName"/>
@@ -1370,10 +1376,10 @@
 
   <datasetClass class="chipChipPlatform" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="limitNU"/>
     <prop name="numInsertions"/>
     <prop name="variableLengthReads"/>
@@ -1410,8 +1416,8 @@
   <!-- manual delivery and plugin or step class must be upgraded see redmine #4257 -->
   <datasetClass class="microarrayExpressionExperiment" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="experimentName"/>
     <prop name="experimentVersion"/>
     <prop name="microarrayPlatformName"/>
@@ -1451,8 +1457,8 @@
   <!--   geneProbeMappingVendor (the cdf or ndf file)   -->
   <datasetClass class="microarrayExpressionExperimentWithProviderProbeMapping" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="experimentName"/>
     <prop name="experimentVersion"/>
     <prop name="doExpressionAnalysis"/>
@@ -1488,8 +1494,8 @@
 
   <datasetClass class="chipChipExperiment" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="experimentName"/>
     <prop name="experimentVersion"/>
     <prop name="chipChipPlatformName"/>
@@ -1523,7 +1529,7 @@
   <!-- the files containing the sample data are assumed to be normalized -->
   <datasetClass class="chipChipSample" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="organismAbbrev"/>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="experimentName"/>
     <prop name="sampleName"/>
     <prop name="LifeCycleStage"/>
@@ -1564,10 +1570,10 @@
        have a samplename.paired file -->
   <datasetClass class="rnaSeqExperiment" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="limitNU"/>
     <prop name="hasVariableLengthReads"/> 
     <prop name="hasTimeSeries"/>
@@ -1603,7 +1609,7 @@
 
   <datasetClass class="rnaSeqSample" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="organismAbbrev"/>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="experimentName"/>
     <prop name="sampleName"/>
  
@@ -1634,10 +1640,10 @@
 
   <datasetClass class="chipSeqExperiment" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="limitNU"/>
     <prop name="hasVariableLengthReads"/> 
     <prop name="numInsertions"/>
@@ -1671,7 +1677,7 @@
 
   <datasetClass class="chipSeqSample" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="organismAbbrev"/>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="experimentName"/>
     <prop name="sampleName"/>
  
@@ -1707,11 +1713,11 @@
 
   <datasetClass class="referenceStrain-clonedInsertEnds" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTermName"/>
     <prop name="sourceIdRegex"/>
 
@@ -1740,9 +1746,9 @@
 
   <datasetClass class="clonedInsertEndsFromReferenceStrain" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="referenceStrainOrganismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="referenceStrainOrganismAbbrev">&referenceStrainOrganismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="organismSpecificMisc.xml"/>
 
@@ -1751,11 +1757,11 @@
 
   <datasetClass class="transcript_sequences" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="soTermName"/>
     <prop name="sourceIdRegex"/>
 
@@ -1785,10 +1791,10 @@
 
   <datasetClass class="sageTagSequences" category="" datasetFileHint="">
      <purpose></purpose>
-     <prop name="projectName"/>
-     <prop name="organismAbbrev"/>
-     <prop name="name"/>
-     <prop name="version"/>
+     <prop name="projectName">&projectName;</prop>
+     <prop name="organismAbbrev">&organismAbbrev;</prop>
+     <prop name="name">&name;</prop>
+     <prop name="version">&version;</prop>
      <prop name="contactName"/>
      <prop name="sequencePrefix"/>
      <prop name="bowtieParams"/>
@@ -1817,10 +1823,10 @@
 
   <datasetClass class="sageTagFrequencies" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="normalizeFrequencies"/>
     <prop name="contactName"/>
 
@@ -1848,10 +1854,10 @@
 
   <datasetClass class="productNames" category="" datasetFileHint="">
     <purpose>Note: this should include product names for organelles as well</purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
  
     <graphTemplateFile name="productNames.xml"/>
 
@@ -1872,10 +1878,10 @@
 
   <datasetClass class="GeneOntologyAssociations" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="version"/>
-    <prop name="name"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="name">&name;</prop>
 
     <graphTemplateFile name="organismSpecificMisc.xml"/>
 
@@ -1895,10 +1901,10 @@
 
   <datasetClass class="EnzymeCommissionAssociations" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="version"/>
-    <prop name="name"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="name">&name;</prop>
 
     <graphTemplateFile name="organismSpecificMisc.xml"/>
 
@@ -1920,9 +1926,9 @@
 
   <datasetClass class="ECAssocFromUniprot" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="organismAbbrev"/>
-    <prop name="version"/>
-    <prop name="speciesNcbiTaxonId"/>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="speciesNcbiTaxonId">&speciesNcbiTaxonId;</prop>
 
     <graphTemplateFile name="organismSpecificMisc.xml"/>
 
@@ -1946,10 +1952,10 @@
 
   <datasetClass class="comments" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
  
     <graphTemplateFile name="organismSpecificMisc.xml"/>
 
@@ -1977,8 +1983,8 @@
 
   <datasetClass class="familyRepresentative-isolatesGenbank" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
  
     <graphTemplateFile name="isolatesFromNonHtsSequencing.xml"/>
 
@@ -2012,10 +2018,10 @@
 
   <datasetClass class="updateIsolatesInfo" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="isolatesFromNonHtsSequencing.xml"/>
 
@@ -2045,11 +2051,11 @@
 
   <datasetClass class="familyRepresentative-isolateSequencesFasta" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="sourceIdRegex"/>
 
     <graphTemplateFile name="isolatesFromNonHtsSequencing.xml"/>
@@ -2075,11 +2081,11 @@
   <!-- the ncbi taxon ID is not important.  isolate strain info is provided by dedicated isolate info tables -->
   <datasetClass class="familyRepresentative-isolateFeaturesGFF2" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="ncbiTaxonId"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="mapFile"/>
  
     <graphTemplateFile name="isolatesFromNonHtsSequencing.xml"/>
@@ -2106,7 +2112,7 @@
   <datasetClass class="isolatesFromFamilyRepresentative" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="familyRepOrganismAbbrev"/>
-    <prop name="name"/>
+    <prop name="name">&name;</prop>
  
     <graphTemplateFile name="organismSpecificMisc.xml"/>
   </datasetClass>
@@ -2117,10 +2123,10 @@
 
   <datasetClass class="isolatesUpdateIsReference" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="organismSpecificMisc.xml"/>
 
@@ -2145,10 +2151,10 @@
 
   <datasetClass class="massSpecPreprocessed" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="genomeVersion"/>
     <prop name="fileNameRegex"/>
 
@@ -2172,8 +2178,8 @@
 
   <datasetClass class="orthomclPhyletic" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="comparativeGenomics.xml"/>
 
@@ -2193,8 +2199,8 @@
 
   <datasetClass class="orthomcl" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="comparativeGenomics.xml"/>
 
@@ -2214,8 +2220,8 @@
 
   <datasetClass class="orthomclTree" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="comparativeGenomics.xml"/>
 
@@ -2241,7 +2247,7 @@
 
   <datasetClass class="geneOntology" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
     <resource resource="GO_RSRC" version="${version}"
       plugin="GUS::Supported::Plugin::InsertGeneOntology"
               scope="global"
@@ -2314,7 +2320,7 @@
 
   <datasetClass class="sequenceOntology" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
   <resource resource="SO_RSRC" version="${version}"
               plugin="GUS::Supported::Plugin::InsertSequenceOntologyOBO"
               scope="global"
@@ -2330,7 +2336,7 @@
 
   <datasetClass class="mgedOntologyTermTypes" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>   
+    <prop name="version">&version;</prop>   
   <resource resource="Mged_Ontology_Term_Types_RSRC" version="${version}"
               plugin="GUS::Supported::Plugin::InsertOntologyTermType"
               scope="global"
@@ -2346,7 +2352,7 @@
 
   <datasetClass class="mgedOntologyRelationshipTypes" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>   
+    <prop name="version">&version;</prop>   
   <resource resource="Mged_Ontology_Relationship_Types_RSRC" version="${version}"
               plugin="GUS::Supported::Plugin::InsertOntologyRelationshipType"
               scope="global"
@@ -2362,7 +2368,7 @@
 
   <datasetClass class="mgedOntology" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>   
+    <prop name="version">&version;</prop>   
   <resource resource="MGED_Ontology_RSRC" version="${version}"
               plugin="GUS::Supported::Plugin::InsertOntologyTermsAndRelationships"
               scope="global"
@@ -2376,7 +2382,7 @@
   <!-- this should probably be just a step in the flow, not a dataset class -->
   <datasetClass class="mgedOntologyEntry" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
   <resource resource="Mged_Ontology_Entry_RSRC" version="${version}"
               plugin="GUS::Community::Plugin::LoadOntologyEntryFromMO"
               scope="global"
@@ -2392,7 +2398,7 @@
 
   <datasetClass class="geneOntologyEvidenceCodes" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
   <resource resource="GO_evidence_codes_RSRC" version="${version}"
               plugin="ApiCommonData::Load::Plugin::InsertGOEvidenceCodesFromObo"
               scope="global"
@@ -2409,7 +2415,7 @@
   <!-- the interpro data must be installed manually on the cluster -->
   <datasetClass class="interproscanData" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
   <resource resource="InterproscanData_RSRC" version="${version}"
               plugin="ApiCommonData::Load::Plugin::InsertInterproDomainDbs"
               scope="global"
@@ -2448,7 +2454,7 @@
 
   <datasetClass class="blatAlignmentQuality" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
   <resource resource="blatAlignmentQuality_RSRC" version="${version}"
               plugin="GUS::Supported::Plugin::LoadGusXml"
               scope="global"
@@ -2464,7 +2470,7 @@
 
   <datasetClass class="isolateVocabulary" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="isolatesVocabulary.xml"/>
 
@@ -2483,7 +2489,7 @@
 
   <datasetClass class="isolateGeographicLocationVocabulary" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="isolatesVocabulary.xml"/>
 
@@ -2502,7 +2508,7 @@
 
   <datasetClass class="isolateGeographicLocationGPS" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="isolatesVocabulary.xml"/>
 
@@ -2522,7 +2528,7 @@
 
   <datasetClass class="isolateQualifierToVocabMapping" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="isolatesVocabulary.xml"/>
 
@@ -2543,7 +2549,7 @@
 
   <datasetClass class="bibRefType" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="version"/>
+    <prop name="version">&version;</prop>
 
 
     <resource resource="BibRefType_RSRC" version="${version}"
@@ -2561,10 +2567,10 @@
 
   <datasetClass class="yeastTwoHybrid" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="organismSpecificMisc.xml"/>
     
@@ -2583,9 +2589,9 @@
 
   <datasetClass class="antiCodon" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="version">&version;</prop>
     <prop name="genomeVersion"/>
     <graphTemplateFile name="organismSpecificMisc.xml"/>
     
@@ -2605,10 +2611,10 @@
 
   <datasetClass class="relatedNaFeature" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <graphTemplateFile name="organismSpecificMisc.xml"/>
    
     <resource resource="${organismAbbrev}_interaction_${name}_RSRC" version="${version}"
@@ -2626,10 +2632,10 @@
 
   <datasetClass class="phenotypeFeatures" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <graphTemplateFile name="organismSpecificMisc.xml"/>
    
     <resource resource="${organismAbbrev}_phenotype_${name}_RSRC" version="${version}"
@@ -2648,10 +2654,10 @@
 
   <datasetClass class="isolateSNPsFromChip" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="isolateType"/>
     <graphTemplateFile name="organismSpecificMisc.xml"/>
     
@@ -2673,11 +2679,11 @@
 
   <datasetClass class="predictedAAFeature" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="category"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="genomeVersion"/>
     <graphTemplateFile name="organismSpecificMisc.xml"/>
    
@@ -2696,11 +2702,11 @@
 
   <datasetClass class="singleMotifMultMappings" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="category"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <prop name="motif"/>
     <prop name="motifName"/>
     <graphTemplateFile name="organismSpecificMisc.xml"/>
@@ -2721,10 +2727,10 @@
 
   <datasetClass class="geneFeatureLODScores" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <graphTemplateFile name="organismSpecificMisc.xml"/>
 
     <resource resource="${organismAbbrev}_eQTL_${name}_RSRC" version="${version}"
@@ -2744,10 +2750,10 @@
 
   <datasetClass class="SnpGffFeatures" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <graphTemplateFile name="organismSpecificMisc.xml"/>
 
     <resource resource="${organismAbbrev}_${name}_SNP_RSRC" version="${version}"
@@ -2765,10 +2771,10 @@
 
   <datasetClass class="massSpecExpressionProfiles" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <graphTemplateFile name="organismSpecificMisc.xml"/>
    
     <resource resource="${organismAbbrev}_massSpec_${name}_RSRC" version="${version}"
@@ -2786,9 +2792,9 @@
 
   <datasetClass class="phylogeneticProfiles" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="version">&version;</prop>
     <prop name="threshold"/>
     <graphTemplateFile name="organismSpecificMisc.xml"/>
     <resource resource="${organismAbbrev}_phylogeny_phylogeneticProfiles_RSRC" version="{$version}"
@@ -2806,11 +2812,11 @@
 
   <datasetClass class="UpdateRodentPlasmodiumChromosomes" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
-    <prop name="organismFullName"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="organismFullName">&organismFullName;<prop>
     <prop name="rodentOrganisms"/>
 
     <graphTemplateFile name="organismSpecificMisc.xml"/>
@@ -2831,10 +2837,10 @@
 
   <datasetClass class="pfalLocationsWithSqlLdr" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
     <graphTemplateFile name="organismSpecificMisc.xml"/>
     
     <resource resource="${organismAbbrev}_LocMapSqlLdr_${name}_RSRC" version="${version}"
@@ -2853,10 +2859,10 @@
 
   <datasetClass class="plasmoMapp" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="organismSpecificMisc.xml"/>
 
@@ -2879,10 +2885,10 @@
 
     <datasetClass class="geneName" category="" datasetFileHint="">
       <purpose></purpose>
-      <prop name="projectName"/>
-      <prop name="organismAbbrev"/>
-      <prop name="name"/>
-      <prop name="version"/>
+      <prop name="projectName">&projectName;</prop>
+      <prop name="organismAbbrev">&organismAbbrev;</prop>
+      <prop name="name">&name;</prop>
+      <prop name="version">&version;</prop>
       <prop name="genomeVersion"/>
 
       <graphTemplateFile name="organismSpecificMisc.xml"/>
@@ -2905,10 +2911,10 @@
   <!-- This dataset class load old sequences of genes in ApiDB.OldCodingSequence and old GO ids, EC numbers and product in ApiDB.OldAnnotation-->
   <datasetClass class="insertOldAnnotation" category="" datasetFileHint="">
     <purpose>Gene features that are not provided by the annotation center</purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="name"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
 
 
     <graphTemplateFile name="organismSpecificMisc.xml"/>
@@ -2932,9 +2938,9 @@
   <!-- NOTE: this class is specific to Crypto and is used to populate apidb.continents  -->
   <datasetClass class="updateIsolatesByContinents" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="organismSpecificMisc.xml"/>
 
@@ -2958,9 +2964,9 @@
   <!-- NOTE: this class is specific to Crypto and is used to update product and product_alias in dots.isolatefeature -->
   <datasetClass class="updateIsolateFeaturesByProductAlias" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="projectName"/>
-    <prop name="organismAbbrev"/>
-    <prop name="version"/>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="version">&version;</prop>
 
     <graphTemplateFile name="organismSpecificMisc.xml"/>
 
@@ -2985,8 +2991,8 @@
   <datasetClass class="orthomclClade" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="cladeAbbrev"/>
-    <prop name="version"/>
-    <prop name="ncbiTaxonId"/>
+    <prop name="version">&version;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="containsOnlyOneOrganism"/>
 
     <graphTemplateFile name="orthomclProject.xml"/>
