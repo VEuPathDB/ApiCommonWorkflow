@@ -10,8 +10,7 @@ use OrthoMCLEngine::Main::Base;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  # note: orthomclPairs supports restart.  to enable that we'd need to change it to look for its
-  # restart tag in its config file.   and maybe it would put out an error message suggesting that option.
+  # Warning: on restart, orthomclPairs reads the log file to see where to start
 
   my $suffix = $self->getParamValue('suffix');
   my $confFile = $self->getParamValue('configFile');
