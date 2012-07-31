@@ -43,8 +43,7 @@ sub getWebsiteFileCmd {
              sres.externaldatabaserelease edr,
              apidb.datasource ds,
              dots.isolatesource i
-        Where tn.taxon_id = $taxonId
-            AND enas.taxon_id = tn.taxon_id
+        Where enas.taxon_id = tn.taxon_id
             AND tn.name_class = 'scientific name'
             AND enas.external_database_release_id = edr.external_database_release_id
             AND edr.external_database_id = ed.external_database_id
@@ -52,6 +51,9 @@ sub getWebsiteFileCmd {
             AND ds.subtype = 'sequencing_typed'
             AND enas.na_sequence_id = i.na_sequence_id
             AND so.sequence_ontology_id = enas.sequence_ontology_id
+			AND tn.taxon_id in (select taxon_id from SRes.Taxon start with ncbi_tax_id in
+				(select family_ncbi_taxon_ids from apidb.organism where abbrev = '$organismAbbrev')
+				connect by prior taxon_id = parent_id)
 EOF
 
   my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\"";
