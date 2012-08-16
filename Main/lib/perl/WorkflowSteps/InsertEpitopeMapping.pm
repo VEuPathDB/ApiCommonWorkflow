@@ -16,13 +16,18 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  if (! -e $inputFile) { 
+    $self->log("$inputFile does not exist. Assuming that there were no mapped epitopes.  Exiting.");
+    return;
+  }
+
   my $args =" --inputFile $workflowDataDir/$inputFile --extDbRelSpec '$epiExtDbName|$epiExtDbVersion' --seqExtDbRelSpec '$seqExtDbSpecs'";
 
     if ($test) {
       $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
     }
 
-    $self->runPlugin ($test,$undo, "ApiCommonData::Load::Plugin::InsertEpitopeFeature","$args");
+    $self->runPlugin ($test,$undo, "ApiCommonData::Load::Plugin::InsertEpitopeFeature","$args") unless ;
 
 
 }
