@@ -49,7 +49,7 @@ EOF
 
 
   if ($undo){
-      $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $gusHome/$isfMappingFile --algInvocationId $algInvIds --workflowContext --commit");
+      $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $gusHome/lib/xml/isf/$isfMappingFile --algInvocationId $algInvIds --workflowContext --commit");
   }else{
       if ($test) {
 	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
