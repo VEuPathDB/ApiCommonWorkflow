@@ -27,7 +27,7 @@ sub run {
       $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
     }
 
-    $self->runPlugin ($test,$undo, "ApiCommonData::Load::Plugin::InsertEpitopeFeature","$args") unless ;
+    $self->runPlugin ($test,$undo, "ApiCommonData::Load::Plugin::InsertEpitopeFeature","$args");
 
 
 }
