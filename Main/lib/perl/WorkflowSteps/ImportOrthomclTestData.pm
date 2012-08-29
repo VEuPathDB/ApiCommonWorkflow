@@ -16,14 +16,14 @@ sub run {
   # four cases:
 
   # 1) Plan A Tier 1
-  #     - taxaDir supplied. ApiDB.SimilarSequences${suffix}_c might exist or might not.  if so  use that table (drop ApiDB.SimilarSequences$suffix and use a synonym).  in either case, "collapse clades" by prepending clade ID protein ID.
+  #     - taxaDir supplied. ApiDB.SimilarSequences${suffix}_c might exist or might not.  if so  use that table (drop ApiDB.SimilarSequences$suffix and use a synonym). 
   # 2) Plan A Tier 2 
-  #     - no taxaDir supplied.  filter based on inputProteinFile (rep proteins)
+  #     - no taxaDir supplied.  filter based on inputProteinFile (rep proteins).  "collapse clades" by prepending clade ID protein ID.
 
   # 3) Plan B Tier 1
-  #     - taxaDir supplied and no table called ApiDB.SimilarSequences${suffix}_c exists.  filter based on taxa in taxaDir.  do not "collapse clades"
-  # 4) Plan A Tier 2 and Plan B Tier 2
-  #     - no taxaDir supplied:  filter based on inputProteinFile (rep proteins for Plan A and residuals for Plan B)
+  #     - taxaDir supplied and no table called ApiDB.SimilarSequences${suffix}_c exists.  filter based on taxa in taxaDir. 
+  # 4) Plan B Tier 2
+  #     - no taxaDir supplied:  filter based on inputProteinFile (residuals).   do not "collapse clades"
 
 
   my $taxaDir = $self->getParamValue('taxaDir');
@@ -46,16 +46,16 @@ SQL
 	  $self->runSqlFetchOneRow($test, "truncate table apidb.SimilarSequences$suffix");
       }
   } else {
-      if (!$taxaDir) {
-	  my $suf = $suffix? "-suffix $suffix" : "";
-	  my $cc = $collapseClades? "-collapseClades" : "";
-	  $self->runCmd($test, "filterSimsByProteinIdsInMemory $suf -proteinsFile $workflowDataDir/$inputProteinFile -simsFile /eupath/data/EuPathDB/devWorkflows/OrthoMCL/testdata/SimilarSequences.dat.gz $cc -verbose");
-      } else {
+      if ($taxaDir) {
 	  if ($cacheTableExists) {
 	      $self->createSynonym($test, $suffix, $cacheTableName);
 	  } else {
 	    $self->runCmd($test, "filterSimilarSequencesByTaxon -suffix $suffix -taxaDir $workflowDataDir/$taxaDir -verbose");
 	  }
+      } else {
+	  my $suf = $suffix? "-suffix $suffix" : "";
+	  my $cc = $collapseClades? "-collapseClades" : "";
+	  $self->runCmd($test, "filterSimsByProteinIdsInMemory $suf -proteinsFile $workflowDataDir/$inputProteinFile -simsFile /eupath/data/EuPathDB/devWorkflows/OrthoMCL/testdata/SimilarSequences.dat.gz $cc -verbose");
       }
   }
 }
