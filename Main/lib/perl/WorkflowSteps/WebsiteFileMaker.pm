@@ -80,6 +80,8 @@ sub run {
 
   my $websiteFileCmd =  $self->getWebsiteFileCmd($websiteFile, $test);
 
+  my $skipIfFile = $self->getSkipIfFile();
+
   if($undo){
     $self->runCmd(0, "rm -f $websiteFile") unless $websiteFileCmd eq 'NONE';
     $self->runCmd(0, "rm -f $descripFile") unless $isWebServiceFile;
@@ -93,7 +95,6 @@ sub run {
       }else {
 	  $self->runCmd($test, $websiteFileCmd) unless $websiteFileCmd eq 'NONE';
 	  $self->runCmd($test, $descripFileCmd)  unless $isWebServiceFile;
-	  my $skipIfFile = $self->getSkipIfFile();
 	  if ($skipIfFile && (-s $websiteFile == 0)) {
 	    my $wfDataDir = $self->getWorkflowDataDir();
 	    $self->runCmd(0, "touch $wfDataDir/$skipIfFile");
