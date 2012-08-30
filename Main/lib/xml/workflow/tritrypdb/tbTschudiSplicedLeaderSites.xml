@@ -1,0 +1,85 @@
+<workflowGraph name="tbTschudiSplicedLeaderSites">
+    <param name="parentDataDir"/>
+    <param name="organismResourceXmlFile"/>
+    <param name="genomicSeqsFile"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="downloadSiteTranscriptExpressionDataDir"/>
+
+    <constant name="dataDir">$$parentDataDir$$/tbTschudiSplicedLeaderSites</constant>
+    <constant name="samplesDataDir">$$dataDir$$/samples</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesDataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="outputIndexDir">$$dataDir$$/indexes</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="Tbrucei_RNASeq_Spliced_Leader_Sites_Tschudi_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">Tbrucei_RNASeq_Spliced_Leader_Sites_Tschudi_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="runBowtie_5-SL-end-enriched-spliceLeader" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_Sites_Tschudi_RSRC/final/5-SL-end-enriched-spliceLeader.fasta</paramValue>
+      <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
+      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
+      <paramValue name="inputShortSeqsFileType">-f</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/5-SL-end-enriched-spliceLeader.bt</paramValue>
+      <depends name="Tbrucei_RNASeq_Spliced_Leader_Sites_Tschudi_RSRC"/>
+      <depends name="createBowtieIndices"/>
+    </step>
+
+     <step name="insertSpliceSiteFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSpliceSiteFeatures" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_Sites_Tschudi_RSRC/final/config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">Tbrucei_RNASeq_Spliced_Leader_Sites_Tschudi_RSRC|@@Tbrucei_RNASeq_Spliced_Leader_Sites_Tschudi_VER@@</paramValue>
+      <paramValue name="type">Splice Site</paramValue>
+      <depends name="runBowtie_5-SL-end-enriched-spliceLeader"/>
+    </step>
+
+    <step name="runTuningManager"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager">
+      <depends name="insertSpliceSiteFeatures"/> 
+  </step>
+
+     <step name="extractSpliceSiteGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSpliceSiteGenes">
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_Sites_Tschudi_RSRC/final/config.txt</paramValue>
+      <paramValue name="outputUniqFile">$$dataDir$$/uniqProfile.out</paramValue>
+      <paramValue name="outputNonUniqFile">$$dataDir$$/nonUniqProfile.out</paramValue>
+      <depends name="runTuningManager"/>
+    </step>
+
+    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
+      <paramValue name="inputFile">$$dataDir$$/uniqProfile.out</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/minPercents.txt</paramValue>
+      <paramValue name="ties">min</paramValue>
+      <paramValue name="hasHeader">true</paramValue>
+      <depends name="extractSpliceSiteGenes"/>
+    </step>
+
+    <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_Sites_Tschudi_RSRC/final/profile_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">Tbrucei_RNASeq_Spliced_Leader_Sites_Tschudi_RSRC|@@Tbrucei_RNASeq_Spliced_Leader_Sites_Tschudi_VER@@</paramValue>
+      <depends name="makeMinPercentileProfile"/>
+    </step>
+
+<step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
+      <paramValue name="copyFromDir">$$dataDir$$</paramValue>
+      <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_Sites_Tschudi_RSRC/final/profile_config.txt</paramValue>
+      <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
+      <depends name="insertExpressionProfile"/>
+</step>
+
+</workflowGraph>
