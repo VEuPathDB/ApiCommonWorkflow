@@ -17,12 +17,6 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
-      <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="outputIndexDir">$$dataDir$$/indexes</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-
     <subgraph name="Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
@@ -31,21 +25,33 @@
     </subgraph>
 
     <step name="runBowtie_3-end-enriched-random-primed-PolyA" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
-      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC/final/3-end-enriched-random-primed-PolyA.fasta</paramValue>
+      <paramValue name="isPairedEnds">false</paramValue>
+      <paramValue name="haveQuals">false</paramValue>
+      <paramValue name="inputFwdSeqsFile">$$dataDir$$/Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC/final/3-end-enriched-random-primed-PolyA.fasta</paramValue>
+      <paramValue name="inputFwdQualsFile"></paramValue>
+      <paramValue name="inputRevSeqsFile"></paramValue>
+      <paramValue name="inputRevQualsFile"></paramValue>
+      <paramValue name="seqsFileType">FASTA</paramValue>
       <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
-      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
-      <paramValue name="inputShortSeqsFileType">-f</paramValue>
       <paramValue name="outputFile">$$dataDir$$/3-end-enriched-random-primed-PolyA.bt</paramValue>
+      <paramValue name="bowtieParams">-a -v 3 -m 14</paramValue>
+      <paramValue name="isColorSpace">false</paramValue>
       <depends name="Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC"/>
       <depends name="createBowtieIndices"/>
     </step>
 
     <step name="runBowtie_3-end-enriched-dT-primed-PolyA" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaRunBowtie">
-      <paramValue name="inputShortSeqsFile">$$dataDir$$/Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC/final/3-end-enriched-dT-primed-PolyA.fasta</paramValue>
+      <paramValue name="isPairedEnds">false</paramValue>
+      <paramValue name="haveQuals">false</paramValue>
+      <paramValue name="inputFwdSeqsFile">$$dataDir$$/Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC/final/3-end-enriched-dT-primed-PolyA.fasta</paramValue>
+      <paramValue name="inputFwdQualsFile"></paramValue>
+      <paramValue name="inputRevSeqsFile"></paramValue>
+      <paramValue name="inputRevQualsFile"></paramValue>
+      <paramValue name="seqsFileType">FASTA</paramValue>
       <paramValue name="inputIndexesDir">$$dataDir$$/indexes</paramValue>
-      <paramValue name="bowtieParam">-a -v 3 -m 14</paramValue>
-      <paramValue name="inputShortSeqsFileType">-f</paramValue>
       <paramValue name="outputFile">$$dataDir$$/3-end-enriched-dT-primed-PolyA.bt</paramValue>
+      <paramValue name="bowtieParams">-a -v 3 -m 14</paramValue>
+      <paramValue name="isColorSpace">false</paramValue>
       <depends name="Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC"/>
       <depends name="createBowtieIndices"/>
     </step>
@@ -54,8 +60,9 @@
      <step name="insertSpliceSiteFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSpliceSiteFeatures" stepLoadTypes="plugin">
       <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC/final/config.txt</paramValue>
       <paramValue name="inputDir">$$dataDir$$</paramValue>
-      <paramValue name="extDbRlsSpec">Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC|@@Tbrucei_RNASeq_PolyA_Sites_Tschudi_VER@@</paramValue>
-      <paramValue name="type">Splice Site</paramValue>
+      <paramValue name="extDbRlsSpec">Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC|2010-03-24</paramValue>
+      <paramValue name="type">PolyA Site</paramValue>
+      <paramValue name="fileNames">3-end-enriched-dT-primed-PolyA.bt,3-end-enriched-random-primed-PolyA.bt</paramValue>
       <depends name="runBowtie_3-end-enriched-random-primed-PolyA"/>
       <depends name="runBowtie_3-end-enriched-dT-primed-PolyA"/>
     </step>
@@ -83,7 +90,7 @@
     <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
       <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC/final/profile_config.txt</paramValue>
       <paramValue name="inputDir">$$dataDir$$</paramValue>
-      <paramValue name="extDbRlsSpec">Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC|@@Tbrucei_RNASeq_PolyA_Sites_Tschudi_VER@@</paramValue>
+      <paramValue name="extDbRlsSpec">Tbrucei_RNASeq_PolyA_Sites_Tschudi_RSRC|2010-03-24</paramValue>
       <depends name="makeMinPercentileProfile"/>
     </step>
 
