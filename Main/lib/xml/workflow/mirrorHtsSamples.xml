@@ -1,0 +1,16 @@
+<workflowGraph name="">
+    <param name="readsFilePath"/>
+    <param name="readsFileBasename"/>
+    <param name="hasPairedEnds"/>
+
+    <!-- mirror this sample's read files to cluster -->
+    <step name="mirrorReadsToCluster_$$readsFileBasename$$" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$readsFilePath$$/$$readsFileBasename$$</paramValue>
+    </step>
+
+    <!-- Only mirror over the Paired file over if it expected -->
+    <step name="mirrorPairedToCluster_$$readsFileBasename$$" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" includeIf="$$hasPairedEnds$$">
+      <paramValue name="fileOrDirToMirror">$$readsFilePath$$/$$snpStrainAbbrev$$.paired</paramValue>
+    </step>
+
+</workflowGraph>

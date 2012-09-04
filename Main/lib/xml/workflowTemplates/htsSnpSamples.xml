@@ -5,11 +5,12 @@
   <param name="samplesOutputDir"/>
   <param name="genomeExtDbRlsSpec"/>
   <param name="genomicSeqsFile"/>
-  <param name="BWAIndexDir"/>
+  <param name="indexDir"/>
   <param name="organismAbbrev"/>
   <param name="experimentName"/>
   <param name="hasPairedEnds"/>
   <param name="relativeWebServicesDir"/>
+  <param name="isColorspace"/>
 
   <constant name="readsFilePath">$$experimentDir$$/$$experimentRSRC$$/final</constant>
 
@@ -25,17 +26,20 @@
       <paramValue name="parentDataDir">$$experimentDir$$</paramValue>
     </subgraph>
 
-    <!-- mirror this sample's read files to cluster -->
-    <step name="mirrorReadsToCluster_${snpStrainAbbrev}" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$readsFilePath$$/${snpStrainAbbrev}</paramValue>
+    <subgraph name="mirrorHtsSampleFiles${snpStrainAbbrev}" xmlFile="mirrorHtsSamples.xml">
+      <paramValue name="readsFilePath">$$readsFilePath$$</paramValue>
+      <paramValue name="readsFileBasename">${snpStrainAbbrev}</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
       <depends name="SNP_sample_${snpStrainAbbrev}_RSRC"/>
-    </step>
+    </subgraph>
 
-    <!-- Only mirror over the Paired file over if it expected -->
-    <step name="mirrorPairedToCluster_${snpStrainAbbrev}" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" includeIf="$$hasPairedEnds$$">
-      <paramValue name="fileOrDirToMirror">$$readsFilePath$$/${snpStrainAbbrev}.paired</paramValue>
+    <subgraph name="mirrorHtsSampleQualFiles${snpStrainAbbrev}" xmlFile="mirrorHtsSamples.xml"  includeIf="$$isColorspace$$">
+      <paramValue name="readsFilePath">$$readsFilePath$$</paramValue>
+      <paramValue name="readsFileBasename">${snpStrainAbbrev}.qual</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
       <depends name="SNP_sample_${snpStrainAbbrev}_RSRC"/>
-    </step>
+    </subgraph>
+
 
     <subgraph name="${snpStrainAbbrev}" xmlFile="analyzeHtsSnpSample.xml">
       <paramValue name="sampleMetaDataFile">$$readsFilePath$$/sampleMetaData.txt</paramValue>
@@ -48,16 +52,53 @@
       <paramValue name="snpStrain">${snpStrainAbbrev}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="BWAIndexDir">$$BWAIndexDir$$</paramValue>
+      <paramValue name="indexDir">$$indexDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="experimentName">$$experimentName$$</paramValue>
       <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <depends name="mirrorReadsToCluster_${snpStrainAbbrev}"/>
-      <depends name="mirrorPairedToCluster_${snpStrainAbbrev}"/>
+      <paramValue name="isColorspace">$$isColorspace$$</paramValue>
+      <paramValue name="sraQueryString"></paramValue>
+      <depends name="mirrorHtsSampleFiles${snpStrainAbbrev}"/>
+      <depends name="mirrorHtsSampleQualFiles${snpStrainAbbrev}"/>
     </subgraph>
 
   </datasetTemplate>
 
+  <datasetTemplate class="SNPs_HTS_Sample_QuerySRA">
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="snpStrainAbbrev"/>
+    <prop name="sraQueryString"/>
+
+    <!-- The resource here does not get anything from manual delivery.  It only makes rows in sres.extdb and extdbrls -->
+    <subgraph name="SNP_sample_${snpStrainAbbrev}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_${experimentName}_${snpStrainAbbrev}_SNPSample_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$experimentDir$$</paramValue>
+    </subgraph>
+
+    <subgraph name="${snpStrainAbbrev}" xmlFile="analyzeHtsSnpSample.xml">
+      <paramValue name="sampleMetaDataFile">$$readsFilePath$$/sampleMetaData.txt</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="experimentDataDir">$$experimentDir$$</paramValue>
+      <paramValue name="readsFile">$$readsFilePath$$/${snpStrainAbbrev}</paramValue>
+      <paramValue name="pairedReadsFile">$$readsFilePath$$/${snpStrainAbbrev}.paired</paramValue>
+      <paramValue name="outputDir">$$samplesOutputDir$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">${organismAbbrev}_${experimentName}_${snpStrainAbbrev}_SNPSample_RSRC|dontcare</paramValue>
+      <paramValue name="snpStrain">${snpStrainAbbrev}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="indexDir">$$indexDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="experimentName">$$experimentName$$</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="isColorspace">$$isColorspace$$</paramValue>
+      <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
+      <depends name="SNP_sample_${snpStrainAbbrev}_RSRC"/>
+    </subgraph>
+
+  </datasetTemplate>
 
 </workflowGraph>

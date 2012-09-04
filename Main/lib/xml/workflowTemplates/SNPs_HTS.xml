@@ -11,15 +11,28 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <step name="createBWAIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBWAIndexes">
+  <!-- Create the bowtie 2 indexes -->
+  <step name="createBowtie2Indices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtie2Indexes">
     <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="outputIndexDir">$$dataDir$$/bwa_index</paramValue>
+    <paramValue name="outputIndexDir">$$dataDir$$/bowtie_index</paramValue>
+      <paramValue name="colorspace">false</paramValue>
+      <paramValue name="bowtieVersion">2</paramValue>
     <depends name="makeDataDir"/>
   </step>
 
+   <!-- Create the Bowtie 1 index for colorspace -->
+    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+      <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="outputIndexDir">$$dataDir$$/bowtie_index</paramValue>
+      <paramValue name="colorspace">true</paramValue>
+      <paramValue name="bowtieVersion">1</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="createBWAIndices"/>
+      <depends name="createBowtieIndices"/>
+      <depends name="createBowtie2Indices"/>
     </step>
 
 
@@ -29,6 +42,7 @@
     <prop name="name"/>
     <prop name="version"/>
     <prop name="hasPairedEnds"/>
+    <prop name="isColorspace"/>
 
     <!-- dataDir eq 'SNPs' directory 
 
@@ -48,7 +62,8 @@
       <paramValue name="experimentResourceVersion">${version}</paramValue>
       <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <depends name="createBWAIndices"/>
+      <paramValue name="isColorspace">$$isColorspace$$</paramValue>
+      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 

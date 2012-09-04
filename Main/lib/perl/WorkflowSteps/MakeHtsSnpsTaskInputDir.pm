@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeBWATaskInputDir;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeHtsSnpsTaskInputDir;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -14,8 +14,13 @@ sub run {
   my $pairedReadsFile = $self->getParamValue("pairedReadsFile");
   my $hasPairedReads = $self->getBooleanParamValue("hasPairedReads");
   my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
-  my $bwaIndexDir = $self->getParamValue("bwaIndexDir");
+  my $indexDir = $self->getParamValue("indexDir");
   my $strain = $self->getParamValue("strain");
+
+  # expects string true/false
+  my $isColorspace = $self->getParamValue("isColorspace");
+
+  my $sraQueryString = $self->getParamValue("sraQueryString");
 
   my $taskSize = $self->getConfig("taskSize");
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
@@ -41,8 +46,9 @@ sub run {
       my $taskPropFileContent="
 fastaFile=$clusterWorkflowDataDir/$genomicSeqsFile
 mateA=$clusterWorkflowDataDir/$readsFile
-bwaIndex=$clusterWorkflowDataDir/$bwaIndexDir
+index=$clusterWorkflowDataDir/$indexDir
 strain=$strain
+isColorspace=$isColorspace
 ";
       if($hasPairedReads){
 	  $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$pairedReadsFile\n";
@@ -60,8 +66,10 @@ sub getParamsDeclaration {
 	  'readsFile',
 	  'hasPairedReads',
 	  'genomicSeqsFile',
-	  'bwaIndexDir',
+	  'indexDir',
 	  'strain',
+          'isColorspace',
+          'sraQueryString',
 	 );
 }
 
