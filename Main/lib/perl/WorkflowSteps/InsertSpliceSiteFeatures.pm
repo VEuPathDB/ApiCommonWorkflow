@@ -23,7 +23,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--dirPath $workflowDataDir/$inputDir --dirPath $workflowDataDir/$inputDir --configFile $workflowDataDir/$configFile  --extDbName $extDbName --extDbVer $extDbVer --type $type";
+  my $args = "--dirPath $workflowDataDir/$inputDir --dirPath $workflowDataDir/$inputDir --configFile $workflowDataDir/$configFile  --extDbName $extDbName --extDbVer $extDbVer --type '$type'";
   $args.= " --fileNames $fileNames" if $fileNames;
 
   if ($test) {
