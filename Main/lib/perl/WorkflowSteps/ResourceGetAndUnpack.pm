@@ -19,7 +19,7 @@ sub run {
     $self->error("Target dir '$targetDir' does not exist") unless -d $targetDir;
 
     if ($undo) {
-      $self->runCmd(0, "rm -fr $targetDir/*");
+      $self->runCmd(0, "rm -rf $targetDir/*");
     } else {
 	$self->getResource($test, $dataSource, $targetDir);
 	$self->unpackResource($test, $dataSource, $targetDir);
