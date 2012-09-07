@@ -56,8 +56,8 @@
       <depends name="runBowtie_5-SL-end-enriched-spliceLeader"/>
     </step>
 
-    <step name="runTuningManager"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTuningManager">
+    <step name="addSpliceSiteGenes"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddSpliceSiteGenes">
       <depends name="insertSpliceSiteFeatures"/> 
   </step>
 
@@ -65,7 +65,8 @@
       <paramValue name="configFile">$$dataDir$$/Tbrucei_RNASeq_Spliced_Leader_Sites_Tschudi_RSRC/final/config.txt</paramValue>
       <paramValue name="outputUniqFile">$$dataDir$$/uniqProfile.out</paramValue>
       <paramValue name="outputNonUniqFile">$$dataDir$$/nonUniqProfile.out</paramValue>
-      <depends name="runTuningManager"/>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="addSpliceSiteGenes"/>
     </step>
 
     <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
