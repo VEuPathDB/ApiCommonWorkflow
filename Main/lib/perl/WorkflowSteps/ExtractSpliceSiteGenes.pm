@@ -11,14 +11,11 @@ sub run {
   my $configFile = $self->getParamValue('configFile');
   my $outputUniqFile = $self->getParamValue('outputUniqFile');
   my $outputNonUniqFile = $self->getParamValue('outputNonUniqFile');
-  my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
 
   my $cmd="extractSpliceSiteGenes --uniqFile $workflowDataDir/$outputUniqFile --nonUniqFile $workflowDataDir/$outputNonUniqFile --configFile $workflowDataDir/$configFile";
-
-  $cmd .= " --genomeExtDbRlsSpec '$genomeExtDbRlsSpec'" if $genomeExtDbRlsSpec;
 
     if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputUniqFile");
