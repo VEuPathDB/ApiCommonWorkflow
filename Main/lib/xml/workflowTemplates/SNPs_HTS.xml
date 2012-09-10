@@ -12,7 +12,7 @@
   </step>
 
   <!-- Create the bowtie 2 indexes -->
-  <step name="createBowtie2Indices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtie2Indexes">
+  <step name="createBowtie2Indices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
     <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
     <paramValue name="outputIndexDir">$$dataDir$$/bowtie_index</paramValue>
       <paramValue name="colorspace">false</paramValue>
@@ -62,14 +62,14 @@
       <paramValue name="experimentResourceVersion">${version}</paramValue>
       <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="isColorspace">$$isColorspace$$</paramValue>
+      <paramValue name="isColorspace">${isColorspace}</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
   <subgraph name="coveragesnps" xmlFile="getAndAnalyzeCoverageSnps.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <dependsPattern name="*_experiment"/>

@@ -20,7 +20,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   
-  $self->error("Colorspace only valid for bowtie version 1") if($colorspace && $bowtieVersoin != 1);
+  $self->error("Colorspace only valid for bowtie version 1") if($colorspace && $bowtieVersion != 1);
 
   $self->runCmd(0,"mkdir -p $workflowDataDir/$outputIndexDir");
 

@@ -49,6 +49,7 @@ mateA=$clusterWorkflowDataDir/$readsFile
 index=$clusterWorkflowDataDir/$indexDir
 strain=$strain
 isColorspace=$isColorspace
+sraSampleIdQueryList=$sraQueryString
 ";
       if($hasPairedReads){
 	  $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$pairedReadsFile\n";
