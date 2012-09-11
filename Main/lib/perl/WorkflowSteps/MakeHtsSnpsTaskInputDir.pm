@@ -45,17 +45,24 @@ sub run {
 
       my $taskPropFileContent="
 fastaFile=$clusterWorkflowDataDir/$genomicSeqsFile
-mateA=$clusterWorkflowDataDir/$readsFile
-index=$clusterWorkflowDataDir/$indexDir
+bowtieIndex=$clusterWorkflowDataDir/$indexDir
 strain=$strain
 isColorspace=$isColorspace
 sraSampleIdQueryList=$sraQueryString
 ";
-      if($hasPairedReads){
-	  $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$pairedReadsFile\n";
-      }else {
+      if(length($sraQueryString)>0){
+	  $taskPropFileContent .= "mateA=none\n";
 	  $taskPropFileContent .= "mateB=none\n";
+      }else {
+	  $taskPropFileContent .= "mateA=$clusterWorkflowDataDir/$readsFile\n";
+	  if($hasPairedReads){
+	      $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$pairedReadsFile\n";
+	  }else {
+	      $taskPropFileContent .= "mateB=none\n";
+	  }
       }
+
+
 
       print F "$taskPropFileContent\n";
        close(F);
