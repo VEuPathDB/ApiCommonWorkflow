@@ -46,12 +46,15 @@ sub run {
   my @dashT;
   my @dashDorN;
   foreach my $org (@organismAbbrevs) {
-    push(@dashT, "$org:0.1");
+    push(@dashT, "$org");
     my $draftFlag = $isDraftHash->{$org}? '-d' : '-n';
 
     push(@dashDorN, "$draftFlag $org");
   }
-  my $t = join(',', @dashT);
+
+  my $start = shift @dashT;
+  my $t = &makeTree($start, \@dashT);
+
   my $dn = join(' ', @dashDorN);
   my $command = "runMercator  -t '($t);' -p $workflowDataDir/$mercatorOutputDir -c $cndSrcBin -m $mavid $dn";
   $self->runCmd($test,$command);
@@ -65,6 +68,19 @@ sub run {
   $self->runCmd($test,"rmdir $workflowDataDir/$mercatorOutputDir/gff");
   $self->runCmd($test,"rmdir $workflowDataDir/$mercatorOutputDir/fasta");
 
+}
+
+sub makeTree {
+  my $first = shift;
+  my $rest = shift;
+
+  my $second = shift @$rest; ;
+  my $baseString = "($first,$second)";
+
+  if(scalar @$rest > 0) {
+    $baseString = makeTree($baseString, $rest);
+  }
+  return $baseString;
 }
 
 sub findOrganismAbbrevs {
