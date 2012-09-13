@@ -48,13 +48,15 @@ fastaFile=$clusterWorkflowDataDir/$genomicSeqsFile
 bowtieIndex=$clusterWorkflowDataDir/$indexDir
 strain=$strain
 isColorspace=$isColorspace
-sraSampleIdQueryList=$sraQueryString
 ";
       if(length($sraQueryString)>0){
 	  $taskPropFileContent .= "mateA=none\n";
 	  $taskPropFileContent .= "mateB=none\n";
+	  $taskPropFileContent .= "sraSampleIdQueryList=$sraQueryString\n";
+
       }else {
 	  $taskPropFileContent .= "mateA=$clusterWorkflowDataDir/$readsFile\n";
+	  $taskPropFileContent .= "sraSampleIdQueryList=none\n";
 	  if($hasPairedReads){
 	      $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$pairedReadsFile\n";
 	  }else {
