@@ -767,6 +767,38 @@
     </resource>
   </datasetClass>
 
+
+<!-- Category: genomeFeature -->
+  <!-- NOTE: THIS CLASS IS FOR FEATURES THAT ARE ON THE VIRTUAL SEQS -->
+  <datasetClass class="virtualSeq_GFF2" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="mapFile"/>
+    <prop name="gff2GroupTag"/>
+    <prop name="virtualGenomeVersion"/>
+
+    <graphTemplateFile name="organismSpecificMisc.xml"/>
+
+    <resource resource="${organismAbbrev}_virtualSeq_${name}_GFF2_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+              scope="organism"
+              type="feature"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genomeFeature/${name}_GFF/${version}/final/features.gff">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--extDbName %RESOURCE_NAME% --extDbRlsVer %RESOURCE_VERSION% --seqExtDbName ${organismAbbrev}_primary_virtual_genome_RSRC --seqExtDbRlsVer ${virtualGenomeVersion} --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/features.gff --fileFormat gff2  --gff2GroupTag "${gff2GroupTag}" --soExtDbRlsName "SO_RSRC" --defaultOrganism ${ncbiTaxonId} --naSequenceSubclass VirtualSequence --seqIdColumn source_id  --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
+    </resource>
+  </datasetClass>
+
   <!-- Category: genomeFeature -->
   <datasetClass class="genomeFeatures_GFF3" category="" datasetFileHint="">
     <purpose></purpose>
