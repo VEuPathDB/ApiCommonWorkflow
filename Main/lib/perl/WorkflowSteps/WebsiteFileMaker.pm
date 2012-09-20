@@ -78,6 +78,7 @@ sub run {
       $descripFileCmd =  "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
   }
 
+  my $wfDataDir = $self->getWorkflowDataDir();
   my $websiteFileCmd =  $self->getWebsiteFileCmd($websiteFile, $test);
 
   my $skipIfFile = $self->getSkipIfFile();
@@ -85,7 +86,7 @@ sub run {
   if($undo){
     $self->runCmd(0, "rm -f $websiteFile") unless $websiteFileCmd eq 'NONE';
     $self->runCmd(0, "rm -f $descripFile") unless $isWebServiceFile;
-    unlink($skipIfFile) if -e $skipIfFile;
+    unlink("$wfDataDir/$skipIfFile") if -e "$wfDataDir/$skipIfFile";
   }else {
       $self->error("Output file '$websiteFile' already exists") if -e $websiteFile;
       $self->error("Output file '$descripFile' already exists") if !$isWebServiceFile && -e $descripFile;
@@ -96,7 +97,6 @@ sub run {
 	  $self->runCmd($test, $websiteFileCmd) unless $websiteFileCmd eq 'NONE';
 	  $self->runCmd($test, $descripFileCmd)  unless $isWebServiceFile;
 	  if ($skipIfFile && (-s $websiteFile == 0)) {
-	    my $wfDataDir = $self->getWorkflowDataDir();
 	    $self->runCmd(0, "touch $wfDataDir/$skipIfFile");
 	  }
       }
