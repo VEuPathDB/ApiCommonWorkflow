@@ -156,28 +156,20 @@
       <depends name="reformatNUPSCoverageFile"/>
     </step>
 
-    <!-- outputs basename.min and basename.max -->
-    <step name="makeIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeIntensityFile" includeIf="$$isRnaSeq$$">
-      <paramValue name="inputSortedFile">$$dataDir$$/master/mainresult/RUM_Unique.sorted,$$dataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
+
+
+
+
+    <!-- am I allowed to have an includeIf in the subgraphCall?? -->
+    <subgraph name="makeRUMIntensityFiles"  xmlFile="makeRUMIntensityFiles.xml" includeIf="$$isRnaSeq$$">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="inputGeneModelFile">$$geneModelFileForSsa$$</paramValue>
-      <paramValue name="outputIntensityFileBasename">$$outputDir$$/$$sampleName$$.intensity</paramValue>
+      <paramValue name="outputDir">$$outputDir$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="isStrandSpecific">$$strandSpecific$$</paramValue>
       <depends name="runRUMOnCluster"/>
-    </step>
+    </subgraph>
 
-    <step name="generateMappingStatsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile">
-      <paramValue name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.sorted</paramValue>
-      <paramValue name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
-      <paramValue name="outputFile">$$outputDir$$/$$sampleName$$.mappingStats</paramValue>
-      <depends name="runRUMOnCluster"/>
-    </step>
-
-    <step name="generateCountFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateCountFile">
-      <paramValue name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.sorted</paramValue>
-      <paramValue name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
-      <paramValue name="geneAnnotationFile">$$geneModelFileForSsa$$</paramValue>
-      <paramValue name="outputFile">$$outputDir$$/$$sampleName$$.count</paramValue>
-      <depends name="runRUMOnCluster"/>
-    </step>
 
 
 </workflowGraph>
