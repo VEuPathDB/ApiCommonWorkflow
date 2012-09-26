@@ -14,6 +14,7 @@
   <param name="genomicSeqsDir"/>
   <param name="relativeDownloadSiteDir"/>
   <param name="relativeWebServicesDir"/>
+  <param name="skipOrfs"/>
 
   <constant name="dataDir">$$parentDataDir$$/genome</constant>
   <constant name="blastxArgs">-topcomboN=1 W=4 T=18 V=100 B=1000000 -hspmax=1000000 -gi E=1e-3 -wordmask=seg+xnu -hspsepQmax=4000 -span1</constant>
@@ -85,7 +86,7 @@
     </subgraph> 
 
     <step name="makeOrfFile"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfFile">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfFile" excludeIf="$$skipOrfs$$">
       <paramValue name="seqFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="minPepLength">50</paramValue>
       <paramValue name="outputFile">$$dataDir$$/Orf50.gff</paramValue>
@@ -93,7 +94,7 @@
     </step>
 
     <step name="document-makeOrfFile"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" excludeIf="$$skipOrfs$$">
       <paramValue name="method">orfFinder_MTHD</paramValue>
       <paramValue name="version">unknown</paramValue>
       <paramValue name="parameters">--minPepLength 50</paramValue>
@@ -101,7 +102,7 @@
     </step>
 
     <step name="loadOrfFile"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrfFile" stepLoadTypes="plugin">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrfFile" stepLoadTypes="plugin" excludeIf="$$skipOrfs$$">
       <paramValue name="inputFile">$$dataDir$$/Orf50.gff</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="substepClass">ExternalNASequence</paramValue>
@@ -110,6 +111,7 @@
       <depends name="makeOrfFile"/>
     </step>
 
+  
   <subgraph name="massSpecResources" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/massSpec.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>

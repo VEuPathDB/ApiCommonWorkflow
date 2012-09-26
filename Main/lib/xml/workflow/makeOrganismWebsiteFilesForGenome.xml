@@ -7,14 +7,14 @@
     <param name="projectVersionForWebsiteFiles"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="minOrfLength"/>
-    <param name="skipGenomeAnalysis"/>
+    <param name="skipOrfs"/>
 
     <constant name="mixedGenomicDescripString">Genomic DNA sequences (NT)</constant>
     <constant name="orfDescripString">Translated open reading frames from genomic sequences (AA)</constant>
     <constant name="orfNADescripString">Open reading frames on genomic sequences (NT)</constant>
     <constant name="sequenceDescripString">Genomic DNA sequence statistics and information in detail</constant>
 
-    <step name="makeMixedGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMixedGenomicDownloadFile" excludeIf="$$skipGenomeAnalysis$$">
+    <step name="makeMixedGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMixedGenomicDownloadFile">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -26,7 +26,7 @@
       <paramValue name="isWebServiceFile">false</paramValue>
     </step>
 
-    <step name="formatMixedGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" excludeIf="$$skipGenomeAnalysis$$">
+    <step name="formatMixedGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -39,7 +39,7 @@
       <depends name="makeMixedGenomicDownloadFile"/>
     </step>
 
-    <step name="makeOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfDownloadFile" excludeIf="$$skipGenomeAnalysis$$">
+    <step name="makeOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfDownloadFile" excludeIf="$$skipOrfs">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -52,7 +52,7 @@
       <paramValue name="isWebServiceFile">false</paramValue>
     </step>
 
-    <step name="formatOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" excludeIf="$$skipGenomeAnalysis$$">
+    <step name="formatOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" excludeIf="$$skipOrfs">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -65,7 +65,7 @@
       <depends name="makeOrfDownloadFile"/>
     </step>
 
-    <step name="copyOrfsMotifFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDownloadFastaFileToWebServices" excludeIf="$$skipGenomeAnalysis$$">
+    <step name="copyOrfsMotifFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDownloadFastaFileToWebServices" excludeIf="$$skipOrfs">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -76,7 +76,7 @@
       <depends name="makeOrfDownloadFile"/>
     </step>
 
-    <step name="makeOrfNADownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfNADownloadFile" excludeIf="$$skipGenomeAnalysis$$">
+    <step name="makeOrfNADownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfNADownloadFile" excludeIf="$$skipOrfs">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -90,7 +90,7 @@
     </step>
 
     <!-- for web services only -->
-    <step name="makeDoubleStrandGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomicDoubleStrandFile" excludeIf="$$skipGenomeAnalysis$$">
+    <step name="makeDoubleStrandGenomicDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomicDoubleStrandFile">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles"></paramValue>
       <paramValue name="projectName"></paramValue>
