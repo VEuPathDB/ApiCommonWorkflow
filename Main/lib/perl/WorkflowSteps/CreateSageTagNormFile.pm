@@ -31,10 +31,9 @@ sub run {
       if ($test) {
 	  $self->runCmd(0,"mkdir -p $workflowDataDir/$outputDir/$normFileDir");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/$normFileDir/test.out");
-      }else{
-	  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CreateSageTagNormalizationFiles", $args);
       }
   }
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CreateSageTagNormalizationFiles", $args);
 }
 
 sub getParamDeclaration {
