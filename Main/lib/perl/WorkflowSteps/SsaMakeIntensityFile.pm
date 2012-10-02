@@ -12,6 +12,15 @@ sub run {
     my $inputGeneModelFile = $self->getParamValue('inputGeneModelFile');
     my $outputIntensityFileBasename = $self->getParamValue('outputIntensityFileBasename');
 
+    my $strand = $self->getParamValue('strand');
+    my $strandParam;
+    if($strand eq 'plus') {
+      $strandParam = "-strand p";
+    }
+    if($strand eq 'minus') {
+      $strandParam = "-strand m";
+    }
+
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
@@ -19,7 +28,7 @@ sub run {
 
     my $tempOutputFile="$workflowDataDir/$outputIntensityFileBasename.tmp";
 
-    my $cmd1 = "rum2quantifications.pl $workflowDataDir/$inputGeneModelFile $workflowDataDir/$uniqueSorted $workflowDataDir/$nuSorted $tempOutputFile";
+    my $cmd1 = "rum2quantifications.pl $workflowDataDir/$inputGeneModelFile $workflowDataDir/$uniqueSorted $workflowDataDir/$nuSorted $tempOutputFile $strandParam";
 
     my $cmd2 = "featurequant2geneprofiles.pl $workflowDataDir/$outputIntensityFileBasename $tempOutputFile  -genes";
 
