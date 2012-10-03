@@ -15,6 +15,7 @@
   <constant name="transcriptSeqsFileForSsa">$$dataDir$$/transcriptSeqsForSsa.fsa</constant>
   <constant name="geneModelFileForSsa">$$dataDir$$/geneModelForSsa.txt</constant>
   <constant name="cdsModelFileForSsa">$$dataDir$$/cdsModelForSsa.txt</constant>
+  <constant name="topLevelSeqSizeFile">$$dataDir$$/topLevelSeqSizes.txt</constant>
 
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -32,6 +33,14 @@
       <depends name="makeDataDir"/>
   </subgraph>
 
+  <step name="makeTopLevelSeqSizeFile"
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelSeqSizeFile">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="outputFile">$$topLevelSeqSizeFile$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
     <depends name="extractFilesForSsa"/>
@@ -48,6 +57,7 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
       <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="experimentResourceName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
@@ -87,6 +97,7 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
       <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa"></paramValue>
       <paramValue name="experimentResourceName">${organismAbbrev}_${name}_chipSeq_RSRC</paramValue>

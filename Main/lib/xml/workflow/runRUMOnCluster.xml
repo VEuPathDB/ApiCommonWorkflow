@@ -14,8 +14,9 @@
       <param name="strandSpecific"/>
       <param name="createJunctionsFile"/>
       <param name="variableLengthReads"/>
+      <param name="topLevelSeqSizeFile"/>
 
-  <constant name="dataDir">$$parentDataDir$$</constant>
+    <constant name="dataDir">$$parentDataDir$$</constant>
   
     <!-- rum distribjob task creates bowtie indexes if not provided -->
 
@@ -60,6 +61,14 @@
       <depends name="runClusterTask"/>
     </step>
 
+    <step name="makeReadsAndQualFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeReadsAndQualFile">
+      <paramValue name="readFilePath">$$readFilePath$$</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="outputReadsFile">$$dataDir$$/reads.fa</paramValue>
+      <paramValue name="outputQualFile">$$dataDir$$/quals.fa</paramValue>
+      <depends name="makeTaskInputDir"/>
+    </step>
+
     <step name="postProcess" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunRUMPostprocessing" undoRoot="runClusterTask">
       <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
       <paramValue name="geneAnnotationFile">$$geneAnnotationFile$$</paramValue>
@@ -67,6 +76,10 @@
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="createJunctionsFile">$$createJunctionsFile$$</paramValue>
       <paramValue name="mainResultDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="readsFile">$$dataDir$$/reads.fa</paramValue>
+      <paramValue name="qualFile">$$dataDir$$/quals.fa</paramValue>
+      <depends name="makeReadsAndQualFile"/>
       <depends name="mirrorFromCluster"/>
     </step>
 
