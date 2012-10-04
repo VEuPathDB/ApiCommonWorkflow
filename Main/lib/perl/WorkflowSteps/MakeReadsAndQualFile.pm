@@ -14,8 +14,8 @@ sub run {
   my $outputQualFile = $self->getParamValue('outputQualFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $qualCmd="fastq2qualities.pl $workflowDataDir/$readFilePath".($hasPairedEnds ? " $workflowDataDir/$readFilePath.paired" : "");
-  my $readCmd="parse2fasta.pl $workflowDataDir/$readFilePath".($hasPairedEnds ? " $workflowDataDir/$readFilePath.paired" : "");
+  my $qualCmd="fastq2qualities.pl $workflowDataDir/$readFilePath".($hasPairedEnds ? " $workflowDataDir/$readFilePath.paired" : "").">$workflowDataDir/$outputQualFile";
+  my $readCmd="parse2fasta.pl $workflowDataDir/$readFilePath".($hasPairedEnds ? " $workflowDataDir/$readFilePath.paired" : "").">$workflowDataDir/$outputReadsFile";
   
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputReadsFile");
