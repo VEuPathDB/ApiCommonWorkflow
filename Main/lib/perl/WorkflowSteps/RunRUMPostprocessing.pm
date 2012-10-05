@@ -12,11 +12,14 @@ sub run {
   # reads files in mainResultDir and produces more files in there (and deletes some too).
 
   my $genomeFastaFile = $self->getParamValue('genomeFastaFile');
-  my $transcriptsFastaFile = $self->getParamValue('transcriptFastaFile');
   my $geneAnnotationFile = $self->getParamValue('geneAnnotationFile');
-  my $mainResultDir = $self->getParamValue('mainResultDir');
-  my $createJunctionsFile = $self->getBooleanParamValue('createJunctionsFile');
+  my $transcriptsFastaFile = $self->getParamValue('transcriptFastaFile');
   my $strandSpecific = $self->getBooleanParamValue('strandSpecific');
+  my $createJunctionsFile = $self->getBooleanParamValue('createJunctionsFile');
+  my $mainResultDir = $self->getParamValue('mainResultDir');
+  my $topLevelSeqSizeFile = $self->getParamValue('topLevelSeqSizeFile');
+  my $readsFile = $self->getParamValue('readsFile');
+  my $qualFile = $self->getParamValue('qualFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -24,7 +27,7 @@ sub run {
   my $createJunctions = $createJunctionsFile? "--createJunctions" : "";
   my $ss = $strandSpecific? "--strandSpecific" : "";
 
-  my $cmd= "postProcessRUMTask --genomeFastaFile $workflowDataDir/$genomeFastaFile --geneAnnotationFile $workflowDataDir/$geneAnnotationFile --mainResultDir $workflowDataDir/$mainResultDir $haveTranscripts $createJunctions $ss";
+  my $cmd= "postProcessRUMTask --genomeFastaFile $workflowDataDir/$genomeFastaFile --geneAnnotationFile $workflowDataDir/$geneAnnotationFile --mainResultDir $workflowDataDir/$mainResultDir $haveTranscripts $createJunctions $ss --readsFile $workflowDataDir/$readsFile --qualFile $workflowDataDir/$qualFile --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile";
 
   if($undo){
       # can't undo this step.  must undo cluster task
