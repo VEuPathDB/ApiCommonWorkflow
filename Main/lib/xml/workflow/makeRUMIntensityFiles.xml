@@ -8,12 +8,21 @@
 
 
   <!-- STRAND SPECIFIC -->
-    <!-- outputs basename.min and basename.max -->
+    <!-- Reverse Strand Profiles -->
     <step name="makeIntensityFilesMinus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeIntensityFile" includeIf="$$isStrandSpecific$$">
       <paramValue name="inputSortedFile">$$parentDataDir$$/master/mainresult/RUM_Unique.sorted,$$parentDataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
       <paramValue name="inputGeneModelFile">$$inputGeneModelFile$$</paramValue>
       <paramValue name="outputIntensityFileBasename">$$outputDir$$/$$sampleName$$.minus.intensity</paramValue>
       <paramValue name="strand">minus</paramValue>
+      <paramValue name="antisense">false</paramValue>
+    </step>
+
+    <step name="makeIntensityFilesMinus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeIntensityFile" includeIf="$$isStrandSpecific$$">
+      <paramValue name="inputSortedFile">$$parentDataDir$$/master/mainresult/RUM_Unique.sorted,$$parentDataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
+      <paramValue name="inputGeneModelFile">$$inputGeneModelFile$$</paramValue>
+      <paramValue name="outputIntensityFileBasename">$$outputDir$$/$$sampleName$$.antisense.minus.intensity</paramValue>
+      <paramValue name="strand">minus</paramValue>
+      <paramValue name="antisense">true</paramValue>
     </step>
 
     <step name="generateMappingStatsFileMinus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile" includeIf="$$isStrandSpecific$$">
@@ -32,12 +41,22 @@
 
 
 
-    <!-- outputs basename.min and basename.max -->
+    <!-- Forward Strand Profiles -->
     <step name="makeIntensityFilesPlus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeIntensityFile" includeIf="$$isStrandSpecific$$">
       <paramValue name="inputSortedFile">$$parentDataDir$$/master/mainresult/RUM_Unique.sorted,$$parentDataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
       <paramValue name="inputGeneModelFile">$$inputGeneModelFile$$</paramValue>
       <paramValue name="outputIntensityFileBasename">$$outputDir$$/$$sampleName$$.plus.intensity</paramValue>
       <paramValue name="strand">plus</paramValue>
+      <paramValue name="antisense">false</paramValue>
+    </step>
+
+
+    <step name="makeIntensityFilesPlus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeIntensityFile" includeIf="$$isStrandSpecific$$">
+      <paramValue name="inputSortedFile">$$parentDataDir$$/master/mainresult/RUM_Unique.sorted,$$parentDataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
+      <paramValue name="inputGeneModelFile">$$inputGeneModelFile$$</paramValue>
+      <paramValue name="outputIntensityFileBasename">$$outputDir$$/$$sampleName$$.antisense.plus.intensity</paramValue>
+      <paramValue name="strand">plus</paramValue>
+      <paramValue name="antisense">true</paramValue>
     </step>
 
     <step name="generateMappingStatsFilePlus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateMappingStatsFile" includeIf="$$isStrandSpecific$$">
@@ -53,7 +72,6 @@
       <paramValue name="outputFile">$$outputDir$$/$$sampleName$$.plus.count</paramValue>
       <paramValue name="strand">plus</paramValue>
     </step>
-
 
 
 </workflowGraph>

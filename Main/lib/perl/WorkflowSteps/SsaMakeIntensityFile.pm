@@ -21,6 +21,17 @@ sub run {
       $strandParam = "-strand m";
     }
 
+    my $antisense = $self->getBooleanParamValue('antisense');
+
+    if($antisense && !$strand) {
+      $self->error("Cannot make antisense probes unless the data is for a specific strand");
+    }
+
+    my $antisenseParam;
+    if($antisense) {
+      $antisenseParam = "- anti";
+    }
+
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
@@ -28,7 +39,7 @@ sub run {
 
     my $tempOutputFile="$workflowDataDir/$outputIntensityFileBasename.tmp";
 
-    my $cmd1 = "rum2quantifications.pl $workflowDataDir/$inputGeneModelFile $workflowDataDir/$uniqueSorted $workflowDataDir/$nuSorted $tempOutputFile $strandParam";
+    my $cmd1 = "rum2quantifications.pl $workflowDataDir/$inputGeneModelFile $workflowDataDir/$uniqueSorted $workflowDataDir/$nuSorted $tempOutputFile $strandParam $antisenseParam";
 
     my $cmd2 = "featurequant2geneprofiles.pl $workflowDataDir/$outputIntensityFileBasename $tempOutputFile  -genes";
 
