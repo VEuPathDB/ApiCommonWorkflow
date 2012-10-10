@@ -29,7 +29,7 @@ sub run {
 
     my $antisenseParam;
     if($antisense) {
-      $antisenseParam = "- anti";
+      $antisenseParam = "-anti";
     }
 
     my $workflowDataDir = $self->getWorkflowDataDir();
