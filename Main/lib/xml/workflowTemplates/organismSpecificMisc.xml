@@ -1,4 +1,4 @@
-<workflowGraph name="">
+ <workflowGraph name="">
   <param name="dataDir"/>
   <param name="organismAbbrev"/>
   <param name="organismResourceXmlFile"/>
@@ -15,7 +15,6 @@
       <paramValue name="isolatesExtDbName">${familyRepOrganismAbbrev}_isolates_${name}_RSRC</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <depends name="mirrorToCluster"/> 
       <dependsExternal name="${familyRepOrganismAbbrev}_isolates_${name}"/>
     </subgraph>
   </datasetTemplate>
@@ -30,7 +29,6 @@
       <paramValue name="resourceName">${organismAbbrev}_${name}_clonedInsertEnds_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -47,7 +45,6 @@
       <paramValue name="referenceStrainOrganismAbbrev">${referenceStrainOrganismAbbrev}</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
       <dependsExternal name="${referenceStrainOrganismAbbrev}_${name}_clonedInsertEnds"/>
     </subgraph>
   </datasetTemplate>
@@ -63,7 +60,6 @@
       <paramValue name="resourceName">${organismAbbrev}_${name}_transcript_sequences_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
     </subgraph>
 
     <subgraph name="${name}_mapTranscript_sequences" xmlFile="mapTranscriptSeqs.xml">
@@ -73,7 +69,6 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
       <depends name="${organismAbbrev}_${name}_transcript_sequences"/>
     </subgraph>
   </datasetTemplate>
@@ -86,13 +81,10 @@
     <prop name="sequencePrefix"/>
     <prop name="bowtieParams"/>
 
-
-<!-- do we need this to depend on mirrorToCluster?? -->
     <subgraph name="sageTag_${name}_RSRC" xmlFile="loadResource.xml">
       <paramValue name="resourceName">${organismAbbrev}_sageTag_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
     </subgraph>
 
     <subgraph name="${name}_mapSageTags" xmlFile="mapSageTags.xml">
@@ -140,7 +132,6 @@
       <paramValue name="resourceName">${organismAbbrev}_genomeFeature_${name}_GFF2_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -161,7 +152,6 @@
       <paramValue name="resourceName">${organismAbbrev}_genomeFeature_${name}_GFF3_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -183,7 +173,6 @@
       <paramValue name="resourceName">${organismAbbrev}_${name}_GOAssociations_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
       <dependsGlobal name="GO_RSRC"/>
       <dependsGlobal name="GO_evidence_codes_RSRC"/>
     </subgraph>
@@ -196,7 +185,6 @@
       <paramValue name="resourceName">${organismAbbrev}_${name}_ECAssociations_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
       <dependsGlobal name="enzymeDB_RSRC"/>
     </subgraph>
   </datasetTemplate>
@@ -207,7 +195,6 @@
       <paramValue name="resourceName">${organismAbbrev}_Uniprot_ECAssociations_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -218,7 +205,6 @@
       <paramValue name="resourceName">${organismAbbrev}_interaction_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -229,7 +215,6 @@
       <paramValue name="resourceName">${organismAbbrev}_mRNA_anticodon_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -240,7 +225,6 @@
       <paramValue name="resourceName">${organismAbbrev}_interaction_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -251,7 +235,6 @@
       <paramValue name="resourceName">${organismAbbrev}_SNP_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate> 
 
@@ -262,7 +245,6 @@
       <paramValue name="resourceName">${organismAbbrev}_phenotype_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -273,7 +255,6 @@
       <paramValue name="resourceName">${organismAbbrev}_cellularLocation_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -284,7 +265,6 @@
       <paramValue name="resourceName">${organismAbbrev}_cellularLocation_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -297,7 +277,6 @@
       <paramValue name="resourceName">${organismAbbrev}_eQTL_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -309,7 +288,6 @@
       <paramValue name="resourceName">${organismAbbrev}_${name}_SNP_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -319,7 +297,6 @@
       <paramValue name="resourceName">${organismAbbrev}_phylogeny_phylogeneticProfiles_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate> 
 
@@ -330,7 +307,6 @@
       <paramValue name="resourceName">${organismAbbrev}_UpdateRodentPlasmoChr_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -341,7 +317,6 @@
       <paramValue name="resourceName">${organismAbbrev}_LocMapSqlLdr_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -356,7 +331,6 @@
       <paramValue name="resourceName">${organismAbbrev}_genomeFeature_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <!-- this part loads the data -->
@@ -367,8 +341,6 @@
     </step>
   </datasetTemplate>
 
-
-
   <datasetTemplate class="geneName">
     <prop name="name"/>
     <prop name="version"/>
@@ -378,7 +350,6 @@
       <paramValue name="resourceName">${organismAbbrev}_genome_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/> 
     </subgraph>
   </datasetTemplate>
 
@@ -389,7 +360,6 @@
       <paramValue name="resourceName">${organismAbbrev}_${name}_comments_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -400,7 +370,6 @@
       <paramValue name="resourceName">${organismAbbrev}_InsertOldAnnotation_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -411,7 +380,6 @@
       <paramValue name="resourceName">${organismAbbrev}_updateIsolatesByContinents_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -423,7 +391,6 @@
       <paramValue name="resourceName">${organismAbbrev}_updateIsolateFeaturesByProductAlias_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="isolatesFromNonHtsSequencing"/>
     </subgraph>
   </datasetTemplate>
 
@@ -435,7 +402,6 @@
       <paramValue name="resourceName">${organismAbbrev}_massSpec_${name}_RSRC</paramValue>
       <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
     </subgraph>
   </datasetTemplate>
 
