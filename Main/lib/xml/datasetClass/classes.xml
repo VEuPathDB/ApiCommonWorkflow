@@ -209,32 +209,6 @@
   <!-- This class is to be used for loading gene features outside of official gene model -->
   <!-- One example is deprecated genes from GiardiaDB -->
 
-  <datasetClass class="GFF2_secondary_genome_features" category="" datasetFileHint="">
-    <purpose></purpose>
-    <prop name="projectName">&projectName;</prop>
-    <prop name="organismAbbrev">&organismAbbrev;</prop>
-    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
-    <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
-
-    <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
-
-    <resource resource="${organismAbbrev}_${soTerm}_GFF_genome_features_RSRC"
-              version="${version}"
-	      parentResource="${organismAbbrev}_primary_genome_RSRC"
-	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
-              scope="organism"
-              organismAbbrev="${organismAbbrev}">
-
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_GFF2/${version}/final/features.gff">
-        <dir name="final">
-        </dir>
-      </manualGet>
-
-      <pluginArgs>--extDbName %PARENT_RESOURCE_NAME% --extDbRlsVer %PARENT_RESOURCE_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/features.gff --inputFileExtension "gff"  --fileFormat gff2 --soExtDbRlsName "SO_RSRC" --defaultOrganism ${ncbiTaxonId}  --seqSoTerm '${soTerm}' --validationLog @@dataDir@@/validation.log --bioperlTreeOutput @@dataDir@@/bioperlTree.out --seqIdColumn source_id --naSequenceSubclass ExternalNASequence --chromosomeMapFile @@dataDir@@/../${organismAbbrev}_${soTerm}_RSRC/final/chromosomeMap.txt</pluginArgs>
-    </resource>
-  </datasetClass>
-
 
 <!-- chromosomeMap.txt file with 3 tab delimited columns, source_id,chromosome,chromosome_order_number, must be in final dir for chromosomes -->
   <datasetClass class="embl_primary_genome" category="" datasetFileHint="">
@@ -701,6 +675,35 @@
       </manualGet>
 
       <pluginArgs>--agpFile @@dataDir@@/final/assembly.agp --seqPieceExtDbName ${organismAbbrev}_primary_genome_RSRC --seqPieceExtDbRlsVer ${genomeVersion} --virSeqExtDbName %RESOURCE_NAME% --virSeqExtDbRlsVer %RESOURCE_VERSION% --virtualSeqSOTerm ${virtualSeqSOTerm}  --ncbiTaxId ${ncbiTaxonId} --soExtDbRlsName "SO_RSRC"  --sourceIdPrefix ${sourceIdPrefix} --chromosomeOrderMappingFile @@dataDir@@/final/chromosomeMap.txt</pluginArgs>
+    </resource>
+  </datasetClass>
+
+  <datasetClass class="secondaryVirtualGenome" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="virtualSeqSOTerm"/>
+    <prop name="sourceIdPrefix"/>  <!-- optional.  add this prefix to the source ID. put "" in if the value is null -->
+    <prop name="genomeVersion"/>
+
+    <graphTemplateFile name="primaryVirtualGenome.xml"/>
+
+    <resource resource="${organismAbbrev}_secondary_virtual_genome_RSRC"
+              version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertVirtualSeqFromAgpFile"
+              parentResource="${organismAbbrev}_primary_virtual_genome_RSRC"
+              scope="organism"
+              type="genome"
+              organismAbbrev="${organismAbbrev}">
+      
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${virtualSeqSOTerm}_assembly_agp/${version}/final/">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--agpFile @@dataDir@@/final/assembly.agp --seqPieceExtDbName ${organismAbbrev}_primary_genome_RSRC --seqPieceExtDbRlsVer ${genomeVersion} --virSeqExtDbName %PARENT_RESOURCE_NAME% --virSeqExtDbRlsVer %PARENT_RESOURCE_VERSION% --virtualSeqSOTerm ${virtualSeqSOTerm}  --ncbiTaxId ${ncbiTaxonId} --soExtDbRlsName "SO_RSRC"  --sourceIdPrefix ${sourceIdPrefix} --chromosomeOrderMappingFile @@dataDir@@/final/chromosomeMap.txt</pluginArgs>
     </resource>
   </datasetClass>
 
