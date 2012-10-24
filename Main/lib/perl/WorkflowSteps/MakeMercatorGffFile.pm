@@ -29,6 +29,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
 
     my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+    die "Unable to get tuning table prefix for $organismAbbrev\n" unless $tuningTablePrefix;
 
     my $cmd = "mercatorGffDump.pl  --outputFile $workflowDataDir/$outputFile --organism '$organism' --tuningTablePrefix '$tuningTablePrefix'";
 
