@@ -17,7 +17,7 @@ sub run {
   my $sql = "select s.composite_element_id, '$prependSeq' || s.tag as tag
              from rad.sagetag s,rad.arraydesign a
              where a.name = '$sageTagExtDbName'
-             and a.version = $sageTagExtDbRlsVer
+             and a.version = '$sageTagExtDbRlsVer'
              and a.array_design_id = s.array_design_id";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
