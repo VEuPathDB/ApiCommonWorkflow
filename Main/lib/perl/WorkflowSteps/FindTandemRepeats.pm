@@ -32,7 +32,7 @@ sub run {
 
   }
     $self->runCmd($test, $cmd);
-    $self->runCmd($test, "mv $stepDir/genomicSeqs.fsa.$repeatFinderArgs.dat $workflowDataDir/$outputFile");
+    $self->runCmd($test, "mv $stepDir/genomicSeqs.fa.$repeatFinderArgs.dat $workflowDataDir/$outputFile");
   }
 
 }
