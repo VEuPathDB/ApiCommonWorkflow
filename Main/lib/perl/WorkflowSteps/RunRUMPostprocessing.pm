@@ -20,14 +20,15 @@ sub run {
   my $topLevelSeqSizeFile = $self->getParamValue('topLevelSeqSizeFile');
   my $readsFile = $self->getParamValue('readsFile');
   my $qualFile = $self->getParamValue('qualFile');
+  my $createBigWigFile = $self->getParamValue('createBigWigFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $haveTranscripts = -e "$workflowDataDir/$transcriptsFastaFile"? "--haveTranscripts" : "";
   my $createJunctions = $createJunctionsFile? "--createJunctions" : "";
   my $ss = $strandSpecific? "--strandSpecific" : "";
-
-  my $cmd= "postProcessRUMTask --genomeFastaFile $workflowDataDir/$genomeFastaFile --geneAnnotationFile $workflowDataDir/$geneAnnotationFile --mainResultDir $workflowDataDir/$mainResultDir $haveTranscripts $createJunctions $ss --readsFile $workflowDataDir/$readsFile --qualFile $workflowDataDir/$qualFile --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile";
+  my $createBigWig = $createBigWigFile? "--createBigWigFile" : "";
+  my $cmd= "postProcessRUMTask --genomeFastaFile $workflowDataDir/$genomeFastaFile --geneAnnotationFile $workflowDataDir/$geneAnnotationFile --mainResultDir $workflowDataDir/$mainResultDir $haveTranscripts $createJunctions $ss $createBigWig --readsFile $workflowDataDir/$readsFile --qualFile $workflowDataDir/$qualFile --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile";
 
   if($undo){
       # can't undo this step.  must undo cluster task
