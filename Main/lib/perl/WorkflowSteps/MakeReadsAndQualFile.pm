@@ -9,11 +9,10 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $readFilePath = $self->getParamValue('readFilePath');
-  my $hasPairedEnds = $self->getParamValue('hasPairedEnds');
+  my $hasPairedEnds = $self->getBooleanParamValue('hasPairedEnds');
   my $outputReadsFile = $self->getParamValue('outputReadsFile');
   my $outputQualFile = $self->getParamValue('outputQualFile');
 
-  $hasPairedEnds = '' if (lc $hasPairedEnds eq 'false');
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $qualCmd="fastq2qualities.pl $workflowDataDir/$readFilePath".($hasPairedEnds ? " $workflowDataDir/$readFilePath.paired" : "").">$workflowDataDir/$outputQualFile";
   my $readCmd="parse2fasta.pl $workflowDataDir/$readFilePath".($hasPairedEnds ? " $workflowDataDir/$readFilePath.paired" : "").">$workflowDataDir/$outputReadsFile";

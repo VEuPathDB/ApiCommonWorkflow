@@ -20,7 +20,7 @@ sub run {
   my $topLevelSeqSizeFile = $self->getParamValue('topLevelSeqSizeFile');
   my $readsFile = $self->getParamValue('readsFile');
   my $qualFile = $self->getParamValue('qualFile');
-  my $createBigWigFile = $self->getParamValue('createBigWigFile');
+  my $createBigWigFile = $self->getBooleanParamValue('createBigWigFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
