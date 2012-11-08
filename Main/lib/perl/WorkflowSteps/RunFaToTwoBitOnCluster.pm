@@ -15,21 +15,19 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputFastaFile = $self->getParamValue('inputFastaFile');
+  my $output2bitFile = $self->getParamValue('output2BitFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
 
-  my $outputFile = $inputFastaFile;
-  $outputFile =~ s/\..*$/\.2bit/;
-
-  my $cmd = "faToTwoBit $clusterWorkflowDataDir/$inputFastaFile $clusterWorkflowDataDir/$outputFile";
+  my $cmd = "faToTwoBit $clusterWorkflowDataDir/$inputFastaFile $clusterWorkflowDataDir/$output2bitFile";
 
   if ($undo) {
     $self->runCmdOnCluster(0,"rm $clusterWorkflowDataDir/$outputFile");
   } else {
       if ($test) {
 	  $self->testInputFile('inputFastaFile', "$workflowDataDir/$inputFastaFile");
-	  $self->runCmd(0, "echo test > $clusterWorkflowDataDir/$outputFile");
+	  $self->runCmd(0, "echo test > $clusterWorkflowDataDir/$output2bitFile");
       }else{
 	  $self->runCmdOnCluster($test,$cmd);
       }
@@ -39,6 +37,7 @@ sub run {
 sub getParamDeclaration {
   return (
      'inputFastaFile',
+     'output2BitFile'
     );
 }
 
