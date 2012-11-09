@@ -46,7 +46,7 @@ sub run {
 
     print F
 "gaBinPath=$gaBinPath
-targetDirPath=$clusterWorkflowDataDir/$targetDir/nib
+targetDirPath=$clusterWorkflowDataDir/$targetDir
 queryPath=$clusterWorkflowDataDir/$queryFile
 maxIntron=$maxIntronSize
 queryType=$queryType
