@@ -16,6 +16,7 @@
     <param name="hasPairedEnds"/>
     <param name="limitNU"/>
     <param name="numInsertions"/>
+    <param name="relativeWebServicesDir"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
@@ -67,6 +68,14 @@
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <depends name="analyzeSamples"/>
+    </step>
+
+    <step name="copyNormalizedBedGraphToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyNormalizedBedGraphToWebServiceDir">
+      <paramValue name="copyFromDir">$$dataDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="experimentResourceName">$$experimentResourceName$$</paramValue>
+      <depends name="doTranscriptExpression"/>
     </step>
 
     <step name="document-rna_seq_experiment"
