@@ -1,0 +1,103 @@
+<workflowGraph name="">
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="parentDataDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="maxIntronSize"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="projectVersionForWebsiteFiles"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomicSeqsDir"/>
+  <param name="isAnnotatedGenome"/>
+
+  <constant name="dataDir">$$parentDataDir$$/organismSpecificNoAlias</constant>
+  <constant name="genomicSeqsFileForSsa">$$dataDir$$/genomicSeqsForSsa.fsa</constant>
+  <constant name="transcriptSeqsFileForSsa">$$dataDir$$/transcriptSeqsForSsa.fsa</constant>
+  <constant name="geneModelFileForSsa">$$dataDir$$/geneModelForSsa.txt</constant>
+  <constant name="cdsModelFileForSsa">$$dataDir$$/cdsModelForSsa.txt</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="extractFilesForSsa" xmlFile="extractFilesForSsa.xml">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="useTopLevel">false</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="cdsModelFileForSsa">$$cdsModelFileForSsa$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="isAnnotatedGenome">$$isAnnotatedGenome$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
+  <!-- this must happen before all the rest of the steps in this file so that all that is 
+       mirrored is the ssa files, and no other extraneous (and possibly large) data -->
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="extractFilesForSsa"/>
+  </step>
+
+<!--FIX: microarrayPlatformWithProviderMapping could use old gene identifiers, does doTranscriptExpression query gene aliases? -->
+  <subgraph name="arrayResources" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/arrayStudies.xml" excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="ssaGeneModelFile">$$geneModelFileForSsa$$</paramValue>
+    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+   <subgraph name="isolatesFromNonHtsSequencing" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/isolatesFromNonHtsSequencing.xml" excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="skipIfFile">$$organismAbbrev$$/foundZeroIsolates</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+  <subgraph name="snps" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/SNPs.xml"  excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+
+  <!-- We will always create this external database release -->
+  <step name="insertHTSExtDbRls" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateExtDbAndDbRls" stepLoadTypes="plugin">
+    <paramValue name="extDbRlsSpec">InsertSnps.pm NGS SNPs INTERNAL|Ref:  $$organismAbbrev$$</paramValue>
+     <depends name="mirrorToCluster"/>
+  </step>
+
+  <subgraph name="htssnps" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/SNPs_HTS.xml"  excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <depends name="insertHTSExtDbRls"/>
+  </subgraph>
+
+  <subgraph name="misc" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/organismSpecificMiscNoAlias.xml"  excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="organismResourceXmlFile">$$organismResourceXmlFile$$</paramValue>
+    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+</workflowGraph>
