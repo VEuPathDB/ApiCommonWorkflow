@@ -1,0 +1,233 @@
+ <workflowGraph name="">
+  <param name="dataDir"/>
+  <param name="organismAbbrev"/>
+  <param name="organismResourceXmlFile"/>
+  <param name="maxIntronSize"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomicSeqsDir"/>
+
+  <datasetTemplate class="isolatesFromFamilyRepresentative">
+    <prop name="familyRepOrganismAbbrev"/>
+    <prop name="name"/>
+
+    <subgraph name="map_${name}_IsolatesToGenome" xmlFile="mapIsolatesToGenome.xml" skipIfFile="${familyRepOrganismAbbrev}/foundZeroIsolates">
+      <paramValue name="dataDir">$$dataDir$$/${name}_mapIsolatesToGenome</paramValue>
+      <paramValue name="isolatesExtDbName">${familyRepOrganismAbbrev}_isolates_${name}_RSRC</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <dependsExternal name="${familyRepOrganismAbbrev}_isolates_${name}"/>
+    </subgraph>
+  </datasetTemplate>
+
+
+  <datasetTemplate class="referenceStrain-clonedInsertEnds">
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="organismAbbrev"/>
+
+    <subgraph name="${organismAbbrev}_${name}_clonedInsertEnds" xmlFile="loadResource.xml" externalName="${organismAbbrev}_${name}_clonedInsertEnds">
+      <paramValue name="resourceName">${organismAbbrev}_${name}_clonedInsertEnds_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="clonedInsertEndsFromReferenceStrain">
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="referenceStrainOrganismAbbrev"/>
+
+    <subgraph name="${name}_mapClonedInsertEnds" xmlFile="mapClonedInsertEnds.xml">
+      <paramValue name="dataDir">$$dataDir$$/${name}_clonedInsertEnds</paramValue>
+      <paramValue name="resourceName">${referenceStrainOrganismAbbrev}_${name}_clonedInsertEnds_RSRC</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="referenceStrainOrganismAbbrev">${referenceStrainOrganismAbbrev}</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <dependsExternal name="${referenceStrainOrganismAbbrev}_${name}_clonedInsertEnds"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="transcript_sequences">
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="soTermName"/>
+    <prop name="sourceIdRegex"/>
+
+    <subgraph name="${organismAbbrev}_${name}_transcript_sequences" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_${name}_transcript_sequences_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+
+    <subgraph name="${name}_mapTranscript_sequences" xmlFile="mapTranscriptSeqs.xml">
+      <paramValue name="dataDir">$$dataDir$$/${name}_transcript_sequences</paramValue>
+      <paramValue name="resourceName">${organismAbbrev}_${name}_transcript_sequences_RSRC</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <depends name="${organismAbbrev}_${name}_transcript_sequences"/>
+    </subgraph>
+  </datasetTemplate>
+
+
+  <datasetTemplate class="sageTagSequences">
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="organismAbbrev"/>
+    <prop name="sequencePrefix"/>
+    <prop name="bowtieParams"/>
+
+    <subgraph name="sageTag_${name}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_sageTag_${name}_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+
+    <subgraph name="${name}_mapSageTags" xmlFile="mapSageTags.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="sageTagExtDbRlsSpec">${organismAbbrev}_sageTag_${name}_RSRC|${version}</paramValue>
+      <paramValue name="sequencePrefix">${sequencePrefix}</paramValue>
+      <paramValue name="name">${name}</paramValue>   
+      <paramValue name="bowtieParams">${bowtieParams}</paramValue>   
+      <depends name="sageTag_${name}_RSRC"/>
+    </subgraph>
+  </datasetTemplate>
+
+
+  <datasetTemplate class="sageTagFrequencies">
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="normalizeFrequencies"/>
+    <prop name="organismAbbrev"/>
+
+    <subgraph name="sageTag_${name}_frequencies_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_sageTag_${name}_frequencies_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="${name}_mapSageTags"/>
+    </subgraph>
+
+    <step name="${name}_createSageTagNormFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSageTagNormFile" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">
+      <paramValue name="studyName">${name}</paramValue>
+      <paramValue name="outputDir">$$dataDir$$</paramValue>
+      <depends name="sageTag_${name}_frequencies_RSRC"/>
+    </step>
+
+    <step name="${name}_insertNormSageTagFreqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNormSageTagFreqs" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="studyName">${name}</paramValue>
+      <depends name="${name}_createSageTagNormFile"/>
+    </step>
+  </datasetTemplate>
+
+  <datasetTemplate class="genomeFeatures_GFF2">
+    <prop name="name"/> 
+    <prop name="organismAbbrev"/>
+    <subgraph name="genomeFeature_${name}_GFF2_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_genomeFeature_${name}_GFF2_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="virtualSeq_GFF2">
+    <prop name="name"/> 
+    <prop name="organismAbbrev"/>
+    <subgraph name="virtualSeq_${name}_GFF2_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_virtualSeq_${name}_GFF2_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+     </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="genomeFeatures_GFF3">
+    <prop name="name"/> 
+    <prop name="organismAbbrev"/>
+    <subgraph name="genomeFeature_${name}_GFF3_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_genomeFeature_${name}_GFF3_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="updateEviganSecondaryScore">
+    <prop name="name"/> 
+    <prop name="organismAbbrev"/>
+    <subgraph name="updateEviganSecondaryScore_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_updateEviganSecondaryScore_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="genomeFeature_${name}_GFF2_RSRC"/>
+    </subgraph>
+  </datasetTemplate>
+
+   <datasetTemplate class="GFF">
+    <prop name="name"/>
+    <prop name="organismAbbrev"/>
+    <subgraph name="${name}_GFF_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_${name}_GFF_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="pfalLocationsWithSqlLdr">
+    <prop name="name"/>
+    <prop name="organismAbbrev"/>
+    <subgraph name="LocMapSqlLdr_${name}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_LocMapSqlLdr_${name}_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+  </datasetTemplate>
+
+
+  <datasetTemplate class="plasmoMapp">
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="organismAbbrev"/>
+
+    <!-- this part get data from manual_dir -->
+    <subgraph name="genomeFeature_${name}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_genomeFeature_${name}_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+
+    <!-- this part loads the data -->
+    <step name="insertPlasmoMapp" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPlasmoMapp">
+      <paramValue name="inputDir">$$dataDir$$/${organismAbbrev}_genomeFeature_${name}_RSRC/final</paramValue>
+      <paramValue name="outputDir">$$dataDir$$</paramValue>
+      <depends name="genomeFeature_${name}_RSRC"/>
+    </step>
+  </datasetTemplate>
+
+  <datasetTemplate class="insertOldAnnotation">
+    <prop name="name"/> 
+    <prop name="organismAbbrev"/>
+    <subgraph name="InsertOldAnnotation_${name}_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_InsertOldAnnotation_${name}_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="updateIsolatesByContinents">
+    <prop name="name"/> 
+    <prop name="organismAbbrev"/>
+    <subgraph name="updateIsolatesByContinents_RSRC" xmlFile="loadResource.xml">
+      <paramValue name="resourceName">${organismAbbrev}_updateIsolatesByContinents_RSRC</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+  </datasetTemplate>
+
+</workflowGraph>
+
+
+
