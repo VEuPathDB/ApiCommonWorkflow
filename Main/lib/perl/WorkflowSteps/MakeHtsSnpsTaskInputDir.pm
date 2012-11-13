@@ -17,9 +17,6 @@ sub run {
   my $indexDir = $self->getParamValue("indexDir");
   my $strain = $self->getParamValue("strain");
   my $clusterServer = $self->getSharedConfig('clusterServer');
-  my $varscanBinPath = $self->getConfig("$clusterServer.varscanBinPathCluster");
-  my $gatkBinPath = $self->getConfig("$clusterServer.gatkBinPathCluster");
-  my $bowtie2BinPath = $self->getConfig("$clusterServer.bowtie2BinPathCluster");
 
   # expects string true/false
   my $isColorspace = $self->getParamValue("isColorspace");
@@ -48,9 +45,6 @@ sub run {
       open(F, ">$taskPropFile") || die "Can't open `task prop file '$taskPropFile' for writing";
 
       my $taskPropFileContent="
-varscan=$varscanBinPath
-gatk=$gatkBinPath
-bowtie2=$bowtie2BinPath
 fastaFile=$clusterWorkflowDataDir/$genomicSeqsFile
 bowtieIndex=$clusterWorkflowDataDir/$indexDir
 strain=$strain

@@ -22,11 +22,6 @@ sub run {
 
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $taskSize = $self->getConfig("taskSize");
-  my $wuBlastBinPathCluster = $self->getConfig("$clusterServer.wuBlastBinPathCluster");
-  my $ncbiBlastBinPathCluster = $self->getConfig("$clusterServer.ncbiBlastBinPathCluster");
-
-  my $blastBinPathCluster = ($vendor eq 'ncbi')?  $ncbiBlastBinPathCluster : $wuBlastBinPathCluster;
-
   my $dbType = ($blastType =~ m/blastn|tblastx/i) ? 'n' : 'p';
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
@@ -59,8 +54,7 @@ sub run {
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
 
       print F
-"blastBinDir=$blastBinPathCluster
-dbFilePath=$clusterWorkflowDataDir/$subjectFile
+"dbFilePath=$clusterWorkflowDataDir/$subjectFile
 inputFilePath=$clusterWorkflowDataDir/$queryFile
 dbType=$dbType
 regex='$idRegex'

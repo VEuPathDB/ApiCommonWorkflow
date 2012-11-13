@@ -18,7 +18,6 @@ sub run {
   # get step properties
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $taskSize = $self->getConfig("taskSize");
-  my $rmPath = $self->getConfig("$clusterServer.rmPath");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -47,8 +46,7 @@ sub run {
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
 
       print F 
-"rmPath=$rmPath
-inputFilePath=$clusterWorkflowDataDir/$seqsFile
+"inputFilePath=$clusterWorkflowDataDir/$seqsFile
 trimDangling=$trimDangling
 dangleMax=$dangleMax
 rmParamsFile=$rmParamsFile

@@ -26,13 +26,11 @@ sub run {
   my $cmd;
   my $undoCmd;
   if ($vendor eq 'wu') {
-    my $blastPath  = $self->getConfig("$clusterServer.wuBlastPathBinCluster");
-    $cmd = "$blastPath/xdformat -$seqType  $clusterWorkflowDataDir/$inputFile";
+    $cmd = "xdformat -$seqType  $clusterWorkflowDataDir/$inputFile";
     $undoCmd = "rm -f $clusterWorkflowDataDir/${inputFile}.p*";
   } else {
     my $tf = $seqType eq 'p'? 'T' : 'F';
-    my $blastPath  = $self->getConfig("$clusterServer.ncbiBlastBinPathCluster");
-    $cmd = "$blastPath/formatdb -i $clusterWorkflowDataDir/$inputFile -p $tf";
+    $cmd = "formatdb -i $clusterWorkflowDataDir/$inputFile -p $tf";
     $undoCmd = "rm -f $clusterWorkflowDataDir/${inputFile}.x*";
   }
 
@@ -48,10 +46,4 @@ sub run {
   }
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['clusterWorkflowDataDir', "", ""],
-	 );
-}
 

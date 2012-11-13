@@ -17,7 +17,6 @@ sub run {
 
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $taskSize = $self->getConfig("taskSize");
-  my $gaBinPath = $self->getConfig("$clusterServer.gaBinPath");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -45,8 +44,7 @@ sub run {
     open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
 
     print F
-"gaBinPath=$gaBinPath
-targetDirPath=$clusterWorkflowDataDir/$targetDir
+"targetDirPath=$clusterWorkflowDataDir/$targetDir
 queryPath=$clusterWorkflowDataDir/$queryFile
 maxIntron=$maxIntronSize
 queryType=$queryType

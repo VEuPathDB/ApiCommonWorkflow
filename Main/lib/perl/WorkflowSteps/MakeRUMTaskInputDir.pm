@@ -29,7 +29,6 @@ sub run {
 
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $taskSize = $self->getConfig("taskSize");
-  my $bowtieBinDir = $self->getConfig("$clusterServer.bowtieBinDir");
   my $blatExec = $self->getConfig("$clusterServer.blatExec");
   my $mdustExec = $self->getConfig("$clusterServer.mdustExec");
 
@@ -58,7 +57,6 @@ sub run {
 readFilePath=$clusterWorkflowDataDir/$readFilePath
 genomeFastaFile=$clusterWorkflowDataDir/$genomeFastaFile
 geneAnnotationFile=$clusterWorkflowDataDir/$geneAnnotationFile 
-bowtieBinDir=$bowtieBinDir
 blatExec=$blatExec
 mdustExec=$mdustExec
 limitNU=$limitNU
@@ -93,10 +91,5 @@ sub getParamsDeclaration {
 	 );
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['taskSize', "", ""],
-	 );
-}
+
 
