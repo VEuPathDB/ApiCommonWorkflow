@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertDataSource;
+package ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertDataset;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
