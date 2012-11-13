@@ -15,13 +15,20 @@ sub run {
 
   my $colorspace = $self->getBooleanParamValue('colorspace');
 
+  my $bowtieVersion = $self->getParamValue('bowtieVersion');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
+
+  
+  $self->error("Colorspace only valid for bowtie version 1") if($colorspace && $bowtieVersion != 1);
 
   $self->runCmd(0,"mkdir -p $workflowDataDir/$outputIndexDir");
 
-  my $cmd= "createBowtieIndexes --inputFile $workflowDataDir/$inputFile --outputIndexDir $workflowDataDir/$outputIndexDir/genomicIndexes";
+  my $cmd= "createBowtieIndexes --inputFile $workflowDataDir/$inputFile --outputIndexDir $workflowDataDir/$outputIndexDir/genomicIndexes --bowtieVersion $bowtieVersion";
 
-  $cmd .= " --colorspace" if $colorspace;
+  if($colorspace) {
+    $cmd .= " --colorspace" ;
+  }
 
   if($undo){
 
@@ -40,6 +47,8 @@ sub getParamDeclaration {
   return (
 	  'inputFile',
 	  'outputIndexDir',
+          'colorspace',
+          'bowtieVersion',
 	 );
 }
 
