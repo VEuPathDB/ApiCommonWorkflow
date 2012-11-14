@@ -7,8 +7,8 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $dataSourceName = $self->getParamValue('resourceName');
-    my $dataSourceXmlFile = $self->getParamValue('resourceXmlFileName');
+    my $dataSourceName = $self->getParamValue('datasetName');
+    my $dataSourceXmlFile = $self->getParamValue('datasetLoaderXmlFileName');
     my $dataDirPath = $self->getParamValue('dataDir');
     my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
     my $parentDataSource = $dataSource->getParentResource();
@@ -51,8 +51,8 @@ sub _formatForCLI {
 
 sub getParamsDeclaration {
     return (
-	'resourceName',
-	'resourceXmlFileName',
+	'datasetName',
+	'datasetLoaderXmlFileName',
         'dataDir'
            );
 }
