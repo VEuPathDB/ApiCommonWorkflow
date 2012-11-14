@@ -1,7 +1,7 @@
 <workflowGraph name="">
   <param name="projectName"/>
   <param name="organismAbbrev"/>
-  <param name="organismResourceXmlFile"/>
+  <param name="organismDatasetLoaderXmlFile"/>
   <param name="parentDataDir"/>
   <param name="relativeDownloadSiteDir"/>
   <param name="relativeWebServicesDir"/>
@@ -17,9 +17,9 @@
   <datasetTemplate class="familyRepresentative-isolatesGenbank">
     <prop name="organismAbbrev"/>
 
-    <subgraph name="isolates_genbank" xmlFile="loadResource.xml"  externalName="${organismAbbrev}_isolates_genbank">
-      <paramValue name="resourceName">${organismAbbrev}_isolates_genbank_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <subgraph name="isolates_genbank" xmlFile="loadDataset.xml"  externalName="${organismAbbrev}_isolates_genbank">
+      <paramValue name="datasetName">${organismAbbrev}_isolates_genbank_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
@@ -28,9 +28,9 @@
   <datasetTemplate class="updateIsolatesInfo">
     <prop name="organismAbbrev"/>
 
-    <subgraph name="updateIsolatesInfo" xmlFile="loadResource.xml"  externalName="${organismAbbrev}_updateIsolatesInfo">
-      <paramValue name="resourceName">${organismAbbrev}_updateIsolatesInfo_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <subgraph name="updateIsolatesInfo" xmlFile="loadDataset.xml"  externalName="${organismAbbrev}_updateIsolatesInfo">
+      <paramValue name="datasetName">${organismAbbrev}_updateIsolatesInfo_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="isolates_genbank"/>
     </subgraph>
@@ -40,9 +40,9 @@
     <prop name="organismAbbrev"/>
     <prop name="name"/>
 
-    <subgraph name="isolates_${name}_sequences" xmlFile="loadResource.xml" externalName="${organismAbbrev}_isolates_${name}">
-      <paramValue name="resourceName">${organismAbbrev}_isolates_${name}_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <subgraph name="isolates_${name}_sequences" xmlFile="loadDataset.xml" externalName="${organismAbbrev}_isolates_${name}">
+      <paramValue name="datasetName">${organismAbbrev}_isolates_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
@@ -52,9 +52,9 @@
     <prop name="organismAbbrev"/>
     <prop name="name"/>
 
-    <subgraph name="isolates_${name}_features" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">${organismAbbrev}_isolates_${name}_features_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <subgraph name="isolates_${name}_features" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_isolates_${name}_features_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="isolates_${name}_sequences"/>
     </subgraph>
@@ -63,9 +63,9 @@
     <datasetTemplate class="isolatesUpdateIsReference">
     <prop name="name"/>
     <prop name="organismAbbrev"/>
-    <subgraph name="isolateIsRef_${name}_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">${organismAbbrev}_isolateIsReference_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <subgraph name="isolateIsRef_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_isolateIsReference_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <dependsPattern name="isolates_*_features"/> 
       <dependsPattern name="isolates_genbank"/> 
@@ -75,9 +75,9 @@
   <datasetTemplate class="updateIsolateFeaturesByProductAlias">
     <prop name="name"/> 
     <prop name="organismAbbrev"/>
-    <subgraph name="updateIsolateFeaturesByProductAlias_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">${organismAbbrev}_updateIsolateFeaturesByProductAlias_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <subgraph name="updateIsolateFeaturesByProductAlias_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_updateIsolateFeaturesByProductAlias_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <dependsPattern name="isolates_*_features"/> 
       <dependsPattern name="isolates_genbank"/> 

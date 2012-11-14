@@ -1,6 +1,6 @@
 <workflowGraph name="">
   <param name="dataDir"/>
-  <param name="resourceName"/>
+  <param name="datasetName"/>
   <param name="maxIntronSize"/>
   <param name="organismAbbrev"/>
   <param name="genomicSeqsFile"/>
@@ -14,7 +14,7 @@
 
   <step name="extractTranscriptSeqs"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
-      <paramValue name="extDbName">$$resourceName$$</paramValue>
+      <paramValue name="extDbName">$$datasetName$$</paramValue>
       <paramValue name="table">ExternalNASequence</paramValue>
       <paramValue name="alternateDefline">na_sequence_id, description, 'length='||length</paramValue>
       <paramValue name="outputFile">$$transcriptSeqFile$$</paramValue>
@@ -36,7 +36,7 @@
       <paramValue name="targetExtDbName">$$organismAbbrev$$_primary_genome_RSRC</paramValue>
       <paramValue name="queryFile">$$transcriptSeqFile$$</paramValue>
       <paramValue name="queryTable">ExternalNASequence</paramValue>
-      <paramValue name="queryExtDbName">$$resourceName$$</paramValue>
+      <paramValue name="queryExtDbName">$$datasetName$$</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
 

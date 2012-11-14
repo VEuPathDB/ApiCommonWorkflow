@@ -1,23 +1,23 @@
 <workflowGraph name="">
   <param name="organismAbbrev"/>
-  <param name="organismResourceXmlFile"/>
+  <param name="organismDatasetLoaderXmlFile"/>
   <param name="parentDataDir"/>
 
   <!-- this is a plan file because loading this is optional -->
   <datasetTemplate class="primaryVirtualGenome">
     <prop name="organismAbbrev"/>
-    <subgraph name="primaryVirtualGenome_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismAbbrev$$_primary_virtual_genome_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <subgraph name="primaryVirtualGenome_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$organismAbbrev$$_primary_virtual_genome_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
   <datasetTemplate class="secondaryVirtualGenome">
     <prop name="organismAbbrev"/>
-    <subgraph name="secondaryVirtualGenome_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$organismAbbrev$$_secondary_virtual_genome_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <subgraph name="secondaryVirtualGenome_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$organismAbbrev$$_secondary_virtual_genome_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
       <depends name="primaryVirtualGenome_RSRC"/>
     </subgraph>
@@ -25,9 +25,9 @@
 
   <datasetTemplate class="insertScaffoldGapFeatures">
     <prop name="organismAbbrev"/>
-    <subgraph name="insertScaffoldGapFeatures_RSRC" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">${organismAbbrev}_insertScaffoldGapFeatures_RSRC</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <subgraph name="insertScaffoldGapFeatures_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_insertScaffoldGapFeatures_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
       <dependsPattern name="*VirtualGenome_RSRC"/>
     </subgraph>

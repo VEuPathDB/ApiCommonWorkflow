@@ -1,6 +1,6 @@
 <workflowGraph name="analyzeMicroarrayExpression_modify">
     <param name="parentDataDir"/>
-    <param name="experimentResourceName"/>
+    <param name="experimentDatasetName"/>
     <param name="chipProbeExtDbRlsSpec"/>
     <param name="experimentExtDbRlsSpec"/>
     <param name="genomeExtDbRlsSpec"/>
@@ -13,20 +13,20 @@
     <param name="downloadSiteTranscriptExpressionDataDir"/>
 
     <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
-      <paramValue name="inputDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
+      <paramValue name="inputDir">$$parentDataDir$$/$$experimentDatasetName$$/final</paramValue>
       <paramValue name="probeGenesMappingFile">$$probeGenesMappingFile$$</paramValue>
     </step>
 
     <step name="loadExpressionProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
-      <paramValue name="inputDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
-      <paramValue name="configFile">$$parentDataDir$$/$$experimentResourceName$$/final/expression_profile_config.txt</paramValue>
+      <paramValue name="inputDir">$$parentDataDir$$/$$experimentDatasetName$$/final</paramValue>
+      <paramValue name="configFile">$$parentDataDir$$/$$experimentDatasetName$$/final/expression_profile_config.txt</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentExtDbRlsSpec$$</paramValue>
       <depends name="doTranscriptExpression"/>
     </step>
 
     <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
-      <paramValue name="copyFromDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
-      <paramValue name="configFile">$$parentDataDir$$/$$experimentResourceName$$/final/expression_profile_config.txt</paramValue>
+      <paramValue name="copyFromDir">$$parentDataDir$$/$$experimentDatasetName$$/final</paramValue>
+      <paramValue name="configFile">$$parentDataDir$$/$$experimentDatasetName$$/final/expression_profile_config.txt</paramValue>
       <paramValue name="copyToDir">$$downloadSiteTranscriptExpressionDataDir$$</paramValue>
       <depends name="doTranscriptExpression"/>
     </step>
@@ -40,8 +40,8 @@
     </step>
 
     <step name="insertAnalysisResultFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin" includeIf="$$insertAnalysisResult$$">
-      <paramValue name="analysisWorkingDir">$$parentDataDir$$/$$experimentResourceName$$/final</paramValue>
-      <paramValue name="configFile">$$parentDataDir$$/$$experimentResourceName$$/final/analysis_result_config.txt</paramValue>
+      <paramValue name="analysisWorkingDir">$$parentDataDir$$/$$experimentDatasetName$$/final</paramValue>
+      <paramValue name="configFile">$$parentDataDir$$/$$experimentDatasetName$$/final/analysis_result_config.txt</paramValue>
       <paramValue name="analysisResultView">DifferentialExpression</paramValue>
       <paramValue name="naFeatureView">GeneFeature</paramValue>
       <paramValue name="useSqlLdr">false</paramValue>

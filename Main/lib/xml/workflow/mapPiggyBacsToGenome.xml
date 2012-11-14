@@ -1,8 +1,8 @@
 <workflowGraph name="mapPiggyBacsToGenome">
   <param name="dataDir"/>
   <param name="genomicSeqsFile"/>
-  <param name="organismResourceXmlFile"/>
-  <param name="piggyBacResourceName"/>
+  <param name="organismDatasetLoaderXmlFile"/>
+  <param name="piggyBacDatasetName"/>
   <param name="piggyBacExtDbRlsSpec"/>
   <param name="genomeExtDbRlsSpec"/>
   <param name="organismFullName"/>
@@ -10,20 +10,20 @@
 
   <constant name="blastArgs">-nogaps V=1 E=1e-10 B=1 hspsepQmax=50000 hspsepSmax=50000 -span1 -topcomboN=1</constant>
 
-    <subgraph name="loadPiggyBacResource" xmlFile="loadResource.xml">
-      <paramValue name="resourceName">$$piggyBacResourceName$$</paramValue>
-      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+    <subgraph name="loadPiggyBacDataset" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$piggyBacDatasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     </subgraph>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/$$piggyBacResourceName$$</paramValue>
-      <depends name="loadPiggyBacResource"/>
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/$$piggyBacDatasetName$$</paramValue>
+      <depends name="loadPiggyBacDataset"/>
     </step>
 
     <subgraph name="runBlastAndLoadFeatures" xmlFile="runBlastAndLoadFeatures.xml">
-      <paramValue name="dataDir">$$dataDir$$/$$piggyBacResourceName$$/mapPiggyBacsToGenome</paramValue>
-      <paramValue name="queryFile">$$dataDir$$/$$piggyBacResourceName$$/piggyBac.fsa</paramValue>
+      <paramValue name="dataDir">$$dataDir$$/$$piggyBacDatasetName$$/mapPiggyBacsToGenome</paramValue>
+      <paramValue name="queryFile">$$dataDir$$/$$piggyBacDatasetName$$/piggyBac.fsa</paramValue>
       <paramValue name="subjectFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="blastArgs">$$blastArgs$$</paramValue>
       <paramValue name="idRegex">$$idRegex$$</paramValue>

@@ -5,21 +5,21 @@
     <param name="parentDataDir"/>
     <param name="hasTimeSeries"/>
     <param name="relativeDownloadSiteDir"/>
-    <param name="experimentResourceName"/>
-    <param name="experimentResourceVersion"/>
+    <param name="experimentDatasetName"/>
+    <param name="experimentDatasetVersion"/>
 
     <!--  these were made in the experiment graph -->
     <constant name="experimentDataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesOutputDir">$$experimentDataDir$$/samplesOutput</constant>
 
     <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
-      <paramValue name="analysisConfigFile">$$experimentDataDir$$/$$experimentResourceName$$/final/analysisConfig.xml</paramValue>
+      <paramValue name="analysisConfigFile">$$experimentDataDir$$/$$experimentDatasetName$$/final/analysisConfig.xml</paramValue>
       <paramValue name="inputDir">$$samplesOutputDir$$</paramValue>
       <paramValue name="outputDir">$$experimentDataDir$$/doTranscriptExpression</paramValue>
       <!-- The ancillary file will mostly be unused;  Only here so we can fiddle with the profiles (like scaliing)   -->
       <paramValue name="geneProbeMappingTabFile"></paramValue>
       <paramValue name="geneProbeMappingVendorFile"></paramValue>
-      <paramValue name="platformDirectory">$$experimentDataDir$$/$$experimentResourceName$$/final</paramValue>
+      <paramValue name="platformDirectory">$$experimentDataDir$$/$$experimentDatasetName$$/final</paramValue>
       <paramValue name="expectCdfFile">false</paramValue>
       <paramValue name="expectNdfFile">false</paramValue>
       <paramValue name="passPlatformMappingFile">true</paramValue>
@@ -35,7 +35,7 @@
     <step name="loadIntensityProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles"  stepLoadTypes="plugin">
       <paramValue name="configFile">$$experimentDataDir$$/doTranscriptExpression/expression_profile_config.txt</paramValue>
       <paramValue name="inputDir">$$experimentDataDir$$/doTranscriptExpression</paramValue>
-      <paramValue name="extDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <depends name="doTranscriptExpression"/>
     </step>
 
@@ -44,12 +44,12 @@
       <paramValue name="copyFromDir">$$experimentDataDir$$/doTranscriptExpression</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="experimentResourceName">$$experimentResourceName$$</paramValue>
+      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
       <depends name="doTranscriptExpression"/>
     </step>
 
     <step name="calculateExpressionStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateExpressionStatsForTimeSeries" stepLoadTypes="plugin" includeIf="$$hasTimeSeries$$" undoRoot="loadExpressionProfilesFromConfig">
-      <paramValue name="extDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="configFile">time_series_stats_config.txt</paramValue>
       <paramValue name="doTranscriptExpressionDir">$$experimentDataDir$$/doTranscriptExpression</paramValue>
       <depends name="loadIntensityProfile"/>
