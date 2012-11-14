@@ -15,20 +15,18 @@
     <step name="copyMaskedTopLevelFastaFileToComparativeGenomicsDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$">
       <paramValue name="fromFile">$$makeAndMaskTopLevelGenomeDataDir$$/master/mainresult/blocked.seq</paramValue>
       <paramValue name="toFile">$$comparativeGenomicsDir$$/$$organismAbbrev$$.fasta</paramValue>
-      <depends name="mirrorFromCluster"/>
     </step>
 
     <step name="copyMaskedTopLevelFastaFileToStrainsComparisonDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$">
       <paramValue name="fromFile">$$makeAndMaskTopLevelGenomeDataDir$$/master/mainresult/blocked.seq</paramValue>
       <paramValue name="toFile">$$strainsComparisonInputDir$$/$$organismAbbrev$$.fasta</paramValue>
-      <depends name="mirrorFromCluster"/>
     </step>
 
   <step name="makeMercatorGffFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMercatorGffFile" includeIf="$$isAnnotatedGenome$$">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/$$organismAbbrev$$.gff</paramValue>
-       <depends name="makeDerivedTables"/> 
+       <depends name="makeDataDir"/> 
     </step>
 
   <step name="correctReadingFrameInMercatorGffFile"

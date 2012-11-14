@@ -23,11 +23,11 @@ sub run {
   my $cmd = "faToTwoBit $clusterWorkflowDataDir/$inputFastaFile $clusterWorkflowDataDir/$output2bitFile";
 
   if ($undo) {
-    $self->runCmdOnCluster(0,"rm $clusterWorkflowDataDir/$outputFile");
+    $self->runCmdOnCluster(0,"rm $clusterWorkflowDataDir/$output2bitFile");
   } else {
       if ($test) {
 	  $self->testInputFile('inputFastaFile', "$workflowDataDir/$inputFastaFile");
-	  $self->runCmd(0, "echo test > $clusterWorkflowDataDir/$output2bitFile");
+	  $self->runCmdOnCluster(0, "echo test > $clusterWorkflowDataDir/$output2bitFile");
       }else{
 	  $self->runCmdOnCluster($test,$cmd);
       }
