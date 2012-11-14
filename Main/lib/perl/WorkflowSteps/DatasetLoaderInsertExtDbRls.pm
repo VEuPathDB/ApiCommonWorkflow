@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertExtDbRls;
+package ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertExtDbRls;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
@@ -7,28 +7,28 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $dataSourceName = $self->getParamValue('datasetName');
-    my $dataSourceXmlFile = $self->getParamValue('datasetLoaderXmlFileName');
+    my $datasetName = $self->getParamValue('datasetName');
+    my $datasetLoaderXmlFile = $self->getParamValue('datasetLoaderXmlFileName');
     my $dataDirPath = $self->getParamValue('dataDir');
-    my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
+    my $datasetLoader = $self->getDatasetLoader($datasetName, $datasetLoaderXmlFile, $dataDirPath);
 
-    my $dataSourceVersion =  $dataSource->getVersion();
-    my $parentDatasource = $dataSource->getParentResource();
-    my $idType = $dataSource->getExternalDbIdType();
-    my $idIsAlias = $dataSource->getExternalDbIdIsAnAlias();
-    my $idUrl = $dataSource->getExternalDbIdUrl();
-    my $idUrlUseSecondary = $dataSource->getExternalDbIdUrlUseSecondaryId();
+    my $datasetLoaderVersion =  $datasetLoader->getVersion();
+    my $parentDatasetLoader = $datasetLoader->getParentDatasetLoader();
+    my $idType = $datasetLoader->getExternalDbIdType();
+    my $idIsAlias = $datasetLoader->getExternalDbIdIsAnAlias();
+    my $idUrl = $datasetLoader->getExternalDbIdUrl();
+    my $idUrlUseSecondary = $datasetLoader->getExternalDbIdUrlUseSecondaryId();
 
-    # if has a parentResource, validate that the resource exists
+    # if has a parentDatasetName, validate that the datasetLoader exists
     # and, if not in test mode, that it is in the database
-    if ($parentDatasource) {
-      my $parentVersion = $parentDatasource->getVersion();
-      my $parentName = $parentDatasource->getName();
-      $self->error("Resource $dataSourceName declares a parentResource=$parentName.  It is therefore not allowed to use any of these attribues:  externalDbIdType, externalDbIdIsAlias, externalDbIdUrl, externalDbIdUrlUseSecondaryId")
+    if ($parentDatasetLoader) {
+      my $parentVersion = $parentDatasetLoader->getVersion();
+      my $parentName = $parentDatasetLoader->getName();
+      $self->error("DatasetLoader $datasetName declares a parentDatasetName=$parentName.  It is therefore not allowed to use any of these attribues:  externalDbIdType, externalDbIdIsAlias, externalDbIdUrl, externalDbIdUrlUseSecondaryId")
 	  if ($idType || $idIsAlias || $idUrl || $idUrlUseSecondary);
       if (!$test) {
 	my $parentExtDbRlsId = $self->getExtDbRlsId($test, "$parentName|$parentVersion");
-	$self->error("Resource $dataSourceName declares a parentResource=$parentName.  But the parent is not found in the database (with version $parentVersion)") unless $parentExtDbRlsId;
+	$self->error("DatasetLoader $datasetName declares a parentDatasetName=$parentName.  But the parent is not found in the database (with version $parentVersion)") unless $parentExtDbRlsId;
       }
     }
 
@@ -42,7 +42,7 @@ sub run {
 	  $idUrl = "";
       }
 
-      my $releasePluginArgs = "--databaseName '$dataSourceName' --databaseVersion '$dataSourceVersion' $idType $idIsAlias $idUrl";
+      my $releasePluginArgs = "--databaseName '$datasetName' --databaseVersion '$datasetLoaderVersion' $idType $idIsAlias $idUrl";
 
       $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
     }

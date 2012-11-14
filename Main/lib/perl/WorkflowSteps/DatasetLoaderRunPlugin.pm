@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::ResourceRunPlugin;
+package ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderRunPlugin;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
@@ -7,21 +7,21 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $dataSourceName = $self->getParamValue('datasetName');
-    my $dataSourceXmlFile = $self->getParamValue('datasetLoaderXmlFileName');
+    my $datasetName = $self->getParamValue('datasetName');
+    my $datasetLoaderXmlFile = $self->getParamValue('datasetLoaderXmlFileName');
     my $dataDirPath = $self->getParamValue('dataDir');
-    my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
-    my $parentDataSource = $dataSource->getParentResource();
+    my $datasetLoader = $self->getDatasetLoader($datasetName, $datasetLoaderXmlFile, $dataDirPath);
+    my $parentDatasetLoader = $datasetLoader->getParentDatasetLoader();
     
     # if version is TODAY, get value from db instead
     my $versionFromDb;
-    my $ds = $parentDataSource? $parentDataSource : $dataSource;
+    my $ds = $parentDatasetLoader? $parentDatasetLoader : $datasetLoader;
     if ($ds->getRawVersion() eq 'TODAY') {
 	$versionFromDb = $self->getExtDbVersion($test, $ds->getName());
     }
 
-    my $plugin =  $dataSource->getPlugin();
-    my $pluginArgs = $dataSource->getPluginArgs($versionFromDb);
+    my $plugin =  $datasetLoader->getPlugin();
+    my $pluginArgs = $datasetLoader->getPluginArgs($versionFromDb);
 
     _formatForCLI($pluginArgs);
 

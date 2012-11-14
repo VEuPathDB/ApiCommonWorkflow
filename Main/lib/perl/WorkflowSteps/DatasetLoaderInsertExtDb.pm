@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertExtDb;
+package ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertExtDb;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
@@ -7,16 +7,16 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $dataSourceName = $self->getParamValue('datasetName');
-    my $dataSourceXmlFile = $self->getParamValue('datasetLoaderXmlFileName');
+    my $datasetName = $self->getParamValue('datasetName');
+    my $datasetLoaderXmlFile = $self->getParamValue('datasetLoaderXmlFileName');
     my $dataDirPath = $self->getParamValue('dataDir');
-    my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
+    my $datasetLoader = $self->getDatasetLoader($datasetName, $datasetLoaderXmlFile, $dataDirPath);
 
-    # if has a parent resource, then assume the ext db has already been inserted
-    # (this is validated in the ResourceInsertExtDbRls step)
-    return if $dataSource->getParentResource();
+    # if has a parent dataset loader, then assume the ext db has already been inserted
+    # (this is validated in the DatasetLoaderInsertExtDbRls step)
+    return if $datasetLoader->getParentDatasetLoader();
 
-    my $dbPluginArgs = "--name '$dataSourceName' ";
+    my $dbPluginArgs = "--name '$datasetName' ";
 
     $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 

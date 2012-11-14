@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertDataset;
+package ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertDataset;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
@@ -7,20 +7,20 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $dataSourceName = $self->getParamValue('datasetName');
-    my $dataSourceXmlFile = $self->getParamValue('datasetLoaderXmlFileName');
+    my $datasetName = $self->getParamValue('datasetName');
+    my $datasetLoaderXmlFile = $self->getParamValue('datasetLoaderXmlFileName');
     my $dataDirPath = $self->getParamValue('dataDir');
 
-    my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
+    my $datasetLoader = $self->getDatasetLoader($datasetName, $datasetLoaderXmlFile, $dataDirPath);
 
-    my $extDbName = $dataSource->getParentResource()?
-	$dataSource->getParentResource()->getName() : $dataSourceName;
+    my $extDbName = $datasetLoader->getParentDatasetLoader()?
+	$datasetLoader->getParentDatasetLoader()->getName() : $datasetName;
 
-    my $version = $dataSource->getVersion();
-    my $organismAbbrev = $dataSource->getOrganismAbbrev();
-    my $scope = $dataSource->getScope();
-    my $type = $dataSource->getType();
-    my $subType = $dataSource->getSubType();
+    my $version = $datasetLoader->getVersion();
+    my $organismAbbrev = $datasetLoader->getOrganismAbbrev();
+    my $scope = $datasetLoader->getScope();
+    my $type = $datasetLoader->getType();
+    my $subType = $datasetLoader->getSubType();
 
     my $isSpeciesScope = $scope eq 'species'? "--isSpeciesScope" : "";
     my $tp = $type? "--type $type" : "";
@@ -32,7 +32,7 @@ sub run {
 	$taxonId = "--taxonId $t";
     }
 
-    my $dbPluginArgs = "--dataSourceName '$dataSourceName' --version '$version' --externalDatabaseName '$extDbName' $isSpeciesScope $taxonId $tp $stp";
+    my $dbPluginArgs = "--datasetName '$datasetName' --version '$version' --externalDatabaseName '$extDbName' $isSpeciesScope $taxonId $tp $stp";
 
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertDataSource", $dbPluginArgs);
 

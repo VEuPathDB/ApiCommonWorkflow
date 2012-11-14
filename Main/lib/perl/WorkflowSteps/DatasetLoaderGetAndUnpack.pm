@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::ResourceGetAndUnpack;
+package ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderGetAndUnpack;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
@@ -7,10 +7,10 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $dataSourceName = $self->getParamValue('datasetName');
-    my $dataSourceXmlFile = $self->getParamValue('datasetLoaderXmlFileName');
+    my $datasetName = $self->getParamValue('datasetName');
+    my $datasetLoaderXmlFile = $self->getParamValue('datasetLoaderXmlFileName');
     my $dataDirPath = $self->getParamValue('dataDir');
-    my $dataSource = $self->getDataSource($dataSourceName, $dataSourceXmlFile, $dataDirPath);
+    my $datasetLoader = $self->getDatasetLoader($datasetName, $datasetLoaderXmlFile, $dataDirPath);
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -21,21 +21,21 @@ sub run {
     if ($undo) {
       $self->runCmd(0, "rm -rf $targetDir/*");
     } else {
-	$self->getResource($test, $dataSource, $targetDir);
-	$self->unpackResource($test, $dataSource, $targetDir);
-	$self->processDeclaredOutputs($test, $dataSource);
+	$self->getDatasetLoader($test, $datasetLoader, $targetDir);
+	$self->unpackDataset($test, $datasetLoader, $targetDir);
+	$self->processDeclaredOutputs($test, $datasetLoader);
     }
 }
 
-sub getResource {
-    my ($self, $test, $dataSource, $targetDir, $dataSourceName) = @_;
+sub getDatasetLoader {
+    my ($self, $test, $datasetLoader, $targetDir, $datasetName) = @_;
 
-    my $WgetArgs = $dataSource->getWgetArgs();
-    my $manualGet = $dataSource->getManualGet();
-    my $manualFileOrDir = $dataSource->getManualFileOrDir();
-    my $UrlArg = $dataSource->getWgetUrl();
+    my $WgetArgs = $datasetLoader->getWgetArgs();
+    my $manualGet = $datasetLoader->getManualGet();
+    my $manualFileOrDir = $datasetLoader->getManualFileOrDir();
+    my $UrlArg = $datasetLoader->getWgetUrl();
 
-    die "Resource $dataSourceName must provide either <wgetArgs> or <manualGet>, but not both\n"
+    die "DatasetLoader $datasetName must provide either <wgetArgs> or <manualGet>, but not both\n"
 	unless ($WgetArgs && !$manualGet) || ($manualGet && !$WgetArgs);
 
     if ($WgetArgs) {
@@ -57,10 +57,10 @@ sub getResource {
     }
 }
 
-sub unpackResource {
-    my ($self, $test, $dataSource) = @_;
+sub unpackDataset {
+    my ($self, $test, $datasetLoader) = @_;
 
-    my $unpacks =  $dataSource->getUnpacks();
+    my $unpacks =  $datasetLoader->getUnpacks();
 
     my @unpacks2 = map { _formatForCLI($_) } @$unpacks;
 
@@ -70,12 +70,12 @@ sub unpackResource {
     }
 }
 
-# the <getAndUnpackOutput> element in the resources xml file declares
+# the <getAndUnpackOutput> element in the datasetLoader xml file declares
 # outputs.  they have an absolute path
 sub processDeclaredOutputs {
-  my ($self, $test, $dataSource) = @_;
+  my ($self, $test, $datasetLoader) = @_;
 
-  foreach my $declaredOutput (@{$dataSource->getGetAndUnpackOutputs()}) {
+  foreach my $declaredOutput (@{$datasetLoader->getGetAndUnpackOutputs()}) {
     my $dir = $declaredOutput->{dir};
     my $file = $declaredOutput->{file};
     if ($test) {
