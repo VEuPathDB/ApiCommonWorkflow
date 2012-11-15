@@ -15,7 +15,7 @@ sub run {
   # this is relative to the website files dir.
   # it will look something like downloadSite/ToxoDB/release-6.3
   my $relativeDir = $self->getParamValue('relativeDir');
-  my $experimentResourceName = $self->getParamValue('experimentResourceName');
+  my $experimentResourceName = $self->getParamValue('experimentDatasetName');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 

@@ -12,7 +12,7 @@ sub run {
   my $copyFromDir = $self->getParamValue('copyFromDir');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $relativeDir = $self->getParamValue('relativeDir');
-  my $experimentResourceName = $self->getParamValue('experimentResourceName');
+  my $experimentResourceName = $self->getParamValue('experimentDatasetName');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
