@@ -17,6 +17,7 @@ sub run {
   my $indexDir = $self->getParamValue("indexDir");
   my $strain = $self->getParamValue("strain");
   my $clusterServer = $self->getSharedConfig('clusterServer');
+  my $snpPercentCutoff = $self->getParamValue("snpPercentCutoff");
 
   # expects string true/false
   my $isColorspace = $self->getParamValue("isColorspace");
@@ -50,6 +51,8 @@ bowtieIndex=$clusterWorkflowDataDir/$indexDir
 strain=$strain
 isColorspace=$isColorspace
 ";
+      $taskPropFileContent .= "snpPercentCutoff=$snpPercentCutoff\n" if $snpPercentCutoff;
+
       if(length($sraQueryString)>0){
 	  $taskPropFileContent .= "mateA=none\n";
 	  $taskPropFileContent .= "mateB=none\n";
