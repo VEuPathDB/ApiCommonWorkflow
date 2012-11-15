@@ -1302,17 +1302,16 @@
 
   </datasetClass>
 
-
-
-  <datasetClass class="SNPs_HTS_Sample" category="" datasetFileHint="">
+<datasetClass class="SNPs_HTS_Sample" category="" datasetFileHint="">
     <purpose></purpose>
-    <prop name="organismAbbrev"/>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="experimentName"/>
     <prop name="snpStrainAbbrev"/>
- 
+    <prop name="snpPercentCutoff"/>
+
     <graphTemplateFile name="htsSnpSamples.xml"/>
 
-    <resource resource="${organismAbbrev}_${experimentName}_${snpStrainAbbrev}_SNPSample_RSRC" version="dontcare"
+    <datasetLoader datasetName="${organismAbbrev}_${experimentName}_${snpStrainAbbrev}_SNPSample_RSRC" version="dontcare"
           plugin="ApiCommonData::Load::Plugin::LoadNothing"
               scope="organism"
               type="isolates"
@@ -1327,9 +1326,46 @@
       <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}" />
       <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}.paired" />
 
-      <pluginArgs>--dbRefExternalDatabaseSpec "%RESOURCE_NAME%|%RESOURCE_VERSION%"</pluginArgs>
-    </resource>
+      <!-- these are needed for colorspace -->
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}.qual" />
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}.qual.paired" />
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
+    </datasetLoader>
   </datasetClass>
+
+
+  <datasetClass class="SNPs_HTS_Sample_QuerySRA" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="experimentName"/>
+    <prop name="snpStrainAbbrev"/>
+    <prop name="sraQueryString"/>
+    <prop name="snpPercentCutoff"/>
+ 
+    <graphTemplateFile name="htsSnpSamples.xml"/>
+
+    <datasetLoader datasetName="${organismAbbrev}_${experimentName}_${snpStrainAbbrev}_SNPSample_RSRC" version="dontcare"
+          plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              type="isolates"
+              subType="HTS_SNP"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <!-- colorspace not allowed when we query from sra -->
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}" />
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}.paired" />
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
+    </datasetLoader>
+  </datasetClass>
+
+ 
 
   <!-- Category: microarrayPlatform -->
 
