@@ -10,7 +10,7 @@ sub run {
     my $datasetName = $self->getParamValue('datasetName');
     my $datasetLoaderXmlFile = $self->getParamValue('datasetLoaderXmlFileName');
     my $dataDirPath = $self->getParamValue('dataDir');
-    my $datasetLoader = $self->getDatasetLoader($datasetName, $datasetLoaderXmlFile, $dataDirPath);
+    my $datasetLoader = $self->getDatasetLoader($test, $datasetName, $datasetLoaderXmlFile, $dataDirPath);
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
