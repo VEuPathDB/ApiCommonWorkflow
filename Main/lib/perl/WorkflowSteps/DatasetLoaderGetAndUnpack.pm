@@ -22,7 +22,7 @@ sub run {
       $self->runCmd(0, "rm -rf $targetDir/*");
     } else {
 	$self->getDataset($test, $datasetLoader, $targetDir, $datasetName);
-	$self->unpackDataset($datasetLoader, $targetDir);
+	$self->unpackDataset($test, $datasetLoader);
 	$self->processDeclaredOutputs($test, $datasetLoader);
     }
 }
