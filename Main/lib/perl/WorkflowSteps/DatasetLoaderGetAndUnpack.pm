@@ -21,14 +21,14 @@ sub run {
     if ($undo) {
       $self->runCmd(0, "rm -rf $targetDir/*");
     } else {
-	$self->getDatasetLoader($test, $datasetLoader, $targetDir);
-	$self->unpackDataset($test, $datasetLoader, $targetDir);
+	$self->getDataset($datasetLoader, $targetDir, $datasetName);
+	$self->unpackDataset($datasetLoader, $targetDir);
 	$self->processDeclaredOutputs($test, $datasetLoader);
     }
 }
 
-sub getDatasetLoader {
-    my ($self, $test, $datasetLoader, $targetDir, $datasetName) = @_;
+sub getDataset {
+    my ($self, $datasetLoader, $targetDir, $datasetName) = @_;
 
     my $WgetArgs = $datasetLoader->getWgetArgs();
     my $manualGet = $datasetLoader->getManualGet();
