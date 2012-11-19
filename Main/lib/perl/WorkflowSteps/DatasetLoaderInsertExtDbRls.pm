@@ -13,6 +13,7 @@ sub run {
     my $datasetLoader = $self->getDatasetLoader($datasetName, $datasetLoaderXmlFile, $dataDirPath);
 
     my $datasetLoaderVersion =  $datasetLoader->getVersion();
+    my $releaseDate = $datasetLoader->getReleaseDate();
     my $parentDatasetLoader = $datasetLoader->getParentDatasetLoader();
     my $idType = $datasetLoader->getExternalDbIdType();
     my $idIsAlias = $datasetLoader->getExternalDbIdIsAnAlias();
@@ -24,8 +25,8 @@ sub run {
     if ($parentDatasetLoader) {
       my $parentVersion = $parentDatasetLoader->getVersion();
       my $parentName = $parentDatasetLoader->getName();
-      $self->error("DatasetLoader $datasetName declares a parentDatasetName=$parentName.  It is therefore not allowed to use any of these attribues:  externalDbIdType, externalDbIdIsAlias, externalDbIdUrl, externalDbIdUrlUseSecondaryId")
-	  if ($idType || $idIsAlias || $idUrl || $idUrlUseSecondary);
+      $self->error("DatasetLoader $datasetName declares a parentDatasetName=$parentName.  It is therefore not allowed to use any of these attribues:  externalDbIdType, externalDbIdIsAlias, externalDbIdUrl, externalDbIdUrlUseSecondaryId, releaseDate")
+	  if ($idType || $idIsAlias || $idUrl || $idUrlUseSecondary || $releaseDate);
       if (!$test) {
 	my $parentExtDbRlsId = $self->getExtDbRlsId($test, "$parentName|$parentVersion");
 	$self->error("DatasetLoader $datasetName declares a parentDatasetName=$parentName.  But the parent is not found in the database (with version $parentVersion)") unless $parentExtDbRlsId;
@@ -36,13 +37,15 @@ sub run {
     else {
       $idType = $idType? "--idType '$idType'" : "";
       $idIsAlias = $idIsAlias? "--idIsAlias" : "";
+      $self->error("DatasetLoader $datasetName declares releaseDate=$releaseDate.  The value is not in dd-mmm-yy format (eg 27-MAR-12).") if ($releaseDate && $releaseDate !~ /^\d\d-\D\D\D-\d\d$/;
+      $rlsDt = $releaseDate? "--releaseDate $releaseDate" : "";
       if ($idUrl) {
 	  $idUrl = $idUrlUseSecondary? "--secondaryIdUrl '$idUrl'" : "--idUrl '$idUrl'";
       } else {
 	  $idUrl = "";
       }
 
-      my $releasePluginArgs = "--databaseName '$datasetName' --databaseVersion '$datasetLoaderVersion' $idType $idIsAlias $idUrl";
+      my $releasePluginArgs = "--databaseName '$datasetName' --databaseVersion '$datasetLoaderVersion' $idType $idIsAlias $idUrl $rlsDt";
 
       $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
     }
