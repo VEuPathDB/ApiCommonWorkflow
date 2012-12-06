@@ -18,6 +18,11 @@ sub run {
     my $releasePluginArgs = "--databaseName '$extDbName' --databaseVersion '$extDbRlsVer'";
 
     $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
+
+    if ($undo) {
+        $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs); 
+        $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
+    }
 }
 
 
