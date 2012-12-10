@@ -25,7 +25,7 @@ sub run {
 
   my $cmd_mkdir = "mkdir -p $copyToDir";
 
-  my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir";
+  my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir";
 
   if ($test) {
     $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");
