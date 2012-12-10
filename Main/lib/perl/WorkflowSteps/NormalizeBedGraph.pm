@@ -16,7 +16,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $ss = $strandSpecific? "--strandSpecific" : "";
-  my $cmd= "normalizeBedGraph.pl --inputDir $workflowDataDir/$inputDir --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile $ss";
+  my $cmd= "normalizeCoverage.pl --inputDir $workflowDataDir/$inputDir --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile $ss";
 
   if($undo){
       # can't undo this step.  must undo cluster task
