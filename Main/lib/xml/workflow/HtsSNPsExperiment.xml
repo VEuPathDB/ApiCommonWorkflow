@@ -3,11 +3,11 @@
     <param name="organismAbbrev"/>
     <param name="experimentName"/>
     <param name="parentDataDir"/>
-    <param name="organismDatasetLoaderXmlFile"/>
+    <param name="organismResourceXmlFile"/>
     <param name="genomicSeqsFile"/>
     <param name="genomeExtDbRlsSpec"/>
-    <param name="experimentDatasetName"/>
-    <param name="experimentDatasetVersion"/>
+    <param name="experimentResourceName"/>
+    <param name="experimentResourceVersion"/>
     <param name="hasPairedEnds"/>
     <param name="relativeWebServicesDir"/>
     <param name="isColorspace"/>
@@ -15,7 +15,7 @@
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
-    <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>
+    <constant name="finalDir">$$dataDir$$/$$experimentResourceName$$/final</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -26,8 +26,8 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="makeExperimentDatasetLoaderDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$/$$experimentDatasetName$$</paramValue>
+    <step name="makeExperimentResourceDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/$$experimentResourceName$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
@@ -36,7 +36,7 @@
 
     <step name="makeFinalDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$finalDir$$</paramValue>
-      <depends name="makeExperimentDatasetLoaderDir"/>
+      <depends name="makeExperimentResourceDir"/>
     </step>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
@@ -51,46 +51,46 @@
       <depends name="makeFinalDir"/>
     </step>
 
-    <step name="insertDataset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertDataset">
-      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+    <step name="insertDataSource" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertDataSource">
+      <paramValue name="resourceName">$$experimentResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="dataDir">$$finalDir$$</paramValue>
       <depends name="makeFinalDir"/>
     </step>
 
-    <step name="getAndUnpack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderGetAndUnpack">
-      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="dataDir">$$dataDir$$/$$experimentDatasetName$$</paramValue>
+    <step name="getAndUnpack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ResourceGetAndUnpack">
+      <paramValue name="resourceName">$$experimentResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$/$$experimentResourceName$$</paramValue>
       <depends name="mirrorFinalDirToCluster"/>
     </step>
 
-    <step name="insertExtDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertExtDb" stepLoadTypes="plugin">
-      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+    <step name="insertExtDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertExtDb" stepLoadTypes="plugin">
+      <paramValue name="resourceName">$$experimentResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="dataDir">$$finalDir$$</paramValue>
       <depends name="makeFinalDir"/>
     </step>
 
-    <step name="experiment_RSRC" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertExtDbRls" stepLoadTypes="plugin">
-      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+    <step name="experiment_RSRC" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ResourceInsertExtDbRls" stepLoadTypes="plugin">
+      <paramValue name="resourceName">$$experimentResourceName$$</paramValue>
+      <paramValue name="resourceXmlFileName">$$organismResourceXmlFile$$</paramValue>
       <paramValue name="dataDir">$$finalDir$$</paramValue>
       <depends name="insertExtDb"/>
     </step>
 
-    <!-- end dataset loader -->
+    <!-- end resource -->
 
   <step name="addStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy">
     <paramValue name="experimentName">$$organismAbbrev$$_$$experimentName$$</paramValue>
-    <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+    <paramValue name="experimentExtDbRlsSpec">$$experimentResourceName$$|$$experimentResourceVersion$$</paramValue>
     <depends name="experiment_RSRC"/>
   </step>
 
     <subgraph name="map_SNPs" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/htsSnpSamples.xml">
        <paramValue name="projectName">$$projectName$$</paramValue>
        <paramValue name="experimentDir">$$dataDir$$</paramValue>
-       <paramValue name="experimentRSRC">$$experimentDatasetName$$</paramValue>
+       <paramValue name="experimentRSRC">$$experimentResourceName$$</paramValue>
        <paramValue name="samplesOutputDir">$$dataDir$$/$$experimentName$$/samplesOutput</paramValue>
        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
        <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
