@@ -18,9 +18,18 @@ sub run {
 
   my $outputFile =  $self->getParamValue('outputFile');
 
+  my $strand = $self->getParamValue('strand');
+  my $strandParam;
+  if($strand eq 'plus') {
+    $strandParam = "-strand p";
+  }
+  if($strand eq 'minus') {
+    $strandParam = "-strand m";
+  }
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "rum2quantifications.pl '$workflowDataDir/$geneAnnotationFile' '$workflowDataDir/$uniqueFile' '$workflowDataDir/$nonUniqueFile' '$workflowDataDir/$outputFile' -countsonly";
+  my $cmd = "rum2quantifications.pl '$workflowDataDir/$geneAnnotationFile' '$workflowDataDir/$uniqueFile' '$workflowDataDir/$nonUniqueFile' '$workflowDataDir/$outputFile' -countsonly $strandParam";
     
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
