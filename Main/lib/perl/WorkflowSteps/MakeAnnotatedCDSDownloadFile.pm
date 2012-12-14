@@ -25,7 +25,7 @@ sub getWebsiteFileCmd {
             || greatest(gf.coding_start,gf.coding_end)
             || '('|| decode(fl.is_reversed, 1, '-', '+') || ') | length='
             || (abs(gf.coding_start - gf.coding_end) + 1) || ' | sequence_SO=' || soseq.term_name
-            || ' | SO=' || gf.so_term_name
+            || ' | SO=' || gf.so_term_name || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
             as defline,
            substr(snas.sequence,
                   taaf.translation_start,
