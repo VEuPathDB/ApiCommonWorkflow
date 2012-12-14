@@ -32,7 +32,7 @@ sub getWebsiteFileCmd {
             decode(fl.is_reversed, 1, '-', '+')
                 ||') | length='||
             taas.length || ' | sequence_SO=' || soseq.term_name
-                || ' | SO=' || gf.so_term_name
+                || ' | SO=' || gf.so_term_name || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
             as defline,
             taas.sequence
            FROM ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
