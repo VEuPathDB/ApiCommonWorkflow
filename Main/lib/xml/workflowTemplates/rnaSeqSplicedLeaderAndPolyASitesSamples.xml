@@ -1,0 +1,44 @@
+<workflowGraph name="">
+  <param name="experimentDataDir"/>
+  <param name="outputDir"/>
+  <param name="organismAbbrev"/>
+  <param name="projectName"/>
+  <param name="genomicSeqsFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="experimentDatasetName"/>
+  <param name="experimentDatasetVersion"/>
+  <param name="relativeWebServicesDir"/>
+
+  <constant name="experimentDatasetLoadersDataDir">$$experimentDataDir$$/$$experimentDatasetName$$</constant>
+
+  <datasetTemplate class="rnaSeqSplicedLeaderAndPolyASitesSample">
+    <prop name="experimentName"/>
+    <prop name="sampleName"/>
+    <prop name="type"/>
+
+    <subgraph name="${sampleName}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_rnaSeqSplicedLeaderAndPolyASitesSample_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+    </subgraph>
+
+
+    <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeRnaSeqSplicedLeaderAndPolyASitesSample.xml">
+      <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="outputDir">$$outputDir$$</paramValue>
+      <paramValue name="sampleName">${sampleName}</paramValue>
+      <paramValue name="shortSeqsFile">$$experimentDatasetLoadersDataDir$$/final/${sampleName}</paramValue>
+      <paramValue name="experimentDatasetDir">$$experimentDatasetLoadersDataDir$$/final</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="type">${type}</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="${sampleName}_RSRC"/>
+    </subgraph>
+
+  </datasetTemplate>
+
+</workflowGraph>
+
