@@ -3161,6 +3161,67 @@
     </datasetLoader>
   </datasetClass>
 
+  <!-- NOTE:  because the data files are so large, we don't copy into our
+       workflow data dir, but use a symlink into manual deliv instead -->
 
+  <!-- final/ dir must have a file per sample, with name identical to the 
+       sample name.  if there are paired ends reads, each sample will also
+       have a samplename.paired file -->
+  <datasetClass class="rnaSeqSplicedLeaderAndPolyASitesExperiment" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
+
+    <graphTemplateFile name="organismSpecificMiscNoAlias.xml"/>
+    <datasetLoader datasetName="${organismAbbrev}_${name}_rnaSeqSplicedLeaderAndPolyASites_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              type="transcript_expression"
+              subType="rnaseq"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <unpack>ln -s @@manualDeliveryDir@@/${projectName}/${organismAbbrev}/rnaSeq/${name}/${version}/final/ @@dataDir@@/final</unpack>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final" />
+      <getAndUnpackOutput file="@@dataDir@@/final/config.txt"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/profile_config.txt"/>
+      <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
+    </datasetLoader>
+  </datasetClass>
+<!-- type: Splice Site or Poly A -->
+  <datasetClass class="rnaSeqSplicedLeaderAndPolyASitesSample" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="experimentName"/>
+    <prop name="sampleName"/>
+    <prop name="type"/>
+
+    <graphTemplateFile name="rnaSeqSplicedLeaderAndPolyASitesSamples.xml"/>
+
+      <!-- we load a fake resource here so we can make a getAndUnpackOutput -->
+      <!-- to declare existence of sample file that is acquired by experiment, for test mode -->
+    <datasetLoader datasetName="${organismAbbrev}_${experimentName}_${sampleName}_rnaSeqSplicedLeaderAndPolyASitesSample_RSRC" version="dontcare"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              type="transcript_expression"
+              subType="rnaseq"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_${experimentName}_rnaSeqSplicedLeaderAndPolyASites_RSRC/final/${sampleName}" />
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
+    </datasetLoader>
+  </datasetClass>
 
 </datasetClasses>
