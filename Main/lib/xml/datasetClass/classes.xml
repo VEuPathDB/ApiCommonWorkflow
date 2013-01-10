@@ -798,6 +798,37 @@
   </datasetClass>
 
 
+  <datasetClass class="unofficialGeneFeatures_embl" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="mapFile"/>
+    <prop name="genomeVersion"/>
+
+
+    <graphTemplateFile name="unofficialGeneFeatures.xml"/>
+
+    <datasetLoader datasetName="${organismAbbrev}_unofficialGeneFeature_${name}_embl_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+              scope="organism"
+              type="feature"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genomeFeature/${name}_embl/${version}/final/">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--extDbName %DATASET_NAME% --extDbRlsVer %DATASET_VERSION% --seqExtDbName ${organismAbbrev}_primary_genome_RSRC --seqExtDbRlsVer ${genomeVersion} --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/final --inputFileExtension "embl" --fileFormat embl   --soExtDbRlsName "SO_RSRC" --defaultOrganism ${ncbiTaxonId} --naSequenceSubclass ExternalNASequence --seqIdColumn source_id  --bioperlTreeOutput @@dataDir@@/bioperlTree.out --validationLog @@dataDir@@/validation.log --notOfficialAnnotation</pluginArgs>  
+    </datasetLoader>
+  </datasetClass>
+
+
+
   <!-- Category: genomeFeature -->
   <!-- NOTE: THIS CLASS IS NOT TO BE USED FOR GENES -->
   <datasetClass class="genomeFeatures_GFF2" category="" datasetFileHint="">
