@@ -2086,7 +2086,7 @@
         </dir>
       </manualGet>
 
-      <pluginArgs>--ECMappingFile @@dataDir@@/ec.txt --evidenceCode "${name}" --aaSeqLocusTagMappingSql "SELECT aa_sequence_id FROM dots.Transcript t, dots.TranslatedAAFeature taf WHERE t.parent_id =? AND t.na_feature_id = taf.na_feature_id"</pluginArgs>
+      <pluginArgs>--ECMappingFile @@dataDir@@/ec.txt --evidenceCode "${name}" --aaSeqLocusTagMappingSql "select taf.aa_sequence_id from dots.Transcript t, dots.TranslatedAAFeature taf, dots.GeneFeature gf where gf.source_id = ? and gf.na_feature_id = t.parent_id and t.na_feature_id = taf.na_feature_id"</pluginArgs>
     </datasetLoader>
 
   </datasetClass>
@@ -2109,7 +2109,7 @@
      
      <unpack>printOrgSpecificGeneToEC --infile @@dataDir@@/ecAssocFromUniprot.tab --outfile @@dataDir@@/${organismAbbrev}LocTagToEC.tab --orgAbbrev ${organismAbbrev}</unpack>     
 
-      <pluginArgs>--ECMappingFile @@dataDir@@/${organismAbbrev}LocTagToEC.tab --evidenceCode "Uniprot" --aaSeqLocusTagMappingSql "SELECT aa_sequence_id FROM dots.Transcript t, dots.TranslatedAAFeature taf WHERE t.parent_id =? AND t.na_feature_id = taf.na_feature_id"</pluginArgs>
+      <pluginArgs>--ECMappingFile @@dataDir@@/${organismAbbrev}LocTagToEC.tab --evidenceCode "Uniprot" --aaSeqLocusTagMappingSql "select taf.aa_sequence_id from dots.Transcript t, dots.TranslatedAAFeature taf, dots.GeneFeature gf where gf.source_id = ? and gf.na_feature_id = t.parent_id and t.na_feature_id = taf.na_feature_id"</pluginArgs>
     </datasetLoader>
 
   </datasetClass>
