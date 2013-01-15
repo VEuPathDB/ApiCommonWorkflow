@@ -3,6 +3,7 @@
     <param name="outputDir"/>
     <param name="sampleName"/>
     <param name="geneModelFileForSsa"/>
+    <param name="cdsModelFileForSsa"/>
     <param name="experimentExtDbRlsSpec"/>
     <param name="genomeExtDbSpec"/>
     <param name="genomicSeqsFileForSsa"/>
@@ -11,6 +12,7 @@
     <param name="numInsertions"/>
     <param name="limitNU"/>
     <param name="strandSpecific"/>
+    <param name="alignWithCdsCoordinates"/>
     <param name="variableLengthReads"/>
     <param name="isRnaSeq"/>
      <param name="topLevelSeqSizeFile"/>
@@ -31,6 +33,7 @@
       <paramValue name="readFilePath">$$shortSeqsFile$$</paramValue>
       <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="geneAnnotationFile">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="geneAnnotationFileWithCdsCoordinates">$$cdsModelFileForSsa$$</paramValue>
       <paramValue name="transcriptFastaFile">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
       <paramValue name="limitNU">$$limitNU$$</paramValue>
@@ -39,6 +42,7 @@
       <paramValue name="countMismatches">false</paramValue>
       <paramValue name="isSNPs">false</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
+      <paramValue name="alignWithCdsCoordinates">$$alignWithCdsCoordinates$$</paramValue>
       <paramValue name="createJunctionsFile">true</paramValue>
       <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
@@ -67,6 +71,8 @@
     <step name="makeIntensityFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SsaMakeIntensityFile" includeIf="$$isRnaSeq$$">
       <paramValue name="inputSortedFile">$$dataDir$$/master/mainresult/RUM_Unique.sorted,$$dataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
       <paramValue name="inputGeneModelFile">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="geneAnnotationFileWithCdsCoordinates">$$cdsModelFileForSsa$$</paramValue>
+      <paramValue name="alignWithCdsCoordinates">$$alignWithCdsCoordinates$$</paramValue>
       <paramValue name="outputIntensityFileBasename">$$outputDir$$/$$sampleName$$.intensity</paramValue>
       <paramValue name="strand"></paramValue>
       <paramValue name="antisense">false</paramValue>
@@ -84,6 +90,8 @@
       <paramValue name="uniqueFile">$$dataDir$$/master/mainresult/RUM_Unique.sorted</paramValue>
       <paramValue name="nonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU.sorted</paramValue>
       <paramValue name="geneAnnotationFile">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="geneAnnotationFileWithCdsCoordinates">$$cdsModelFileForSsa$$</paramValue>
+      <paramValue name="alignWithCdsCoordinates">$$alignWithCdsCoordinates$$</paramValue>
       <paramValue name="outputFile">$$outputDir$$/$$sampleName$$.count</paramValue>
       <paramValue name="strand"></paramValue>
       <depends name="runRUMOnCluster"/>
@@ -94,6 +102,8 @@
     <subgraph name="makeRUMIntensityFiles"  xmlFile="makeRUMIntensityFiles.xml" includeIf="$$isRnaSeq$$">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="inputGeneModelFile">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="geneAnnotationFileWithCdsCoordinates">$$cdsModelFileForSsa$$</paramValue>
+      <paramValue name="alignWithCdsCoordinates">$$alignWithCdsCoordinates$$</paramValue>
       <paramValue name="outputDir">$$outputDir$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
       <paramValue name="isStrandSpecific">$$strandSpecific$$</paramValue>
