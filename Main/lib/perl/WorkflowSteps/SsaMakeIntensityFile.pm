@@ -11,7 +11,9 @@ sub run {
     my $inputSortedFile = $self->getParamValue('inputSortedFile');
     my $inputGeneModelFile = $self->getParamValue('inputGeneModelFile');
     my $outputIntensityFileBasename = $self->getParamValue('outputIntensityFileBasename');
-
+    my $geneAnnotationFileWithCdsCoordinates  = $self->getParamValue("geneAnnotationFileWithCdsCoordinates ");
+    my $alignWithCdsCoordinates  = $self->getBooleanParamValue("alignWithCdsCoordinates ");
+    $inputGeneModelFile = $alignWithCdsCoordinates ? $inputGeneModelFile : $geneAnnotationFileWithCdsCoordinates ;
     my $strand = $self->getParamValue('strand');
     my $strandParam;
     if($strand eq 'plus') {

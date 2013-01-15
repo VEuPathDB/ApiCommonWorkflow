@@ -14,6 +14,8 @@ sub run {
   my $genomeBowtieIndex = $self->getParamValue("genomeBowtieIndex");
   my $transcriptBowtieIndex = $self->getParamValue("transcriptBowtieIndex");
   my $geneAnnotationFile = $self->getParamValue("geneAnnotationFile");
+  my $geneAnnotationFileWithCdsCoordinates  = $self->getParamValue("geneAnnotationFileWithCdsCoordinates ");
+  my $alignWithCdsCoordinates  = $self->getBooleanParamValue("alignWithCdsCoordinates ");
   my $transcriptFastaFile = $self->getParamValue("transcriptFastaFile");
   my $hasPairedEnds = $self->getBooleanParamValue("hasPairedEnds");
   my $limitNU = $self->getParamValue("limitNU");
@@ -34,6 +36,8 @@ sub run {
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
+
+  $geneAnnotationFile = $alignWithCdsCoordinates ? $geneAnnotationFile : $geneAnnotationFileWithCdsCoordinates ;
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");

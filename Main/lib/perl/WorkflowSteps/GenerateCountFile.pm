@@ -18,6 +18,12 @@ sub run {
 
   my $outputFile =  $self->getParamValue('outputFile');
 
+  my $geneAnnotationFileWithCdsCoordinates  = $self->getParamValue("geneAnnotationFileWithCdsCoordinates ");
+  
+  my $alignWithCdsCoordinates  = $self->getBooleanParamValue("alignWithCdsCoordinates ");
+   
+  $geneAnnotationFile = $alignWithCdsCoordinates ? $geneAnnotationFile : $geneAnnotationFileWithCdsCoordinates; 
+
   my $strand = $self->getParamValue('strand');
   my $strandParam;
   if($strand eq 'plus') {

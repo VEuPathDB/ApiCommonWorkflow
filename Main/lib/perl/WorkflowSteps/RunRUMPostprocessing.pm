@@ -13,6 +13,8 @@ sub run {
 
   my $genomeFastaFile = $self->getParamValue('genomeFastaFile');
   my $geneAnnotationFile = $self->getParamValue('geneAnnotationFile');
+  my $geneAnnotationFileWithCdsCoordinates = $self->getParamValue("geneAnnotationFileWithCdsCoordinates");
+  my $alignWithCdsCoordinates = $self->getBooleanParamValue("alignWithCdsCoordinates");
   my $transcriptsFastaFile = $self->getParamValue('transcriptFastaFile');
   my $strandSpecific = $self->getBooleanParamValue('strandSpecific');
   my $createJunctionsFile = $self->getBooleanParamValue('createJunctionsFile');
@@ -23,6 +25,8 @@ sub run {
   my $createBigWigFile = $self->getBooleanParamValue('createBigWigFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
+
+  $geneAnnotationFile = $alignWithCdsCoordinates? $geneAnnotationFile : $geneAnnotationFileWithCdsCoordinates;
 
   my $haveTranscripts = -e "$workflowDataDir/$transcriptsFastaFile"? "--haveTranscripts" : "";
   my $createJunctions = $createJunctionsFile? "--createJunctions" : "";
