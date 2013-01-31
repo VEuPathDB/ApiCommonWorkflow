@@ -35,13 +35,15 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  $geneAnnotationFile = -e "$workflowDataDir/$geneAnnotationFile"? "$clusterWorkflowDataDir/$geneAnnotationFile" : "none";
+
+
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
   }else {
       if ($test) {
 	  $self->testInputFile('readFilePath', "$workflowDataDir/$readFilePath");
 	  $self->testInputFile('genomeFastaFile', "$workflowDataDir/$genomeFastaFile");
-	  $self->testInputFile('geneAnnotationFile', "$workflowDataDir/$geneAnnotationFile");
       }
 
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
@@ -56,7 +58,7 @@ sub run {
       my $taskPropFileContent="
 readFilePath=$clusterWorkflowDataDir/$readFilePath
 genomeFastaFile=$clusterWorkflowDataDir/$genomeFastaFile
-geneAnnotationFile=$clusterWorkflowDataDir/$geneAnnotationFile 
+geneAnnotationFile=$geneAnnotationFile 
 blatExec=$blatExec
 mdustExec=$mdustExec
 limitNU=$limitNU

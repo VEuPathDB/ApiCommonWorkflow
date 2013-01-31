@@ -28,14 +28,13 @@ sub run {
   my $createJunctions = $createJunctionsFile? "--createJunctions" : "";
   my $ss = $strandSpecific? "--strandSpecific" : "";
   my $createBigWig = $createBigWigFile? "--createBigWigFile" : "";
-  my $cmd= "postProcessRUMTask --genomeFastaFile $workflowDataDir/$genomeFastaFile --geneAnnotationFile $workflowDataDir/$geneAnnotationFile --mainResultDir $workflowDataDir/$mainResultDir $haveTranscripts $createJunctions $ss $createBigWig --readsFile $workflowDataDir/$readsFile --qualFile $workflowDataDir/$qualFile --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile";
+  my $cmd= "postProcessRUMTask --genomeFastaFile $workflowDataDir/$genomeFastaFile --geneAnnotationFile ".(-e "$workflowDataDir/$geneAnnotationFile"? "$workflowDataDir/$geneAnnotationFile" : "none")." --mainResultDir $workflowDataDir/$mainResultDir $haveTranscripts $createJunctions $ss $createBigWig --readsFile $workflowDataDir/$readsFile --qualFile $workflowDataDir/$qualFile --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile";
 
   if($undo){
       # can't undo this step.  must undo cluster task
   }else{
       if ($test) {
 	  $self->testInputFile('genomeFastaFile', "$workflowDataDir/$genomeFastaFile");
-	  $self->testInputFile('geneAnnotationFile', "$workflowDataDir/$geneAnnotationFile");
       }else{
 	  $self->runCmd($test, $cmd);
       }
