@@ -14,7 +14,7 @@ sub run {
 
   my $gusHome = $self->getSharedConfig('gusHome');
 
-  my $instance = $self->getGusInstanceName();
+my $instance = $self->getSharedConfig('instance');
 
   my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
