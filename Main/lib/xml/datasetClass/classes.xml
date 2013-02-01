@@ -492,6 +492,73 @@
     </resource>
   </datasetClass>
 
+  <!-- Creating a FungiDB/SGD/CGD mitochondria dataset class. Should be merged with the GeneDB class in the future -->
+  <datasetClass class="FungiDB_GFF_organelle_genome_features" category="" datasetFileHint="">
+      <purpose></purpose>
+      <prop name="projectName"/>
+      <prop name="organismAbbrev"/>
+      <prop name="ncbiTaxonId"/>
+      <prop name="version"/>
+      <prop name="soTerm"/>
+      <prop name="source"/>
+      <prop name="mapFile"/>
+
+    <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_${soTerm}_${source}_features_RSRC"
+                  version="${version}"
+                  	      parentResource="${organismAbbrev}_primary_genome_RSRC"
+                  	      	      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+                  	      	                    scope="organism"
+                  	      	                                  organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${source}_gff3/${version}/final/genome.gff3">
+              <dir name="final">
+                      </dir>
+                            </manualGet>
+
+      <unpack>preprocessGFF3 --input_gff @@dataDir@@/genome.gff3 --output_gff @@dataDir@@/genome.gff</unpack> 
+
+      <pluginArgs>--extDbName %PARENT_DATASET_NAME% --extDbRlsVer %PARENT_DATASET_VERSION% --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/genome.gff --inputFileExtension "gff"  --fileFormat gff3 --soExtDbRlsName "SO_RSRC" --defaultOrganism ${ncbiTaxonId}  --seqSoTerm '${soTerm}' --validationLog @@dataDir@@/validation.log --bioperlTreeOutput @@dataDir@@/bioperlTree.out --seqIdColumn source_id --naSequenceSubclass ExternalNASequence</pluginArgs>
+          </resource>
+            </datasetClass>
+
+  <!-- Creating a Broad gtf mitochondria dataset class. Should be merged with the GeneDB class in the future -->
+  <datasetClass class="Broad_GFF_organelle_genome_features" category="" datasetFileHint="">
+      <purpose></purpose>
+      <prop name="projectName"/>
+      <prop name="organismAbbrev"/>
+      <prop name="ncbiTaxonId"/>
+      <prop name="version"/>
+      <prop name="soTerm"/>
+      
+      
+
+    <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
+
+    <resource resource="${organismAbbrev}_${soTerm}_Broad_features_RSRC"
+                  version="${version}"
+                              parentResource="${organismAbbrev}_primary_genome_RSRC"
+                                      plugin="GUS::Supported::Plugin::InsertSequenceFeatures"
+                                                    scope="organism"
+                                                                  organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_Broad_gff3/${version}/final/genome.gtf">
+              <dir name="final">
+                      </dir>
+      </manualGet>
+
+      <unpack>convertGTFToGFF3 @@dataDir@@/genome.gtf > @@dataDir@@/genome.gff3</unpack>
+
+      <unpack>preprocessGFF3 --input_gff @@dataDir@@/genome.gff3 --output_gff @@dataDir@@/genome.gff</unpack>
+
+      <pluginArgs>--extDbName %PARENT_DATASET_NAME% --extDbRlsVer %PARENT_DATASET_VERSION% --mapFile @@gusHome@@/lib/xml/isf/broadGFF32Gus.xml --inputFileOrDir @@dataDir@@/genome.gff --inputFileExtension "gff"  --fileFormat gff3 --soExtDbRlsName "SO_RSRC" --defaultOrganism ${ncbiTaxonId}  --seqSoTerm '${soTerm}' --validationLog @@dataDir@@/validation.log --bioperlTreeOutput @@dataDir@@/bioperlTree.out --seqIdColumn source_id --naSequenceSubclass ExternalNASequence</pluginArgs>
+        
+   </resource>
+  
+  </datasetClass>
+
+
 <!-- chromosomeMap.txt file with 3 tab delimited columns, source_id,chromosome,chromosome_order_number, must be in final dir for chromosomes -->
   <datasetClass class="fasta_primary_genome_sequence" category="" datasetFileHint="">
     <purpose></purpose>
