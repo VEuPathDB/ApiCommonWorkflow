@@ -28,7 +28,6 @@ sub getWebsiteFileCmd {
 # optional. return 1 to indicate that we should use speciesNameForFiles
 # 0 by default
 sub getIsSpeciesLevel {
-    my ($self) = @_;
     return 0;
 }
 
@@ -65,7 +64,7 @@ sub run {
 
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
   my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
-  my $isSpeciesLevel = $self->getIsSpeciesLevel($projectName);
+  my $isSpeciesLevel = $self->getIsSpeciesLevel();
   my $familyNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getFamilyNameForFiles();
   my $isFamilyLevel = $self->getIsFamilyLevel();
   

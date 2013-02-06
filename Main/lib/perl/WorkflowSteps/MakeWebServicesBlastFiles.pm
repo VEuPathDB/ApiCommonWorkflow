@@ -19,8 +19,6 @@ sub run {
 
   my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  my $dataName = $self->getParamValue('dataName');
   
-  $useSpeciesName = $projectName eq 'GiardiaDB'? 0 : $useSpeciesName;
-
   # extra params for this step
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
   my $args = $self->getParamValue('args');
