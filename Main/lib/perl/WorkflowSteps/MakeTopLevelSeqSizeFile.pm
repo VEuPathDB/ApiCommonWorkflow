@@ -16,10 +16,7 @@ sub run {
 
   my $sql = "select sa.source_id||chr(9)||ns.length
             from ApidbTuning.${tuningTablePrefix}sequenceattributes sa, dots.nasequence ns
-            where sa.na_sequence_id in (
-              select na_sequence_id
-              from ApidbTuning.${tuningTablePrefix}featurelocation
-              where is_top_level = 1)
+            where sa.is_top_level = 1
             and sa.na_sequence_id = ns.na_sequence_id
             and sa.NCBI_TAX_ID = $ncbiTaxonId";
  
