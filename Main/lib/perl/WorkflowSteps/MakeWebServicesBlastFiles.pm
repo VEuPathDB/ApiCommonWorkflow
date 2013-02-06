@@ -18,6 +18,8 @@ sub run {
   $self->error("Parameters useFamilyName and useSpeciesName cannot both be 'true'") if $useFamilyName && $useSpeciesName;
 
   my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  my $dataName = $self->getParamValue('dataName');
+  
+  $useSpeciesName = $projectName eq 'GiardiaDB'? 0 : $useSpeciesName;
 
   # extra params for this step
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');

@@ -5,7 +5,8 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
 sub getIsSpeciesLevel {
-    return 1;
+  my ($self) = @_;
+  return $self->getParamValue('projectName') eq 'GiardiaDB'? "0" : "1";
 }
 
 sub getSkipIfFile {
