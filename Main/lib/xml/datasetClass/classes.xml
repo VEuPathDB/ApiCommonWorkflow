@@ -1192,6 +1192,35 @@
     </datasetLoader>
   </datasetClass>
 
+<!-- Gene synonyms -->
+
+<datasetClass class="dbxref_synonym" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="name">&name;</prop>
+
+    <graphTemplateFile name="dbXRefs.xml"/>
+ 
+    <datasetLoader datasetName="${organismAbbrev}_dbxref_${name}_synonym_RSRC"
+	      version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::InsertDBxRefs"
+              scope="organism"
+              externalDbIdType="synonym"
+              type="dbxref"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/function/synonym/${name}/${version}/final/synonyms.txt">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--DbRefMappingFile @@dataDir@@/synonyms.txt --extDbName %DATASET_NAME% --extDbReleaseNumber %DATASET_VERSION% --columnSpec "primary_identifier" --tableName "DbRefNAFeature"  --organismAbbrev ${organismAbbrev}</pluginArgs>
+    </datasetLoader>
+  </datasetClass>
+
+
   <datasetClass class="dbxref_gene2PubmedFromNcbi" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
