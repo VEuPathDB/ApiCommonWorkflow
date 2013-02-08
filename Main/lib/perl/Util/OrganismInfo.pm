@@ -107,10 +107,8 @@ sub getSpeciesName {
 
 sub getSpeciesNameForFiles {
     my ($self) = @_;
-    return "$self->{organismAbbrev}_SPECIES_NAME_FOR_FILES" if $self->{test};
-    my @a = split(/\s/, $self->{speciesName});
-    $self->{workflowStep}->error("Species name '$self->{speciesName}' does not split into genus and species)") unless scalar(@a) == 2;
-    return substr($a[0], 0, 1) . $a[1];
+    return "$self->{organismAbbrev}_NAME_FOR_FILES" if $self->{test};
+    return $self->{nameForFiles} =~ s/$self->{strainAbbrev}$//;
 }
 
 sub getOrganismId {
