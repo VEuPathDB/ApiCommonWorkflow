@@ -10,7 +10,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $gene2probesInputFile = $self->getParamValue('gene2probesInputFile');
-  my $ndfFile = $self->getParamValue('originalNdfFile');
+  my $ndfFile = $self->getParamValue('inputNdfFile');
   my $outputFile = $self->getParamValue('outputNdfFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
