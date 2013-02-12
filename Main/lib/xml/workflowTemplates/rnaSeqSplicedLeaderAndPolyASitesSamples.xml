@@ -1,7 +1,6 @@
 <workflowGraph name="">
   <param name="experimentDataDir"/>
   <param name="outputDir"/>
-  <param name="organismAbbrev"/>
   <param name="projectName"/>
   <param name="genomicSeqsFile"/>
   <param name="genomeExtDbRlsSpec"/>
@@ -13,13 +12,14 @@
   <constant name="experimentDatasetLoadersDataDir">$$experimentDataDir$$/$$experimentDatasetName$$</constant>
 
   <datasetTemplate class="rnaSeqSplicedLeaderAndPolyASitesSample">
+    <prop name="organismAbbrev"/>
     <prop name="experimentName"/>
     <prop name="sampleName"/>
     <prop name="type"/>
 
     <subgraph name="${sampleName}_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_rnaSeqSplicedLeaderAndPolyASitesSample_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$projectName$$/$$organismAbbrev$$/${experimentName}.xml</paramValue>
+      <paramValue name="datasetName">${organismAbbrev}_${experimentName}_${sampleName}_rnaSeqSplicedLeaderAndPolyASitesSample_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
     </subgraph>
 
@@ -36,7 +36,7 @@
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="type">${type}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="genomicBowtie2IndexDir">$$dataDir$$/bowtie_index</paramValue>
       <depends name="${sampleName}_RSRC"/>
     </subgraph>
