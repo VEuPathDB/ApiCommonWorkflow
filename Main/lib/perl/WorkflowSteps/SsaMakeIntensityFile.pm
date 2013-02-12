@@ -49,6 +49,7 @@ sub run {
 	if ($test) {
 	    $self->testInputFile('inputUniqueSortedFile', "$workflowDataDir/$uniqueSorted");
 	    $self->testInputFile('inputNUSortedFile', "$workflowDataDir/$nuSorted");
+	    $self->testInputFile('inputGeneModelFile', "$workflowDataDir/$inputGeneModelFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputIntensityFileBasename.min");
             $self->runCmd(0,"echo test > $workflowDataDir/$outputIntensityFileBasename.max");
 	}
