@@ -48,11 +48,48 @@
       <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
       <paramValue name="isRnaSeq">true</paramValue>
       <depends name="${sampleName}_RSRC"/>
+
+    </subgraph>
+   <!-- might have to reformat the count and mapping stats files made by RUM -->
+  </datasetTemplate>
+
+  <datasetTemplate class="rnaSeqSampleNoTranscripts">
+    <prop name="experimentName"/>
+    <prop name="sampleName"/>
+
+    <subgraph name="${sampleName}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_rnaSeqSample_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
     </subgraph>
 
-   <!-- might have to reformat the count and mapping stats files made by RUM -->
 
+    <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+      <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="outputDir">$$outputDir$$</paramValue>
+      <paramValue name="sampleName">${sampleName}</paramValue>
+      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
+      <paramValue name="shortSeqsFile">$$experimentDatasetLoadersDataDir$$/final/${sampleName}</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="numInsertions">1</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <paramValue name="SNPs">false</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
+      <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
+      <paramValue name="isRnaSeq">false</paramValue> <!-- NOTE:  Cannot easily change this paramName... should be something like "hasTranscripts" -->
+      <depends name="${sampleName}_RSRC"/>
+
+    </subgraph>
   </datasetTemplate>
+
+
+
+
 
   <datasetTemplate class="chipSeqSample">
     <prop name="experimentName"/>
