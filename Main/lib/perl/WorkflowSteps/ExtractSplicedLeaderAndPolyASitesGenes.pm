@@ -16,7 +16,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cmd;
-
+  my $allowed="'Splice Site' or 'Poly A'";
   if($type eq 'Splice Site'){
         $cmd="extractSpliceSiteGenes --uniqFile $workflowDataDir/$outputUniqFile --nonUniqFile $workflowDataDir/$outputNonUniqFile --configFile $workflowDataDir/$configFile";
   }elsif($type eq 'Poly A'){
