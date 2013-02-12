@@ -1831,6 +1831,40 @@
   </datasetClass>
 
 
+
+
+  <datasetClass class="rnaSeqSampleNoTranscripts" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="experimentName"/>
+    <prop name="sampleName"/>
+ 
+    <graphTemplateFile name="rnaSeqOrChipSeqSamples.xml"/>
+
+      <!-- we load a fake resource here so we can make a getAndUnpackOutput -->
+      <!-- to declare existence of sample file that is acquired by experiment, for test mode -->
+    <datasetLoader datasetName="${organismAbbrev}_${experimentName}_${sampleName}_rnaSeqSample_RSRC" version="dontcare"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              type="transcript_expression"
+              subType="rnaseq"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_${experimentName}_rnaSeq_RSRC/final/${sampleName}" />
+
+      <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
+    </datasetLoader>
+
+
+  </datasetClass>
+
+
+
   <datasetClass class="chipSeqExperiment" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
