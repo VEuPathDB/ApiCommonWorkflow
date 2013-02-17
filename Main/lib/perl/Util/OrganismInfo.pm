@@ -108,7 +108,8 @@ sub getSpeciesName {
 sub getSpeciesNameForFiles {
     my ($self) = @_;
     return "$self->{organismAbbrev}_SPECIES_NAME" if $self->{test};
-    return $self->{nameForFiles} =~ s/$self->{strainAbbrev}$//;
+    $self->{nameForFiles} =~ s/$self->{strainAbbrev}$//;
+    return $self->{nameForFiles};
 }
 sub getOrganismId {
     my ($self) = @_;
