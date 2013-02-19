@@ -13,6 +13,10 @@ sub run {
 
   my $sampleName = $self->getParamValue('sampleName');
 
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+
+  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+
   my $allowed="'Splice Site' or 'Poly A'";
 
   my $gusConfigFile= "$ENV{GUS_HOME}/config/gus.config";
@@ -22,7 +26,7 @@ sub run {
   my $cmd;
 
   if($type eq 'Splice Site'){
-        $cmd = "updateSpliceSiteGenesBySampleName --gusConfigFile $gusConfigFile --sampleName '$sampleName' --commit";
+        $cmd = "updateSpliceSiteGenesBySampleName --gusConfigFile $gusConfigFile --sampleName '$sampleName' --tuningTablePrefix $tuningTablePrefix  --commit";
   }elsif($type eq 'Poly A'){
         $cmd = "updatePolyAGenesBySampleName --gusConfigFile $gusConfigFile --sampleName '$sampleName' --commit";
   }else{

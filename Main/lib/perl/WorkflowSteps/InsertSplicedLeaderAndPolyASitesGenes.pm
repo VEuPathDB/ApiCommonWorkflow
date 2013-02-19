@@ -13,11 +13,15 @@ sub run {
 
   my $sampleName = $self->getParamValue('sampleName');
 
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+
+  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+
   my $allowed="'Splice Site' or 'Poly A'";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--sampleName $sampleName";
+  my $args = "--sampleName $sampleName --tuningTablePrefix $tuningTablePrefix";
 
   if($type eq 'Splice Site'){
       $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertSpliceSiteGenes", $args);
