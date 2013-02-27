@@ -1831,6 +1831,40 @@
   </datasetClass>
 
 
+  <datasetClass class="rnaSeqExperimentNoTranscripts" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="limitNU"/>
+    <prop name="hasVariableLengthReads"/> 
+    <prop name="hasTimeSeries"/>
+    <prop name="numInsertions"/>
+    <prop name="hasPairedEnds"/>
+    <prop name="isStrandSpecific"/>
+
+    <graphTemplateFile name="organismSpecificOnTopLevelGenome.xml"/>
+   <!-- Inquiry: Always follow naming convention -->
+    <datasetLoader datasetName="${organismAbbrev}_${name}_rnaSeq_RSRC" version="${version}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              type="transcript_expression"
+              subType="rnaseq"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <unpack>ln -s @@manualDeliveryDir@@/${projectName}/${organismAbbrev}/rnaSeq/${name}/${version}/final/ @@dataDir@@/final</unpack>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final" />
+      <getAndUnpackOutput file="@@dataDir@@/final/analysisConfig.xml"/>
+      <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
+    </datasetLoader>
+
+  </datasetClass>
 
 
   <datasetClass class="rnaSeqSampleNoTranscripts" category="" datasetFileHint="">
