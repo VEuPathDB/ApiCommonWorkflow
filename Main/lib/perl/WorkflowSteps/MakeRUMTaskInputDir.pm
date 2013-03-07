@@ -71,14 +71,14 @@ postProcess=false
 
       $taskPropFileContent .= "pairedReadFilePath=$clusterWorkflowDataDir/$readFilePath.paired\n" if($hasPairedEnds);
 
-      if(-e "$workflowDataDir/$transcriptFastaFile" && -e "$workflowDataDir/$transcriptBowtieIndex") {
+      if(-e "$workflowDataDir/$transcriptFastaFile") {
         $taskPropFileContent .= "transcriptFastaFile=$clusterWorkflowDataDir/$transcriptFastaFile\n";
-        $taskPropFileContent .= "transcriptBowtieIndex=$clusterWorkflowDataDir/$transcriptBowtieIndex\n";
       }
       else {
         $taskPropFileContent .= "transcriptFastaFile=none\n";
       }
-
+      
+      $taskPropFileContent .= "transcriptBowtieIndex=$clusterWorkflowDataDir/$transcriptBowtieIndex\n" if $transcriptBowtieIndex;
       $taskPropFileContent .= "genomeBowtieIndex=$clusterWorkflowDataDir/$genomeBowtieIndex\n" if $genomeBowtieIndex;
       $taskPropFileContent .= "strandSpecific=$strandSpecific\n" if $strandSpecific;
       $taskPropFileContent .= "SNPs=$SNPS\n" if $SNPS;
