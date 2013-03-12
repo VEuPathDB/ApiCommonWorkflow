@@ -11,8 +11,10 @@ sub getWebsiteFileCmd {
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $projectName = $self->getParamValue('projectName');
-    my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
+    #my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
+    my $projectVersion = 'CURRENT';
     my $relativeDir = $self->getParamValue('relativeDir');
+    $relativeDir  =~ s/release-\S+/release-CURRENT/g;
     my $inputDataName = $self->getParamValue("inputDataName");
 
     my $websiteFilesDir = $self->getWebsiteFilesDir($test);

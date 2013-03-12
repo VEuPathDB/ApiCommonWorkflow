@@ -11,14 +11,16 @@ sub run {
   # standard parameters for making download files
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $projectName = $self->getParamValue('projectName');
-  my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
+  #my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
+  my $projectVersion = 'CURRENT';
   my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  
+  $downloadSiteRelativeDir  =~ s/release-\S+/release-CURRENT/g;
   my $dataName = $self->getParamValue('dataName');
   my $service = $self->getParamValue('service');
 
   # extra params for this step
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
-
+  $webServicesRelativeDir  =~ s/release-\S+/release-CURRENT/g;
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
