@@ -11,16 +11,20 @@ sub run {
   # standard parameters for making download files
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $projectName = $self->getParamValue('projectName');
-  my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
+  #my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
+  my $projectVersion = 'CURRENT';
   my $useSpeciesName = $self->getBooleanParamValue('useSpeciesName');
   my $useFamilyName = $self->getBooleanParamValue('useFamilyName');
 
   $self->error("Parameters useFamilyName and useSpeciesName cannot both be 'true'") if $useFamilyName && $useSpeciesName;
 
-  my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  my $dataName = $self->getParamValue('dataName');
+  my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  
+  $downloadSiteRelativeDir  =~ s/release-\S+/release-CURRENT/g;
+  my $dataName = $self->getParamValue('dataName');
 
   # extra params for this step
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
+  $webServicesRelativeDir  =~ s/release-\S+/release-CURRENT/g;
   my $args = $self->getParamValue('args');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);

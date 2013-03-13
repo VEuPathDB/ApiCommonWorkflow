@@ -50,8 +50,10 @@ sub run {
   # standard parameters for making website files
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $projectName = $self->getParamValue('projectName');
-  my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
+  #my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
+  my $projectVersion = 'CURRENT';
   my $relativeDir = $self->getParamValue('relativeDir');
+  $relativeDir  =~ s/release-\S+/release-CURRENT/g;
   my $fileType = $self->getParamValue('fileType');
   my $dataName = $self->getParamValue('dataName');
   my $descripString = $self->getParamValue('descripString');
