@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeHtsCoverageSNPs;
+package ApiCommonWorkflow::Main::WorkflowSteps::InitHtsSnpFeatures;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -9,20 +9,18 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $coverageSnpsFile = $self->getParamValue('coverageSnpsFile');
-  my $varscanConsDir = $self->getParamValue('varscanConsDir');
 
   my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
   my $referenceOrganism = $organismInfo->getFullName();
-#  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "generateHtsCoverageSnpsWithQuality.pl --referenceOrganism '$referenceOrganism' --varscanDir $varscanConsDir --outputFile $coverageSnpsFile";
-  
+  my $cmd = "echo 'initHtsSnpFeatures for $referenceOrganism complete'";
+  my $undoCmd = "undoInitHtsSnpFeatures.pl --referenceOrganism $referenceOrganism";
+
   if ($undo) {
-    $self->runCmd(0, "rm -f $coverageSnpsFile");
+    $self->runCmd(0, $undoCmd);
   } else {
     if ($test) {
-      $self->runCmd(0,"echo test > $coverageSnpsFile");
+      $self->runCmd(0,"echo test; $cmd");
     }else{
       $self->runCmd($test,$cmd);
     }
@@ -31,8 +29,6 @@ sub run {
 
 sub getParamDeclaration {
   return ('organismAbbrev',
-          'coverageSnpsFile',
-          'varscanConsDir',
          );
 }
 

@@ -25,13 +25,13 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $ctlFile");
   } else {
-      if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-      }
-
-      # run sqlldr (after writing its control file)
-      writeControlFile($ctlFile, $suffix);
-      $self->runCmd($test, $cmd);
+    if ($test) {
+      $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+    }
+    
+    # run sqlldr (after writing its control file)
+    writeControlFile($ctlFile, $suffix);
+    $self->runCmd($test, $cmd);
   }
 }
 
@@ -45,7 +45,7 @@ sub writeControlFile {
      INTO TABLE DOTS.SeqVariation
      FIELDS TERMINATED BY " " OPTIONALLY ENCLOSED BY '"'
      TRAILING NULLCOLS
-    (na_feature_id,na_sequence_id,subclass_view,name,sequence_ontology_id,parent_id,external_database_release_id,source_id,organism,strain,phenotype,product,allele,matches_reference,coverage,allele_percent,modification_date,user_read,user_write,group_read,group_write,other_read,other_write,row_user_id,row_group_id,row_project_id,row_alg_invocation_id)
+    (na_feature_id,na_sequence_id,subclass_view,name,sequence_ontology_id,parent_id,external_database_release_id,source_id,organism,strain,phenotype,product,allele,matches_reference,coverage,allele_percent,user_read,user_write,group_read,group_write,other_read,other_write,row_user_id,row_group_id,row_project_id,row_alg_invocation_id)
 EOF
 
   close(CTL);

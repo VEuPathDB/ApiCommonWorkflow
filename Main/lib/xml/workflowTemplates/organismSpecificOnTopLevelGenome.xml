@@ -47,7 +47,17 @@
     <depends name="extractFilesForSsa"/>
   </step>
 
-  <datasetTemplate class="rnaSeqExperiment">
+  <subgraph name="htssnps" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/SNPs_HTS.xml"  excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsFileForSsa$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
+
+<datasetTemplate class="rnaSeqExperiment">
     <prop name="organismAbbrev"/>
 
    <!-- NOTE: we have duplication here for CDS.  be sure to make changes to both -->
@@ -171,6 +181,7 @@
     </subgraph>
 
   </datasetTemplate>
+
 
 </workflowGraph>
 

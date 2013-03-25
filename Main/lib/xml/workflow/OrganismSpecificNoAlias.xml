@@ -73,23 +73,6 @@
     <depends name="mirrorToCluster"/>
   </subgraph>
 
-
-  <!-- We will always create this external database release -->
-  <step name="insertHTSExtDbRls" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateExtDbAndDbRls" stepLoadTypes="plugin">
-    <paramValue name="extDbRlsSpec">InsertSnps.pm NGS SNPs INTERNAL|Ref:  $$organismAbbrev$$</paramValue>
-     <depends name="mirrorToCluster"/>
-  </step>
-
-  <subgraph name="htssnps" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/SNPs_HTS.xml"  excludeIfXmlFileDoesNotExist="true">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <depends name="insertHTSExtDbRls"/>
-  </subgraph>
-
   <subgraph name="misc" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/organismSpecificMiscNoAlias.xml"  excludeIfXmlFileDoesNotExist="true">
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$</paramValue>
