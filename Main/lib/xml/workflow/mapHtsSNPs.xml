@@ -9,6 +9,7 @@
   <param name="isColorspace"/>
   <param name="sraQueryString"/>
   <param name="snpPercentCutoff"/>
+  <param name="varscanConsDir"/>
 
   <constant name="dataDir">$$clusterDataDir$$</constant>
   
@@ -43,9 +44,17 @@
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
-      <paramValue name="outputFiles">result.bai,result.bam,result.consensus.fa,result.insertions.gff,result.SNPs.gff</paramValue>
+      <paramValue name="outputFiles">result.bai,result.bam,result.consensus.fa,result.insertions.gff,result.SNPs.gff,result.varscan.cons</paramValue>
       <depends name="runClusterTask"/>
     </step>
+
+    <step name="linkVarscanCons" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PutVarscanConsInVarscanDir">
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
+      <paramValue name="mainResultDir">$$dataDir$$/master</paramValue>
+      <paramValue name="strain">$$strain$$</paramValue>
+      <depends name="mirrorFromCluster"/>
+    </step>
+    
 
 
 
