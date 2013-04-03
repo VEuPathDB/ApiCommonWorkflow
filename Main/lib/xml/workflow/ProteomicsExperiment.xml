@@ -1,0 +1,139 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="experimentName"/>
+    <param name="parentDataDir"/>
+    <param name="organismDatasetLoaderXmlFile"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="experimentDatasetName"/>
+    <param name="experimentDatasetVersion"/>
+    <param name="decoyDatabaseDir"/>
+    <param name="configDir"/>
+
+
+<!-- Constants -->	
+    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
+    <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
+    <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>
+    <constant name="configInputFilesDir">$$configDir$$/inputFiles</constant>
+	<constant name="decoyFastaFile">$$decoyDatabaseDir$$/$$organismAbbrev$$_withdecoy.fasta</constant>
+    <constant name="searchConfigFile">$$finalDir$$/searchCriteria.txt</constant>
+    <constant name="databaseConfigFile">$$tandemInputFilesDir$$/databaseCriteria.txt</constant>
+
+	<constant name="fileNameRegEx">.tab</constant>
+	<constant name="clusterOutputFileName">WholeSummary.txt</constant>
+    <constant name="mgfSplitterFileSizeLimit">100000</constant>
+    <constant name="enzymeName">0</constant>
+	<constant name="decoyRegEx">0</constant>
+	<constant name="decoyRatio">3</constant>
+	<constant name="productTolerance">0.8</constant>
+	<constant name="precursorTolerance ">1.5</constant>
+	<constant name="fixedModId">3</constant>
+	<constant name="variableModId">1,10</constant>
+	<constant name="missedCleavages">1</constant>
+	<constant name="tandemOutfileFile">{{ output_dir_path }}/testrun_osx.csv</constant>
+	<constant name="defaultInputFile">$$configInputFilesDir$$/default_input.xml 	</constant>	
+	<constant name="taxonomyFile">{{ output_dir_path }}/taxonomy.xml</constant>
+	
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesOutputDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeExperimentDatasetLoaderDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/$$experimentDatasetName$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <!-- make an empty final dir, and mirror it to the cluster.  the samples will each mirror their own file -->
+    <!-- to the cluster, so the mirroring can be done in pieces and in parallel -->
+
+    <step name="makeFinalDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$finalDir$$</paramValue>
+    </step>
+	<!-- step class needed -->
+
+<!--Step Class Done -->
+    <step name="makeTandemConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTandemConfigFile">
+      <paramValue name="tandemInputDir">{{ input_file_path }}</paramValue>
+	  <paramValue name="decoyFastaFile">$$decoyFastaFile$$</paramValue>
+	  <paramValue name="enzymeName">$$enzymeName$$</paramValue>
+	  <paramValue name="productTolerance">$$productTolerance$$</paramValue>
+	  <paramValue name="precursorTolerance ">$$precursorTolerance $$</paramValue>
+	  <paramValue name="fixedModId">$$fixedModId$$</paramValue>
+	  <paramValue name="variableModId">$$variableModId$$</paramValue>
+	  <paramValue name="missedCleavages">$$missedCleavages$$</paramValue>
+	  <paramValue name="tandemOutfileFile">$$tandemOutfileFile$$</paramValue>
+	  <paramValue name="species">$$organismAbbrev$$</paramValue>
+	  <paramValue name="tandemDefaultInputFile">$$tandemDefaultInputFile$$</paramValue>
+	  <paramValue name="taxonomyFile">$$taxonomyFile$$</paramValue>
+	  <paramValue name="writeToFile">$$searchConfigFile$$</paramValue>
+      <depends name="makeFinalDir"/>
+    </step>	
+	
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesOutputDir"/>
+    </step>
+
+    <!-- load dataset manually so we can mirror the final dir before filling it with the sample files -->
+
+    <step name="mirrorFinalDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$finalDir$$</paramValue>
+      <depends name="makeTandemConfigFile"/>
+    </step>
+
+    <step name="insertDataset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertDataset">
+      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="dataDir">$$finalDir$$</paramValue>
+      <depends name="makeFinalDir"/>
+    </step>
+
+    <step name="getAndUnpack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderGetAndUnpack">
+      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="dataDir">$$dataDir$$/$$experimentDatasetName$$</paramValue>
+      <depends name="mirrorFinalDirToCluster"/>
+    </step>
+
+    <step name="insertExtDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertExtDb" stepLoadTypes="plugin">
+      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="dataDir">$$finalDir$$</paramValue>
+      <depends name="makeFinalDir"/>
+    </step>
+
+    <step name="experiment_RSRC" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertExtDbRls" stepLoadTypes="plugin">
+      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="dataDir">$$finalDir$$</paramValue>
+      <depends name="insertExtDb"/>
+    </step>
+
+    <subgraph name="map_peptides" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/massSpecSamples.xml">
+       <paramValue name="projectName">$$projectName$$</paramValue>
+       <paramValue name="experimentDir">$$dataDir$$</paramValue>
+       <paramValue name="experimentRSRC">$$experimentDatasetName$$</paramValue>
+       <paramValue name="samplesOutputDir">$$samplesOutputDir$$</paramValue>
+       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+       <paramValue name="experimentName">$$experimentName$$</paramValue>
+	   <paramValue name="fileNameRegEx">$$fileNameRegEx$$</paramValue>
+	   <paramValue name="clusterOutputFileName">$$clusterOutputFileName$$</paramValue>
+       <depends name="addStudy"/>
+       <depends name="getAndUnpack"/>
+     </subgraph>	
+  
+    <step name="document-massspec_experiment"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">proteomics_experiment_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters">TODO: patch in later</paramValue>
+    </step>
+
+</workflowGraph>
