@@ -2410,7 +2410,63 @@
     </datasetLoader>
   </datasetClass>
 
+  
+    <datasetClass class="massSpecFromMgf" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="genomeVersion"/>
 
+    <graphTemplateFile name="MassSpecFromMgf.xml"/>
+
+    <datasetLoader datasetName="${organismAbbrev}_massSpec_${name}_RSRC" version="${version}"
+		  plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              type="protein_expression"
+              organismAbbrev="${organismAbbrev}"
+	      >
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+	        <!-- delete empty final/ dir created by experiment graph for mirroring.  samples will mirror their own files. -->
+      <unpack>rm -rf @@dataDir@@/final</unpack>
+      <!-- since mirroring is already done, now we can make a non-empty final dir -->
+      <unpack>ln -s @@manualDeliveryDir@@/${projectName}/${organismAbbrev}/massSpec/${name}/${version}/final/ @@dataDir@@</unpack>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final" />	 
+      <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>	  
+    </datasetLoader>
+  </datasetClass>
+
+    <datasetClass class="massSpecFromMgf_Sample" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="organismAbbrev">&organismAbbrev;</prop>
+    <prop name="experimentName"/>
+    <prop name="sampleName"/>
+
+    <graphTemplateFile name="massSpecSamples.xml"/>
+
+    <datasetLoader datasetName="${organismAbbrev}_${experimentName}_${sampleName}_MassSpecSample_RSRC" version="dontcare"
+          plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              type="protein_expression"
+              organismAbbrev="${organismAbbrev}">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_MassSpec_${experimentName}_RSRC/final/${sampleName}.mgf" />
+ 
+      <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
+    </datasetLoader>
+  </datasetClass>
+  
   <datasetClass class="massSpecPreprocessed" category="" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
@@ -3299,7 +3355,7 @@
 
     <datasetLoader datasetName="${organismAbbrev}_updateIsolateFeaturesByProductAlias_RSRC"
               version="${version}"
-	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+	          plugin="ApiCommonData::Load::Plugin::LoadNothing"
               scope="organism"
               type="isolates"
               subType=""
