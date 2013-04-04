@@ -14,15 +14,15 @@ sub run {
 
   my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
   my $referenceOrganism = $organismInfo->getFullName();
-#  my $workflowDataDir = $self->getWorkflowDataDir();
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "generateHtsCoverageSnpsWithQuality.pl --referenceOrganism '$referenceOrganism' --varscanDir $varscanConsDir --outputFile $coverageSnpsFile";
+  my $cmd = "generateHtsCoverageSnpsWithQuality.pl --referenceOrganism '$referenceOrganism' --varscanDir $workflowDataDir/$varscanConsDir --outputFile $workflowDataDir/$coverageSnpsFile";
   
   if ($undo) {
-    $self->runCmd(0, "rm -f $coverageSnpsFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$coverageSnpsFile");
   } else {
     if ($test) {
-      $self->runCmd(0,"echo test > $coverageSnpsFile");
+      $self->runCmd(0,"echo test > $workflowDataDir/$coverageSnpsFile");
     }else{
       $self->runCmd($test,$cmd);
     }
