@@ -1,30 +1,36 @@
 <workflowGraph name="">
   <param name="parentDataDir"/>
   <param name="organismDatasetLoaderXmlFile"/>
-<!--  <param name="proteinsFile"/> -->
+  <param name="proteinsFile"/> 
   <param name="genomeExtDbRlsSpec"/>
   <param name="organismAbbrev"/>
-
-  <constant name="dataDir">$$parentDataDir$$/MassSpec</constant>
-  <constant name="decoyDatabseDir">$$dataDir/decoy_database</constant>
+  
+ <constant name="dataDir">$$parentDataDir$$/MassSpec</constant>
+  <constant name="decoyDatabaseDir">$$dataDir$$/decoy_database</constant>
+  <constant name="decoyFastaFile">$$organismAbbrev$$_decoy_DB</constant>
   <constant name="configDir">$GUS_HOME/config/ProteoAnnotator</constant>
+  
   <!-- temporary for testing -->
-  <constant name="proteinsFile">$$organismAbbrev$$/loadGenome/AnnotatedProteins.fsa</constant>
+  <constant name="proteinsFile">$$proteinsFile$$</constant>
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
-  
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+
+    <constant name="proteinsFile">$$proteinsFile$$</constant>
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+  <step name="makeDecoyDatabaseDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$decoyDatabaseDir$$</paramValue>
   </step>
   
-	<step name="makeDecoyDatabase" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDecoyDatabase">
-      <paramValue name="inputFile">${proteinsFile}</paramValue>
-	  <paramValue name="outputFile">$$decoyFastaFile$$</paramValue>	  
-	  <paramValue name="decoyRatio">$$decoyRatio$$</paramValue>
-	  <paramValue name="decoyRegEx">$$decoyRegEx$$</paramValue>
-	  <paramValue name="decoyDatabseDir">$$decoyDatabaseDir$$</paramValue>
-    </step>		
+   <step name="makeDecoyDatabase" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDecoyDatabase">
+    <paramValue name="inputFile">$$proteinsFile$$</paramValue>
+    <paramValue name="outputFile">$$decoyFastaFile$$</paramValue>
+    <paramValue name="decoyRatio">3</paramValue>
+    <paramValue name="decoyRegEx">Decoy</paramValue>
+    <paramValue name="decoyDatabseDir">$$decoyDatabaseDir$$</paramValue>
+  </step>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
