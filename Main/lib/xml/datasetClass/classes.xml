@@ -47,7 +47,7 @@
     <prop name="genomeVersion">The date or version number for this organism's genome, as determined by its provider.  If a date, typically the date the data was downloaded.   FIX:  WHAT DO WE USE THIS FOR?</prop>
     <prop name="annotationIncludesTRNAs">[true|false] If true then this genome's annotation includes predicted tRNAs.  This property is read by workflow steps that predict tRNAs.   If it is true those steps are skipped.</prop>
     <prop name="runExportPred">[true|false]  If "true" then the ExportPred program should be run on this organism. Typically only true for Plasmodium organisms</prop>
-    <prop name="taxonHierarchyForBlastxFilter">A space delimited list of scientific names for taxa to be used to filter NRDB protein matches against this organism's genome sequence.  For example:  Eukaryota Apicomplexa Plasmodium.  This will FIX THIS... EXPLAIN IT.</prop>
+    <prop name="taxonHierarchyForBlastxFilter">A space delimited list of scientific names for taxa to be used to filter NRDB protein matches against this organism's genome  sequence.  For example:  Eukaryota Apicomplexa Plasmodium.  This will FIX THIS... EXPLAIN IT.</prop>
     <prop name="skipOrfs">[true|false] If true then skip making orfs and skip generating download files for orfs</prop>
 
     <prop name="maxIntronSize">An approximation of the maximum intron size.  Used by BLAT when mapping proteins or DNA to this organisms genome.</prop>
@@ -1406,7 +1406,7 @@
 
     <graphTemplateFile name="SNPs_HTS.xml"/>
    
-    <datasetLoader datasetName="${organismAbbrev}_SNP_${name}_RSRC" version="${version}"
+    <datasetLoader datasetName="${organismAbbrev}_HTS_SNP_${name}_RSRC" version="${version}"
           plugin="ApiCommonData::Load::Plugin::LoadNothing"
               scope="organism"
               type="isolates"
@@ -1439,7 +1439,7 @@
 
     <graphTemplateFile name="htsSnpSamples.xml"/>
 
-    <datasetLoader datasetName="${organismAbbrev}_${experimentName}_${snpStrainAbbrev}_SNPSample_RSRC" version="dontcare"
+    <datasetLoader datasetName="${organismAbbrev}_${experimentName}_${snpStrainAbbrev}_HTS_SNPSample_RSRC" version="dontcare"
           plugin="ApiCommonData::Load::Plugin::LoadNothing"
               scope="organism"
               type="isolates"
@@ -1451,12 +1451,12 @@
         </dir>
       </manualGet>
 
-      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}" />
-      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}.paired" />
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_HTS_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}" />
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_HTS_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}.paired" />
 
       <!-- these are needed for colorspace -->
-      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}.qual" />
-      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}.qual.paired" />
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_HTS_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}.qual" />
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_HTS_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}.qual.paired" />
 
       <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
     </datasetLoader>
@@ -1472,7 +1472,7 @@
  
     <graphTemplateFile name="htsSnpSamples.xml"/>
 
-    <datasetLoader datasetName="${organismAbbrev}_${experimentName}_${snpStrainAbbrev}_SNPSample_RSRC" version="dontcare"
+    <datasetLoader datasetName="${organismAbbrev}_${experimentName}_${snpStrainAbbrev}_HTS_SNPSample_RSRC" version="dontcare"
           plugin="ApiCommonData::Load::Plugin::LoadNothing"
               scope="organism"
               type="isolates"
@@ -1485,8 +1485,8 @@
       </manualGet>
 
       <!-- colorspace not allowed when we query from sra -->
-      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}" />
-      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}.paired" />
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_HTS_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}" />
+      <getAndUnpackOutput file="@@dataDir@@/../${organismAbbrev}_HTS_SNP_${experimentName}_RSRC/final/${snpStrainAbbrev}.paired" />
 
       <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
     </datasetLoader>
