@@ -47,8 +47,35 @@ sub run {
 
     foreach my $pair (readdir INPUT){
 	next if ($pair =~ m/^\./);
-	my ($orgAbbrevA, $orgAbbrevB) = split(/\-/, $pair);
+	#my ($orgAbbrevA, $orgAbbrevB) = split(/\-/, $pair);
+	my @orgAbbrevs = split(/\-/, $pair);
+	my ($orgAbbrevA, $orgAbbrevB);
+	while(scalar @orgAbbrevs >1){
+	    my $tmp=shift(@orgAbbrevs);
+	    $orgAbbrevA .= $tmp;
+	    my $exists = $self->runSqlFetchOneRow($test,"select abbrev from apidb.organism where abbrev = '$orgAbbrevA'");
+	    if ($exists) {
+		$self->log("orgAbbrevA is '$orgAbbrevA'.");
+		last;
+	    }else{
+		$orgAbbrevA .= "-";
+	    }
+            
+	}
 
+
+	while(scalar @orgAbbrevs >0){
+	    my $tmp=shift(@orgAbbrevs);
+	    $orgAbbrevB .= $tmp;
+	    my $exists = $self->runSqlFetchOneRow($test,"select abbrev from apidb.organism where abbrev = '$orgAbbrevB'");
+	    if ($exists) {
+		$self->log("orgAbbrevB is '$orgAbbrevB'.");
+		last;
+	    }else{
+		$orgAbbrevB .= "-";
+	    }
+            
+	}
         my $gffFileA = "$workflowDataDir/$mercatorInputsDir/${orgAbbrevA}.gff";
         my $gffFileB = "$workflowDataDir/$mercatorInputsDir/${orgAbbrevB}.gff";
 

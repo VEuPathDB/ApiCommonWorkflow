@@ -1,0 +1,63 @@
+<workflowGraph name="">
+  <param name="parentDataDir"/>
+  <param name="organismDatasetLoaderXmlFile"/>
+<!--  <param name="proteinsFile"/> -->
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="organismAbbrev"/>
+
+  <constant name="dataDir">$$parentDataDir$$/MassSpec</constant>
+  <constant name="decoyDatabseDir">$$dataDir/decoy_database</constant>
+  <constant name="configDir">$GUS_HOME/config/ProteoAnnotator</constant>
+  <!-- temporary for testing -->
+  <constant name="proteinsFile">$$organismAbbrev$$/loadGenome/AnnotatedProteins.fsa</constant>
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+  
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$decoyDatabaseDir$$</paramValue>
+  </step>
+  
+	<step name="makeDecoyDatabase" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDecoyDatabase">
+      <paramValue name="inputFile">${proteinsFile}</paramValue>
+	  <paramValue name="outputFile">$$decoyFastaFile$$</paramValue>	  
+	  <paramValue name="decoyRatio">$$decoyRatio$$</paramValue>
+	  <paramValue name="decoyRegEx">$$decoyRegEx$$</paramValue>
+	  <paramValue name="decoyDatabseDir">$$decoyDatabaseDir$$</paramValue>
+    </step>		
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDecoyDatabase"/>
+    </step>
+	
+  <datasetTemplate class="massSpec_from_mgf">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+
+
+
+    <!-- dataDir eq 'MassSpec' directory 
+
+    Make directories for the experiment and output directory for samples
+    mirror over the experiment directory to the cluster
+    want to mirror over the samples individually So We do the mirror before we get the dataset
+    -->
+    <subgraph name="${name}_experiment" xmlFile="ProteomicsExperiment.xml">
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="experimentName">${name}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="experimentDatasetName">${organismAbbrev}_MassSpec_${name}_RSRC</paramValue>
+      <paramValue name="experimentDatasetVersion">${version}</paramValue>
+	  <paramValue name="decoyDatabseDir">$$decoyDatabaseDir$$</paramValue>
+      <paramValue name="configDir">$$configDir$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+  </datasetTemplate>
+</workflowGraph>
