@@ -25,7 +25,7 @@ sub run {
   
   $string = $string."missed_cleavages = ".$self->getParamValue('missedCleavages')."\n"; 
   
-  $string = $string."output_file = ".$self->getParamValue('tandemOutfileFile')."\n";
+  $string = $string."output_file = ".$self->getParamValue('tandemOutputFile')."\n";
   
   $string = $string."species = ".$self->getParamValue('species')."\n"; 
 
@@ -36,6 +36,10 @@ sub run {
   my $outputFile = $self->getParamValue('writeToFile');
 
   $outputFile=~ s/\s/_/g;
+  
+  my $workflowDataDir = $self->getWorkflowDataDir();
+  
+  $outputFile=$workflowDataDir .'/'.$outputFile;
 
   $outputFile =~ s/\/+/\//g;
  
@@ -63,7 +67,7 @@ sub getParamsDeclaration {
 		'fixedModId',
 		'variableModId',
 		'missedCleavages',
-		'tandemOutfileFile',
+		'tandemOutputFile',
 		'species',
 		'tandemDefaultInputFile',
 		'taxonomyFile',
