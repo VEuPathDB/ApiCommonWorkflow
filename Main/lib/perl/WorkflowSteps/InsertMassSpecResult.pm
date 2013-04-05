@@ -20,7 +20,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--inputDir $inpuDir --externalDatabaseSpec $massSpecExtDbRlsSpec --geneExternalDatabaseSpec '$genomeExtDbName|$genomeExtDbRlsVer' '$organismAbbrev_primary_genome_RSRC|$genomeVersion' --fileNameRegEx $fileNameRegEx";
+  my $args = "--inputDir $inpuDir --externalDatabaseSpec $massSpecExtDbRlsSpec --geneExternalDatabaseSpec $genomeExtDbRlsSpec --fileNameRegEx $fileNameRegEx";
 
   if ($test) {
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
