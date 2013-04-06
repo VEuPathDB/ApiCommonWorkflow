@@ -20,7 +20,7 @@ sub run {
 
   my $ctlFile = "$workflowDataDir/covSeqVar.ctl";
   my $sqlldrLog = "$workflowDataDir/sqlldr.log";
-  my $cmd = "sqlldr $gusLogin/$gusPassword\@$gusInstance data=$workflowDataDir/$inputFile control=$ctlFile log=$sqlldrLog rows=25000 direct=TRUE";
+  my $cmd = "sqlldr $gusLogin/$gusPassword\@$gusInstance data=$workflowDataDir/$inputFile control=$ctlFile log=$sqlldrLog rows=25000";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $ctlFile");
@@ -42,10 +42,12 @@ sub writeControlFile {
   print CTL <<"EOF";
      LOAD DATA
      INFILE *
-     INTO TABLE DOTS.SeqVariation
-     FIELDS TERMINATED BY " " OPTIONALLY ENCLOSED BY '"'
+     INTO TABLE DOTS.NaFeatureImp
+     APPEND
+     FIELDS TERMINATED BY " " OPTIONALLY ENCLOSED BY "'"
      TRAILING NULLCOLS
-    (na_feature_id,na_sequence_id,subclass_view,name,sequence_ontology_id,parent_id,external_database_release_id,source_id,organism,strain,phenotype,product,allele,matches_reference,coverage,allele_percent,user_read,user_write,group_read,group_write,other_read,other_write,row_user_id,row_group_id,row_project_id,row_alg_invocation_id)
+    (na_sequence_id,subclass_view,name,sequence_ontology_id,parent_id,external_database_release_id,source_id,string8,string9,string11,string12,string18,number2,number3,float2,user_read,user_write,group_read,group_write,other_read,other_write,row_user_id,row_group_id,row_project_id,row_alg_invocation_id, na_feature_id "dots.NaFeatureImp_sq.nextval")
+
 EOF
 
   close(CTL);
