@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpHts;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -32,6 +32,8 @@ sub run {
   unless($strainAbbrev) {
     $self->error("Strain Abbreviation for the reference [$organismAbbrev] was not defined");   
   }
+  $self->error("Param value isNextGenSeq must be true") unless $isNextGenSeq;   
+  $self->error("isCoverage: Coverage SNPs should now be loaded with sqlldr so not computing SnpFeature values") if $isCoverage;   
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -39,14 +41,12 @@ sub run {
 
   my $args = "--reference '$strainAbbrev' --organism '$organismFullName' --snpExternalDatabaseName '$snpExtDbName' --snpExternalDatabaseVersion '$snpExtDbRlsVer' --naExternalDatabaseName '$genomExtDbName' --naExternalDatabaseVersion '$genomeExtDbRlsVer' --transcriptExternalDatabaseName '$transcriptExtDbName' --transcriptExternalDatabaseVersion '$transcriptExtDbRlsVer' --seqTable 'DoTS::ExternalNASequence' --ontologyTerm $soTerm --snpFile $workflowDataDir/$inputFile";
 
-  $args .= " --NGS_SNP" if ($isNextGenSeq);
-  $args .= " --NgsUpdateSnpFeature" if ($isCoverage);
+  $args .= " --NGS_SNP"; ## if ($isNextGenSeq); ##note this is to be used only for nextgenseq
   if ($test) {
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-  }else{
-    
-    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertSnps", $args);
   }
+
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertHtsSnps", $args);
 
 }
 

@@ -15,6 +15,7 @@
     <param name="sampleMetaDataFile"/>
     <param name="sraQueryString"/>
     <param name="snpPercentCutoff"/>
+    <param name="varscanConsDir"/>
 
     <!-- mirror the sample directory over to the cluster
      This directory will eventually contain the cluster task dir but not the fastq files for the sample
@@ -52,6 +53,7 @@
       <paramValue name="clusterDataDir">$$dataDir$$</paramValue>
       <paramValue name="isColorspace">$$isColorspace$$</paramValue>
       <paramValue name="snpPercentCutoff">$$snpPercentCutoff$$</paramValue>
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
@@ -63,7 +65,7 @@
       <paramValue name="parameters">TODO: patch in later</paramValue>
     </step>
 
-    <step name="insertSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="plugin,loadSnpFeature">
+    <step name="insertSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpHts" stepLoadTypes="plugin,loadSnpFeature">
       <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.SNPs.gff</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -81,7 +83,7 @@
       <paramValue name="ncbiTaxId"></paramValue>
       <paramValue name="sequenceFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.consensus.fa</paramValue>
       <paramValue name="soTermName">variant_genome</paramValue>
-      <paramValue name="regexSourceId">>(\S+)</paramValue>
+      <paramValue name="regexSourceId">\>(\S+)</paramValue>
       <paramValue name="tableName">DoTS::ExternalNASequence</paramValue>
       <depends name="mapSnpsOnCluster"/>
     </step>

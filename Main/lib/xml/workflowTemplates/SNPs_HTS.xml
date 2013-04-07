@@ -7,35 +7,52 @@
   <param name="organismAbbrev"/>
 
   <constant name="dataDir">$$parentDataDir$$/SNPs_HTS</constant>
+  <constant name="varscanConsDir">$$parentDataDir$$/SNPs_HTS_varscanCons</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeVarscanConsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$varscanConsDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <!-- Create the external database release -->
+  <step name="insertHTSExtDbRls" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateExtDbAndDbRls" stepLoadTypes="plugin">
+    <paramValue name="extDbRlsSpec">InsertSnps.pm NGS SNPs INTERNAL|Ref:  $$organismAbbrev$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <!-- the init step that does nothing forward but removes snpfeatures and remaining seqvars in undo -->
+  <step name="initHtsSnpFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitHtsSnpFeatures">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <depends name="insertHTSExtDbRls"/>
   </step>
 
   <!-- Create the bowtie 2 indexes -->
   <step name="createBowtie2Indices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
     <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
     <paramValue name="outputIndexDir">$$dataDir$$/bowtie_index</paramValue>
-      <paramValue name="colorspace">false</paramValue>
-      <paramValue name="bowtieVersion">2</paramValue>
+    <paramValue name="colorspace">false</paramValue>
+    <paramValue name="bowtieVersion">2</paramValue>
     <depends name="makeDataDir"/>
   </step>
 
    <!-- Create the Bowtie 1 index for colorspace -->
-    <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
-      <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="outputIndexDir">$$dataDir$$/bowtie_index</paramValue>
-      <paramValue name="colorspace">true</paramValue>
-      <paramValue name="bowtieVersion">1</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
+  <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+    <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
+  <paramValue name="outputIndexDir">$$dataDir$$/bowtie_index</paramValue>
+    <paramValue name="colorspace">true</paramValue>
+    <paramValue name="bowtieVersion">1</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="createBowtieIndices"/>
-      <depends name="createBowtie2Indices"/>
-    </step>
-
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="createBowtieIndices"/>
+    <depends name="createBowtie2Indices"/>
+  </step>
 
   <datasetTemplate class="SNPs_HTS_Experiment">
     <prop name="projectName"/>
@@ -67,6 +84,7 @@
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="isColorspace">${isColorspace}</paramValue>
       <paramValue name="snpPercentCutoff">${snpPercentCutoff}</paramValue>
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
@@ -76,6 +94,7 @@
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
     <dependsPattern name="*_experiment"/>
   </subgraph>
 

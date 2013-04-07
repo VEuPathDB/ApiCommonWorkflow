@@ -1,43 +1,42 @@
-<workflowGraph name="getAndAnalyzezCoverageSNPs.xml">
+<workflowGraph name="getAndAnalyzeCoverageSNPs.xml">
   <param name="parentDataDir"/>
   <param name="organismAbbrev"/>
   <param name="genomicSeqsFile"/>
   <param name="genomeExtDbRlsSpec"/>
-  <constant name="coverageExtDbRlsSpec">HTS_coverage_SNPs_$$organismAbbrev$$|dontcare</constant>
+  <param name="varscanConsDir"/>
+
+  <constant name="coverageDataDir">$$parentDataDir$$/SNPs_HTS_coverage</constant>
+  <constant name="coverageSnpsFile">$$coverageDataDir$$/coverageSeqVars.sqlldr</constant>
 
    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$parentDataDir$$/SNPs_HTS_Coverage</paramValue>
+    <paramValue name="dataDir">$$coverageDataDir$$</paramValue>
   </step>
-
-    <step name="insertExtDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateExtDbAndDbRls" stepLoadTypes="plugin">
-      <paramValue name="extDbRlsSpec">$$coverageExtDbRlsSpec$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
 
     <step name="makeHtsCoverageSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHtsCoverageSNPs">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="coverageSnpsFile">$$parentDataDir$$/SNPs_HTS_Coverage/$$organismAbbrev$$.gff</paramValue>
+      <paramValue name="coverageSnpsFile">$$coverageSnpsFile$$</paramValue>
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="insertCoverageSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="loadSnpFeature,plugin">
-      <paramValue name="inputFile">$$parentDataDir$$/SNPs_HTS_Coverage/$$organismAbbrev$$.gff</paramValue>
+    <!-- insert needs to use sqlLdr -->
+  <step name="loadCoverageSeqVar" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadCoverageSeqVars">
+    <paramValue name="inputFile">$$coverageSnpsFile$$</paramValue>
+    <depends name="makeHtsCoverageSnps"/>
+  </step>
+
+    <!-- step here to compute the overall numbers for the snpfeatures ... could be script or plugin -->
+    <step name="updateSnpFeatureValues" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateHtsSnpFeatures" stepLoadTypes="plugin">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="snpExtDbRlsSpec">$$coverageExtDbRlsSpec$$</paramValue>
-      <paramValue name="isNextGenSeq">true</paramValue>
-      <paramValue name="isCoverage">true</paramValue>
-      <depends name="insertExtDb"/>
-      <depends name="makeHtsCoverageSnps"/>
+      <depends name="loadCoverageSeqVar"/>
     </step>
 
     <step name="document-coverage-snps-mummer"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">coverage_snps_mummer_MTHD</paramValue>
+      <paramValue name="method">coverage_snps_MTHD</paramValue>
       <paramValue name="version">1</paramValue>
       <paramValue name="parameters"></paramValue>
-      <depends name="insertCoverageSnps"/>
+      <depends name="updateSnpFeatureValues"/>
     </step>
 
 </workflowGraph>
