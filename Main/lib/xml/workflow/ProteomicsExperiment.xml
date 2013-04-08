@@ -4,9 +4,9 @@
     <param name="experimentName"/>
     <param name="parentDataDir"/>
     <param name="organismDatasetLoaderXmlFile"/>
-    <param name="genomeExtDbRlsSpec"/>
     <param name="experimentDatasetName"/>
     <param name="experimentDatasetVersion"/>
+	<param name="genomeExtDbRlsSpec"/>
     <param name="decoyDatabaseDir"/>
     <param name="configDir"/>
 
@@ -16,9 +16,9 @@
     <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
     <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>
     <constant name="configInputFilesDir">$$configDir$$/inputFiles</constant>
-	<constant name="decoyFastaFile">$$decoyDatabaseDir$$/$$organismAbbrev$$_withdecoy.fasta</constant>
+	<constant name="decoyFastaFile">$$decoyDatabaseDir$$/$$organismAbbrev$$_withdecoy.fsa</constant>
     <constant name="searchConfigFile">$$finalDir$$/searchCriteria.txt</constant>
-    <constant name="databaseConfigFile">$$tandemInputFilesDir$$/databaseCriteria.txt</constant>
+    <constant name="databaseConfigFile">$$configInputFilesDir$$/databaseCriteria.txt</constant>
 
 	<constant name="fileNameRegEx">.tab</constant>
 	<constant name="clusterOutputFileName">WholeSummary.txt</constant>
@@ -31,8 +31,8 @@
 	<constant name="fixedModId">3</constant>
 	<constant name="variableModId">1,10</constant>
 	<constant name="missedCleavages">1</constant>
-	<constant name="tandemOutfileFile">{{ output_dir_path }}/testrun_osx.csv</constant>
-	<constant name="defaultInputFile">$$configInputFilesDir$$/default_input.xml 	</constant>	
+	<constant name="tandemOutputFile">{{ output_dir_path }}/testrun_osx.csv</constant>
+	<constant name="tandemDefaultInputFile">$$configInputFilesDir$$/default_input.xml 	</constant>	
 	<constant name="taxonomyFile">{{ output_dir_path }}/taxonomy.xml</constant>
 	
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -54,6 +54,7 @@
 
     <step name="makeFinalDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$finalDir$$</paramValue>
+	  <depends name="makeExperimentDatasetLoaderDir"/>
     </step>
 	<!-- step class needed -->
 
@@ -67,7 +68,7 @@
 	  <paramValue name="fixedModId">$$fixedModId$$</paramValue>
 	  <paramValue name="variableModId">$$variableModId$$</paramValue>
 	  <paramValue name="missedCleavages">$$missedCleavages$$</paramValue>
-	  <paramValue name="tandemOutfileFile">$$tandemOutfileFile$$</paramValue>
+	  <paramValue name="tandemOutputFile">$$tandemOutputFile$$</paramValue>
 	  <paramValue name="species">$$organismAbbrev$$</paramValue>
 	  <paramValue name="tandemDefaultInputFile">$$tandemDefaultInputFile$$</paramValue>
 	  <paramValue name="taxonomyFile">$$taxonomyFile$$</paramValue>
@@ -120,12 +121,11 @@
        <paramValue name="experimentDir">$$dataDir$$</paramValue>
        <paramValue name="experimentRSRC">$$experimentDatasetName$$</paramValue>
        <paramValue name="samplesOutputDir">$$samplesOutputDir$$</paramValue>
-       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
        <paramValue name="experimentName">$$experimentName$$</paramValue>
 	   <paramValue name="fileNameRegEx">$$fileNameRegEx$$</paramValue>
+	   <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
 	   <paramValue name="clusterOutputFileName">$$clusterOutputFileName$$</paramValue>
-       <depends name="addStudy"/>
        <depends name="getAndUnpack"/>
      </subgraph>	
   
