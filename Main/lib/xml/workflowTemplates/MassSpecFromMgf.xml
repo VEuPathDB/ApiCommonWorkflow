@@ -2,34 +2,25 @@
   <param name="parentDataDir"/>
   <param name="organismDatasetLoaderXmlFile"/>
   <param name="proteinsFile"/> 
-  <param name="genomeExtDbRlsSpec"/>
   <param name="organismAbbrev"/>
+  <param name="genomeExtDbRlsSpec"/>
   
  <constant name="dataDir">$$parentDataDir$$/MassSpec</constant>
   <constant name="decoyDatabaseDir">$$dataDir$$/decoy_database</constant>
-  <constant name="decoyFastaFile">$$organismAbbrev$$_decoy_DB</constant>
+  <constant name="decoyFastaFile">$$organismAbbrev$$_withdecoy.fsa</constant>
   <constant name="configDir">$GUS_HOME/config/ProteoAnnotator</constant>
-  
-  <!-- temporary for testing -->
-  <constant name="proteinsFile">$$proteinsFile$$</constant>
+ 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
-  </step>
-
-    <constant name="proteinsFile">$$proteinsFile$$</constant>
-  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$</paramValue>
-  </step>
-  <step name="makeDecoyDatabaseDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$decoyDatabaseDir$$</paramValue>
   </step>
   
    <step name="makeDecoyDatabase" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDecoyDatabase">
     <paramValue name="inputFile">$$proteinsFile$$</paramValue>
-    <paramValue name="outputFile">$$decoyFastaFile$$</paramValue>
+    <paramValue name="outputFile">$$decoyDatabaseDir$$/$$decoyFastaFile$$</paramValue>
     <paramValue name="decoyRatio">3</paramValue>
     <paramValue name="decoyRegEx">Decoy</paramValue>
-    <paramValue name="decoyDatabseDir">$$decoyDatabaseDir$$</paramValue>
+    <paramValue name="decoyDatabaseDir">$$decoyDatabaseDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </step>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
@@ -37,7 +28,7 @@
       <depends name="makeDecoyDatabase"/>
     </step>
 	
-  <datasetTemplate class="massSpec_from_mgf">
+  <datasetTemplate class="massSpecFromMgf">
     <prop name="projectName"/>
     <prop name="organismAbbrev"/>
     <prop name="name"/>
@@ -58,10 +49,10 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="experimentDatasetName">${organismAbbrev}_MassSpec_${name}_RSRC</paramValue>
+      <paramValue name="experimentDatasetName">${organismAbbrev}_massSpec_${name}_RSRC</paramValue>
       <paramValue name="experimentDatasetVersion">${version}</paramValue>
-	  <paramValue name="decoyDatabseDir">$$decoyDatabaseDir$$</paramValue>
+	  <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+	  <paramValue name="decoyDatabaseDir">$$decoyDatabaseDir$$</paramValue>
       <paramValue name="configDir">$$configDir$$</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
