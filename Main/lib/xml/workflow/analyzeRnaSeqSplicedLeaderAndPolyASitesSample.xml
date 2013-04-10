@@ -56,38 +56,6 @@
       <depends name="insertSplicedLeaderAndPolyASitesGenes"/> 
   </step>
 
-     <step name="extractSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSplicedLeaderAndPolyASitesGenes">
-      <paramValue name="configFile">$$experimentDatasetDir$$/config.txt</paramValue>
-      <paramValue name="outputUniqFile">$$dataDir$$/uniqProfile.out</paramValue>
-      <paramValue name="outputNonUniqFile">$$dataDir$$/nonUniqProfile.out</paramValue>
-      <paramValue name="type">$$type$$</paramValue>
-      <depends name="updateSplicedLeaderAndPolyASitesGenes"/>
-    </step>
-
-    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
-      <paramValue name="inputFile">$$dataDir$$/uniqProfile.out</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/minPercents.txt</paramValue>
-      <paramValue name="ties">min</paramValue>
-      <paramValue name="hasHeader">true</paramValue>
-      <depends name="extractSplicedLeaderAndPolyASitesGenes"/>
-    </step>
-
-    <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$experimentDatasetDir$$/profile_config.txt</paramValue>
-      <paramValue name="inputDir">$$dataDir$$</paramValue>
-      <paramValue name="extDbRlsSpec">$$experimentExtDbRlsSpec$$</paramValue>
-      <depends name="makeMinPercentileProfile"/>
-    </step>
-
-    <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
-      <paramValue name="configFile">$$experimentDatasetDir$$/profile_config.txt</paramValue>
-      <paramValue name="copyFromDir">$$dataDir$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
-      <depends name="insertExpressionProfile"/>
-    </step>
-
     <step name="document-RnaSeqOrChipSeqRum"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
       <paramValue name="method">bowtie_rna_seq_SplicedLeaderAndPolyASitesGenes_MTHD</paramValue>
