@@ -97,13 +97,13 @@
         stepClass="ReFlow::StepClasses::InitClusterHomeDir">
   </step>
 
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+  <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">good.fasta</paramValue>
     <depends name="makeGoodProteinsFile"/>
     <depends name="initClusterHomeDir"/>
   </step>
 
-  <subgraph name="_makeGroups" xmlFile="makeOrthologGroups.xml">
+  <subgraph name="makeGroups" xmlFile="makeOrthologGroups.xml">
     <paramValue name="parentDataDir">$$tierOneDir$$/${cladeAbbrev}</paramValue>
     <paramValue name="inputProteinFile">good.fasta</paramValue>
     <paramValue name="inputTaxaDir">???</paramValue>
@@ -112,8 +112,58 @@
     <paramValue name="useExistingSimSeqs">false</paramValue>
     <paramValue name="collapseClades">false</paramValue>
     <paramValue name="includeSingletonGroups">true</paramValue>
-    <depends name="mirrorToCluster"/>
+    <depends name="mirrorProteinsToCluster"/>
   </subgraph>
+
+  <!-- insert groups -->
+  <step name="InsertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertGroups">
+    <depends name="makeGroups"/>
+  </step>
+
+  <!-- run group statistics -->
+  <step name="UpdateGroupStatistics" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::UpdateGroupStatistics">
+    <depends name="insertGroups"/>
+  </step>
+
+
+  <!-- run interpro -->
+    <subgraph name="interpro" xmlFile="interpro.xml">
+      <paramValue name="proteinsFile">good.fasta</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="mirrorProteinsToCluster"/>
+      <depends name="interproscanData_RSRC"/>
+    </subgraph>
+
+    <step name="document-interpro"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">interProScan_MTHD</paramValue>
+      <paramValue name="version">most recent</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="interpro"/>
+    </step>
+
+
+  <!-- run EC analysis -->
+
+  <!-- run MSA -->
+
+  <!-- run biolayout -->
+
+  <!-- load GroupTaxonMatrix (phyletic pattern) -->
+
+  <!-- create Oracle Text indexes -->
+
+  <!-- make the downloadSite -->
+
+  <!-- make web services dir -->
+
+  <!-- copy blast DB to cluster for proteome service -->
+
+  <!-- domain keywords -->
+
+  <!-- description keywords -->
+
+
 
 
 </workflowGraph>
