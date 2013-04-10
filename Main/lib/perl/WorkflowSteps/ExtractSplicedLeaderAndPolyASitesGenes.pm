@@ -12,15 +12,16 @@ sub run {
   my $configFile = $self->getParamValue('configFile');
   my $outputUniqFile = $self->getParamValue('outputUniqFile');
   my $outputNonUniqFile = $self->getParamValue('outputNonUniqFile');
+  my $experimentDatasetName = $self->getParamValue('experimentDatasetName');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cmd;
   my $allowed="'Splice Site' or 'Poly A'";
   if($type eq 'Splice Site'){
-        $cmd="extractSpliceSiteGenes --uniqFile $workflowDataDir/$outputUniqFile --nonUniqFile $workflowDataDir/$outputNonUniqFile --configFile $workflowDataDir/$configFile";
+        $cmd="extractSpliceSiteGenes --uniqFile $workflowDataDir/$outputUniqFile --nonUniqFile $workflowDataDir/$outputNonUniqFile --configFile $workflowDataDir/$configFile --extDbName $experimentDatasetName";
   }elsif($type eq 'Poly A'){
-         $cmd="extractPolyAGenes --uniqFile $workflowDataDir/$outputUniqFile --nonUniqFile $workflowDataDir/$outputNonUniqFile --configFile $workflowDataDir/$configFile";
+         $cmd="extractPolyAGenes --uniqFile $workflowDataDir/$outputUniqFile --nonUniqFile $workflowDataDir/$outputNonUniqFile --configFile $workflowDataDir/$configFile --extDbName $experimentDatasetName";
   }else{
       $self->error("Invalide type '$type'. Allowed types are: $allowed");
   }
