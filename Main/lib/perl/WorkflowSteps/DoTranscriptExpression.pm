@@ -43,7 +43,7 @@ sub run {
       $mappingFile = "$platformDirectory/$ndfs[0]"
     }
     else {
-      $mappingFile = "$platformDirectory/$geneProbeMappingTabFile";
+      $mappingFile = $geneProbeMappingTabFile eq '' ? "$platformDirectory/ancillary.txt" : "$platformDirectory/$geneProbeMappingTabFile";
     }
     $input_file = "--input_file $mappingFile";
   }
