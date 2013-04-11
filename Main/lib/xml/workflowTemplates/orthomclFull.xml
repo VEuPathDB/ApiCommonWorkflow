@@ -150,11 +150,13 @@
   <!-- extract files for MSA -->
   <!-- NEEDS WORK -->
   <step name="extractMsaFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::ExtractFilesForMsa">
+    <paramValue name="outputDir">MsaFastaFiles</paramValue>
+    <paramValue name="filesPerTarball">500</paramValue>
     <depends name="insertGroups"/>
   </step>
 
   <step name="mirrorMsaFastaFilesToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">good.fasta</paramValue>
+    <paramValue name="fileOrDirToMirror">MsaFastaFiles</paramValue>
     <depends name="extractMsaFastaFiles"/>
     <depends name="initClusterHomeDir"/>
   </step>
