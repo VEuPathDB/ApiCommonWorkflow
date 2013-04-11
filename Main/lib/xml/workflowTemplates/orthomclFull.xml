@@ -85,7 +85,7 @@
   </datasetTemplate>
   
   <step name="makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
-    <paramValue name="proteomesDir">???</paramValue>
+    <paramValue name="proteomesDir">proteomes</paramValue>
     <paramValue name="outputGoodProteinsFile">good.fasta</paramValue>
     <paramValue name="outputBadProteinsFile">bad.fasta</paramValue>
     <paramValue name="minLength">10</paramValue>
@@ -103,8 +103,9 @@
     <depends name="initClusterHomeDir"/>
   </step>
 
+  <!-- NEEDS WORK -->
   <subgraph name="makeGroups" xmlFile="makeOrthologGroups.xml">
-    <paramValue name="parentDataDir">$$tierOneDir$$/${cladeAbbrev}</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
     <paramValue name="inputProteinFile">good.fasta</paramValue>
     <paramValue name="inputTaxaDir">???</paramValue>
     <paramValue name="outputGroupsDir">groupsOutput</paramValue>
@@ -117,6 +118,7 @@
 
   <!-- insert groups -->
   <step name="InsertGroups" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertGroups">
+    <paramValue name="inputGroupsDir">groupsOutput</paramValue>
     <depends name="makeGroups"/>
   </step>
 
@@ -145,7 +147,34 @@
 
   <!-- run EC analysis -->
 
+  <!-- extract files for MSA -->
+  <!-- NEEDS WORK -->
+  <step name="extractMsaFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::ExtractFilesForMsa">
+    <depends name="insertGroups"/>
+  </step>
+
+  <step name="mirrorMsaFastaFilesToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">good.fasta</paramValue>
+    <depends name="extractMsaFastaFiles"/>
+    <depends name="initClusterHomeDir"/>
+  </step>
+
   <!-- run MSA -->
+  <!-- NEEDS WORK -->
+    <subgraph name="muscle" xmlFile="muscleMSA.xml">
+      <paramValue name="proteinsFile">good.fasta</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="extractFilesForMsa"/>
+    </subgraph>
+
+    <step name="document-interpro"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">interProScan_MTHD</paramValue>
+      <paramValue name="version">most recent</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="interpro"/>
+    </step>
+
 
   <!-- run biolayout -->
 
