@@ -149,14 +149,14 @@
 
   <!-- extract files for MSA -->
   <!-- NEEDS WORK -->
-  <step name="extractMsaFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::ExtractFilesForMsa">
-    <paramValue name="outputDir">MsaFastaFiles</paramValue>
+  <step name="extractGroupFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::ExtractFilesForMsa">
+    <paramValue name="outputDir">TarredGroupFastaFilesDir</paramValue>
     <paramValue name="filesPerTarball">500</paramValue>
     <depends name="insertGroups"/>
   </step>
 
-  <step name="mirrorMsaFastaFilesToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">MsaFastaFiles</paramValue>
+  <step name="mirrorGroupFastaFilesToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">TarredGroupFastaFilesDir</paramValue>
     <depends name="extractMsaFastaFiles"/>
     <depends name="initClusterHomeDir"/>
   </step>
@@ -164,9 +164,9 @@
   <!-- run MSA -->
   <!-- NEEDS WORK -->
     <subgraph name="muscle" xmlFile="muscleMSA.xml">
-      <paramValue name="proteinsFile">good.fasta</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="extractFilesForMsa"/>
+      <paramValue name="fastaFilesDir">TarredGroupFastaFilesDir</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+      <depends name="mirrorGroupFastaFilesToCluster"/>
     </subgraph>
 
     <step name="document-interpro"
