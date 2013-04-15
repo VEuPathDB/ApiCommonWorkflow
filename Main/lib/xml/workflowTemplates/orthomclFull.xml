@@ -162,25 +162,27 @@
   </step>
 
   <!-- run MSA -->
-  <!-- NEEDS WORK -->
-    <subgraph name="muscle" xmlFile="muscleMSA.xml">
-      <paramValue name="fastaFilesDir">TarredGroupFastaFilesDir</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <depends name="mirrorGroupFastaFilesToCluster"/>
-    </subgraph>
-
-    <step name="document-interpro"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">interProScan_MTHD</paramValue>
-      <paramValue name="version">most recent</paramValue>
-      <paramValue name="parameters"></paramValue>
-      <depends name="interpro"/>
-    </step>
-
+  <subgraph name="muscle" xmlFile="muscleMSA.xml">
+    <paramValue name="fastaFilesDir">TarredGroupFastaFilesDir</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <depends name="mirrorGroupFastaFilesToCluster"/>
+  </subgraph>
+  
+  <step name="document-muscle"
+	stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+    <paramValue name="method">muscle_MTHD</paramValue>
+    <paramValue name="version">most recent</paramValue>
+    <paramValue name="parameters"></paramValue>
+    <depends name="muscle"/>
+  </step>
+  
 
   <!-- run biolayout -->
 
   <!-- load GroupTaxonMatrix (phyletic pattern) -->
+  <step name="insertGroupTaxonMatrix" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertGroupTaxonMatrix">
+    <depends name="insertGroups"/>
+  </step>
 
   <!-- create Oracle Text indexes -->
 
@@ -188,11 +190,20 @@
 
   <!-- make web services dir -->
 
+  <!-- map old IDs -->
+
   <!-- copy blast DB to cluster for proteome service -->
 
   <!-- domain keywords -->
+  <step name="insertDomainKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertDomainKeywords">
+    <depends name="insertGroups"/>
+    <depends name="interpro"/>
+  </step>
 
   <!-- description keywords -->
+  <step name="insertProteinKeywords" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::InsertProteinKeywords">
+    <depends name="insertGroups"/>
+  </step>
 
 
 
