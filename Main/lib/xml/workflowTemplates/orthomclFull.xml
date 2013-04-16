@@ -1,4 +1,11 @@
 <workflowGraph name="">
+  <param name="projectVersionForWebsiteFiles"/>
+
+  <constant name="projectName">OrthoMCL</constant>
+  <constant name="relativeWebServicesDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
+  <constant name="relativeDownloadSiteDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
+
+  <constant name="oldReleasesSequenceFilesDir">oldReleasesSeqFiles</constant>
 
   <!-- NEEDS UPGRADE TO ADD BAD PROTEINS TO SINGLETONS !! -->
 
@@ -10,6 +17,28 @@
 	stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
     <paramValue name="projectName">$$projectName$$</paramValue>
   </step>
+
+  <step name="makeProjectReleaseDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <dependsGlobal name="initUserGroupProject"/>
+  </step>
+
+  <step name="makeProjectReleaseWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+    <dependsGlobal name="initUserGroupProject"/>
+  </step>
+
+  <step name="getOldReleaseSeqFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesSequenceFiles">
+    <paramValue name="inputDir">@@webServicesDir@@/$$projectName$$</paramValue>
+    <paramValue name="outputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+    <dependsGlobal name="initUserGroupProject"/>
+  </step>  
+
+  <step name="getOldReleaseGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleaseGroupFiles">
+    <paramValue name="inputDir">@@webServicesDir@@/$$projectName$$</paramValue>
+    <paramValue name="outputDir">$$oldReleasesGroupFilesDir$$</paramValue>
+    <dependsGlobal name="initUserGroupProject"/>
+  </step>  
 
   <step name="makeGlobalDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$globalDataDir$$</paramValue>
@@ -66,15 +95,34 @@
     </subgraph>
   </datasetTemplate>  
 
+  <!-- get mapping of previous release proteome abbrevs to current abbrevs -->
+  <datasetTemplate class="orthomclPreviousReleaseAbbrevs">
+    <prop name="version"/>
+    <subgraph name="orthomclPreviousReleaseAbbrevs_${version}" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">orthomclPreviousReleaseAbbrevs_${version}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="orthomclPreviousReleaseGroups">
+    <prop name="version"/>
+    <subgraph name="orthomclPreviousReleaseGroups_${version}" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">orthomclPreviousReleaseGroups_${version}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+    </subgraph>
+  </datasetTemplate>
+
   <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">proteomes</paramValue>
   </step>
 
   <datasetTemplate class="orthomclProteome">
     <prop name="abbrev"/>
+    <prop name="oldAbbrevsList"/>
     <prop name="ncbiTaxonId"/>
-
-    <subgraph name="${abbrev}_orthomclProteome_RSRC" xmlFile="loadDataset.xml">
+    <subgraph name="${abbrev}_orthomclProteome" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${abbrev}_orthomclProteome_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
       <paramValue name="parentDataDir">proteomes</paramValue>
@@ -82,15 +130,29 @@
       <depends name="initUserGroupProject"/>
     </subgraph>
 
+    <step name="${abbrev}_mapPreviousSeqIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPreviousSeqIDs">
+      <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
+      <depends name="${abbrev}_orthomclProteome"/>
+      <depends name="getOldReleaseSeqFiles"/>
+    </step>
+
+    <step name="${abbrev}_mapPreviousGroupIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPreviousGroupIDs">
+      <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
+      <depends name="${abbrev}_mapPreviousSeqIDs"/>
+      <depends name="getOldReleaseGroupFiles"/>
+    </step>
+
   </datasetTemplate>
-  
+
   <step name="makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteins">
     <paramValue name="proteomesDir">proteomes</paramValue>
     <paramValue name="outputGoodProteinsFile">good.fasta</paramValue>
     <paramValue name="outputBadProteinsFile">bad.fasta</paramValue>
     <paramValue name="minLength">10</paramValue>
     <paramValue name="maxStopPercent">20</paramValue>
-    <dependsPattern name="*_orthomclProteome_RSRC"/>
+    <dependsPattern name="*_orthomclProteome"/>
   </step>
 
   <step name="initClusterHomeDir"
@@ -127,7 +189,6 @@
     <depends name="insertGroups"/>
   </step>
 
-
   <!-- run interpro -->
     <subgraph name="interpro" xmlFile="interpro.xml">
       <paramValue name="proteinsFile">good.fasta</paramValue>
@@ -150,20 +211,20 @@
   <!-- extract files for MSA -->
   <!-- NEEDS WORK -->
   <step name="extractGroupFastaFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::ExtractFilesForMsa">
-    <paramValue name="outputDir">TarredGroupFastaFilesDir</paramValue>
+    <paramValue name="outputDir">tarredGroupFastaFilesDir</paramValue>
     <paramValue name="filesPerTarball">500</paramValue>
     <depends name="insertGroups"/>
   </step>
 
   <step name="mirrorGroupFastaFilesToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">TarredGroupFastaFilesDir</paramValue>
+    <paramValue name="fileOrDirToMirror">tarredGroupFastaFilesDir</paramValue>
     <depends name="extractMsaFastaFiles"/>
     <depends name="initClusterHomeDir"/>
   </step>
 
   <!-- run MSA -->
   <subgraph name="muscle" xmlFile="muscleMSA.xml">
-    <paramValue name="fastaFilesDir">TarredGroupFastaFilesDir</paramValue>
+    <paramValue name="fastaFilesDir">tarredGroupFastaFilesDir</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <depends name="mirrorGroupFastaFilesToCluster"/>
   </subgraph>
@@ -189,8 +250,6 @@
   <!-- make the downloadSite -->
 
   <!-- make web services dir -->
-
-  <!-- map old IDs -->
 
   <!-- copy blast DB to cluster for proteome service -->
 
