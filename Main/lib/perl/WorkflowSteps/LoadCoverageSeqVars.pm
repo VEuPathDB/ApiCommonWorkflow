@@ -10,6 +10,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputFile = $self->getParamValue('inputFile');
+  my $controlFileDir = $self->getParamValue('controlFileDir');
 
   my $gusInstance = $self->getGusInstanceName();
   my $gusLogin = $self->getGusDatabaseLogin();
@@ -17,12 +18,13 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $ctlFile = "$workflowDataDir/covSeqVar.ctl";
-  my $sqlldrLog = "$workflowDataDir/sqlldr.log";
+  my $ctlFile = "$workflowDataDir/$controlFileDir/covSeqVar.ctl";
+  my $sqlldrLog = "$workflowDataDir/$controlFileDir/sqlldr.log";
   my $cmd = "sqlldr $gusLogin/$gusPassword\@$gusInstance data=$workflowDataDir/$inputFile control=$ctlFile log=$sqlldrLog rows=25000";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $ctlFile");
+    $self->runCmd(0, "rm -f $sqlldrLog");
   } else {
     if ($test) {
       $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
