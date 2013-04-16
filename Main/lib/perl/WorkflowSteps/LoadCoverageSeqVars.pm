@@ -10,7 +10,6 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputFile = $self->getParamValue('inputFile');
-  my $suffix = $self->getParamValue('suffix');
 
   my $gusInstance = $self->getGusInstanceName();
   my $gusLogin = $self->getGusDatabaseLogin();
@@ -30,13 +29,13 @@ sub run {
     }
     
     # run sqlldr (after writing its control file)
-    writeControlFile($ctlFile, $suffix);
+    writeControlFile($ctlFile);
     $self->runCmd($test, $cmd);
   }
 }
 
 sub writeControlFile {
-  my ($ctlFile, $suffix) = @_;
+  my ($ctlFile) = @_;
 
   open(CTL, ">$ctlFile") || die "Can't open '$ctlFile' for writing";
   print CTL <<"EOF";
