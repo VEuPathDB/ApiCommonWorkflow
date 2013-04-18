@@ -95,25 +95,6 @@
     </subgraph>
   </datasetTemplate>  
 
-  <!-- get mapping of previous release proteome abbrevs to current abbrevs -->
-  <datasetTemplate class="orthomclPreviousReleaseAbbrevs">
-    <prop name="version"/>
-    <subgraph name="orthomclPreviousReleaseAbbrevs_${version}" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">orthomclPreviousReleaseAbbrevs_${version}_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-    </subgraph>
-  </datasetTemplate>
-
-  <datasetTemplate class="orthomclPreviousReleaseGroups">
-    <prop name="version"/>
-    <subgraph name="orthomclPreviousReleaseGroups_${version}" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">orthomclPreviousReleaseGroups_${version}_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-    </subgraph>
-  </datasetTemplate>
-
   <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">proteomes</paramValue>
   </step>
@@ -133,6 +114,7 @@
     <step name="${abbrev}_mapPreviousSeqIDs" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::MapPreviousSeqIDs">
       <paramValue name="abbrev">${abbrev}</paramValue>
       <paramValue name="oldAbbrevsList">${oldAbbrevsList}</paramValue>
+      <paramValue name="inputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
       <depends name="${abbrev}_orthomclProteome"/>
       <depends name="getOldReleaseSeqFiles"/>
     </step>
