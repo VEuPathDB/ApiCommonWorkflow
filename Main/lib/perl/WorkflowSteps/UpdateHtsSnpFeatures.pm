@@ -16,7 +16,7 @@ sub run {
     $self->error("Organism Abbreviation for the reference [$organismAbbrev] was not defined");   
   }
 
-  my $args = "--organism $referenceOrganism";
+  my $args = "--organism '$referenceOrganism'";
   
   if ($undo) {
     $self->runCmd(0,"echo undoing updating SNPs for $referenceOrganism ... nothing to be done");
