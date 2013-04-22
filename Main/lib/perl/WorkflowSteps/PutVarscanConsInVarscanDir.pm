@@ -15,7 +15,7 @@ sub run {
 
 
   my $cmd = "ln -s $workflowDataDir/$mainResultDir/result.varscan.cons.gz $workflowDataDir/$varscanConsDir/$strain.varscan.cons.gz";
-  my $undoCmd = "/bin/rm $workflowDataDir/$varscanConsDir/$strain.varscan.cons";
+  my $undoCmd = "/bin/rm $workflowDataDir/$varscanConsDir/$strain.varscan.cons.gz";
 
   if ($undo) {
     $self->runCmd(0, $undoCmd);
