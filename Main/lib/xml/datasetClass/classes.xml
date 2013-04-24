@@ -3561,6 +3561,33 @@
     </datasetLoader>
   </datasetClass>
 
+<datasetClass class="Q4O_reference_protein_sequences" category="" datasetFileHint="">
+    <purpose>Download and load the proteins, to be used in the proteome collection for OrthoMCL, from the Quest for Orthologs database. Only the cononical (reference protein from each gene) file will be downloaded. Files will be processed to rearrange the def line, to filter out proteins that are less than 10 aa long or that have more than 20 stop codons, and to append the orthomcl abbrev with pipe to the source_id</purpose>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;The ncbi_tax_id for the specific strain, obtained from the NCBI Taxonomy database. </prop>
+    <prop name="organism">Full organism name from ncbi taxonomy but with underscore in place of spaces e.g. Aedes_aegypti</prop>
+    <prop name="version"> The date of the file being downloaded.</prop>
+    <prop name="organismOrthoMCLAbbrev">The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
+
+ 
+    <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
+
+    <datasetLoader datasetName="${organism}_Q4O_proteome_RSRC" 
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              scope="organism"
+              type="proteome"
+              version="${version}">
+
+
+     <wgetArgs url="ftp://ftp.ebi.ac.uk/pub/databases/reference_proteomes/current_release/"> --tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=4 --accept=${ncbiTaxonId}.fasta.gz</wgetArgs>
+
+     <unpack>processQ4OProtFile --fastaFile @@dataDir@@/${ncbiTaxonId}.fasta.gz  --maxStopCodonPercent 20 --outputFile @@dataDir@@/${ncbiTaxonId}Modified.fasta.gz </unpack>
+
+     <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${ncbiTaxonId}Modified.fasta.gz  --abbrev $organismOrthoMCLAbbrev --outputFile @@dataDir@@/${ncbiTaxonId}Final.fasta.gz</unpack>
+
+      <pluginArgs>--externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/${ncbiTaxonId}Final.fasta.gz --regexSourceId "^>(\S+)" --regexDesc "D=(.*)"  --tableName "DoTS::ExternalAASequence"</pluginArgs>
+    </datasetLoader>
+  </datasetClass>
+
 
 </datasetClasses>
 
