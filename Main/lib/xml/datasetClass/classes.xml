@@ -3617,8 +3617,35 @@
   </datasetClass>
 
 
+<datasetClass class="Manual_delivery_protein_sequences" category="" datasetFileHint="">
+    <purpose>Download and load the proteins, to be used in the proteome collection for OrthoMCL, from the OrthoMCL manualDelivery directory. File defline should have >source_id\sdefinition which may require preprocessing. Files will be processed to filter out proteins that are less than 10 aa long or that have more than 20 stop codons, and to append the orthomcl abbrev with pipe to the source_id</purpose>
+    <prop name="ncbiTaxonId">The ncbi_tax_id for the specific strain, obtained from the NCBI Taxonomy database. </prop>
+    <prop name="species">Species name with spaces replaced by underscores e.g. </prop>
+    <prop name="version"> Date or version number of file as it appears in manualDelivery.</prop>
+    <prop name="organismOrthoMCLAbbrev">The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
+ 
+    <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
+
+    <datasetLoader datasetName="${organism}_EuPath_proteome_RSRC" 
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              scope="organism"
+              type="proteome"
+              version="${version}">
+
+
+     <manualGet fileOrDir="@@manualDeliveryDir@@/OrthoMCL/${species}/proteome/${version}/final/${species}.fasta">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+     <unpack>processManDeliveryProtFile --fastaFile @@dataDir@@/${species}.fasta  --maxStopCodonPercent 20 --outputFile @@dataDir@@/${species}Mod.fasta </unpack>
+
+     <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${species}Mod.fasta  --abbrev $organismOrthoMCLAbbrev --outputFile @@dataDir@@/${species}Final.fasta</unpack>
+
+      <pluginArgs>--externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/${species}Final.fasta --regexSourceId "^>(\S+)" --regexDesc "^>\S+\s+(.*)"  --tableName "DoTS::ExternalAASequence"</pluginArgs>
+    </datasetLoader>
+  </datasetClass>
+
+
 </datasetClasses>
-
-
-
 
