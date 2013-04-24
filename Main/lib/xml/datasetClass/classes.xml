@@ -3470,4 +3470,97 @@
     </datasetLoader>
   </datasetClass>
 
+    <!-- Category:proteomes -->
+
+  <datasetClass class="Ensembl_core_protein_sequences" category="" datasetFileHint="">
+    <purpose>Download and load the proteins, to be used in the proteome collection for OrthoMCL, from the main or core Ensembl database. Files will be processed to obtain the longest protein representative of each gene, to filter out proteins that are less than 10 aa long or that have more than 20 stop codons, and to append the orthomcl abbrev with pipe to the source_id. </purpose>
+    <prop name="species"/> The species name as it is used in the Ensembl ftp directory, e.g. mus_musculus from ftp://ftp.ensembl.org/pub/current/fasta/mus_musculus/pep/. </prop>
+    <prop name="organismOrthoMCLAbbrev"/> The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
+    <prop name="ncbiTaxonId"/> The ncbi_tax_id for the specific strain, obtained from the NCBI Taxonomy database. </prop>
+    <prop name="version"/> The actual release version designated by Ensembl for this proteome file, e.g. release-71. </prop>
+    <prop name="filename"/> The specific filename, e.g. Mus_musculus.GRCm38.71.pep.all.fa.gz, should be the pep.all file and not the ab initio file which is not curated. </prop>
+
+
+    <graphTemplateFile name="proteinSequences.xml"/>
+
+    <datasetLoader datasetName="${species}_ensembl_proteome_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              type="proteome"
+              scope="organism"
+              organismAbbrev="${organismOrthoMCLAbbrev}"> 
+
+    <wgetArgs url="ftp://ftp.ensembl.org/pub/current_fasta/${species}/pep/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=4 --accept=${filename} </wgetArgs> 
+
+    <unpack>processEnsProtFile --fastaFile @@dataDir@@/${filename}  --maxStopCodonPercent 20 --outputFile @@dataDir@@/${filename]_modified </unpack>
+
+    <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${filename]_modified  --abbrev $organismOrthoMCLAbbrev --outputFile @@dataDir@@/${filename]_final</unpack>
+
+    <pluginArgs><pluginArgs> --externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId $ncbiTaxonId  --sequenceFile "@@dataDir@@/${filename]_final" --regexSourceId "^>(\S+)" --tableName "DoTS::ExternalAASequence"</pluginArgs>
+
+    </datasetLoader>
+  </datasetClass>
+
+<datasetClass class="Ensembl_bacteria_protein_sequences" category="" datasetFileHint="">
+    <purpose>Download and load the proteins, to be used in the proteome collection for OrthoMCL, from the Ensembl database for bacteria. Files will be processed to filter out proteins that are less than 10 aa long or that have more than 20 stop codons  and to append the orthomcl abbrev with pipe to the source_id. </purpose>
+    <prop name="organism"/> The organism (likely a strain) name as used in the Ensembl ftp directory, e.g. escherichia_coli_1_2264 in ftp://ftp.ensemblgenomes.org/pub/bacteria/release-17/fasta/bacteria_2_collection/escherichia_coli_1_2264/pep/. </prop>
+    <prop name="organismOrthoMCLAbbrev"/> The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
+    <prop name="ncbiTaxonId"/> The ncbi_tax_id for the specific strain, obtained from the NCBI Taxonomy database. </prop>
+    <prop name="version"/> The actual release version designated by Ensembl for this proteome file, e.g. release-17. </prop>
+    <prop name="filename"/> The specific filename, should be the pep.all file and not the ab initio file which is not curated e.g.Escherichia_coli_1_2264.GCA_000194415.2.17.pep.all.fa.gz. </prop> 
+    <prop name="collection"/> Ensembl structures the bacterial files into subdirectories called collections e.g. bacteria_2_collection(see the URL above). </prop>
+
+
+    <graphTemplateFile name="proteinSequences.xml"/>
+
+    <datasetLoader datasetName="${organism}_ensembl_proteome_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              type="proteome"
+              scope="organism"
+              organismAbbrev="${organismOrthoMCLAbbrev}"> 
+
+    <wgetArgs url="ftp://ftp.ensemblgenomes.org/pub/bacteria/current/fasta/${collection}/${organism}/pep/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=4 --accept=${filename} </wgetArgs> 
+
+    <unpack>processEnsProtFile --fastaFile @@dataDir@@/${filename}  --maxStopCodonPercent 20 --outputFile @@dataDir@@/${filename]_modified </unpack>
+
+    <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${filename]_modified  --abbrev $organismOrthoMCLAbbrev --outputFile @@dataDir@@/${filename]_final</unpack>
+
+    <pluginArgs><pluginArgs> --externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId $ncbiTaxonId  --sequenceFile "@@dataDir@@/${filename]_final" --regexSourceId "^>(\S+)" --tableName "DoTS::ExternalAASequence"</pluginArgs>
+
+    </datasetLoader>
+  </datasetClass>
+
+<datasetClass class="Ensembl_extended_protein_sequences" category="" datasetFileHint="">
+    <purpose>Download and load the proteins, to be used in the proteome collection for OrthoMCL, from the extended Ensembl database, not the core or bacterial database. Files will be processed to obtain the longest protein representative of each gene, to filter out proteins that are less than 10 aa long or that have more than 20 stop codons, and to append the orthomcl abbrev with pipe to the source_id</purpose>
+    <prop name="species"/>The species name as it is used in the Ensembl ftp directory, e.g. anopheles_gambiae ftp://ftp.ensemblgenomes.org/pub/metazoa/release-17/fasta/anopheles_gambiae/pep/. </prop>
+    <prop name="organismOrthoMCLAbbrev"/>The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
+    <prop name="ncbiTaxonId"/>The ncbi_tax_id for the specific strain, obtained from the NCBI Taxonomy database. </prop>
+    <prop name="version"/>The actual release version designated by Ensembl for this proteome file, e.g. release-71. </prop>
+    <prop name="filename"/>The specific filename, should be the pep.all file and not the ab initio file which is not curated e.g.Anopheles_gambiae.AgamP3.17.pep.all.fa.gz. </prop>
+    <prop name="division"/>[fungi|metazoa|plants|protists], Ensembl organizes the organisms that are not in their core or bacterial database into major divisions (see the URL above). </prop> 
+
+
+    <graphTemplateFile name="proteinSequences.xml"/>
+
+    <datasetLoader datasetName="${species}_ensembl_proteome_RSRC"
+              version="${version}"
+	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
+              type="proteome"
+              scope="organism"
+              organismAbbrev="${organismOrthoMCLAbbrev}"> 
+
+    <wgetArgs url="ftp://ftp.ensemblgenomes.org/pub/${division}/current/fasta/${species}/pep/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=4 --accept=${filename} </wgetArgs> 
+
+    <unpack>processEnsProtFile --fastaFile @@dataDir@@/${filename}  --maxStopCodonPercent 20 --outputFile @@dataDir@@/${filename]_modified </unpack>
+
+    <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${filename]_modified  --abbrev $organismOrthoMCLAbbrev --outputFile @@dataDir@@/${filename]_final</unpack>
+
+    <pluginArgs><pluginArgs> --externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId $ncbiTaxonId  --sequenceFile "@@dataDir@@/${filename]_final" --regexSourceId "^>(\S+)" --tableName "DoTS::ExternalAASequence"</pluginArgs>
+
+    </datasetLoader>
+  </datasetClass>
+
+
 </datasetClasses>
+
