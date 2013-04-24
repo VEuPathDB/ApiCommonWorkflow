@@ -7,8 +7,6 @@
 
   <constant name="oldReleasesSequenceFilesDir">oldReleasesSeqFiles</constant>
 
-  <!-- NEEDS UPGRADE TO ADD BAD PROTEINS TO SINGLETONS !! -->
-
   <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
   <constant name="globalDataDir">global</constant>
 
@@ -17,28 +15,6 @@
 	stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
     <paramValue name="projectName">$$projectName$$</paramValue>
   </step>
-
-  <step name="makeProjectReleaseDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
-    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
-    <dependsGlobal name="initUserGroupProject"/>
-  </step>
-
-  <step name="makeProjectReleaseWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
-    <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
-    <dependsGlobal name="initUserGroupProject"/>
-  </step>
-
-  <step name="getOldReleaseSeqFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesSequenceFiles">
-    <paramValue name="inputDir">@@webServicesDir@@/$$projectName$$</paramValue>
-    <paramValue name="outputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
-    <dependsGlobal name="initUserGroupProject"/>
-  </step>  
-
-  <step name="getOldReleaseGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleaseGroupFiles">
-    <paramValue name="inputDir">@@webServicesDir@@/$$projectName$$</paramValue>
-    <paramValue name="outputDir">$$oldReleasesGroupFilesDir$$</paramValue>
-    <dependsGlobal name="initUserGroupProject"/>
-  </step>  
 
   <step name="makeGlobalDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$globalDataDir$$</paramValue>
@@ -94,6 +70,18 @@
       <depends name="initUserGroupProject"/>
     </subgraph>
   </datasetTemplate>  
+
+  <step name="getOldReleaseSeqFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleasesSequenceFiles">
+    <paramValue name="inputDir">@@webServicesDir@@/$$projectName$$</paramValue>
+    <paramValue name="outputDir">$$oldReleasesSequenceFilesDir$$</paramValue>
+    <dependsGlobal name="initUserGroupProject"/>
+  </step>  
+
+  <step name="getOldReleaseGroupFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::GetOldReleaseGroupFiles">
+    <paramValue name="inputDir">@@webServicesDir@@/$$projectName$$</paramValue>
+    <paramValue name="outputDir">$$oldReleasesGroupFilesDir$$</paramValue>
+    <dependsGlobal name="initUserGroupProject"/>
+  </step>  
 
   <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">proteomes</paramValue>
@@ -171,21 +159,49 @@
     <depends name="insertGroups"/>
   </step>
 
-  <!-- run interpro -->
-    <subgraph name="interpro" xmlFile="interpro.xml">
-      <paramValue name="proteinsFile">good.fasta</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="mirrorProteinsToCluster"/>
-      <depends name="interproscanData_RSRC"/>
-    </subgraph>
+  <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <dependsGlobal name="initUserGroupProject"/>
+  </step>
 
-    <step name="document-interpro"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">interProScan_MTHD</paramValue>
-      <paramValue name="version">most recent</paramValue>
-      <paramValue name="parameters"></paramValue>
-      <depends name="interpro"/>
-    </step>
+  <step name="makeWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+    <dependsGlobal name="initUserGroupProject"/>
+  </step>
+
+  <!--  TODO:  NEEDS TO MAKE A FILE OF SINGLETONS -->
+  <step name="makeDownloadFiles" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::MakeDownloadFiles">
+    <paramValue name="downloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="project">$$projectName$$</paramValue>
+    <paramValue name="inputGroupsDir">groupsOutput</paramValue>
+    <depends name="insertGroups"/>
+    <depends name="makeDownloadSiteDir"/>
+  </step>
+
+  <!-- run interpro -->
+  <subgraph name="interpro" xmlFile="interpro.xml">
+    <paramValue name="proteinsFile">good.fasta</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="mirrorProteinsToCluster"/>
+    <depends name="interproscanData_RSRC"/>
+  </subgraph>
+
+  <step name="document-interpro"
+	stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+    <paramValue name="method">interProScan_MTHD</paramValue>
+    <paramValue name="version">most recent</paramValue>
+    <paramValue name="parameters"></paramValue>
+    <depends name="interpro"/>
+  </step>
+
+  <step name="makeInterproDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="downloadSitDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="project">$$projectName$$</paramValue>
+    <paramValue name="interproExtDbName">$$interproExtDbName$$</paramValue>
+    <dependsGlobal name="initUserGroupProject"/>
+  </step>
 
 
   <!-- run EC analysis -->
@@ -227,11 +243,13 @@
     <depends name="insertGroups"/>
   </step>
 
-  <!-- create Oracle Text indexes -->
-
-  <!-- make the downloadSite -->
-
   <!-- make web services dir -->
+  <step name="webServiceBlastFile" stepClass="OrthoMCLWorkflow::Main::WorkflowStep::MakeWebservicesBlastFile">
+    <paramValue name="downloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="webServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <depends name="makeWebServicesDir"/>
+    <depends name="makeDownloadFiles"/>
+  </step>
 
   <!-- copy blast DB to cluster for proteome service -->
 
