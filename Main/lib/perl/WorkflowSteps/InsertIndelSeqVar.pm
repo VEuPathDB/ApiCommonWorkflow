@@ -7,7 +7,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer;
 
 
 sub getSoTerm {
-  return 'insertion';
+  return 'indel';
 }
 
 

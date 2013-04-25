@@ -7,7 +7,7 @@
   <param name="organismAbbrev"/>
 
   <constant name="dataDir">$$parentDataDir$$/SNPs_HTS</constant>
-  <constant name="varscanConsDir">$$parentDataDir$$/SNPs_HTS_varscanCons</constant>
+  <constant name="varscanConsDir">$$parentDataDir$$/SNPs_HTS/varscanCons</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -22,6 +22,7 @@
   <step name="insertHTSExtDbRls" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateExtDbAndDbRls" stepLoadTypes="plugin">
     <paramValue name="extDbRlsSpec">InsertSnps.pm NGS SNPs INTERNAL|Ref:  $$organismAbbrev$$</paramValue>
     <depends name="makeDataDir"/>
+    <depends name="makeVarscanConsDir"/>
   </step>
 
   <!-- the init step that does nothing forward but removes snpfeatures and remaining seqvars in undo -->
@@ -86,6 +87,7 @@
       <paramValue name="snpPercentCutoff">${snpPercentCutoff}</paramValue>
       <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
       <depends name="mirrorToCluster"/>
+      <depends name="initHtsSnpFeatures"/>
     </subgraph>
   </datasetTemplate>
 

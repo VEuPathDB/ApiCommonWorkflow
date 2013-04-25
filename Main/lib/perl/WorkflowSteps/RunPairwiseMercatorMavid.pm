@@ -33,7 +33,6 @@ sub run {
     }
 
     my @organismAbbrevs = $self->findOrganismAbbrevs("$workflowDataDir/$mercatorInputsDir"); # tests .fasta and .gff existence
-
     my $isDraftHash = $self->getIsDraftHash(\@organismAbbrevs, $test);  # hash of 0/1 for each organism
 
     # create and clean out needed dirs
@@ -50,7 +49,11 @@ sub run {
 
 
     foreach my $orgA (@organismAbbrevs) {
+        ## next if the sequence's SO TermName of $orgA or $orgB is only mito- or api-
+        next unless ($self->ifSkipOnSoTermName($orgA, $test) eq 'no');
+
 	foreach my $orgB (@organismAbbrevs) {
+	    next unless ($self->ifSkipOnSoTermName($orgB, $test) eq 'no');
 
 	    next unless $orgA gt $orgB;  # only do each pair once, and don't do self-self
 
@@ -120,6 +123,30 @@ sub findOrganismAbbrevs {
     $self->error("Mismatched number of .fasta and .gff files in $mercatorInputsDir") unless keys(%gffHash) == keys(%fastaHash);
     $self->error("Empty mercator inputs dir: $mercatorInputsDir") unless keys(%gffHash) > 0;
     return keys(%gffHash);
+}
+
+## based on the SO termName of the sequence in the geneattributes table, skip mercator if it is only mito- or api-
+sub ifSkipOnSoTermName {
+  my ($self, $organismAbbrev, $test) = @_;
+
+  my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $sql = "select distinct s.term_name 
+                  from apidbtuning.${tmPrefix}sequenceattributes sa, apidbtuning.${tmPrefix}geneattributes ga, SRES.sequenceontology s
+                  where sa.na_sequence_id = ga.na_sequence_id and sa.so_id=s.so_id and sa.na_sequence_id in
+                  (select distinct na_sequence_id from apidbtuning.${tmPrefix}geneattributes) ";
+  my $cmd = "getValueFromTable --idSQL \"$sql\"";
+
+  my $result = $self->runCmd($test, $cmd);
+  my @soTermNames = split(/\,/, $result);
+
+  my $ifSkip = "yes";
+  foreach my $soTermName (@soTermNames) {
+    if ($soTermName eq 'chromosome' || $soTermName eq 'supercontig' || $soTermName eq 'contig' ) {
+      $ifSkip = "no";
+      last;
+    }
+  }
+  return $ifSkip;
 }
 
 sub getIsDraftHash {

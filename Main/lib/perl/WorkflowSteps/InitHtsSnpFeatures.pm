@@ -14,7 +14,7 @@ sub run {
   my $referenceOrganism = $organismInfo->getFullName();
 
   my $cmd = "echo 'initHtsSnpFeatures for $referenceOrganism complete'";
-  my $undoCmd = "undoInitHtsSnpFeatures.pl --referenceOrganism $referenceOrganism";
+  my $undoCmd = "undoInitHtsSnpFeatures.pl --referenceOrganism '$referenceOrganism' ";
 
   if ($undo) {
     $self->runCmd(0, $undoCmd);
