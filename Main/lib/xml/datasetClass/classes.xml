@@ -3470,108 +3470,110 @@
     </datasetLoader>
   </datasetClass>
 
-    <!-- Category:proteomes -->
 
-  <datasetClass class="Ensembl_core_protein_sequences" category="" datasetFileHint="">
+    <!-- Category:OrthoMCL -->
+    <!-- subCategory:proteomes -->
+
+  <datasetClass class="ensemblCoreProteome" category="" datasetFileHint="">
     <purpose>Download and load the proteins, to be used in the proteome collection for OrthoMCL, from the main or core Ensembl database. Files will be processed to obtain the longest protein representative of each gene, to filter out proteins that are less than 10 aa long or that have more than 20 stop codons, and to append the orthomcl abbrev with pipe to the source_id. </purpose>
     <prop name="species"> The species name as it is used in the Ensembl ftp directory, e.g. mus_musculus from ftp://ftp.ensembl.org/pub/current/fasta/mus_musculus/pep/. </prop>
-    <prop name="organismOrthoMCLAbbrev"> The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
+    <prop name="abbrev"> The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
     <prop name="ncbiTaxonId"> The ncbi_tax_id for the specific strain, obtained from the NCBI Taxonomy database. </prop>
     <prop name="version"> The actual release version designated by Ensembl for this proteome file, e.g. release-71. </prop>
     <prop name="filename"> The specific filename, e.g. Mus_musculus.GRCm38.71.pep.all.fa.gz, should be the pep.all file and not the ab initio file which is not curated. </prop>
+    <prop name="oldAbbrevsList"> List of old orthomcl abbrevs if they differ from the current e.g. 3:pfa, 4:pfa. </prop>
 
 
-    <graphTemplateFile name="proteinSequences.xml"/>
+    <graphTemplateFile name="orthomclFull.xml"/>
 
-    <datasetLoader datasetName="${species}_ensembl_proteome_RSRC"
+    <datasetLoader datasetName="${abbrev}_orthomclProteome_RSRC"
               version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
               type="proteome"
-              scope="organism"
-              organismAbbrev="${organismOrthoMCLAbbrev}"> 
+              scope="organism" > 
 
     <wgetArgs url="ftp://ftp.ensembl.org/pub/current_fasta/${species}/pep/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=4 --accept=${filename} </wgetArgs> 
 
     <unpack>processEnsProtFile --fastaFile @@dataDir@@/${filename}  --maxStopCodonPercent 20 --outputFile @@dataDir@@/${filename]_modified </unpack>
 
-    <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${filename]_modified  --abbrev $organismOrthoMCLAbbrev --outputFile @@dataDir@@/${filename]_final</unpack>
+    <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${filename]_modified  --abbrev $abbrev --outputFile @@dataDir@@/${filename]_final</unpack>
 
     <pluginArgs> --externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId $ncbiTaxonId  --sequenceFile "@@dataDir@@/${filename]_final" --regexSourceId "^>(\S+)" --tableName "DoTS::ExternalAASequence"</pluginArgs>
 
     </datasetLoader>
   </datasetClass>
 
-<datasetClass class="Ensembl_bacteria_protein_sequences" category="" datasetFileHint="">
+<datasetClass class="ensemblBacterialProteome" category="" datasetFileHint="">
     <purpose>Download and load the proteins, to be used in the proteome collection for OrthoMCL, from the Ensembl database for bacteria. Files will be processed to filter out proteins that are less than 10 aa long or that have more than 20 stop codons  and to append the orthomcl abbrev with pipe to the source_id. </purpose>
     <prop name="organism"> The organism (likely a strain) name as used in the Ensembl ftp directory, e.g. escherichia_coli_1_2264 in ftp://ftp.ensemblgenomes.org/pub/bacteria/release-17/fasta/bacteria_2_collection/escherichia_coli_1_2264/pep/. </prop>
-    <prop name="organismOrthoMCLAbbrev"> The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
+    <prop name="abbrev"> The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
     <prop name="ncbiTaxonId"> The ncbi_tax_id for the specific strain, obtained from the NCBI Taxonomy database. </prop>
     <prop name="version"> The actual release version designated by Ensembl for this proteome file, e.g. release-17. </prop>
     <prop name="filename"> The specific filename, should be the pep.all file and not the ab initio file which is not curated e.g.Escherichia_coli_1_2264.GCA_000194415.2.17.pep.all.fa.gz. </prop> 
     <prop name="collection"> Ensembl structures the bacterial files into subdirectories called collections e.g. bacteria_2_collection(see the URL above). </prop>
+    <prop name="oldAbbrevsList"> List of old orthomcl abbrevs if they differ from the current e.g. 3:pfa, 4:pfa. </prop>
 
+    <graphTemplateFile name="orthomclFull.xml"/>
 
-    <graphTemplateFile name="proteinSequences.xml"/>
-
-    <datasetLoader datasetName="${organism}_ensembl_proteome_RSRC"
+    <datasetLoader datasetName="${abbrev}_orthomclProteome_RSRC"
               version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
               type="proteome"
-              scope="organism"
-              organismAbbrev="${organismOrthoMCLAbbrev}"> 
+              scope="organism">
+     
 
     <wgetArgs url="ftp://ftp.ensemblgenomes.org/pub/bacteria/current/fasta/${collection}/${organism}/pep/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=4 --accept=${filename} </wgetArgs> 
 
     <unpack>processEnsProtFile --fastaFile @@dataDir@@/${filename}  --maxStopCodonPercent 20 --outputFile @@dataDir@@/${filename]_modified </unpack>
 
-    <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${filename]_modified  --abbrev $organismOrthoMCLAbbrev --outputFile @@dataDir@@/${filename]_final</unpack>
+    <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${filename]_modified  --abbrev $abbrev --outputFile @@dataDir@@/${filename]_final</unpack>
 
     <pluginArgs> --externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId $ncbiTaxonId  --sequenceFile "@@dataDir@@/${filename]_final" --regexSourceId "^>(\S+)" --tableName "DoTS::ExternalAASequence"</pluginArgs>
 
     </datasetLoader>
   </datasetClass>
 
-<datasetClass class="Ensembl_extended_protein_sequences" category="" datasetFileHint="">
+<datasetClass class="ensemblExtendedProteome" category="" datasetFileHint="">
     <purpose>Download and load the proteins, to be used in the proteome collection for OrthoMCL, from the extended Ensembl database, not the core or bacterial database. Files will be processed to obtain the longest protein representative of each gene, to filter out proteins that are less than 10 aa long or that have more than 20 stop codons, and to append the orthomcl abbrev with pipe to the source_id</purpose>
     <prop name="species">The species name as it is used in the Ensembl ftp directory, e.g. anopheles_gambiae ftp://ftp.ensemblgenomes.org/pub/metazoa/release-17/fasta/anopheles_gambiae/pep/. </prop>
-    <prop name="organismOrthoMCLAbbrev">The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
+    <prop name="abbrev">The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
     <prop name="ncbiTaxonId">The ncbi_tax_id for the specific strain, obtained from the NCBI Taxonomy database. </prop>
     <prop name="version">The actual release version designated by Ensembl for this proteome file, e.g. release-71. </prop>
     <prop name="filename">The specific filename, should be the pep.all file and not the ab initio file which is not curated e.g.Anopheles_gambiae.AgamP3.17.pep.all.fa.gz. </prop>
     <prop name="division">[fungi|metazoa|plants|protists], Ensembl organizes the organisms that are not in their core or bacterial database into major divisions (see the URL above). </prop> 
+    <prop name="oldAbbrevsList"> List of old orthomcl abbrevs if they differ from the current e.g. 3:pfa, 4:pfa. </prop>
 
+    <graphTemplateFile name="orthomclFull.xml"/>
 
-    <graphTemplateFile name="proteinSequences.xml"/>
-
-    <datasetLoader datasetName="${species}_ensembl_proteome_RSRC"
+    <datasetLoader datasetName="${abbrev}_orthomclProteome_RSRC"
               version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
               type="proteome"
               scope="organism"
-              organismAbbrev="${organismOrthoMCLAbbrev}"> 
+              organismAbbrev="${abbrev}"> 
 
     <wgetArgs url="ftp://ftp.ensemblgenomes.org/pub/${division}/current/fasta/${species}/pep/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=4 --accept=${filename} </wgetArgs> 
 
     <unpack>processEnsProtFile --fastaFile @@dataDir@@/${filename}  --maxStopCodonPercent 20 --outputFile @@dataDir@@/${filename]_modified </unpack>
 
-    <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${filename]_modified  --abbrev $organismOrthoMCLAbbrev --outputFile @@dataDir@@/${filename]_final</unpack>
+    <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${filename]_modified  --abbrev $abbrev --outputFile @@dataDir@@/${filename]_final</unpack>
 
     <pluginArgs> --externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId $ncbiTaxonId  --sequenceFile "@@dataDir@@/${filename]_final" --regexSourceId "^>(\S+)" --tableName "DoTS::ExternalAASequence"</pluginArgs>
 
     </datasetLoader>
   </datasetClass>
 
-<datasetClass class="Q4O_reference_protein_sequences" category="" datasetFileHint="">
+<datasetClass class="q4OProteome" category="" datasetFileHint="">
     <purpose>Download and load the proteins, to be used in the proteome collection for OrthoMCL, from the Quest for Orthologs database. Only the cononical (reference protein from each gene) file will be downloaded. Files will be processed to rearrange the def line, to filter out proteins that are less than 10 aa long or that have more than 20 stop codons, and to append the orthomcl abbrev with pipe to the source_id</purpose>
     <prop name="ncbiTaxonId">The ncbi_tax_id for the specific strain, obtained from the NCBI Taxonomy database. </prop>
     <prop name="organism">Full organism name from ncbi taxonomy but with underscore in place of spaces e.g. Aedes_aegypti</prop>
     <prop name="version"> The date of the file being downloaded.</prop>
-    <prop name="organismOrthoMCLAbbrev">The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
-
+    <prop name="abbrev">The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
+    <prop name="oldAbbrevsList"> List of old orthomcl abbrevs if they differ from the current e.g. 3:pfa, 4:pfa. </prop>
  
-    <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
+    <graphTemplateFile name="orthomclFull.xml"/>
 
-    <datasetLoader datasetName="${organism}_Q4O_proteome_RSRC" 
+    <datasetLoader datasetName="${abbrev}_orthomclProteome_RSRC" 
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
               scope="organism"
               type="proteome"
@@ -3582,24 +3584,24 @@
 
      <unpack>processQ4OProtFile --fastaFile @@dataDir@@/${ncbiTaxonId}.fasta.gz  --maxStopCodonPercent 20 --outputFile @@dataDir@@/${ncbiTaxonId}Modified.fasta.gz </unpack>
 
-     <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${ncbiTaxonId}Modified.fasta.gz  --abbrev $organismOrthoMCLAbbrev --outputFile @@dataDir@@/${ncbiTaxonId}Final.fasta.gz</unpack>
+     <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${ncbiTaxonId}Modified.fasta.gz  --abbrev $abbrev --outputFile @@dataDir@@/${ncbiTaxonId}Final.fasta.gz</unpack>
 
       <pluginArgs>--externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/${ncbiTaxonId}Final.fasta.gz --regexSourceId "^>(\S+)" --regexDesc "D=(.*)"  --tableName "DoTS::ExternalAASequence"</pluginArgs>
     </datasetLoader>
   </datasetClass>
 
-<datasetClass class="EuPath_protein_sequences" category="" datasetFileHint="">
+<datasetClass class="euPathProteome" category="" datasetFileHint="">
     <purpose>Download and load the proteins, to be used in the proteome collection for OrthoMCL, from one of the EuPathDB project download directories. Files will be processed to filter out proteins that are less than 10 aa long or that have more than 20 stop codons, and to append the orthomcl abbrev with pipe to the source_id</purpose>
     <prop name="ncbiTaxonId">The ncbi_tax_id for the specific strain, obtained from the NCBI Taxonomy database. </prop>
     <prop name="organism">Organism name for filenames used in the EuPathDB project e.g. PbergheiANKA</prop>
     <prop name="release"> Release number for the EuPathDB project, e.g. 9.3.</prop>
     <prop name="project"> The EuPathDB project, e.g. PlasmoDB.</prop>
-    <prop name="organismOrthoMCLAbbrev">The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
-
+    <prop name="abbrev">The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
+    <prop name="oldAbbrevsList"> List of old orthomcl abbrevs if they differ from the current e.g. 3:pfa, 4:pfa. </prop>
  
-    <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
+    <graphTemplateFile name="orthomclFull.xml"/>
 
-    <datasetLoader datasetName="${organism}_EuPath_proteome_RSRC" 
+    <datasetLoader datasetName="${abbrev}_orthomclProteome_RSRC" 
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
               scope="organism"
               type="proteome"
@@ -3610,23 +3612,24 @@
 
      <unpack>processEuPathProtFile --fastaFile @@dataDir@@/${project}-${release}_${organism}_AnnotatedProteins.fasta  --maxStopCodonPercent 20 --outputFile @@dataDir@@/${organism}_AnnotatedProteins.fasta </unpack>
 
-     <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${organism}_AnnotatedProteins.fasta  --abbrev $organismOrthoMCLAbbrev --outputFile @@dataDir@@/${organism}_AnnotatedProteinsMod.fasta</unpack>
+     <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${organism}_AnnotatedProteins.fasta  --abbrev $abbrev --outputFile @@dataDir@@/${organism}_AnnotatedProteinsMod.fasta</unpack>
 
       <pluginArgs>--externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/${organism}_AnnotatedProteinsMod.fasta --regexSourceId "^>(\S+)" --regexDesc "product=([^|]*)\|"  --tableName "DoTS::ExternalAASequence"</pluginArgs>
     </datasetLoader>
   </datasetClass>
 
 
-<datasetClass class="Manual_delivery_protein_sequences" category="" datasetFileHint="">
+<datasetClass class="manualDeliveryProteome" category="" datasetFileHint="">
     <purpose>Download and load the proteins, to be used in the proteome collection for OrthoMCL, from the OrthoMCL manualDelivery directory. File defline should have >source_id\sdefinition which may require preprocessing. Files will be processed to filter out proteins that are less than 10 aa long or that have more than 20 stop codons, and to append the orthomcl abbrev with pipe to the source_id</purpose>
     <prop name="ncbiTaxonId">The ncbi_tax_id for the specific strain, obtained from the NCBI Taxonomy database. </prop>
     <prop name="species">Species name with spaces replaced by underscores e.g. </prop>
     <prop name="version"> Date or version number of file as it appears in manualDelivery.</prop>
-    <prop name="organismOrthoMCLAbbrev">The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
+    <prop name="abbrev">The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
+    <prop name="oldAbbrevsList"> List of old orthomcl abbrevs if they differ from the current e.g. 3:pfa, 4:pfa. </prop>
  
-    <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
+    <graphTemplateFile name="orthomclFull.xml"/>
 
-    <datasetLoader datasetName="${organism}_EuPath_proteome_RSRC" 
+    <datasetLoader datasetName="${abbrev}_orthomclProteome_RSRC" 
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
               scope="organism"
               type="proteome"
@@ -3640,12 +3643,35 @@
 
      <unpack>processManDeliveryProtFile --fastaFile @@dataDir@@/${species}.fasta  --maxStopCodonPercent 20 --outputFile @@dataDir@@/${species}Mod.fasta </unpack>
 
-     <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${species}Mod.fasta  --abbrev $organismOrthoMCLAbbrev --outputFile @@dataDir@@/${species}Final.fasta</unpack>
+     <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${species}Mod.fasta  --abbrev $abbrev --outputFile @@dataDir@@/${species}Final.fasta</unpack>
 
       <pluginArgs>--externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/${species}Final.fasta --regexSourceId "^>(\S+)" --regexDesc "^>\S+\s+(.*)"  --tableName "DoTS::ExternalAASequence"</pluginArgs>
     </datasetLoader>
   </datasetClass>
 
+     <!-- subCategory:Clades -->
+
+  <datasetClass class="orthomclClades" category="" datasetFileHint="">
+    <purpose>Retrieve and load the hierarchy of clades file from manual delivery. </purpose>
+    <prop name="release">Release number which serves as the subdirectory in manual delivery where the clades file is found.</prop>
+     
+    <graphTemplateFile name="orthomclFull.xml"/>
+
+    <datasetLoader datasetName="orthomclClades_RSRC" 
+	      plugin="ApiCommonData::Load::Plugin::InsertOrthomclTaxon"
+              scope="global"
+              type="taxonomy"
+              version="${release}">
+
+     <manualGet fileOrDir="@@manualDeliveryDir@@/common/orthology/orthoMCL/${release}/taxonomy">
+        <dir name="taxonomy">
+        </dir>
+     </manualGet>
+
+     <pluginArgs>--cladeFile  @@dataDir@@/taxonomy/orthomclClades.txt --speciesFile  @@dataDir@@/taxonomy/orthomclTaxons.txt</pluginArgs>
+
+     </datasetLoader>
+  </datasetClass>
 
 </datasetClasses>
 
