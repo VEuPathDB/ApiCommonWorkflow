@@ -29,8 +29,8 @@ sub run {
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
-      $self->makeDistribJobControllerPropFile($taskInputDir, $cpus, $taskSize,
-				       "DJob::DistribJobTasks::BlastSimilarityTask"); 
+      $self->makeDistribJobControllerPropFile($taskInputDir, $self->getCPUs(), $taskSize,
+				       $self->getDistribJobTask());
 
       my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
@@ -56,4 +56,16 @@ sub getTaskPropFileContents {
 # subclasses can override this to do any additional work, eg task-specific config files
 sub doAdditionalStuff {
     my ($self) = @_;
+}
+
+# subclasses can override this to specify CPUs.  1 is default.
+sub getCPUs {
+  my ($self) = @_;
+
+  return 1;
+}
+
+sub getDistribJobTask {
+  my ($self, $distribJobTaskName) = @_;
+  die "subclass is not overriding this method";
 }
