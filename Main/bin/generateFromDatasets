@@ -1,0 +1,48 @@
+#!/bin/bash
+set -e
+
+project=$1
+
+if [ ! $project ]
+then 
+  echo "
+Generate workflow files from dataset files for a provided project.
+
+Usage: generateFromDatasets projectName
+
+Where:
+   projectName: the project containing the dataset files, eg EuPathDatasets.  This project must contain Datasets/lib/xml where the dataset XML files are.
+"
+  exit 1
+fi
+
+echo "$PROJECT_HOME"
+echo "$GUS_HOME"
+
+echo running...
+echo validateXmlWithRng  $GUS_HOME/lib/rng/datasetClass.rng $PROJECT_HOME/ApiCommonWorkflow/Main/lib/xml/datasetClass/classes.xml
+echo
+
+validateXmlWithRng  $GUS_HOME/lib/rng/datasetClass.rng $PROJECT_HOME/ApiCommonWorkflow/Main/lib/xml/datasetClass/classes.xml
+
+echo
+echo Removing all previously generated files
+if [ -e $GUS_HOME/lib/xml/workflow/generated ]
+then
+rm -r $GUS_HOME/lib/xml/workflow/generated
+fi
+echo
+
+cd $PROJECT_HOME
+for dataset in `find $project/Datasets/lib/xml/datasets/ -name "*.xml"`
+
+do
+  echo `basename $dataset`:
+  echo "  workflowDataset2DatasetLoaders \$PROJECT_HOME/$dataset \$PROJECT_HOME/ApiCommonWorkflow/Main/lib/xml/datasetClass/classes.xml"
+  workflowDataset2DatasetLoaders  $PROJECT_HOME/$dataset $PROJECT_HOME/ApiCommonWorkflow/Main/lib/xml/datasetClass/classes.xml -skipXmlValidation
+  echo
+  echo "  workflowDataset2Graphs \$PROJECT_HOME/$dataset \$PROJECT_HOME/ApiCommonWorkflow/Main/lib/xml/datasetClass/classes.xml"
+  workflowDataset2Graphs  $PROJECT_HOME/$dataset $PROJECT_HOME/ApiCommonWorkflow/Main/lib/xml/datasetClass/classes.xml -skipXmlValidation
+  echo
+done
+
