@@ -3490,6 +3490,7 @@
               version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
               type="proteome"
+              organismAbbrev="${abbrev}"
               scope="organism" > 
 
     <wgetArgs url="ftp://ftp.ensembl.org/pub/current_fasta/${species}/pep/">--tries=5 --mirror --no-parent --no-directories --no-host-directories --cut-dirs=4 --accept=${filename} </wgetArgs> 
@@ -3519,6 +3520,7 @@
               version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
               type="proteome"
+              organismAbbrev="${abbrev}"
               scope="organism">
      
 
@@ -3528,7 +3530,7 @@
 
     <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${abbrev}ProteomeMod.fasta   --abbrev $abbrev --outputFile @@dataDir@@/${abbrev}Proteome.fasta </unpack>
 
-    <pluginArgs> --externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId $ncbiTaxonId  --sequenceFile "@@dataDir@@/${abbrev}Proteome.fasta" --regexSourceId "^>(\S+)" --tableName "DoTS::ExternalAASequence"</pluginArgs>
+    <pluginArgs> --externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId $ncbiTaxonId  --sequenceFile "@@dataDir@@/${abbrev}Proteome.fasta" --regexSourceId '^>(\S+)' --tableName "DoTS::ExternalAASequence"</pluginArgs>
 
     </datasetLoader>
   </datasetClass>
@@ -3558,7 +3560,7 @@
 
     <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${abbrev}ProteomeMod.fasta   --abbrev $abbrev --outputFile @@dataDir@@/${abbrev}Proteome.fasta </unpack>    
 
-    <pluginArgs> --externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId $ncbiTaxonId  --sequenceFile "@@dataDir@@/${abbrev}Proteome.fasta" --regexSourceId "^>(\S+)" --tableName "DoTS::ExternalAASequence"</pluginArgs>
+    <pluginArgs> --externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId $ncbiTaxonId  --sequenceFile "@@dataDir@@/${abbrev}Proteome.fasta" --regexSourceId '^>(\S+)' --tableName "DoTS::ExternalAASequence"</pluginArgs>
 
     </datasetLoader>
   </datasetClass>
@@ -3577,6 +3579,7 @@
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
               scope="organism"
               type="proteome"
+              organismAbbrev="${abbrev}"
               version="${version}">
 
 
@@ -3586,7 +3589,7 @@
 
      <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${abbrev}ProteomeMod.fasta   --abbrev $abbrev --outputFile @@dataDir@@/${abbrev}Proteome.fasta </unpack> 
 
-      <pluginArgs>--externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/${abbrev}Proteome.fasta --regexSourceId "^>(\S+)" --regexDesc "D=(.*)"  --tableName "DoTS::ExternalAASequence"</pluginArgs>
+      <pluginArgs>--externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/${abbrev}Proteome.fasta --regexSourceId '^>(\S+)' --regexDesc "D=(.*)"  --tableName "DoTS::ExternalAASequence"</pluginArgs>
     </datasetLoader>
   </datasetClass>
 
@@ -3604,6 +3607,7 @@
     <datasetLoader datasetName="${abbrev}_orthomclProteome_RSRC" 
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
               scope="organism"
+              organismAbbrev="${abbrev}"
               type="proteome"
               version="${release}">
 
@@ -3614,7 +3618,7 @@
 
      <unpack>orgAbbrevSourceId --inputFile @@dataDir@@/${abbrev}ProteomeMod.fasta  --abbrev $abbrev --outputFile @@dataDir@@/${abbrev}Proteome.fasta </unpack> 
 
-      <pluginArgs>--externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/${abbrev}ProteomeMod.fasta --regexSourceId "^>(\S+)" --regexDesc "product=([^|]*)\|"  --tableName "DoTS::ExternalAASequence"</pluginArgs>
+      <pluginArgs>--externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/${abbrev}ProteomeMod.fasta --regexSourceId '^>(\S+)' --regexDesc "product=([^|]*)\|"  --tableName "DoTS::ExternalAASequence"</pluginArgs>
     </datasetLoader>
   </datasetClass>
 
@@ -3637,7 +3641,7 @@
               version="${version}">
 
 
-     <manualGet fileOrDir="@@manualDeliveryDir@@/OrthoMCL/${species}/proteome/${version}/final/${species}.fasta">
+     <manualGet fileOrDir="OrthoMCL/proteomes/${species}/${version}/final/proteins.fasta.gz">
         <dir name="final">
         </dir>
       </manualGet>
@@ -3664,12 +3668,12 @@
               type="taxonomy"
               version="${release}">
 
-     <manualGet fileOrDir="@@manualDeliveryDir@@/common/orthology/orthoMCL/${release}/taxonomy">
+     <manualGet fileOrDir="common/orthology/orthoMCL/${release}">
         <dir name="taxonomy">
         </dir>
      </manualGet>
 
-     <pluginArgs>--cladeFile  @@dataDir@@/taxonomy/orthomclClades.txt --speciesFile  @@dataDir@@/taxonomy/orthomclTaxons.txt</pluginArgs>
+     <pluginArgs>--cladeFile  @@dataDir@@/orthomclClades.txt --speciesFile  @@dataDir@@/orthomclTaxons.txt</pluginArgs>
 
      </datasetLoader>
   </datasetClass>
