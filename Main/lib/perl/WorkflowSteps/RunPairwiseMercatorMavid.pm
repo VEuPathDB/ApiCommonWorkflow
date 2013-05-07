@@ -66,7 +66,7 @@ sub run {
 	    } 
 
 	    if ($self->cacheHit($orgA, $orgB, $cacheDir, "$workflowDataDir/$mercatorInputsDir", $test)) {
-		$self->runCmd($test, "cp -r $cacheDir/${orgA}-${orgB} $pairOutputDir");
+		$self->runCmd($test, "ln -s $cacheDir/${orgA}-${orgB} $pairOutputDir");
 	    } else {
 
 		mkdir("$pairOutputDir") || $self->error("Failed making dir $pairOutputDir");
@@ -89,9 +89,9 @@ sub run {
 		$self->runCmd($test,$command);
 
 		# move selected output from tmp dir to the real output dir
-		$self->runCmd($test,"cp $pairTmpDir/*.align $pairOutputDir");
-		$self->runCmd($test,"cp $pairTmpDir/mercator-output/*.agp $pairOutputDir");
-		$self->runCmd($test,"cp -r $pairTmpDir/mercator-output/alignments $pairOutputDir");
+		$self->runCmd($test,"mv $pairTmpDir/*.align $pairOutputDir");
+		$self->runCmd($test,"mv $pairTmpDir/mercator-output/*.agp $pairOutputDir");
+		$self->runCmd($test,"mv $pairTmpDir/mercator-output/alignments $pairOutputDir");
 
 		# delete tmp dir
 		$self->runCmd($test,"rm -r $pairTmpDir");
