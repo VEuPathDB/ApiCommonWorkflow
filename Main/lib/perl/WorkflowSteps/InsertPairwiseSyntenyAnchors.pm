@@ -29,8 +29,8 @@ sub run {
       if ($algInvIdsFull) {
 	  my @algInvIdsArray = split(/,/, $algInvIdsFull);
 	  my $count = scalar(@algInvIdsArray);
-	  for (my $i=0; $i<$count; $i+=100) {
-	      my @subArray = splice(@algInvIdsArray, 0, 100);
+	  for (my $i=0; $i<$count; $i+=99) {
+	      my @subArray = splice(@algInvIdsArray, 0, 99);
 	      my $algInvIds = join(",", @subArray);
 	      my $cmd1 = "ga GUS::Community::Plugin::Undo --plugin ApiCommonData::Load::Plugin::InsertSyntenySpans --workflowContext --algInvocationId '$algInvIds' --commit";
 	      my $cmd2 = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabaseRls --workflowContext --algInvocationId '$algInvIds' --commit";
