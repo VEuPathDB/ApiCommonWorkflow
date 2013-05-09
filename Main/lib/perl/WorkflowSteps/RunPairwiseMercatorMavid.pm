@@ -114,11 +114,11 @@ sub run {
 
 		  # and link output dir to cache
 		  $self->runCmd($test, "ln -s $pairCacheDir $workflowDataDir/$mercatorOutputsDir");
+		} else {
+		  # if no alignments, mv to skipped dir
+		  $self->runCmd($test,"mv $pairTmpDir $pairSkippedDir");
 		}
-	      } else {
-		# if no alignments, mv to skipped dir
-		$self->runCmd($test,"mv $pairTmpDir $pairSkippedDir");
-	      }
+	    }
 	}
     }
 }
