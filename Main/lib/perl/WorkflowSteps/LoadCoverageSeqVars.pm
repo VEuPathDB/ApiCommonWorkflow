@@ -20,7 +20,7 @@ sub run {
 
   my $ctlFile = "$workflowDataDir/$controlFileDir/covSeqVar.ctl";
   my $sqlldrLog = "$workflowDataDir/$controlFileDir/sqlldr.log";
-  my $cmd = "sqlldr $gusLogin/$gusPassword\@$gusInstance data=$workflowDataDir/$inputFile control=$ctlFile log=$sqlldrLog rows=25000";
+  my $cmd = "sqlldr $gusLogin/$gusPassword\@$gusInstance data=$workflowDataDir/$inputFile control=$ctlFile log=$sqlldrLog rows=25000 direct=TRUE";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $ctlFile");
