@@ -1,0 +1,26 @@
+<workflowGraph name="">
+    <param name="parentDataDir"/>
+    <param name="type"/>
+
+    <constant name="dataDir">$$parentDataDir$$</constant>
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+  <!-- Run plugin  -->
+     <step name="insertPathways" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPathways" stepLoadTypes="plugin">
+      <paramValue name="pathwaysFileDir">$$dataDir$$</paramValue>
+      <paramValue name="imageFileDir">$$dataDir$$</paramValue>
+      <paramValue name="type">$$type$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
+    <step name="document-pathways"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">pathways_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters">TODO: patch in later</paramValue>
+    </step>
+
+</workflowGraph>

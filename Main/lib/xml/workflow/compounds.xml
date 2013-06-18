@@ -1,0 +1,37 @@
+<workflowGraph name="">
+    <param name="parentDataDir"/>
+    <paramValue name="substanceFileNames"/>
+    <paramValue name="compoundIdsFile"/>
+    <paramValue name="compoundFileNames"/>
+
+    <constant name="dataDir">$$parentDataDir$$</constant>
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <!-- insert Substances  -->
+     <step name="insertPubChemSubstances" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPubChemSubstances" stepLoadTypes="plugin">
+      <paramValue name="fileDir">$$dataDir$$</paramValue>
+      <paramValue name="fileNames">$$substanceFileNames$$</paramValue>
+      <paramValue name="compoundIdsFile">$$compoundIdsFile$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+<!-- STOP needed here, to make the compoundFile(s)  -->
+
+  <!-- insert Compounds  -->
+     <step name="insertPubChemCompounds" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPubChemCompounds" stepLoadTypes="plugin">
+      <paramValue name="fileDir">$$dataDir$$</paramValue>
+      <paramValue name="fileNames">$$compoundFileNames$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
+    <step name="document-compounds"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">compounds_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters">TODO: patch in later</paramValue>
+    </step>
+
+</workflowGraph>
