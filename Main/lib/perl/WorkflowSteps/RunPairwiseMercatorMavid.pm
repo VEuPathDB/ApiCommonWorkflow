@@ -100,7 +100,7 @@ sub run {
 
                 # Check that mercator created some alignments, otherwise move folder to Skipped directory instead of Output.
                 if (-d "$pairTmpDir/mercator-output/alignments/1/") {
-
+		  $self->runCmd($test,"mkdir $pairOutputDir");
 		  # move selected output from tmp dir to the real output dir
 		  $self->runCmd($test,"mv $pairTmpDir/*.align $pairOutputDir");
 		  $self->runCmd($test,"mv $pairTmpDir/mercator-output/*.agp $pairOutputDir");
