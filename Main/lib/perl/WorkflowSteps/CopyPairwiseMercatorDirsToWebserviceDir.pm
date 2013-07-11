@@ -16,6 +16,7 @@ sub run {
 
     my $outputDir   = "$websiteFilesDir/$mercatorWebsvcDir";
 
+
     my $workflowDataDir = $self->getWorkflowDataDir();
 
     if ($undo) {

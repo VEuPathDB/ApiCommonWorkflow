@@ -31,7 +31,7 @@ sub run {
   # this is relative to the website files dir.
   # it will look something like webServices/ToxoDB/release-6.3
   my $relativeDir = $self->getParamValue('relativeDir');
-
+  $relativeDir  =~ s/release-\S+/release-CURRENT/g;
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $fullPath = "$websiteFilesDir/$relativeDir/$nameForFiles";

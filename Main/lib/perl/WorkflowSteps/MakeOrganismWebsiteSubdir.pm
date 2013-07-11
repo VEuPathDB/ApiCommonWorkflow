@@ -21,6 +21,7 @@ sub run {
   # this is relative to the website files dir.
   # it will look something like downloadSite/ToxoDB/release-6.3
   my $relativeDir = $self->getParamValue('relativeDir');
+     $relativeDir  =~ s/release-\S+/release-CURRENT/g; 
   my $subDir = $self->getParamValue('subDir');
   my $needsDataSubDir = $self->getBooleanParamValue('needsDataSubDir');
 
