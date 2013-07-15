@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <?xml-stylesheet href="./../../xsl/datasetstyle.xsl" type="text/xsl" ?>
 
+
 <!-- define here reusable text -->
 <!DOCTYPE datasetClasses [
-  <!ENTITY organismAbbrev "The standard abbreviation for this organism.  For example TgonME49 for T. gondii ME49.  This abbreviation is like a 'primary key' for the organism.  It must be unique to this organism, and may never change for the lifetime of the workflow.  It should only include alpha-numeric characters.">
+  <!ENTITY organismAbbrev "The standard abbreviation for this organism.  For example tgonME49 for T. gondii ME49.  This abbreviation is like a 'primary key' for the organism.  It must be unique to this organism, and may never change for the lifetime of the workflow.  It should only include alpha-numeric characters.">
   <!ENTITY projectName "The name of the project, eg, PlasmoDB.  This value is used to find graph files that are generated from datasets, so it must be equal to the name of project directory which contains the project's dataset files.  It is stored in in the GUS database in Core.ProjectInfo.name and must agree with the project= (FIX: IS THAT CORRECT?) value in gus.config.  It is also used in the names of website files and directories.">
   <!ENTITY organismFullName "The full name for this organism.  This must match the scientific name in the NCBI taxonomy for this organism (see ncbiTaxonId).  It is specified redundantly to cross validate the name and ncbiTaxonId.">
-  <!ENTITY ncbiTaxonId "The NCBI Taxonomy ID for this organism.  The scientific name for this entry in the NCBI Taxonomy must match the organismFullName. ">
+  <!ENTITY ncbiTaxonId "The NCBI Taxonomy ID for this organism.">
   <!ENTITY speciesNcbiTaxonId "The NCBI Taxonomy for the species that this organism is from.  This ID must agree with the ncbiTaxonId:  it must be at or above it in the taxonomy and must have rank = 'species'">
-  <!ENTITY referenceStrainOrganismAbbrev "The organism abbreviation of the reference strain for this organism's species.  If this orgnanism is a reference strain, this value must be equal to its organismAbbrev; otherwise it must be equal to the organism abbreviation of this species' reference strain.  (These rules are validated by the triggers on the ApiDB.Organism table.">
+  <!ENTITY referenceStrainOrganismAbbrev "The organism abbreviation of the reference strain for this organism's species.  If this orgnanism is a reference strain, this value must be equal to its organismAbbrev; otherwise it must be equal to the organism abbreviation of this species' reference strain.  (These rules are validated by the triggers on the ApiDB.Organism table.)">
   <!ENTITY isAnnotatedGenome "[true|false] If true then this organism's genome has been annotated with gene models by the data provider.">
   <!ENTITY strainAbbrev "The abbreviation to use for this organism's strain.  Should not include the species name.  For example, for the organism 'Plasmodium Falciparum 3D7', this should be set to '3D7'.  It does not need to agree exactly with the organism's name in the NCBI Taxonomy.   This abbreviation should not include FIX: WHAT CHARS GIVE US TROUBLE?">
   <!ENTITY name "The name of this dataset, typically the provider, for example 'GeneDB.'  This name is used to form the directory name in Manual Delivery where this data will be found, and the name of the resource in the database.  It is not displayed to the end-user.">
   <!ENTITY version "The version of this dataset, typically a release number or a date in yyyy-mm-dd format. This version is used to find this dataset in Manual Delivery.  It is displayed to end-users.">
-  <!ENTITY soTerm "The Sequence Ontology term that describes the sequence data in this dataset.  It is used as part of the directory name for this dataset in Manual Delivery.">
+  <!ENTITY soTerm "The Sequence Ontology term that describes the sequence data in this dataset.">
+  <!ENTITY sourceIdRegex "A Perl regular expression that will extract the stable identifier (a.k.a the source ID) from the definition line of a FASTA sequence.  For example >(\S+) will extract the first non-white-space word on the definition line.  The part to extract must be in parentheses.">
   <!ENTITY isfMappingFile "The mapping file required by the GUS InsertSequenceFeatures (ISF) plugin.  See the ISF documentation.">
 
 ]>
@@ -24,14 +26,51 @@
   <defaultPropertyDescriptions>
   </defaultPropertyDescriptions>
 
-  <datasetClass class="organism" category="" datasetFileHint="">
+  <!-- temporary while developing API GUI -->
+  <datasetClass class="example" category="" datasetFileHint="organism">
+    <purpose></purpose>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
+
+    <graphTemplateFile name="project.xml"/>
+
+    <qaNotes>To QA this class ask Dave Falke, he is really good at it</qaNotes>
+
+    <templateInjector name="org.apidb.apicommon.model.datasetInjector.AnnotatedGenome">Optionally text here</templateInjector>
+
+    <datasetLoader datasetName="metaboliteProfiles_${experimentName}_RSRC" version="${experimentVersion}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              type="transcript_expression"
+              subType="FILL"
+              organismAbbrev="">
+
+      <manualGet fileOrDir="common/empty">
+        <descriptionOfFinal>The final/ dir must contain three .fasta files</descriptionOfFinal>
+        <example dir="genome/falke/2013">Provider gives crazy files</example>
+        <example dir="genome/fischer/2012">Provider gives really crazy files</example>
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <unpack>ln -s @@manualDeliveryDir@@/${projectName}/common/massSpecExperiments/${experimentName}/${experimentVersion}/final/ @@dataDir@@/final</unpack>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final" />
+      <getAndUnpackOutput file="@@dataDir@@/final/config.txt"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/profile_config.txt"/>
+      <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
+    </datasetLoader>
+  </datasetClass>
+
+  <datasetClass class="organism" category="organism" datasetFileHint="">
     <purpose>Add an organism to the workflow.  This "dataset" is not actually a dataset.  Instead, it provides the framework and essential properties of the organism so that real datasets can be added to the organism.  It is critical that every property of this dataset be carefully reviewed for correctness before the workflow runs this organism.   Correcting them after the workflow runs is very expensive.  NOTE: in the datasets file, reference strains must precede secondary strains</purpose>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="projectName">&projectName;</prop>
     <prop name="publicOrganismAbbrev">The abbreviation for this organism that the end-user will see.   It is used in displays when there is very limited space.</prop>
     <prop name="organismFullName">&organismFullName;</prop>
     <prop name="organismNameForFiles">The name of this organism for use in file and directory names, for example on the download site.  It should not include white space or other characters that are not file friendly.</prop>
-    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
+    <prop name="ncbiTaxonId">&ncbiTaxonId;  The scientific name for this entry in the NCBI Taxonomy must match the organismFullName property.</prop>
     <prop name="speciesNcbiTaxonId">&speciesNcbiTaxonId;</prop>
     <prop name="isReferenceStrain">[true|false] If true then this organism is the reference strain for its species.  Exactly one organism per species must set this value to 'true', and all others must set it to 'false'.  FIX: NEED TO ADD VALIDATION FOR THIS TO InsertOrganism PLUGIN.  The reference strain for a species has the responsibility for loading species-wide datasets, for example ESTs.  Dataset classes that are intended to be used only by reference strains are typically named with the prefix 'referenceStrain-', for example 'referenceStrain-dbEST'.  Be sure to include these datasets in reference strains, and omit them from other organisms.</prop>
     <prop name="referenceStrainOrganismAbbrev">&referenceStrainOrganismAbbrev;</prop>
@@ -56,7 +95,7 @@
 
   </datasetClass>
 
-  <datasetClass class="validateOrganismInfo" category="" datasetFileHint="">
+  <datasetClass class="validateOrganismInfo" category="organism" datasetFileHint="">
     <purpose></purpose>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="strainAbbrev">&strainAbbrev;</prop>
@@ -91,7 +130,7 @@
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="name">&name;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm">[choromsome, mitochondrial_chromosome, apicoplast_chromosome, supercontig, contig] &soTerm;</prop>
+    <prop name="soTerm">[chromosome, supercontig, contig] &soTerm;</prop>
     <prop name="mapFile">&isfMappingFile;</prop>
    
 
@@ -145,14 +184,14 @@
   </datasetClass>
 
 <!-- chromosomeMap.txt file with 3 tab delimited columns, source_id,chromosome,chromosome_order_number, must be in final dir for chromosomes -->
-  <datasetClass class="genbank_secondary_genome" category="" datasetFileHint="">
+  <datasetClass class="genbank_secondary_genome" category="genome" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="name">&name;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[chromosome, random_sequence, supercontig, contig] &soTerm;</prop>
     <prop name="mapFile"/>
     
 
@@ -181,7 +220,7 @@
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="name">&name;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[mitochondrial_chromosome, apicoplast_chromosome, supercontig, contig] &soTerm;</prop>
     <prop name="mapFile"/>
     <prop name="organelle"/>
 
@@ -217,7 +256,7 @@
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="name">&name;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[chromosome, supercontig, contig] &soTerm;</prop>
     <prop name="mapFile"/>
  
 
@@ -240,14 +279,14 @@
   </datasetClass>
 
 <!-- chromosomeMap.txt file with 3 tab delimited columns, source_id,chromosome,chromosome_order_number, must be in final dir for chromosomes -->
-  <datasetClass class="embl_secondary_genome" category="" datasetFileHint="">
+  <datasetClass class="embl_secondary_genome" category="genome" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="name">&name;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[chromosome, supercontig, contig, random_sequence] &soTerm;</prop>
     <prop name="mapFile"/>
    
 
@@ -276,7 +315,7 @@
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="name">&name;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[mitochondrial_chromosome, apicoplast_chromosome, supercontig, contig] &soTerm;</prop>
     <prop name="mapFile"/>
     <prop name="organelle"/>
 
@@ -300,13 +339,13 @@
   </datasetClass>
 
 
-  <datasetClass class="GeneDB_GFF_primary_genome_features" category="" datasetFileHint="">
+  <datasetClass class="GeneDB_GFF_primary_genome_features" category="genome" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[chromosome, supercontig, contig] &soTerm;</prop>
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
 
     <datasetLoader datasetName="${organismAbbrev}_primary_genome_features_RSRC"
@@ -325,13 +364,13 @@
     </datasetLoader>
   </datasetClass>
 
-  <datasetClass class="GeneDB_GFF_secondary_genome_features" category="" datasetFileHint="">
+  <datasetClass class="GeneDB_GFF_secondary_genome_features" category="genome" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[chromosome, supercontig, contig, random_sequence] &soTerm;</prop>
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
 
@@ -352,13 +391,13 @@
   </datasetClass>
 
   <!-- must be used in conjunction w/ fasta_organelle_genome with name="GeneDB" -->
-  <datasetClass class="GeneDB_GFF_organelle_genome_features" category="" datasetFileHint="">
+  <datasetClass class="GeneDB_GFF_organelle_genome_features" category="genome" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[mitochondrial_chromosome, apicoplast_chromosome, supercontig, contig] &soTerm;</prop>
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
 
@@ -384,7 +423,7 @@
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[chromosome, supercontig, contig] &soTerm;</prop>
     <prop name="idPrefix"/>
     <prop name="source"/>
 
@@ -411,13 +450,13 @@
     </datasetLoader>
   </datasetClass>
   
-    <datasetClass class="GFF_primary_genome_features" category="" datasetFileHint="">
+    <datasetClass class="GFF_primary_genome_features" category="genome" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[chromosome, supercontig, contig] &soTerm;</prop>
     <prop name="source"/>
     <prop name="mapFile"/>
 
@@ -448,7 +487,7 @@
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[chromosome, supercontig, contig] &soTerm;</prop>
     <prop name="source"/>
     <prop name="mapFile"/>
 
@@ -478,7 +517,7 @@
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[chromosome, supercontig, contig, random_sequence] &soTerm;</prop>
     <prop name="name"/>
     <prop name="mapFile"/>
 
@@ -501,13 +540,13 @@
     </datasetLoader>
   </datasetClass>
 
-  <datasetClass class="Broad_GFF_primary_genome_features" category="" datasetFileHint="">
+  <datasetClass class="Broad_GFF_primary_genome_features" category="genome" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[chromosome, supercontig, contig] &soTerm;</prop>
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
 
@@ -531,13 +570,13 @@
     </datasetLoader>
   </datasetClass>
 
-  <datasetClass class="NoPreprocess_GTF_primary_genome_features" category="" datasetFileHint="">
+  <datasetClass class="NoPreprocess_GTF_primary_genome_features" category="genome" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[chromosome, supercontig, contig] &soTerm;</prop>
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
 
@@ -561,13 +600,13 @@
     </datasetLoader>
   </datasetClass>
 
-  <datasetClass class="VBI_primary_genome_features" category="" datasetFileHint="">
+  <datasetClass class="VBI_primary_genome_features" category="genome" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="version">&version;</prop>
-    <prop name="soTerm"/>
+    <prop name="soTerm">[chromosome, supercontig, contig] &soTerm;</prop>
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
 
@@ -592,18 +631,20 @@
   </datasetClass>
 
 <!-- chromosomeMap.txt file with 3 tab delimited columns, source_id,chromosome,chromosome_order_number, must be in final dir for chromosomes -->
-  <datasetClass class="fasta_primary_genome_sequence" category="" datasetFileHint="">
+  <datasetClass class="fasta_primary_genome_sequence" category="" datasetFileHint="organism">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="name">&name;</prop>
     <prop name="version">&version;</prop>
-    <prop name="table"/>  <!-- example:  DoTS::NASequence -->
-    <prop name="soTerm"/>
-    <prop name="sourceIdRegex"/>
+    <prop name="table">Ignore this property. It should be removed from the dataset class. You can leave it blank.</prop>
+    <prop name="soTerm">[chromosome, supercontig, contig] &soTerm;</prop>
+    <prop name="sourceIdRegex">&sourceIdRegex;</prop>
  
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
+
+    <qaNotes></qaNotes>
 
     <datasetLoader datasetName="${organismAbbrev}_primary_genome_RSRC" version="${version}"
 	      plugin="GUS::Supported::Plugin::LoadFastaSequences"
@@ -612,11 +653,11 @@
               organismAbbrev="${organismAbbrev}">
 
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/genome/${soTerm}_${name}_fasta/${version}/final/">
-        <dir name="final">
-        </dir>
+        <descriptionOfFinal>The final/ dir must contain two files: genome.fasta and chromosomeMap.txt</descriptionOfFinal>
+        <example dir="fasta_primary_genome_sequence.1"></example>
       </manualGet>
 
-      <pluginArgs>--externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/final/genome.fasta --chromosomeMapFile @@dataDir@@/final/chromosomeMap.txt --soTermName ${soTerm} --regexSourceId "${sourceIdRegex}" --tableName "${table}"</pluginArgs>
+      <pluginArgs>--externalDatabaseName %DATASET_NAME% --externalDatabaseVersion %DATASET_VERSION% --ncbiTaxId ${ncbiTaxonId} --sequenceFile @@dataDir@@/final/genome.fasta --chromosomeMapFile @@dataDir@@/final/chromosomeMap.txt --soTermName ${soTerm} --regexSourceId "${sourceIdRegex}" --tableName "DoTS::ExternalNASequence"</pluginArgs>
     </datasetLoader>
   </datasetClass>
 
@@ -627,9 +668,9 @@
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="name">&name;</prop>
     <prop name="version">&version;</prop>
-    <prop name="table"/>  <!-- example:  DoTS::NASequence -->
-    <prop name="soTerm"/>
-    <prop name="sourceIdRegex"/>
+    <prop name="table">Ignore this property. It should be removed from the dataset class. You can leave it blank.</prop>
+    <prop name="soTerm">[mitochondrial_chromosome, apicoplast_chromosome, supercontig, contig] &soTerm;</prop>
+    <prop name="sourceIdRegex">&sourceIdRegex;</prop>
     <prop name="organelle"/>
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
@@ -650,16 +691,16 @@
     </datasetLoader>
   </datasetClass>
 
-  <datasetClass class="fasta_secondary_genome" category="" datasetFileHint="">
+  <datasetClass class="fasta_secondary_genome" category="genome" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="name">&name;</prop>
     <prop name="version">&version;</prop>
-    <prop name="table"/>  <!-- example:  DoTS::NASequence -->
-    <prop name="soTerm"/>
-    <prop name="sourceIdRegex"/>
+    <prop name="table">Ignore this property. It should be removed from the dataset class. You can leave it blank.</prop>
+    <prop name="soTerm">[chromosome, supercontig, contig, random_sequence] &soTerm;</prop>
+    <prop name="sourceIdRegex">&sourceIdRegex;</prop>
 
     <graphTemplateFile name="genomeSequenceAndFeatures.xml"/>
 
@@ -870,6 +911,7 @@
     <prop name="version"/>
     <prop name="mapFile"/>
     <prop name="gff2GroupTag"/>
+    <prop name="virtualGenomeName"/>
     <prop name="virtualGenomeVersion"/>
 
     <graphTemplateFile name="organismSpecificMiscNoAlias.xml"/>
@@ -886,7 +928,7 @@
         </dir>
       </manualGet>
 
-      <pluginArgs>--extDbName %DATASET_NAME% --extDbRlsVer %DATASET_VERSION% --seqExtDbName ${organismAbbrev}_primary_virtual_genome_RSRC --seqExtDbRlsVer ${virtualGenomeVersion} --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/features.gff --fileFormat gff2  --gff2GroupTag "${gff2GroupTag}" --soExtDbRlsName "SO_RSRC" --defaultOrganism ${ncbiTaxonId} --naSequenceSubclass VirtualSequence --seqIdColumn source_id  --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
+      <pluginArgs>--extDbName %DATASET_NAME% --extDbRlsVer %DATASET_VERSION% --seqExtDbName ${virtualGenomeName} --seqExtDbRlsVer ${virtualGenomeVersion} --mapFile @@gusHome@@/lib/xml/isf/${mapFile} --inputFileOrDir @@dataDir@@/features.gff --fileFormat gff2  --gff2GroupTag "${gff2GroupTag}" --soExtDbRlsName "SO_RSRC" --defaultOrganism ${ncbiTaxonId} --naSequenceSubclass VirtualSequence --seqIdColumn source_id  --bioperlTreeOutput @@dataDir@@/bioperlTree.out</pluginArgs>
     </datasetLoader>
   </datasetClass>
 
@@ -994,7 +1036,7 @@
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="version">&version;</prop>
     <prop name="name">&name;</prop>
-    <prop name="sourceIdRegex"/>
+    <prop name="sourceIdRegex">&sourceIdRegex;</prop>
     <prop name="soTerm"/>
     <prop name="isPutativeFullLength"/> <!-- true or false -->
     <prop name="libraryVector"/>
@@ -1088,7 +1130,7 @@
        our genome.  The reference strain DOES need to include an instance
        of this class so that its transcripts get mapped to its genome  -->
 
-  <datasetClass class="epitopesFromReferenceStrain" category="" datasetFileHint="">
+  <datasetClass class="epitopesFromReferenceStrain" category="epitope" datasetFileHint="">
     <purpose></purpose>
     <prop name="referenceStrainOrganismAbbrev">&referenceStrainOrganismAbbrev;</prop>
 
@@ -1980,7 +2022,7 @@
     <prop name="name">&name;</prop>
     <prop name="version">&version;</prop>
     <prop name="soTermName"/>
-    <prop name="sourceIdRegex"/>
+    <prop name="sourceIdRegex">&sourceIdRegex;</prop>
     <prop name="secondaryIdRegex"/>
 
     <graphTemplateFile name="organismSpecificMiscNoAlias.xml"/>
@@ -2025,7 +2067,7 @@
     <prop name="name">&name;</prop>
     <prop name="version">&version;</prop>
     <prop name="soTermName"/>
-    <prop name="sourceIdRegex"/>
+    <prop name="sourceIdRegex">&sourceIdRegex;</prop>
 
     <graphTemplateFile name="organismSpecificMiscNoAlias.xml"/>
 
@@ -2138,7 +2180,7 @@
     </datasetLoader>
   </datasetClass>
 
-  <datasetClass class="GeneOntologyAssociations" category="" datasetFileHint="">
+  <datasetClass class="GeneOntologyAssociations" category="gene_annotation" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
@@ -2161,7 +2203,7 @@
     </datasetLoader>
   </datasetClass>
 
-  <datasetClass class="EnzymeCommissionAssociations" category="" datasetFileHint="">
+  <datasetClass class="EnzymeCommissionAssociations" category="gene_annotation" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
@@ -2186,7 +2228,7 @@
 
   </datasetClass>
 
-  <datasetClass class="ECAssocFromUniprot" category="" datasetFileHint="">
+  <datasetClass class="ECAssocFromUniprot" category="gene_annotation" datasetFileHint="">
     <purpose></purpose>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
     <prop name="version">&version;</prop>
@@ -2318,7 +2360,7 @@
     <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
     <prop name="name">&name;</prop>
     <prop name="version">&version;</prop>
-    <prop name="sourceIdRegex"/>
+    <prop name="sourceIdRegex">&sourceIdRegex;</prop>
 
     <graphTemplateFile name="isolatesFromNonHtsSequencing.xml"/>
 
@@ -2341,7 +2383,7 @@
 
 
   <!-- the ncbi taxon ID is not important.  isolate strain info is provided by dedicated isolate info tables -->
-  <datasetClass class="familyRepresentative-isolateFeaturesGFF2" category="" datasetFileHint="">
+  <datasetClass class="familyRepresentative-isolateFeaturesGFF2" category="isolates" datasetFileHint="">
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
@@ -2371,7 +2413,7 @@
        them to the genome.  It extracts the sequences from the database
   -->
 
-  <datasetClass class="isolatesFromFamilyRepresentative" category="" datasetFileHint="">
+  <datasetClass class="isolatesFromFamilyRepresentative" category="isolates" datasetFileHint="">
     <purpose></purpose>
     <prop name="familyRepOrganismAbbrev"/>
     <prop name="name">&name;</prop>
@@ -2844,7 +2886,7 @@
   </datasetClass>
 
 
-  <datasetClass class="isolateQualifierToVocabMapping" category="" datasetFileHint="">
+  <datasetClass class="isolateQualifierToVocabMapping" category="sres" datasetFileHint="">
     <purpose></purpose>
     <prop name="version">&version;</prop>
 
@@ -3135,21 +3177,25 @@
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
-    <prop name="name">&name;</prop>
-    <prop name="version">&version;</prop>
-    <graphTemplateFile name="organismSpecificMisc.xml"/>
+    <prop name="name"/>
+    <prop name="version"/>
+	<prop name="hasTimeSeries"/>
+    <graphTemplateFile name="quantitativeMassSpec.xml"/>
    
     <datasetLoader datasetName="${organismAbbrev}_quantitativeMassSpec_${name}_RSRC" version="${version}"
-              plugin="ApiCommonData::Load::Plugin::InsertExpressionProfiles"
+              plugin="ApiCommonData::Load::Plugin::LoadNothing"
               type="protein_expression"
               subType="quantitative"
               scope="organism"
               organismAbbrev="${organismAbbrev}">
+
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/quantitativeMassSpec/${name}/${version}/final/">
         <dir name="final">
         </dir>
       </manualGet>
-      <pluginArgs>--inputDir @@dataDir@@/final --configFile @@dataDir@@/final/profiles.config --tolerateMissingIds --externalDatabase "%DATASET_NAME%" --externalDatabaseRls "%DATASET_VERSION%" --organismAbbrev ${organismAbbrev}</pluginArgs>
+      <getAndUnpackOutput dir="@@dataDir@@/final"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/analysisConfig.xml"/>
+      <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
     </datasetLoader>
   </datasetClass>
 
@@ -3676,6 +3722,102 @@
      <pluginArgs>--cladeFile  @@dataDir@@/orthomclClades.txt --speciesFile  @@dataDir@@/orthomclTaxons.txt</pluginArgs>
 
      </datasetLoader>
+  </datasetClass>
+
+  <!-- datasetClass for Pathways -->
+  <datasetClass class="Pathways" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="version">&version;</prop>
+    <prop name="type"/>
+
+    <datasetLoader datasetName="Pathways_RSRC" version="${version}"
+		   plugin="ApiCommonData::Load::Plugin::InsertPathways"
+		   scope="global"
+		   type="pathway"
+		   >
+      <manualGet fileOrDir="common/pathways/${type}/${version}/">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <pluginArgs>--pathwaysFileDir @@dataDir@@ --imageFileDir @@dataDir@@ --format ${type}</pluginArgs>
+    </datasetLoader>
+  </datasetClass>
+
+
+  <!-- datasetClasses for Compounds -->
+  <datasetClass class="PathwayCompounds" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="substanceFileNames"/>
+    <prop name="compoundIdsFile"/>
+    <prop name="compoundFileNames"/>
+
+    <graphTemplateFile name="project.xml"/>
+    <datasetLoader datasetName="PathwayCompounds_RSRC" version="${version}"
+		   plugin="ApiCommonData::Load::Plugin::LoadNothing"
+		   scope="global"
+		   type="compound"
+		   >
+      <manualGet fileOrDir="common/metabolites/${name}/${version}/final">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <pluginArgs>--fileDir @@dataDir@@ --fileNames '{fileNames}' --compoundIdsFile '{compoundIdsFile}'</pluginArgs>
+    </datasetLoader>
+  </datasetClass>
+
+  <datasetClass class="ExperimentCompounds" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="name">&name;</prop>
+    <prop name="version">&version;</prop>
+    <prop name="substanceFileNames"/>
+    <prop name="compoundIdsFile"/>
+    <prop name="compoundFileNames"/>
+
+    <graphTemplateFile name="project.xml"/>
+    <datasetLoader datasetName="ExperimentCompounds_RSRC" version="${version}"
+		   plugin="ApiCommonData::Load::Plugin::LoadNothing"
+		   scope="global"
+		   type="compound"
+		   >
+      <manualGet fileOrDir="${projectName}/common/metabolites//${name}/${version}/final">
+        <dir name="final">
+        </dir>
+      </manualGet>
+
+      <pluginArgs>--fileDir @@dataDir@@ --fileNames '{fileNames}' --compoundIdsFile '{compoundIdsFile}'</pluginArgs>
+    </datasetLoader>
+  </datasetClass>
+
+
+  <!-- datasetClass for Metabolite Profiles -->
+  <datasetClass class="metaboliteProfiles" category="" datasetFileHint="">
+    <purpose></purpose>
+    <prop name="projectName">&projectName;</prop>
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
+
+    <graphTemplateFile name="project.xml"/>
+    <datasetLoader datasetName="metaboliteProfiles_${experimentName}_RSRC" version="${experimentVersion}"
+	      plugin="ApiCommonData::Load::Plugin::LoadNothing"
+              scope="organism"
+              type="metabolite_levels"
+              subType="FILL"
+              organismAbbrev="">
+
+      <manualGet fileOrDir="common/empty">
+        <dir name="final">
+        </dir>
+      </manualGet>
+      <unpack>ln -s @@manualDeliveryDir@@/${projectName}/common/massSpecExperiments/${experimentName}/${experimentVersion}/final/ @@dataDir@@/final</unpack>
+
+      <getAndUnpackOutput dir="@@dataDir@@/final" />
+      <getAndUnpackOutput file="@@dataDir@@/final/config.txt"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/profile_config.txt"/>
+      <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
+    </datasetLoader>
   </datasetClass>
 
 </datasetClasses>
