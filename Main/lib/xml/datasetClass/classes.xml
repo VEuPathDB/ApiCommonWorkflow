@@ -3067,11 +3067,11 @@
               type="protein_expression"
               scope="organism"
               organismAbbrev="${organismAbbrev}">
-      <manualGet fileOrDir="${projectName}/${organismAbbrev}/profiles/${name}/${version}/final/">
+      <manualGet fileOrDir="${projectName}/${organismAbbrev}/massSpec/${name}/${version}/final/">
         <dir name="final">
         </dir>
       </manualGet>
-      <pluginArgs>--inputDir @@dataDir@@/final --configFile @@dataDir@@/final/profiles.config --tolerateMissingIds --externalDatabase "%DATASET_NAME%" --externalDatabaseRls "%DATASET_VERSION%" --organismAbbrev ${organismAbbrev}</pluginArgs>
+      <pluginArgs>--inputDir @@dataDir@@/final --configFile @@dataDir@@/final/mass_spec_profiles.config --tolerateMissingIds --externalDatabase "%DATASET_NAME%" --externalDatabaseRls "%DATASET_VERSION%" --organismAbbrev ${organismAbbrev}</pluginArgs>
     </datasetLoader>
   </datasetClass>
 
@@ -3079,21 +3079,25 @@
     <purpose></purpose>
     <prop name="projectName">&projectName;</prop>
     <prop name="organismAbbrev">&organismAbbrev;</prop>
-    <prop name="name">&name;</prop>
-    <prop name="version">&version;</prop>
-    <graphTemplateFile name="organismSpecificMisc.xml"/>
+    <prop name="name"/>
+    <prop name="version"/>
+	<prop name="hasTimeSeries"/>
+    <graphTemplateFile name="quantitativeMassSpec.xml"/>
    
     <datasetLoader datasetName="${organismAbbrev}_quantitativeMassSpec_${name}_RSRC" version="${version}"
-              plugin="ApiCommonData::Load::Plugin::InsertExpressionProfiles"
+              plugin="ApiCommonData::Load::Plugin::LoadNothing"
               type="protein_expression"
               subType="quantitative"
               scope="organism"
               organismAbbrev="${organismAbbrev}">
+
       <manualGet fileOrDir="${projectName}/${organismAbbrev}/quantitativeMassSpec/${name}/${version}/final/">
         <dir name="final">
         </dir>
       </manualGet>
-      <pluginArgs>--inputDir @@dataDir@@/final --configFile @@dataDir@@/final/profiles.config --tolerateMissingIds --externalDatabase "%DATASET_NAME%" --externalDatabaseRls "%DATASET_VERSION%" --organismAbbrev ${organismAbbrev}</pluginArgs>
+      <getAndUnpackOutput dir="@@dataDir@@/final"/>
+      <getAndUnpackOutput file="@@dataDir@@/final/analysisConfig.xml"/>
+      <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
     </datasetLoader>
   </datasetClass>
 
