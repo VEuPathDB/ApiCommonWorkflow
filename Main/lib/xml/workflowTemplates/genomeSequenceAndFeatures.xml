@@ -89,16 +89,6 @@
     </subgraph>
   </datasetTemplate>
 
-  <datasetTemplate class="NoPreprocess_GFF_primary_genome_features">
-    <prop name="organismAbbrev"/>
-    <subgraph name="primary_genome_features_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${organismAbbrev}_primary_genome_features_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="primary_genome_RSRC"/>
-    </subgraph>
-  </datasetTemplate>
-
   <datasetTemplate class="Broad_GTF_primary_genome_features">
     <prop name="organismAbbrev"/>
     <subgraph name="primary_genome_features_RSRC" xmlFile="loadDataset.xml">
@@ -201,6 +191,7 @@
 
   <datasetTemplate class="GeneDB_GFF_organelle_genome_features">
     <prop name="organismAbbrev"/>
+    <prop name="soTerm"/>
     <subgraph name="${soTerm}_GeneDB_features_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_GeneDB_features_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
@@ -228,6 +219,18 @@
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="${soTerm}_${name}_secondary_genome_RSRC"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="NoPreprocess_organelle_genome_features">
+    <prop name="organismAbbrev"/>
+    <prop name="soTerm"/>
+    <prop name="name"/>
+    <subgraph name="${soTerm}_GeneDB_features_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_features_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="${soTerm}_${name}_RSRC"/>
     </subgraph>
   </datasetTemplate>
 
