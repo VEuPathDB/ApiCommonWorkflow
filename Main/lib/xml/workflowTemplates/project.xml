@@ -185,7 +185,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <!-- use the topLevelGenomicSeqs.fsa as genomicSeqsFile here to make htssnps run at topLevel -->
       <paramValue name="genomicSeqsFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fsa</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
-      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativedDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
@@ -296,12 +296,13 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="datasetName">Custom_Ontology_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <dependsPattern name="*specific*"/>      
     </subgraph>
   </datasetTemplate>
   
   <subgraph name="loadMetaData" xmlFile="generated/$$projectName$$/metaData.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="parentDataDir"></paramValue>
-    <dependsPattern name="*specific"/>
+    <dependsPattern name="custom_ontology_RSRC"/>
   </subgraph>
 
   <!-- depends on all organism specific graphs. 
