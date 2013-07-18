@@ -12,7 +12,11 @@
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="datasetName">$$organismAbbrev$$_metaData_$$experimentName$$_RSRC</constant>
 
-     <subgraph name="$$experimentName$$_metaData" xmlFile="loadDataset.xml">
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+   </step>
+
+   <subgraph name="$$experimentName$$_metaData" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$datasetName$$</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -25,7 +29,7 @@
       <depends name="$$experimentName$$_metaData"/>
     </step>
 
-    <step name="addMetaData" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSampleMetaData" stepLoadTypes="plugin">
+    <step name="addMetaData" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyMetaData" stepLoadTypes="plugin">
      <paramValue name="experimentName">$$experimentName$$</paramValue>
      <paramValue name="sampleMetaDataFile">$$dataDir$$/$$datasetName$$/final/sampleMetaData.txt</paramValue>
      <paramValue name="readsFile">$$readsFile</paramValue>
