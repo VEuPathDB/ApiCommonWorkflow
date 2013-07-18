@@ -264,6 +264,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
   </datasetTemplate>
 
+  
   <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml">
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="comparativeGenomicsInputDir">$$comparativeGenomicsInputDir$$</paramValue>
@@ -287,6 +288,21 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
   </datasetTemplate>
+  
+  <datasetTemplate class="customOntologyEntries">
+    <prop name="name"/> 
+    <prop name="organismAbbrev"/>
+    <subgraph name="custom_ontology_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">Custom_Ontology_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+  </datasetTemplate>
+  
+  <subgraph name="loadMetaData" xmlFile="generated/$$projectName$$/metaData.xml" excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="parentDataDir"></paramValue>
+    <dependsPattern name="*specific"/>
+  </subgraph>
 
   <!-- depends on all organism specific graphs. 
        waits for manual improvement of the vocabularies -->

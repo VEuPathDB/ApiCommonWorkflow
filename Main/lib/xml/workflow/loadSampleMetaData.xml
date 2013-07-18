@@ -1,0 +1,39 @@
+<workflowGraph name="">
+    <paramValue name="organismAbbrev"/>
+    <paramValue name="parentDataDir"/>
+    <paramValue name="experimentName"/>
+    <paramValue name="readsFile"/>
+    <paramValue name="sampleExtDbRlsSpec"/>
+    <paramValue name="sampleExtDbRlsSpecTemplate"/>
+    <paramValue name="studyExtDbRlsSpec"/>
+    <paramValue name="isProfile"/>
+    <paramValue name="dataType"/>
+
+    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
+    <constant name="datasetName">$$organismAbbrev$$_metaData_$$experimentName$$_RSRC</constant>
+
+     <subgraph name="$$experimentName$$_metaData" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$datasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="addStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
+      <paramValue name="experimentName">$$organismAbbrev$$_$$dataType$$_$$experimentName$$</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">$$studyExtDbRlsSpec$$</paramValue>
+      <depends name="$$experimentName$$_metaData"/>
+    </step>
+
+    <step name="addMetaData" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSampleMetaData" stepLoadTypes="plugin">
+     <paramValue name="experimentName">$$experimentName$$</paramValue>
+     <paramValue name="sampleMetaDataFile">$$dataDir$$/$$datasetName$$/final/sampleMetaData.txt</paramValue>
+     <paramValue name="readsFile">$$readsFile</paramValue>
+     <paramValue name="sampleExtDbRlsSpec">$$sampleExtDbRlsSpec$$</paramValue>
+     <paramValue name="sampleExtDbRlsSpecTemplate">$$sampleExtDbRlsSpecTemplate$$</paramValue>
+     <paramValue name="studyExtDbRlsSpec">$$studyExtDbRlsSpec$$</paramValue>
+     <paramValue name="isProfile">$$isProfile$$</paramValue>
+     <depends name="addStudy"/>
+    </step>
+
+</workflowGraph>
