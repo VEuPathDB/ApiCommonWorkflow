@@ -296,22 +296,43 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <dependsPattern name="*specific"/>
   </subgraph>
 
+ <datasetTemplate class="PathwayCompounds">
+    <prop name="version"/> 
+    <prop name="substanceFileNames"/> 
+    <prop name="compoundFileNames"/> 
+    <prop name="compoundIdsFile"/>   
 
     <subgraph name="PathwayCompounds" xmlFile="compounds.xml">
       <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="version">$$version$$</paramValue>
-      <paramValue name="fileNames">$$fileNames$$</paramValue>
-      <paramValue name="compoundIdsFile">$$compoundIdsFile$$</paramValue>
+      <paramValue name="version">${version}</paramValue>
+      <paramValue name="fileNames">${substanceFileNames},${compoundFileNames}</paramValue>
+      <paramValue name="compoundIdsFile">${compoundIdsFile}</paramValue>
       <dependsGlobal name="initUserGroupProject"/>
     </subgraph>
 
+ </datasetTemplate>
+
+  <datasetTemplate class="ExperimentCompounds">
+    <prop name="version"/> 
+    <prop name="substanceFileNames"/> 
+    <prop name="compoundFileNames"/> 
+    <prop name="compoundIdsFile"/>  
+
     <subgraph name="ExperimentCompounds" xmlFile="compounds.xml">
       <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="version">$$version$$</paramValue>
-      <paramValue name="fileNames">$$fileNames$$</paramValue>
-      <paramValue name="compoundIdsFile">$$compoundIdsFile$$</paramValue>
+      <paramValue name="version">${version}</paramValue>
+      <paramValue name="fileNames">${substanceFileNames},${compoundFileNames}</paramValue>
+      <paramValue name="compoundIdsFile">${compoundIdsFile}</paramValue>
       <dependsGlobal name="initUserGroupProject"/>
     </subgraph>
+
+ </datasetTemplate>
+
+ <datasetTemplate class="MetaboliteProfiles">
+   <prop name="experimentName"/> 
+    <prop name="experimentVersion"/> 
+    <prop name="doExpressionAnalysis"/> 
+    <prop name="hasTimeSeries"/> 
 
     <subgraph name="MetaboliteProfiles" xmlFile="metaboliteProfiles.xml">
       <paramValue name="parentDataDir"></paramValue>
@@ -322,5 +343,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <dependsGlobal name="initUserGroupProject"/>
     </subgraph>
+
+</datasetTemplate>
 
 </workflowGraph>
