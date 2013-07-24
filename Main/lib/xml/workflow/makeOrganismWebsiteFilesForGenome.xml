@@ -7,7 +7,7 @@
     <param name="projectVersionForWebsiteFiles"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="minOrfLength"/>
-    <param name="skipOrfs"/>
+    <param name="isHugeGenome"/>
 
     <constant name="mixedGenomicDescripString">Genomic DNA sequences (NT)</constant>
     <constant name="orfDescripString">Translated open reading frames from genomic sequences (AA)</constant>
@@ -39,7 +39,7 @@
       <depends name="makeMixedGenomicDownloadFile"/>
     </step>
 
-    <step name="makeOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfDownloadFile" excludeIf="$$skipOrfs$$">
+    <step name="makeOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfDownloadFile" excludeIf="$$isHugeGenome$$">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -52,7 +52,7 @@
       <paramValue name="isWebServiceFile">false</paramValue>
     </step>
 
-    <step name="formatOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" excludeIf="$$skipOrfs$$">
+    <step name="formatOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" excludeIf="$$isHugeGenome$$">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -65,7 +65,7 @@
       <depends name="makeOrfDownloadFile"/>
     </step>
 
-    <step name="copyOrfsMotifFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDownloadFastaFileToWebServices" excludeIf="$$skipOrfs$$">
+    <step name="copyOrfsMotifFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDownloadFastaFileToWebServices" excludeIf="$$isHugeGenome$$">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -77,7 +77,7 @@
     </step>
 
 <!-- comment out - will be removed unless there is an objection from users
-    <step name="makeOrfNADownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfNADownloadFile" excludeIf="$$skipOrfs$$">
+    <step name="makeOrfNADownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfNADownloadFile" excludeIf="$$isHugeGenome$$">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
