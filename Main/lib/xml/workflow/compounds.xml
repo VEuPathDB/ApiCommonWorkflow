@@ -1,29 +1,43 @@
 <workflowGraph name="">
     <param name="parentDataDir"/>
-    <paramValue name="substanceFileNames"/>
+    <paramValue name="substanceIdsFile"/>
     <paramValue name="compoundIdsFile"/>
-    <paramValue name="compoundFileNames"/>
 
     <constant name="dataDir">$$parentDataDir$$</constant>
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <!-- insert Substances  -->
-     <step name="insertPubChemSubstances" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPubChemSubstances" stepLoadTypes="plugin">
-      <paramValue name="fileDir">$$dataDir$$</paramValue>
-      <paramValue name="fileNames">$$substanceFileNames$$</paramValue>
-      <paramValue name="compoundIdsFile">$$compoundIdsFile$$</paramValue>
+    <!-- extract Substances XML from PubChem  -->
+    <step name="extractPubChemSubstances" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractPubChemData">
+     <paramValue name="idFile">$$dataDir$$/${substanceIdsFile}</paramValue>
+     <paramValue name="outFile">$$dataDir$$/substances.xml</paramValue>
+     <paramValue name="type">pcsubstance</paramValue>
     <depends name="makeDataDir"/>
   </step>
 
-<!-- STOP needed here, to make the compoundFile(s)  -->
+    <!-- insert Substances  -->
+     <step name="insertPubChemSubstances" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPubChemSubstances" stepLoadTypes="plugin">
+      <paramValue name="fileDir">$$dataDir$$</paramValue>
+      <paramValue name="fileNames">substances.xml</paramValue>
+      <paramValue name="compoundIdsFile">$$dataDir$$/${compoundIdsFile}</paramValue>
+    <depends name="insertPubChemSubstances"/>
+  </step>
+
+  <!-- extract Compounds XML from PubChem  -->
+    <step name="extractPubChemCompounds" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractPubChemData">
+     <paramValue name="idFile">$$dataDir$$/${compoundIdsFile}</paramValue>
+     <paramValue name="outFile">$$dataDir$$/compounds.xml</paramValue>
+     <paramValue name="type">pccompound</paramValue>
+    <depends name="insertPubChemSubstances"/>
+  </step>
+
 
   <!-- insert Compounds  -->
      <step name="insertPubChemCompounds" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPubChemCompounds" stepLoadTypes="plugin">
       <paramValue name="fileDir">$$dataDir$$</paramValue>
-      <paramValue name="fileNames">$$compoundFileNames$$</paramValue>
-    <depends name="makeDataDir"/>
+      <paramValue name="fileNames">$$dataDir$$/compounds.xml</paramValue>
+    <depends name="extractPubChemCompounds"/>
   </step>
 
 
