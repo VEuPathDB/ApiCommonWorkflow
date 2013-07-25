@@ -9,22 +9,21 @@ use File::Basename;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  my $workflowDataDir = $self->getWorkflowDataDir();
   my $experimentName = $self->getParamValue("experimentName");
   my $sampleMetaDataFile = $self->getParamValue('sampleMetaDataFile');
+  my $studyExtDbRlsSpec = $self->getParamValue('studyExtDbRlsSpec');
   my $readsFile = $self->getParamValue('readsFile');
-  my $samplesExtDbRlsSpec = $self->getParamValue('sampleExtDbRlsSpec');
-  my $samplesExtDbRlsSpecStr = $samplesExtDbRlsSpec ?  "--samplesExtDbRlsSpec \'$samplesExtDbRlsSpec\'" : '';
-  my $workflowDataDir = $self->getWorkflowDataDir();
   my $baseFileName = basename($readsFile);
+  my $sampleIdStr  = $baseFileName ? "--sampleId $baseFileName" :'';
   my $sampleExtDbRlsSpecTemplate = $self->getParamValue('sampleExtDbRlsSpecTemplate');
-  my $sampleExtDbRlsSpecTemplateStr = $sampleExtDbRlsSpecTemplate ?  "--sampleExtDbRlsSpecTemplate \'$sampleExtDbRlsSpecTemplate\'" : '';
+  my $sampleExtDbRlsSpecTemplateStr = $sampleExtDbRlsSpecTemplate ?  "--sampleExtDbRlsSpecTemplate $sampleExtDbRlsSpecTemplate" : '';
   my $isProfile = $self->getParamValue('isProfile');
   $isProfile = $isProfile ?  '--isProfile' : '';
-  my $studyExtDbRlsSpec = $self->getParamValue('studyExtDbRlsSpec');
-  my $studyExtDbRlsSpecStr = $studyExtDbRlsSpec ?  "--studyExtDbRlsSpec \'$studyExtDbRlsSpec\'" : '';
+
   
 
-  my $args = "--studyName '$experimentName' --file $workflowDataDir/$sampleMetaDataFile --sampleId $baseFileName $studyExtDbRlsSpecStr $samplesExtDbRlsSpecStr  $sampleExtDbRlsSpecTemplateStr $isProfile $samplesExtDbRlsSpecStr";
+  my $args = "--studyName '$experimentName' --file $workflowDataDir/$sampleMetaDataFile --studyExtDbRlsSpec $studyExtDbRlsSpec  $sampleExtDbRlsSpecTemplateStr $isProfile $sampleIdStr";
 
  unless ($test) {
    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertStudyMetaData", $args);
@@ -35,7 +34,6 @@ sub getParamDeclaration {
   return ('experimentName',
           'sampleMetaDataFile',
           'readsFile',
-          'sampleExtDbRlsSpec',
           'sampleExtDbRlsSpecTemplate',
           'isProfile',
           'studyExtDbRlsSpec',
