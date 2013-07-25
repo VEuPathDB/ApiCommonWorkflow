@@ -27,7 +27,7 @@ sub run {
   my $args = "--studyName '$experimentName' --file $workflowDataDir/$sampleMetaDataFile --sampleId $baseFileName $studyExtDbRlsSpecStr $samplesExtDbRlsSpecStr  $sampleExtDbRlsSpecTemplateStr $isProfile $samplesExtDbRlsSpecStr";
 
  unless ($test) {
-   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertSampleMetaData", $args);
+   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertStudyMetaData", $args);
   } 
 }
 
