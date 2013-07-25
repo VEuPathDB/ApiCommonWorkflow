@@ -14,8 +14,8 @@ sub run {
   my $sampleMetaDataFile = $self->getParamValue('sampleMetaDataFile');
   my $studyExtDbRlsSpec = $self->getParamValue('studyExtDbRlsSpec');
   my $readsFile = $self->getParamValue('readsFile');
-  my $baseFileName = basename($readsFile);
-  my $sampleIdStr  = $baseFileName ? "--sampleId $baseFileName" :'';
+  my $baseFileName = $readsFile ? basename($readsFile) : '';
+  my $sampleIdStr  = $readsFile ? "--sampleId $baseFileName" :'';
   my $sampleExtDbRlsSpecTemplate = $self->getParamValue('sampleExtDbRlsSpecTemplate');
   my $sampleExtDbRlsSpecTemplateStr = $sampleExtDbRlsSpecTemplate ?  "--sampleExtDbRlsSpecTemplate $sampleExtDbRlsSpecTemplate" : '';
   my $isProfile = $self->getParamValue('isProfile');
