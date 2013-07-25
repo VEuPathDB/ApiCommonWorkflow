@@ -17,13 +17,13 @@ sub run {
   my $baseFileName = $readsFile ? basename($readsFile) : '';
   my $sampleIdStr  = $readsFile ? "--sampleId $baseFileName" :'';
   my $sampleExtDbRlsSpecTemplate = $self->getParamValue('sampleExtDbRlsSpecTemplate');
-  my $sampleExtDbRlsSpecTemplateStr = $sampleExtDbRlsSpecTemplate ?  "--sampleExtDbRlsSpecTemplate $sampleExtDbRlsSpecTemplate" : '';
+  my $sampleExtDbRlsSpecTemplateStr = $sampleExtDbRlsSpecTemplate ?  "--sampleExtDbRlsSpecTemplate \'$sampleExtDbRlsSpecTemplate\'" : '';
   my $isProfile = $self->getParamValue('isProfile');
   $isProfile = $isProfile ?  '--isProfile' : '';
 
   
 
-  my $args = "--studyName '$experimentName' --file $workflowDataDir/$sampleMetaDataFile --studyExtDbRlsSpec $studyExtDbRlsSpec  $sampleExtDbRlsSpecTemplateStr $isProfile $sampleIdStr";
+  my $args = "--studyName '$experimentName' --file $workflowDataDir/$sampleMetaDataFile --studyExtDbRlsSpec '$studyExtDbRlsSpec'  $sampleExtDbRlsSpecTemplateStr $isProfile $sampleIdStr";
 
  unless ($test) {
    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertStudyMetaData", $args);
