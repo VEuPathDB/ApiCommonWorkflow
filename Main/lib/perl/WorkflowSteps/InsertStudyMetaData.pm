@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::InsertSampleMetaData;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyMetaData;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -16,7 +16,7 @@ sub run {
   my $samplesExtDbRlsSpecStr = $samplesExtDbRlsSpec ?  '--samplesExtDbRlsSpec $samplesExtDbRlsSpec' : '';
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $baseFileName = basename($readsFile);
-  my $sampleExtDbRlsSpecTemplate = $self->('sampleExtDbRlsSpecTemplate');
+  my $sampleExtDbRlsSpecTemplate = $self->getParamValue('sampleExtDbRlsSpecTemplate');
   my $sampleExtDbRlsSpecTemplateStr = $sampleExtDbRlsSpecTemplate ?  '--sampleExtDbRlsSpecTemplate $sampleExtDbRlsSpecTemplate' : '';
   my $isProfile = $self->getParamValue('isProfile');
   $isProfile = $isProfile ?  '--isProfile' : '';
