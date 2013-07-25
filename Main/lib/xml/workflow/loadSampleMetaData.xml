@@ -1,13 +1,14 @@
 <workflowGraph name="">
-    <paramValue name="organismAbbrev"/>
-    <paramValue name="parentDataDir"/>
-    <paramValue name="experimentName"/>
-    <paramValue name="readsFile"/>
-    <paramValue name="sampleExtDbRlsSpec"/>
-    <paramValue name="sampleExtDbRlsSpecTemplate"/>
-    <paramValue name="studyExtDbRlsSpec"/>
-    <paramValue name="isProfile"/>
-    <paramValue name="dataType"/>
+    <param name="organismAbbrev"/>
+    <param name="parentDataDir"/>
+    <param name="experimentName"/>
+    <param name="readsFile"/>
+    <param name="sampleExtDbRlsSpec"/>
+    <param name="sampleExtDbRlsSpecTemplate"/>
+    <param name="studyExtDbRlsSpec"/>
+    <param name="isProfile"/>
+    <param name="dataType"/>
+    <param name="datasetLoaderXmlFileName"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="datasetName">$$organismAbbrev$$_metaData_$$experimentName$$_RSRC</constant>
@@ -16,9 +17,9 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
    </step>
 
-   <subgraph name="$$experimentName$$_metaData" xmlFile="loadDataset.xml">
+   <subgraph name="getMetaData" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$datasetName$$</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
@@ -26,13 +27,13 @@
     <step name="addStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
       <paramValue name="experimentName">$$organismAbbrev$$_$$dataType$$_$$experimentName$$</paramValue>
       <paramValue name="experimentExtDbRlsSpec">$$studyExtDbRlsSpec$$</paramValue>
-      <depends name="$$experimentName$$_metaData"/>
+      <depends name="getMetaData"/>
     </step>
 
     <step name="addMetaData" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyMetaData" stepLoadTypes="plugin">
      <paramValue name="experimentName">$$experimentName$$</paramValue>
      <paramValue name="sampleMetaDataFile">$$dataDir$$/$$datasetName$$/final/sampleMetaData.txt</paramValue>
-     <paramValue name="readsFile">$$readsFile</paramValue>
+     <paramValue name="readsFile">$$readsFile$$</paramValue>
      <paramValue name="sampleExtDbRlsSpec">$$sampleExtDbRlsSpec$$</paramValue>
      <paramValue name="sampleExtDbRlsSpecTemplate">$$sampleExtDbRlsSpecTemplate$$</paramValue>
      <paramValue name="studyExtDbRlsSpec">$$studyExtDbRlsSpec$$</paramValue>

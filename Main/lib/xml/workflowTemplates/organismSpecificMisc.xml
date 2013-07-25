@@ -5,7 +5,8 @@
   <param name="maxIntronSize"/>
   <param name="genomicSeqsFile"/>
   <param name="genomicSeqsDir"/>
-
+  <param name="projectName"/>
+        <param name="relativeDownloadSiteDir"/>
 
   <datasetTemplate class="GeneOntologyAssociations">
     <prop name="name"/> 
@@ -184,16 +185,20 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     </subgraph>
   </datasetTemplate>
-  
-    <datasetTemplate class="proteinMicroarrayProfiles">
-    <prop name="organismAbbrev"/> 
-    <prop name="name"/> 
-    <subgraph name="proteinMicroarray_${name}_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${organismAbbrev}_proteinMicroarray_${name}_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+
+  <subgraph name="proteinMicroarrayProfiles" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/genericArray.xml" excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+     <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+  </subgraph>
+
+
+  <subgraph name="proteinMicroarrayMetaData" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/metaData.xml" excludeIfXmlFileDoesNotExist="true">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    </subgraph>
-  </datasetTemplate>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+  </subgraph>
+
 
   <datasetTemplate class="SiRNA">
     <prop name="organismAbbrev"/> 

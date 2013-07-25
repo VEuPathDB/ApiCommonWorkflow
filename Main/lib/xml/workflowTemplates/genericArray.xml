@@ -1,22 +1,22 @@
 <workflowGraph name="">
 	<param name="parentDataDir"/>
-	<param name="organismDatasetLoaderXmlFile"/>
+	<param name="datasetLoaderXmlFileName"/>
 	<param name="organismAbbrev"/>
+        <param name="relativeDownloadSiteDir"/>
+  
+	<constant name="dataDir">$$parentDataDir$$/genericArray</constant>
 
-  
-	<constant name="dataDir">$$parentDataDir$$/quantMassSpec</constant>
-  
 	<step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
 		<paramValue name="dataDir">$$dataDir$$</paramValue>
 	</step>
-  
+
 	<datasetTemplate class="proteinMicroarrayProfiles">
 		<prop name="name"/>
 		<prop name="version"/>
 	
 		<subgraph name="${name}" xmlFile="loadDataset.xml">
 			<paramValue name="datasetName">$$organismAbbrev$$_microarrayAntibody_${name}_RSRC</paramValue>
-			<paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+			<paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
 			<paramValue name="parentDataDir">$$dataDir$$</paramValue>
 		</subgraph>
   
