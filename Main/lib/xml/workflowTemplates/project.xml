@@ -10,7 +10,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
   <param name="projectVersionForWebsiteFiles"/>
 
   <constant name="comparativeGenomicsInputDir">comparativeGenomicsInputDir</constant>
-  <constant name="relativeWebServicesDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
+  <constant name="relativeWebServicesDir">@@webServicesDir@@/$$projectName$$/release-$projectVersionForWebsiteFiles$$</constant>
   <constant name="relativeDownloadSiteDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
 
   <globalSubgraph name="global" xmlFile="globalGraph.xml">
@@ -190,6 +190,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
 
+
     <subgraph name="${organismAbbrev}_LoadAliases" xmlFile="generated/${projectName}/${organismAbbrev}/aliases.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -299,11 +300,31 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsPattern name="*specific*"/>      
     </subgraph>
   </datasetTemplate>
-  
-  <subgraph name="loadMetaData" xmlFile="generated/$$projectName$$/metaData.xml" excludeIfXmlFileDoesNotExist="true">
-    <paramValue name="parentDataDir"></paramValue>
-    <dependsPattern name="custom_ontology_RSRC"/>
-  </subgraph>
+
+
+
+  <datasetTemplate class="proteinMicroarrayMetaData">
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
+    <prop name="projectName"/>
+
+      <subgraph name="${experimentName}_microarrayAntibody_insertMetaData" xmlFile="loadSampleMetaData.xml">
+        <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+        <paramValue name="parentDataDir"></paramValue>
+        <paramValue name="experimentName">${experimentName}</paramValue>
+        <paramValue name="readsFile"></paramValue>
+        <paramValue name="sampleExtDbRlsSpecTemplate"></paramValue>
+        <paramValue name="studyExtDbRlsSpec">${organismAbbrev}_microarrayAntibody_${experimentName}_RSRC|${experimentVersion}</paramValue>
+        <paramValue name="isProfile">true</paramValue>
+        <paramValue name="dataType">microarrayAntibody</paramValue>
+        <paramValue name="datasetLoaderXmlFileName">${projectName}/${organismAbbrev}.xml</paramValue>
+        <depends name="custom_ontology_RSRC"/>
+      </subgraph>
+
+  </datasetTemplate>
+
+
 
   <!-- depends on all organism specific graphs. 
        waits for manual improvement of the vocabularies -->
