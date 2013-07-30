@@ -91,6 +91,35 @@
 
    </datasetTemplate>
 
+  <datasetTemplate class="rtpcrPlatformWithProviderMapping">
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    
+    <subgraph name="${name}_probe_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_rtpcrPlatform_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="${name}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/${name}</paramValue>
+      <depends name="${name}_probe_RSRC"/>
+    </step>
+
+    <step name="${name}_getAndMapProbes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyProviderProbeMappingFiles">
+      <paramValue name="outputDir">$$dataDir$$/${name}</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/${organismAbbrev}_rtpcrPlatform_${name}_RSRC/final</paramValue>
+      <paramValue name="providedMappingFileName">${providedMappingFileName}</paramValue>
+      <paramValue name="outputGeneProbeMappingTabFile">$$dataDir$$/${name}/geneProbeMapping.tab</paramValue>
+      <paramValue name="makeCdfFile">false</paramValue>
+      <paramValue name="makeNdfFile">false</paramValue>
+      <depends name="${name}_makeDataDir"/>
+    </step>
+   </datasetTemplate>
+
+
   <datasetTemplate class="microarrayExpressionExperiment">
     <prop name="organismAbbrev"/>
     <prop name="experimentName"/>
@@ -125,6 +154,41 @@
       <depends name="${experimentName}"/>
     </subgraph>
   </datasetTemplate>
+
+
+  <datasetTemplate class="rtpcrExpressionExperiment">
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
+    <prop name="experimentDisplayName"/>
+    <prop name="rtpcrPlatformName"/>
+    <prop name="doExpressionAnalysis"/>
+    <prop name="hasTimeSeries"/>
+
+    <subgraph name="${experimentName}" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_rtpcrExpression_${experimentName}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="${rtpcrPlatformName}_getAndMapProbes"/>
+    </subgraph>
+
+    <subgraph name="${experimentName}_analyzeMicroarrayExperiment" xmlFile="analyzeMicroarrayExperiment.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="experimentDatasetName">${organismAbbrev}_rtpcrExpression_${experimentName}_RSRC</paramValue>
+      <paramValue name="experimentDatasetVersion">${experimentVersion}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="doExpressionAnalysis">${doExpressionAnalysis}</paramValue>
+      <paramValue name="hasTimeSeries">${hasTimeSeries}</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="platform">${rtpcrPlatformName}</paramValue>
+      <paramValue name="expectCdfFile">false</paramValue>
+      <paramValue name="expectNdfFile">false</paramValue>
+      <depends name="${experimentName}"/>
+    </subgraph>
+  </datasetTemplate>
+
+
 
   <datasetTemplate class="chipChipPlatform">
     <prop name="organismAbbrev"/>
