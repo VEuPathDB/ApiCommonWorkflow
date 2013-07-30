@@ -25,6 +25,7 @@ sub run {
 <property>
 <password>$apidbTuningPassword</password>
 <schema>ApiDBTuning</schema>
+<dblink>prodN.login_comment</dblink>
 </property>
 ";
   my $stepDir = $self->getStepDir();
