@@ -19,13 +19,16 @@ sub run {
   my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $apidbTuningPassword = $self->getConfig('apidbTuningPassword');
+
+  my $dblink = $self->getConfig('dblink');
+
   my $xmlConfigFileName="tmpConfigFile.xml";
   my $xmlConfigFileString=
 "<?xml version='1.0'?>
 <property>
 <password>$apidbTuningPassword</password>
 <schema>ApiDBTuning</schema>
-<dblink>prodN.login_comment</dblink>
+<dblink>$dblink</dblink>
 </property>
 ";
   my $stepDir = $self->getStepDir();
