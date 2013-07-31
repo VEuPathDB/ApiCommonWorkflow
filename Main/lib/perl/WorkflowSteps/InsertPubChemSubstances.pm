@@ -14,10 +14,12 @@ sub run {
 
   my $compoundIdsFile = $self->getParamValue('compoundIdsFile');
 
+  my $property = $self->getParamValue('property');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--fileDir ${fileDir} --fileNames '{fileNames}' --compoundIdsFile '{compoundIdsFile}' ";
-
+  my $args = "--fileDir $workflowDataDir/$fileDir --fileNames '$fileNames' --compoundIdsFile '$compoundIdsFile'  --property '$property'  ";
+  my $args = "--fileDir $workflowDataDir/$fileDir --fileNames '$fileNames' --compoundIdsFile '$compoundIdsFile' ";
 
   if ($test) {
     $self->testInputFile('fileDir', "$workflowDataDir/$fileDir");

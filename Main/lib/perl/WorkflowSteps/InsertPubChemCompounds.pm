@@ -12,11 +12,9 @@ sub run {
 
   my $fileNames = $self->getParamValue('fileNames');
 
-  my $compoundIdsFile = $self->getParamValue('compoundIdsFile');
-
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--fileDir ${fileDir} --fileNames '{fileNames}' --compoundIdsFile '{compoundIdsFile}' ";
+  my $args = "--fileDir $workflowDataDir/$fileDir --fileNames '$fileNames' ";
 
 
   if ($test) {

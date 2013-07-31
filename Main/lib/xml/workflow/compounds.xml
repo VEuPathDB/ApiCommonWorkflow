@@ -8,30 +8,49 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <!-- extract Substances XML from PubChem  -->
+    <!-- extract CID data in XML from PubChem for  Substances  -->
     <step name="extractPubChemSubstances" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractPubChemData">
      <paramValue name="idFile">$$dataDir$$/${substanceIdsFile}</paramValue>
-     <paramValue name="outFile">$$dataDir$$/substances.xml</paramValue>
+     <paramValue name="outFile">$$dataDir$$/substance_cids.xml</paramValue>
      <paramValue name="type">pcsubstance</paramValue>
+     <paramValue name="property">CID</paramValue>
     <depends name="makeDataDir"/>
   </step>
 
-    <!-- insert Substances  -->
+    <!-- insert CID data for Substances  -->
      <step name="insertPubChemSubstances" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPubChemSubstances" stepLoadTypes="plugin">
       <paramValue name="fileDir">$$dataDir$$</paramValue>
-      <paramValue name="fileNames">substances.xml</paramValue>
+      <paramValue name="fileNames">substance_cids.xml</paramValue>
       <paramValue name="compoundIdsFile">$$dataDir$$/${compoundIdsFile}</paramValue>
+     <paramValue name="property">CID</paramValue>
     <depends name="insertPubChemSubstances"/>
   </step>
 
-  <!-- extract Compounds XML from PubChem  -->
+    <!-- extract Synonym data in XML from PubChem for  Substances  -->
+    <step name="extractPubChemSubstances" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractPubChemData">
+     <paramValue name="idFile">$$dataDir$$/${substanceIdsFile}</paramValue>
+     <paramValue name="outFile">$$dataDir$$/substance_synonyms.xml</paramValue>
+     <paramValue name="type">pcsubstance</paramValue>
+     <paramValue name="property">Synonym</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+    <!-- insert Synonym data for Substances  -->
+     <step name="insertPubChemSubstances" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPubChemSubstances" stepLoadTypes="plugin">
+      <paramValue name="fileDir">$$dataDir$$</paramValue>
+      <paramValue name="fileNames">substance_synonyms.xml</paramValue>
+     <paramValue name="property">Synonym</paramValue>
+    <depends name="insertPubChemSubstances"/>
+  </step>
+
+
+  <!-- extract properties data XML from PubChem for  Compounds  -->
     <step name="extractPubChemCompounds" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractPubChemData">
      <paramValue name="idFile">$$dataDir$$/${compoundIdsFile}</paramValue>
      <paramValue name="outFile">$$dataDir$$/compounds.xml</paramValue>
      <paramValue name="type">pccompound</paramValue>
     <depends name="insertPubChemSubstances"/>
   </step>
-
 
   <!-- insert Compounds  -->
      <step name="insertPubChemCompounds" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPubChemCompounds" stepLoadTypes="plugin">
