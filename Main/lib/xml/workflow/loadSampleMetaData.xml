@@ -1,0 +1,42 @@
+<workflowGraph name="">
+    <param name="organismAbbrev"/>
+    <param name="parentDataDir"/>
+    <param name="experimentName"/>
+    <param name="readsFile"/>
+    <param name="sampleExtDbRlsSpecTemplate"/>
+    <param name="studyExtDbRlsSpec"/>
+    <param name="isProfile"/>
+    <param name="dataType"/>
+    <param name="datasetLoaderXmlFileName"/>
+
+    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
+    <constant name="datasetName">$$organismAbbrev$$_metaData_$$experimentName$$_RSRC</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+   </step>
+
+   <subgraph name="getMetaData" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$datasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="addStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
+      <paramValue name="experimentName">$$organismAbbrev$$_$$dataType$$_$$experimentName$$</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">$$studyExtDbRlsSpec$$</paramValue>
+      <depends name="getMetaData"/>
+    </step>
+
+    <step name="addMetaData" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyMetaData" stepLoadTypes="plugin">
+     <paramValue name="experimentName">$$organismAbbrev$$_$$dataType$$_$$experimentName$$</paramValue>
+     <paramValue name="sampleMetaDataFile">$$dataDir$$/$$datasetName$$/final/sampleMetaData.txt</paramValue>
+     <paramValue name="readsFile">$$readsFile$$</paramValue>
+     <paramValue name="sampleExtDbRlsSpecTemplate">$$sampleExtDbRlsSpecTemplate$$</paramValue>
+     <paramValue name="studyExtDbRlsSpec">$$studyExtDbRlsSpec$$</paramValue>
+     <paramValue name="isProfile">$$isProfile$$</paramValue>
+     <depends name="addStudy"/>
+    </step>
+
+</workflowGraph>
