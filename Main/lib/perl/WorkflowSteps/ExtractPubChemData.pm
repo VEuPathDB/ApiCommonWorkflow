@@ -15,7 +15,7 @@ sub run {
   my $type =  $self->getParamValue('type');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "extractPubChemData.pl  --idFile '$workflowDataDir/$idFile' --outFile '$workflowDataDir/$outFile' --type $type'";
+  my $cmd = "extractPubChemData  --idFile '$workflowDataDir/$idFile' --outFile '$workflowDataDir/$outFile' --type '$type'";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outFile");
