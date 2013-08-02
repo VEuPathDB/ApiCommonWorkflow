@@ -13,9 +13,10 @@ sub run {
   my $idFile = $self->getParamValue('idFile');
   my $outFile =  $self->getParamValue('outFile');
   my $type =  $self->getParamValue('type');
+  my $property =  $self->getParamValue('property');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "extractPubChemData  --idFile '$workflowDataDir/$idFile' --outFile '$workflowDataDir/$outFile' --type '$type'";
+  my $cmd = "extractPubChemData  --idFile '$workflowDataDir/$idFile' --outFile '$workflowDataDir/$outFile' --type '$type' --property '$property'";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outFile");
