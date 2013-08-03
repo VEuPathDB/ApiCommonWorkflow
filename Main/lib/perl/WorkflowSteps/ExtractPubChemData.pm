@@ -16,8 +16,8 @@ sub run {
   my $property =  $self->getParamValue('property');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "extractPubChemData  --idFile '$workflowDataDir/$idFile' --outFile '$workflowDataDir/$outFile' --type '$type' --property '$property'";
-
+  my $cmd = "extractPubChemData  --idFile '$workflowDataDir/$idFile' --outFile '$workflowDataDir/$outFile' --type '$type'";
+  $cmd .= "  --property '$property'" if $property;
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outFile");
   }else {

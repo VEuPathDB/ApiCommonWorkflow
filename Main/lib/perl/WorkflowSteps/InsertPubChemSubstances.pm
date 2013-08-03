@@ -18,7 +18,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--fileDir $workflowDataDir/$fileDir --fileNames '$fileNames' --compoundIdsFile '$compoundIdsFile'  --property '$property'  ";
+  my $args = "--fileDir $workflowDataDir/$fileDir --fileNames '$fileNames' --compoundIdsFile '$workflowDataDir/$compoundIdsFile'  --property '$property'  ";
 
   if ($test) {
     $self->testInputFile('fileDir', "$workflowDataDir/$fileDir");
