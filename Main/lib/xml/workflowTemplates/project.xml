@@ -10,8 +10,8 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
   <param name="projectVersionForWebsiteFiles"/>
 
   <constant name="comparativeGenomicsInputDir">comparativeGenomicsInputDir</constant>
-  <constant name="relativeWebServicesDir">@@webServicesDir@@/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
-  <constant name="relativeDownloadSiteDir">@@downloadSiteDir@@/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
+  <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
+  <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
 
   <globalSubgraph name="global" xmlFile="globalGraph.xml">
     <paramValue name="commonDatasetLoaderXmlFile">$$projectName$$/$$projectName$$Common.xml</paramValue>
@@ -342,11 +342,17 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
  </datasetTemplate>
 
- <datasetTemplate class="MetaboliteProfiles">
+ <datasetTemplate class="metaboliteProfiles">
    <prop name="experimentName"/> 
     <prop name="experimentVersion"/> 
     <prop name="doExpressionAnalysis"/> 
     <prop name="hasTimeSeries"/> 
+
+    <subgraph name="metaboliteProfiles_${experimentName}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+    </subgraph>
 
     <subgraph name="MetaboliteProfiles" xmlFile="metaboliteProfiles.xml">
       <paramValue name="parentDataDir"></paramValue>
@@ -355,7 +361,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="doExpressionAnalysis">${doExpressionAnalysis}</paramValue>
       <paramValue name="hasTimeSeries">${hasTimeSeries}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
+      <depends name="metaboliteProfiles_${experimentName}_RSRC"/>
     </subgraph>
 
 </datasetTemplate>
