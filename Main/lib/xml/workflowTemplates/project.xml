@@ -126,7 +126,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
-    <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeCompGenomicsFiles" xmlFile="makeCompGenomicsFiles.xml" groupName="${organismAbbrev}">
+    <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeCompGenomicsFiles" xmlFile="makeCompGenomicsFiles.xml" groupName="${organismAbbrev}" excludeIf="$$isHugeGenome$$">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="makeAndMaskTopLevelGenomeDataDir">${organismAbbrev}/makeAndMaskTopLevelGenome</paramValue>
       <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fsa</paramValue>
@@ -264,7 +264,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
   </datasetTemplate>
 
-  <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml">
+  <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml" excludeIf="$$isHugeGenome$$" >
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="comparativeGenomicsInputDir">$$comparativeGenomicsInputDir$$</paramValue>
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
@@ -288,7 +288,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <prop name="organismAbbrev"/>      <!-- same as referenceStrainOrganismAbbrev -->
     <prop name="isAnnotatedGenome"/>  <!-- if ref strain is annotated -->
  
-    <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml" includeIf="${isAnnotatedGenome}"  groupName="${organismAbbrev}">
+    <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml" includeIf="${isAnnotatedGenome}" && !excludeIf="$$isHugeGenome$$" groupName="${organismAbbrev}">
       <paramValue name="parentDataDir"></paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="strainsComparisonDir">${organismAbbrev}_strainsComparisonInput</paramValue>
