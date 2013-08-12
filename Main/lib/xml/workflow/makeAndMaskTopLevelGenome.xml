@@ -34,7 +34,7 @@
       <depends name="makeDerivedTables"/> 
     </step>
 
-    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomeRepeatMaskTaskInputDir" includeIf="$$isAnnotatedGenome$$" &amp;&amp; !excludeIf="$$isHugeGenome$$">
+    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomeRepeatMaskTaskInputDir" includeIf="$$isAnnotatedGenome$$ &amp;amp;&amp;amp; !$$isHugeGenome$$">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="seqsFile">$$topLevelFastaFile$$</paramValue>
       <paramValue name="dangleMax">0</paramValue>
@@ -44,12 +44,12 @@
       <depends name="extractTopLevelFastaSeqs"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" includeIf="$$isAnnotatedGenome$$" &amp;&amp; !excludeIf="$$isHugeGenome$$" >
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" includeIf="$$isAnnotatedGenome$$ &amp;amp;&amp;amp; !$$isHugeGenome$$" >
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeClusterTaskInputDir"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster" includeIf="$$isAnnotatedGenome$$" && !excludeIf="$$isHugeGenome$$">
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster" includeIf="$$isAnnotatedGenome$$ &amp;amp;&amp;amp; !$$isHugeGenome$$">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="numNodes">10</paramValue>
       <paramValue name="maxMemoryGigs">1.75</paramValue>
@@ -57,7 +57,7 @@
       <depends name="mirrorToCluster"/>
     </step>
 
-    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" includeIf="$$isAnnotatedGenome$$" &amp;&amp; !excludeIf="$$isHugeGenome$$">
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" includeIf="$$isAnnotatedGenome$$ &amp;amp;&amp;amp; !$$isHugeGenome$$">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blocked.err,blocked.seq</paramValue>
