@@ -140,6 +140,14 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
 
+   <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml" excludeIf="${isHugeGenome}">
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="comparativeGenomicsInputDir">$$comparativeGenomicsInputDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
+    <dependsPattern name="*_MakeCompGenomicsFiles"/>
+  </subgraph>
+
     <subgraph name="${organismAbbrev}_PostLoadGenome" xmlFile="postLoadGenome.xml" groupName="${organismAbbrev}">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -264,14 +272,6 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
   </datasetTemplate>
-
-  <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml" excludeIf="${isHugeGenome}">
-    <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="comparativeGenomicsInputDir">$$comparativeGenomicsInputDir$$</paramValue>
-    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-    <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
-    <dependsPattern name="*_MakeCompGenomicsFiles"/>
-  </subgraph>
 
   <datasetTemplate class="Pathways">
    <prop name="projectName"/>     
