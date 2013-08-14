@@ -8,6 +8,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 <workflowGraph name="">
   <param name="projectName"/>
   <param name="projectVersionForWebsiteFiles"/>
+  <param name="areBigGenomes"/>
 
   <constant name="comparativeGenomicsInputDir">comparativeGenomicsInputDir</constant>
   <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
@@ -266,7 +267,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
   </datasetTemplate>
 
 
-  <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml">
+  <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml" excludeIf="$$areBigGenomes$$" >
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="comparativeGenomicsInputDir">$$comparativeGenomicsInputDir$$</paramValue>
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
@@ -290,7 +291,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <prop name="organismAbbrev"/>      <!-- same as referenceStrainOrganismAbbrev -->
     <prop name="isAnnotatedGenome"/>  <!-- if ref strain is annotated -->
 
-    <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml" includeIf="${isAnnotatedGenome}" groupName="${organismAbbrev}">
+    <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml" includeIf="${isAnnotatedGenome} &amp;&amp; !$$areBigGenomes$$" groupName="${organismAbbrev}" >
       <paramValue name="parentDataDir"></paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="strainsComparisonDir">${organismAbbrev}_strainsComparisonInput</paramValue>
