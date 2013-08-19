@@ -18,11 +18,18 @@
       <paramValue name="passPlatformMappingFile">true</paramValue>
     </step>
 
+    <step name="insertCompoundAlias" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDbRefCompounds" stepLoadTypes="plugin">
+      <paramValue name="aliasFile">$$dataDir$$/final/compoundAlias.txt</paramValue>
+      <paramValue name="extDbName">$$experimentName$$</paramValue>
+      <paramValue name="extDbVersion">$$experimentVersion$$</paramValue>
+    </step>
+
     <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
       <paramValue name="configFile">$$dataDir$$/doTranscriptExpression/expression_profile_config.txt</paramValue>
       <paramValue name="inputDir">$$dataDir$$/doTranscriptExpression</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentName$$|$$experimentVersion$$</paramValue>
       <depends name="doTranscriptExpression"/>
+      <depends name="insertCompoundAlias"/>
     </step>
 
     <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
