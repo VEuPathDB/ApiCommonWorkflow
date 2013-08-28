@@ -16,7 +16,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $baseFileName = basename($readsFile);
 
-  my $args = "--studyName '$experimentName' --file $workflowDataDir/$sampleMetaDataFile --sampleId $baseFileName --extDbRlsSpec '$snpExtDbRlsSpec'";
+  my $args = "--studyName '$experimentName' --file $workflowDataDir/$sampleMetaDataFile --sampleId $baseFileName --sampleExtDbRlsSpec '$snpExtDbRlsSpec'";
 
  unless ($test) {
    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertSampleMetaData", $args);
