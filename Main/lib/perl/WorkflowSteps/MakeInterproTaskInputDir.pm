@@ -29,17 +29,16 @@ sub run {
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
       # make controller.prop file
       $self->makeDistribJobControllerPropFile($taskInputDir, 1, $taskSize,
-				       "DJob::DistribJobTasks::IprscanTask");
+				       "DJob::DistribJobTasks::Iprscan5Task");
       # make task.prop file
       my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
       print F
 "seqfile=$clusterWorkflowDataDir/$proteinsFile
-outputfile=iprscan_out.xml
+outputfile=iprscan_out.tsv
 seqtype=p
 appl=$applications
 email=dontcare\@dontcare.com
-crc=false
 ";
 
        #&runCmd($test, "chmod -R g+w $workflowDataDir/similarity/$queryName-$subjectName");
