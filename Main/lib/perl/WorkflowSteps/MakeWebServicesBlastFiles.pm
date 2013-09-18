@@ -32,9 +32,8 @@ sub run {
 
   my $outputWebservicesFileDir = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceDir($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, $familyNameForFiles, $useFamilyName, 'blast');
 
-  my $blastPath = $self->getConfig("wuBlastPath");
-  my $cmd = "$blastPath/xdformat $args -o $outputWebservicesFileDir/$dataName $inputDownloadFile";
-
+  my $blastPath = $self->getConfig("ncbiBlastPath");
+  my $cmd = "$blastPath/makeblastdb -in $inputDownloadFile $args -out $outputWebservicesFileDir/$dataName ";
   if($undo) {
     $self->runCmd(0, "rm -f $outputWebservicesFileDir/$dataName.*");
   } else{
@@ -43,15 +42,8 @@ sub run {
 	  $self->testInputFile('outputWebservicesFileDir', "$outputWebservicesFileDir");
 	  $self->runCmd(0, "echo test > $outputWebservicesFileDir/$dataName.xnd");
       }else {
-	   if($args =~/\-p/){
-	       my $tempFile = "$outputWebservicesFileDir/$dataName.tmp";
-	       $self->runCmd($test,"cat $inputDownloadFile | perl -pe 'unless (/^>/){s/J/X/g;}' > $tempFile");
-	       $self->runCmd($test,"$blastPath/xdformat $args -o $outputWebservicesFileDir/$dataName $tempFile");
-	       $self->runCmd($test,"rm -fr $tempFile");
-	   }else {
 	       $self->runCmd($test, $cmd);
-	   }
-       }
+      }
   }
 }
 
