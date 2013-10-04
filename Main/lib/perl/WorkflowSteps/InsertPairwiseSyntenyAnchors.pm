@@ -29,8 +29,8 @@ sub run {
       if ($algInvIdsFull) {
 	  my @algInvIdsArray = split(/,/, $algInvIdsFull);
 	  my $count = scalar(@algInvIdsArray);
-	  for (my $i=0; $i<$count; $i+=100) {
-	      my @subArray = splice(@algInvIdsArray, 0, 100);
+	  for (my $i=0; $i<$count; $i+=99) {
+	      my @subArray = splice(@algInvIdsArray, 0, 99);
 	      my $algInvIds = join(",", @subArray);
 	      my $cmd1 = "ga GUS::Community::Plugin::Undo --plugin ApiCommonData::Load::Plugin::InsertSyntenySpans --workflowContext --algInvocationId '$algInvIds' --commit";
 	      my $cmd2 = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabaseRls --workflowContext --algInvocationId '$algInvIds' --commit";
@@ -50,32 +50,33 @@ sub run {
 	#my ($orgAbbrevA, $orgAbbrevB) = split(/\-/, $pair);
 	my @orgAbbrevs = split(/\-/, $pair);
 	my ($orgAbbrevA, $orgAbbrevB);
+
 	while(scalar @orgAbbrevs >1){
-	    my $tmp=shift(@orgAbbrevs);
-	    $orgAbbrevA .= $tmp;
-	    my $exists = $self->runSqlFetchOneRow($test,"select abbrev from apidb.organism where abbrev = '$orgAbbrevA'");
-	    if ($exists) {
-		$self->log("orgAbbrevA is '$orgAbbrevA'.");
-		last;
-	    }else{
-		$orgAbbrevA .= "-";
-	    }
-            
-	}
-
-
-	while(scalar @orgAbbrevs >0){
-	    my $tmp=shift(@orgAbbrevs);
-	    $orgAbbrevB .= $tmp;
+	    my $tmp=pop(@orgAbbrevs);
+	    $orgAbbrevB = $tmp . $orgAbbrevB;
 	    my $exists = $self->runSqlFetchOneRow($test,"select abbrev from apidb.organism where abbrev = '$orgAbbrevB'");
 	    if ($exists) {
 		$self->log("orgAbbrevB is '$orgAbbrevB'.");
 		last;
 	    }else{
-		$orgAbbrevB .= "-";
+		$orgAbbrevB = "-".$orgAbbrevB;
 	    }
             
 	}
+
+	while(scalar @orgAbbrevs >0){
+	    my $tmp=pop(@orgAbbrevs);
+	    $orgAbbrevA = $tmp . $orgAbbrevA;
+	    my $exists = $self->runSqlFetchOneRow($test,"select abbrev from apidb.organism where abbrev = '$orgAbbrevA'");
+	    if ($exists) {
+		$self->log("orgAbbrevA is '$orgAbbrevA'.");
+		last;
+	    }else{
+		$orgAbbrevA = "-" . $orgAbbrevA;
+	    }
+            
+	}
+
         my $gffFileA = "$workflowDataDir/$mercatorInputsDir/${orgAbbrevA}.gff";
         my $gffFileB = "$workflowDataDir/$mercatorInputsDir/${orgAbbrevB}.gff";
 
