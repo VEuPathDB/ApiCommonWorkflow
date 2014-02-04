@@ -1,0 +1,53 @@
+<workflowGraph name="">
+  <param name="readsFile"/>
+  <param name="pairedReadsFile"/>
+  <param name="hasPairedReads"/>
+  <param name="genomicSeqsFile"/>
+  <param name="indexDir"/>
+  <param name="sampleName"/>
+  <param name="clusterDataDir"/>
+  <param name="isColorspace"/>
+  <param name="removePCRDuplicates"/>
+  <param name="extraBowtieParams"/>
+
+  <constant name="dataDir">$$clusterDataDir$$</constant>
+  
+<!--Can probably re-use this step?? No - this is where the distribJob task is defined - will need to create a new script here-->
+     <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBowtieMappingTaskInputDir">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="readsFile">$$readsFile$$</paramValue>
+      <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
+      <paramValue name="hasPairedReads">$$hasPairedReads$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="indexDir">$$indexDir$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="isColorspace">$$isColorspace$$</paramValue>
+      <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
+      <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+     </step>
+
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/input</paramValue>
+      <depends name="makeTaskInputDir"/>
+    </step>
+
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="numNodes">1</paramValue>
+      <paramValue name="maxMemoryGigs">5</paramValue>
+      <paramValue name="processorsPerNode">4</paramValue>
+      <depends name="mirrorToCluster"/>
+    </step>
+
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputFiles">${sampleName}.bam</paramValue>
+      <depends name="runClusterTask"/>
+    </step>
+
+</workflowGraph>
+
+
+
