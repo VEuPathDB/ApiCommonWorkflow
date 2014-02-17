@@ -19,17 +19,22 @@ sub run {
   my $xmlConfigFileName="tmpConfigFile.xml";
   my $xmlConfigFileString=
 "<?xml version='1.0'?>
-<property>
-<password>$apidbPassword</password>
-<username>apidb</username>
-</property>
+<tuningProps>
+  <password>$apidbPassword</password>
+  <schema>apidb</schema>
+  <housekeepingSchema>apidb</housekeepingSchema>
+  <dblink>prodN.login_comment</dblink>
+  <logTable>apidb_r.TuningTableLog@prodN.login_comment</logTable>
+  <dbaEmail>eupath-admin@pcbi.upenn.edu</dbaEmail>
+  <fromEmail>$email</fromEmail>
+</tuningProps>
 ";
   open(F,">$xmlConfigFileName");
   print F $xmlConfigFileString;
   close F;
   my $cmd;
 
-      $cmd = "tuningManager --instance '$instance' --propFile $xmlConfigFileName --doUpdate --notifyEmail '$email' --tables $tables";
+      $cmd = "tuningManager -instance $instance -propFile $xmlConfigFileName -doUpdate -notifyEmail '$email' -tables $tables";
 
 
   if ($undo){
