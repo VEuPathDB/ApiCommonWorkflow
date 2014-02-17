@@ -1,7 +1,8 @@
-<workflowGraph name="analyzeGenericArrayExperiment.xml">
+<workflowGraph name="analyzeGenericProfileExperiment.xml">
   <param name="parentDataDir"/>
   <param name="experimentDatasetName"/>
   <param name="experimentDatasetVersion"/>
+  <param name="doExpressionAnalysis"/>
   <param name="hasTimeSeries"/>
   <param name="organismAbbrev"/>
   <param name="relativeDownloadSiteDir"/>
@@ -42,10 +43,19 @@
     <paramValue name="doTranscriptExpressionDir">$$dataDir$$/doTranscriptExpression</paramValue>
     <depends name="loadExpressionProfilesFromConfig"/>
   </step>
+
+  <step name="loadAnalysisResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin" includeIf="$$doExpressionAnalysis$$">
+      <paramValue name="analysisWorkingDir">$$dataDir$$/doTranscriptExpression/</paramValue>
+      <paramValue name="configFile">$$dataDir$$/doTranscriptExpression/analysis_result_config.txt</paramValue>
+      <paramValue name="analysisResultView">DifferentialExpression</paramValue>
+      <paramValue name="naFeatureView">GeneFeature</paramValue>
+      <paramValue name="useSqlLdr">false</paramValue>
+      <depends name="loadExpressionProfilesFromConfig"/>
+  </step>
   
-   <step name="document-generic_array"
+   <step name="document-generic_profile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">generic_array_MTHD</paramValue>
+      <paramValue name="method">generic_profile_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters"></paramValue>
       <depends name="doTranscriptExpression"/>

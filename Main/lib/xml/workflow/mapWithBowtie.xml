@@ -1,0 +1,52 @@
+<workflowGraph name="">
+  <param name="parentDataDir"/>
+  <param name="organismDatasetLoaderXmlFile"/>
+  <param name="genomicSeqsDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="organismAbbrev"/>
+  
+
+  <constant name="dataDir">$$parentDataDir$$/bowtieIndices</constant>
+
+  <!-- Create the external database release -->
+  <step name="insertExtDbRls" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateExtDbAndDbRls" stepLoadTypes="plugin">
+    <paramValue name="extDbRlsSpec">InsertSnps.pm NGS SNPs INTERNAL|Ref:  $$organismAbbrev$$</paramValue> <!--will need to change this -->
+  </step>
+
+  <!-- Create the bowtie 2 indexes -->
+  <step name="createBowtie2Indices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+    <paramValue name="inputFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fsa</paramValue>
+    <paramValue name="outputIndexDir">$$dataDir$$</paramValue>
+    <paramValue name="colorspace">false</paramValue>
+    <paramValue name="bowtieVersion">2</paramValue>
+  </step>
+
+   <!-- Create the Bowtie 1 index for colorspace -->
+  <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+    <paramValue name="inputFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fsa</paramValue>
+  <paramValue name="outputIndexDir">$$dataDir$$</paramValue>
+    <paramValue name="colorspace">true</paramValue>
+    <paramValue name="bowtieVersion">1</paramValue>
+  </step>
+
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="createBowtieIndices"/>
+    <depends name="createBowtie2Indices"/>
+  </step>
+
+<!-- Can add in other subgraphs later as necessary -->
+<!--  This section will set up the experiment and call the workflow that does the mapping and generates binned coverage file -->
+    <subgraph name="originsOfReplicationExperiment" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/originsOfReplicationExperiment.xml" excludeIfXmlFileDoesNotExist="true">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+  </workflowGraph>

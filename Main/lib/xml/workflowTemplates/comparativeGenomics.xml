@@ -2,11 +2,12 @@
     <param name="parentDataDir"/>
     <param name="comparativeGenomicsInputDir"/>
     <param name="relativeWebServicesDir"/>
+    <param name="areBigGenomes"/>
 
     <constant name="mercatorOutputsDir">$$parentDataDir$$/mercatorOutput</constant>
     <constant name="mercatorCacheDir">$$parentDataDir$$/mercatorCache</constant>
 
-    <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid">
+    <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid" excludeIf="$$areBigGenomes$$" >
       <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
       <paramValue name="mercatorOutputsDir">$$mercatorOutputsDir$$</paramValue>
       <paramValue name="mercatorCacheDir">$$mercatorCacheDir$$</paramValue>
@@ -41,14 +42,14 @@
       </subgraph>
     </datasetTemplate>
 
-    <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin">
+    <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin" excludeIf="$$areBigGenomes$$" >
       <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
       <paramValue name="mercatorOutputsDir">$$mercatorOutputsDir$$</paramValue>
       <depends name="runPairwiseMercatorMavid"/>
       <depends name="OrthoMCL_RSRC"/>
     </step>
 
-    <step name="copyPairwiseMercatorDirsToWebserviceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPairwiseMercatorDirsToWebserviceDir">
+    <step name="copyPairwiseMercatorDirsToWebserviceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPairwiseMercatorDirsToWebserviceDir" excludeIf="$$areBigGenomes$$" >
       <paramValue name="mercatorOutputsDir">$$mercatorOutputsDir$$</paramValue>
       <paramValue name="mercatorWebsvcDir">$$relativeWebServicesDir$$/mercator_pairwise</paramValue>
       <depends name="runPairwiseMercatorMavid"/>
