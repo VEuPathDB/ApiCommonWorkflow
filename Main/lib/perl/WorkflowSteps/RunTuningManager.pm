@@ -21,7 +21,7 @@ sub run {
 "<?xml version='1.0'?>
 <tuningProps>
   <password>$apidbPassword</password>
-  <schema>apidb</schema>
+  <schema>ApiDBTuning</schema>
   <housekeepingSchema>apidb</housekeepingSchema>
   <dblink>prodN.login_comment</dblink>
   <logTable>apidb_r.TuningTableLog@prodN.login_comment</logTable>

@@ -25,11 +25,15 @@ sub run {
   my $xmlConfigFileName="tmpConfigFile.xml";
   my $xmlConfigFileString=
 "<?xml version='1.0'?>
-<property>
-<password>$apidbTuningPassword</password>
-<schema>ApiDBTuning</schema>
-<dblink>$dblink</dblink>
-</property>
+<tuningProps>
+  <password>$apidbTuningPassword</password>
+  <schema>ApidbTuning</schema>
+  <housekeepingSchema>apidb</housekeepingSchema>
+  <dblink>$dblink</dblink>
+  <logTable>apidb_r.TuningTableLog$dblink</logTable>
+  <dbaEmail>eupath-admin\@pcbi.upenn.edu</dbaEmail>
+  <fromEmail>tuningMgr\@pcbi.upenn.edu</fromEmail>
+</tuningProps>
 ";
   my $stepDir = $self->getStepDir();
   open(F,">$stepDir/$xmlConfigFileName");
@@ -38,7 +42,7 @@ sub run {
 
   my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
 
-  my $cmd = "tuningManager -prefix '$tuningTablePrefix' -instance '$instance' -propFile $stepDir/$xmlConfigFileName -doUpdate -notifyEmail none -tables $tables -configFile ${gusHome}/lib/xml/tuningManager.xml -filterValue $taxonId ";
+  my $cmd = "tuningManager -prefix '$tuningTablePrefix' -instance '$instance' -propFile $stepDir/$xmlConfigFileName -doUpdate -notifyEmail none -tables $tables -configFile ${gusHome}/lib/xml/tuningManager/tuningManager.xml -filterValue $taxonId ";
 
 
   if ($undo) {
