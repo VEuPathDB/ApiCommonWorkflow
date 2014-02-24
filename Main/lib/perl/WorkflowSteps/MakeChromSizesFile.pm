@@ -11,16 +11,16 @@ sub run{
 
     #get parameter values
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $genomicSeqsDir = $self->getParamValue("genomicSeqsDir");
+    my $indicesDir = $self->getParamValue("indicesDir");
     my $genomeIndex = $self->getParamValue("genomeIndex");
 
-    my $cmd = "cut -f 1,2 $workflowDataDir/$genomicSeqsDir/$genomeIndex > $workflowDataDir/$genomicSeqsDir/chrom.sizes";
+    my $cmd = "cut -f 1,2 $workflowDataDir/$indicesDir/$genomeIndex > $workflowDataDir/$indicesDir/chrom.sizes";
     
     if ($undo) {
-        $self->runCmd(0, "rm $workflowDataDir/$genomicSeqsDir/chrom.sizes");
+        $self->runCmd(0, "rm $workflowDataDir/$indicesDir/chrom.sizes");
     }else{
         if($test){
-            $self->runCmd(0, "echo test > $workflowDataDir/$genomicSeqsDir/chrom.sizes");
+            $self->runCmd(0, "echo test > $workflowDataDir/$indicesDir/chrom.sizes");
         }
         $self->runCmd($test, $cmd);
     }
@@ -28,7 +28,7 @@ sub run{
 
 sub getParamDeclaration {
     return (
-        'genomicSeqsDir',
+        'indicesDir',
         'genomeIndex'
     );
 }

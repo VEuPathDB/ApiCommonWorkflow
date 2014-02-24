@@ -6,6 +6,8 @@
     <param name="genomicSeqsDir"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="relativeWebServicesDir"/>
+    <param name="samtoolsIndex"/>
+    <param name="chromSizesFile"/>
   
     <datasetTemplate class="originsOfReplicationExperiment">
         <prop name="experimentName"/>
@@ -100,28 +102,38 @@
        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
        <paramValue name="experimentName">${experimentName}</paramValue>
        <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
-       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+<!--       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>  -->
        <paramValue name="isColorspace">${isColorspace}</paramValue>
        <paramValue name="removePCRDuplicates">${removePCRDuplicates}</paramValue>
        <paramValue name="windowSize">${coverageWindowSize}</paramValue>
        <paramValue name="extraBowtieParams">${extraBowtieParams}</paramValue>
+       <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
        <depends name="getAndUnpack"/>
      </subgraph>
- 
+ <!-- This step moved to top level so it is available to other data classes -->
+    <!--
     <step name="makeChromSizesFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeChromSizesFile">
         <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
         <paramValue name="genomeIndex">topLevelGenomicSeqs.fsa.fai</paramValue>
         <depends name="doMapping"/>
     </step>   
-
+    -->
     <!-- Add in step to calculate coverage ratios here -->
     <step name="calculateCoverageRatios" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateCoverageRatios">
         <paramValue name="experimentDir">$$dataDir$$</paramValue>
         <paramValue name="outputDir">$$outputDir$$</paramValue>
-        <paramValue name="chromSizesFile">$$genomicSeqsDir$$/chrom.sizes</paramValue>
+        <paramValue name="chromSizesFile">$$chromSizesFile$$</paramValue>
         <depends name="doMapping"/>
         <depends name="makeOutputDir"/>
-        <depends name="makeChromSizesFile"/>
+<!--        <depends name="makeChromSizesFile"/> -->
+    </step>
+    
+    <step name="copyBigWigFilesToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBigWigFilesToWebServices">
+        <paramValue name="copyFromDir">$$outputDir$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+        <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
+        <depends name="calculateCoverageRatios"/>
     </step>
 
     <step name="document-originsOfReplication_experiment"
