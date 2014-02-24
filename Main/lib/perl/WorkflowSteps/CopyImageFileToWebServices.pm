@@ -31,7 +31,7 @@ sub run {
         $self->runCmd(0, "mkdir -p $copyToDir");
       }else {
         $self->runCmd($test, "mkdir -p $copyToDir");
-        $self->runCmd($test, "cp $workflowDataDir/$inputFile $copyToDir");
+        $self->runCmd($test, "cp $workflowDataDir/$inputFile/* $copyToDir");
        }
   }
 }
