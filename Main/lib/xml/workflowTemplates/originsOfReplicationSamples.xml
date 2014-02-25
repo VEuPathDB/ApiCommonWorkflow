@@ -7,7 +7,6 @@
   <param name="indexDir"/>
   <param name="organismAbbrev"/>
   <param name="experimentName"/>
-<!--  <param name="relativeWebServicesDir"/>-->
   <param name="hasPairedEnds"/>
   <param name="isColorspace"/>
   <param name="removePCRDuplicates"/>
@@ -22,34 +21,9 @@
     <prop name="organismAbbrev"/>
     <prop name="experimentName"/>
     <prop name="sampleName"/>
-
-    <!-- The dataset loader here does not get anything from manual delivery.  It only makes rows in sres.extdb and extdbrls -->
-    <subgraph name="originsOfReplicationSample_${sampleName}_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${organismAbbrev}_${experimentName}_${sampleName}_originsOfReplicationSample_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
-      <paramValue name="parentDataDir">$$experimentDir$$</paramValue>
-    </subgraph>
-
-    <subgraph name="mirrorSampleFiles_${sampleName}" xmlFile="mirrorHtsSamples.xml"> <!--Can probably stick with this subgraph -->
-      <paramValue name="readsFilePath">$$readsFilePath$$</paramValue>
-      <paramValue name="readsFileBasename">${sampleName}.fsa</paramValue>
-      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
-      <paramValue name="snpStrainAbbrev">${sampleName}</paramValue> <!--will need to retain param name for subgraph to work -->
-      <depends name="originsOfReplicationSample_${sampleName}_RSRC"/>
-    </subgraph>
-
-    <!-- See above re sticking to this subgraph -->
-    <subgraph name="mirrorSampleQualFiles_${sampleName}" xmlFile="mirrorHtsSamples.xml"  includeIf="$$isColorspace$$">
-      <paramValue name="readsFilePath">$$readsFilePath$$</paramValue>
-      <paramValue name="readsFileBasename">${sampleName}.qual</paramValue>
-      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
-      <paramValue name="snpStrainAbbrev">${sampleName}</paramValue>
-      <depends name="originsOfReplicationSample_${sampleName}_RSRC"/>
-    </subgraph>
-
-<!-- add param for additional bowtie params -->
-    <subgraph name="${sampleName}_runBowtie" xmlFile="runBowtie.xml">
-      <paramValue name="projectName">$$projectName$$</paramValue>
+    
+    <subgraph name="originsOfReplicationSample_${sampleName}" xmlFile="processOriginsSample.xml">
+       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="experimentDataDir">$$experimentDir$$</paramValue>
       <paramValue name="readsFile">$$readsFilePath$$/${sampleName}.fsa</paramValue>
       <paramValue name="pairedReadsFile">$$readsFilePath$$/${sampleName}.fsa.paired</paramValue>
@@ -58,29 +32,15 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="indexDir">$$indexDir$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="experimentName">$$experimentName$$</paramValue>
-<!--      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>-->
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="experimentName">${experimentName}</paramValue>
       <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
       <paramValue name="isColorspace">$$isColorspace$$</paramValue>
       <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
-      <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
-      <depends name="mirrorSampleFiles_${sampleName}"/>
-      <depends name="mirrorSampleQualFiles_${sampleName}"/>
-    </subgraph>
-
-<!--subgraph to create binned coverage file for each sample goes here-->
-    <step name="${sampleName}_createBinnedCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBinnedCoverageFile">
-      <paramValue name="bamFile">$$experimentDir$$/analyze_${sampleName}/master/mainresult/${sampleName}.bam</paramValue>
-<!--      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue> -->
       <paramValue name="windowSize">$$windowSize$$</paramValue>
-      <paramValue name="outputFile">$$experimentDir$$/${sampleName}.bed</paramValue>
-<!--      <paramValue name="experimentDir">$$experimentDir$$</paramValue>-->
+      <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
       <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
-      <depends name="${sampleName}_runBowtie"/>
-    </step>
-
+      <paramValue name="sampleName">${sampleName}</paramValue>
+    </subgraph>
   </datasetTemplate>
-
-
 </workflowGraph>

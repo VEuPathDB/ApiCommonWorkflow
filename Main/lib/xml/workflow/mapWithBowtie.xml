@@ -46,12 +46,13 @@
   <step name="createSamtoolsIndex" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSamtoolsIndex">
     <paramValue name="genomicSeqsFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fsa</paramValue>
     <paramValue name="outputFile">$$indicesDir$$/topLevelGenomicSeqs.fsa.fai</paramValue>
+    <depends name="makeIndicesDir"/>
   </step>
   
   <step name="makeChromSizesFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeChromSizesFile">
     <paramValue name="indicesDir">$$indicesDir$$</paramValue>
     <paramValue name="genomeIndex">topLevelGenomicSeqs.fsa.fai</paramValue>
-    <depends name="createSamtoolsIndex"/>
+    <depends name="makeSamtoolsIndex"/>
   </step>
 
 <!-- Subgraphs that use these indices initiated from here -->
