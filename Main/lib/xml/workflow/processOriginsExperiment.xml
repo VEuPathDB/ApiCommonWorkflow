@@ -9,7 +9,7 @@
     <param name="samtoolsIndex"/>
     <param name="chromSizesFile"/>
     <param name="experimentName"/>
-    <param name="hasPairedEnd"/>
+    <param name="hasPairedEnds"/>
     <param name="isColorspace"/>
     <param name="removePCRDuplicates"/>
     <param name="coverageWindowSize"/>
@@ -17,22 +17,27 @@
     <param name="experimentDatasetName"/>
 
     <constant name="dataDir">$$parentDataDir$$/originsOfReplication</constant>
-    <constant name="outputDir">$$dataDir$$/output</constant>
-    <constant name="finalDir">$$parentDataDir$$/originsOfReplication/$$experimentDatasetName$$/final</constant>
+    <constant name="coverageFilesDir">$$dataDir$$/$$experimentDatasetName$$/coverageFiles</constant>
+    <constant name="outputDir">$$dataDir$$/$$experimentDatasetName$$/output</constant>
+    <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-
     <step name="makeExperimentDatasetLoaderDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$dataDir$$/$$experimentDatasetName$$</paramValue>
         <depends name="makeDataDir"/>
     </step>
+
+    <step name="makeCoverageFilesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$coverageFilesDir$$</paramValue>
+        <depends name="makeExperimentDatasetLoaderDir"/>
+    </step>
                         
     <step name="makeOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$outputDir$$</paramValue>
-        <depends name="makeDataDir"/>
+        <depends name="makeExperimentDatasetLoaderDir"/>
     </step>
                             
     <!-- make an empty final dir, and mirror it to the cluster.  the samples will each mirror their own file -->
@@ -91,7 +96,8 @@
     <subgraph name="doMapping" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/originsOfReplicationSamples.xml">
         <paramValue name="projectName">$$projectName$$</paramValue>
         <paramValue name="experimentDir">$$dataDir$$</paramValue>
-        <paramValue name="experimentRSRC">$$experimentDatasetName$$</paramValue>
+        <paramValue name="experimentRSRC">$$dataDir$$/$$experimentDatasetName$$</paramValue>
+        <paramValue name="coverageFilesDir">$$coverageFilesDir$$</paramValue>
         <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
         <paramValue name="genomicSeqsFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fsa</paramValue>
         <paramValue name="indexDir">$$parentDataDir$$/bowtieIndices/genomicIndexes</paramValue>
@@ -107,7 +113,7 @@
     </subgraph>
 
     <step name="calculateCoverageRatios" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateCoverageRatios">
-        <paramValue name="experimentDir">$$dataDir$$</paramValue>
+        <paramValue name="experimentDir">$$coverageFilesDir$$</paramValue>
         <paramValue name="outputDir">$$outputDir$$</paramValue>
         <paramValue name="chromSizesFile">$$chromSizesFile$$</paramValue>
         <depends name="doMapping"/>
@@ -127,6 +133,5 @@
         <paramValue name="version">1.0</paramValue>
         <paramValue name="parameters">TODO: patch in later</paramValue>
     </step>
-
 
 </workflowGraph>
