@@ -13,7 +13,7 @@ sub run {
   my $projectName = $self->getParamValue('projectName');
   my $inputFile=$self->getParamValue('inputFile');
   my $datasetName=$self->getParamValue('datasetName');
-  my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
+  my $relativeAuxiliaryDir = $self->getParamValue('relativeAuxiliaryDir');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
@@ -21,7 +21,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/image/$datasetName/";
+  my $copyToDir = "$websiteFilesDir/$relativeAuxiliaryDir/$organismNameForFiles/image/$datasetName/";
 
   if($undo) {
     $self->runCmd(0, "rm -f $copyToDir/*");
