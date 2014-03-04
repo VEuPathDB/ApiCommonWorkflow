@@ -42,7 +42,7 @@ sub run {
         my $image = Image::Magick->new;
         $image->Read("$workflowDataDir/$inputFile/$f");
         $image->Set (compression=>"JPEG", quality=>90);
-        $f =~ s/(\.tif|\.tiff)$//i;
+        #$f =~ s/(\.tif|\.tiff)$//i;
         $image->Write ("$copyToDir/$f.jpg");
       }
       closedir(DIR);
