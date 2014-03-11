@@ -11,12 +11,16 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $gffVersion =  $self->getParamValue('gffVersion');
 
+  my $undoneStrainsFile = $self->getParamValue('undoneStrainsFile');
+  my $strain = $self->getParamValue('strain');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cmd = "snpSampleGFFToTabSort.pl --snp_gff $workflowDataDir/$inputFile --out_file $workflowDataDir/$outputFile --gff_version $gffVersion";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
+    $self->runCmd(0, "echo $strain >>$workflowDataDir/$undoneStrainsFile");
   } else {
       if ($test) {
 	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");

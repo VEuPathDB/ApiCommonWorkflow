@@ -18,6 +18,7 @@
     <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
     <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>
 
+
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
@@ -82,12 +83,6 @@
 
     <!-- end dataset loader -->
 
-  <step name="addStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy">
-    <paramValue name="experimentName">$$organismAbbrev$$_$$experimentName$$</paramValue>
-    <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
-    <depends name="experiment_RSRC"/>
-  </step>
-
     <subgraph name="map_SNPs" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/htsSnpSamples.xml">
        <paramValue name="projectName">$$projectName$$</paramValue>
        <paramValue name="experimentDir">$$dataDir$$</paramValue>
@@ -104,10 +99,21 @@
        <paramValue name="snpPercentCutoff">$$snpPercentCutoff$$</paramValue>
        <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
        
-       <depends name="addStudy"/>
+       <depends name="experiment_RSRC"/>
        <depends name="getAndUnpack"/>
      </subgraph>
-     
+
+
+
+    <step name="mergeSortedSnpTab" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpMergeSortedTab" stepLoadTypes="mergeSortedSNPExpt">
+      <paramValue name="inputFile">$$dataDir$$/ExptNewSamples.tab</paramValue>
+      <paramValue name="newSampleFile">$$parentDataDir$$/NewSamples.tab</paramValue>
+      <paramValue name="undoneStrainsFile">$$parentDataDir$$/UndoneStrains</paramValue>
+      <depends name="map_SNPs"/>
+    </step>
+
+
+
     <step name="document-hts_snp_experiment"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
       <paramValue name="method">hts_snp_experiment_MTHD</paramValue>

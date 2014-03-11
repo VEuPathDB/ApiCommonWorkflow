@@ -1,0 +1,68 @@
+<workflowGraph name="loadSnps.xml">
+  <param name="snpsDataDir"/>
+  <param name="organismAbbrev"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="varscanConsDir"/>
+
+  <constant name="loaderDir">$$snpsDataDir$$/loader</constant>
+
+   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$loaderDir$$</paramValue>
+  </step>
+
+  <step name="insertExtDbRls" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateExtDbAndDbRls" stepLoadTypes="plugin">
+      <paramValue name="extDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeControlFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeControlFilesForSNPs">
+      <paramValue name="sequenceVariationCtl">$$loaderDir$$/loadSequenceVariations.ctl</paramValue>
+      <paramValue name="snpCtl">$$loaderDir$$/loadSNP.ctl</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="processSequenceVariations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ProcessSequenceVariations">
+      <paramValue name="newSampleFile">$$snpsDataDir$$/NewSamples.tab</paramValue>
+      <paramValue name="cacheFile">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
+      <paramValue name="undoneStrainsFile">$$snpsDataDir$$/UndoneStrains</paramValue>
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="minAllelePercent">60</paramValue>
+      <depends name="makeControlFiles"/>
+      <depends name="insertExtDbRls"/>
+    </step>
+
+
+    <step name="load" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadNextGenSNPs">
+      <paramValue name="sequenceVariationCtl">$$loaderDir$$/loadSequenceVariations.ctl</paramValue>
+      <paramValue name="snpCtl">$$loaderDir$$/loadSNP.ctl</paramValue>
+      <paramValue name="sequenceVariationDat">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
+      <paramValue name="snpDat">$$snpsDataDir$$/snpFeature.dat</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
+      <paramValue name="loaderDir">$$loaderDir$$</paramValue>
+      <depends name="processSequenceVariations"/>
+    </step>
+
+<!-- 
+
+TODO:      add foreign key constraints and indexex
+
+-->
+
+
+
+
+<!--
+TODO:  document
+    <step name="document-coverage-snps-mummer"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">coverage_snps_MTHD</paramValue>
+      <paramValue name="version">1</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="processSequenceVariations"/>
+    </step>
+-->
+
+</workflowGraph>

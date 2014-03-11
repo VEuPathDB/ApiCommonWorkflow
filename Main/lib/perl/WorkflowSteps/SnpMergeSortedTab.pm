@@ -9,24 +9,20 @@ sub run {
 
   my $inputFile = $self->getParamValue('inputFile');
   my $newSampleFile = $self->getParamValue('newSampleFile');
-  my $snpStrain = $self->getParamValue('snpStrain');
+  my $undoneStrainsFile = $self->getParamValue('undoneStrainsFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "mergeSortedSnpTab.pl --inputFile $workflowDataDir/$inputFile --cacheFile $workflowDataDir/$newSampleFile";
+  my $cmd = "mergeSortedSnpTab.pl --inputFile $workflowDataDir/$inputFile --cacheFile $workflowDataDir/$newSampleFile --undoneStrainsFile $workflowDataDir/$undoneStrainsFile";
 
-  if ($undo) {
-    $cmd .= " --removeStrain $snpStrain";
-    $self->runCmd(0, $cmd);
-  } else {
-      if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-	  $self->runCmd(0, "echo test > $workflowDataDir/$newSampleFile");
-      }else{
-	  $self->runCmd($test, $cmd);
-      }
+  unless ($undo) {
+    if($test) {
+      $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+      $self->runCmd(0, "echo test > $workflowDataDir/$newSampleFile");
+    } else{
+      $self->runCmd($test, $cmd);
+    }
   }
-
 }
 
 sub getConfigDeclaration {

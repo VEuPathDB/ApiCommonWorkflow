@@ -16,6 +16,7 @@
     <param name="sraQueryString"/>
     <param name="snpPercentCutoff"/>
     <param name="varscanConsDir"/>
+    <param name="outputDir"/>
 
     <!-- mirror the sample directory over to the cluster
      This directory will eventually contain the cluster task dir but not the fastq files for the sample
@@ -33,15 +34,6 @@
     </step>
     
 
-  <!-- may want to replace the readsFile here with strain ?? -->
-  <step name="addMetaData" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSampleMetaData">
-    <paramValue name="experimentName">$$organismAbbrev$$_$$experimentName$$</paramValue>
-    <paramValue name="sampleMetaDataFile">$$sampleMetaDataFile$$</paramValue>
-    <paramValue name="readsFile">$$readsFile$$</paramValue>
-    <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
-    <depends name="mirrorToCluster"/>
-  </step>
-
     <subgraph name="mapSnpsOnCluster"  xmlFile="mapHtsSNPs.xml">
       <paramValue name="readsFile">$$readsFile$$</paramValue>
       <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
@@ -57,7 +49,6 @@
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-
     <step name="document-HTS_snps_bwa"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
       <paramValue name="method">HTS_snps_bowtie_MTHD</paramValue>
@@ -65,6 +56,7 @@
       <paramValue name="parameters">TODO: patch in later</paramValue>
     </step>
 
+<!--
     <step name="insertSnps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpHts" stepLoadTypes="plugin,loadSnpFeature">
       <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.SNPs.gff</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -74,6 +66,25 @@
       <paramValue name="isNextGenSeq">true</paramValue>
       <paramValue name="isCoverage">false</paramValue>
       <depends name="mapSnpsOnCluster"/>
+    </step>
+-->
+
+
+    <step name="gffToTabSort" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpGffToTabSort">
+      <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.SNPs.gff</paramValue>
+      <paramValue name="outputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.SNPs.tab</paramValue>
+      <paramValue name="gffVersion">2</paramValue>
+      <paramValue name="undoneStrainsFile">$$experimentDataDir$$/../UndoneStrains</paramValue>
+      <paramValue name="strain">$$snpStrain$$</paramValue>
+      <depends name="mapSnpsOnCluster"/>
+    </step>
+
+
+    <step name="mergeSortedSnpTab" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpMergeSortedTab" stepLoadTypes="mergeSortedSNPSample">
+      <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.SNPs.tab</paramValue>
+      <paramValue name="newSampleFile">$$experimentDataDir$$/ExptNewSamples.tab</paramValue>
+      <paramValue name="undoneStrainsFile">$$experimentDataDir$$/../UndoneStrains</paramValue>
+      <depends name="gffToTabSort"/>
     </step>
 
    <!--  TODO:  Need to see an example consensus file to fill in the regex here -->
