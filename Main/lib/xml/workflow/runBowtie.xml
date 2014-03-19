@@ -1,0 +1,58 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="experimentDataDir"/>
+    <param name="readsFile"/>
+    <param name="pairedReadsFile"/>
+    <param name="sampleName"/>
+    <param name="genomicSeqsFile"/>
+    <param name="indexDir"/>
+    <param name="organismAbbrev"/>
+    <param name="experimentName"/>
+    <param name="hasPairedEnds"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="snpExtDbRlsSpec"/>
+    <param name="isColorspace"/>
+    <param name="removePCRDuplicates"/>
+    <param name="extraBowtieParams"/>
+
+    <!-- mirror the sample directory over to the cluster
+     This directory will eventually contain the cluster task dir but not the fastq files for the sample
+     Those still live in the experiment directory
+     -->
+    <constant name="dataDir">$$experimentDataDir$$/analyze_$$sampleName$$</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+    
+
+    <subgraph name="runBowtieOnCluster"  xmlFile="bowtieJob.xml">
+      <paramValue name="readsFile">$$readsFile$$</paramValue>
+      <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
+      <paramValue name="hasPairedReads">$$hasPairedEnds$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="indexDir">$$indexDir$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <paramValue name="clusterDataDir">$$dataDir$$</paramValue>
+      <paramValue name="isColorspace">$$isColorspace$$</paramValue>
+      <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
+      <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+    <step name="document-BowtieMapping"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">mapWithBowtie_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters">TODO: patch in later</paramValue>
+   </step> 
+
+</workflowGraph>
+
+

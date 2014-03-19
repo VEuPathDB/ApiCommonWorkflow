@@ -1,0 +1,74 @@
+<workflowGraph name="">
+  <param name="parentDataDir"/>
+  <param name="organismDatasetLoaderXmlFile"/>
+  <param name="genomicSeqsDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="organismAbbrev"/>
+  
+
+  <constant name="bowtieDir">$$parentDataDir$$/bowtieIndices</constant>
+  <constant name="indicesDir">$$parentDataDir$$/otherIndices</constant>
+
+  <step name="makeIndicesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$indicesDir$$</paramValue>
+  </step>
+
+  <!-- Create the external database release -->
+  <step name="insertExtDbRls" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateExtDbAndDbRls" stepLoadTypes="plugin">
+    <paramValue name="extDbRlsSpec">InsertSnps.pm NGS SNPs INTERNAL|Ref:  $$organismAbbrev$$</paramValue> <!--will need to change this -->
+  </step>
+
+  <!-- Create the bowtie 2 indexes -->
+  <step name="createBowtie2Indices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+    <paramValue name="inputFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fsa</paramValue>
+    <paramValue name="outputIndexDir">$$bowtieDir$$</paramValue>
+    <paramValue name="colorspace">false</paramValue>
+    <paramValue name="bowtieVersion">2</paramValue>
+  </step>
+
+   <!-- Create the Bowtie 1 index for colorspace -->
+  <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+    <paramValue name="inputFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fsa</paramValue>
+    <paramValue name="outputIndexDir">$$bowtieDir$$</paramValue>
+    <paramValue name="colorspace">true</paramValue>
+    <paramValue name="bowtieVersion">1</paramValue>
+  </step>
+
+  <!-- Mirror bowtie indices to cluster -->
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$bowtieDir$$</paramValue>
+    <depends name="createBowtieIndices"/>
+    <depends name="createBowtie2Indices"/>
+  </step>
+
+  <!-- Create other common indices -->
+  <step name="createSamtoolsIndex" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSamtoolsIndex">
+    <paramValue name="genomicSeqsFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fsa</paramValue>
+    <paramValue name="outputFile">$$indicesDir$$/topLevelGenomicSeqs.fsa.fai</paramValue>
+    <depends name="makeIndicesDir"/>
+  </step>
+  
+  <step name="makeChromSizesFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeChromSizesFile">
+    <paramValue name="indicesDir">$$indicesDir$$</paramValue>
+    <paramValue name="genomeIndex">topLevelGenomicSeqs.fsa.fai</paramValue>
+    <depends name="createSamtoolsIndex"/>
+  </step>
+
+<!-- Subgraphs that use these indices initiated from here -->
+
+    <subgraph name="originsOfReplicationExperiment" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/originsOfReplicationExperiment.xml" excludeIfXmlFileDoesNotExist="true">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="samtoolsIndex">$$indicesDir$$/topLevelGenomicSeqs.fsa.fai</paramValue>
+      <paramValue name="chromSizesFile">$$indicesDir$$/chrom.sizes</paramValue>
+      <depends name="mirrorToCluster"/>
+      <depends name="makeChromSizesFile"/>
+    </subgraph>
+
+  </workflowGraph>
