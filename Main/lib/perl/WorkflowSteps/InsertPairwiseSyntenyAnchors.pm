@@ -29,8 +29,8 @@ sub run {
       if ($algInvIdsFull) {
 	  my @algInvIdsArray = split(/,/, $algInvIdsFull);
 	  my $count = scalar(@algInvIdsArray);
-	  for (my $i=0; $i<$count; $i+=100) {
-	      my @subArray = splice(@algInvIdsArray, 0, 100);
+	  for (my $i=0; $i<$count; $i+=99) {
+	      my @subArray = splice(@algInvIdsArray, 0, 99);
 	      my $algInvIds = join(",", @subArray);
 	      my $cmd1 = "ga GUS::Community::Plugin::Undo --plugin ApiCommonData::Load::Plugin::InsertSyntenySpans --workflowContext --algInvocationId '$algInvIds' --commit";
 	      my $cmd2 = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabaseRls --workflowContext --algInvocationId '$algInvIds' --commit";
@@ -48,50 +48,45 @@ sub run {
     foreach my $pair (readdir INPUT){
 	next if ($pair =~ m/^\./);
 	#my ($orgAbbrevA, $orgAbbrevB) = split(/\-/, $pair);
-	my @orgAbbrevs = split(/\-/, $pair);
+        my $ndelim = $pair =~ tr/\-//;
+	my @orgAbbrevs = split(/\-/, $pair, $ndelim + 1);
 	my ($orgAbbrevA, $orgAbbrevB);
+
 	while(scalar @orgAbbrevs >1){
-	    my $tmp=shift(@orgAbbrevs);
-	    $orgAbbrevA .= $tmp;
-	    my $exists = $self->runSqlFetchOneRow($test,"select abbrev from apidb.organism where abbrev = '$orgAbbrevA'");
-	    if ($exists) {
-		$self->log("orgAbbrevA is '$orgAbbrevA'.");
-		last;
-	    }else{
-		$orgAbbrevA .= "-";
-	    }
-            
-	}
-
-
-	while(scalar @orgAbbrevs >0){
-	    my $tmp=shift(@orgAbbrevs);
-	    $orgAbbrevB .= $tmp;
+	    my $tmp=pop(@orgAbbrevs);
+	    $orgAbbrevB = $tmp . $orgAbbrevB;
 	    my $exists = $self->runSqlFetchOneRow($test,"select abbrev from apidb.organism where abbrev = '$orgAbbrevB'");
 	    if ($exists) {
 		$self->log("orgAbbrevB is '$orgAbbrevB'.");
 		last;
 	    }else{
-		$orgAbbrevB .= "-";
+		$orgAbbrevB = "-".$orgAbbrevB;
 	    }
             
 	}
-        my $gffFileA = "$workflowDataDir/$mercatorInputsDir/${orgAbbrevA}.gff";
-        my $gffFileB = "$workflowDataDir/$mercatorInputsDir/${orgAbbrevB}.gff";
+
+	while(scalar @orgAbbrevs >0){
+	    my $tmp=pop(@orgAbbrevs);
+	    $orgAbbrevA = $tmp . $orgAbbrevA;
+	    my $exists = $self->runSqlFetchOneRow($test,"select abbrev from apidb.organism where abbrev = '$orgAbbrevA'");
+	    if ($exists) {
+		$self->log("orgAbbrevA is '$orgAbbrevA'.");
+		last;
+	    }else{
+		$orgAbbrevA = "-" . $orgAbbrevA;
+	    }
+            
+	}
 
 	my $databaseName = "${pair}_Mercator_synteny";
 	my $dbPluginArgs = "--name '$databaseName' ";
 	my $releasePluginArgs = "--databaseName '$databaseName' --databaseVersion dontcare";
 
-	my $insertPluginArgs = "--inputFile $workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny --syntenyDbRlsSpec '$databaseName|dontcare' --gffFileA $gffFileA --gffFileB $gffFileB";
+	my $insertPluginArgs = "--inputDirectory $workflowDataDir/$mercatorOutputsDir/$pair --syntenyDbRlsSpec '$databaseName|dontcare'";
 
-	# command to reformat .align file
-	my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align";
-	my $outputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny";
-	my $formatCmd = "reformatMercatorAlignFile --inputFile $inputFile --outputFile $outputFile";
 
 	if ($undo) {
-	    unlink($outputFile);
+#	    unlink($outputFile);
 	} else {
 	    # allow for restart; skip those already in db.   any partially done pair needs to be fully backed out before restart.
 	    my $exists = $self->runSqlFetchOneRow($test,"select name from sres.externaldatabase where name = '$databaseName'");
@@ -100,20 +95,7 @@ sub run {
 		next;
 	    }
 
-	    my $tmPrefix = $self->getTuningTablePrefix($orgAbbrevB, $test);
-	    my $sql = "select count(*)
-                       from apidbtuning.${tmPrefix}sequenceattributes sa, apidb.organism o, sres.sequenceontology so
-                       where so.term_name IN ('chromosome', 'supercontig')
-                       and sa.so_id = so.so_id
-                       and sa.taxon_id = o.taxon_id
-                       and o.abbrev = '$orgAbbrevB'";
-	    my $cmd = "getValueFromTable --idSQL \"$sql\"";
-	    my $isNotDraftGenome = $self->runCmd($test, $cmd);
-	    if (!$isNotDraftGenome) {
-	      $formatCmd .= " --agpFile $workflowDataDir/$mercatorOutputsDir/$pair/$orgAbbrevB.agp";
-	    }
 
-	    $self->runCmd($test, $formatCmd);
 	    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 	    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
 	    $self->runPlugin($test, 0, "ApiCommonData::Load::Plugin::InsertSyntenySpans", $insertPluginArgs);
