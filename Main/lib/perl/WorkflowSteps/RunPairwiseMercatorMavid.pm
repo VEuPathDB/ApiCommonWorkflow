@@ -47,7 +47,7 @@ sub run {
     my $cacheDir = "$workflowDataDir/$mercatorCacheDir";
     mkdir("$workflowDataDir/$mercatorCacheDir");
 
-    my $skippedDir = "$workflowDataDir/pairsWithNoAlignment";
+    my $skippedDir = "$workflowDataDir/$mercatorCacheDir/../pairsWithNoAlignment";
 
 
     foreach my $orgA (@organismAbbrevs) {
@@ -117,7 +117,6 @@ sub run {
 		} else {
 		  # if no alignments, mv to skipped dir
 		  $self->runCmd($test,"mv $pairTmpDir $pairSkippedDir");
-		  $self->runCmd($test, "ln -s $pairSkippedDir $pairCacheDir");
 		}
 	    }
 	}
