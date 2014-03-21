@@ -48,7 +48,8 @@ sub run {
     foreach my $pair (readdir INPUT){
 	next if ($pair =~ m/^\./);
 	#my ($orgAbbrevA, $orgAbbrevB) = split(/\-/, $pair);
-	my @orgAbbrevs = split(/\-/, $pair);
+        my $ndelim = $pair =~ tr/\-//;
+	my @orgAbbrevs = split(/\-/, $pair, $ndelim + 1);
 	my ($orgAbbrevA, $orgAbbrevB);
 
 	while(scalar @orgAbbrevs >1){
