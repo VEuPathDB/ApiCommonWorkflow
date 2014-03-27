@@ -33,7 +33,6 @@ sub run {
     }
 
     my @organismAbbrevs = $self->findOrganismAbbrevs("$workflowDataDir/$mercatorInputsDir"); # tests .fasta and .gff existence
-
     my $isDraftHash = $self->getIsDraftHash(\@organismAbbrevs, $test);  # hash of 0/1 for each organism
 
     # create and clean out needed dirs
@@ -48,32 +47,45 @@ sub run {
     my $cacheDir = "$workflowDataDir/$mercatorCacheDir";
     mkdir("$workflowDataDir/$mercatorCacheDir");
 
+    my $skippedDir = "$workflowDataDir/pairsWithNoAlignment";
+
 
     foreach my $orgA (@organismAbbrevs) {
+        ## next if the sequence's SO TermName of $orgA or $orgB is only mito- or api-
+        next unless ($self->ifSkipOnSoTermName($orgA, $test) eq 'no');
+
 	foreach my $orgB (@organismAbbrevs) {
+	    next unless ($self->ifSkipOnSoTermName($orgB, $test) eq 'no');
 
 	    next unless $orgA gt $orgB;  # only do each pair once, and don't do self-self
 
 	    my $pairOutputDir = "$workflowDataDir/$mercatorOutputsDir/${orgA}-${orgB}";
+	    my $pairCacheDir = "$cacheDir/${orgA}-${orgB}";
+	    my $pairSkippedDir = "$skippedDir/${orgA}-${orgB}";
 
 	    if ($test) {
 		$self->runCmd(0,"mkdir $pairOutputDir");
 		$self->runCmd(0,"echo hello > $pairOutputDir/${orgA}-${orgB}.align");
 		next;
-	    } 
+	    }
 
 	    if ($self->cacheHit($orgA, $orgB, $cacheDir, "$workflowDataDir/$mercatorInputsDir", $test)) {
-		$self->runCmd($test, "cp -r $cacheDir/${orgA}-${orgB} $pairOutputDir");
+		$self->runCmd($test, "ln -s $cacheDir/${orgA}-${orgB} $pairOutputDir");
 	    } else {
 
-		mkdir("$pairOutputDir") || $self->error("Failed making dir $pairOutputDir");
+	        # the strategy here is:
+	        #  - set up a tmp dir with input files.
+                #  - run mercator in the tmp dir; it will produce output there
+                #  - mv the desired output from the tmp dir to the output dir
+                #  - remove the tmp dir
+                #  - on success, mv the output dir to the cache
+                #  - replace the output dir with a link to the cache.
 
 		#  set up tmp dir with input files
 		my $pairTmpDir = "$workflowDataDir/$mercatorTmpDir/${orgA}-${orgB}";
 		mkdir("$pairTmpDir") || $self->error("Failed making dir $pairTmpDir");
 		mkdir("$pairTmpDir/fasta") || $self->error("Failed making dir $pairTmpDir/fasta");
 		mkdir("$pairTmpDir/gff") || $self->error("Failed making dir $pairTmpDir/gff");
-
 		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgA}.fasta $pairTmpDir/fasta");
 		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgA}.gff $pairTmpDir/gff");
 		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgB}.fasta $pairTmpDir/fasta");
@@ -82,19 +94,31 @@ sub run {
 		my $draftFlagA = $isDraftHash->{$orgA}? '-d' : '-n';
 		my $draftFlagB = $isDraftHash->{$orgB}? '-d' : '-n';
 
+		# run mercator in tmp dir
 		my $command = "runMercator  -t '($orgA:0.1,$orgB:0.1);' -p $pairTmpDir -c $cndSrcBin -m $mavid $draftFlagA $orgA $draftFlagB $orgB";
 		$self->runCmd($test,$command);
 
-		# move selected output from tmp dir to the real output dir
-		$self->runCmd($test,"cp $pairTmpDir/*.align $pairOutputDir");
-		$self->runCmd($test,"cp $pairTmpDir/mercator-output/*.agp $pairOutputDir");
-		$self->runCmd($test,"cp -r $pairTmpDir/mercator-output/alignments $pairOutputDir");
+                # Check that mercator created some alignments, otherwise move folder to Skipped directory instead of Output.
+                if (-d "$pairTmpDir/mercator-output/alignments/1/") {
+		  $self->runCmd($test,"mkdir $pairOutputDir");
+		  # move selected output from tmp dir to the real output dir
+		  $self->runCmd($test,"mv $pairTmpDir/*.align $pairOutputDir");
+		  $self->runCmd($test,"mv $pairTmpDir/mercator-output/*.agp $pairOutputDir");
+		  $self->runCmd($test,"mv $pairTmpDir/mercator-output/alignments $pairOutputDir");
 
-		# delete tmp dir
-		$self->runCmd($test,"rm -r $pairTmpDir");
+		  # delete tmp dir
+		  $self->runCmd($test,"rm -r $pairTmpDir");
 
-		# and copy real output dir to cache
-		$self->runCmd($test, "cp -r $pairOutputDir $cacheDir");
+		  # mv the output dir to cache
+		  $self->runCmd($test, "mv $pairOutputDir $cacheDir");
+
+		  # and link output dir to cache
+		  $self->runCmd($test, "ln -s $pairCacheDir $workflowDataDir/$mercatorOutputsDir");
+		} else {
+		  # if no alignments, mv to skipped dir
+		  $self->runCmd($test,"mv $pairTmpDir $pairSkippedDir");
+		  $self->runCmd($test, "ln -s $pairSkippedDir $pairCacheDir");
+		}
 	    }
 	}
     }
@@ -120,6 +144,30 @@ sub findOrganismAbbrevs {
     $self->error("Mismatched number of .fasta and .gff files in $mercatorInputsDir") unless keys(%gffHash) == keys(%fastaHash);
     $self->error("Empty mercator inputs dir: $mercatorInputsDir") unless keys(%gffHash) > 0;
     return keys(%gffHash);
+}
+
+## based on the SO termName of the sequence in the geneattributes table, skip mercator if it is only mito- or api-
+sub ifSkipOnSoTermName {
+  my ($self, $organismAbbrev, $test) = @_;
+
+  my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $sql = "select distinct s.term_name 
+                  from apidbtuning.${tmPrefix}sequenceattributes sa, apidbtuning.${tmPrefix}geneattributes ga, SRES.sequenceontology s
+                  where sa.na_sequence_id = ga.na_sequence_id and sa.so_id=s.so_id and sa.na_sequence_id in
+                  (select distinct na_sequence_id from apidbtuning.${tmPrefix}geneattributes) ";
+  my $cmd = "getValueFromTable --idSQL \"$sql\"";
+
+  my $result = $self->runCmd($test, $cmd);
+  my @soTermNames = split(/\,/, $result);
+
+  my $ifSkip = "yes";
+  foreach my $soTermName (@soTermNames) {
+    if ($soTermName eq 'chromosome' || $soTermName eq 'supercontig' || $soTermName eq 'contig' ) {
+      $ifSkip = "no";
+      last;
+    }
+  }
+  return $ifSkip;
 }
 
 sub getIsDraftHash {
