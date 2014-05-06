@@ -298,11 +298,9 @@ sub getParentInfoFromSpeciesNcbiTaxId {
 
   die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
-  my $sql = "select rank, genetic_code_id, mitochondrial_genetic_code_id from sres.taxon where ncbi_tax_id = $taxId";
+  my $sql = "select rank,genetic_code_id,mitochondrial_genetic_code_id from sres.taxon where ncbi_tax_id = $taxId";
 
-  my $cmd = "getValueFromTable --idSQL \"$sql\"";
-
-  my ($rank, $genetic_code_id, $mitochondrial_genetic_code_id) = $self->runCmd($test, $cmd);
+  my ($rank, $genetic_code_id, $mitochondrial_genetic_code_id) = $self->runSqlFetchOneRow($test,$sql);
 
   if ($test) {
     return ("UNKNOWN_rank","UNKNOWN_genetic_code_id","UNKNOWN_mitochondrial_genetic_code_id");
