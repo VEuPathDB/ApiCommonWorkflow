@@ -85,6 +85,13 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsGlobal name="initClusterHomeDir"/>
     </step>
 
+    <step name="${organismAbbrev}_loadTemporaryNcbiTaxonId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadTemporaryNcbiTaxonId" includeIf="${hasTemporaryNcbiTaxonId}" groupName="${organismAbbrev}">
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="organismFullName">${organismFullName}</paramValue>
+      <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
+      <dependsGlobal name="taxonomy_RSRC"/> 
+    </step>
+
     <subgraph name="${organismAbbrev}_LoadGenome" xmlFile="loadGenome.xml" groupName="${organismAbbrev}">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -118,6 +125,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="makeProjectReleaseDownloadDir"/>
       <depends name="makeProjectReleaseWebServicesDir"/>
       <depends name="${organismAbbrev}_mirrorToCluster"/>
+      <depends name="${organismAbbrev}_loadTemporaryNcbiTaxonId"/>
       <dependsGlobal name="taxonomy_RSRC"/> 
       <dependsGlobal name="SO_RSRC"/>
     </subgraph>
