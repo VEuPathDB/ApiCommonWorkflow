@@ -18,7 +18,7 @@ sub run {
       $self->error("hasTemporaryNcbiTaxonId is true but the provided ncbi taxon ID does not look like a temporary one.  (It must be greater than 9000000000 to be a temp ID)");
   }
 
-  my ($rank, $genetic_code_id, $mitochondrial_genetic_code_id) = $self->getParentInfoFromSpeciesNcbiTaxId($test,$speciesNcbiTaxonId);
+  my ($rank, $geneticCodeId, $mitochondrialGeneticCodeId) = $self->getParentInfoFromSpeciesNcbiTaxId($test,$speciesNcbiTaxonId);
  
   my $args = "--parentNcbiTaxId $speciesNcbiTaxonId --parentRank $parentRank --ncbiTaxId $ncbiTaxonId --rank 'no rank' --name '$organismFullName' --nameClass 'scientific name' --geneticCodeId $geneticCodeId --mitochondrialGeneticCodeId $mitochondrialGeneticCodeId";
 
