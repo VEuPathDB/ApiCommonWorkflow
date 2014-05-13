@@ -1,0 +1,43 @@
+<workflowGraph name="analyzeDnaArraySample">
+    <param name="parentDataDir"/>
+    <param name="experimentDatasetName"/>
+    <param name="probeExtDbRlsSpec"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="inputSampleFile"/>
+    <param name="sampleName"/>
+    <param name="experimentName"/>
+    <param name="organismAbbrev"/>
+    <param name="configFilesDir"/>
+
+    <constant name="dataDir">$$parentDataDir$$/analyze_dna_Array_$$sampleName$$</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="mapProbesToFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MapArrayProbesToArrayElementFeatures">
+      <paramValue name="inputFile">$$parentDataDir$$/$$experimentDatasetName$$/final/$$inputSampleFile$$</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/mapped_results.txt</paramValue>
+      <paramValue name="extDbRlsSpec">$$probeExtDbRlsSpec$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="writeRadConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteRadSampleConfig">
+      <paramValue name="configOutputFile">$$configFilesDir$$/$$sampleName$$_analysis_config.txt</paramValue>
+      <paramValue name="file">mapped_results.txt</paramValue>
+      <paramValue name="analysisName">$$sampleName$$</paramValue>
+      <paramValue name="protocolName">dna_array_simple</paramValue>
+      <depends name="mapProbesToFeatures"/>
+    </step>
+
+
+    <step name="loadDnaArrayFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin">
+      <paramValue name="analysisWorkingDir">$$dataDir$$</paramValue>
+      <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_analysis_config.txt</paramValue>
+      <paramValue name="analysisResultView">DataTransformationResult</paramValue>
+      <paramValue name="naFeatureView">ArrayElementFeature</paramValue>
+      <paramValue name="useSqlLdr">true</paramValue>
+      <depends name="writeRadConfig"/>
+    </step>
+
+  </workflowGraph>

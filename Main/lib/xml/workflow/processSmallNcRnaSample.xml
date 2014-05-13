@@ -1,0 +1,137 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="experimentDataDir"/>
+<!--    <param name="coverageFilesDir"/> -->
+<!--    <param name="readsFilePath"/> -->
+    <param name="readsFile"/>
+<!--    <param name="pairedReadsFile"/> -->
+    <param name="snpExtDbRlsSpec"/>
+    <param name="sampleName"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="genomicSeqsFile"/>
+    <param name="indexDir"/>
+    <param name="organismAbbrev"/>
+    <param name="experimentName"/>
+    <param name="hasPairedEnds"/>
+    <param name="isColorspace"/>
+    <param name="removePCRDuplicates"/>
+<!--    <param name="windowSize"/> -->
+    <param name="extraBowtieParams"/>
+<!--    <param name="samtoolsIndex"/> -->
+    <param name="minReadLength"/>
+    <param name="maxReadLength"/>
+    <param name="sequenceFormat"/>
+<!--    <param name="sampleName"/> -->
+
+ <!-- The dataset loader here does not get anything from manual delivery.  It only makes rows in sres.extdb and extdbrls -->
+    <subgraph name="loadSmallNcRnaSample" xmlFile="loadDataset.xml">
+        <paramValue name="datasetName">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_smallNcRnaSample_RSRC</paramValue>
+        <paramValue name="datasetLoaderXmlFileName">$$projectName$$/$$organismAbbrev$$/$$experimentName$$.xml</paramValue>
+        <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+    </subgraph>
+    
+    <!-- Make dirs in which to do length and mapping filtering -->
+    <constant name="lengthFilterDir">$$experimentDataDir$$/lengthFilter</constant>
+    <constant name="tRNArRNAMappingDir">$$experimentDataDir$$/tRNArRNAMapping</constant>
+    <constant name="filteredReadsDir">$$experimentDataDir$$/filteredReads</constant>
+
+    <step name="makeLengthFilterDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$lengthFilterDir$$</paramValue>
+    </step>
+
+    <step name="maketRNArRNAMappingDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$tRNArRNAMappingDir$$</paramValue>
+    </step>
+
+    <step name="makeFilteredReadsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$filteredReadsDir$$</paramValue>
+    </step>
+
+    <step name="filterFastqByLength" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterFastqByLength">
+        <paramValue name="readsFile">$$readsFile$$</paramValue> 
+        <paramValue name="sequenceFormat">$$sequenceFormat$$</paramValue>
+        <paramValue name="minLength">$$minReadLength$$</paramValue>
+        <paramValue name="maxLength">$$maxReadLength$$</paramValue>
+        <paramValue name="outFile">$$lengthFilterDir$$/$$sampleName$$.fastq</paramValue>
+        <depends name="loadSmallNcRnaSample"/>
+        <depends name="makeLengthFilterDir"/>
+    </step>
+
+<!-- Run Bowtie locally against tRNA and rRNA seqs -->
+    <subgraph name="mapReadsTotRNArRNATranscripts" xmlFile="mapReadsTotRNArRNATranscripts.xml">
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="experimentDataDir">$$experimentDataDir$$</paramValue>
+        <paramValue name="readsFile">$$lengthFilterDir$$/$$sampleName$$.fastq</paramValue>
+        <paramValue name="pairedReadsFile">$$lengthFilterDir$$/$$sampleName$$.fastq.paired</paramValue>
+        <paramValue name="isColorspace">$$isColorspace$$</paramValue>
+        <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
+        <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+        <paramValue name="sampleName">$$sampleName$$</paramValue>
+        <paramValue name="mappingDir">$$tRNArRNAMappingDir$$</paramValue> 
+        <depends name="maketRNArRNAMappingDir"/>
+        <depends name="filterFastqByLength"/>
+    </subgraph>
+
+    <step name="filterMappedReads" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RemoveMappedReads">
+        <paramValue name="bamFile">$$tRNArRNAMappingDir$$/$$sampleName$$.bam</paramValue>
+        <paramValue name="outFile">$$filteredReadsDir$$/$$sampleName$$.fastq</paramValue> 
+        <depends name="makeFilteredReadsDir"/>
+        <depends name="mapReadsTotRNArRNATranscripts"/>
+    </step>
+
+
+<!-- Filter out mapped reads and mirror filtered reads to cluster -->
+
+    <subgraph name="mirrorSampleFiles" xmlFile="mirrorHtsSamples.xml"> <!--Can probably stick with this subgraph -->
+        <paramValue name="readsFilePath">$$filteredReadsDir$$</paramValue>
+        <paramValue name="readsFileBasename">$$sampleName$$.fastq</paramValue> 
+        <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+        <paramValue name="snpStrainAbbrev">$$sampleName$$</paramValue> <!--will need to retain param name for subgraph to work -->
+        <depends name="filterMappedReads"/>
+    </subgraph>
+<!--TODO: check dependencies from this point down -->
+
+<!-- Don't need this for fastq -->
+    <!-- See above re sticking to this subgraph -->
+<!--    <subgraph name="mirrorSampleQualFiles" xmlFile="mirrorHtsSamples.xml"  includeIf="$$isColorspace$$">
+        <paramValue name="readsFilePath">$$readsFilePath$$</paramValue>
+        <paramValue name="readsFileBasename">$$sampleName$$.qual</paramValue>
+        <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+        <paramValue name="snpStrainAbbrev">$$sampleName$$</paramValue>
+        <depends name="loadOriginsOfReplicationSample"/>
+    </subgraph> -->
+
+
+<!-- Bowtie here should run filtered reads against genome -->
+<!-- add param for additional bowtie params -->
+    <subgraph name="runBowtie" xmlFile="runBowtie.xml">
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="experimentDataDir">$$experimentDataDir$$</paramValue>
+        <paramValue name="readsFile">$$filteredReadsDir$$/$$sampleName$$.fastq</paramValue>
+        <paramValue name="pairedReadsFile">$$filteredReadsDir$$/$$sampleName$$.fastq.paired</paramValue> 
+        <paramValue name="snpExtDbRlsSpec">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_smallNcRnaSample_RSRC|dontcare</paramValue>
+        <paramValue name="sampleName">$$sampleName$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+        <paramValue name="indexDir">$$indexDir$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="experimentName">$$experimentName$$</paramValue>
+        <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+        <paramValue name="isColorspace">$$isColorspace$$</paramValue>
+        <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
+        <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+        <depends name="mirrorSampleFiles"/>
+<!--        <depends name="mirrorSampleQualFiles"/> -->
+    </subgraph>
+
+<!-- Don't need this -->
+<!--subgraph to create binned coverage file for each sample goes here-->
+<!--    <step name="createBinnedCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBinnedCoverageFile">
+        <paramValue name="bamFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam</paramValue>
+        <paramValue name="windowSize">$$windowSize$$</paramValue>
+        <paramValue name="outputFile">$$coverageFilesDir$$/$$sampleName$$.bed</paramValue>
+        <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
+        <depends name="runBowtie"/>
+    </step> -->
+</workflowGraph>
+
