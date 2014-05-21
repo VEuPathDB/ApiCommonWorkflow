@@ -11,7 +11,11 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $gffVersion =  $self->getParamValue('gffVersion');
 
-  my $undoneStrainsFile = $self->getParamValue('undoneStrainsFile');
+  my $merge1UndoneStrains = $self->getParamValue('merge1UndoneStrains');
+  my $merge2UndoneStrains = $self->getParamValue('merge2UndoneStrains');
+  my $merge3UndoneStrains = $self->getParamValue('merge3UndoneStrains');
+
+
   my $strain = $self->getParamValue('strain');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -20,7 +24,11 @@ sub run {
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
-    $self->runCmd(0, "echo $strain >>$workflowDataDir/$undoneStrainsFile");
+
+    $self->runCmd(0, "echo $strain >>$workflowDataDir/$merge1UndoneStrains");
+    $self->runCmd(0, "echo $strain >>$workflowDataDir/$merge2UndoneStrains");
+    $self->runCmd(0, "echo $strain >>$workflowDataDir/$merge3UndoneStrains");
+
   } else {
       if ($test) {
 	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
