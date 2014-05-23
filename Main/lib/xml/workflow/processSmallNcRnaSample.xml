@@ -1,10 +1,7 @@
 <workflowGraph name="">
     <param name="projectName"/>
     <param name="experimentDataDir"/>
-<!--    <param name="coverageFilesDir"/> -->
-<!--    <param name="readsFilePath"/> -->
     <param name="readsFile"/>
-<!--    <param name="pairedReadsFile"/> -->
     <param name="snpExtDbRlsSpec"/>
     <param name="sampleName"/>
     <param name="genomeExtDbRlsSpec"/>
@@ -15,14 +12,18 @@
     <param name="hasPairedEnds"/>
     <param name="isColorspace"/>
     <param name="removePCRDuplicates"/>
-<!--    <param name="windowSize"/> -->
     <param name="extraBowtieParams"/>
-<!--    <param name="samtoolsIndex"/> -->
     <param name="minReadLength"/>
     <param name="maxReadLength"/>
     <param name="sequenceFormat"/>
-<!--    <param name="sampleName"/> -->
+    <param name="tRNArRNASeqsDir"/>
+   
+    <constant name="sampleAnalysisDir">$$experimentDataDir$$/$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_smallNcRnaSample_RSRC</constant> 
+    <constant name="lengthFilterDir">$$sampleAnalysisDir$$/lengthFilter</constant>
+    <constant name="tRNArRNAMappingDir">$$sampleAnalysisDir$$/tRNArRNAMapping</constant>
+    <constant name="filteredReadsDir">$$sampleAnalysisDir$$/filteredReads</constant>
 
+   
  <!-- The dataset loader here does not get anything from manual delivery.  It only makes rows in sres.extdb and extdbrls -->
     <subgraph name="loadSmallNcRnaSample" xmlFile="loadDataset.xml">
         <paramValue name="datasetName">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_smallNcRnaSample_RSRC</paramValue>
@@ -30,21 +31,29 @@
         <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
     </subgraph>
     
-    <!-- Make dirs in which to do length and mapping filtering -->
-    <constant name="lengthFilterDir">$$experimentDataDir$$/lengthFilter</constant>
-    <constant name="tRNArRNAMappingDir">$$experimentDataDir$$/tRNArRNAMapping</constant>
-    <constant name="filteredReadsDir">$$experimentDataDir$$/filteredReads</constant>
-
+    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+        <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$</paramValue>
+        <depends name="loadSmallNcRnaSample"/>
+    </step>
+    
     <step name="makeLengthFilterDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$lengthFilterDir$$</paramValue>
+        <depends name="mirrorSampleAnalysisDirToCluster"/>
     </step>
 
     <step name="maketRNArRNAMappingDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$tRNArRNAMappingDir$$</paramValue>
+        <depends name="mirrorSampleAnalysisDirToCluster"/>
     </step>
 
     <step name="makeFilteredReadsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$filteredReadsDir$$</paramValue>
+        <depends name="mirrorSampleAnalysisDirToCluster"/>
+    </step>
+
+    <step name="mirrorFilteredReadsDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+        <paramValue name="fileOrDirToMirror">$$filteredReadsDir$$</paramValue>
+        <depends name="makeFilteredReadsDir"/>
     </step>
 
     <step name="filterFastqByLength" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterFastqByLength">
@@ -67,18 +76,13 @@
         <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
         <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
         <paramValue name="sampleName">$$sampleName$$</paramValue>
+        <paramValue name="tRNArRNASeqsDir">$$tRNArRNASeqsDir$$</paramValue>
+        <paramValue name="filteredReadsDir">$$filteredReadsDir$$</paramValue>
         <paramValue name="mappingDir">$$tRNArRNAMappingDir$$</paramValue> 
         <depends name="maketRNArRNAMappingDir"/>
         <depends name="filterFastqByLength"/>
-    </subgraph>
-
-    <step name="filterMappedReads" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RemoveMappedReads">
-        <paramValue name="bamFile">$$tRNArRNAMappingDir$$/$$sampleName$$.bam</paramValue>
-        <paramValue name="outFile">$$filteredReadsDir$$/$$sampleName$$.fastq</paramValue> 
         <depends name="makeFilteredReadsDir"/>
-        <depends name="mapReadsTotRNArRNATranscripts"/>
-    </step>
-
+    </subgraph> 
 
 <!-- Filter out mapped reads and mirror filtered reads to cluster -->
 
@@ -87,20 +91,8 @@
         <paramValue name="readsFileBasename">$$sampleName$$.fastq</paramValue> 
         <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
         <paramValue name="snpStrainAbbrev">$$sampleName$$</paramValue> <!--will need to retain param name for subgraph to work -->
-        <depends name="filterMappedReads"/>
+        <depends name="mapReadsTotRNArRNATranscripts"/>
     </subgraph>
-<!--TODO: check dependencies from this point down -->
-
-<!-- Don't need this for fastq -->
-    <!-- See above re sticking to this subgraph -->
-<!--    <subgraph name="mirrorSampleQualFiles" xmlFile="mirrorHtsSamples.xml"  includeIf="$$isColorspace$$">
-        <paramValue name="readsFilePath">$$readsFilePath$$</paramValue>
-        <paramValue name="readsFileBasename">$$sampleName$$.qual</paramValue>
-        <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
-        <paramValue name="snpStrainAbbrev">$$sampleName$$</paramValue>
-        <depends name="loadOriginsOfReplicationSample"/>
-    </subgraph> -->
-
 
 <!-- Bowtie here should run filtered reads against genome -->
 <!-- add param for additional bowtie params -->
@@ -121,17 +113,14 @@
         <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
         <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
         <depends name="mirrorSampleFiles"/>
-<!--        <depends name="mirrorSampleQualFiles"/> -->
     </subgraph>
 
-<!-- Don't need this -->
-<!--subgraph to create binned coverage file for each sample goes here-->
-<!--    <step name="createBinnedCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBinnedCoverageFile">
-        <paramValue name="bamFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam</paramValue>
-        <paramValue name="windowSize">$$windowSize$$</paramValue>
-        <paramValue name="outputFile">$$coverageFilesDir$$/$$sampleName$$.bed</paramValue>
-        <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
+    <step name="archiveFilteredReads" stepClass="ApiCommonWorkflow::WorkflowSteps::MakeTarArchive">
+        <paramValue name="fileToArchive">$$filteredReadsDir$$/$$sampleName$$.fastq</paramValue>
         <depends name="runBowtie"/>
-    </step> -->
+    </step>
+    
+    <!-- Make .bam.bai index-->
+    <!-- Copy bam file and index to staging -->
 </workflowGraph>
 

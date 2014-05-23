@@ -7,44 +7,33 @@
     <param name="removePCRDuplicates"/>
     <param name="extraBowtieParams"/>
     <param name="sampleName"/>
+    <param name="tRNArRNASeqsDir"/>
+    <param name="filteredReadsDir"/>
     <param name="mappingDir"/>
 
-<!--    <constant name="mappingDir">$$experimentDataDir$$/tRNArRNAMapping</constant> -->
     <constant name="tRNArRNAIndicesDir">$$mappingDir$$/BowtieIndices</constant>
 
-<!--    <step name="makeMappingDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$mappingDir$$</paramValue>
-    </step> -->
-
-    <step name="makeBowtieIndicesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$tRNArRNAIndicesDir$$</paramValue>
-    </step>
-
-    <step name="extracttRNArRNAFastaSeqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtracttRNArRNAFastaSeqs">
-        <paramValue name="outputFile">$$mappingDir$$/tRNArRNA.fsa</paramValue>
-        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    </step>
-
-    <step name="maketRNArRNABowtieIndex" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
-        <paramValue name="inputFile">$$mappingDir$$/tRNArRNA.fsa</paramValue>
-        <paramValue name="outputIndexDir">$$tRNArRNAIndicesDir$$</paramValue>
-        <paramValue name="colorspace">false</paramValue>
-        <paramValue name="bowtieVersion">2</paramValue>
-        <depends name="makeBowtieIndicesDir"/>
-        <depends name="extracttRNArRNAFastaSeqs"/>
-    </step>
-
-    <step name="mapWithBowtieLocal" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LocalBowtieMap">
+    <step name="mapTotRNArRNATranscripts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunBowtieLocal">
        <paramValue name="readsFile">$$readsFile$$</paramValue>
-       <paramValue name="pairedReadsFile">$$pairedReadsFiles$$</paramValue>
-       <paramValue name="bowtieIndex">$$tRNArRNAIndicesDir$$/genomicIndexes</paramValue>
+       <paramValue name="pairedReadsFile">$$readsFile$$.paired</paramValue>
+       <paramValue name="bowtieIndex">$$tRNArRNASeqsDir$$/BowtieIndices/genomicIndexes</paramValue>
        <paramValue name="isColorspace">$$isColorspace$$</paramValue>
        <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
        <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
        <paramValue name="sampleName">$$sampleName$$</paramValue>
        <paramValue name="deleteIntermediateFiles">true</paramValue>
-       <paramValue name="outputdir">$$mappingDir$$</paramValue>
-       <depends name="maketRNArRNABowtieIndex"/>
+       <paramValue name="outputDir">$$mappingDir$$</paramValue>
    </step> 
+
+    <step name="archiveLengthFilteredReads" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTarArchive">
+        <paramValue name="fileToArchive">$$readsFile$$</paramValue>
+        <depends name="mapTotRNArRNATranscripts"/>
+    </step>
+
+    <step name="filterMappedReads" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RemoveMappedReads">
+        <paramValue name="bamFile">$$mappingDir$$/$$sampleName$$.bam</paramValue>
+        <paramValue name="outFile">$$filteredReadsDir$$/$$sampleName$$.fastq</paramValue>
+        <depends name="archiveLengthFilteredReads"/>
+    </step>
 
 </workflowGraph>
