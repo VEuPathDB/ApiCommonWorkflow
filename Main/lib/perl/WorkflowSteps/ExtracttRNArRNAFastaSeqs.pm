@@ -10,12 +10,11 @@ sub run {
 
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-#  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
   my $sql = 
-    "select gf.source, sns.sequence
-     from dots.transcripts t,
+    "select gf.source_id, sns.sequence
+     from dots.transcript t,
      dots.splicednasequence sns,
      sres.taxon tn,
      sres.sequenceontology so,
