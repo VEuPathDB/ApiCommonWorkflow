@@ -16,24 +16,23 @@ sub run{
     my $mateB = $self->getParamValue("pairedReadsFile");
     my $bowtieIndex = $self->getParamValue("bowtieIndex");
     my $isColorspace = $self->getParamValue("isColorspace");
-    my $removePCRDuplicates = $self->getParamValue("removeRCRDuplicates");
+    my $removePCRDuplicates = $self->getParamValue("removePCRDuplicates");
     my $extraBowtieParams = $self->getParamValue("extraBowtieParams");
     my $sampleName = $self->getParamValue("sampleName");
-    my $deleteIntermediateFiles = $self->getParamValue("deleteIntermediateFIles");
-#    my $experimentDir = $self->getParamValue("experimentDir");
+    my $deleteIntermediateFiles = $self->getParamValue("deleteIntermediateFiles");
     my $outputDirName = $self->getParamValue("outputDir");
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $outputDir = "$workflowDataDir/$outputDirName";    
 
-    my $cmd = "runBowtieMapping.pl --mate A $mateA".(-e "$mateB" ? " --mateB $mateB": "");
-    $cmd .= " --bowtieIndex $bowtieIndex";
+    my $cmd = "runBowtieMappingLocal.pl --mateA $workflowDataDir/$mateA".(-e "$workflowDataDir/$mateB" ? " --mateB $workflowDataDir/$mateB": "");
+    $cmd .= " --bowtieIndex $workflowDataDir/$bowtieIndex";
     if ($extraBowtieParams ne 'none'){
         # make swaps so GetOpt::Long can take bowtieParams as a string
         $extraBowtieParams =~ s/-/_/g;
         $extraBowtieParams=~ s/ /#/g;
         $cmd .= " --extraBowtieParams $extraBowtieParams";
     }
-    if ($isColorSpace eq 'true'){
+    if ($isColorspace eq 'true'){
         $cmd.= " --isColorspace";
     }
     if ($removePCRDuplicates eq 'true'){
