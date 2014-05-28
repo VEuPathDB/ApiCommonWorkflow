@@ -13,12 +13,14 @@ sub run{
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $fileToArchive = $self->getParamValue("fileToArchive");
 
-    my $cmd = "tar czf $workflowDataDir/$fileToArchive.tar.gz $workflowDataDir/$fileToArchive";
+    my ($path, $fileName) = split (/\/([^\/]+)$/, "$workflowDataDir/$fileToArchive");
+
+    my $cmd = "tar czf $workflowDataDir/$fileToArchive.tar.gz -C $path $fileName";
     my $cmd2 = "rm $workflowDataDir/$fileToArchive";
 
     if ($undo){
         if (-e "$workflowDataDir/$fileToArchive.tar.gz"){
-            $self->runCmd(0, "tar xzf $workflowDataDir/$fileToArchive.tar.gz");
+            $self->runCmd(0, "tar xzf $workflowDataDir/$fileToArchive.tar.gz -C $path");
             $self->runCmd(0, "rm $workflowDataDir/$fileToArchive.tar.gz");
         }
     }else{
