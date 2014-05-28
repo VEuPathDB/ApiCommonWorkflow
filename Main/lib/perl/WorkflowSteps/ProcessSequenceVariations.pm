@@ -16,7 +16,6 @@ sub run {
   my $snpExtDbRlsSpec = $self->getParamValue('snpExtDbRlsSpec');
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $minAllelePercent = $self->getParamValue('minAllelePercent');
 
   my $organismStrain = $self->getOrganismInfo($test, $organismAbbrev)->getStrainAbbrev();
   
@@ -27,7 +26,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "processSequenceVariations.pl --new_sample_file $workflowDataDir/$newSampleFile --cache_file $workflowDataDir/$cacheFile --undone_strains_file $workflowDataDir/$undoneStrainsFile --varscan_directory $workflowDataDir/$varscanConsDir --transcript_extdb_spec '$genomeExtDbRlsSpec' --organism_abbrev $organismAbbrev --reference_strain $organismStrain --minAllelePercent $minAllelePercent  --extdb_spec '$snpExtDbRlsSpec'";
+  my $cmd = "processSequenceVariations.pl --new_sample_file $workflowDataDir/$newSampleFile --cache_file $workflowDataDir/$cacheFile --undone_strains_file $workflowDataDir/$undoneStrainsFile --varscan_directory $workflowDataDir/$varscanConsDir --transcript_extdb_spec '$genomeExtDbRlsSpec' --organism_abbrev $organismAbbrev --reference_strain $organismStrain  --extdb_spec '$snpExtDbRlsSpec'";
 
   unless($undo) {
     if($test) {
