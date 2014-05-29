@@ -3,6 +3,7 @@
   <param name="organismAbbrev"/>
   <param name="genomeExtDbRlsSpec"/>
   <param name="varscanConsDir"/>
+  <param name="relativeWebServicesDir"/>
 
   <constant name="loaderDir">$$snpsDataDir$$/loader</constant>
 
@@ -29,9 +30,46 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="snpExtDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="minAllelePercent">60</paramValue>
       <depends name="makeControlFiles"/>
       <depends name="insertExtDbRls"/>
+    </step>
+
+    <step name="makeHSS80FileInWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHighSpeedSearchFiles" stepLoadTypes="hssWS">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="variantsFile">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
+      <paramValue name="readFrequency">80</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="processSequenceVariations"/>
+    </step>
+
+    <step name="makeHSS60FileInWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHighSpeedSearchFiles" stepLoadTypes="hssWS">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="variantsFile">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
+      <paramValue name="readFrequency">60</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="processSequenceVariations"/>
+    </step>
+
+
+    <step name="makeHSS40FileInWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHighSpeedSearchFiles" stepLoadTypes="hssWS">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="variantsFile">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
+      <paramValue name="readFrequency">40</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="processSequenceVariations"/>
+    </step>
+
+
+    <step name="makeHSS20FileInWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHighSpeedSearchFiles" stepLoadTypes="hssWS">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="variantsFile">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
+      <paramValue name="readFrequency">20</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="processSequenceVariations"/>
     </step>
 
 
@@ -45,24 +83,9 @@
       <depends name="processSequenceVariations"/>
     </step>
 
-<!-- 
-
-TODO:      add foreign key constraints and indexex
-
--->
-
-
-
-
-<!--
-TODO:  document
-    <step name="document-coverage-snps-mummer"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">coverage_snps_MTHD</paramValue>
-      <paramValue name="version">1</paramValue>
-      <paramValue name="parameters"></paramValue>
-      <depends name="processSequenceVariations"/>
+    <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables" undoRoot="load">
+      <depends name="load"/>
     </step>
--->
+
 
 </workflowGraph>
