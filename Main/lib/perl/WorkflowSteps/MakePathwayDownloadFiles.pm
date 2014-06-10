@@ -10,17 +10,21 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $gusConfigFile= "$ENV{GUS_HOME}/config/gus.config";
-  my $relativePathwayDownloadSiteDir =  $self->getParamValue('relativePathwayDownloadSiteDir');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "makePathwayImgDataFiles.pl --gusConfigFile $gusConfigFile -- outputDir relativePathwayDownloadSiteDir --pathwayList ALL --commit";
+  my $relativeDownloadSiteDir =  $self->getParamValue('relativeDownloadSiteDir');
+  my $outputDirName = $self->getParamValue('outputDirName');
+  my $outputDir = $self->getParamValue('relativeDownloadSiteDir') . '/' . $outputDirName;
+
+  my $cmd = "makePathwayImgDataFiles.pl --gusConfigFile $gusConfigFile -- outputDir $outputDir --pathwayList ALL --commit";
 
   if ($undo) {
-      #need to remove the rows from apidb.PolyAGenes
+    $self->runCmd(0, "rm -Rf $outputDir/}");
   }else {
       if ($test){
-      }else{
-	    $self->runCmd($test, $cmd);
+      }else {
+	$self->runCmd($test, "mkdir -p $outputDir");
+	$self->runCmd($test, $cmd);
       }
   }
 
