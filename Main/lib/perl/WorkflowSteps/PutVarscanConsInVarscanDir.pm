@@ -14,14 +14,14 @@ sub run {
   my $mainResultDir = $self->getParamValue('mainResultDir');
 
 
-  my $cmd = "ln -s $workflowDataDir/$mainResultDir/result.varscan.cons.gz $workflowDataDir/$varscanConsDir/$strain.varscan.cons.gz";
-  my $undoCmd = "/bin/rm $workflowDataDir/$varscanConsDir/$strain.varscan.cons.gz";
+  my $cmd = "ln -s $workflowDataDir/$mainResultDir/result.coverage.txt $workflowDataDir/$varscanConsDir/$strain.coverage.txt";
+  my $undoCmd = "/bin/rm $workflowDataDir/$varscanConsDir/$strain.coverage.txt";
 
   if ($undo) {
     $self->runCmd(0, $undoCmd);
   } else {
     if ($test) {
-      $self->runCmd(0,"echo $cmd > $workflowDataDir/$varscanConsDir/$strain.varscan.cons.gz");
+      $self->runCmd(0,"echo $cmd > $workflowDataDir/$varscanConsDir/$strain.coverage.txt");
     }else{
       $self->runCmd($test,$cmd);
     }
