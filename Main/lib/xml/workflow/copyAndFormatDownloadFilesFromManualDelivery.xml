@@ -1,0 +1,28 @@
+<workflowGraph name="copyAndFormatDownloadFilesFromManualDelivery">
+    <param name="relativeManualDeliveryDir"/>
+    <param name="relativeDownloadSiteDir"/>
+    <param name="relativeWebServiceDir"/>
+    <param name="inputFileNameRegex"/>
+    <param name="projectName"/>
+    <param name="formatDownloadFile"/>
+    <param name="argsOfFormatingDownloadFile"/>
+    <param name="formattedOutputName"/>
+
+
+    <step name="copyDownloadFilesFromManualDelivery" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDownloadFilesFromManualDelivery">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeManualDeliveryDir">$$relativeManualDeliveryDir$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="inputFileNameRegex">$$inputFileNameRegex$$</paramValue>
+    </step>
+
+    <step name="formatDownloadFilesFromManualDelivery" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatDownloadFilesFromManualDelivery">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="inputFile">$$relativeDownloadSiteDir$$/*$$inputFileNameRegex$$</paramValue>
+      <paramValue name="outputDir">$$relativeWebServiceDir$$</paramValue>
+      <paramValue name="formattedFileName">$$formattedOutputName$$</paramValue>
+      <paramValue name="args">$$argsOfFormatingDownloadFile$$</paramValue>
+      <depends name="copyDownloadFilesFromManualDelivery"/>
+    </step>
+
+</workflowGraph>

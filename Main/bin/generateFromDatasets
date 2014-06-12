@@ -2,6 +2,7 @@
 set -e
 
 project=$1
+regex=${2:-$1};
 
 if [ ! $project ]
 then 
@@ -15,6 +16,8 @@ Where:
 "
   exit 1
 fi
+
+
 
 echo "$PROJECT_HOME"
 echo "$GUS_HOME"
@@ -34,7 +37,7 @@ fi
 echo
 
 cd $PROJECT_HOME
-for dataset in `find $project/Datasets/lib/xml/datasets/ -name "*.xml" | grep -v Deprecated`
+for dataset in `find $project/Datasets/lib/xml/datasets* -name "*.xml" | grep -v Deprecated|grep -P ${regex}`
 
 do
   echo `basename $dataset`:

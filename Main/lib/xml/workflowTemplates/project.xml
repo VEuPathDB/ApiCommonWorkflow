@@ -13,6 +13,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
   <constant name="comparativeGenomicsInputDir">comparativeGenomicsInputDir</constant>
   <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
   <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
+  <constant name="relativeAuxiliaryDir">auxiliary/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
 
   <globalSubgraph name="global" xmlFile="globalGraph.xml">
     <paramValue name="commonDatasetLoaderXmlFile">$$projectName$$/$$projectName$$Common.xml</paramValue>
@@ -29,6 +30,12 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
       <dependsGlobal name="initUserGroupProject"/>
   </step>
+
+  <step name="makeProjectReleaseAuxiliaryDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeAuxiliaryDir$$</paramValue>
+      <dependsGlobal name="initUserGroupProject"/>
+  </step>
+
 
   <step name="makeComparativeGenomicsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$comparativeGenomicsInputDir$$</paramValue>
@@ -78,6 +85,13 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsGlobal name="initClusterHomeDir"/>
     </step>
 
+    <step name="${organismAbbrev}_loadTemporaryNcbiTaxonId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadTemporaryNcbiTaxonId" includeIf="${hasTemporaryNcbiTaxonId}" groupName="${organismAbbrev}">
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="organismFullName">${organismFullName}</paramValue>
+      <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
+      <dependsGlobal name="taxonomy_RSRC"/> 
+    </step>
+
     <subgraph name="${organismAbbrev}_LoadGenome" xmlFile="loadGenome.xml" groupName="${organismAbbrev}">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -100,6 +114,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="organismDatasetLoaderXmlFile">$$projectName$$/${organismAbbrev}.xml</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="relativeAuxiliaryDir">$$relativeAuxiliaryDir$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
@@ -110,6 +125,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="makeProjectReleaseDownloadDir"/>
       <depends name="makeProjectReleaseWebServicesDir"/>
       <depends name="${organismAbbrev}_mirrorToCluster"/>
+      <depends name="${organismAbbrev}_loadTemporaryNcbiTaxonId"/>
       <dependsGlobal name="taxonomy_RSRC"/> 
       <dependsGlobal name="SO_RSRC"/>
     </subgraph>
@@ -214,10 +230,11 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="relativeAuxiliaryDir">$$relativeAuxiliaryDir$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome</paramValue>
-	  <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
@@ -231,6 +248,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="relativeAuxiliaryDir">$$relativeAuxiliaryDir$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
@@ -285,6 +303,12 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="parentDataDir"></paramValue>
       <dependsGlobal name="enzymeDB_RSRC"/>
    </subgraph>
+    <step name="makePathwayDownloadFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePathwayDownloadFiles">
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="outputDirName">pathwayFiles/</paramValue>
+      <dependsGlobal name="Pathways_RSRC"/> 
+    </step>
+
   </datasetTemplate>
 
   <!-- only reference strains have an instance of this -->
@@ -309,6 +333,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <paramValue name="datasetLoaderXmlFile">global.xml</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <dependsPattern name="*specific"/>
+    <dependsPattern name="*specific_noAlias"/>
   </subgraph>
 
  <datasetTemplate class="PathwayCompounds">
@@ -379,4 +404,31 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <dependsPattern name="*specific*"/>
   </subgraph>
 
+<!--A generic dataset template to copy and format files from EuPathDB manualDelivery to download sites and web services-->
+ <datasetTemplate class="copyAndFormatDownloadFilesFromManualDelivery">
+   <prop name="projectName"/>
+   <prop name="relativeManualDeliveryDir"/>
+   <prop name="relativeDownloadSiteDir"/>
+   <prop name="relativeWebServiceDir"/>
+   <prop name="datasetName"/>
+   <prop name="formatDownloadFile"/>
+   <prop name="argsOfFormatingDownloadFile"/> 
+   <prop name="formattedOutputName"/>
+   <prop name="inputFileNameRegex"/>
+
+
+    <subgraph name="CopyAndFormatDownloadFilesFromManualDelivery" xmlFile="copyAndFormatDownloadFilesFromManualDelivery.xml">
+      <paramValue name="relativeManualDeliveryDir">${relativeManualDeliveryDir}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">${relativeDownloadSiteDir}</paramValue>
+      <paramValue name="relativeWebServiceDir">${relativeWebServiceDir}</paramValue>
+      <paramValue name="datasetName">${datasetName}</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="formatDownloadFile">${formatDownloadFile}</paramValue>
+      <paramValue name="argsOfFormatingDownloadFile">${argsOfFormatingDownloadFile}</paramValue>
+      <paramValue name="formattedOutputName">${formattedOutputName}</paramValue>
+      <paramValue name="inputFileNameRegex">${inputFileNameRegex}</paramValue>
+      <dependsGlobal name="initUserGroupProject"/>
+    </subgraph>
+
+ </datasetTemplate>
 </workflowGraph>
