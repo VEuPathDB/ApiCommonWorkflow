@@ -1,0 +1,21 @@
+<workflowGraph name="">
+    <param name="organismAbbrev"/>
+    <param name="experimentDataDir"/>
+    <param name="tRNArRNASeqsDir"/>
+
+    <constant name="tRNArRNAIndicesDir">$$tRNArRNASeqsDir$$/BowtieIndices</constant>
+
+    <step name="extracttRNArRNAFastaSeqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtracttRNArRNAFastaSeqs">
+        <paramValue name="outputFile">$$tRNArRNASeqsDir$$/tRNArRNA.fsa</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    </step>
+
+    <step name="maketRNArRNABowtieIndex" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
+        <paramValue name="inputFile">$$tRNArRNASeqsDir$$/tRNArRNA.fsa</paramValue>
+        <paramValue name="outputIndexDir">$$tRNArRNAIndicesDir$$</paramValue>
+        <paramValue name="colorspace">false</paramValue>
+        <paramValue name="bowtieVersion">2</paramValue>
+        <depends name="extracttRNArRNAFastaSeqs"/>
+    </step>
+
+</workflowGraph>
