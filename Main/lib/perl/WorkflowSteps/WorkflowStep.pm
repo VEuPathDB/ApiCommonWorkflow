@@ -292,5 +292,24 @@ sub getTuningTablePrefix {
     return "P${organismId}_";
 }
 
+
+sub getParentInfoFromSpeciesNcbiTaxId {
+  my ($self, $test, $taxId) = @_;
+
+  die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
+
+  my $sql = "select rank,genetic_code_id,mitochondrial_genetic_code_id from sres.taxon where ncbi_tax_id = $taxId";
+
+  my ($rank, $genetic_code_id, $mitochondrial_genetic_code_id) = $self->runSqlFetchOneRow($test,$sql);
+
+  if ($test) {
+    return ("UNKNOWN_rank","UNKNOWN_genetic_code_id","UNKNOWN_mitochondrial_genetic_code_id");
+  } else {
+    return ($rank, $genetic_code_id, $mitochondrial_genetic_code_id);
+  }
+}
+
+
+
 1;
 

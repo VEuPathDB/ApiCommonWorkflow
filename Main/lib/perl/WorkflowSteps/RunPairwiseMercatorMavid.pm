@@ -48,6 +48,9 @@ sub run {
     mkdir("$workflowDataDir/$mercatorCacheDir");
 
     my $skippedDir = "$workflowDataDir/pairsWithNoAlignment";
+   $self->runCmd($test, "rm -r $skippedDir") if -e "$skippedDir";
+    mkdir("$skippedDir")
+	|| $self->error("Could not make dir '$skippedDir'");
 
 
     foreach my $orgA (@organismAbbrevs) {
@@ -62,6 +65,7 @@ sub run {
 	    my $pairOutputDir = "$workflowDataDir/$mercatorOutputsDir/${orgA}-${orgB}";
 	    my $pairCacheDir = "$cacheDir/${orgA}-${orgB}";
 	    my $pairSkippedDir = "$skippedDir/${orgA}-${orgB}";
+        mkdir("$pairSkippedDir") || $self->error("Failed making dir $pairSkippedDir");
 
 	    if ($test) {
 		$self->runCmd(0,"mkdir $pairOutputDir");
