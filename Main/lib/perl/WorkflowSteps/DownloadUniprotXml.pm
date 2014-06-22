@@ -8,7 +8,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $outputFastaFile = $self->getParamValue('outputFastaFile');
-  my $ouputEcFile = $self->getParamValue('ouputEcFile');
+  my $outputEcFile = $self->getParamValue('ouputEcFile');
   my $reviewedStatus = $self->getParamValue('reviewedStatus');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -17,7 +17,7 @@ sub run {
 
   if ($undo) {
     $self->runCmd(0, "rm $workflowDataDir/$outputFastaFile") if -e "$workflowDataDir/$outputFastaFile";
-    $self->runCmd(0, "rm $workflowDataDir/$ouputEcFile") if -e "$workflowDataDir/$ouputEcFile";
+    $self->runCmd(0, "rm $workflowDataDir/$outputEcFile") if -e "$workflowDataDir/$outputEcFile";
     $self->runCmd(0, "rm $workflowDataDir/$taxonFile") if -e "$workflowDataDir/$taxonFile";
   } else {
     my $xmlFile = $self->getStepDir() . "/uniprot.xml";
@@ -33,8 +33,12 @@ sub run {
     $cmd = "apiFindNcbiTaxonIds $taxonFile";
     $self->runCmd($test, $cmd);
 
-    $cmd = "uniprotXmlToFasta -xmlFile uniprot.xml -taxonFile $taxonFile -fastaFile uniprot.fasta -ecMappingFile uniprot.ec";
+    $cmd = "uniprotXmlToFasta -xmlFile uniprot.xml -taxonFile $taxonFile -fastaFile $workflowDataDir/$outputFastaFile -ecMappingFile $workflowDataDir/$outputEcFile";
     $self->runCmd($test, $cmd);
+    if ($test) {
+      $self->runCmd(0, "touch $workflowDataDir/$outputEcFile");
+      $self->runCmd(0, "touch $workflowDataDir/$outputFastaFile");
+    }
   }
 }
 
