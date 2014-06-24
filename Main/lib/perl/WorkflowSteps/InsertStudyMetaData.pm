@@ -13,9 +13,10 @@ sub run {
   my $experimentName = $self->getParamValue("experimentName");
   my $sampleMetaDataFile = $self->getParamValue('sampleMetaDataFile');
   my $studyExtDbRlsSpec = $self->getParamValue('studyExtDbRlsSpec');
-  my $readsFile = $self->getParamValue('readsFile');
-  my $baseFileName = $readsFile ? basename($readsFile) : '';
-  my $sampleIdStr  = $readsFile ? "--sampleId $baseFileName" :'';
+  #my $readsFile = $self->getParamValue('readsFile');
+  #my $baseFileName = $readsFile ? basename($readsFile) : '';
+  #my $sampleIdStr  = $readsFile ? "--sampleId $baseFileName" :'';
+  my $sampleIdStr  = "";
   my $sampleExtDbRlsSpecTemplate = $self->getParamValue('sampleExtDbRlsSpecTemplate');
   my $sampleExtDbRlsSpecTemplateStr = $sampleExtDbRlsSpecTemplate ?  "--sampleExtDbRlsSpecTemplate \'$sampleExtDbRlsSpecTemplate\'" : '';
   my $isProfile = $self->getParamValue('isProfile');
@@ -33,7 +34,7 @@ sub run {
 sub getParamDeclaration {
   return ('experimentName',
           'sampleMetaDataFile',
-          'readsFile',
+          #'readsFile',
           'sampleExtDbRlsSpecTemplate',
           'isProfile',
           'studyExtDbRlsSpec',
