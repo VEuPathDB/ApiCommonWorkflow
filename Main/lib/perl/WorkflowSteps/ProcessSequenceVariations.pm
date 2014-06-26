@@ -4,8 +4,12 @@ package ApiCommonWorkflow::Main::WorkflowSteps::ProcessSequenceVariations;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
+use File::Basename;
+
 sub run {
   my ($self, $test, $undo) = @_;
+
+
 
   my $newSampleFile = $self->getParamValue('newSampleFile');
   my $cacheFile = $self->getParamValue('cacheFile');
@@ -23,8 +27,9 @@ sub run {
     $self->error("Strain Abbreviation for the reference [$organismAbbrev] was not defined");   
   }
 
-
   my $workflowDataDir = $self->getWorkflowDataDir();
+
+  my $dirname = dirname("$workflowDataDir/$newSampleFile");
 
   my $cmd = "processSequenceVariations.pl --new_sample_file $workflowDataDir/$newSampleFile --cache_file $workflowDataDir/$cacheFile --undone_strains_file $workflowDataDir/$undoneStrainsFile --varscan_directory $workflowDataDir/$varscanConsDir --transcript_extdb_spec '$genomeExtDbRlsSpec' --organism_abbrev $organismAbbrev --reference_strain $organismStrain  --extdb_spec '$snpExtDbRlsSpec'";
 
@@ -32,6 +37,7 @@ sub run {
     if($test) {
       $self->testInputFile('newSampleFile', "$workflowDataDir/$newSampleFile");
       $self->runCmd(0, "echo test > $workflowDataDir/$cacheFile");
+      $self->runCmd(0, "echo test > $dirname/snpFeature.dat");
     } else{
       $self->runCmd($test, $cmd);
     }
