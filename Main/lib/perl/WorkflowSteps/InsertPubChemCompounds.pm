@@ -16,26 +16,11 @@ sub run {
 
   my $args = "--fileDir $workflowDataDir/$fileDir --fileNames '$fileNames' ";
 
-
-  if ($test) {
-    $self->testInputFile('fileDir', "$workflowDataDir/$fileDir");
-    $self->testInputFile('fileNames', "$workflowDataDir/$fileNames");
-  }
+  $self->testInputFile('fileDir', "$workflowDataDir/$fileDir");
+  $self->testInputFile('fileNames', "$workflowDataDir/$fileDir/$fileNames");
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertPubChemCompounds", $args);
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'pathwaysFileDir',
-	  'imageFileDir',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;
