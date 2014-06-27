@@ -22,20 +22,5 @@ sub run {
 
 }
 
-
-sub getParamsDeclaration {
-    return (
-	'datasetName',
-	'datasetLoaderXmlFileName',
-        'dataDir'
-	);
-}
-
-sub getConfigDeclaration {
-    return (
-           # [name, default, description]
-           );
-}
-
-
+1;
 

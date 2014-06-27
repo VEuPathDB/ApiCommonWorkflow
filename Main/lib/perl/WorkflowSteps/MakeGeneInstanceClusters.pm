@@ -53,10 +53,4 @@ sub run {
     $self->runCmd($test,$cmd);
 }
 
-
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-           );
-}
-
+1;

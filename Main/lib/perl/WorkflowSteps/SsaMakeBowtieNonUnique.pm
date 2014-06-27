@@ -22,32 +22,15 @@ sub run {
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$bnuFile");
     } else {
-	if ($test) {
-	    $self->testInputFile('inputGenomeNonUniqueFile', "$workflowDataDir/$gnuFile");
-	    $self->testInputFile('inputTrancriptNonUniqueFile', "$workflowDataDir/$tnuFile");
-	    $self->testInputFile('inputCombinedNonUniqueFile', "$workflowDataDir/$cnuFile");
+      $self->testInputFile('inputGenomeNonUniqueFile', "$workflowDataDir/$gnuFile");
+      $self->testInputFile('inputTrancriptNonUniqueFile', "$workflowDataDir/$tnuFile");
+      $self->testInputFile('inputCombinedNonUniqueFile', "$workflowDataDir/$cnuFile");
 
-	    $self->runCmd(0,"echo test > $workflowDataDir/$bnuFile");
-
-	}
-	$self->runCmd($test, $cmd);
-
+      if ($test) {
+        $self->runCmd(0,"echo test > $workflowDataDir/$bnuFile");
+      }
+      $self->runCmd($test, $cmd);
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'inputGenomeNonUniqueFile',
-      'inputTranscriptNonUniqueFile',
-      'inputCombinedNonUniqueFile',
-      'outputBowtieNonUniqueFile',
-      );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
-
+1;

@@ -41,29 +41,11 @@ sub run {
 
   $args .= " --NGS_SNP" if ($isNextGenSeq);
   $args .= " --NgsUpdateSnpFeature" if ($isCoverage);
-  if ($test) {
+
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-  }else{
     
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertSnps", $args);
-  }
-
 }
 
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	  'genomeExtDbRlsSpec',
-	  'strain',
-	  'organismFullName',
-	  'transcriptExtDbRlsSpec',
-	  'snpExtDbRlsSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 

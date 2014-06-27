@@ -20,22 +20,10 @@ sub run {
   
   if ($undo) {
     $self->runCmd(0,"echo undoing updating SNPs for $referenceOrganism ... nothing to be done");
-  } elsif ($test) {
-      $self->runCmd(0,"echo testing coverage SNPs for $referenceOrganism");
-  }else{
+  } else{
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::UpdateHtsSnpsFromSeqVars", $args);
   }
 }
 
-sub getParamDeclaration {
-  return ('organismAbbrev',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-      # [name, default, description]
-     );
-}
 
 1;

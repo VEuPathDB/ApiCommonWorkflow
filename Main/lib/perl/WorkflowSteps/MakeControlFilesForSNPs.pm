@@ -21,15 +21,11 @@ sub run {
     if($test) {
       $self->runCmd(0, "echo test > $workflowDataDir/$sequenceVariationCtl");
       $self->runCmd(0, "echo test > $workflowDataDir/$snpCtl");
-    } else{
-      $self->runCmd($test, $cmd);
     }
+    $self->runCmd($test, $cmd);
+
   }
 }
 
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
+
+1;

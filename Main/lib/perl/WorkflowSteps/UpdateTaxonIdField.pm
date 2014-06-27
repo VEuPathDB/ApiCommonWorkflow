@@ -22,29 +22,14 @@ sub run {
 
   my $args = "--fileName '$mappingFile' --sourceIdRegex  \"$sourceIdRegex\" $taxonRegex --idSql '$idSql' --extDbRelSpec '$extDbRlsSpec'  --tableName '$tableName'";
 
-  if ($test) {
-    $self->testInputFile('mappingFile', "$mappingFile");
-  }
+  $self->testInputFile('mappingFile', "$mappingFile");
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::UpdateTaxonFieldFromFile", $args);
 
 }
 
-sub getParamsDeclaration {
-  return ('mappingFileRelativeToDownloadDir',
-	  'sourceIdRegex',
-	  'taxonRegex',
-	  'idSql',
-	  'extDbRlsSpec',
-	  'tableName',
-	 );
-}
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 
 
 

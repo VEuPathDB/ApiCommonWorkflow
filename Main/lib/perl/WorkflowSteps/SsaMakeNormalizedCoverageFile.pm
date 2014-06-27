@@ -31,19 +31,6 @@ sub run {
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'inputFile',
-      'outputUnNormFile',
-      'outputNormFile',
-      'sampleName',
-      );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 
 

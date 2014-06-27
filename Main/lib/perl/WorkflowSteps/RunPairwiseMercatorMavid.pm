@@ -210,9 +210,4 @@ sub cacheHit {
     return $cacheIsCurrent;
 }
 
-sub getConfigDeclaration {
-    return (
-	# [name, default, description]
-
-	);
-}
+1;

@@ -37,17 +37,16 @@ sub run {
   if($undo) {
     $self->runCmd(0, "rm -f $outputWebservicesFileDir/$dataName.*");
   } else{
-      if($test){
-	  $self->testInputFile('inputDownloadFile', "$inputDownloadFile");
-	  $self->testInputFile('outputWebservicesFileDir', "$outputWebservicesFileDir");
-	  $self->runCmd(0, "echo test > $outputWebservicesFileDir/$dataName.xnd");
-      }else {
-	       $self->runCmd($test, $cmd);
-      }
+    $self->testInputFile('inputDownloadFile', "$inputDownloadFile");
+    $self->testInputFile('outputWebservicesFileDir', "$outputWebservicesFileDir");
+
+    if($test){
+      $self->runCmd(0, "echo test > $outputWebservicesFileDir/$dataName.xnd");
+    }
+    $self->runCmd($test, $cmd);
+    
   }
 }
 
-sub getConfigDeclaration {
-    return ();
-}
 
+1;

@@ -127,9 +127,4 @@ sub getIsDraftHash {
   return $hash;
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-
-	 );
-}
+1;

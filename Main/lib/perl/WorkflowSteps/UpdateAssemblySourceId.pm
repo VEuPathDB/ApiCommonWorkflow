@@ -22,18 +22,6 @@ sub run {
   }
 }
 
-sub getParamDeclaration {
-  return (
-     'ncbiTaxonId',
-     'organismTwoLetterAbbrev',
-    );
-}
-
-sub getConfigDeclaration {
-  return
-    (
-     # [name, default, description]
-    );
-}
+1;
 
 

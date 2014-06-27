@@ -27,11 +27,9 @@ sub run {
     $self->testInputFile('inputFile', "$workflowDataDir/$idFile");
     if ($test){
       $self->runCmd(0, "echo test> $workflowDataDir/$outFile");
-    }else{
-      $self->runCmd($test, $cmd);
     }
+    $self->runCmd($test, $cmd);
   }
-
 }
 
 1;

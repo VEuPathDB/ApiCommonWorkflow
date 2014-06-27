@@ -16,25 +16,13 @@ sub run {
 
   my $args = "--inputFile $workflowDataDir/$inputFile --seqTable DoTS::AASequence --seqExtDbRlsSpec '$genomeExtDbRlsSpec' --extDbRlsSpec '$genomeExtDbRlsSpec'";
 
-  if ($test) {
+
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-  }
+
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertExportPredFeature", $args);
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	  'genomeExtDbRlsSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['version', "", ""],
-	 );
-}
+1;
 

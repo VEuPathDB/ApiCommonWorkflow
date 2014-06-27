@@ -34,27 +34,15 @@ sub run {
 
     $args .= " --setPercentages" if ($setPercent);
 
-    if ($test) {
-      $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-    }
+
+    $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
+
 
    $self->runPlugin($test,$undo, "GUS::Supported::Plugin::InsertSecondaryStructure", $args);
 
 }
 
 
-sub getParamsDeclaration {
-    return ('algName',
-            'inputDir',
-           );
-}
-
-
-sub getConfigDeclaration {
-    return (
-            # [name, default, descriptio]n
-           );
-}
-
+1;
 
 

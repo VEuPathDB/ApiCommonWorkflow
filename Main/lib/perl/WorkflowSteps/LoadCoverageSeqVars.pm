@@ -26,9 +26,8 @@ sub run {
     $self->runCmd(0, "rm -f $ctlFile");
     $self->runCmd(0, "rm -f $sqlldrLog");
   } else {
-    if ($test) {
-      $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-    }
+
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
     
     # run sqlldr (after writing its control file)
     writeControlFile($ctlFile);
@@ -53,3 +52,5 @@ EOF
 
   close(CTL);
 }
+
+1;

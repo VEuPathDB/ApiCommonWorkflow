@@ -27,10 +27,8 @@ sub run {
     $self->runCmd(0,"rm -rf $workflowDataDir/$taskInputDir");
   }else {
 
-   if ($test) {
-        $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
-        $self->testInputFile('targetDir', "$workflowDataDir/$targetDir");
-    }
+    $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
+    $self->testInputFile('targetDir', "$workflowDataDir/$targetDir");
 
     $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
@@ -54,11 +52,5 @@ $blatParams
  }
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['taskSize', "", ""],
-	  ['gaBinPath', "", ""],
-	 );
-}
+1;
 

@@ -23,33 +23,16 @@ sub run {
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outFile");
     } else {
-	if ($test) {
-	    $self->testInputFile('inputBowtieUniqueFile', "$workflowDataDir/$buFile");
-	    $self->testInputFile('inputBowtieNonUniqueFile', "$workflowDataDir/$bnuFile");
-	    $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$shortSeqsFile");
+      $self->testInputFile('inputBowtieUniqueFile', "$workflowDataDir/$buFile");
+      $self->testInputFile('inputBowtieNonUniqueFile', "$workflowDataDir/$bnuFile");
+      $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$shortSeqsFile");
 
-	    $self->runCmd(0,"echo test > $workflowDataDir/$outFile");
-
-	}
-	$self->runCmd($test, $cmd);
-
+      if ($test) {
+        $self->runCmd(0,"echo test > $workflowDataDir/$outFile");
+      }
+      $self->runCmd($test, $cmd);
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'inputBowtieNonUniqueFile',
-      'inputBowtieUniqueFile',
-      'inputShortSeqsFile',
-      'readType',
-      'outputBowtieUnmappedSeqsFile',
-      );
-}
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
-
+1;

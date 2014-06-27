@@ -21,32 +21,15 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
-      if ($test) {
-	  $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
-	  $self->testInputFile('nrdbFile', "$workflowDataDir/$nrdbFile");
-	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
-      }else{
-	  $self->error("Proteins file '$workflowDataDir/$proteinsFile' does not exist or is empty") unless -s "$workflowDataDir/$proteinsFile";
+    $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
+    $self->testInputFile('nrdbFile', "$workflowDataDir/$nrdbFile");
 
-	  $self->runCmd($test,$cmd);
+      if ($test) {
+	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
       }
+	  $self->error("Proteins file '$workflowDataDir/$proteinsFile' does not exist or is empty") unless -s "$workflowDataDir/$proteinsFile";
+	  $self->runCmd($test,$cmd);
   }
 }
 
-sub getParamsDeclaration {
-  return (
-          'proteinsFile',
-          'nrdbFile',
-          'proteinsFileRegex',
-          'nrdbFileRegex',
-          'outputFile',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-
+1;

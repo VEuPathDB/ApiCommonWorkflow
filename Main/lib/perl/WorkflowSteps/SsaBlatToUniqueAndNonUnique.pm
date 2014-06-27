@@ -30,36 +30,18 @@ sub run {
 	$self->runCmd(0, "rm -f $workflowDataDir/$uFile");
 	$self->runCmd(0, "rm -f $workflowDataDir/$nuFile");
     } else {
-	if ($test) {
-	    $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$shortSeqsFile");
-	    $self->testInputFile('inputBlatFile', "$workflowDataDir/$blatFile");
-	    $self->testInputFile('inputMdustFile', "$workflowDataDir/$mdustFile");
-
-	    $self->runCmd(0,"echo test > $workflowDataDir/$uFile");
-	    $self->runCmd(0,"echo test > $workflowDataDir/$nuFile");
-
-	}
-	$self->runCmd($test, $cmd);
-
+      $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$shortSeqsFile");
+      $self->testInputFile('inputBlatFile', "$workflowDataDir/$blatFile");
+      $self->testInputFile('inputMdustFile', "$workflowDataDir/$mdustFile");
+      
+      if ($test) {
+        $self->runCmd(0,"echo test > $workflowDataDir/$uFile");
+        $self->runCmd(0,"echo test > $workflowDataDir/$nuFile");
+      }
+      $self->runCmd($test, $cmd);
     }
 }
 
-sub getParamsDeclaration {
-  return (
-    'inputShortSeqsFile',
-    'inputBlatFile',
-    'inputMdustFile',
-    'outputUniqueFile',
-    'outputNonUniqueFile',
-    'readLength',
-    'isChipSeq',
-      );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 
 

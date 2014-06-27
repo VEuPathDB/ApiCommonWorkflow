@@ -23,21 +23,14 @@ sub run {
     $self->runCmd(0, "rm -f $outputDir/*${inputFileNameRegex}");
     $self->runCmd(0, "rm -r $outputDir");
   } else{
+    $self->testInputFile('inputFile', "$inputFile");
       if($test){
-	  $self->testInputFile('inputFile', "$inputFile");
           $self->runCmd(0, "mkdir -p $outputDir");
 	  $self->runCmd(0, "echo test > $outputDir/test${inputFileNameRegex}");
-      }else {
-          $self->runCmd($test, "mkdir -p $outputDir");
-	  $self->runCmd($test, "cp $inputFile $outputDir");
        }
+    $self->runCmd($test, "mkdir -p $outputDir");
+    $self->runCmd($test, "cp $inputFile $outputDir");
   }
 }
 
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-
+1;

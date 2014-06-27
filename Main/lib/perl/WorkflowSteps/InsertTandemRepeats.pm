@@ -18,24 +18,11 @@ sub run {
 
   my $args = "--tandemRepeatFile $workflowDataDir/$inputFile --extDbName '$extDbName' --extDbVersion '$extDbRlsVer'";
 
-  if ($test) {
-    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-  }
 
+  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
   $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertTandemRepeatFeatures", $args);
 }
 
-sub getParamsDeclaration {
-  return (
-	  'inputFile',
-	  'genomeExtDbRlsSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	 );
-}
-
+1;
 

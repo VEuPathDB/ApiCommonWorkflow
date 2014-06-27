@@ -30,14 +30,5 @@ sub run {
 
 }
 
-sub getParamsDeclaration {
-  return (
-	  'extDbRlsSpec',
-	 );
-}
 
-sub getConfigDeclaration {
-  return (
-
-	 );
-}
+1;

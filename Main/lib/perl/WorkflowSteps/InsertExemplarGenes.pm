@@ -28,9 +28,9 @@ sub run {
     }    
 
 
-   if ($test) {
-     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-   }
+
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+
 
     # see if there are multiple strains.  if not, exit
     opendir(INPUT, $inputsDir) or $self->error("Could not open mercator inputs dir '$inputsDir' for reading.");
@@ -47,9 +47,4 @@ sub run {
    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CreateGenesForGeneFeatures", $args);
 }
 
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-           );
-}
-
+1;

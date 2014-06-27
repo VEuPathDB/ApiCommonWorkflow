@@ -21,18 +21,10 @@ sub run {
   if($undo){
       # can't undo this step.  must undo cluster task
   }else{
-      if ($test) {
-	  $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-	  $self->testInputFile('topLevelSeqSizeFile', "$workflowDataDir/$topLevelSeqSizeFile");
-      }else{
-	  $self->runCmd($test, $cmd);
-      }
+    $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
+    $self->testInputFile('topLevelSeqSizeFile', "$workflowDataDir/$topLevelSeqSizeFile");
+    $self->runCmd($test, $cmd);
   }
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

@@ -21,27 +21,14 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   }else {
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
-      }else{
-	  $self->runCmd($test, "shortenDefLine --inputFile $workflowDataDir/$inputFile --outputFile $workflowDataDir/$outputFile --taxonIdMappingFile '$mappingFile'");
       }
+    $self->runCmd($test, "shortenDefLine --inputFile $workflowDataDir/$inputFile --outputFile $workflowDataDir/$outputFile --taxonIdMappingFile '$mappingFile'");
   }
 }
 
-sub getParamsDeclaration {
-  return (
-          'inputFile',
-          'outputFile',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
+1;
 
 
