@@ -59,24 +59,14 @@ sub run {
     if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     } else {
-    if ($test) {
       $self->testInputFile('inputFilesDir', "$workflowDataDir/$inputFilesDir");
-      $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+
+      if ($test) {
+        $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+      }
+
     }
 }
-}
-
-sub getParamsDeclaration {
-    return ('inputDirRelativeToDownloadsDir',
-            'organismName',
-            'outputDir'
-           );
-}
 
 
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-           );
-}
-
+1;
