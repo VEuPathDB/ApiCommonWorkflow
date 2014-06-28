@@ -26,29 +26,10 @@ sub run {
       $self->runCmd($test, $undoCmd); 
  
   }else{
-      if ($test) {
-      }else {
-	  $self->runCmd($test, $cmd);
-      }
+    $self->runCmd($test, $cmd);
   }
 
 }
 
-sub getParamsDeclaration {
-  return (
-	  'record',
-	  'organismFullName',
-	  'attributesTable',
-	  'cacheTable',
-	  'model',
-	  'deprecated',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;
 

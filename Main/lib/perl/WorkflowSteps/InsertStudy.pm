@@ -14,21 +14,10 @@ sub run {
 
   my $args = "--name '$experimentName' --extDbRlsSpec '$experimentExtDbRlsSpec'";
 
- unless ($test) {
-   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertStudy", $args);
-  } 
+
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertStudy", $args);
+
 }
 
-sub getParamDeclaration {
-  return ('experimentName',
-          'experimentExtDbRlsSpec'
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-      # [name, default, description]
-     );
-}
 
 1;

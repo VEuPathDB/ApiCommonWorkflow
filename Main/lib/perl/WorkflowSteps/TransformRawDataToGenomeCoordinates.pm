@@ -23,27 +23,14 @@ sub run {
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   }else {
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       if ($test){
 	  $self->runCmd(0, "echo test> $workflowDataDir/$outputFile");
-          $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-      }else{
-	  $self->runCmd($test, $cmd);
       }
+    $self->runCmd($test, $cmd);
   }
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	  'outputFile',
-	  'extDbRlsSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 

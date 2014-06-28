@@ -52,10 +52,10 @@ sub run {
 
   $args .= " --percentTop $percentTop" if $percentTop;
 
-  if ($test) {
+
     $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
     $self->testInputFile('blatFile', "$workflowDataDir/$blatFile");
-  }
+
 
   if (-s "$workflowDataDir/$queryFile" || $test) {
       $self->runPlugin($test, $undo, $plugin, $args);
@@ -64,9 +64,5 @@ sub run {
   }
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 

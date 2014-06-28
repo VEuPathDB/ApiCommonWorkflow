@@ -21,23 +21,9 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -Rf $outputDir/}");
   }else {
-      if ($test){
-      }else {
-	$self->runCmd($test, "mkdir -p $outputDir");
-	$self->runCmd($test, $cmd);
-      }
+    $self->runCmd($test, "mkdir -p $outputDir");
+    $self->runCmd($test, $cmd);
   }
-
 }
 
-sub getParamDeclaration {
-  return (
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

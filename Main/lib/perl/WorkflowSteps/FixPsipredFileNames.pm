@@ -18,31 +18,19 @@ sub run {
 	if ($test) {
 	    $self->runCmd(0,"mkdir -p  $workflowDataDir/$outputDir");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/testFile");
-	}else{
-	    $self->runCmd(0,"cp -r $workflowDataDir/$inputDir  $workflowDataDir/$outputDir");
-	    opendir(DIR, "$workflowDataDir/$outputDir") || die "Can't open directory '$workflowDataDir/$outputDir'";
-	    my @files = readdir(DIR);
-	    foreach my $file (@files) {
-		next if $file=~ /^\.\.?$/;  # skip . and ..
-		my $original = $file;
-		$file =~ s/_DASH_/-/g;
-		$self->runCmd($test, "mv $workflowDataDir/$outputDir/$original $workflowDataDir/$outputDir/$file");
-	    }
+        }
+        $self->runCmd(0,"cp -r $workflowDataDir/$inputDir  $workflowDataDir/$outputDir");
+        opendir(DIR, "$workflowDataDir/$outputDir") || die "Can't open directory '$workflowDataDir/$outputDir'";
+        my @files = readdir(DIR);
+        foreach my $file (@files) {
+          next if $file=~ /^\.\.?$/;  # skip . and ..
+          my $original = $file;
+          $file =~ s/_DASH_/-/g;
+          $self->runCmd($test, "mv $workflowDataDir/$outputDir/$original $workflowDataDir/$outputDir/$file");
 	}
     }
 }
 
-sub getParamsDeclaration {
-    return ('inputDir',
-            'outputDir'
-           );
-}
-
-
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-           );
-}
+1;
 
 

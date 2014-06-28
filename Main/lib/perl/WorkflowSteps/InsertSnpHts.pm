@@ -42,28 +42,11 @@ sub run {
   my $args = "--reference '$strainAbbrev' --organism '$organismFullName' --snpExternalDatabaseName '$snpExtDbName' --snpExternalDatabaseVersion '$snpExtDbRlsVer' --naExternalDatabaseName '$genomExtDbName' --naExternalDatabaseVersion '$genomeExtDbRlsVer' --transcriptExternalDatabaseName '$transcriptExtDbName' --transcriptExternalDatabaseVersion '$transcriptExtDbRlsVer' --seqTable 'DoTS::ExternalNASequence' --ontologyTerm $soTerm --snpFile $workflowDataDir/$inputFile";
 
   $args .= " --NGS_SNP"; ## if ($isNextGenSeq); ##note this is to be used only for nextgenseq
-  if ($test) {
-    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-  }
+
+  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertHtsSnps", $args);
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	  'genomeExtDbRlsSpec',
-	  'strain',
-	  'organismFullName',
-	  'transcriptExtDbRlsSpec',
-	  'snpExtDbRlsSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

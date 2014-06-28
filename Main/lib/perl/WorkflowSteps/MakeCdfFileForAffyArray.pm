@@ -32,36 +32,21 @@ sub run {
     $self->runCmd(0, "rm -f $workflowDataDir/pbase-tbase.out");
     $self->runCmd(0, "rm -f $workflowDataDir/$outputCdfFile");
   } else {
+    $self->testInputFile('gene2probesInputFile', "$workflowDataDir/$gene2probesInputFile");
+    $self->testInputFile('probename2sequenceInputFile', "$workflowDataDir/$probename2sequenceInputFile");
+
     if ($test) {
-      $self->testInputFile('gene2probesInputFile', "$workflowDataDir/$gene2probesInputFile");
-      $self->testInputFile('probename2sequenceInputFile', "$workflowDataDir/$probename2sequenceInputFile");
       $self->runCmd(0,"echo test > $workflowDataDir/pbase-tbase.out");
       $self->runCmd(0,"echo test > $workflowDataDir/$outputCdfFile");
 
     }
 
-    if (!$test) {
-      $self->runCmd($test,$cmd1);
-      $self->runCmd($test,$cmd2);
-      $self->runCmd($test,$cmd3);
-    }
+
+    $self->runCmd($test,$cmd1);
+    $self->runCmd($test,$cmd2);
+    $self->runCmd($test,$cmd3);
+
   }
 }
 
-sub getParamDeclaration {
-  return (
-	  'gene2probesInputFile',
-	  'probename2sequenceInputFile',
-	  'gene2probesInputFile',
-          'vendorMappingFileName',
-          'probeRows',
-          'probeCols',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

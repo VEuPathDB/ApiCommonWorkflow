@@ -24,10 +24,8 @@ sub run {
   if ($undo) {
     $self->runCmd(0,"rm -rf $workflowDataDir/$taskInputDir");
   }else {
-      if ($test) {
-	  $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
-	  $self->testInputFile('nrdbFile', "$workflowDataDir/$nrdbFile");
-      }
+    $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
+    $self->testInputFile('nrdbFile', "$workflowDataDir/$nrdbFile");
       
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
@@ -49,20 +47,4 @@ ncbiBinDir=$ncbiBinPath
   }
 }
 
-sub getParamsDeclaration {
-  return (
-          'taskInputDir',
-          'proteinsFile',
-          'nrdbFile',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-           ['ncbiBinPath', '', ''],
-           ['psipredPath', '', ''],
-           ['taskSize', '', ''],
-         );
-}
-
+1;

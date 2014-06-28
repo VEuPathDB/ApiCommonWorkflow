@@ -31,25 +31,10 @@ sub run {
   }else {
       if ($test){
 	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
-      }else{
-	    $self->runCmd($test, $cmdReformat);
       }
+      $self->runCmd($test, $cmdReformat);
   }
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	  'outputFile',
-	  'extDbRlsSpec',
-	  'genomeExtDbSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

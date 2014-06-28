@@ -60,23 +60,11 @@ sub run {
   } else {
       if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-      }else{
-	    $self->runCmd($test,"gusExtractSequences --outputFile $workflowDataDir/$outputFile --allowEmptyOutput --idSQL \"$sql\" --verbose");
       }
+      $self->runCmd($test,"gusExtractSequences --outputFile $workflowDataDir/$outputFile --allowEmptyOutput --idSQL \"$sql\" --verbose");
   }
 }
 
-sub getParamsDeclaration {
-  return (
-	  'outputFile',
-	  'ncbiTaxonId'
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 
 

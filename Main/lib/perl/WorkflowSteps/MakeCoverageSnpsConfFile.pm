@@ -32,17 +32,4 @@ sub run {
   }
 }
 
-sub getParamsDeclaration {
-  return ('samplesDataDir',
-	  'sampleNameList',
-	  'outputFile',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['taskSize', "", ""],
-	 );
-}
-
+1;

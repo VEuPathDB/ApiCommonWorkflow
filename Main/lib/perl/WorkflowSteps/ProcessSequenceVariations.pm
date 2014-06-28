@@ -34,19 +34,13 @@ sub run {
   my $cmd = "processSequenceVariations.pl --new_sample_file $workflowDataDir/$newSampleFile --cache_file $workflowDataDir/$cacheFile --undone_strains_file $workflowDataDir/$undoneStrainsFile --varscan_directory $workflowDataDir/$varscanConsDir --transcript_extdb_spec '$genomeExtDbRlsSpec' --organism_abbrev $organismAbbrev --reference_strain $organismStrain  --extdb_spec '$snpExtDbRlsSpec'";
 
   unless($undo) {
+    $self->testInputFile('newSampleFile', "$workflowDataDir/$newSampleFile");
     if($test) {
-      $self->testInputFile('newSampleFile', "$workflowDataDir/$newSampleFile");
       $self->runCmd(0, "echo test > $workflowDataDir/$cacheFile");
       $self->runCmd(0, "echo test > $dirname/snpFeature.dat");
-    } else{
-      $self->runCmd($test, $cmd);
     }
+    $self->runCmd($test, $cmd);
   }
 }
 
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
+1;

@@ -31,30 +31,11 @@ sub run {
   }
 
   if($undo){
-
       $self->runCmd(0,"rm -fr $workflowDataDir/$outputIndexDir");
-
   }else{
-      if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-      }else{
-	  $self->runCmd($test, $cmd);
-      }
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+    $self->runCmd($test, $cmd);
   }
 }
 
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	  'outputIndexDir',
-          'colorspace',
-          'bowtieVersion',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

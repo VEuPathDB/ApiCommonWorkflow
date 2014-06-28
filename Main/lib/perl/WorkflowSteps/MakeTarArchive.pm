@@ -25,25 +25,10 @@ sub run{
         }
     }else{
         if (-e "$workflowDataDir/$fileToArchive"){
-            if ($test){
-                $self->runCmd(0, $cmd);
-                $self->runCmd(0, $cmd2);
-            }
-            $self->runCmd($test, $cmd);
-            $self->runCmd($test,$cmd2);
+          $self->runCmd($test, $cmd);
+          $self->runCmd($test,$cmd2);
         }
     }
 }
 
-sub getParamDeclaration{
-    return(
-        'fileToArchive'
-    );
-}
-
-sub getConfigDeclaration {
-    return (
-        #[name, default, description]
-    );
-}
 1;

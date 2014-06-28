@@ -24,8 +24,8 @@ sub run {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputPeaksFile");
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputSmoothedFile");
     } else {
+      $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 	if ($test) {
-	    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputPeaksFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputSmoothedFile");
 	}
@@ -33,22 +33,4 @@ sub run {
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'inputFile',
-      'outputPeaksFile',
-      'outputSmoothedFile',
-      'sdMultCutoff',
-      'numConsecProbes',
-      'featureMaxGap',
-      'smootherMaxGap',
-      );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
-
+1;

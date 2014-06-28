@@ -27,14 +27,13 @@ sub run {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputGoodProteinsFile");
       $self->runCmd(0, "rm -f $workflowDataDir/$outputBadProteinsFile");
   }else {
-      if ($test){
-	  $self->runCmd(0, "echo test> $workflowDataDir/$outputGoodProteinsFile");
-	  $self->runCmd(0, "echo test> $workflowDataDir/$outputBadProteinsFile");
-      }else{
-	  $self->runCmd($test, $cmd);
-      }
+    if ($test){
+      $self->runCmd(0, "echo test> $workflowDataDir/$outputGoodProteinsFile");
+      $self->runCmd(0, "echo test> $workflowDataDir/$outputBadProteinsFile");
+    }
+    $self->runCmd($test, $cmd);
   }
 
 }
 
-
+1;

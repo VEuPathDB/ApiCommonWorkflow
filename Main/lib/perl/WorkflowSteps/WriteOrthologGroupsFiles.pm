@@ -25,10 +25,10 @@ sub run {
     $self->runCmd(0, "rm -f $outputFile");
   } else {
       if ($test) {
-	  $self->testInputFile('inputFile', "$inputFile");
 	  $self->runCmd(0,"echo test > $outputFile");
       }
 
+      $self->testInputFile('inputFile', "$inputFile");
       $self->runCmd($test, $cmd);
 
       if ($includeSingletons) {

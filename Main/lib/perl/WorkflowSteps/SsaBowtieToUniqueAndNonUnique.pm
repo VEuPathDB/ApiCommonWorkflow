@@ -24,9 +24,7 @@ sub run {
     $geneModelFile = "$workflowDataDir/$geneModelFile";
     if ($transcriptOrGenome eq 'transcript') {
 	$c = 'make_TU_and_TNU.pl';
-	if ($test) {
-	    $self->testInputFile('inputGeneModelFile', "$geneModelFile");
-	}
+        $self->testInputFile('inputGeneModelFile', "$geneModelFile");
     }
     elsif ($transcriptOrGenome eq 'genome') {
 	$c = 'make_GU_and_GNU.pl';
@@ -44,33 +42,15 @@ sub run {
 	$self->runCmd(0, "rm -f $workflowDataDir/$uFile");
 	$self->runCmd(0, "rm -f $workflowDataDir/$nuFile");
     } else {
+      $self->testInputFile('inputBowtieFile', "$workflowDataDir/$bowtieFile");
 	if ($test) {
-	    $self->testInputFile('inputBowtieFile', "$workflowDataDir/$bowtieFile");
-
 	    $self->runCmd(0,"echo test > $workflowDataDir/$uFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$nuFile");
-
 	}
-	$self->runCmd($test, $cmd);
-
+      $self->runCmd($test, $cmd);
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'inputBowtieFile',
-      'inputGeneModelFile',
-      'outputUniqueFile',
-      'outputNonUniqueFile',
-      'transcriptOrGenome',
-      'readType'
-      );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 
 

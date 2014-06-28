@@ -28,25 +28,12 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -rf $outputFile");
   }else {
-      if ($test) {
-	  $self->testInputFile('inputFile', "$inputFile");
-      }else {
-      $self->runCmd($test, $cmd);
-	  }
-	}
- }	
-	sub getParamsDeclaration {
-  return ('inputFile',
-	      'outputFile',
-		  'decoyRatio',
-		  'decoyRegEx',
-		  'decoyDatabaseDir',
-	     );
-}
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ["", "", ""],
-	 );
-}
+    #TODO should write outputFile here?
+
+    $self->testInputFile('inputFile', "$inputFile");
+    $self->runCmd($test, $cmd);
+  }
+ }	
+
+1;

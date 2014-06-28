@@ -19,26 +19,14 @@ sub run {
 
   my $args = "--inputFile $workflowDataDir/$inputFile --extDbName $extDbName --extDbVer $extDbRlsVer --sampleName $sampleName";
 
-  if ($test) {
+
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-  }
+
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertRUMIntronFeature", $args);
 }
 
 
-sub getParamsDeclaration {
-  return (
-	  'inputFile',
-	  'rnaSeqExtDbRlsSpec',
-	  'sampleName',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 
 

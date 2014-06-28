@@ -23,26 +23,14 @@ sub run {
 
 
   
-  if ($test) {
+
     $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
     $self->testInputFile('configFile', "$workflowDataDir/$configFile");
-  }
+
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertExpressionProfiles", $args);
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'configFile',
-	  'inputDir',
-	  'extDbRlsSpec',
-	 );
-}
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

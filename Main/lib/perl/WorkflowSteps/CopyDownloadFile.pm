@@ -15,8 +15,8 @@ sub run {
 
   my $cmd = "cp $fromFile $workflowDataDir/$toFile";
 
+  $self->testInputFile('fromFile', "$fromFile");
   if ($test) {
-    $self->testInputFile('fromFile', "$fromFile");
     $self->runCmd(0, "echo test > $workflowDataDir/$toFile");
   }
 
@@ -28,18 +28,4 @@ sub run {
 
 }
 
-sub getParamsDeclaration {
-  return (
-          'fromFile',
-          'toFile',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-
-
+1;

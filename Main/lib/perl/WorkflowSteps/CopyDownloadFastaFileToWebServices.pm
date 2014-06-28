@@ -30,19 +30,12 @@ sub run {
   if($undo) {
     $self->runCmd(0, "rm -f $outputFile*");
   } else{
+    $self->testInputFile('inputFile', "$inputDownloadFile");
       if($test){
-	  $self->testInputFile('inputFile', "$inputDownloadFile");
 	  $self->runCmd(0, "echo test > $outputFile");
-      }else {
-	  $self->runCmd($test, "cp $inputDownloadFile $outputFile");
-       }
+      }
+    $self->runCmd($test, "cp $inputDownloadFile $outputFile");
   }
 }
 
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-
+1;

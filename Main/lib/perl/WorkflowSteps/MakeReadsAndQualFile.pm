@@ -24,26 +24,12 @@ sub run {
       if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputQualFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputReadsFile");
-      }else{
-	  $self->runCmd($test, $qualCmd);
-	  $self->runCmd($test, $readCmd);
       }
+      $self->runCmd($test, $qualCmd);
+      $self->runCmd($test, $readCmd);
   }
 }
 
-sub getParamsDeclaration {
-  return (
-	  'readFilePath',
-	  'hasPairedEnds',
-	  'outputReadsFile',
-	  'outputQualFile',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 
 

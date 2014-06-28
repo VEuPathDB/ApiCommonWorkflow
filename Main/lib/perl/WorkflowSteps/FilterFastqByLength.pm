@@ -29,19 +29,4 @@ sub run{
     }
 }
 
-sub getParamDeclaration{
-    return(
-        'readsFile',
-        'sequenceFormat',
-        'minLength',
-        'maxLength',
-        'outFile'
-    );
-}
-
-sub getConfigDeclaration{
-    return(
-        #[name, default, description]
-    );
-}
 1;

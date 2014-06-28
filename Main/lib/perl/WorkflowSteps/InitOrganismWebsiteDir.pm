@@ -89,9 +89,5 @@ sub _parseXmlFile {
   $self->error("Error parsing '$methodsXmlFile': \n$@\n") if($@);
 }
 
-sub getConfigDeclaration {
-  return (
-	 );
-}
-
+1;
 

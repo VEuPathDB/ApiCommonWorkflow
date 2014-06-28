@@ -28,16 +28,9 @@ sub run {
   } else {
       if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-      }else{
-	    $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$outputFile --sql \"$sql\" --verbose");
       }
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$outputFile --sql \"$sql\" --verbose");
   }
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
-
+1;
