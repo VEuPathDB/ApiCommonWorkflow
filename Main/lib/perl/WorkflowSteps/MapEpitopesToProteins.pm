@@ -44,11 +44,14 @@ sub run {
       $self->testInputFile('proteinsFileWithBlastDb', "$protFile");
       $self->testInputFile('inputTabFile', "$tabFile");
 
-	if ($test) {
-	  $self->runCmd(0, "echo hello > $mappingFile");
-        }
-      $self->error("Output file '$mappingFile' already exists") if -e $mappingFile;
-      $self->error("Output file '$fastaFile' already exists") if -e $fastaFile;
+      if ($test) {
+        $self->runCmd(0, "echo hello > $mappingFile");
+        $self->runCmd(0, "echo hello > $fastaFile");
+      }
+      else {
+        $self->error("Output file '$mappingFile' already exists") if -e $mappingFile;
+        $self->error("Output file '$fastaFile' already exists") if -e $fastaFile;
+      }
 
       if (-s $tabFile || $test) {
         $self->runCmd($test, $cmd1);
