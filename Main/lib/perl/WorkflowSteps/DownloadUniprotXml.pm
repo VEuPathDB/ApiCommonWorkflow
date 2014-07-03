@@ -8,7 +8,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $outputFastaFile = $self->getParamValue('outputFastaFile');
-  my $outputEcFile = $self->getParamValue('ouputEcFile');
+  my $outputEcFile = $self->getParamValue('outputEcFile');
   my $reviewedStatus = $self->getParamValue('reviewedStatus');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -18,7 +18,6 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm $workflowDataDir/$outputFastaFile") if -e "$workflowDataDir/$outputFastaFile";
     $self->runCmd(0, "rm $workflowDataDir/$outputEcFile") if -e "$workflowDataDir/$outputEcFile";
-    $self->runCmd(0, "rm $workflowDataDir/$taxonFile") if -e "$workflowDataDir/$taxonFile";
   } else {
     my $xmlFile = $self->getStepDir() . "/uniprot.xml";
     my $logFile = $self->getStepDir() . "/wget.log";
