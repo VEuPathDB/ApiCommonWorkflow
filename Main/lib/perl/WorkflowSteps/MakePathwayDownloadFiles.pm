@@ -16,7 +16,7 @@ sub run {
   my $outputDirName = $self->getParamValue('outputDirName');
   my $outputDir = $self->getParamValue('relativeDownloadSiteDir') . '/' . $outputDirName;
 
-  my $cmd = "makePathwayImgDataFiles.pl --gusConfigFile $gusConfigFile -- outputDir $outputDir --pathwayList ALL --commit";
+  my $cmd = "makePathwayImgDataFiles.pl --gusConfigFile $gusConfigFile --outputDir $outputDir --pathwayList ALL";
 
   if ($undo) {
     $self->runCmd(0, "rm -Rf $outputDir/}");
