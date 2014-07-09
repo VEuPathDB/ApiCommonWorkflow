@@ -26,17 +26,5 @@ sub run {
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'inputFile',
-      'outputFile',
-      );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;
 

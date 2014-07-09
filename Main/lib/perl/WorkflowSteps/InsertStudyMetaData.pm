@@ -13,9 +13,10 @@ sub run {
   my $experimentName = $self->getParamValue("experimentName");
   my $sampleMetaDataFile = $self->getParamValue('sampleMetaDataFile');
   my $studyExtDbRlsSpec = $self->getParamValue('studyExtDbRlsSpec');
-  my $readsFile = $self->getParamValue('readsFile');
-  my $baseFileName = $readsFile ? basename($readsFile) : '';
-  my $sampleIdStr  = $readsFile ? "--sampleId $baseFileName" :'';
+  #my $readsFile = $self->getParamValue('readsFile');
+  #my $baseFileName = $readsFile ? basename($readsFile) : '';
+  #my $sampleIdStr  = $readsFile ? "--sampleId $baseFileName" :'';
+  my $sampleIdStr  = "";
   my $sampleExtDbRlsSpecTemplate = $self->getParamValue('sampleExtDbRlsSpecTemplate');
   my $sampleExtDbRlsSpecTemplateStr = $sampleExtDbRlsSpecTemplate ?  "--sampleExtDbRlsSpecTemplate \'$sampleExtDbRlsSpecTemplate\'" : '';
   my $isProfile = $self->getParamValue('isProfile');
@@ -25,25 +26,9 @@ sub run {
 
   my $args = "--studyName '$experimentName' --file $workflowDataDir/$sampleMetaDataFile --studyExtDbRlsSpec '$studyExtDbRlsSpec'  $sampleExtDbRlsSpecTemplateStr $isProfile $sampleIdStr";
 
- unless ($test) {
-   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertStudyMetaData", $args);
-  } 
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertStudyMetaData", $args);
+
 }
 
-sub getParamDeclaration {
-  return ('experimentName',
-          'sampleMetaDataFile',
-          'readsFile',
-          'sampleExtDbRlsSpecTemplate',
-          'isProfile',
-          'studyExtDbRlsSpec',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-      # [name, default, description]
-     );
-}
 
 1;

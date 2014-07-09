@@ -26,16 +26,4 @@ sub run{
     }
 }
 
-sub getParamDeclaration {
-    return (
-        'indicesDir',
-        'genomeIndex'
-    );
-}
-
-sub getConfigDeclaration {
-    return (
-        #[name, default, description]
-    );
-}
 1;

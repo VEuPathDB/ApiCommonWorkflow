@@ -23,16 +23,5 @@ sub run {
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	  'extDbSpecs',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 

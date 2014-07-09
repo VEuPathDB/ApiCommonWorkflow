@@ -27,26 +27,9 @@ sub run {
   } else {
       if ($test) {
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-      }else{
-	  $self->runPlugin($test,0, "DoTS::DotsBuild::Plugin::ClusterByGenome", $args);
       }
+      $self->runPlugin($test,0, "DoTS::DotsBuild::Plugin::ClusterByGenome", $args);
   }
-
 }
 
-sub getParamDeclaration {
-  my @properties =
-    ('parentNcbiTaxonId',
-     'outputFile',
-     'maxIntronSize',
-     'genomeExtDbRlsSpec',
-    );
-  return @properties;
-}
-
-sub getConfigDeclaration {
-return (
-     # [name, default, description]
-       );
-}
-
+1;

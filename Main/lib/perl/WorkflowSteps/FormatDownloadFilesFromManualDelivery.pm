@@ -24,23 +24,16 @@ sub run {
     $self->runCmd(0, "rm -f  $formattedFile*");
     $self->runCmd(0, "rm -r  $formattedOutputDir");
   } else {
+    $self->testInputFile('inputFile', "$fileToFormat");
       if ($test) {
-	  $self->testInputFile('inputFile', "$fileToFormat");
           $self->runCmd(0, "mkdir -p $formattedOutputDir");
 	  $self->runCmd(0,"echo test >  $formattedFile");
-      } else {
-	  $self->runCmd($test, "mkdir -p $formattedOutputDir");
-	  $self->runCmd($test,"$ncbiBlastPath/makeblastdb -in $fileToFormat $formatterArgs -out $formattedFile");
       }
+    $self->runCmd($test, "mkdir -p $formattedOutputDir");
+    $self->runCmd($test,"$ncbiBlastPath/makeblastdb -in $fileToFormat $formatterArgs -out $formattedFile");
   }
 }
 
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['ncbiBlastPath', "", ""],
-	 );
-}
-
+1;
 

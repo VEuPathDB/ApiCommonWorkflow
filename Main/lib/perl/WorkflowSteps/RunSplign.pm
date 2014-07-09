@@ -19,12 +19,11 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
+  $self->testInputFile('subjectFile', "$workflowDataDir/$subjectFile");
+
   if ($test) {
-    $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
-    $self->testInputFile('subjectFile', "$workflowDataDir/$subjectFile");
-
     $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-
   }
 
   $self->runCmd($test, "${splignPath}/splign -mklds $splignDir");
@@ -46,28 +45,5 @@ sub undo {
 
 }
 
-sub getConfigDeclaration {
-  my @properties = 
-    (
-     # [name, default, description]
-     ['splignPath', "", ""],
-     ['ncbiBlastPath', "", ""],
-    );
-  return @properties;
-}
 
-sub getParamDeclaration {
-  my @properties = 
-    (
-     ['queryFile'],
-     ['subjectFile'],
-     ['outputFile'],
-     ['splignDir'],
-     ['splignPath'],
-     ['ncbiBlastPath'],
-    );
-  return @properties;
-}
-
-sub getDocumentation {
-}
+1;

@@ -27,16 +27,4 @@ sub run{
     }
 }
 
-sub getParamDeclaration{
-    return(
-        'bamFile',
-        'outFile',
-    );
-}
-
-sub getConfigDeclaration{
-    return(
-        #[name, default, description]
-    );
-}
 1;

@@ -27,9 +27,9 @@ sub run {
     $self->runCmd(0,"rm -rf $configFile");
   }else{
 
-      if ($test) {
-	  $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-      }
+
+    $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
+
       opendir (DIR,"$workflowDataDir/$inputDir") || die "Can not open dir $workflowDataDir/$inputDir";
 
       my @files = grep { /\w*\.dat/ && -f "$workflowDataDir/$inputDir/$_" } readdir(DIR); 
@@ -51,15 +51,4 @@ sub run {
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertRadAnalysis", $args);
 }
 
-sub getParamDeclaration {
-  return (
-	  'studyName',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

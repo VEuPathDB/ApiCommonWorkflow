@@ -13,10 +13,9 @@ sub run {
 
   my $inputFile = $self->getParamValue("inputFile");
   my $outputFile = $self->getParamValue("outputFile");
-  #my $isolateType = $self->getParamValue("isolateType");
+  my $isolateType = $self->getParamValue("isolateType");
 
-  #my $args = "--inputFile '$workflowDataDir/$inputFile' --outputFile '$workflowDataDir/$outputFile' --isolateType '$isolateType'";
-  my $args = "--inputFile '$workflowDataDir/$inputFile' --outputFile '$workflowDataDir/$outputFile'";
+  my $args = "--inputFile '$workflowDataDir/$inputFile' --outputFile '$workflowDataDir/$outputFile' --isolateType '$isolateType'";
 
   my $cmd = "convertIsolateAssay2GFF $args";
 
@@ -25,23 +24,10 @@ sub run {
   } else {
     if ($test) {
       $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-    } else {
-      $self->runCmd($test, $cmd);
     }
+    $self->runCmd($test, $cmd);
   }
 }
 
-sub getParamDeclaration {
-  return ('inputFile',
-          'outputFile',
-          #'isolateType',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-      # [name, default, description]
-     );
-}
 
 1;

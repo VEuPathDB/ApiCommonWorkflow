@@ -33,25 +33,9 @@ sub run {
 	if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputNonUniqFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputUniqFile");
-	}else{
-	    $self->runCmd($test,$cmd);
 	}
+        $self->runCmd($test,$cmd);
     }
 }
   
-sub getParamsDeclaration {
-  return (
-	  'configFile',
-	  'outputUniqFile',
-	  'outputNonUniqFile',
-	  'type',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
-
+1;

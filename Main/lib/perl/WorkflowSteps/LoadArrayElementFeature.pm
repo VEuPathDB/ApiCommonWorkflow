@@ -18,25 +18,9 @@ sub run {
   
   my $args = "--extDbSpec '$extDbRlsSpec'  --fileName $workflowDataDir/$inputFile";
 
-  if ($test) {
-     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-  }else{
-     $self->runPlugin($test, $undo,"ApiCommonData::Load::Plugin::LoadArrayElementFeature", $args);
-  }
+  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
+  $self->runPlugin($test, $undo,"ApiCommonData::Load::Plugin::LoadArrayElementFeature", $args);
 }
 
-sub getParamsDeclaration {
-  return (
-	  'inputFile',
-	  'extDbRlsSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
-
+1;

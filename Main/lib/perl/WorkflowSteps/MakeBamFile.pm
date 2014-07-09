@@ -22,37 +22,15 @@ sub run {
 
     $self->runCmd(0, "rm -f $workflowDataDir/$bamIndex");
   } else {
-      if ($test) {
-	  $self->testInputFile('seqFile', "$workflowDataDir/$samFile");
-      }else{
-          my $cmd = "samtools view -b -S $workflowDataDir/$samFile > $workflowDataDir/$bamFile";
-	  $self->runCmd($test,$cmd);
-	  my $cmd = "samtools index $workflowDataDir/$bamFile $workflowDataDir/$bamIndex";
-	  $self->runCmd($test,$cmd);
-      }
+
+    $self->testInputFile('seqFile', "$workflowDataDir/$samFile");
+
+    my $cmd = "samtools view -b -S $workflowDataDir/$samFile > $workflowDataDir/$bamFile";
+    $self->runCmd($test,$cmd);
+    my $cmd = "samtools index $workflowDataDir/$bamFile $workflowDataDir/$bamIndex";
+    $self->runCmd($test,$cmd);
+
   }
 }
 
-
-sub getParamDeclaration {
-  my @properties = 
-    (
-     ['uniqueFile'],
-     ['nuFile'],
-     ['fastaFile'],
-     ['qualFile'],
-     ['samFile'],
-    );
-  return @properties;
-}
-
-sub getDocumentation {
-}
-
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

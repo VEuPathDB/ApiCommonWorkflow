@@ -21,37 +21,18 @@ sub run {
     if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
-      if ($test) {
-	  $self->testInputFile('seqFile', "$workflowDataDir/$shortSeqsFile");
-          $self->testInputFile('seqFile', "$workflowDataDir/$pairedEndFile") if $pairedEndFile;
-	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
-      }else{
-          my $cmd = "fastq2qualities.pl $workflowDataDir/$shortSeqsFile";
-	  $cmd .= " $workflowDataDir/$pairedEndFile" if $pairedEndFile;
-	  $cmd .= " > $workflowDataDir/$outputFile";
-	  $self->runCmd($test,$cmd);
-      }
+    $self->testInputFile('seqFile', "$workflowDataDir/$shortSeqsFile");
+    $self->testInputFile('seqFile', "$workflowDataDir/$pairedEndFile") if $pairedEndFile;
+
+    if ($test) {
+      $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
+    }
+    my $cmd = "fastq2qualities.pl $workflowDataDir/$shortSeqsFile";
+    $cmd .= " $workflowDataDir/$pairedEndFile" if $pairedEndFile;
+    $cmd .= " > $workflowDataDir/$outputFile";
+    $self->runCmd($test,$cmd);
+    
   }
 }
 
-
-sub getParamDeclaration {
-  my @properties = 
-    (
-     ['shortSeqsFile'],
-     ['pairedEndFile'],
-     ['outputFile'],
-    );
-  return @properties;
-}
-
-sub getDocumentation {
-}
-
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

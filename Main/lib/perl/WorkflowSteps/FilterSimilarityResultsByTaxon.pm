@@ -37,30 +37,14 @@ sub run {
     $self->runCmd(0, "rm -f $workflowDataDir/$unfilteredOutputFile");
     $self->runCmd(0, "rm -f $workflowDataDir/$filteredOutputFile");
   } else {  
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$filteredOutputFile");
-      }else{
-	  $self->runCmd($test,$cmd);
       }
+    $self->runCmd($test,$cmd);
   }
 }
 
-sub getParamsDeclaration {
-  return (
-	  'taxonHierarchy',
-	  'gi2taxidFile',
-	  'inputFile',
-	  'unfilteredOutputFile',
-	  'filteredOutputFile',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;
 
 

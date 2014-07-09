@@ -49,19 +49,5 @@ sub _formatForCLI {
 }
 
 
-sub getParamsDeclaration {
-    return (
-	'datasetName',
-	'datasetLoaderXmlFileName',
-        'dataDir'
-           );
-}
-
-sub getConfigDeclaration {
-    return (
-           # [name, default, description]
-           );
-}
-
-
+1;
 

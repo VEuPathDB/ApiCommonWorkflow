@@ -33,32 +33,14 @@ sub run {
   if ($undo) {
     $self->runPlugin($test,$undo, "DoTS::DotsBuild::Plugin::UpdateDotsAssembliesWithCap4", '');
   }else {
-      if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-      }
-      $self->runCmd($test, $cmd);
+
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+
+    $self->runCmd($test, $cmd);
   }
 }
 
 
-sub getConfigDeclaration {
-  my @properties = 
-    (
-     # [name, default, description]
-     ['cap4Dir', "", ""],
-    );
-  return @properties;
-}
-
-sub getParamDeclaration {
-  my @properties = 
-    (
-     ['inputFile',
-      'ncbiTaxonId',
-      'reassemble',
-     ]
-    );
-  return @properties;
-}
+1;
 
 

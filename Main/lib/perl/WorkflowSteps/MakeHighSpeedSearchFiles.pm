@@ -30,26 +30,11 @@ sub run {
   } else {
     if ($test) {
 	  $self->runCmd(0, "mkdir -p $hssDir/readFreq$readFreq");
-    }else{
-      $self->runCmd(0, "mkdir -p $hssDir");
-      $self->runCmd($test,$cmd);
     }
+    $self->runCmd(0, "mkdir -p $hssDir");
+    $self->runCmd($test,$cmd);
   }
 }
 
-sub getParamDeclaration {
-  return ('organismAbbrev',
-          'variantsFile',
-          'varscanConsDir',
-          'readFrequency',
-          'relativeWebServicesDir',
-      );
-}
-
-sub getConfigDeclaration {
-  return (
-      # [name, default, description]
-     );
-}
 
 1;

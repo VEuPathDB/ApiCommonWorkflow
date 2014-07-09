@@ -40,24 +40,10 @@ sub run {
     } else {
 	if ($test) {
 	    $self->runCmd(0,"echo hello > $workflowDataDir/$outputFile");
-	}else{
-	    $self->runCmd($test, $cmd);
 	}
+        $self->runCmd($test, $cmd);
     }
 }
 
-sub getParamsDeclaration {
-    return (
-            'organism',
-            'outputFile'
-           );
-}
-
-
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-              ['ncbiBlastPath', "", ""]
-           );
-}
+1;
 

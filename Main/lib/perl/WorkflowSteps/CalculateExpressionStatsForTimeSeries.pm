@@ -29,23 +29,13 @@ sub run {
 
   $args .= " --timePointsMappingFile '$workflowDataDir/$dataDir/$mappingFile'" unless ($mappingFile eq "NO_MAPPING_FILE");
 
+  $self->testInputFile('inputDir', "$workflowDataDir/$dataDir/$mappingFile") if $mappingFile;
 
-
-
-    if ($test) {
-      $self->testInputFile('inputDir', "$workflowDataDir/$dataDir/$mappingFile") if $mappingFile;
-    }
     if ($undo){
-    }else{
-	$self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CalculateProfileSummaryStats", $args);
+    } else{
+      $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CalculateProfileSummaryStats", $args);
     }
 
 }
 
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

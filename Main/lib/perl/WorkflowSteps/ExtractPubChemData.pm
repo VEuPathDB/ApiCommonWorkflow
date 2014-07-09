@@ -18,30 +18,19 @@ sub run {
 
   my $cmd = "extractPubChemData  --idFile '$workflowDataDir/$idFile' --outFile '$workflowDataDir/$outFile' --type '$type'";
   $cmd .= "  --property '$property'" if $property;
+
+
+
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outFile");
   }else {
+    $self->testInputFile('inputFile', "$workflowDataDir/$idFile");
     if ($test){
       $self->runCmd(0, "echo test> $workflowDataDir/$outFile");
-      $self->testInputFile('inputFile', "$workflowDataDir/$idFile");
-    }else{
-      $self->runCmd($test, $cmd);
     }
+    $self->runCmd($test, $cmd);
   }
-
 }
 
-sub getParamDeclaration {
-  return (
-	  'idFile',
-	  'outFile',
-	  'extDbRlsSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 

@@ -8,10 +8,16 @@
 
   <constant name="dataDir">$$parentDataDir$$/SNPs_HTS</constant>
   <constant name="varscanConsDir">$$parentDataDir$$/SNPs_HTS/varscanCons</constant>
+  <constant name="bowtieIndexDir">$$parentDataDir$$/bowtieIndices</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
 
   <step name="makeVarscanConsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$varscanConsDir$$</paramValue>
@@ -58,6 +64,7 @@
       <paramValue name="isColorspace">${isColorspace}</paramValue>
       <paramValue name="snpPercentCutoff">${snpPercentCutoff}</paramValue>
       <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
+      <paramValue name="bowtieIndexDir">$$bowtieIndexDir$$</paramValue>
       <depends name="makeVarscanConsDir"/>
 
     </subgraph>

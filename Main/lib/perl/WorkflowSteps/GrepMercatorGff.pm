@@ -16,27 +16,16 @@ sub run {
 
   my $cmd = "grep -P '\texon\t' ${workflowDataDir}/$inputFile |sed 's/apidb|//'  > ${workflowDataDir}/$outputFile; grep -P '\tCDS\t' ${workflowDataDir}/$inputFile |sed 's/apidb|//'  > ${workflowDataDir}/$outputFile";
 
-  if ($test) {
-    $self->runCmd(0, "echo test > ${workflowDataDir}/$outputFile");
-  }elsif ($undo) {
+
+  if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   }else {
+    if ($test) {
+      $self->runCmd(0, "echo test > ${workflowDataDir}/$outputFile");
+    }
     $self->runCmd($test, $cmd);
   }
 
 }
 
-sub getParamsDeclaration {
-  return (
-          'inputFile',
-          'outputFile',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-
+1;

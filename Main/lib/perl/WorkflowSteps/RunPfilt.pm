@@ -20,26 +20,13 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
-      }else{
-	  $self->runCmd($test, "$psipredPath/pfilt $workflowDataDir/$inputFile > $workflowDataDir/$outputFile");
       }
+    $self->runCmd($test, "$psipredPath/pfilt $workflowDataDir/$inputFile > $workflowDataDir/$outputFile");
   }
 }
 
-sub getParamsDeclaration {
-  return (
-          'inputFile',
-          'outputFile',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-          ['psipredPath', '', ''],
-         );
-}
+1;
 

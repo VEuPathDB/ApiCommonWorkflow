@@ -21,21 +21,14 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFastaDir/*SNPs.fasta");
   } else {
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFastaDir/SNPs.fasta");
-      }else{
-	  $self->runCmd($test, $cmd);
+        $self->runCmd(0, "echo test > $workflowDataDir/$outputFastaDir/SNPs.fasta");
       }
+    $self->runCmd($test, $cmd);
   }
-
 }
 
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
+1;
 
 

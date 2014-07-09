@@ -36,17 +36,4 @@ sub run {
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CreateSageTagNormalizationFiles", $args);
 }
 
-sub getParamDeclaration {
-  return (
-	  'studyName',
-	  'paramValue',
-	  'outputDir',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

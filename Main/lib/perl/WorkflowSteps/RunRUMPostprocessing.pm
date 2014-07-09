@@ -35,15 +35,9 @@ sub run {
   }else{
       if ($test) {
 	  $self->testInputFile('genomeFastaFile', "$workflowDataDir/$genomeFastaFile");
-      }else{
-	  $self->runCmd($test, $cmd);
       }
+      $self->runCmd($test, $cmd);
   }
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

@@ -25,38 +25,18 @@ sub run {
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     }else{
+      $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
+      $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
+
 	if ($test) {
-	    $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-	    $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-	}else{
+        }            
 	    foreach my $inputFile (@inputFileNames){
-		my $cmd = "callMUMmerForSnps --mummerDir $mummerPath --query_file $workflowDataDir/$genomicSeqsFile --output_file $workflowDataDir/$outputFile --snp_file $inputFile"; 
-		$self->runCmd($test,$cmd);
-	    }
+              my $cmd = "callMUMmerForSnps --mummerDir $mummerPath --query_file $workflowDataDir/$genomicSeqsFile --output_file $workflowDataDir/$outputFile --snp_file $inputFile"; 
+              $self->runCmd($test,$cmd);
 	}
     }
 }
 
-sub getParamsDeclaration {
-    return ('genomicSeqsFile',
-            'inputDir',
-            'outputFile'
-           );
-}
 
-
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-           );
-}
-
-sub getDocumentation {
-}
-
-sub restart {
-}
-
-sub undo {
-}
+1;

@@ -23,27 +23,14 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
+    $self->testInputFile('seqFile', "$workflowDataDir/$inputFile");
       if ($test) {
-	  $self->testInputFile('seqFile', "$workflowDataDir/$inputFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-      }else{
-	  $self->runCmd($test,$cmd);
       }
+    $self->runCmd($test,$cmd);
+
   }
 }
 
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	  'ties',
-	  'outputFile',
-	  'hasHeader',
-	 );
-}
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;
