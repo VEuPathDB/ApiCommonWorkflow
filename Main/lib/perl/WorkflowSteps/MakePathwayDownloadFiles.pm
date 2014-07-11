@@ -15,13 +15,14 @@ sub run {
   my $relativeDownloadSiteDir =  $self->getParamValue('relativeDownloadSiteDir');
   my $outputDirName = $self->getParamValue('outputDirName');
   my $outputDir = $self->getParamValue('relativeDownloadSiteDir') . '/' . $outputDirName;
+  my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-  my $cmd = "makePathwayImgDataFiles.pl --gusConfigFile $gusConfigFile --outputDir $outputDir --pathwayList ALL";
+  my $cmd = "makePathwayImgDataFiles.pl --gusConfigFile $gusConfigFile --outputDir $websiteFilesDir/$outputDir --pathwayList ALL";
 
   if ($undo) {
-    $self->runCmd(0, "rm -Rf $outputDir/}");
+    $self->runCmd(0, "rm -Rf $websiteFilesDir/$outputDir/}");
   }else {
-    $self->runCmd($test, "mkdir -p $outputDir");
+    $self->runCmd($test, "mkdir -p $websiteFilesDir/$outputDir");
     $self->runCmd($test, $cmd);
   }
 }
