@@ -18,27 +18,16 @@ sub run {
 
   if ($undo) {
   } else {
-      if ($test) {
-	  $self->testInputFile('seqFile', "$workflowDataDir/$inputFile");
-      }else{
-	  if (-s "$workflowDataDir/$queryFile" || $test) {
-	      $self->runCmd($test,$cmd);
-	  } else {
-	      $self->log("queryFile '$workflowDataDir/$queryFile' is empty.  Doing nothing.");
-	  }
-      }
+
+    $self->testInputFile('seqFile', "$workflowDataDir/$inputFile");
+
+    if (-s "$workflowDataDir/$queryFile" || $test) {
+      $self->runCmd($test,$cmd);
+    } else {
+      $self->log("queryFile '$workflowDataDir/$queryFile' is empty.  Doing nothing.");
+    }
+
   }
 }
 
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

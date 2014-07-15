@@ -25,22 +25,18 @@ sub run {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputUniqueFile");
     $self->runCmd(0, "rm -f $workflowDataDir/$outputNonUniqueFile");
   } else {
+    $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$inputUniqueFile");
+    $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$inputNonUniqueFile");
+    $self->testInputFile('shortSeqsFile', "$workflowDataDir/$shortSeqsFile");
+
     if ($test) {
-      $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$inputUniqueFile");
-      $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$inputNonUniqueFile");
-      $self->testInputFile('shortSeqsFile', "$workflowDataDir/$shortSeqsFile");
       $self->runCmd(0,"echo test > $workflowDataDir/$outputUniqueFile");
       $self->runCmd(0,"echo test > $workflowDataDir/$outputNonUniqueFile");
-    } else {
-      $self->runCmd($test,"RevertProbeSeqId --originalShortSeqsFile $workflowDataDir/$shortSeqsFile --inputFile $workflowDataDir/$inputUniqueFile --outputFile $workflowDataDir/$outputUniqueFile");
-      $self->runCmd($test,"RevertProbeSeqId --originalShortSeqsFile $workflowDataDir/$shortSeqsFile --inputFile $workflowDataDir/$inputNonUniqueFile --outputFile $workflowDataDir/$outputNonUniqueFile");
     }
+    $self->runCmd($test,"RevertProbeSeqId --originalShortSeqsFile $workflowDataDir/$shortSeqsFile --inputFile $workflowDataDir/$inputUniqueFile --outputFile $workflowDataDir/$outputUniqueFile");
+    $self->runCmd($test,"RevertProbeSeqId --originalShortSeqsFile $workflowDataDir/$shortSeqsFile --inputFile $workflowDataDir/$inputNonUniqueFile --outputFile $workflowDataDir/$outputNonUniqueFile");
+
   }
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

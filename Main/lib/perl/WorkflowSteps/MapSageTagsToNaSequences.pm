@@ -24,30 +24,16 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
-      if ($test) {
-	  $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
-	  $self->testInputFile('sageTagFile', "$workflowDataDir/$sageTagFile");
-	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
-      }else{
-	  $self->runCmd($test, $cmd);
-      }
+    $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
+    $self->testInputFile('sageTagFile', "$workflowDataDir/$sageTagFile");
+
+    if ($test) {
+      $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
+    }
+    $self->runCmd($test, $cmd);
+
   }
 
 }
 
-sub getParamsDeclaration {
-  return (
-          'genomicSeqsFile',
-          'outputFile',
-          'sageTagFile',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-
-
+1;

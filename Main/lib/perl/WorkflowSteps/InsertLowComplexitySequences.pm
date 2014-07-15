@@ -21,28 +21,13 @@ sub run {
 
   my $args = "--seqFile $workflowDataDir/$inputFile --fileFormat 'fasta' --extDbName '$extDbName' --extDbVersion '$extDbRlsVer' --seqType $seqType --maskChar $mask $options";
 
-  if ($test) {
-    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-  }
+
+  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertLowComplexityFeature", $args);
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	  'genomeExtDbRlsSpec',
-	  'mask',
-	  'seqType',
-	  'options',
-	 );
-}
-
+1;
 
 

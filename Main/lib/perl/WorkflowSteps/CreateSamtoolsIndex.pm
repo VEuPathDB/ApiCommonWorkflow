@@ -28,16 +28,4 @@ sub run{
     }
 }
 
-sub getParamDeclaration{
-    return(
-        'genomicSeqsFile',
-        'outputFile'
-    );
-}
-
-sub getConfigDeclaration {
-    return (
-        #[name, default, description]
-    );
-}
 1;

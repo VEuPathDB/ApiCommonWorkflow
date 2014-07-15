@@ -22,18 +22,16 @@ sub run {
 
 my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbVer --sequenceFile $workflowDataDir/$fastaFile --sourceIdsFile  $workflowDataDir/$idsFile --regexSecondaryId '>gi\\|\\d+\\|\\w+\\|(\\w+\\.?\\w+)\\|' --regexDesc '^>gi\\|\\d+\\|\\w+\\|\\w+\\.?\\w+\\|(\.+)' --regexSourceId '>gi\\|(\\d+)\\|' --tableName DoTS::ExternalAASequence";
 
-  if ($test) {
-    $self->testInputFile('fastaFile', "$workflowDataDir/$fastaFile");
-    $self->testInputFile('idsFile', "$workflowDataDir/$idsFile");
-  }
+
+  $self->testInputFile('fastaFile', "$workflowDataDir/$fastaFile");
+  $self->testInputFile('idsFile', "$workflowDataDir/$idsFile");
+
 
   $self->runPlugin($test,$undo, "GUS::Supported::Plugin::LoadFastaSequences",$args);
 
 }
 
 
-sub getConfigDeclaration {
-  return ();
-}
+1;
 
 

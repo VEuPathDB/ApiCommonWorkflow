@@ -37,13 +37,11 @@ sub run {
   if ($undo) {
     $self->runCmdOnCluster($test,$undoCmd);
   } else {
-      if ($test) {
-	  # should really test this on the cluster?
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-      }else{
-	  $self->runCmdOnCluster($test,$cmd);
-      }
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+    $self->runCmdOnCluster($test,$cmd);
   }
 }
 
+
+1;
 

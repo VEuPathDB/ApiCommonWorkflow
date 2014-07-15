@@ -28,19 +28,12 @@ sub run {
 --goVersion=\'$goVersion\' \\
 EOF
 
-  if ($test) {
-    $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-  }
+
+$self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
+
 
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertInterproscanResultsTSV", $args);
 
 }
 
-
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-           );
-}
-
-
+1;

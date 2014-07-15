@@ -46,22 +46,18 @@ sub run {
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputIntensityFileBasename.*");
     } else {
-	if ($test) {
-	    $self->testInputFile('inputUniqueSortedFile', "$workflowDataDir/$uniqueSorted");
-	    $self->testInputFile('inputNUSortedFile', "$workflowDataDir/$nuSorted");
-	    $self->testInputFile('inputGeneModelFile', "$workflowDataDir/$inputGeneModelFile");
-	    $self->runCmd(0,"echo test > $workflowDataDir/$outputIntensityFileBasename.min");
-            $self->runCmd(0,"echo test > $workflowDataDir/$outputIntensityFileBasename.max");
-	}
-	$self->runCmd($test, $cmd1);
-	$self->runCmd($test, $cmd2);
+      $self->testInputFile('inputUniqueSortedFile', "$workflowDataDir/$uniqueSorted");
+      $self->testInputFile('inputNUSortedFile', "$workflowDataDir/$nuSorted");
+      $self->testInputFile('inputGeneModelFile', "$workflowDataDir/$inputGeneModelFile");
+
+      if ($test) {
+        $self->runCmd(0,"echo test > $workflowDataDir/$outputIntensityFileBasename.min");
+        $self->runCmd(0,"echo test > $workflowDataDir/$outputIntensityFileBasename.max");
+      }
+      $self->runCmd($test, $cmd1);
+      $self->runCmd($test, $cmd2);
     }
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;
 

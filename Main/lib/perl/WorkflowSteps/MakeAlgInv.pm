@@ -24,20 +24,6 @@ sub run {
 		   $args);
 }
 
-sub getParamsDeclaration {
-  return (
-          'algName',
-          'algVersion',
-          'algDesc',
-          'algResult',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
+1;
 
 

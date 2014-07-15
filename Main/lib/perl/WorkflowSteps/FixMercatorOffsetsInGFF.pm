@@ -17,29 +17,16 @@ sub run {
 
     my $args = "--f $workflowDataDir/$fsaFile --g $workflowDataDir/$inputFile --o $workflowDataDir/$outputFile";
 
-    if ($test){
-    $self->testInputFile('fsaFile', "$workflowDataDir/$fsaFile");
-    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-        $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-    }
     if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     } else {
+      $self->testInputFile('fsaFile', "$workflowDataDir/$fsaFile");
+      $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+      if ($test){
+        $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+      }
       $self->runCmd($test,"fixMercatorOffsetsInGFF.pl $args");
     }
 }
 
-sub getParamsDeclaration {
-    return ('inputFile',
-            'fsaFile',
-            'outputFile'
-           );
-}
-
-
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-           );
-}
-
+1;

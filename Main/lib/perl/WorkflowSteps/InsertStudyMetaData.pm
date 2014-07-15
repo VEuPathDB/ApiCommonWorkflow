@@ -26,25 +26,9 @@ sub run {
 
   my $args = "--studyName '$experimentName' --file $workflowDataDir/$sampleMetaDataFile --studyExtDbRlsSpec '$studyExtDbRlsSpec'  $sampleExtDbRlsSpecTemplateStr $isProfile $sampleIdStr";
 
- unless ($test) {
-   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertStudyMetaData", $args);
-  } 
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertStudyMetaData", $args);
+
 }
 
-sub getParamDeclaration {
-  return ('experimentName',
-          'sampleMetaDataFile',
-          #'readsFile',
-          'sampleExtDbRlsSpecTemplate',
-          'isProfile',
-          'studyExtDbRlsSpec',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-      # [name, default, description]
-     );
-}
 
 1;

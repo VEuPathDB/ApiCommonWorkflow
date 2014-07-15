@@ -28,37 +28,18 @@ sub run {
 	$self->runCmd(0, "rm -f $workflowDataDir/$buFile");
 	$self->runCmd(0, "rm -f $workflowDataDir/$cnuFile");
     } else {
+      $self->testInputFile('inputTrancriptUniqueFile', "$workflowDataDir/$tuFile");
+      $self->testInputFile('inputGenomeUniqueFile', "$workflowDataDir/$guFile");
+      $self->testInputFile('inputTrancriptNonUniqueFile', "$workflowDataDir/$tnuFile");
+      $self->testInputFile('inputGenomeNonUniqueFile', "$workflowDataDir/$gnuFile");
+      
 	if ($test) {
-	    $self->testInputFile('inputTrancriptUniqueFile', "$workflowDataDir/$tuFile");
-	    $self->testInputFile('inputGenomeUniqueFile', "$workflowDataDir/$guFile");
-	    $self->testInputFile('inputTrancriptNonUniqueFile', "$workflowDataDir/$tnuFile");
-	    $self->testInputFile('inputGenomeNonUniqueFile', "$workflowDataDir/$gnuFile");
-
 	    $self->runCmd(0,"echo test > $workflowDataDir/$buFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$cnuFile");
-
 	}
-	$self->runCmd($test, $cmd);
-
+      $self->runCmd($test, $cmd);
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'inputGenomeNonUniqueFile',
-      'inputTranscriptNonUniqueFile',
-      'inputGenomeUniqueFile',
-      'inputTranscriptUniqueFile',
-      'outputBowtieUniqueFile',
-      'outputCombinedNonUniqueFile',
-      'readType',
-      );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;
 

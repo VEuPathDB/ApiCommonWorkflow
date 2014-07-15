@@ -17,16 +17,6 @@ sub run {
 
 }
 
-sub getParamsDeclaration {
-  return ('nullsOnly',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;
 
 

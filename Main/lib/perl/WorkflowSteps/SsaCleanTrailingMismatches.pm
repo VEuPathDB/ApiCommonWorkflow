@@ -26,31 +26,18 @@ sub run {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputUFile");
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputNuFile");
     } else {
-	if ($test) {
-	    $self->testInputFile('inputUniqueFile', "$workflowDataDir/$inputUFile");
-	    $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$inputNuFile");
-	    $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
-	    $self->runCmd(0,"echo test > $workflowDataDir/$outputUFile");
-	    $self->runCmd(0,"echo test > $workflowDataDir/$outputNuFile");
-	}
-	$self->runCmd($test, $cmd);
+
+      $self->testInputFile('inputUniqueFile', "$workflowDataDir/$inputUFile");
+      $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$inputNuFile");
+      $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
+
+      if ($test) {
+        $self->runCmd(0,"echo test > $workflowDataDir/$outputUFile");
+        $self->runCmd(0,"echo test > $workflowDataDir/$outputNuFile");
+      }
+      $self->runCmd($test, $cmd);
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'inputUniqueFile',
-      'inputNonUniqueFile',
-      'outputUniqueFile',
-      'outputNonUniqueFile',
-      'genomicSeqsFile',
-      );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;
 

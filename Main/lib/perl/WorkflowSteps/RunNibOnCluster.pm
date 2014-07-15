@@ -25,25 +25,12 @@ sub run {
   if ($undo) {
     #$self->runCmdOnCluster(0,"rm -r $clusterWorkflowDataDir/$dirname/nib/");
   } else {
+    $self->testInputFile('inputTargetListFile', "$workflowDataDir/$inputTargetListFile");
       if ($test) {
-	  $self->testInputFile('inputTargetListFile', "$workflowDataDir/$inputTargetListFile");
 	  $self->runCmdOnCluster(0,"mkdir $clusterWorkflowDataDir/$dirname/nib") unless $undo;
-      }else{
-	  $self->runCmdOnCluster($test,$cmd);
       }
+    $self->runCmdOnCluster($test,$cmd);
   }
 }
 
-sub getParamDeclaration {
-  return (
-     'inputTargetListFile',
-    );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['clusterWorkflowDataDir', "", ""],
-	 );
-}
-
+1;

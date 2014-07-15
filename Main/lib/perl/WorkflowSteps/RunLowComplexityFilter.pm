@@ -27,29 +27,12 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
-      if ($test) {
-	  $self->testInputFile('seqFile', "$workflowDataDir/$seqFile");
-	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-      }else{
-	  $self->runCmd($test,"$filter $workflowDataDir/$seqFile $options > $workflowDataDir/$outputFile");
-      }
+    $self->testInputFile('seqFile', "$workflowDataDir/$seqFile");
+    if ($test) {
+      $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+    }
+    $self->runCmd($test,"$filter $workflowDataDir/$seqFile $options > $workflowDataDir/$outputFile");
   }
 }
 
-sub getParamDeclaration {
-  return (
-	  'seqFile',
-	  'outputFile',
-	  'filterType',
-	  'options',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['wuBlastPath', "", ""],
-	 );
-}
-
-
+1;

@@ -1,11 +1,12 @@
 <workflowGraph name="">
     <param name="parentDataDir"/>
-    <param name="substanceIdsFile"/>
-    <param name="compoundIdsFile"/>
     <param name="datasetLoaderXmlFile"/>
     <param name="compoundName"/>
+    <param name="source"/> 
 
-    <constant name="dataDir">$$parentDataDir$$</constant>
+
+    <constant name="dataDir">$$parentDataDir$$/$$source$$</constant>
+
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
@@ -19,7 +20,7 @@
 
     <!-- extract CID data in XML from PubChem for  Substances  -->
     <step name="extractPubChemSubstances_CID" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractPubChemData">
-     <paramValue name="idFile">$$dataDir$$/compounds_$$compoundName$$_RSRC/$$substanceIdsFile$$</paramValue>
+     <paramValue name="idFile">$$dataDir$$/compounds_$$compoundName$$_RSRC/sidFile.txt</paramValue>
      <paramValue name="outFile">$$dataDir$$/substance_cids.xml</paramValue>
      <paramValue name="type">pcsubstance</paramValue>
      <paramValue name="property">CID</paramValue>
@@ -30,25 +31,25 @@
      <step name="insertPubChemSubstances_CID" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPubChemSubstances" stepLoadTypes="plugin">
       <paramValue name="fileDir">$$dataDir$$</paramValue>
       <paramValue name="fileNames">substance_cids.xml</paramValue>
-      <paramValue name="compoundIdsFile">$$dataDir$$/$$compoundIdsFile$$</paramValue>
+      <paramValue name="compoundIdsFile">$$dataDir$$/compoundIdFile.txt</paramValue>
      <paramValue name="property">CID</paramValue>
     <depends name="extractPubChemSubstances_CID"/>
   </step>
 
     <!-- extract Synonym data in XML from PubChem for  Substances  -->
     <step name="extractPubChemSubstances_synonyms" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractPubChemData">
-     <paramValue name="idFile">$$dataDir$$/compounds_$$compoundName$$_RSRC/$$substanceIdsFile$$</paramValue>
+     <paramValue name="idFile">$$dataDir$$/compounds_$$compoundName$$_RSRC/sidFile.txt</paramValue>
      <paramValue name="outFile">$$dataDir$$/substance_synonyms.xml</paramValue>
      <paramValue name="type">pcsubstance</paramValue>
      <paramValue name="property">Synonym</paramValue>
-    <depends name="compounds_RSRC"/>
+    <depends name="insertPubChemSubstances_CID"/>
   </step>
 
     <!-- insert Synonym data for Substances  -->
      <step name="insertPubChemSubstances_synonyms" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPubChemSubstances" stepLoadTypes="plugin">
       <paramValue name="fileDir">$$dataDir$$</paramValue>
       <paramValue name="fileNames">substance_synonyms.xml</paramValue>
-      <paramValue name="compoundIdsFile">$$dataDir$$/$$compoundIdsFile$$</paramValue>
+      <paramValue name="compoundIdsFile">$$dataDir$$/compoundIdFile.txt</paramValue>
      <paramValue name="property">Synonym</paramValue>
     <depends name="extractPubChemSubstances_synonyms"/>
   </step>
@@ -56,11 +57,11 @@
 
   <!-- extract properties data XML from PubChem for  Compounds  -->
     <step name="extractPubChemCompounds_pccompound" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractPubChemData">
-     <paramValue name="idFile">$$dataDir$$/$$compoundIdsFile$$</paramValue>
+     <paramValue name="idFile">$$dataDir$$/compoundIdFile.txt</paramValue>
      <paramValue name="outFile">$$dataDir$$/compounds_pccompound.xml</paramValue>
      <paramValue name="type">pccompound</paramValue>
      <paramValue name="property"></paramValue>
-    <depends name="compounds_RSRC"/>
+    <depends name="insertPubChemSubstances_CID"/>
   </step>
 
   <!-- insert Compounds  -->

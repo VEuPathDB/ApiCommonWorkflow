@@ -19,8 +19,8 @@ sub run {
     $self->runCmd(0,"rm -rf $workflowDataDir/$outputFile");
   }else {
 
+    $self->testInputFile('targetDir', "$workflowDataDir/$targetDir");
    if ($test) {
-        $self->testInputFile('targetDir', "$workflowDataDir/$targetDir");
 	$self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
     }
 
@@ -47,14 +47,4 @@ sub makeGenomeTargetListFile {
 }
 
 
-sub getParamsDeclaration {
-  return ( 'targetDir',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

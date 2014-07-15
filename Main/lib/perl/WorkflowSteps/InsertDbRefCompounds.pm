@@ -18,18 +18,12 @@ sub run {
 
   my $args = "--aliasFile '$workflowDataDir/$aliasFile' --extDbName $extDbName --extDbReleaseNumber $extDbReleaseNumber";
 
-    if ($test) {
-      $self->testInputFile('aliasFile', "$workflowDataDir/$aliasFile");
-    }
+
+  $self->testInputFile('aliasFile', "$workflowDataDir/$aliasFile");
+
    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertDbRefCompounds", $args);
 
 
 }
 
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-
+1;

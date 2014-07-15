@@ -20,11 +20,11 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $outputFile");
   } else {
-      if ($test) {
-	  $self->testInputFile('inputFile', "$inputFile");
-	  $self->runCmd(0,"echo test > $outputFile");
-      }
-      $self->runCmd($test,$cmd);
+    $self->testInputFile('inputFile', "$inputFile");
+    if ($test) {
+      $self->runCmd(0,"echo test > $outputFile");
+    }
+    $self->runCmd($test,$cmd);
   }
 }
 
@@ -56,3 +56,6 @@ sub runMcl{
 }
 
 =cut
+
+
+1;

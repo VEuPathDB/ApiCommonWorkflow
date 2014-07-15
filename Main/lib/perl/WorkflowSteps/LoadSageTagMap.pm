@@ -15,23 +15,13 @@ sub run {
       
   my $args = "--tagToSeqFile $workflowDataDir/$inputFile --extDbSpec 'RAD.SAGETag|continuous' --featureType SAGETagFeature";
 
-  if ($test) {
+
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-  }
+
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadExpressionFeature", $args);
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 

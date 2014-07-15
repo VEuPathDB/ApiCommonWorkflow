@@ -94,12 +94,12 @@ sub run {
       if ($test) {
 	  $self->runCmd(0, "echo test > $websiteFile") unless $websiteFileCmd eq 'NONE';
 	  $self->runCmd(0, "echo test > $descripFile")  unless $isWebServiceFile;
-      }else {
-	  $self->runCmd($test, $websiteFileCmd) unless $websiteFileCmd eq 'NONE';
-	  $self->runCmd($test, $descripFileCmd)  unless $isWebServiceFile;
-	  if ($skipIfFile && (-s $websiteFile == 0)) {
-	    $self->runCmd(0, "touch $wfDataDir/$skipIfFile");
-	  }
+      }
+
+      $self->runCmd($test, $websiteFileCmd) unless $websiteFileCmd eq 'NONE';
+      $self->runCmd($test, $descripFileCmd)  unless $isWebServiceFile;
+      if ($skipIfFile && (-s $websiteFile == 0)) {
+        $self->runCmd(0, "touch $wfDataDir/$skipIfFile");
       }
   }
 }
@@ -154,13 +154,6 @@ sub getDescripFileName {
     return "$outputDir/.$projectName-${projectVersion}_${nameForFiles}$dataName.$fileType.desc";
 }
 
-sub getConfigDeclaration {
-    my ($self) = @_;
 
-    my @baseConfig = (
-	);
-    my @extraConfig = $self->getExtraConfig();
-    return (@baseConfig, @extraConfig);
-
-}
+1;
 

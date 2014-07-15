@@ -13,20 +13,8 @@ sub run {
 
   my $args = "--name '$file'";
 
- unless ($test) {
-   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertCustomOntologyEntries", $args);
-  } 
-}
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertCustomOntologyEntries", $args);
 
-sub getParamDeclaration {
-  return ('file',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-      # [name, default, description]
-     );
 }
 
 1;

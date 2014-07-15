@@ -21,26 +21,13 @@ sub run {
   if ($undo){
       $self->runPlugin($test, $undo, "GUS::Supported::Plugin::LoadGusXml", $undoArgs);
   }else{
-      if ($test) {
+
 	  $self->testInputFile('xmlFile', "$gusHome/$xmlFile");
-      }else{
+
 	  $self->runPlugin($test, $undo, "GUS::Supported::Plugin::LoadGusXml", $args);
-      }
+
   }
 
 }
 
-sub getParamsDeclaration {
-  return (
-	  'xmlFile',
-	  'gusTable',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
-
+1;

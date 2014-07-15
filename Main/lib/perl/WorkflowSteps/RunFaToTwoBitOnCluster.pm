@@ -25,25 +25,12 @@ sub run {
   if ($undo) {
     $self->runCmdOnCluster(0,"rm $clusterWorkflowDataDir/$output2bitFile");
   } else {
+    $self->testInputFile('inputFastaFile', "$workflowDataDir/$inputFastaFile");
       if ($test) {
-	  $self->testInputFile('inputFastaFile', "$workflowDataDir/$inputFastaFile");
 	  $self->runCmdOnCluster(0, "echo test > $clusterWorkflowDataDir/$output2bitFile");
-      }else{
-	  $self->runCmdOnCluster($test,$cmd);
       }
+    $self->runCmdOnCluster($test,$cmd);
   }
 }
 
-sub getParamDeclaration {
-  return (
-     'inputFastaFile',
-     'output2BitFile'
-    );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['clusterWorkflowDataDir', "", ""],
-	 );
-}
+1;

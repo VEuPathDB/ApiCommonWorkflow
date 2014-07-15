@@ -65,23 +65,10 @@ sub run {
       $self->runCmd(0, "executeIdSQL.pl --idSql \"$deleteSql\"");
       $self->runCmd(0, "rm -f $workflowDataDir/geneGenomicSeq*");
     } else {
-        if ($test) {
-        }else{
-            $self->runCmd($test,"gusExtractSequences --outputFile $workflowDataDir/geneGenomicSeq.fsa --verbose --idSQL \"$selectSql\"");
-            $self->runCmd($test,"geneGenomicSequence --inFile $workflowDataDir/geneGenomicSeq.fsa --outFile $workflowDataDir/geneGenomicSeqSqlLdr.txt");
-            $self->runCmd($test,"nohup sqlldr  apidb/$apidbPassword@$instance control=$workflowDataDir/geneGenomicSeqSqlLdr.txt");
-        }
+      $self->runCmd($test,"gusExtractSequences --outputFile $workflowDataDir/geneGenomicSeq.fsa --verbose --idSQL \"$selectSql\"");
+      $self->runCmd($test,"geneGenomicSequence --inFile $workflowDataDir/geneGenomicSeq.fsa --outFile $workflowDataDir/geneGenomicSeqSqlLdr.txt");
+      $self->runCmd($test,"nohup sqlldr  apidb/$apidbPassword@$instance control=$workflowDataDir/geneGenomicSeqSqlLdr.txt");
     }
 }
 
-sub getParamsDeclaration {
-  return (
-	  'extDbRlsSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-
-	 );
-}
+1;

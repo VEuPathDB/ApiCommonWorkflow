@@ -24,10 +24,7 @@ sub run {
 
   $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertTaxonAndTaxonName", $args);
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
 }
 
+
+1;

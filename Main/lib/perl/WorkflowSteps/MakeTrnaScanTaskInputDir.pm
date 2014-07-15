@@ -23,9 +23,8 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
   }else {
-      if ($test) {
-	  $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
-      }
+    $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
+
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
@@ -45,17 +44,4 @@ trainingOption=C
   }
 }
 
-sub getParamsDeclaration {
-  return ('taskInputDir',
-	  'genomicSeqsFile',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['taskSize', "", ""],
-	  ['tRNAscanDir', "", ""],
-	 );
-}
-
+1;

@@ -77,23 +77,13 @@ sub run {
 	    if ($undo) {
 		$self->runCmd(0, "rm -fr $dirName");
 	    }else{
-		if ($test) {
-		$self->runCmd(0,"mkdir -p $dirName/fasta");
-		$self->runCmd(0,"mkdir -p $dirName/gff");
-		$self->runCmd(0,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$i].fasta $dirName/fasta");
-		$self->runCmd(0,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$j].fasta $dirName/fasta");
-		$self->runCmd(0,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$i].gff $dirName/gff");
-		$self->runCmd(0,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$j].gff $dirName/gff");		    
-		$self->runCmd(0,"echo hello > $dirName/config.txt");
-		}else{		
-		    $self->runCmd($test,"mkdir -p $dirName/fasta");
-		    $self->runCmd($test,"mkdir -p $dirName/gff");
-		    $self->runCmd($test,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$i].fasta $dirName/fasta");
-		    $self->runCmd($test,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$j].fasta $dirName/fasta");
-		    $self->runCmd($test,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$i].gff $dirName/gff");
-		    $self->runCmd($test,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$j].gff $dirName/gff");
-		    $self->createConfigFile("$dirName","$dirName/$allGenomes[$i]-$allGenomes[$j].align-synteny",$seqTableA,$seqTableB,$specA,$specB,$syntenySpec,$agpFile);
-		}
+              $self->runCmd($test,"mkdir -p $dirName/fasta");
+              $self->runCmd($test,"mkdir -p $dirName/gff");
+              $self->runCmd($test,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$i].fasta $dirName/fasta");
+              $self->runCmd($test,"cp -R $workflowDataDir/$mercatorFastaDir/$allGenomes[$j].fasta $dirName/fasta");
+              $self->runCmd($test,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$i].gff $dirName/gff");
+              $self->runCmd($test,"cp -R $workflowDataDir/$mercatorGffDir/$allGenomes[$j].gff $dirName/gff");
+              $self->createConfigFile("$dirName","$dirName/$allGenomes[$i]-$allGenomes[$j].align-synteny",$seqTableA,$seqTableB,$specA,$specB,$syntenySpec,$agpFile);
 	    }
 	}
     }
@@ -103,27 +93,6 @@ sub run {
  
 }
 
-sub getParamsDeclaration {
-    return ('mercatorDir',
-            'mercatorFastaDir',
-            'mercatorGffDir',
-            'mercatorDraftGenomes',
-            'mercatorNonDraftGenomes',
-            'mercatorDraftExternalDbSpec',
-            'mercatorNonDraftExternalDbSpec',
-            'mercatorDraftSeqTables',
-            'mercatorNonDraftSeqTables',
-	    'mercatorSyntenyVersion',
-           );
-}
-
-
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-
-           );
-}
 
 sub createConfigFile {
     my($self,$inputDir,$inFile, $seqTableA, $seqTableB, $specA, $specB, $syntenySpec, $agpFile) = @_;
@@ -142,3 +111,5 @@ sub createConfigFile {
     return;
 
 }
+
+1;

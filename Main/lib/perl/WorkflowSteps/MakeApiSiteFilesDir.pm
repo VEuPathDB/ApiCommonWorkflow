@@ -26,15 +26,6 @@ sub run {
       #$self->runCmd(0, "chmod -R g+w $baseDir/$path[0]");
   }
 }
-sub getParamsDeclaration {
-  return (
-          'apiSiteFilesDir',
-         );
-}
 
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         );
-}
+1;
 

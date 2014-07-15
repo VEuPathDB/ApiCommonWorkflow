@@ -31,23 +31,10 @@ sub run {
   } else {
     if ($test) {
       $self->runCmd(0,"echo $cmd > $workflowDataDir/$varscanConsDir/$strain.coverage.txt");
-    }else{
-      $self->runCmd($test,$cmd);
     }
+    $self->runCmd($test,$cmd);
   }
 }
 
-sub getParamDeclaration {
-  return ('varscanConsDir',
-          'strain',
-          'mainResultDir'
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-      # [name, default, description]
-     );
-}
 
 1;

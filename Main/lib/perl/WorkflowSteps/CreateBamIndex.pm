@@ -25,15 +25,4 @@ sub run{
     }
 }
 
-sub getParamDeclaration{
-    return(
-        'bamFile'
-    );
-}
-
-sub getConfigDeclaration {
-    return (
-        #[name, default, description]
-    );
-}
 1;

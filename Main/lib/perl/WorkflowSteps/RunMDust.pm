@@ -19,33 +19,12 @@ sub run {
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputSeqsFile");
     }else{
-	if ($test) {
-	    $self->testInputFile('inputSeqsFile', "$workflowDataDir/$inputSeqsFile");
-	    $self->runCmd(0,"echo test > $workflowDataDir/$outputSeqsFile");
-	}else{
-		$self->runCmd($test,"mdust $workflowDataDir/$inputSeqsFile > $workflowDataDir/$outputSeqsFile");
-	}
+      $self->testInputFile('inputSeqsFile', "$workflowDataDir/$inputSeqsFile");
+      if ($test) {
+        $self->runCmd(0,"echo test > $workflowDataDir/$outputSeqsFile");
+      }
+      $self->runCmd($test,"mdust $workflowDataDir/$inputSeqsFile > $workflowDataDir/$outputSeqsFile");
     }
 }
 
-sub getParamsDeclaration {
-    return ('inputSeqsFile',
-            'outputSeqsFile'
-           );
-}
-
-
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-           );
-}
-
-sub getDocumentation {
-}
-
-sub restart {
-}
-
-sub undo {
-}
+1;

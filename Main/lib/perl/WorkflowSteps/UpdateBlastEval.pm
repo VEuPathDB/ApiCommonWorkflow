@@ -19,8 +19,8 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }
       $self->runCmd($test,$cmd);
