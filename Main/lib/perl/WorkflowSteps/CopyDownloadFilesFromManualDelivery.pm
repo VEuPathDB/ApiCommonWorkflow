@@ -23,7 +23,8 @@ sub run {
     $self->runCmd(0, "rm -f $outputDir/*${inputFileNameRegex}");
     $self->runCmd(0, "rm -r $outputDir");
   } else{
-    $self->testInputFile('inputFile', "$inputFile");
+      my @files = glob "$inputFile";
+      die "No input files. Please check inputDir and input file name regext: $inputFile\n" if (scalar @files<1);
       if($test){
           $self->runCmd(0, "mkdir -p $outputDir");
 	  $self->runCmd(0, "echo test > $outputDir/test${inputFileNameRegex}");
