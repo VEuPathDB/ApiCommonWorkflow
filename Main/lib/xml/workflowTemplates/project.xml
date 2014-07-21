@@ -428,4 +428,20 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
  </datasetTemplate>
+
+  <datasetTemplate class="EcNumberGenus">
+   <prop name="projectName"/>   
+
+  <step name="manuallyImproveEcNumberGenus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+    <dependsPattern name="*_LoadGenome"/>
+  </step>
+  
+   <subgraph name="EcNumberGenus_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">EcNumberGenus_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+    <depends name="manuallyImproveEcNumberGenus"/>
+   </subgraph>
+  </datasetTemplate>
+
 </workflowGraph>
