@@ -57,28 +57,4 @@ sub run {
 
 }
 
-sub getParamsDeclaration {
-  return (
-		'tandemInputDir',
-		'decoyFastaFile',
-		'enzymeName',
-		'productTolerance',
-		'precursorTolerance',
-		'fixedModId',
-		'variableModId',
-		'missedCleavages',
-		'tandemOutputFile',
-		'species',
-		'tandemDefaultInputFile',
-		'taxonomyFile',
-		'writeToFile',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-  
+1;

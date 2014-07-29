@@ -22,22 +22,16 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+    $self->testInputFile('gffFile', "$workflowDataDir/$gffFile");
+
       if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-	  $self->testInputFile('gffFile', "$workflowDataDir/$gffFile");
 	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
-      }else{
-	  $self->runCmd($test, $cmd);
       }
+    $self->runCmd($test, $cmd);
   }
-
 }
 
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
+1;
 
 

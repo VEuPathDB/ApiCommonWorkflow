@@ -24,9 +24,9 @@ sub run {
 
   my $args =" --inputFile $inputFile --extDbRelSpec '$epiExtDbName|$epiExtDbVersion' --seqExtDbRelSpec '$seqExtDbSpecs'";
 
-    if ($test) {
-      $self->testInputFile('inputFile', "$inputFile");
-    }
+
+  $self->testInputFile('inputFile', "$inputFile");
+
 
     $self->runPlugin ($test,$undo, "ApiCommonData::Load::Plugin::InsertEpitopeFeature","$args");
 
@@ -34,19 +34,4 @@ sub run {
 }
 
 
-sub getParamsDeclaration {
-  return ('inputFile',
-	  'iedbExtDbRlsSpec',
-	  'genomeExtDbRlsSpec'
-	 );
-}
-
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
- 	 );
-}
-
-
-
+1;

@@ -22,18 +22,11 @@ sub run {
   } else {
       if ($test) {
 	  $self->runCmd(0,"echo test > $fileToFormat.pin");
-      } else {
-	  $self->runCmd($test,"$ncbiBlastPath/formatdb -i $fileToFormat -p $formatterArgs");
       }
+      $self->runCmd($test,"$ncbiBlastPath/formatdb -i $fileToFormat -p $formatterArgs");
+
   }
 }
 
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['ncbiBlastPath', "", ""],
-	 );
-}
-
+1;
 

@@ -20,25 +20,12 @@ sub run {
 
   my $args = "--data_file $workflowDataDir/$inputFile --algName TMHMM --algDesc 'TMHMM $version' --useSourceId --extDbName '$extDbName' --extDbRlsVer '$extDbRlsVer'";
 
-  if ($test) {
-    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-  }
+
+  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadTMDomains", $args);
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	  'genomeExtDbRlsSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['version', "", ""],
-	 );
-}
+1;
 

@@ -19,24 +19,12 @@ sub run {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
       if ($test) {
-	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-      }else{
-	    $self->runCmd($test,"createSamHeader --outFile $workflowDataDir/$outputFile --ncbiTaxonId $ncbiTaxonId");
+        $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }
+      $self->runCmd($test,"createSamHeader --outFile $workflowDataDir/$outputFile --ncbiTaxonId $ncbiTaxonId");
   }
 }
 
-sub getParamsDeclaration {
-  return (
-	  'ncbiTaxonId',
-	  'outputFile',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 
 

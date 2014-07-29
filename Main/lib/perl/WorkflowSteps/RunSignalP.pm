@@ -22,28 +22,14 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
+    $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
       if ($test) {
-	  $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-      }else{
-	  $self->runCmd($test,$cmd);
       }
+    $self->runCmd($test,$cmd);
   }
 }
 
-sub getParamDeclaration {
-  return (
-	  'proteinsFile',
-	  'outputFile',
-	  'options',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['binPath', "", ""],
-	 );
-}
+1;
 
 

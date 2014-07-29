@@ -22,40 +22,11 @@ sub run {
   my $args = "--inputFile $inputFile --estTable '$queryTable' --seqTable '$subjectTable' --estExtDbRlsSpec '$queryExtDbRlsSpec' --seqExtDbRlsSpec '$subjectExtDbRlsSpec'";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  if ($test) {
-    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-  }
+
+  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
   $self -> runPlugin ($test, $undo, "ApiCommonData::Load::Plugin::InsertSplignAlignments", $args);
 }
 
 
-
-sub restart {
-}
-
-sub undo {
-
-}
-
-sub getConfigDeclaration {
-  my @properties = 
-    (
-    );
-  return @properties;
-}
-
-sub getParamDeclaration {
-  my @properties = 
-    (
-     ['queryExtDbRlsSpecc'],
-     ['subjectExtDbRlsSpec'],
-     ['inputFile'],
-     ['queryTable'],
-     ['subjectTable'],
-    );
-  return @properties;
-}
-
-sub getDocumentation {
-}
+1;

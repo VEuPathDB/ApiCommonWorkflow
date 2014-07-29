@@ -16,12 +16,11 @@ sub run {
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$toFile");
   } else {
-      if ($test) {
-	  $self->testInputFile('fromFile', "$workflowDataDir/$fromFile");
-      }
-      $self->runCmd(0, "ln -s $workflowDataDir/$fromFile $workflowDataDir/$toFile");
+    $self->testInputFile('fromFile', "$workflowDataDir/$fromFile");
+    $self->runCmd(0, "ln -s $workflowDataDir/$fromFile $workflowDataDir/$toFile");
   }
 }
 
 
+1;
 

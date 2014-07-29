@@ -69,3 +69,6 @@ sub getDistribJobTask {
   my ($self, $distribJobTaskName) = @_;
   die "subclass is not overriding this method";
 }
+
+
+1;

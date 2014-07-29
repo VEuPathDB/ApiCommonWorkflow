@@ -31,10 +31,4 @@ sub run {
   }
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['binPath', "", ""],
-	 );
-}
-
+1;

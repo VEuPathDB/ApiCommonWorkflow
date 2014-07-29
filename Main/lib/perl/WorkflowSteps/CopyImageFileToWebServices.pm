@@ -28,8 +28,8 @@ sub run {
   if($undo) {
     $self->runCmd(0, "rm -f $copyToDir/*");
   } else{
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
     if($test){
-      $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       $self->runCmd(0, "mkdir -p $copyToDir");
     }else {
       $self->runCmd($test, "mkdir -p $copyToDir");
@@ -50,9 +50,4 @@ sub run {
   }
 }
 
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
+1;

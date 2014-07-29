@@ -35,25 +35,13 @@ sub run {
   }else {
       if ($test){
 	  $self->runCmd(0, "echo test> $workflowDataDir/$outputFile");
-      }else{
-	  $self->runCmd($test, $cmd1);
-	  $self->runCmd($test, $cmd2);
-	  $self->runCmd($test, $cmd3);
       }
+      $self->runCmd($test, $cmd1);
+      $self->runCmd($test, $cmd2);
+      $self->runCmd($test, $cmd3);
+      
   }
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'inputFile',
-	  'outputFile',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

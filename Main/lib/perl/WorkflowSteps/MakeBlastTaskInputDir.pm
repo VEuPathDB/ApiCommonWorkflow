@@ -34,10 +34,10 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
   }else {
-      if ($test) {
+
 	  $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
 	  $self->testInputFile('subjectFile', "$workflowDataDir/$subjectFile");
-      }
+
 
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
@@ -74,3 +74,4 @@ $simSeqs
   }
 }
 
+1;

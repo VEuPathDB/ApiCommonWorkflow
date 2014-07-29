@@ -20,23 +20,18 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
+    $self->testInputFile('shortSeqsFile', "$workflowDataDir/$shortSeqsFile");
+    $self->testInputFile('pairedEndFile', "$workflowDataDir/$pairedEndFile") if $pairedEndFile;
+
     if ($test) {
-      $self->testInputFile('shortSeqsFile', "$workflowDataDir/$shortSeqsFile");
-      $self->testInputFile('pairedEndFile', "$workflowDataDir/$pairedEndFile") if $pairedEndFile;
       $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-    } else {
-      my $cmd = "parse2fasta.pl $workflowDataDir/$shortSeqsFile";
-      $cmd .= " $workflowDataDir/$pairedEndFile" if $pairedEndFile;
-      $cmd .= " > $workflowDataDir/$outputFile";
-      $self->runCmd($test,$cmd);
     }
+    my $cmd = "parse2fasta.pl $workflowDataDir/$shortSeqsFile";
+    $cmd .= " $workflowDataDir/$pairedEndFile" if $pairedEndFile;
+    $cmd .= " > $workflowDataDir/$outputFile";
+    $self->runCmd($test,$cmd);
   }
 }
 
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

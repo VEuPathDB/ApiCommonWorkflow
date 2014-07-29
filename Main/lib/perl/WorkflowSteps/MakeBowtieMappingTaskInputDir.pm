@@ -30,9 +30,9 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
   }else {
-      if ($test) {
-	  $self->testInputFile('readsFile', "$workflowDataDir/$readsFile");
-      }
+
+    $self->testInputFile('readsFile', "$workflowDataDir/$readsFile");
+
 
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
@@ -65,23 +65,4 @@ extraBowtieParams=$extraBowtieParams
   }
 }
 
-sub getParamsDeclaration {
-  return ('taskInputDir',
-	  'readsFile',
-	  'hasPairedReads',
-	  'genomicSeqsFile',
-	  'indexDir',
-	  'sampleName',
-      'isColorspace',
-      'removePCRDuplicates',
-      'extraBowtieParams',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['taskSize', "", ""],
-	 );
-}
 1;

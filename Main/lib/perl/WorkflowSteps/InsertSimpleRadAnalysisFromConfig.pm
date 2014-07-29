@@ -28,27 +28,13 @@ sub run {
 
   $args.=" --useSqlLdr" if($useSqlLdr); 
 
-  if ($test) {
-    $self->testInputFile('inputDir', "$workflowDataDir/$analysisWorkingDir");
-    $self->testInputFile('configFile', "$workflowDataDir/$configFile");
-  }
+
+  $self->testInputFile('inputDir', "$workflowDataDir/$analysisWorkingDir");
+  $self->testInputFile('configFile', "$workflowDataDir/$configFile");
+
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertAnalysisResult", $args);
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'analysisWorkingDir',
-	  'analysisResultView',
-	  'naFeatureView',
-	  'useSqlLdr',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

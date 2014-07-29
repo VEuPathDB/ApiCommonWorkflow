@@ -32,24 +32,14 @@ sub run {
     if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputDir/IEDBExport.txt");
     } else {
-    if ($test) {
+
       $self->testInputFile('inputDir', "$inputDir");
       $self->testInputFile('outputDir', "$workflowDataDir/$outputDir");
-    }
+
       $self->runCmd($test, $cmd);
     }
 }
 
-sub getParamsDeclaration {
-    return ('inputDir',
-            'outputDir'
-           );
-}
+1;
 
-
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-           );
-}
 

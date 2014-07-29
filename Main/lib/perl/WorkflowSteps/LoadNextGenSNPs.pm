@@ -35,20 +35,15 @@ sub run {
     $self->runCmd(0, $undoCommand);
     $self->runCmd(0, "rm -fr $workflowDataDir/$loaderDir/*.log");
     $self->runCmd(0, "rm -fr $workflowDataDir/$loaderDir/*.bad");
-  } elsif($test) {
+  }  else {
     $self->testInputFile('inputFile', "$workflowDataDir/$sequenceVariationCtl");
     $self->testInputFile('inputFile', "$workflowDataDir/$snpCtl");
     $self->testInputFile('inputFile', "$workflowDataDir/$sequenceVariationDat");
     $self->testInputFile('inputFile', "$workflowDataDir/$snpDat");
-  } else{
+
       $self->runCmd($test, $snpCmd);
       $self->runCmd($test, $varCmd);
   }
 }
 
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
+1;

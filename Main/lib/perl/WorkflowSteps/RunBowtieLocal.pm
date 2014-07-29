@@ -46,30 +46,10 @@ sub run{
     }else{
         if($test){
             $self->runCmd(0, "echo test > $outputDir/$sampleName.bam");
-        }else{
-            $self->runCmd($test, $cmd);
         }
+        $self->runCmd($test, $cmd);
     }
 }
 
 
-sub getParamDeclaration {
-    return (
-        'readsFile',
-        'pairedReadsFile',
-        'bowtieIndex',
-        'isColorspace',
-        'removePCRDuplicates',
-        'extraBowtieParams',
-        'sampleName',
-        'deleteIntermediateFiles',
-        'outputDir'
-    );
-}
-
-sub getConfigDeclaration {
-    return (
-        # [name, default, description]
-    );
-}
 1;

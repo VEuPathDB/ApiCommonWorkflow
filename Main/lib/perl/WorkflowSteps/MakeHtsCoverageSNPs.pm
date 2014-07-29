@@ -23,23 +23,11 @@ sub run {
   } else {
     if ($test) {
       $self->runCmd(0,"echo test > $workflowDataDir/$coverageSnpsFile");
-    }else{
-      $self->runCmd($test,$cmd);
     }
+    $self->runCmd($test,$cmd);
+
   }
 }
 
-sub getParamDeclaration {
-  return ('organismAbbrev',
-          'coverageSnpsFile',
-          'varscanConsDir',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-      # [name, default, description]
-     );
-}
 
 1;

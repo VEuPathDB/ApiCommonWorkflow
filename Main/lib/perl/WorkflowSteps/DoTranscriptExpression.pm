@@ -54,16 +54,19 @@ sub run {
     $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir");
   } else {
       $self->runCmd(0, "mkdir $workflowDataDir/$outputDir");
+
+      $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
+      # $self->testInputFile('geneProbeMappingFile', "$mappingFile") if $passPlatformMappingFile;
+      $self->testInputFile('analysisConfigFile', "$workflowDataDir/$analysisConfigFile");
+
       if ($test) {
-	  $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-	 # $self->testInputFile('geneProbeMappingFile', "$mappingFile") if $passPlatformMappingFile;
-	  $self->testInputFile('analysisConfigFile', "$workflowDataDir/$analysisConfigFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/expression_profile_config.txt");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/analysis_result_config.txt **optional**");
-      } else {
-	  $self->makeSymLinks($inputDir, $outputDir);
-	  $self->runCmd($test,$cmd);
       }
+      if(!$test) {
+        $self->makeSymLinks($inputDir, $outputDir);
+      }
+      $self->runCmd($test,$cmd);
   }
 }
 
@@ -82,9 +85,4 @@ sub makeSymLinks {
     closedir $dh;
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

@@ -27,25 +27,11 @@ sub run {
 	      $self->testInputFile('resourcesFile', "$downloadDir/$resourcesFile");
 	  }
 	  $self->runCmd(0,"echo test > $workflowDataDir/$toFile");
-      }else{
-	  $self->runCmd(0, "gunzip $downloadDir/$resourcesFile.gz") if (-e "$downloadDir/$resourcesFile.gz");
-	  $self->runCmd($test, "cp $downloadDir/$resourcesFile $workflowDataDir/$toFile");
+
       }
+      $self->runCmd(0, "gunzip $downloadDir/$resourcesFile.gz") if (-e "$downloadDir/$resourcesFile.gz");
+      $self->runCmd($test, "cp $downloadDir/$resourcesFile $workflowDataDir/$toFile");
   }
 }
 
-sub getParamsDeclaration {
-  return (
-          'resourcesFile',
-          'toFile',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-
-
+1;

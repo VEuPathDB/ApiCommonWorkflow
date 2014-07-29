@@ -25,31 +25,13 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
-  if ($test) {
     $self->testInputFile('seqsFile', "$workflowDataDir/$seqsFile");
-
-    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-
-  }
+    if ($test) {
+      $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+    }
     $self->runCmd($test, $cmd);
     $self->runCmd($test, "mv $stepDir/genomicSeqs.fa.$repeatFinderArgs.dat $workflowDataDir/$outputFile");
   }
 
 }
-
-sub getParamsDeclaration {
-  return (
-	  'seqsFile',
-	  'repeatFinderArgs',
-	  'outputFile',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['trfPath', "", ""],
-	 );
-}
-
-
+1;

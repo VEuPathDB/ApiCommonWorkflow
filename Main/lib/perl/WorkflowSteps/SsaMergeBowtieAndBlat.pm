@@ -31,39 +31,23 @@ sub run {
 	$self->runCmd(0, "rm -f $workflowDataDir/$nuFile");
 	$self->runCmd(0, "rm -f $workflowDataDir/$nuFile.save");
     } else {
+
+      $self->testInputFile('inputBowtieUniqueFile', "$workflowDataDir/$bowtieUFile");
+      $self->testInputFile('inputBowtieNonUniqueFile', "$workflowDataDir/$bowtieNuFile");
+      $self->testInputFile('inputBlatUniqueFile', "$workflowDataDir/$blatUFile");
+      $self->testInputFile('inputBlatNonUniqueFile', "$workflowDataDir/$blatNuFile");
+
 	if ($test) {
-	    $self->testInputFile('inputBowtieUniqueFile', "$workflowDataDir/$bowtieUFile");
-	    $self->testInputFile('inputBowtieNonUniqueFile', "$workflowDataDir/$bowtieNuFile");
-	    $self->testInputFile('inputBlatUniqueFile', "$workflowDataDir/$blatUFile");
-	    $self->testInputFile('inputBlatNonUniqueFile', "$workflowDataDir/$blatNuFile");
-
-	    $self->runCmd(0,"echo test > $workflowDataDir/$uFile");
-	    $self->runCmd(0,"echo test > $workflowDataDir/$nuFile");
-
+          $self->runCmd(0,"echo test > $workflowDataDir/$uFile");
+          $self->runCmd(0,"echo test > $workflowDataDir/$nuFile");
 	}
-	$self->runCmd($test, $cmd1);
-	$self->runCmd($test, $cmd2);
-	$self->runCmd($test, $cmd3);
+      $self->runCmd($test, $cmd1);
+      $self->runCmd($test, $cmd2);
+      $self->runCmd($test, $cmd3);
 
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'inputBlatUniqueFile',
-      'inputBlatNonUniqueFile',
-      'inputBowtieUniqueFile',
-      'inputBowtieNonUniqueFile',
-      'outputUniqueFile',
-      'outputNonUniqueFile',
-      'readType',
-      );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
+1;
 
 

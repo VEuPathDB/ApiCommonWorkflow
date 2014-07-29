@@ -49,31 +49,16 @@ EOF
   if ($undo){
       $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $gusHome/$isfMappingFileRelToGusHome --algInvocationId $algInvIds --workflowContext --commit");
   }else{
-      if ($test) {
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-      }else{
-	  $self->runPlugin($test, 0,"GUS::Supported::Plugin::InsertSequenceFeatures", $args);
-      }
+
+
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+
+    $self->runPlugin($test, 0,"GUS::Supported::Plugin::InsertSequenceFeatures", $args);
+
   }
 
 }
 
 
-sub getParamsDeclaration {
-  return (
-	  'inputFile',
-	  'genomeExtDbRlsSpec',
-	  'substepClass',
-	  'defaultOrg',
-	  'isfMappingFileRelToGusHome',
-	  'soVersion',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;
 

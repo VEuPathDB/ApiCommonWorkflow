@@ -20,9 +20,8 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
   }else {
-      if ($test) {
-	  $self->testInputFile('mgfFile', "$workflowDataDir/$mgfFile");
-      }
+
+    $self->testInputFile('mgfFile', "$workflowDataDir/$mgfFile");
 	  
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
@@ -42,15 +41,4 @@ mgfFile=$clusterWorkflowDataDir/$mgfFile
   }
 }
 
-sub getParamsDeclaration {
-  return ('taskInputDir',
-	  'mgfFile',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['taskSize', "", ""],
-	 );
-}
+1;

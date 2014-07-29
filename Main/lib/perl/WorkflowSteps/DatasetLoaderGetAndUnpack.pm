@@ -98,20 +98,6 @@ sub _formatForCLI {
     return $_[0];
 }
 
-
-sub getParamsDeclaration {
-    return (
-	'datasetName',
-	'datasetLoaderXmlFileName',
-        'dataDir'
-           );
-}
-
-sub getConfigDeclaration {
-    return (
-           # [name, default, description]
-           );
-}
-
+1;
 
 

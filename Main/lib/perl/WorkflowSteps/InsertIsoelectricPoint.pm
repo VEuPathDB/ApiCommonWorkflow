@@ -20,17 +20,4 @@ sub run {
 
 }
 
-sub getParamsDeclaration {
-  return (
-     'genomeExtDbRlsSpec',
-     'table',
-    );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
-
+1;

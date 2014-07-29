@@ -28,26 +28,12 @@ sub run {
 	    }else{
 		if ($test) {
 		    $self->runCmd(0,"echo hello > $workflowDataDir/$outputDir/$sampleNames[$i]"."_vs_"."$sampleNames[$j]");
-		}else{		
-		    $self->runCmd($test,$command);
 		}
+                $self->runCmd($test,$command);
 	    }
 	}
     }
 
 }
 
-sub getParamsDeclaration {
-    return ('inputFilesDir',
-            'outputDir',
-            'sampleNameList',
-           );
-}
-
-
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-
-           );
-}
+1;

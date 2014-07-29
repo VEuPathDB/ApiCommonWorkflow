@@ -30,10 +30,8 @@ sub run {
 
   my $cmd_copy = "copyExpressionProfilesToDownloadDir --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir --configFile $workflowDataDir/$configFile";
 
-  if ($test) {
-    $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");
-  }
 
+  $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");
   if ($undo) {
     $self->runCmd(0, "rm -fr $copyToDir");
   } else {
@@ -43,20 +41,6 @@ sub run {
 
 }
 
-sub getParamsDeclaration {
-  return (
-          'copyFromDir',
-          'organismAbbrev',
-          'relativeDir',
-          'configFile',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
+1;
 
 

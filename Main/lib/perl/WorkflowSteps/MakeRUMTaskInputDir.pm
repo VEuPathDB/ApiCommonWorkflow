@@ -41,10 +41,9 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
   }else {
-      if ($test) {
-	  $self->testInputFile('readFilePath', "$workflowDataDir/$readFilePath");
-	  $self->testInputFile('genomeFastaFile', "$workflowDataDir/$genomeFastaFile");
-      }
+
+    $self->testInputFile('readFilePath', "$workflowDataDir/$readFilePath");
+    $self->testInputFile('genomeFastaFile', "$workflowDataDir/$genomeFastaFile");
 
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
@@ -89,16 +88,6 @@ postProcess=false
   }
 }
 
-sub getParamsDeclaration {
-  return ('taskInputDir',
-	  'queryFile',
-	  'subjectFile',
-	  'blastArgs',
-	  'idRegex',
-	  'blastType',
-	  'vendor',
-	 );
-}
-
+1;
 
 
