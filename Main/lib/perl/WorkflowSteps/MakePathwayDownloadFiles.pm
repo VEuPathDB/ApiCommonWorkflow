@@ -20,7 +20,7 @@ sub run {
   my $cmd = "makePathwayImgDataFiles.pl --gusConfigFile $gusConfigFile --outputDir $websiteFilesDir/$outputDir --pathwayList ALL";
 
   if ($undo) {
-    $self->runCmd(0, "rm -Rf $websiteFilesDir/$outputDir/}");
+    $self->runCmd(0, "rm -Rf $websiteFilesDir/$outputDir");
   }else {
     $self->runCmd($test, "mkdir -p $websiteFilesDir/$outputDir");
     $self->runCmd($test, $cmd);
