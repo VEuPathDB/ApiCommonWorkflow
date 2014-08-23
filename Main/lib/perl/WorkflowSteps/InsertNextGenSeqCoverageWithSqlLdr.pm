@@ -17,8 +17,8 @@ sub run {
 
   my $args = "--dataFile $workflowDataDir/$inputFile --isReversed $isReversed";
 
+  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
   if ($test) {
-      $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       $self->runCmd(0,"echo test > $workflowDataDir/$inputFile.ctrl") unless $undo;
   }
 
@@ -30,9 +30,4 @@ sub run {
 
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

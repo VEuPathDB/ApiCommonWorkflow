@@ -47,7 +47,10 @@ sub run {
     my $cacheDir = "$workflowDataDir/$mercatorCacheDir";
     mkdir("$workflowDataDir/$mercatorCacheDir");
 
-    my $skippedDir = "$workflowDataDir/$mercatorCacheDir/../pairsWithNoAlignment";
+    my $skippedDir = "$workflowDataDir/pairsWithNoAlignment";
+   $self->runCmd($test, "rm -r $skippedDir") if -e "$skippedDir";
+    mkdir("$skippedDir")
+	|| $self->error("Could not make dir '$skippedDir'");
 
 
     foreach my $orgA (@organismAbbrevs) {
@@ -62,6 +65,7 @@ sub run {
 	    my $pairOutputDir = "$workflowDataDir/$mercatorOutputsDir/${orgA}-${orgB}";
 	    my $pairCacheDir = "$cacheDir/${orgA}-${orgB}";
 	    my $pairSkippedDir = "$skippedDir/${orgA}-${orgB}";
+        mkdir("$pairSkippedDir") || $self->error("Failed making dir $pairSkippedDir");
 
 	    if ($test) {
 		$self->runCmd(0,"mkdir $pairOutputDir");
@@ -117,6 +121,7 @@ sub run {
 		} else {
 		  # if no alignments, mv to skipped dir
 		  $self->runCmd($test,"mv $pairTmpDir $pairSkippedDir");
+		  $self->runCmd($test, "ln -s $pairSkippedDir $pairCacheDir");
 		}
 	    }
 	}
@@ -205,9 +210,4 @@ sub cacheHit {
     return $cacheIsCurrent;
 }
 
-sub getConfigDeclaration {
-    return (
-	# [name, default, description]
-
-	);
-}
+1;

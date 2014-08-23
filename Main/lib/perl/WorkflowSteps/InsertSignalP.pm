@@ -20,26 +20,12 @@ sub run {
 
   my $args = "--data_file $workflowDataDir/$inputFile --algName 'SignalP' --algVer '$version' --algDesc 'SignalP' --extDbName '$extDbName' --extDbRlsVer '$extDbRlsVer' --useSourceId";
 
-  if ($test) {
+
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-  }
+
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadSignalP", $args);
 
 }
 
-sub getParamsDeclaration {
-  return (
-	  'inputFile',
-	  'genomeExtDbRlsSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['version', "", ""],
-	 );
-}
-
-
+1;

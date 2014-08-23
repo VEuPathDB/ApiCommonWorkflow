@@ -17,25 +17,8 @@ sub run {
   if ($undo){
      $self->runCmd(0, "echo Doing nothing for \"undo\" clear WDK Cache.\n");  
   }else{
-      if ($test) {
-      }else {
-	  $self->runCmd($test, $cmd);
-      }
+    $self->runCmd($test, $cmd);
   }
-
-
 }
 
-sub getParamsDeclaration {
-  return (
-	  'model',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
-
+1;

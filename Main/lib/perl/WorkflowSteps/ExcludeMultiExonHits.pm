@@ -26,25 +26,18 @@ sub run {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputNonUniqueFile");
 
   } else {
+    $self->testInputFile('inputUniqueFile', "$workflowDataDir/$inputUniqueFile");
+    $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$inputNonUniqueFile");
 
     if ($test) {
-      $self->testInputFile('inputUniqueFile', "$workflowDataDir/$inputUniqueFile");
-      $self->testInputFile('inputNonUniqueFile', "$workflowDataDir/$inputNonUniqueFile");
-
       $self->runCmd(0,"echo test > $workflowDataDir/$outputUniqueFile");
       $self->runCmd(0,"echo test > $workflowDataDir/$outputNonUniqueFile");
-
-    } else {
-      my $command = ($excludeMultiExonsIf)? "grep -v ','" : "cat";
-      $self->runCmd($test,"$command $workflowDataDir/$inputUniqueFile > $workflowDataDir/$outputUniqueFile");
-      $self->runCmd($test,"$command $workflowDataDir/$inputNonUniqueFile > $workflowDataDir/$outputNonUniqueFile");
     }
+    my $command = ($excludeMultiExonsIf)? "grep -v ','" : "cat";
+    $self->runCmd($test,"$command $workflowDataDir/$inputUniqueFile > $workflowDataDir/$outputUniqueFile");
+    $self->runCmd($test,"$command $workflowDataDir/$inputNonUniqueFile > $workflowDataDir/$outputNonUniqueFile");
+
   }
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

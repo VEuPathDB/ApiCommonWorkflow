@@ -23,26 +23,12 @@ sub run {
 
   my $args = "--dirPath $workflowDataDir/$inputDir --dirPath $workflowDataDir/$inputDir --configFile $workflowDataDir/$configFile  --extDbName $extDbName --extDbVer $extDbVer --type '$type'";
 
-  if ($test) {
-    $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-    $self->testInputFile('configFile', "$workflowDataDir/$configFile");
-  }
+
+  $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
+  $self->testInputFile('configFile', "$workflowDataDir/$configFile");
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertSpliceSiteFeatures", $args);
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'configFile',
-	  'inputDir',
-	  'extDbRlsSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

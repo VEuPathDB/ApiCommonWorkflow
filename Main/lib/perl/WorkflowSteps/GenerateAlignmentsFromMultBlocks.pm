@@ -24,29 +24,12 @@ sub run {
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     } else {
-	if ($test) {
-	    $self->testInputFile('inputCoverageFile', "$workflowDataDir/$inputFile");
-	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-	}
-	$self->runCmd($test, $cmd);
+      $self->testInputFile('inputCoverageFile', "$workflowDataDir/$inputFile");
+      if ($test) {
+        $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+      }
+      $self->runCmd($test, $cmd);
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'inputFile',
-      'sampleName',
-      'outputFile',
-      'fileType',
-      'extDbSpecs',
-      'maxGenomeMatch',
-      );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
-
+1;

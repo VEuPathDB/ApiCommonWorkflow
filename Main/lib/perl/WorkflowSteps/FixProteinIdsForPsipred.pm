@@ -23,27 +23,14 @@ sub run {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputProteinsFile.d*");
     $self->runCmd(0, "rm -f $workflowDataDir/$outputProteinsFile.pag");
   } else {
+    $self->testInputFile('inputProteinsFile', "$workflowDataDir/$inputProteinsFile");
       if ($test){
-	  $self->testInputFile('inputProteinsFile', "$workflowDataDir/$inputProteinsFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputProteinsFile");
-      }else{
-	  $self->runCmd($test,$cmd);
       }
+    $self->runCmd($test,$cmd);
   }
 }
 
 
-sub getParamsDeclaration {
-  return ('inputProteinsFile',
-	  'outputProteinsFile'
-	 );
-}
-
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
- 	 );
-}
-
+1;
 

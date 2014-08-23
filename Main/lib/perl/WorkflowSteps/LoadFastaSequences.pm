@@ -24,28 +24,12 @@ sub run {
   $args .= "--soTermName $soTermName " if ($soTermName);
   $args .= "--ncbiTaxId $ncbiTaxId " if ($ncbiTaxId);
 
-  if ($test) {
-    $self->testInputFile('inputFile', "$workflowDataDir/$sequenceFile");
-  }
+
+  $self->testInputFile('inputFile', "$workflowDataDir/$sequenceFile");
 
   $self->runPlugin($test, $undo, "GUS::Supported::Plugin::LoadFastaSequences", $args);
 }
 
-sub getConfigDeclaration {
-  return (
-      # [name, default, description]
-     );
-}
-
-sub getParamDeclaration {
-  return ('extDbRlsSpec',
-          'ncbiTaxId',
-          'sequenceFile',
-          'soTermName',
-          'regexSourceId',
-          'tableName'
-     );
-}
 
 
 1;

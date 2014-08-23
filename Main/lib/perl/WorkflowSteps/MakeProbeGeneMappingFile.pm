@@ -24,15 +24,9 @@ sub run {
   } else {
       if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-      }else{
-	  $self->runCmd($test,$cmd);
       }
+      $self->runCmd($test,$cmd);
   }
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

@@ -28,28 +28,16 @@ sub run {
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile.*");
     } else {
+      $self->testInputFile('inputCoverageFile', "$workflowDataDir/$inputIndexesDir");
+      $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$inputShortSeqsFile");
+      $self->testInputFile('pairedReadsFile', "$workflowDataDir/$pairedReadFile") if ($hasPairedReads);
+
 	if ($test) {
-	    $self->testInputFile('inputCoverageFile', "$workflowDataDir/$inputIndexesDir");
-	    $self->testInputFile('inputShortSeqsFile', "$workflowDataDir/$inputShortSeqsFile");
-	    $self->testInputFile('pairedReadsFile', "$workflowDataDir/$pairedReadFile") if ($hasPairedReads);
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile.gff");
 	}
 	$self->runCmd($test, $cmd);
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'inputIndexesDir',
-      'inputShortSeqsFile',
-      'outputFile',
-      );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;
 

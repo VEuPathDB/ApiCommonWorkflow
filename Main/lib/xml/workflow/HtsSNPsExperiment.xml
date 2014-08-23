@@ -13,10 +13,12 @@
     <param name="isColorspace"/>
     <param name="snpPercentCutoff"/>
     <param name="varscanConsDir"/>
+    <param name="bowtieIndexDir"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
     <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>
+
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -45,11 +47,18 @@
       <depends name="makeSamplesOutputDir"/>
     </step>
 
+    <step name="mirrorExperimentDatasetLoaderDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/$$experimentDatasetName$$</paramValue>
+      <depends name="makeExperimentDatasetLoaderDir"/>
+      <depends name="mirrorToCluster"/>
+    </step>
+
     <!-- load dataset manually so we can mirror the final dir before filling it with the sample files -->
 
     <step name="mirrorFinalDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
       <paramValue name="fileOrDirToMirror">$$finalDir$$</paramValue>
       <depends name="makeFinalDir"/>
+      <depends name="mirrorExperimentDatasetLoaderDirToCluster"/>
     </step>
 
     <step name="insertDataset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertDataset">
@@ -82,12 +91,6 @@
 
     <!-- end dataset loader -->
 
-  <step name="addStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy">
-    <paramValue name="experimentName">$$organismAbbrev$$_$$experimentName$$</paramValue>
-    <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
-    <depends name="experiment_RSRC"/>
-  </step>
-
     <subgraph name="map_SNPs" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/htsSnpSamples.xml">
        <paramValue name="projectName">$$projectName$$</paramValue>
        <paramValue name="experimentDir">$$dataDir$$</paramValue>
@@ -95,7 +98,7 @@
        <paramValue name="samplesOutputDir">$$dataDir$$/$$experimentName$$/samplesOutput</paramValue>
        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
        <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-       <paramValue name="indexDir">$$parentDataDir$$/bowtie_index/genomicIndexes</paramValue>
+       <paramValue name="indexDir">$$bowtieIndexDir$$/genomicIndexes</paramValue>
        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
        <paramValue name="experimentName">$$experimentName$$</paramValue>
        <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
@@ -104,10 +107,21 @@
        <paramValue name="snpPercentCutoff">$$snpPercentCutoff$$</paramValue>
        <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
        
-       <depends name="addStudy"/>
+       <depends name="experiment_RSRC"/>
        <depends name="getAndUnpack"/>
      </subgraph>
-     
+
+
+
+    <step name="mergeSortedSnpTab" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpMergeSortedTab" stepLoadTypes="mergeSortedSNPExpt">
+      <paramValue name="inputFile">$$dataDir$$/ExptNewSamples.tab</paramValue>
+      <paramValue name="newSampleFile">$$parentDataDir$$/NewSamples.tab</paramValue>
+      <paramValue name="undoneStrainsFile">$$dataDir$$/UndoneStrains</paramValue>
+      <depends name="map_SNPs"/>
+    </step>
+
+
+
     <step name="document-hts_snp_experiment"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
       <paramValue name="method">hts_snp_experiment_MTHD</paramValue>

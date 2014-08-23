@@ -16,25 +16,11 @@ sub run {
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$toFile");
   } else {  
-      if ($test) {
-	  $self->testInputFile('fromFile', "$workflowDataDir/$fromFile");
-      }
-      $self->runCmd(0, "cp $workflowDataDir/$fromFile $workflowDataDir/$toFile");
+    $self->testInputFile('fromFile', "$workflowDataDir/$fromFile");
+    $self->runCmd(0, "cp $workflowDataDir/$fromFile $workflowDataDir/$toFile");
   }
 }
 
-sub getParamsDeclaration {
-  return (
-          'fromFile',
-          'toFile',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
+1;
 
 

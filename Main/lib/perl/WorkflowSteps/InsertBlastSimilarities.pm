@@ -37,9 +37,9 @@ sub run {
 
   $self->runCmd(0, "gunzip $workflowDataDir/$inputFile.gz") if (-e "$workflowDataDir/$inputFile.gz");
 
-  if ($test) {
-    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-  }
+
+  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+
 
   my $args = "--file $workflowDataDir/$inputFile --queryTable $queryTable $queryColArg $queryExtDbArg --subjectTable $subjectTable $subjectColArg $subjectExtDbArg $options";
 
@@ -47,7 +47,4 @@ sub run {
 }
 
 
-sub getConfigurationDeclaration {
-  return ();
-}
-
+1;

@@ -41,9 +41,4 @@ sub run {
   }
 }
 
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         );
-}
-
+1;

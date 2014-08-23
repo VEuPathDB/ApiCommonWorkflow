@@ -28,26 +28,4 @@ sub run {
 
 }
 
-sub getParamsDeclaration {
-  return (
-          'resourcesFileDir',
-          'toDir',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-
-sub restart {
-}
-
-sub undo {
-
-}
-
-sub getDocumentation {
-}
+1;

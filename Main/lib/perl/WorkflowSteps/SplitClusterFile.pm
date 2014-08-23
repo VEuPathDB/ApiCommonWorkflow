@@ -20,34 +20,13 @@ sub run {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputSmallFile");
     $self->runCmd(0, "rm -f $workflowDataDir/$outputBigFile");
   } else {
+    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       if ($test){
-	  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 	  $self->runCmd(0,"echo hello > $workflowDataDir/$outputSmallFile");
 	  $self->runCmd(0,"echo hello > $workflowDataDir/$outputBigFile");
-      }else{
-	  $self->runCmd($test,$cmd);
       }
+    $self->runCmd($test,$cmd);
   }
 }
 
-
-sub getConfigDeclaration {
-  my @properties = 
-    (
-     # [name, default, description]
-    );
-  return @properties;
-}
-
-sub getParamDeclaration {
-  my @properties = 
-    (
-     ['inputFile',
-      'outputBigFile',
-      'outputSmallFile',
-     ]
-    );
-  return @properties;
-}
-
-
+1;

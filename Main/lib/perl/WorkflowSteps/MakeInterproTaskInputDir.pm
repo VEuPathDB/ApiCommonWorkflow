@@ -22,9 +22,7 @@ sub run {
   if ($undo) {
     $self->runCmd(0,"rm -rf $workflowDataDir/$taskInputDir");
   }else {
-      if ($test) {
-	  $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
-      }
+    $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
       
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
       # make controller.prop file
@@ -45,18 +43,4 @@ email=dontcare\@dontcare.com
   }
 }
 
-sub getParamsDeclaration {
-  return (
-          'taskInputDir',
-          'proteinsFile',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-
-
+1;

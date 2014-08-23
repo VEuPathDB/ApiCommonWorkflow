@@ -28,9 +28,5 @@ sub run {
   }
 }
 
-sub getConfigDeclaration {
-  return (
-	 );
-}
-
+1;
 

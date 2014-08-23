@@ -29,24 +29,9 @@ sub run {
     } else {
 	if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-	}else{
-	    $self->runCmd($test,"gusExtractSequences --outputFile $workflowDataDir/$outputFile --idSQL \"$sql\" --verbose");
 	}
+        $self->runCmd($test,"gusExtractSequences --outputFile $workflowDataDir/$outputFile --idSQL \"$sql\" --verbose");
     }
 }
   
-sub getParamsDeclaration {
-  return (
-	  'sageTagExtDbRlsSpec',
-	  'outputFile',
-	  'prependSeq',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
-
+1;

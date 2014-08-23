@@ -25,8 +25,6 @@ sub run {
     $self->runCmd(0, "rm -f $configFile");
 
   } else {
-      if ($test) {
-      }
 
       # make OrthoMCL config file
       writeConfigFile($configFile, $gusInstance, $gusLogin, $gusPassword);
@@ -58,3 +56,5 @@ EOF
 
   close(CONFIG);
 }
+
+1;

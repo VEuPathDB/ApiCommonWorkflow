@@ -23,10 +23,8 @@ sub run {
   my $insertDataArgs = "--dataFile $workflowDataDir/$outputDir/plasmoMapp.sql";
 
 
-  # in test mode, there are no input files to iterate over, so just leave
-  if ($test) {
-    $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-  }
+  $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
+
 
 
   # only 2nd plugin (InsertPlasmoMappWithSqlLdr) adds data to database, so undo can be done in the same order as load
@@ -35,10 +33,4 @@ sub run {
 }
 
 
-
-sub getConfigDeclaration {
-  return (
-    	  # [name, default, description]
-     	 );
-}
-
+1;

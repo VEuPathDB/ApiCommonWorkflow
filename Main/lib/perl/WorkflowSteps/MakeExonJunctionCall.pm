@@ -33,20 +33,6 @@ sub run {
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'uniqueFile',
-      'nonUniqueFile',
-      'genomeFastaFile',
-      'geneAnnotationFile',
-      'outputFile',
-      );
-}
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;
 

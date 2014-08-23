@@ -19,25 +19,12 @@ sub run {
   my $args = "--data_file $manualDeliveryDir/$inputFileRelativeToManualDeliveryDir --genomeDbName '$extDbName' --genomeDbVer '$extDbRlsVer'";
 
 
-  if ($test) {
-    $self->testInputFile('inputFile', "$manualDeliveryDir/$inputFileRelativeToManualDeliveryDir");
-  }
+  $self->testInputFile('inputFile', "$manualDeliveryDir/$inputFileRelativeToManualDeliveryDir");
+
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertAntiCodon", $args);
 
 }
 
-sub getParamDeclaration {
-  return (
-	  'inputFileRelativeToManualDeliveryDir',
-	  'genomeExtDbRlsSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	  ['version', "", ""],
-	 );
-}
+1;
 

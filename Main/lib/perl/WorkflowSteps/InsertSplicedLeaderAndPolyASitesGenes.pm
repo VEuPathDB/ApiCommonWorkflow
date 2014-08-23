@@ -32,15 +32,4 @@ sub run {
   }
 }
 
-sub getParamDeclaration {
-  return (
-	  'sampleName',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

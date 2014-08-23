@@ -22,26 +22,10 @@ sub run {
   } else {
       if ($test) {
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-      }else{
-	  $self->runCmd($test,$cmd);
       }
+      $self->runCmd($test,$cmd);
   }
 }
 
-sub getParamsDeclaration {
-  return (
-	  'inputFile',
-          'outputFile',
-          'extDbRlsSpec',
-	  'sampleName',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-
+1;
 

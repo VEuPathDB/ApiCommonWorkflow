@@ -62,22 +62,9 @@ sub run {
   if ($undo) {
       $self->runCmd(0, "executeIdSQL.pl --idSql \"$deleteSql\"");
     } else {
-        if ($test) {
-        }else{
-            $self->runCmd($test,"executeIdSQL.pl --idSql \"$isertSql\"");
-            $self->runCmd($test,"executeIdSQL.pl --idSql \"$updateSql\"");
-        }
+      $self->runCmd($test,"executeIdSQL.pl --idSql \"$isertSql\"");
+      $self->runCmd($test,"executeIdSQL.pl --idSql \"$updateSql\"");
     }
 }
 
-sub getParamsDeclaration {
-  return (
-	  'extDbRlsSpec',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-
-	 );
-}
+1;

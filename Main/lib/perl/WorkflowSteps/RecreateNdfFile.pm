@@ -20,26 +20,15 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
-      if ($test) {
-	  $self->testInputFile('originalNdfFile', "$workflowDataDir/$ndfFile");
-	  $self->testInputFile('gene2probesInputFile', "$workflowDataDir/$gene2probesInputFile");
-	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
-      }else{
-	  $self->runCmd($test,$cmd);
-      }
+    $self->testInputFile('originalNdfFile', "$workflowDataDir/$ndfFile");
+    $self->testInputFile('gene2probesInputFile', "$workflowDataDir/$gene2probesInputFile");
+
+    if ($test) {
+      $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
+    }
+    $self->runCmd($test,$cmd);
+
   }
 }
 
-sub getParamDeclaration {
-  return (
-	  'gene2probesInputFile',
-	  'ndfFile',
-	 );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;

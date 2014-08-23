@@ -27,22 +27,9 @@ sub run{
         if($test){
             $self->runCmd(0, "echo test > $outputDir/test.bed");
             $self->runCmd(0, "echo test > $outputDir/test.bw");
-        }else{
-            $self->runCmd($test, $cmd);
         }
+        $self->runCmd($test, $cmd);
     }
 }
 
-
-sub getParamDeclaration {
-    return (
-        'outputDir'
-    );
-}
-
-sub getConfigDeclaration {
-    return (
-        # [name, default, description]
-    );
-}
 1;

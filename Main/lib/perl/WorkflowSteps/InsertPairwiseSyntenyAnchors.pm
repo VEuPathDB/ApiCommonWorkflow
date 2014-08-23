@@ -48,7 +48,8 @@ sub run {
     foreach my $pair (readdir INPUT){
 	next if ($pair =~ m/^\./);
 	#my ($orgAbbrevA, $orgAbbrevB) = split(/\-/, $pair);
-	my @orgAbbrevs = split(/\-/, $pair);
+        my $ndelim = $pair =~ tr/\-//;
+	my @orgAbbrevs = split(/\-/, $pair, $ndelim + 1);
 	my ($orgAbbrevA, $orgAbbrevB);
 
 	while(scalar @orgAbbrevs >1){
@@ -77,22 +78,15 @@ sub run {
             
 	}
 
-        my $gffFileA = "$workflowDataDir/$mercatorInputsDir/${orgAbbrevA}.gff";
-        my $gffFileB = "$workflowDataDir/$mercatorInputsDir/${orgAbbrevB}.gff";
-
 	my $databaseName = "${pair}_Mercator_synteny";
 	my $dbPluginArgs = "--name '$databaseName' ";
 	my $releasePluginArgs = "--databaseName '$databaseName' --databaseVersion dontcare";
 
-	my $insertPluginArgs = "--inputFile $workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny --syntenyDbRlsSpec '$databaseName|dontcare' --gffFileA $gffFileA --gffFileB $gffFileB";
+	my $insertPluginArgs = "--inputDirectory $workflowDataDir/$mercatorOutputsDir/$pair --syntenyDbRlsSpec '$databaseName|dontcare'";
 
-	# command to reformat .align file
-	my $inputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align";
-	my $outputFile = "$workflowDataDir/$mercatorOutputsDir/$pair/$pair.align-synteny";
-	my $formatCmd = "reformatMercatorAlignFile --inputFile $inputFile --outputFile $outputFile";
 
 	if ($undo) {
-	    unlink($outputFile);
+#	    unlink($outputFile);
 	} else {
 	    # allow for restart; skip those already in db.   any partially done pair needs to be fully backed out before restart.
 	    my $exists = $self->runSqlFetchOneRow($test,"select name from sres.externaldatabase where name = '$databaseName'");
@@ -101,20 +95,7 @@ sub run {
 		next;
 	    }
 
-	    my $tmPrefix = $self->getTuningTablePrefix($orgAbbrevB, $test);
-	    my $sql = "select count(*)
-                       from apidbtuning.${tmPrefix}sequenceattributes sa, apidb.organism o, sres.sequenceontology so
-                       where so.term_name IN ('chromosome', 'supercontig')
-                       and sa.so_id = so.so_id
-                       and sa.taxon_id = o.taxon_id
-                       and o.abbrev = '$orgAbbrevB'";
-	    my $cmd = "getValueFromTable --idSQL \"$sql\"";
-	    my $isNotDraftGenome = $self->runCmd($test, $cmd);
-	    if (!$isNotDraftGenome) {
-	      $formatCmd .= " --agpFile $workflowDataDir/$mercatorOutputsDir/$pair/$orgAbbrevB.agp";
-	    }
 
-	    $self->runCmd($test, $formatCmd);
 	    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabase", $dbPluginArgs);
 	    $self->runPlugin($test, 0, "GUS::Supported::Plugin::InsertExternalDatabaseRls", $releasePluginArgs);
 	    $self->runPlugin($test, 0, "ApiCommonData::Load::Plugin::InsertSyntenySpans", $insertPluginArgs);
@@ -122,10 +103,4 @@ sub run {
     }
 }
 
-sub getConfigDeclaration {
-    return (
-            # [name, default, description]
-
-           );
-}
-
+1;

@@ -90,3 +90,4 @@ EOF
   my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" --verbose";
 }
 
+1;

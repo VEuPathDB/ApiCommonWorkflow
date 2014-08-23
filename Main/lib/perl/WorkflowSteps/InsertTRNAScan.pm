@@ -23,19 +23,13 @@ sub run {
   my ($tRNAExtDbName,$tRNAExtDbVersion)=$self->getExtDbInfo($test,$tRNAExtDbRlsSpec);
 
   my $args = "--data_file $workflowDataDir/$inputFile --scanDbName '$tRNAExtDbName' --scanDbVer '$tRNAExtDbVersion' --genomeDbName '$genomeExtDbName' --genomeDbVer '$genomeExtDbVersion' --soVersion '$soVersion'";
-    if ($test) {
-      $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-    }
+
+  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+
 
    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadTRNAScan", $args);
 
 
 }
 
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
-
+1;

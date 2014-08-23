@@ -16,25 +16,12 @@ sub run {
   if($undo){
     $self->runCmd(0, "rm -f $outputFile");
   }else{  
-      if ($test) {
-	  $self->runCmd(0, "echo test > $outputFile");
-      }else {
-	  $self->runCmd($test, $cmd);
-      }
+    if ($test) {
+      $self->runCmd(0, "echo test > $outputFile");
+    }
+    $self->runCmd($test, $cmd);
   }
 }
 
-sub getParamsDeclaration {
-  return (
-          'baseDir',
-          'outputFile',
-         );
-}
-
-sub getConfigDeclaration {
-  return (
-         # [name, default, description]
-         # ['', '', ''],
-         );
-}
+1;
 

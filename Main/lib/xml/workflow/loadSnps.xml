@@ -1,0 +1,86 @@
+<workflowGraph name="loadSnps.xml">
+  <param name="snpsDataDir"/>
+  <param name="organismAbbrev"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="varscanConsDir"/>
+  <param name="relativeWebServicesDir"/>
+
+  <constant name="loaderDir">$$snpsDataDir$$/loader</constant>
+
+   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$loaderDir$$</paramValue>
+  </step>
+
+  <step name="insertExtDbRls" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateExtDbAndDbRls" stepLoadTypes="plugin">
+      <paramValue name="extDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeControlFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeControlFilesForSNPs">
+      <paramValue name="sequenceVariationCtl">$$loaderDir$$/loadSequenceVariations.ctl</paramValue>
+      <paramValue name="snpCtl">$$loaderDir$$/loadSNP.ctl</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="processSequenceVariations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ProcessSequenceVariations">
+      <paramValue name="newSampleFile">$$snpsDataDir$$/NewSamples.tab</paramValue>
+      <paramValue name="cacheFile">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
+      <paramValue name="undoneStrainsFile">$$snpsDataDir$$/UndoneStrains</paramValue>
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <depends name="makeControlFiles"/>
+      <depends name="insertExtDbRls"/>
+    </step>
+
+    <step name="makeHSS80FileInWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHighSpeedSearchFiles" stepLoadTypes="hssWS">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="variantsFile">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
+      <paramValue name="readFrequency">80</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="processSequenceVariations"/>
+    </step>
+
+    <step name="makeHSS60FileInWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHighSpeedSearchFiles" stepLoadTypes="hssWS">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="variantsFile">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
+      <paramValue name="readFrequency">60</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="processSequenceVariations"/>
+    </step>
+
+
+    <step name="makeHSS40FileInWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHighSpeedSearchFiles" stepLoadTypes="hssWS">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="variantsFile">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
+      <paramValue name="readFrequency">40</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="processSequenceVariations"/>
+    </step>
+
+
+    <step name="makeHSS20FileInWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHighSpeedSearchFiles" stepLoadTypes="hssWS">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="variantsFile">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
+      <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
+      <paramValue name="readFrequency">20</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="processSequenceVariations"/>
+    </step>
+
+
+    <step name="load" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadNextGenSNPs">
+      <paramValue name="sequenceVariationCtl">$$loaderDir$$/loadSequenceVariations.ctl</paramValue>
+      <paramValue name="snpCtl">$$loaderDir$$/loadSNP.ctl</paramValue>
+      <paramValue name="sequenceVariationDat">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
+      <paramValue name="snpDat">$$snpsDataDir$$/snpFeature.dat</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
+      <paramValue name="loaderDir">$$loaderDir$$</paramValue>
+      <depends name="processSequenceVariations"/>
+    </step>
+
+</workflowGraph>

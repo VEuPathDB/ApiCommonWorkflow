@@ -21,27 +21,14 @@ sub run {
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputDir");
     } else {
+      $self->testInputFile('', "$workflowDataDir/$configXmlFile");
+      $self->testInputFile('', "$workflowDataDir/$resourceDataDir");
+
 	if ($test) {
-	    $self->testInputFile('', "$workflowDataDir/$configXmlFile");
-	    $self->testInputFile('', "$workflowDataDir/$resourceDataDir");
 	    $self->runCmd(0,"mkdir $workflowDataDir/$outputDir");
 	}
 	$self->runCmd($test, $cmd);
     }
 }
 
-sub getParamsDeclaration {
-  return (
-      'configXmlFile',
-      'resourceDataDir',
-      'outputDir',
-      );
-}
-
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
-
+1;
