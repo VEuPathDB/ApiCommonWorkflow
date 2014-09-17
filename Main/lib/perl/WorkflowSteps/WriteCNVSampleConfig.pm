@@ -16,7 +16,7 @@ sub run {
   my $protocolName = $self->getParamValue('protocolName');
   my $sampleDatasetName = $self->getParamValue('sampleDatasetName');
 
-  my $cmd = "writeCNVConfig --file $file --outputFile $workflowDataDir/$configOutputFile --name $analysisName --protocol $protocolName --sampleDatasetName $sampleDatasetName";
+  my $cmd = "writeCNVConfig --file $workflowDataDir/$file --outputFile $workflowDataDir/$configOutputFile --name $analysisName --protocol $protocolName --sampleDatasetName $sampleDatasetName";
 
   if ($undo) {
     $self->runCmd(0, "rm $workflowDataDir/$configOutputFile");

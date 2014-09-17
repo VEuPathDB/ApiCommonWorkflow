@@ -12,22 +12,22 @@ sub run{
     #get parameter values
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
-    my $outputFile = $self->getParamValue("outputFile");
+    my $outputDir = $self->getParamValue("outputFile");
     my $bamFile = $self->getParamValue("bamFile");
     my $gtfFile = $self->getParamValue("gtfFile");
 
     $self->runCmd(0, "mkdir -p $workflowDataDir/Cufflinks");
 
-    my $cmd = "cufflinks -u -N -p 4 -b $genomicSeqsFile -G $gtfFile -o $workflowDataDir/Cufflinks $bamFile";
+    my $cmd = "cufflinks -u -N -p 4 -b $genomicSeqsFile -G $workflowDataDir/$gtfFile -o $workflowDataDir/$outputDir/Cufflinks $workflowDataDir/$bamFile";
 
 
     if ($undo){
-        $self->runCmd(0, "rm -rf $workflowDataDir/Cufflinks");
+        $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir/Cufflinks");
     }else{
-        $self->testInputFile('genomicSeqsFile', $genomicSeqsFile);
-        $self->testInputFile('bamFile', $bamFile);
+        $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
+        $self->testInputFile('bamFile', "$workflowDataDir/$bamFile");
         if ($test){
-            $self->runCmd(0, "echo test > $workflowDataDir/Cufflinks/test");
+            $self->runCmd(0, "echo test > $workflowDataDir/$outputDir/Cufflinks/test");
         }
         $self->runCmd($test, $cmd);
     }

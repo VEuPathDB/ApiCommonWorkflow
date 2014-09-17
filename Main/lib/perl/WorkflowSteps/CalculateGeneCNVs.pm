@@ -35,13 +35,13 @@ sub run {
              and sg.sequence_group_id = ssg.sequence_group_id
              order by gf.source_id";
 
-  my $cmd = "calculateGeneCNVs --outputDir $outputDir --sampleName $sampleName --fpkmFile $fpkmFile --ploidy $ploidy --sql $sql";
+  my $cmd = "calculateGeneCNVs --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --sql $sql";
 
   if ($undo) {
     $self->runCmd(0, "rm $outputDir/$sampleName\_CNVestimations.tsv");
     $self->runCmd(0, "rm $outputDir/$sampleName\_geneCNVs.txt");
   }else{
-    $self->testInputFile('fpkmFile', $fpkmFile);
+    $self->testInputFile('fpkmFile', "$workflowDataDir/$fpkmFile");
     if ($test) {
         $self->runCmd(0, "echo test > $outputDir/$sampleName\_CNVestimations.tsv");
         $self->runCmd(0, "echo test > $outputDir/$sampleName\_geneCNVs.txt");
