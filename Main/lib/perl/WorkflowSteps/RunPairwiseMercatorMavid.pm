@@ -120,6 +120,7 @@ sub run {
 		} else {
 		  # if no alignments, mv to skipped dir
                   my $pairSkippedDir = "$skippedDir/${orgA}-${orgB}";
+			mkdir("$pairSkippedDir") || $self->error("Failed making dir $pairSkippedDir");
 		  $self->runCmd($test,"mv $pairTmpDir $pairSkippedDir");
 		}
 	    }
