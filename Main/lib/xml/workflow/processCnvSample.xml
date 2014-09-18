@@ -1,0 +1,162 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="experimentDataDir"/>
+    <param name="readsFile"/>
+    <param name="snpExtDbRlsSpec"/>
+    <param name="sampleName"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="genomicSeqsFile"/>
+    <param name="indexDir"/>
+    <param name="organismAbbrev"/>
+    <param name="experimentName"/>
+    <param name="hasPairedEnds"/>
+    <param name="isColorspace"/>
+    <param name="removePCRDuplicates"/>
+    <param name="extraBowtieParams"/>
+    <param name="ploidy"/>
+    <param name="gtfFile"/>
+    <param name="relativeWebServicesDir"/>
+   
+    <constant name="sampleAnalysisDir">$$experimentDataDir$$/$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_cnvSample_RSRC</constant> 
+
+   
+ <!-- The dataset loader here does not get anything from manual delivery.  It only makes rows in sres.extdb and extdbrls -->
+    <subgraph name="loadCnvSample" xmlFile="loadDataset.xml">
+        <paramValue name="datasetName">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_copyNumberVariationSample_RSRC</paramValue>
+        <paramValue name="datasetLoaderXmlFileName">$$projectName$$/$$organismAbbrev$$/$$experimentName$$.xml</paramValue>
+        <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+    </subgraph>
+    
+    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+        <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$</paramValue>
+        <depends name="loadSmallNcRnaSample"/>
+    </step>
+    
+    <subgraph name="mirrorSampleFiles" xmlFile="mirrorHtsSamples.xml"> <!--Can probably stick with this subgraph -->
+        <paramValue name="readsFilePath">$$filteredReadsDir$$</paramValue>
+        <paramValue name="readsFileBasename">$$sampleName$$.fastq</paramValue> 
+        <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+        <paramValue name="snpStrainAbbrev">$$sampleName$$</paramValue> <!--will need to retain param name for subgraph to work -->
+        <depends name="mirrorSampleAnalysisDirToCluster"/>
+    </subgraph>
+
+    <subgraph name="runBowtie" xmlFile="runBowtie.xml">
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="experimentDataDir">$$experimentDataDir$$</paramValue>
+        <paramValue name="readsFile">$$filteredReadsDir$$/$$sampleName$$.fastq</paramValue>
+        <paramValue name="pairedReadsFile">$$filteredReadsDir$$/$$sampleName$$.fastq.paired</paramValue> 
+        <paramValue name="snpExtDbRlsSpec">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_copyNumberVariationSample_RSRC|dontcare</paramValue>
+        <paramValue name="sampleName">$$sampleName$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+        <paramValue name="indexDir">$$indexDir$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="experimentName">$$experimentName$$</paramValue>
+        <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+        <paramValue name="isColorspace">$$isColorspace$$</paramValue>
+        <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
+        <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+        <depends name="mirrorSampleFiles"/>
+    </subgraph>
+
+    
+    <!--Run Cufflinks-->
+    <step name="runCufflinksForCNVs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunCufflinksForCNVs">
+        <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+        <paramValue name="outputDir">$$sampleAnalysisDir$$/</paramValue>
+        <paramValue name="bamFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam</paramValue>
+        <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+        <depends name="runBowtie"/>
+    <\step>
+
+    <!--Calculate Ploidy-->
+    <step name="calculatePloidy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculatePloidy">
+        <paramValue name="outputDir">$$sampleAnalysisDir$$</paramValue>
+        <paramValue name="fpkmFile">$$sampleAnalysisDir$$/Cufflinks/genes.fpkm_tracking</paramValue>
+        <paramValue name="ploidy">$$ploidy$$</paramValue>
+        <paramValue name="sampleName">$$sampleName$$</paramValue>
+        <depends name="runCufflinksForCNVs"/>
+    </step>
+
+    <!--Calculate Gene CNVs -->
+    <step name="calculateGeneCNVs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateGeneCNVs">
+        <paramValue name="outputDir">$$sampleAnalysisDir$$</paramValue>
+        <paramValue name="fpkmFile">$$sampleAnalysisDir$$/Cufflinks/genes.fpkm_tracking</paramValue>
+        <paramValue name="ploidy">$$ploidy$$</paramValue>
+        <paramValue name="sampleName">$$sampleName$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <depends name="runCufflinksForCNVs"/>
+    </step>    
+
+    <!--Write Ploidy config file -->
+    <step name="writePloidyConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteCNVSampleConfig">
+        <paramValue name="file">$$sampleAnalysisDir$$/$$sampleName$$_Ploidy.txt</paramValue>
+        <paramValue name="configOutputFile">$$sampleAnalysisDir$$/ploidyConfig.txt</paramValue>
+        <paramValue name="analysisName">$$sampleName$$</paramValue>
+        <paramValue name="protocolName">Ploidy</paramValue>
+        <paramValue name="sampleDatasetName">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_copyNumberVariationSample_RSRC</paramValue>
+        <depends name="calculatePloidy"/>
+    </step>
+
+    <!--Load Ploidy -->
+    <step name="insertPloidy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGeneOrChromosomeCNVs" stepLoadTypes="plugin">
+        <paramValue name="inputDir">$$sampleAnalysisDir$$</paramValue>
+        <paramValue name="configFile">ploidyConfig.txt</paramValue>
+        <paramValue name="analysisResultView">DataTransformationResult</paramValue>
+        <paramValue name="sourceIdType">NaSequence</paramValue>
+        <paramValue name="useSqlLdr">False</paramValue>
+        <depends name="writePloidyConfigFile"/>
+    </step>
+
+
+    <!--Write Gene CNV config file -->
+    <step name="writeCNVConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteCNVSampleConfig">
+        <paramValue name="file">$$sampleAnalysisDir$$/$$sampleName$$_geneCNVs.txt</paramValue>
+        <paramValue name="configOutputFile">$$sampleAnalysisDir$$/geneCNVConfig.txt</paramValue>
+        <paramValue name="analysisName">$$sampleName$$</paramValue>
+        <paramValue name="protocolName">geneCNV</paramValue>
+        <paramValue name="sampleDatasetName">$$organismAbbrev$$_$$experiment    Name$$_$$sampleName$$_copyNumberVariationSample_RSRC</paramValue>
+        <depends name="calculateGeneCNVs"/>
+    </step>
+
+    <!--Load Gene CNVs -->
+    <step name="insertGeneCNVs" stepClass"ApiCommonWorkflow::Main::WorkflowSteps::InsertGeneOrChromosomeCNVs" stepLoadTypes="plugin">
+        <paramValue name="inputDir">$$sampleAnalysisDir$$</paramValue>
+        <paramValue name="configFile">geneCNVConfig.txt</paramValue>
+        <paramValue name="analysisResultView">DataTransformationResult</paramValueName>
+        <paramValue name="sourceIdType">NaFeature</paramValue>
+        <paramValue name="naFeatureView">GeneFeature</paramValue>
+        <paramValue name="useSqlLdr">True</paramValue>
+        <depends name="writeCNVConfigFile"/>
+    </step>
+
+    <!-- Required for coverage tracks-->
+    <!-- Make .bam.bai index-->
+    <step name="makeBamIndex" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBamIndex">
+        <paramValue name="bamFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam</paramValue>
+        <depends name="runBowtie"/>
+    </step>
+
+    <!-- Copy bam file and index to staging -->
+    <step name="copyBamFileToStaging" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBAMFileToWebServices">
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam</paramValue>
+        <paramValue name="experimentName">$$experimentName$$</paramValue>
+        <paramValue name="snpStrain">$$sampleName$$</paramValue>
+        <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+        <depends name="makeBamIndex"/>
+    </step>
+
+    <step name="copyBamIndexToStaging" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBAMFileToWebServices">
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam.bai</paramValue>
+        <paramValue name="experimentName">$$experimentName$$</paramValue>
+        <paramValue name="snpStrain">$$sampleName$$</paramValue>
+        <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+        <depends name="makeBamIndex"/>
+    </step>
+
+</workflowGraph>
+
