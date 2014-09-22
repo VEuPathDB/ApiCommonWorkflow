@@ -11,6 +11,7 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $skipIfFile = $self->getParamValue('skipIfFile');
+  my $soExtDbName = $self->getParamValue('soExtDbName');
 
   my $speciesTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
 
@@ -24,7 +25,7 @@ sub run {
     if ($test) {
       $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
     }
-    $self->runCmd($test,"extractEpitopesTabFile $workflowDataDir/$outputFile $taxonIdList");
+    $self->runCmd($test,"extractEpitopesTabFile $workflowDataDir/$outputFile $taxonIdList $soExtDbName");
     if (!$test && (-s "$workflowDataDir/$outputFile" == 0)) {
 	$self->runCmd(0, "touch $workflowDataDir/$skipIfFile");
     }
