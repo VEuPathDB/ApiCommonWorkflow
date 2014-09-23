@@ -15,7 +15,6 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $isfMappingFile = $self->getParamValue('isfMappingFile');
 
-  my $soVersion = $self->getExtDbVersion($test, 'SO_RSRC');
   my $ncbiTaxId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
   my $gusHome = $self->getSharedConfig('gusHome');
@@ -26,6 +25,8 @@ sub run {
 
   my $algInvIds = $self->getAlgInvIds();
 
+# TODO:  SO_RSRC is hardcoded here; Should be passed down;
+
   my $args = <<"EOF";
 --extDbName '$extDbName'  \\
 --extDbRlsVer '$extDbRlsVer' \\
@@ -33,7 +34,7 @@ sub run {
 --inputFileOrDir $workflowDataDir/$inputFile \\
 --fileFormat gff3   \\
 --seqSoTerm ORF  \\
---soCvsVersion $soVersion \\
+--soExtDbRlsName 'SO_RSRC' \\
 --naSequenceSubclass $substepClass \\
 --organism $ncbiTaxId \\
 EOF
