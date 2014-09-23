@@ -17,7 +17,7 @@ sub run {
   my $sampleName = $self->getParamValue('sampleName');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
-  my $outputDir = "$workflowDataDir/$outputDir";
+  $outputDir = "$workflowDataDir/$outputDir";
   my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
 
   my $sql = "select gf.source_id as geneid,

@@ -23,14 +23,14 @@ sub run {
     $naFeatureView = $self->getParamValue('naFeatureView');
   }
       
-  my $args = "--inputDir '$workflowDataDir/$inputDir' --configFile '$workflowDataDir/$configFile' --analysisResultView $analysisResultView  --sourceIdType $sourceIdType";
+  my $args = "--inputDir '$workflowDataDir/$inputDir' --configFile '$workflowDataDir/$inputDir/$configFile' --analysisResultView $analysisResultView  --sourceIdType $sourceIdType";
 
   $args.=" --useSqlLdr" if($useSqlLdr); 
   $args.=" --naFeatureView $naFeatureView" if($naFeatureView);
 
 
   $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-  $self->testInputFile('configFile', "$workflowDataDir/$configFile");
+  $self->testInputFile('configFile', "$workflowDataDir/$inputDir/$configFile");
 
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertCNVAnalysisResult", $args);
