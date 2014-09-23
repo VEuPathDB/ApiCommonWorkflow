@@ -1,6 +1,7 @@
 <workflowGraph name="">
     <param name="projectName"/>
     <param name="experimentDataDir"/>
+    <param name="readsFilePath"/>
     <param name="readsFile"/>
     <param name="snpExtDbRlsSpec"/>
     <param name="sampleName"/>
@@ -17,7 +18,7 @@
     <param name="gtfFile"/>
     <param name="relativeWebServicesDir"/>
    
-    <constant name="sampleAnalysisDir">$$experimentDataDir$$/$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_cnvSample_RSRC</constant> 
+    <constant name="sampleAnalysisDir">$$experimentDataDir$$/$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_copyNumberVariationSample_RSRC</constant> 
 
    
  <!-- The dataset loader here does not get anything from manual delivery.  It only makes rows in sres.extdb and extdbrls -->
@@ -29,11 +30,11 @@
     
     <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
         <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$</paramValue>
-        <depends name="loadSmallNcRnaSample"/>
+        <depends name="loadCnvSample"/>
     </step>
     
     <subgraph name="mirrorSampleFiles" xmlFile="mirrorHtsSamples.xml"> <!--Can probably stick with this subgraph -->
-        <paramValue name="readsFilePath">$$filteredReadsDir$$</paramValue>
+        <paramValue name="readsFilePath">$$readsFilePath$$</paramValue>
         <paramValue name="readsFileBasename">$$sampleName$$.fastq</paramValue> 
         <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
         <paramValue name="snpStrainAbbrev">$$sampleName$$</paramValue> <!--will need to retain param name for subgraph to work -->
@@ -43,8 +44,8 @@
     <subgraph name="runBowtie" xmlFile="runBowtie.xml">
         <paramValue name="projectName">$$projectName$$</paramValue>
         <paramValue name="experimentDataDir">$$experimentDataDir$$</paramValue>
-        <paramValue name="readsFile">$$filteredReadsDir$$/$$sampleName$$.fastq</paramValue>
-        <paramValue name="pairedReadsFile">$$filteredReadsDir$$/$$sampleName$$.fastq.paired</paramValue> 
+        <paramValue name="readsFile">$$readsFilePath$$/$$sampleName$$.fastq</paramValue>
+        <paramValue name="pairedReadsFile">$$readsFilePath$$/$$sampleName$$.fastq.paired</paramValue> 
         <paramValue name="snpExtDbRlsSpec">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_copyNumberVariationSample_RSRC|dontcare</paramValue>
         <paramValue name="sampleName">$$sampleName$$</paramValue>
         <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -67,7 +68,7 @@
         <paramValue name="bamFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam</paramValue>
         <paramValue name="gtfFile">$$gtfFile$$</paramValue>
         <depends name="runBowtie"/>
-    <\step>
+    </step>
 
     <!--Calculate Ploidy-->
     <step name="calculatePloidy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculatePloidy">
@@ -104,7 +105,7 @@
         <paramValue name="configFile">ploidyConfig.txt</paramValue>
         <paramValue name="analysisResultView">DataTransformationResult</paramValue>
         <paramValue name="sourceIdType">NaSequence</paramValue>
-        <paramValue name="useSqlLdr">False</paramValue>
+        <paramValue name="useSqlLdr">false</paramValue>
         <depends name="writePloidyConfigFile"/>
     </step>
 
@@ -115,18 +116,18 @@
         <paramValue name="configOutputFile">$$sampleAnalysisDir$$/geneCNVConfig.txt</paramValue>
         <paramValue name="analysisName">$$sampleName$$</paramValue>
         <paramValue name="protocolName">geneCNV</paramValue>
-        <paramValue name="sampleDatasetName">$$organismAbbrev$$_$$experiment    Name$$_$$sampleName$$_copyNumberVariationSample_RSRC</paramValue>
+        <paramValue name="sampleDatasetName">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_copyNumberVariationSample_RSRC</paramValue>
         <depends name="calculateGeneCNVs"/>
     </step>
 
     <!--Load Gene CNVs -->
-    <step name="insertGeneCNVs" stepClass"ApiCommonWorkflow::Main::WorkflowSteps::InsertGeneOrChromosomeCNVs" stepLoadTypes="plugin">
+    <step name="insertGeneCNVs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGeneOrChromosomeCNVs" stepLoadTypes="plugin">
         <paramValue name="inputDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="configFile">geneCNVConfig.txt</paramValue>
-        <paramValue name="analysisResultView">DataTransformationResult</paramValueName>
+        <paramValue name="analysisResultView">DataTransformationResult</paramValue>
         <paramValue name="sourceIdType">NaFeature</paramValue>
         <paramValue name="naFeatureView">GeneFeature</paramValue>
-        <paramValue name="useSqlLdr">True</paramValue>
+        <paramValue name="useSqlLdr">true</paramValue>
         <depends name="writeCNVConfigFile"/>
     </step>
 
