@@ -18,7 +18,7 @@ sub run{
 
     $self->runCmd(0, "mkdir -p $workflowDataDir/$outputDir/Cufflinks");
 
-    my $cmd = "cufflinks -u -N -p 4 -b $genomicSeqsFile -G $workflowDataDir/$gtfFile -o $workflowDataDir/$outputDir/Cufflinks $workflowDataDir/$bamFile";
+    my $cmd = "cufflinks -u -N -p 4 -b $workflowDataDir/$genomicSeqsFile -G $workflowDataDir/$gtfFile -o $workflowDataDir/$outputDir/Cufflinks $workflowDataDir/$bamFile";
 
 
     if ($undo){

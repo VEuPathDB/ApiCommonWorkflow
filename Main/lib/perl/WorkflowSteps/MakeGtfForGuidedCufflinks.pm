@@ -25,8 +25,13 @@ sub run {
                l.end_max,
                decode(l.is_reversed, 1, '-', 0, '+', 'err') as strand,
                ef.coding_start,
-               ef.coding_end
+               ef.coding_end,
+               mod(3-mod((select nvl(sum(greatest(ef2.coding_start, ef2.coding_end) - least(ef2.coding_start, ef2.coding_end) + 1), 0)
+                    from dots.exonfeature ef2
+                    where parent_id = ef.parent_id
+                    and order_number < ef.order_number), 3), 3) as phase
                from sres.taxon t,
+               dots.nasequence ns,
                dots.genefeature gf,
                dots.exonfeature ef,
                dots.transcript tr,
@@ -39,7 +44,7 @@ sub run {
                and l.na_feature_id = ef.na_feature_id
                order by ns.source_id, l.start_min"; 
     
-    my $cmd = "makeGtfForGuidedCufflinks.pl --outputFile $workflowDataDir/$gtfDir/$outputFile --SQL $sql --project $project";
+    my $cmd = "makeGtfForGuidedCufflinks.pl --outputFile $workflowDataDir/$gtfDir/$outputFile --SQL \"$sql\" --project $project";
 
     if ($undo) {
         $self->runCmd(0, "rm -f $workflowDataDir/$gtfDir/$outputFile");
