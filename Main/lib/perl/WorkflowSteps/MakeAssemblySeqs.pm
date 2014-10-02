@@ -18,7 +18,8 @@ sub run {
   my $taxonId = $organismInfo->getSpeciesTaxonId();
   my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
 
-  my $args = "--taxon_id_list '$taxonIdList' --repeatFile $vectorFile --phrapDir $phrapDir";
+  # TODO:  Pass in SO external database name|version
+  my $args = "--taxon_id_list '$taxonIdList' --repeatFile $vectorFile --phrapDir $phrapDir --soExtDbSpec 'SO_RSRC|%'";
 
 
   $self->runPlugin($test, $undo, "DoTS::DotsBuild::Plugin::MakeAssemblySequences", $args);
