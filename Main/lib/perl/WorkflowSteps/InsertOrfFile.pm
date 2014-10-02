@@ -34,7 +34,7 @@ sub run {
 --inputFileOrDir $workflowDataDir/$inputFile \\
 --fileFormat gff3   \\
 --seqSoTerm ORF  \\
---soExtDbRlsName 'SO_RSRC' \\
+--soExtDbSpec 'SO_RSRC|%' \\
 --naSequenceSubclass $substepClass \\
 --organism $ncbiTaxId \\
 EOF
