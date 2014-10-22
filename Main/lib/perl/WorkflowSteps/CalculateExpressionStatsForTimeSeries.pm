@@ -29,7 +29,7 @@ sub run {
 
   $args .= " --timePointsMappingFile '$workflowDataDir/$dataDir/$mappingFile'" unless ($mappingFile eq "NO_MAPPING_FILE");
 
-  $self->testInputFile('inputDir', "$workflowDataDir/$dataDir/$mappingFile") if $mappingFile;
+  $self->testInputFile('inputDir', "$workflowDataDir/$dataDir/$mappingFile") unless ($mappingFile eq "NO_MAPPING_FILE");
 
     if ($undo){
     } else{

@@ -285,6 +285,9 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
   </datasetTemplate>
 
+    <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables">
+      <dependsPattern name="*_bowtieMapping"/>
+    </step>
 
   <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml">
     <paramValue name="parentDataDir"></paramValue>
@@ -308,7 +311,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <step name="makePathwayDownloadFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePathwayDownloadFiles">
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="outputDirName">pathwayFiles/</paramValue>
-      <dependsGlobal name="Pathways_RSRC"/> 
+      <depends name="Pathways_RSRC"/> 
     </step>
 -->
   </datasetTemplate>
@@ -427,4 +430,20 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
  </datasetTemplate>
+
+  <datasetTemplate class="EcNumberGenus">
+   <prop name="projectName"/>   
+
+  <step name="manuallyImproveEcNumberGenus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+    <dependsPattern name="*_LoadGenome"/>
+  </step>
+  
+   <subgraph name="EcNumberGenus_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">EcNumberGenus_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+    <depends name="manuallyImproveEcNumberGenus"/>
+   </subgraph>
+  </datasetTemplate>
+
 </workflowGraph>

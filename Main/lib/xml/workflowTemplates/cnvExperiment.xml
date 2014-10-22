@@ -1,0 +1,37 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="parentDataDir"/>
+    <param name="organismDatasetLoaderXmlFile"/>
+    <param name="genomicSeqsDir"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="relativeWebServicesDir"/>
+  
+    <datasetTemplate class="copyNumberVariationExperiment">
+        <prop name="organismAbbev"/>
+        <prop name="experimentName"/>
+        <prop name="experimentVersion"/>
+        <prop name="hasPairedEnds"/>
+        <prop name="isColorspace"/>
+        <prop name="removePCRDuplicates"/>
+        <prop name="extraBowtieParams"/> 
+        <prop name="ploidy"/>
+
+        <subgraph name="${organismAbbrev}_copyNumberVariations_${experimentName}_RSRC" xmlFile="processCnvExperiment.xml">
+            <paramValue name="projectName">$$projectName$$</paramValue>
+            <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+            <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+            <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+            <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+            <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+            <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+            <paramValue name="experimentName">${experimentName}</paramValue>
+            <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
+            <paramValue name="isColorspace">${isColorspace}</paramValue>
+            <paramValue name="removePCRDuplicates">${removePCRDuplicates}</paramValue>
+            <paramValue name="extraBowtieParams">${extraBowtieParams}</paramValue>
+            <paramValue name="ploidy">${ploidy}</paramValue>
+            <paramValue name="experimentDatasetName">$$organismAbbrev$$_copyNumberVariations_${experimentName}_RSRC</paramValue>
+        </subgraph>
+    </datasetTemplate>
+</workflowGraph>

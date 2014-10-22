@@ -24,7 +24,6 @@ sub run {
     $self->runCmd(0, "rm -f  $formattedFile*");
     $self->runCmd(0, "rm -r  $formattedOutputDir");
   } else {
-    $self->testInputFile('inputFile', "$fileToFormat");
       if ($test) {
           $self->runCmd(0, "mkdir -p $formattedOutputDir");
 	  $self->runCmd(0,"echo test >  $formattedFile");

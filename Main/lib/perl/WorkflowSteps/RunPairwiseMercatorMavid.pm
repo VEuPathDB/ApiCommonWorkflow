@@ -47,8 +47,9 @@ sub run {
     my $cacheDir = "$workflowDataDir/$mercatorCacheDir";
     mkdir("$workflowDataDir/$mercatorCacheDir");
 
+    # always re-run unaligned pairs
     my $skippedDir = "$workflowDataDir/pairsWithNoAlignment";
-   $self->runCmd($test, "rm -r $skippedDir") if -e "$skippedDir";
+    $self->runCmd($test, "rm -r $skippedDir") if -e "$skippedDir";
     mkdir("$skippedDir")
 	|| $self->error("Could not make dir '$skippedDir'");
 
@@ -64,8 +65,6 @@ sub run {
 
 	    my $pairOutputDir = "$workflowDataDir/$mercatorOutputsDir/${orgA}-${orgB}";
 	    my $pairCacheDir = "$cacheDir/${orgA}-${orgB}";
-	    my $pairSkippedDir = "$skippedDir/${orgA}-${orgB}";
-        mkdir("$pairSkippedDir") || $self->error("Failed making dir $pairSkippedDir");
 
 	    if ($test) {
 		$self->runCmd(0,"mkdir $pairOutputDir");
@@ -74,7 +73,7 @@ sub run {
 	    }
 
 	    if ($self->cacheHit($orgA, $orgB, $cacheDir, "$workflowDataDir/$mercatorInputsDir", $test)) {
-		$self->runCmd($test, "ln -s $cacheDir/${orgA}-${orgB} $pairOutputDir");
+                $self->runCmd($test, "ln -s $pairCacheDir $pairOutputDir");
 	    } else {
 
 	        # the strategy here is:
@@ -90,16 +89,16 @@ sub run {
 		mkdir("$pairTmpDir") || $self->error("Failed making dir $pairTmpDir");
 		mkdir("$pairTmpDir/fasta") || $self->error("Failed making dir $pairTmpDir/fasta");
 		mkdir("$pairTmpDir/gff") || $self->error("Failed making dir $pairTmpDir/gff");
-		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgA}.fasta $pairTmpDir/fasta");
-		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgA}.gff $pairTmpDir/gff");
-		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgB}.fasta $pairTmpDir/fasta");
-		$self->runCmd($test, "cp $workflowDataDir/$mercatorInputsDir/${orgB}.gff $pairTmpDir/gff");
+		$self->runCmd($test, "ln -s $workflowDataDir/$mercatorInputsDir/${orgA}.fasta $pairTmpDir/fasta");
+		$self->runCmd($test, "ln -s $workflowDataDir/$mercatorInputsDir/${orgA}.gff $pairTmpDir/gff");
+		$self->runCmd($test, "ln -s $workflowDataDir/$mercatorInputsDir/${orgB}.fasta $pairTmpDir/fasta");
+		$self->runCmd($test, "ln -s $workflowDataDir/$mercatorInputsDir/${orgB}.gff $pairTmpDir/gff");
 
 		my $draftFlagA = $isDraftHash->{$orgA}? '-d' : '-n';
 		my $draftFlagB = $isDraftHash->{$orgB}? '-d' : '-n';
 
 		# run mercator in tmp dir
-		my $command = "runMercator  -t '($orgA:0.1,$orgB:0.1);' -p $pairTmpDir -c $cndSrcBin -m $mavid $draftFlagA $orgA $draftFlagB $orgB";
+		my $command = "runMercator -t '($orgA:0.1,$orgB:0.1);' -p $pairTmpDir -c $cndSrcBin -m $mavid $draftFlagA $orgA $draftFlagB $orgB";
 		$self->runCmd($test,$command);
 
                 # Check that mercator created some alignments, otherwise move folder to Skipped directory instead of Output.
@@ -120,8 +119,9 @@ sub run {
 		  $self->runCmd($test, "ln -s $pairCacheDir $workflowDataDir/$mercatorOutputsDir");
 		} else {
 		  # if no alignments, mv to skipped dir
+                  my $pairSkippedDir = "$skippedDir/${orgA}-${orgB}";
+			mkdir("$pairSkippedDir") || $self->error("Failed making dir $pairSkippedDir");
 		  $self->runCmd($test,"mv $pairTmpDir $pairSkippedDir");
-		  $self->runCmd($test, "ln -s $pairSkippedDir $pairCacheDir");
 		}
 	    }
 	}
