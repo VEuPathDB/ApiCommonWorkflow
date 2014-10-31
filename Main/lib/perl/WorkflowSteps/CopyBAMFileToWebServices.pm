@@ -27,7 +27,6 @@ sub run {
   if($undo) {
     $self->runCmd(0, "rm -f $copyToDir/*");
   } else{
-    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       if($test){
 	  $self->runCmd(0, "mkdir -p $copyToDir");
       }
