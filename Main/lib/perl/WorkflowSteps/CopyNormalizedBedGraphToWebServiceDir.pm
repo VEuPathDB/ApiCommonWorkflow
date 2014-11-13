@@ -12,6 +12,7 @@ sub run {
   my $copyFromDir = $self->getParamValue('copyFromDir');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $relativeDir = $self->getParamValue('relativeDir');
+  my $analysisConfig = $self->getParamValue('analysisConfig');
   my $experimentResourceName = $self->getParamValue('experimentDatasetName');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
@@ -25,7 +26,7 @@ sub run {
 
   my $cmd_mkdir = "mkdir -p $copyToDir";
 
-  my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir";
+  my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir --analysisConfig $analysisConfig";
 
   if ($test) {
     $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");
