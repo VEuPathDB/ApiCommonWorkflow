@@ -18,7 +18,7 @@ sub run {
   my $outDir = "$workflowDataDir/$orthmclGroupsDir";
 
   if ($undo) {
-    $self->runCmd($test, "rm -rf $outDir");
+    $self->runCmd(0, "rm -rf $outDir");
   } else {
     $self->testInputFile('configFile', "$configFile");
     $self->runCmd(0, "mkdir $outDir");
