@@ -36,16 +36,18 @@ sub run {
 
   my $cmd = "gusExtractSequences --outputFile $workflowDataDir/$outputFile --idSQL \"$sql\" --verbose";
 
-
+  my $cmd_replace = "cat $workflowDataDir/$outputFile | perl -pe 'unless (/^>/){s/\\*/X/g;}' > $workflowDataDir/$outputFile.NoAsterisks";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile.d*");
+	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile.NoAsterisks");
   } else {  
       if ($test) {
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }
       $self->runCmd($test,$cmd);
+	  $self->runCmd($test,$cmd_replace);
   }
 }
 
