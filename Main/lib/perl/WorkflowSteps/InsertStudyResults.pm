@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -15,12 +15,11 @@ sub run {
 
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
 
-  my ($externalDatabase,$externalDatabaseRls) = $self->getExtDbInfo($test,$extDbRlsSpec);
+  my $studyName = $self->getParamValue('studyName');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--inputDir $workflowDataDir/$inputDir --configFile $workflowDataDir/$configFile --tolerateMissingIds --externalDatabase $externalDatabase --externalDatabaseRls $externalDatabaseRls";
-
+  my $args = "--inputDir $workflowDataDir/$inputDir --configFile $workflowDataDir/$configFile --extDbSpec '$extDbRlsSpec' --studyName '$studyName'";
 
   
 
@@ -28,7 +27,7 @@ sub run {
     $self->testInputFile('configFile', "$workflowDataDir/$configFile");
 
 
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertExpressionProfiles", $args);
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertStudyResults", $args);
 
 }
 
