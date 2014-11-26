@@ -25,7 +25,7 @@ sub run {
 
   my $algInvIds = $self->getAlgInvIds();
 
-# TODO:  SO_RSRC is hardcoded here; Should be passed down;
+  my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
 
   my $args = <<"EOF";
 --extDbName '$extDbName'  \\
@@ -34,7 +34,7 @@ sub run {
 --inputFileOrDir $workflowDataDir/$inputFile \\
 --fileFormat gff3   \\
 --seqSoTerm ORF  \\
---soExtDbSpec 'SO_RSRC|%' \\
+ --soExtDbSpec '$soExtDbName|%' \\
 --naSequenceSubclass $substepClass \\
 --organism $ncbiTaxId \\
 EOF

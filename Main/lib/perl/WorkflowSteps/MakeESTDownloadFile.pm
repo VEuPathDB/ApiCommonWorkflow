@@ -23,8 +23,8 @@ sub getWebsiteFileCmd {
   my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
 
 
+  my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
 
-# TODO:  Hard Coded SO_RSRC
     my $sql = <<"EOF";
     SELECT x.source_id
 	||' | organism='||
@@ -46,7 +46,7 @@ sub getWebsiteFileCmd {
 	AND so.name = 'EST'
         AND so.external_database_release_id = r.external_database_release_id
         AND r.external_database_id = d.external_database_id
-        AND d.name = 'SO_RSRC'
+        AND d.name = '$soExtDbName'
 EOF
 
     my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\"";

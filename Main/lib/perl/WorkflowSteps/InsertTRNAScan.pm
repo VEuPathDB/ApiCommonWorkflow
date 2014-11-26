@@ -14,7 +14,9 @@ sub run {
 
   my $tRNAExtDbRlsSpec = $self->getParamValue('tRNAExtDbRlsSpec');
 
-  my $soVersion = $self->getExtDbVersion($test, 'SO_RSRC');
+  my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
+
+  my $soVersion = $self->getExtDbVersion($test, $soExtDbName);
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

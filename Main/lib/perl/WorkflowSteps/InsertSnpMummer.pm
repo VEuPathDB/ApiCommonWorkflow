@@ -22,6 +22,8 @@ sub run {
   my $isNextGenSeq = $self->getBooleanParamValue('isNextGenSeq');
   my $isCoverage = $self->getBooleanParamValue('isCoverage');
 
+  my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
+
   my ($genomExtDbName,$genomeExtDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
   my ($snpExtDbName,$snpExtDbRlsVer) = $self->getExtDbInfo($test,$snpExtDbRlsSpec);
   my ($transcriptExtDbName,$transcriptExtDbRlsVer) = $self->getExtDbInfo($test,$transcriptExtDbRlsSpec);
@@ -37,7 +39,7 @@ sub run {
 
   my $soTerm = $self->getSoTerm();
 
-  my $args = "--reference '$strainAbbrev' --organism '$organismFullName' --snpExternalDatabaseName '$snpExtDbName' --snpExternalDatabaseVersion '$snpExtDbRlsVer' --naExternalDatabaseName '$genomExtDbName' --naExternalDatabaseVersion '$genomeExtDbRlsVer' --transcriptExternalDatabaseName '$transcriptExtDbName' --transcriptExternalDatabaseVersion '$transcriptExtDbRlsVer' --seqTable 'DoTS::ExternalNASequence' --ontologyTerm $soTerm --snpFile $workflowDataDir/$inputFile";
+  my $args = "--reference '$strainAbbrev' --organism '$organismFullName' --snpExternalDatabaseName '$snpExtDbName' --snpExternalDatabaseVersion '$snpExtDbRlsVer' --naExternalDatabaseName '$genomExtDbName' --naExternalDatabaseVersion '$genomeExtDbRlsVer' --transcriptExternalDatabaseName '$transcriptExtDbName' --transcriptExternalDatabaseVersion '$transcriptExtDbRlsVer' --seqTable 'DoTS::ExternalNASequence' --ontologyTerm $soTerm --snpFile $workflowDataDir/$inputFile --soExtDbSpec '$soExtDbName|%'";
 
   $args .= " --NGS_SNP" if ($isNextGenSeq);
   $args .= " --NgsUpdateSnpFeature" if ($isCoverage);
