@@ -6,6 +6,8 @@
     <param name="snpExtDbRlsSpec"/>
     <param name="sampleName"/>
     <param name="genomeExtDbRlsSpec"/>
+    <param name="samtoolsIndex"/>
+    <param name="chromSizesFile"/>
     <param name="genomicSeqsFile"/>
     <param name="indexDir"/>
     <param name="organismAbbrev"/>
@@ -17,6 +19,7 @@
     <param name="ploidy"/>
     <param name="gtfFile"/>
     <param name="relativeWebServicesDir"/>
+    <param name="experimentDatasetName"/>
    
     <constant name="sampleAnalysisDir">$$experimentDataDir$$/$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_copyNumberVariationSample_RSRC</constant> 
 
@@ -131,33 +134,32 @@
         <depends name="writeCNVConfigFile"/>
     </step>
 
-    <!-- Required for coverage tracks-->
-    <!-- Make .bam.bai index-->
-    <step name="makeBamIndex" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBamIndex">
+    <!--Make normalised coverage tracks for CNV-->
+    <step name="createBinnedCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBinnedCoverageFile">
         <paramValue name="bamFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam</paramValue>
+        <paramValue name="windowSize">1000</paramValue>
+        <paramValue name="outputFile">$$sampleAnalysisDir$$/$$sampleName$$.bed</paramValue>
+        <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
         <depends name="runBowtie"/>
     </step>
 
-    <!-- Copy bam file and index to staging -->
-    <step name="copyBamFileToStaging" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBAMFileToWebServices">
+    <step name="makeNormalisedCoverageTrack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeNormalisedCoverageTrack">
+        <paramValue name="coverageFile">$$sampleAnalysisDir$$/$$sampleName$$.bed</paramValue>
+        <paramValue name="ploidy">$$ploidy$$</paramValue>
+        <paramValue name="sampleName">$$sampleName$$</paramValue>
+        <paramValue name="outputDir">$$sampleAnalysisDir$$</paramValue>
+        <paramValue name="chromSizesFile">$$chromSizesFile$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-        <paramValue name="projectName">$$projectName$$</paramValue>
-        <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam</paramValue>
-        <paramValue name="experimentName">$$experimentName$$</paramValue>
-        <paramValue name="snpStrain">$$sampleName$$</paramValue>
-        <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-        <depends name="makeBamIndex"/>
+        <depends name="createBinnedCoverage"/>
     </step>
 
-    <step name="copyBamIndexToStaging" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBAMFileToWebServices">
+    <step name="copyBigWigFilesToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBigWigFilesToWebServices">
+        <paramValue name="copyFromDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-        <paramValue name="projectName">$$projectName$$</paramValue>
-        <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam.bai</paramValue>
-        <paramValue name="experimentName">$$experimentName$$</paramValue>
-        <paramValue name="snpStrain">$$sampleName$$</paramValue>
-        <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-        <depends name="makeBamIndex"/>
+        <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+        <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
+        <depends name="makeNormalisedCoverageTrack"/>
     </step>
-
+    
 </workflowGraph>
 
