@@ -21,10 +21,12 @@ sub run {
     my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
     
     # This statement will only return chromosomes.
-    my $SQL = "select source_id
-               from dots.externalnasequence
-               where taxon_id = $taxonId
-               and sequence_ontology_id = 340";
+    my $SQL = "select ens.source_id
+               from sres.sequenceontology so,
+               dots.externalnasequence ens
+               where so.so_id = 'SO:0000340'
+               and so.sequence_ontology_id = ens.sequence_ontology_id
+               and ens.taxon_id = $taxonId";
 
     my $cmd = "makeNormalisedCoverageTrack --coverageFile $workflowDataDir/$coverageFile --ploidy $ploidy --sampleName $sampleName --outputDir $workflowDataDir/$outputDir --chromSizesFile $workflowDataDir/$chromSizesFile --SQL \"$SQL\"";
 
