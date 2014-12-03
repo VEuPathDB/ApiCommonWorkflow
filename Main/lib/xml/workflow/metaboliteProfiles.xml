@@ -6,6 +6,7 @@
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
 
+    <!-- Reusing the DoTranscriptExpression WorkflowStep here.  May consider rename -->
     <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
       <paramValue name="analysisConfigFile">$$parentDataDir$$/$$experimentName$$/final/analysisConfig.xml</paramValue>
       <paramValue name="inputDir">$$dataDir$$/final</paramValue>
@@ -24,8 +25,8 @@
       <paramValue name="extDbVersion">$$experimentVersion$$</paramValue>
     </step>
 
-    <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$dataDir$$/doTranscriptExpression/expression_profile_config.txt</paramValue>
+    <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/doTranscriptExpression/insert_study_results_config.txt</paramValue>
       <paramValue name="inputDir">$$dataDir$$/doTranscriptExpression</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentName$$|$$experimentVersion$$</paramValue>
       <depends name="doTranscriptExpression"/>

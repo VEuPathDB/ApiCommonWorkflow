@@ -15,43 +15,27 @@
   <param name="isAnnotatedGenome"/>
 
   <constant name="dataDir">$$parentDataDir$$/organismSpecificNoAlias</constant>
-  <constant name="genomicSeqsFileForSsa">$$dataDir$$/genomicSeqsForSsa.fsa</constant>
-  <constant name="transcriptSeqsFileForSsa">$$dataDir$$/transcriptSeqsForSsa.fsa</constant>
-  <constant name="geneModelFileForSsa">$$dataDir$$/geneModelForSsa.txt</constant>
-  <constant name="cdsModelFileForSsa">$$dataDir$$/cdsModelForSsa.txt</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <subgraph name="extractFilesForSsa" xmlFile="extractFilesForSsa.xml">
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="useTopLevel">false</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
-      <paramValue name="cdsModelFileForSsa">$$cdsModelFileForSsa$$</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
-      <paramValue name="isAnnotatedGenome">$$isAnnotatedGenome$$</paramValue>
-      <depends name="makeDataDir"/>
-  </subgraph>
 
   <!-- this must happen before all the rest of the steps in this file so that all that is 
        mirrored is the ssa files, and no other extraneous (and possibly large) data -->
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="extractFilesForSsa"/>
+      <depends name="makeDataDir"/>
   </step>
 
 <!--FIX: microarrayPlatformWithProviderMapping could use old gene identifiers, does doTranscriptExpression query gene aliases? -->
   <subgraph name="arrayStudies" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/arrayStudies.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="ssaGeneModelFile">$$geneModelFileForSsa$$</paramValue>
-    <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="isAnnotatedGenome">$$isAnnotatedGenome$$</paramValue>
     <depends name="mirrorToCluster"/>
   </subgraph>
 
