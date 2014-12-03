@@ -19,6 +19,8 @@ sub run {
 
   my $snpExtDbRlsSpec = $self->getParamValue('snpExtDbRlsSpec');
 
+  my $isLegacy = $self->getBooleanParamValue('isLegacy');
+
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
   my $organismStrain = $self->getOrganismInfo($test, $organismAbbrev)->getStrainAbbrev();
@@ -32,6 +34,10 @@ sub run {
   my $dirname = dirname("$workflowDataDir/$newSampleFile");
 
   my $cmd = "processSequenceVariations.pl --new_sample_file $workflowDataDir/$newSampleFile --cache_file $workflowDataDir/$cacheFile --undone_strains_file $workflowDataDir/$undoneStrainsFile --varscan_directory $workflowDataDir/$varscanConsDir --transcript_extdb_spec '$genomeExtDbRlsSpec' --organism_abbrev $organismAbbrev --reference_strain $organismStrain  --extdb_spec '$snpExtDbRlsSpec'";
+
+  if($isLegacy) {
+    $cmd .= " --is_legacy_variations --clean_cache";
+  }
 
   unless($undo) {
     $self->testInputFile('newSampleFile', "$workflowDataDir/$newSampleFile");
