@@ -1,0 +1,47 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="organismDatasetLoaderXmlFile"/>
+    <param name="dataDir"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="genomicSeqsFile"/>
+    <param name="bowtieDir"/>
+    <param name="relativeDownloadSiteDir"/>
+
+
+     <datasetTemplate class="rnaSeqSplicedLeaderAndPolyASitesExperiment">
+       <prop name="organismAbbrev"/>
+       <prop name="type"/>
+       <prop name="name"/>
+       <prop name="version"/>
+
+       <subgraph name="${name}_rnaSeqSplicedLeaderAndPolyASites_experiment" xmlFile="rnaSeqSplicedLeaderAndPolyASitesExperiment.xml">
+         <paramValue name="projectName">$$projectName$$</paramValue>
+         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+         <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+         <paramValue name="experimentName">${name}</paramValue>
+         <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+         <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+         <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+         <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeqSplicedLeaderAndPolyASites_RSRC</paramValue>
+         <paramValue name="experimentDatasetVersion">${version}</paramValue>
+         <paramValue name="bowtieIndicesDir">$$bowtieDir$$</paramValue>
+       </subgraph>
+
+          <!--  call subgraph to load profiles  -->
+       <subgraph name="${name}_rnaSeqSplicedLeaderAndPolyASites_profiles" xmlFile="rnaSeqSplicedLeaderAndPolyASitesProfiles.xml">
+         <paramValue name="projectName">$$projectName$$</paramValue>
+         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+         <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+         <paramValue name="experimentName">${name}</paramValue>
+         <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+         <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+         <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+         <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeqSplicedLeaderAndPolyASites_RSRC</paramValue>
+         <paramValue name="experimentDatasetVersion">${version}</paramValue>
+         <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+         <paramValue name="type">${type}</paramValue>
+         <depends name="${name}_rnaSeqSplicedLeaderAndPolyASites_experiment"/>
+       </subgraph>
+     </datasetTemplate>
+</workflowGraph>
