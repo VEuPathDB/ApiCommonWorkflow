@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile;
+package ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;

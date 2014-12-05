@@ -316,6 +316,23 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 -->
   </datasetTemplate>
 
+  <datasetTemplate class="Pathways_Biocyc">
+   <prop name="projectName"/>     
+   <prop name="type"/>
+   <subgraph name="Pathways_${type}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">Pathways_${type}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+      <dependsGlobal name="enzymeDB_RSRC"/>
+   </subgraph>
+    <step name="makePathwayDownloadFiles_${type}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePathwayDownloadFiles">
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="outputDirName">pathwayFiles/</paramValue>
+      <depends name="Pathways_${type}_RSRC"/> 
+    </step>
+
+  </datasetTemplate>
+
   <!-- only reference strains have an instance of this -->
   <!-- it depends on all make and mask genomes for this organism (they all have the ref strain as a prefix) -->
   <datasetTemplate class="referenceStrain">
@@ -355,6 +372,22 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
  </datasetTemplate>
+
+ <datasetTemplate class="PathwayCompounds_Biocyc">
+    <prop name="version"/>
+    <prop name="name"/>
+
+    <subgraph name="PathwayCompounds_${name}_${version}" xmlFile="compounds.xml">
+      <paramValue name="source">PathwayCompounds_${name}_${version}</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="version">${version}</paramValue>
+      <paramValue name="datasetLoaderXmlFile">$$projectName$$.xml</paramValue>
+      <paramValue name="compoundName">${name}_${version}</paramValue>
+      <dependsGlobal name="initUserGroupProject"/>
+    </subgraph>
+
+ </datasetTemplate>
+
 
   <datasetTemplate class="ExperimentCompounds">
     <prop name="version"/> 

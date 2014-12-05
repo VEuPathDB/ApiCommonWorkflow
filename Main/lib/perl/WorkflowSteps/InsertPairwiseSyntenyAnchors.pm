@@ -29,16 +29,28 @@ sub run {
       if ($algInvIdsFull) {
 	  my @algInvIdsArray = split(/,/, $algInvIdsFull);
 	  my $count = scalar(@algInvIdsArray);
-	  for (my $i=0; $i<$count; $i+=99) {
+	  my @algInvIdsChunks;
+          for (my $i=0; $i<$count; $i+=99){
 	      my @subArray = splice(@algInvIdsArray, 0, 99);
 	      my $algInvIds = join(",", @subArray);
-	      my $cmd1 = "ga GUS::Community::Plugin::Undo --plugin ApiCommonData::Load::Plugin::InsertSyntenySpans --workflowContext --algInvocationId '$algInvIds' --commit";
-	      my $cmd2 = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabaseRls --workflowContext --algInvocationId '$algInvIds' --commit";
-	      my $cmd3 = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabase --workflowContext --algInvocationId '$algInvIds' --commit";
+              push(@algInvIdsChunks, $algInvIds);
+	  }
 
-	      $self->runCmd($test, $cmd1);
-	      $self->runCmd($test, $cmd2);
-	      $self->runCmd($test, $cmd3);
+          my $chunk_count = scalar(@algInvIdsChunks);
+	  for (my $i=0; $i<$chunk_count; $i++) {
+	      my $algInvIds = $algInvIdsChunks[$i];
+	      my $cmd = "ga GUS::Community::Plugin::Undo --plugin ApiCommonData::Load::Plugin::InsertSyntenySpans --workflowContext --algInvocationId '$algInvIds' --commit";
+	      $self->runCmd($test, $cmd);;
+	  }
+	  for (my $i=0; $i<$chunk_count; $i++) {
+	      my $algInvIds = $algInvIdsChunks[$i];
+	      my $cmd = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabaseRls --workflowContext --algInvocationId '$algInvIds' --commit";
+	      $self->runCmd($test, $cmd);;
+	  }
+	  for (my $i=0; $i<$chunk_count; $i++) {
+	      my $algInvIds = $algInvIdsChunks[$i];
+	      my $cmd = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabase --workflowContext --algInvocationId '$algInvIds' --commit";
+	      $self->runCmd($test, $cmd);;
 	  }
       }
     }
