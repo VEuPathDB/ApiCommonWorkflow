@@ -66,7 +66,7 @@ sub run {
   if ($action eq 'load' && !$test && !$undo){
        my $algInvIds = $self->getAlgInvIds();
        my $loaded = $self->runSqlFetchOneRow(0,"select count(*) from ApiDB.BlatProteinAlignment where row_alg_invocation_id in ($algInvIds)");
-       die "Less than 1000 rows loaded" if ($loaded < 1000);     
+       #die "Less than 1000 rows loaded" if ($loaded < 1000);     
   }
 }
 
