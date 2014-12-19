@@ -13,10 +13,10 @@ sub run {
   my $readsFile = $self->getParamValue("readsFile");
   my $pairedReadsFile = $self->getParamValue("pairedReadsFile");
   my $hasPairedReads = $self->getBooleanParamValue("hasPairedReads");
-  my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
+#  my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
   my $indexDir = $self->getParamValue("indexDir");
   my $sampleName = $self->getParamValue("sampleName");
-  my $clusterServer = $self->getSharedConfig('clusterServer');
+#  my $clusterServer = $self->getSharedConfig('clusterServer');
   my $extraBowtieParams = $self->getParamValue("extraBowtieParams");
 
   # expects string true/false 
