@@ -1,0 +1,148 @@
+<workflowGraph name="getAndMapProbes">
+<!-- TODO:  cut out unecessary params, add in params for bowtie graph -->
+    <param name="dataDir"/>
+    <param name="probeSetName"/>
+    <param name="probeDatasetName"/>
+    <param name="probeDatasetVersion"/>
+    <param name="makeCdfFile"/>
+    <param name="makeNdfFile"/>
+    <param name="vendorMappingFileName"/>
+    <param name="probeRows"/>
+    <param name="probeCols"/>
+    <param name="outputGeneProbeMappingTabFile"/>
+    <param name="organismDatasetLoaderXmlFile"/>
+    <param name="ssaGeneModelFile"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="genomicSeqsFileForSsa"/>
+    <param name="transcriptSeqsFileForSsa"/>
+    <param name="dnaHybridization"/>
+    <param name="limitNU"/>
+    <param name="numInsertions"/>
+    <param name="countMismatches"/>
+    <param name="variableLengthReads"/>
+    <param name="makeGeneProbeMappingFile"/>
+
+    <!-- parent defines name of data dir so we can pass it our output files -->
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <subgraph name="probe_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$probeDatasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+<!-- Don't think we need this for Bowtie -->
+<!--    <step name="runParse2fasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunParse2fasta">
+      <paramValue name="inputShortSeqsFile">$$dataDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
+      <paramValue name="outputShortSeqsFile">$$dataDir$$/cleanedProbes.fsa</paramValue>
+      <paramValue name="pairedEndFile"></paramValue>
+      <depends name="probe_RSRC"/>
+    </step> -->
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="runParse2fasta"/>
+    </step>
+
+<!-- REPLACE THIS WITH BOWTIE GRAPH -->
+
+<!--    <subgraph name="runRUMOnCluster"  xmlFile="runRUMOnCluster.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="readFilePath">$$dataDir$$/cleanedProbes.fsa</paramValue>
+      <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
+      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
+      <paramValue name="transcriptFastaFile">$$transcriptSeqsFileForSsa$$</paramValue>
+      <paramValue name="hasPairedEnds">false</paramValue>
+      <paramValue name="limitNU">$$limitNU$$</paramValue>
+      <paramValue name="numInsertions">$$numInsertions$$</paramValue>
+      <paramValue name="createSAMFile">false</paramValue>
+      <paramValue name="countMismatches">$$countMismatches$$</paramValue>
+      <paramValue name="isSNPs">false</paramValue>
+      <paramValue name="outputFile"></paramValue>
+      <paramValue name="createJunctionsFile">false</paramValue>
+      <paramValue name="strandSpecific">false</paramValue>
+      <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
+      <paramValue name="topLevelSeqSizeFile"></paramValue>
+      <paramValue name="createBigWigFile">false</paramValue>
+      <depends name="runParse2fasta"/>
+    </subgraph> -->
+
+<!-- Don't think we need this for Bowtie -->
+<!--    <step name="revertProbeSeqId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RevertProbeSeqId">
+      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
+      <paramValue name="inputUniqueFile">$$dataDir$$/master/mainresult/RUM_Unique</paramValue>
+      <paramValue name="inputNonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU</paramValue>
+      <paramValue name="outputUniqueFile">$$dataDir$$/uniqueFileRevertedIds.txt</paramValue>
+      <paramValue name="outputNonUniqueFile">$$dataDir$$/nonUniqueFileRevertedIds.txt</paramValue>
+      <depends name="runRUMOnCluster"/>
+    </step> -->
+
+<!-- We might still need this depending on what mapping parameters we use, will need to change as currently using RUM output -->
+    <step name="optionallyExcludeMultiExonHits" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExcludeMultiExonHits">
+      <paramValue name="excludeMultiExonsIf">$$dnaHybridization$$</paramValue>
+      <paramValue name="inputUniqueFile">$$dataDir$$/uniqueFileRevertedIds.txt</paramValue>
+      <paramValue name="inputNonUniqueFile">$$dataDir$$/nonUniqueFileRevertedIds.txt</paramValue>
+      <paramValue name="outputUniqueFile">$$dataDir$$/uniqueFileFiltered.txt</paramValue>
+      <paramValue name="outputNonUniqueFile">$$dataDir$$/nonUniqueFileFiltered.txt</paramValue>
+      <depends name="revertProbeSeqId"/>
+    </step>
+
+<!-- Parse BAM file directly in plugin below -->
+<!--    <step name="makeProbeGenomeMappingGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateGenomeMappingGff">
+      <paramValue name="inputUniqueFile">$$dataDir$$/uniqueFileFiltered.txt</paramValue>
+      <paramValue name="inputNonUniqueFile">$$dataDir$$/nonUniqueFileFiltered.txt</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/genomeMapping.gff</paramValue>
+      <paramValue name="allowedMismatches">1</paramValue>
+      <depends name="optionallyExcludeMultiExonHits"/>
+    </step> -->
+
+<!--LOAD DIRECTLY FROM BAM FILE HERE -->
+
+<!-- Load in to Platform.ReporterSet, Platform.Reporter and Platform.ReporterLocation table directly from bam file- will need new plugin -->
+    <step name="loadProbeGenomeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadArrayElementFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/genomeMapping.gff</paramValue>
+      <paramValue name="extDbRlsSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
+      <depends name="makeProbeGenomeMappingGffFile"/>
+    </step>
+
+
+<!-- Don't need these for genomic arrays -->
+    <!-- always output this file, even when we are making a vendor-specific -->
+    <!-- file, in which case outputting this file is not really useful -->
+    <!-- but output it anyway for simplicity -->
+<!--    <step name="makeProbeGeneMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProbeGeneMappingFile" includeIf="$$makeGeneProbeMappingFile$$">
+      <paramValue name="outputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
+      <paramValue name="probeExtDbSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
+      <paramValue name="geneExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="isOneChannel">$$makeCdfFile$$</paramValue>
+      <depends name="loadProbeGenomeMapping"/>
+    </step>
+
+    <step name="makeCdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$makeCdfFile$$">
+      <paramValue name="gene2probesInputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
+      <paramValue name="probename2sequenceInputFile">$$dataDir$$/$$probeDatasetName$$/probes.tab</paramValue>
+      <paramValue name="vendorMappingFileName">$$vendorMappingFileName$$</paramValue>
+      <paramValue name="probeRows">$$probeRows$$</paramValue>
+      <paramValue name="probeCols">$$probeCols$$</paramValue>
+      <paramValue name="outputCdfFile">$$dataDir$$/$$vendorMappingFileName$$</paramValue>
+      <depends name="makeProbeGeneMappingFile"/>
+    </step>
+
+    <step name="fixNdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RecreateNdfFile" includeIf="$$makeNdfFile$$">
+      <paramValue name="gene2probesInputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
+      <paramValue name="inputNdfFile">$$dataDir$$/$$probeDatasetName$$/final/geneProbeMapping.ndf</paramValue>
+      <paramValue name="outputNdfFile">$$dataDir$$/$$vendorMappingFileName$$</paramValue>
+      <depends name="makeProbeGeneMappingFile"/>
+    </step> -->
+
+    <step name="document-getAndMapProbes"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">getAndMapProbes_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters">TODO: patch in later</paramValue>
+    </step>
+
+</workflowGraph>
