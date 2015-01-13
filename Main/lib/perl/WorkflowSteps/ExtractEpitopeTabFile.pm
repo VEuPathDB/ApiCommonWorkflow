@@ -11,7 +11,8 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $skipIfFile = $self->getParamValue('skipIfFile');
-  my $soExtDbName = $self->getParamValue('soExtDbName');
+
+  my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
 
   my $speciesTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
 
