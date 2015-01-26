@@ -19,21 +19,9 @@
           4) that mapping requires the EST datasets in the reference strain to be done loading.  to do this, it has a dependsExternal on the reference strain's dbEST dataset.  therefore, ALL reference strains MUST have a dbEST dataset EVEN IF dbEST has no ESTs for the species.  (the set can be empty).
           5) furthermore, to make sure that the mapping depends on all reference strain EST datasets, the dbEST dataset MUST depend on all the others.  this dependency is artificial (using the dbEST dataset as a funnel), but ensures workflow correctness.  this is accomplished by the dbEST step declaring a dependsPattern on "*sequence_RSRC".  ALL non-dbEST EST datasets must conform to that pattern.
  -->
-
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
-
-  <datasetTemplate class="referenceStrain-ESTsFromFasta">
-    <prop name="name"/>
-    <prop name="organismAbbrev"/>
-    <subgraph name="EST_${name}_sequences_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${organismAbbrev}_EST_${name}_sequences_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
-  </datasetTemplate>
 
   <datasetTemplate class="referenceStrain-dbEST">
     <prop name="organismAbbrev"/>
@@ -44,6 +32,18 @@
       <depends name="makeDataDir"/>
     </subgraph>
   </datasetTemplate>
+
+  <datasetTemplate class="referenceStrain-ESTsFromFasta">
+    <prop name="name"/>
+    <prop name="organismAbbrev"/>
+    <subgraph name="EST_${name}_sequences_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_EST_${name}_sequences_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="dbEST_RSRC"/>
+    </subgraph>
+  </datasetTemplate>
+
 
   <step name="makeESTDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeESTDownloadFile">
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
