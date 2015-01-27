@@ -14,11 +14,8 @@ sub run {
     my $gtfDir = $self->getParamValue("gtfDir");
     my $outputFile = $self->getParamValue("outputFile");
     my $project = $self->getParamValue("project");
-    my $organismAbbrev = $self->getParamValue("organismAbbrev");
     my $genomeExtDbRlsSpec = $self->getParamValue("genomeExtDbRlsSpec");
 
-    my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
-       
     my $cmd = "makeGtf.pl --outputFile $workflowDataDir/$gtfDir/$outputFile --project $project --genomeExtDbRlsSpec $genomeExtDbRlsSpec";
 
     if ($undo) {
