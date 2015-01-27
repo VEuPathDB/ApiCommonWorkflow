@@ -15,11 +15,11 @@ sub run {
     my $outputFile = $self->getParamValue("outputFile");
     my $project = $self->getParamValue("project");
     my $organismAbbrev = $self->getParamValue("organismAbbrev");
-    my $genomeExtDbRlsId = $self->getParamValue("genomeExtDbRlsId");
+    my $genomeExtDbRlsSpec = $self->getParamValue("genomeExtDbRlsSpec");
 
     my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
        
-    my $cmd = "makeGtf.pl --outputFile $workflowDataDir/$gtfDir/$outputFile --project $project --genomeExtDbRlsId $genomeExtDbRlsId";
+    my $cmd = "makeGtf.pl --outputFile $workflowDataDir/$gtfDir/$outputFile --project $project --genomeExtDbRlsSpec $genomeExtDbRlsSpec";
 
     if ($undo) {
         $self->runCmd(0, "rm -f $workflowDataDir/$gtfDir/$outputFile");
