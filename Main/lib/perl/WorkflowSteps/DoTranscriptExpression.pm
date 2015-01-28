@@ -62,6 +62,7 @@ sub run {
       if ($test) {
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/expression_profile_config.txt");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/analysis_result_config.txt **optional**");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/insert_study_results_config.txt");
       }
       if(!$test) {
         $self->makeSymLinks($inputDir, $outputDir);
