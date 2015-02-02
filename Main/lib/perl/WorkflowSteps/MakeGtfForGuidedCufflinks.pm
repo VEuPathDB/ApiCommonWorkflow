@@ -18,6 +18,10 @@ sub run {
 
     my $cmd = "makeGtf.pl --outputFile $workflowDataDir/$gtfDir/$outputFile --project $project --genomeExtDbRlsSpec $genomeExtDbRlsSpec";
 
+    if($cdsOnly) {
+      $cmd .= " --cds_only";
+    }
+
     if ($undo) {
         $self->runCmd(0, "rm -f $workflowDataDir/$gtfDir/$outputFile");
     }else{
