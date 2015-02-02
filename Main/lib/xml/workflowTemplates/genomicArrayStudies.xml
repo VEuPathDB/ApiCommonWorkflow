@@ -1,109 +1,65 @@
 <workflowGraph name="">
-  <param name="parentDataDir"/>
-  <param name="organismDatasetLoaderXmlFile"/>
-  <param name="relativeDownloadSiteDir"/>
+  <param name="projectName"/>
   <param name="organismAbbrev"/>
+  <param name="organismDatasetLoaderXmlFile"/>
+  <param name="parentDataDir"/>
+  <param name="bowtieDir"/>
   <param name="genomeExtDbRlsSpec"/>
-  <param name="isAnnotatedGenome"/>
-  <!--will need to add bowtie index (and genomic seq file?) here -->
 
   <constant name="dataDir">$$parentDataDir$$/genomicArrayStudies</constant>
-
-<!-- Don't need these if we are mapping against top level sequence -->
-<!--  <constant name="genomicSeqsFileForSsa">$$dataDir$$/genomicSeqsForSsa.fsa</constant> -->
-<!--  <constant name="transcriptSeqsFileForSsa">$$dataDir$$/transcriptSeqsForSsa.fsa</constant> -->
-
-<!--  <constant name="ssaGeneModelFile">$$dataDir$$/geneModelForSsa.txt</constant> -->
-<!--  <constant name="ssaCdsModelFile">$$dataDir$$/cdsModelForSsa.txt</constant> -->
-
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-<!-- we should have already mirrored bowtie indices to cluseter-->
-<!--  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="extractFilesForSsa"/>
-  </step> -->
-
   <datasetTemplate class="chipChipPlatform">
     <prop name="organismAbbrev"/>
     <prop name="name"/>
     <prop name="version"/>
-    <prop name="limitNU"/>
-    <prop name="numInsertions"/>
+    <prop name="hasPairedEnds"/>
+    <prop name="isColorspace"/>
+    <prop name="removePCRDuplicates"/>
+    <prop name="extraBowtieParams"/>
     
     <subgraph name="${name}_mapGenomicArrayProbes" xmlFile="mapGenomicArrayProbes.xml">
-        <!-- TODO:  Add in necessary params -->
+        <paramValue name="dataDir">$$dataDir$$</paramValue>
+        <paramValue name="probeSetName">${name}</paramValue>
+        <paramValue name="probeDatasetName">${organismAbbrev}_chipChipPlatform_${name}_RSRC</paramValue>
+        <paramValue name="probeDatasetVersion">${version}</paramValue>
+        <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="indexDir">$$bowtieDir$$</paramValue>
+        <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+        <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
+        <paramValue name="isColorspace">${isColorspace}</paramValue>
+        <paramValue name="removePCRDuplicates">${removePCRDuplicates}</paramValue>
+        <paramValue name="extraBowtieParams">${extraBowtieParams}</paramValue>
     </subgraph>
-
-<!-- Replaced by above -->
-<!--    <subgraph name="${name}_getAndMapProbes" xmlFile="getAndMapProbes.xml">
-      <paramValue name="dataDir">$$dataDir$$/${name}</paramValue>
-      <paramValue name="probeSetName">${name}</paramValue>
-      <paramValue name="probeDatasetName">${organismAbbrev}_chipChipPlatform_${name}_RSRC</paramValue>
-      <paramValue name="probeDatasetVersion">${version}</paramValue>
-      <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
-      <paramValue name="limitNU">${limitNU}</paramValue>
-      <paramValue name="variableLengthReads">${variableLengthReads}</paramValue>
-      <paramValue name="numInsertions">${numInsertions}</paramValue>
-      <paramValue name="dnaHybridization">true</paramValue>
-      <paramValue name="countMismatches">false</paramValue>
-      <paramValue name="pairedReadFilePath"></paramValue>
-      <paramValue name="outputGeneProbeMappingTabFile"></paramValue>
-      <paramValue name="makeCdfFile">false</paramValue>
-      <paramValue name="makeNdfFile">false</paramValue>
-      <paramValue name="makeGeneProbeMappingFile">false</paramValue>
-      <paramValue name="probeRows"></paramValue>
-      <paramValue name="probeCols"></paramValue>
-      <paramValue name="vendorMappingFileName"></paramValue>
-      <depends name="mirrorToCluster"/>
-    </subgraph> -->
-
   </datasetTemplate>
 
   <datasetTemplate class="cghArrayPlatform">
     <prop name="organismAbbrev"/>
     <prop name="name"/>
     <prop name="version"/>
-    <prop name="limitNU"/>
-    <prop name="numInsertions"/>
+    <prop name="hasPairedEnds"/>
+    <prop name="isColorspace"/>
+    <prop name="removePCRDuplicates"/>
+    <prop name="extraBowtieParams"/>
     
     <subgraph name="${name}_mapGenomicArrayProbes" xmlFile="mapGenomicArrayProbes.xml">
-        <!-- TODO: Add in necessary params -->
+        <paramValue name="dataDir">$$dataDir$$</paramValue> 
+        <paramValue name="probeSetName">${name}</paramValue>
+        <paramValue name="probeDatasetName">${organismAbbrev}_chipChipPlatform_${name}_RSRC</paramValue>
+        <paramValue name="probeDatasetVersion">${version}</paramValue>
+        <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="indexDir">$$bowtieDir$$</paramValue>
+        <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+        <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
+        <paramValue name="isColorspace">${isColorspace}</paramValue>
+        <paramValue name="removePCRDuplicates">${removePCRDuplicates}</paramValue>
+        <paramValue name="extraBowtieParams">${extraBowtieParams}</paramValue>
     </subgraph>
-
-<!-- Replaced by above -->    
-<!--    <subgraph name="${name}_getAndMapProbes" xmlFile="getAndMapProbes.xml">
-      <paramValue name="dataDir">$$dataDir$$/${name}</paramValue>
-      <paramValue name="probeSetName">${name}</paramValue>
-      <paramValue name="probeDatasetName">${organismAbbrev}_cghArrayPlatform_${name}_RSRC</paramValue>
-      <paramValue name="probeDatasetVersion">${version}</paramValue>
-      <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="ssaGeneModelFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
-      <paramValue name="limitNU">${limitNU}</paramValue>
-      <paramValue name="variableLengthReads">${variableLengthReads}</paramValue>
-      <paramValue name="numInsertions">${numInsertions}</paramValue>
-      <paramValue name="dnaHybridization">true</paramValue>
-      <paramValue name="countMismatches">false</paramValue>
-      <paramValue name="pairedReadFilePath"></paramValue>
-      <paramValue name="outputGeneProbeMappingTabFile"></paramValue>
-      <paramValue name="makeCdfFile">false</paramValue>
-      <paramValue name="makeNdfFile">false</paramValue>
-      <paramValue name="makeGeneProbeMappingFile">false</paramValue>
-      <paramValue name="probeRows"></paramValue>
-      <paramValue name="probeCols"></paramValue>
-      <paramValue name="vendorMappingFileName"></paramValue>
-      <depends name="mirrorToCluster"/>
-    </subgraph> -->
   </datasetTemplate>
 
 
@@ -162,8 +118,7 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="experimentDatasetName">${organismAbbrev}_cghArrayExper_${experimentName}_RSRC</paramValue>
-      <paramValue name="probeExtDbRlsSpec">${organismAbbrev}_cghArrayPlatform_${cghArrayPlatformName}_RSRC|${cghArrayPlatformVersion}</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+<!--      <paramValue name="probeExtDbRlsSpec">${organismAbbrev}_cghArrayPlatform_${cghArrayPlatformName}_RSRC|${cghArrayPlatformVersion}</paramValue> -->
       <paramValue name="configFilesDir">$$dataDir$$/${organismAbbrev}_cghArrayExper_${experimentName}_RSRC/final</paramValue>
       <depends name="${experimentName}"/>
     </subgraph>

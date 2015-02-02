@@ -4,56 +4,55 @@
     <param name="probeDatasetName"/>
     <param name="probeDatasetVersion"/>
     <param name="organismDatasetLoaderXmlFile"/>
-    <param name="genomeExtDbRlsSpec"/>
-    <param name="genomicSeqsFileForSsa"/>
-    <param name="transcriptSeqsFileForSsa"/>
+    <param name="projectName"/>
+    <param name="indexDir"/> 
+    <param name="organismAbbrev"/>
+    <param name="hasPairedEnds"/>
+    <param name="isColorspace"/>
+    <param name="removePCRDuplicates"/> 
+    <param name="extraBowtieParams"/> 
+
+    <!-- We be able to use dataDir directly without clobbering instead of making a subdir- not sure until we run in test mode -->
+    <constant name="platformDir">$$dataDir$$/$$probeSetName$$</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <paramValue name="dataDir">$$platformDir$$</paramValue>
     </step>
 
     <subgraph name="probe_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$probeDatasetName$$</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="parentDataDir">$$platformDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
     <step name="loadReporter" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPlatformReporter">
-      <paramValue name="fastaFile">$$dataDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
+      <paramValue name="fastaFile">$$platformDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue><!-- not sure this is correct-->
       <paramValue name="extDbRlsSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
       <paramValue name="platformName">$$probeSetName$$</paramValue>
       <depends name="probe_RSRC"/>
     </step>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <paramValue name="fileOrDirToMirror">$$platformDir$$</paramValue>
       <depends name="probe_RSRC"/>
     </step>
 
-<!-- REPLACE THIS WITH BOWTIE GRAPH -->
-
-<!--    <subgraph name="runRUMOnCluster"  xmlFile="runRUMOnCluster.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="readFilePath">$$dataDir$$/cleanedProbes.fsa</paramValue>
-      <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="transcriptFastaFile">$$transcriptSeqsFileForSsa$$</paramValue>
-      <paramValue name="hasPairedEnds">false</paramValue>
-      <paramValue name="limitNU">$$limitNU$$</paramValue>
-      <paramValue name="numInsertions">$$numInsertions$$</paramValue>
-      <paramValue name="createSAMFile">false</paramValue>
-      <paramValue name="countMismatches">$$countMismatches$$</paramValue>
-      <paramValue name="isSNPs">false</paramValue>
-      <paramValue name="outputFile"></paramValue>
-      <paramValue name="createJunctionsFile">false</paramValue>
-      <paramValue name="strandSpecific">false</paramValue>
-      <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
-      <paramValue name="topLevelSeqSizeFile"></paramValue>
-      <paramValue name="createBigWigFile">false</paramValue>
-      <depends name="runParse2fasta"/>
-    </subgraph> -->
-
+<!-- REPLACES RUM MAPPING GRAPH-->
+    <subgraph name="runBowtie" xmlFile="runBowtie.xml">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="experimentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="readsFile">$$platformDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
+      <paramValue name="pairedReadsFile"></paramValue>
+      <paramValue name="sampleName">$$probeSetName$$</paramValue>
+      <paramValue name="indexDir">$$indexDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="isColorspace">$$isColorspace$$</paramValue>
+      <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
+      <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
 
 <!-- Parse BAM file directly in plugin below -->
 
