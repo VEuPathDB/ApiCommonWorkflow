@@ -65,8 +65,10 @@ sub run {
   #check the number of rows loaded. We will put a threshold for it, say if less than 1000 rows, the step will fail.
   if ($action eq 'load' && !$test && !$undo){
        my $algInvIds = $self->getAlgInvIds();
-       my $loaded = $self->runSqlFetchOneRow(0,"select count(*) from ApiDB.BlatProteinAlignment where row_alg_invocation_id in ($algInvIds)");
-       die "Less than 1000 rows loaded" if ($loaded < 1000);     
+       my $sql = "select count(*) from ApiDB.BlatProteinAlignment where row_alg_invocation_id in ($algInvIds)";
+       my $cmd = "getValueFromTable --idSQL \"$sql\"";
+       my $loaded = $self->runCmd($test, $cmd);
+       die "Less than 1000 rows loaded." if ($loaded < 1000);     
   }
 }
 
