@@ -1,0 +1,60 @@
+<workflowGraph name="">
+    <param name="parentDataDir"/>
+    <param name="outputDir"/>
+    <param name="sampleName"/>
+    <param name="shortSeqsFile"/>
+    <param name="experimentExtDbRlsSpec"/>
+    <param name="hasPairedEnds"/>
+    <param name="limitNU"/>
+    <param name="strandSpecific"/>
+      <param name="spliceSitesDatabase"/>
+      <param name="gtfFile"/>
+      <param name="gmapDatabase"/>
+
+
+    <constant name="dataDir">$$parentDataDir$$/analyze_$$sampleName$$</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+ 
+    <subgraph name="runGSNAPOnCluster"  xmlFile="runGSNAPOnCluster.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="readFilePath">$$shortSeqsFile$$</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="limitNU">$$limitNU$$</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
+      <paramValue name="createJunctionsFile">true</paramValue>
+      <paramValue name="writeBedFile">true</paramValue>
+      <paramValue name="quantifyWithCufflinks">true</paramValue>
+      <paramValue name="spliceSitesDatabase">$$spliceSitesDatabase$$</paramValue>
+      <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+      <paramValue name="gmapDatabase">$$gmapDatabase$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="document-RnaSeqOrChipSeqGSNAP"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="method">rum_rna_or_chip_seq_MTHD</paramValue>
+      <paramValue name="version">1.0</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="runGSNAPOnCluster"/>
+    </step>
+
+
+<!-- TODO:  Need to rename this table -->
+    <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/master/mainresult/junctions_all.rum</paramValue>
+      <paramValue name="rnaSeqExtDbRlsSpec">$$experimentExtDbRlsSpec$$</paramValue>
+      <paramValue name="sampleName">$$sampleName$$</paramValue>
+      <depends name="runGSNAPOnCluster"/>
+    </step>
+
+</workflowGraph>
+
+

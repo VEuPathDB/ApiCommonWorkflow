@@ -1,0 +1,54 @@
+<workflowGraph name="runGSNAPOnCluster">
+      <param name="parentDataDir"/>
+      <param name="readFilePath"/>
+      <param name="hasPairedEnds"/>
+      <param name="limitNU"/>
+      <param name="strandSpecific"/>
+      <param name="createJunctionsFile"/>
+      <param name="writeBedFile"/>
+      <param name="quantifyWithCufflinks"/>
+      <param name="spliceSitesDatabase"/>
+      <param name="gtfFile"/>
+      <param name="gmapDatabase"/>
+
+    <constant name="dataDir">$$parentDataDir$$</constant>
+  
+    <!-- rum distribjob task creates bowtie indexes if not provided -->
+
+    <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGSNAPTaskInputDir">
+      <paramValue name="readFilePath">$$readFilePath$$</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="limitNU">$$limitNU$$</paramValue>
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
+      <paramValue name="keepNode">no</paramValue>
+      <paramValue name="createJunctionsFile">$$createJunctionsFile$$</paramValue>
+      <paramValue name="spliceSitesDatabase">$$spliceSitesDatabase$$</paramValue>
+      <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+      <paramValue name="gmapDatabase">$$gmapDatabase$$</paramValue>
+      <paramValue name="quantifyWithCufflinks">$$quantifyWithCufflinks$$</paramValue>
+      <paramValue name="writeBedFile">$$writeBedFile$$</paramValue>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/input</paramValue>
+      <depends name="makeTaskInputDir"/>
+    </step>
+
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="numNodes">20</paramValue>
+      <paramValue name="maxMemoryGigs">3</paramValue>
+      <paramValue name="processorsPerNode">1</paramValue>
+      <depends name="mirrorToCluster"/>
+    </step>
+
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputFiles">TODO</paramValue>
+      <depends name="runClusterTask"/>
+    </step>
+
+
+</workflowGraph>

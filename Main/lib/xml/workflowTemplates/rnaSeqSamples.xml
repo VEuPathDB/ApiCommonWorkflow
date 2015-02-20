@@ -3,18 +3,14 @@
   <param name="outputDir"/>
   <param name="organismAbbrev"/>
   <param name="projectName"/>
-  <param name="geneModelFileForSsa"/>
-  <param name="genomicSeqsFileForSsa"/>
-  <param name="topLevelSeqSizeFile"/>
-  <param name="transcriptSeqsFileForSsa"/>
-  <param name="genomeExtDbRlsSpec"/>
   <param name="experimentDatasetName"/>
   <param name="experimentDatasetVersion"/>
   <param name="strandSpecific"/>
-  <param name="variableLengthReads"/>
   <param name="hasPairedEnds"/>
   <param name="limitNU"/>
-  <param name="numInsertions"/>
+  <param name="spliceSitesDatabase"/>
+  <param name="gtfFile"/>
+  <param name="gmapDatabase"/>
 
   <constant name="experimentDatasetLoadersDataDir">$$experimentDataDir$$/$$experimentDatasetName$$</constant>
 
@@ -29,30 +25,27 @@
     </subgraph>
 
 
-    <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeRnaSeqOrChipSeqSample.xml">
+    <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeRnaSeqSample.xml">
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
       <paramValue name="outputDir">$$outputDir$$</paramValue>
       <paramValue name="sampleName">${sampleName}</paramValue>
-      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
       <paramValue name="shortSeqsFile">$$experimentDatasetLoadersDataDir$$/final/${sampleName}</paramValue>
       <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
-      <paramValue name="genomeExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
-      <paramValue name="numInsertions">1</paramValue>
       <paramValue name="limitNU">14</paramValue>
-      <paramValue name="SNPs">false</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
-      <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
-      <paramValue name="isRnaSeq">true</paramValue>
+      <paramValue name="spliceSitesDatabase">$$spliceSitesDatabase$$</paramValue>
+      <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+      <paramValue name="gmapDatabase">$$gmapDatabase$$</paramValue>
+
       <depends name="${sampleName}_RSRC"/>
 
     </subgraph>
    <!-- might have to reformat the count and mapping stats files made by RUM -->
   </datasetTemplate>
 
+
+<!--
   <datasetTemplate class="rnaSeqSampleNoTranscripts">
     <prop name="experimentName"/>
     <prop name="sampleName"/>
@@ -81,7 +74,7 @@
       <paramValue name="SNPs">false</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
-      <paramValue name="isRnaSeq">false</paramValue> <!-- NOTE:  Cannot easily change this paramName... should be something like "hasTranscripts" -->
+      <paramValue name="isRnaSeq">false</paramValue>
       <depends name="${sampleName}_RSRC"/>
 
     </subgraph>
@@ -123,9 +116,11 @@
       <depends name="${sampleName}_RSRC"/>
     </subgraph>
 
-   <!-- might have to reformat the count and mapping stats files made by RUM -->
+
 
   </datasetTemplate>
+-->
+   <!-- might have to reformat the count and mapping stats files made by RUM -->
 
 
 </workflowGraph>

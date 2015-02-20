@@ -4,6 +4,7 @@
     <param name="genomeExtDbRlsSpec"/>
     <param name="organismAbbrev"/>
 
+
     <constant name="dataDir">$$parentDataDir$$/iedb</constant>
     <constant name="skipIfFile">$$dataDir$$/foundZeroEpitopes</constant>
 
@@ -19,11 +20,18 @@
   <datasetTemplate class="epitopesFromReferenceStrain">
     <prop name="referenceStrainOrganismAbbrev"/>
 
+<!-- TODO REMOVE THIS -->
+<prop name="sequenceOntologyInternal"/>
+
    <step name="extractEpitopeTabFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractEpitopeTabFile">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/epitopes.tab</paramValue>
       <paramValue name="skipIfFile">$$dataDir$$/foundZeroEpitopes</paramValue>
+
+<!-- TODO REMOVE THIS -->
+<paramValue name="soExtDbName">${sequenceOntologyInternal}</paramValue>
+
       <depends name="makeDataDir"/>
       <dependsExternal name="${referenceStrainOrganismAbbrev}_epitope_IEDB_RSRC"/>
     </step>

@@ -12,6 +12,7 @@
   <param name="isAnnotatedGenome"/>
 
   <constant name="dataDir">$$parentDataDir$$/gsnap</constant>
+  <constant name="topLevelSeqSizeFile">$$dataDir$$/topLevelSeqSizes.txt</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -26,67 +27,114 @@
     <depends name="makeDataDir"/>
   </step>
 
+    <step name="makeGtfForCufflinks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGtfForGuidedCufflinks">
+        <paramValue name="outputFile">$$organismAbbrev$$.gtf</paramValue>
+        <paramValue name="gtfDir">$$dataDir$$</paramValue>
+        <paramValue name="project">$$projectName$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="cdsOnly">false</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeGtfForCufflinksCdsOnly" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGtfForGuidedCufflinks">
+        <paramValue name="outputFile">$$organismAbbrev$$_cds.gtf</paramValue>
+        <paramValue name="gtfDir">$$dataDir$$</paramValue>
+        <paramValue name="project">$$projectName$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="cdsOnly">true</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeSpliceSitesDatabase" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSpliceSitesMapFromGtf">
+        <paramValue name="gtfDir">$$dataDir$$</paramValue>
+        <paramValue name="gtfFile">$$organismAbbrev$$.gtf</paramValue>
+        <paramValue name="outputFile">$$organismAbbrev$$</paramValue>
+        <depends name="makeGtfForCufflinks"/>
+    </step>
+
+
+
 
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
     <depends name="makeGmapDatabase"/>
+    <depends name="makeGtfForCufflinks"/>
+    <depends name="makeGtfForCufflinksCdsOnly"/>
+    <depends name="makeSpliceSitesDatabase"/>
   </step>
 
-<!--
+  <step name="makeTopLevelSeqSizeFile"
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelSeqSizeFile">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="outputFile">$$topLevelSeqSizeFile$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
+
 <datasetTemplate class="rnaSeqExperiment">
+    <prop name="projectName"/>
     <prop name="organismAbbrev"/>
--->
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="limitNU"/>
+    <prop name="hasPairedEnds"/>
+    <prop name="isStrandSpecific"/>
+    <prop name="hasTimeSeries"/>
+    <prop name="alignWithCdsCoordinates"/>
+
    <!-- NOTE: we have duplication here for CDS.  be sure to make changes to both -->
  
    <!-- transcript coords -->
-<!--
-    <subgraph name="${name}_rnaSeq_experiment" xmlFile="rnaSeqOrChipSeqExperiment.xml" excludeIf="${alignWithCdsCoordinates}">
+    <subgraph name="${name}_rnaSeq_experiment" xmlFile="gsnapRnaSeqExperiment.xml" excludeIf="${alignWithCdsCoordinates}">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="experimentName">${name}</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
-      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
       <paramValue name="experimentDatasetVersion">${version}</paramValue>
       <paramValue name="limitNU">${limitNU}$</paramValue>
-      <paramValue name="variableLengthReads">${hasVariableLengthReads}</paramValue>
       <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
-      <paramValue name="hasTimeSeries">${hasTimeSeries}</paramValue>
       <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
-      <paramValue name="numInsertions">${numInsertions}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="spliceSitesDatabase">$$organismAbbrev$$.iit</paramValue>
+      <paramValue name="gtfFile">$$organismAbbrev$$.gtf</paramValue>
+      <paramValue name="gmapDatabase">$$organismAbbrev$$</paramValue>
       <depends name="mirrorToCluster"/>
+      <depends name="makeTopLevelSeqSizeFile"/>
+
     </subgraph>
--->
+
+
    <!-- CDS coords -->
-<!--
-    <subgraph name="${name}_rnaSeq_experiment_CDS" xmlFile="rnaSeqOrChipSeqExperiment.xml" includeIf="${alignWithCdsCoordinates}">
+    <subgraph name="${name}_rnaSeq_experiment_CDS" xmlFile="gsnapRnaSeqExperiment.xml" includeIf="${alignWithCdsCoordinates}">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="experimentName">${name}</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
-      <paramValue name="geneModelFileForSsa">$$cdsModelFileForSsa$$</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
       <paramValue name="experimentDatasetVersion">${version}</paramValue>
       <paramValue name="limitNU">${limitNU}$</paramValue>
-      <paramValue name="variableLengthReads">${hasVariableLengthReads}</paramValue>
       <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
-      <paramValue name="hasTimeSeries">${hasTimeSeries}</paramValue>
       <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
-      <paramValue name="numInsertions">${numInsertions}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="spliceSitesDatabase">$$organismAbbrev$$.iit</paramValue>
+      <paramValue name="gtfFile">$$organismAbbrev$$_cds.gtf</paramValue>
+      <paramValue name="gmapDatabase">$$organismAbbrev$$</paramValue>
       <depends name="mirrorToCluster"/>
+      <depends name="makeTopLevelSeqSizeFile"/>
     </subgraph>
+
+
+
 
     <subgraph name="${name}_analyze_rnaSeq_experiment" xmlFile="analyzeRnaSeqExperiment.xml">
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -102,6 +150,8 @@
     </subgraph>
 
   </datasetTemplate>
+
+<!--
 
   <datasetTemplate class="rnaSeqExperimentNoTranscripts">
     <prop name="organismAbbrev"/>
@@ -120,7 +170,6 @@
       <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
       <paramValue name="experimentDatasetVersion">${version}</paramValue>
       <paramValue name="limitNU">${limitNU}$</paramValue>
-      <paramValue name="variableLengthReads">${hasVariableLengthReads}</paramValue>
       <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
       <paramValue name="hasTimeSeries">${hasTimeSeries}</paramValue>
       <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
@@ -148,7 +197,6 @@
       <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_chipSeq_RSRC</paramValue>
       <paramValue name="experimentDatasetVersion">${version}</paramValue>
       <paramValue name="limitNU">${limitNU}$</paramValue>
-      <paramValue name="variableLengthReads">${hasVariableLengthReads}</paramValue>
       <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
       <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
       <paramValue name="numInsertions">${numInsertions}</paramValue>

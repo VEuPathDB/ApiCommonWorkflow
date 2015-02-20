@@ -1,22 +1,20 @@
 <workflowGraph name="">
     <param name="projectName"/>
     <param name="organismAbbrev"/>
+    <param name="organismDatasetLoaderXmlFile"/>
     <param name="experimentName"/>
     <param name="parentDataDir"/>
-    <param name="organismDatasetLoaderXmlFile"/>
-    <param name="geneModelFileForSsa"/>
-    <param name="genomicSeqsFileForSsa"/>
-    <param name="topLevelSeqSizeFile"/>
-    <param name="transcriptSeqsFileForSsa"/>
     <param name="genomeExtDbRlsSpec"/>
+    <param name="topLevelSeqSizeFile"/>
     <param name="experimentDatasetName"/>
     <param name="experimentDatasetVersion"/>
-    <param name="strandSpecific"/>
-    <param name="variableLengthReads"/>
-    <param name="hasPairedEnds"/>
     <param name="limitNU"/>
-    <param name="numInsertions"/>
+    <param name="hasPairedEnds"/>
+    <param name="strandSpecific"/>
     <param name="relativeWebServicesDir"/>
+  <param name="spliceSitesDatabase"/>
+  <param name="gtfFile"/>
+  <param name="gmapDatabase"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
@@ -43,26 +41,26 @@
       <depends name="experiment_RSRC"/>
     </step>
 
-    <subgraph name="analyzeSamples" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/rnaSeqOrChipSeqSamples.xml">
+    <subgraph name="analyzeSamples" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/rnaSeqSamples.xml">
       <paramValue name="experimentDataDir">$$dataDir$$</paramValue>
       <paramValue name="outputDir">$$samplesOutputDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
-      <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
       <paramValue name="experimentDatasetVersion">$$experimentDatasetVersion$$</paramValue>
-      <paramValue name="limitNU">$$limitNU$$</paramValue>
-      <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
-      <paramValue name="numInsertions">$$numInsertions$$</paramValue>
       <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="limitNU">$$limitNU$$</paramValue>
+      <paramValue name="spliceSitesDatabase">$$spliceSitesDatabase$$</paramValue>
+      <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+      <paramValue name="gmapDatabase">$$gmapDatabase$$</paramValue>
+
       <depends name="mirrorToCluster"/>
     </subgraph>
 
+
+<!-- TODO ... which file here is input?? -->
     <step name="normalizeBedGraph" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraph">
       <paramValue name="inputDir">$$dataDir$$</paramValue>
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
