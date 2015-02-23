@@ -26,8 +26,10 @@ sub run {
 
   my $cmd_mkdir = "mkdir -p $copyToDir";
 
-  #my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir --analysisConfig $analysisConfig"; restore for rebuild
-  my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir"; 
+  my $analysisConfig = "$workflowDataDir/$copyFromDir/$experimentDatasetName/final/analysisConfig.xml";
+
+  my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir --analysisConfig $analysisConfig"; 
+  #my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir"; 
 
 
   $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");
