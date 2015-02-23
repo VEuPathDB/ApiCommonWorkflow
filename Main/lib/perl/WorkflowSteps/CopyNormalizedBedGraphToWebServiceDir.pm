@@ -13,14 +13,14 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $relativeDir = $self->getParamValue('relativeDir');
   # my $analysisConfig = $self->getParamValue('analysisConfig'); restore for rebuild
-  my $experimentResourceName = $self->getParamValue('experimentDatasetName');
+  my $experimentDatasetName = $self->getParamValue('experimentDatasetName');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $organismNameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
 
-  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/bigwig/$experimentResourceName";
+  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/bigwig/$experimentDatasetName";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
