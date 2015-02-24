@@ -1,4 +1,4 @@
-<workflowGraph name="getAndMapProbes">
+<workflowGraph name="mapGenomicArrayProbes">
     <param name="dataDir"/>
     <param name="probeSetName"/>
     <param name="probeDatasetName"/>
@@ -6,13 +6,8 @@
     <param name="organismDatasetLoaderXmlFile"/>
     <param name="projectName"/>
     <param name="indexDir"/> 
-    <param name="organismAbbrev"/>
-    <param name="hasPairedEnds"/>
-    <param name="isColorspace"/>
-    <param name="removePCRDuplicates"/> 
-    <param name="extraBowtieParams"/> 
+    <param name="organismAbbrev"/> 
 
-    <!-- We be able to use dataDir directly without clobbering instead of making a subdir- not sure until we run in test mode -->
     <constant name="platformDir">$$dataDir$$/$$probeSetName$$</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -26,8 +21,8 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <step name="loadReporter" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPlatformReporter">
-      <paramValue name="fastaFile">$$platformDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue><!-- not sure this is correct-->
+    <step name="loadReporter" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPlatformReporter" stepLoadTypes="plugin">
+      <paramValue name="fastaFile">$$platformDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
       <paramValue name="extDbRlsSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
       <paramValue name="platformName">$$probeSetName$$</paramValue>
       <depends name="probe_RSRC"/>
@@ -47,24 +42,25 @@
       <paramValue name="sampleName">$$probeSetName$$</paramValue>
       <paramValue name="indexDir">$$indexDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
-      <paramValue name="isColorspace">$$isColorspace$$</paramValue>
-      <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
-      <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+      <paramValue name="hasPairedEnds">false</paramValue>
+      <paramValue name="isColorspace">false</paramValue>
+      <paramValue name="removePCRDuplicates">false</paramValue>
+      <paramValue name="extraBowtieParams">-D 20 -R 3 -N 1 -L 20 -i S,1,0.50 -I 0 -X 1000 -f</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-<!-- Parse BAM file directly in plugin below -->
-
-<!--LOAD DIRECTLY FROM BAM FILE HERE -->
-<!-- Load in to Platform.ReporterSet, Platform.Reporter and Platform.ReporterLocation table directly from bam file- will need new plugin -->
-
+    <step name="loadReporterLocations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertReporterLocation" stepLoadTypes="plugin">
+        <paramValue name="bamFile">$$experimentDataDir$$/analyze_$$probeSetName$$/master/mainresult/$$probeSetName.bam</paramValue>
+        <paramValue name="platformExtDbSpec">$$probeDatasetName$$</paramValue>
+        <depends name="runBowtie"/>
+    </step>
 
     <step name="document-getAndMapProbes"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
       <paramValue name="method">getAndMapProbes_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters">TODO: patch in later</paramValue>
+      <depends name="loadReporterLocations"/>
     </step>
 
 </workflowGraph>

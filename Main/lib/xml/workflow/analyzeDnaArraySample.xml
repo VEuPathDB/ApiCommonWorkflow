@@ -1,8 +1,6 @@
 <workflowGraph name="analyzeDnaArraySample">
     <param name="parentDataDir"/>
     <param name="experimentDatasetName"/>
-<!--    <param name="sampleDatasetName"/> -->
-<!--    <param name="probeExtDbRlsSpec"/> -->
     <param name="inputSampleFile"/>
     <param name="sampleName"/>
     <param name="configFilesDir"/>
@@ -13,48 +11,20 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-<!-- Not required for gus4 schema -->
-<!--    <step name="mapProbesToFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MapArrayProbesToArrayElementFeatures">
-      <paramValue name="inputFile">$$parentDataDir$$/$$experimentDatasetName$$/final/$$inputSampleFile$$</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/mapped_results.txt</paramValue>
-      <paramValue name="extDbRlsSpec">$$probeExtDbRlsSpec$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step> -->
-
-<!-- Replace with config for study tables -->
-<!--    <step name="writeRadConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteRadSampleConfig">
-      <paramValue name="configOutputFile">$$configFilesDir$$/$$sampleName$$_analysis_config.txt</paramValue>
-      <paramValue name="file">mapped_results.txt</paramValue>
-      <paramValue name="analysisName">$$sampleName$$</paramValue>
-      <paramValue name="protocolName">dna_array_simple</paramValue>
-      <depends name="mapProbesToFeatures"/>
-    </step> -->
-
-    <!-- config for study tables -->
     <step name="writeStudyConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteGenomicArrayConfig">
         <paramValue name="configOutputFile">$$configFilesDir$$/$$sampleName$$_config.txt</paramValue>
         <paramValue name="file">$$inputSampleFile$$</paramValue> 
         <paramValue name="analysisName">$$sampleName$$</paramValue>
-        <paramValue name="protocolName">genomic_array</paramValue>
-        <paramValue name="sourceIdType">array_element</paramValue>
+        <paramValue name="protocolName">cghArrayQuantification</paramValue>
+        <paramValue name="sourceIdType">reporter</paramValue>
         <paramValue name="inputProtocolAppNode"></paramValue>
         <depends name="mapProbesToFeatures"/>
     </step>
 
-<!-- Replace with call to study tables plugin -->
-<!--    <step name="loadDnaArrayFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimpleRadAnalysisFromConfig" stepLoadTypes="plugin">
-      <paramValue name="analysisWorkingDir">$$dataDir$$</paramValue>
-      <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_analysis_config.txt</paramValue>
-      <paramValue name="analysisResultView">DataTransformationResult</paramValue>
-      <paramValue name="naFeatureView">ArrayElementFeature</paramValue>
-      <paramValue name="useSqlLdr">true</paramValue>
-      <depends name="writeRadConfig"/>
-    </step> -->
-
     <step name="loadDnaArrayFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
         <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_config.txt</paramValue>
         <paramValue name="inputDir">$$dataDir$$</paramValue>
-        <paramValue name="extDbRlsSpec">$$sexperimentDatasetName$$</paramValue> <!--TODO: check this -->
+        <paramValue name="extDbRlsSpec">$$sexperimentDatasetName$$</paramValue> 
         <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
         <depends name="writeStudyConfig"/>
     </step>

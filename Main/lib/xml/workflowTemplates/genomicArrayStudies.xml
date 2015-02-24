@@ -16,10 +16,6 @@
     <prop name="organismAbbrev"/>
     <prop name="name"/>
     <prop name="version"/>
-    <prop name="hasPairedEnds"/>
-    <prop name="isColorspace"/>
-    <prop name="removePCRDuplicates"/>
-    <prop name="extraBowtieParams"/>
     
     <subgraph name="${name}_mapGenomicArrayProbes" xmlFile="mapGenomicArrayProbes.xml">
         <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -30,10 +26,6 @@
         <paramValue name="projectName">$$projectName$$</paramValue>
         <paramValue name="indexDir">$$bowtieDir$$</paramValue>
         <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-        <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
-        <paramValue name="isColorspace">${isColorspace}</paramValue>
-        <paramValue name="removePCRDuplicates">${removePCRDuplicates}</paramValue>
-        <paramValue name="extraBowtieParams">${extraBowtieParams}</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -49,16 +41,12 @@
     <subgraph name="${name}_mapGenomicArrayProbes" xmlFile="mapGenomicArrayProbes.xml">
         <paramValue name="dataDir">$$dataDir$$</paramValue> 
         <paramValue name="probeSetName">${name}</paramValue>
-        <paramValue name="probeDatasetName">${organismAbbrev}_chipChipPlatform_${name}_RSRC</paramValue>
+        <paramValue name="probeDatasetName">${organismAbbrev}_cghArrayPlatform_${name}_RSRC</paramValue>
         <paramValue name="probeDatasetVersion">${version}</paramValue>
         <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
         <paramValue name="projectName">$$projectName$$</paramValue>
         <paramValue name="indexDir">$$bowtieDir$$</paramValue>
         <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-        <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
-        <paramValue name="isColorspace">${isColorspace}</paramValue>
-        <paramValue name="removePCRDuplicates">${removePCRDuplicates}</paramValue>
-        <paramValue name="extraBowtieParams">${extraBowtieParams}</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -80,7 +68,6 @@
       <depends name="${chipChipPlatformName}_getAndMapProbes"/>
     </subgraph>
 
-<!-- will need to change plugins in this graph - see John's email -->
     <subgraph name="${experimentName}_chipChipSamples" xmlFile="generated/${projectName}/${organismAbbrev}/${experimentName}/chipChipSamples.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -112,13 +99,12 @@
       <depends name="${cghArrayPlatformName}_getAndMapProbes"/>
     </subgraph>
 
-<!-- will need to change plugins in this graph - see John's email -->
     <subgraph name="${experimentName}_cghArraySamples" xmlFile="generated/${projectName}/${organismAbbrev}/${experimentName}/dnaArraySamples.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="experimentDatasetName">${organismAbbrev}_cghArrayExper_${experimentName}_RSRC</paramValue>
-<!--      <paramValue name="probeExtDbRlsSpec">${organismAbbrev}_cghArrayPlatform_${cghArrayPlatformName}_RSRC|${cghArrayPlatformVersion}</paramValue> -->
+      <paramValue name="probeExtDbRlsSpec">${organismAbbrev}_cghArrayPlatform_${cghArrayPlatformName}_RSRC|${cghArrayPlatformVersion}</paramValue>
       <paramValue name="configFilesDir">$$dataDir$$/${organismAbbrev}_cghArrayExper_${experimentName}_RSRC/final</paramValue>
       <depends name="${experimentName}"/>
     </subgraph>

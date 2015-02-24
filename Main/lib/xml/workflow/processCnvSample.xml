@@ -3,9 +3,7 @@
     <param name="experimentDataDir"/>
     <param name="readsFilePath"/>
     <param name="readsFile"/>
-<!--    <param name="snpExtDbRlsSpec"/> -->
     <param name="sampleName"/>
-<!--    <param name="genomeExtDbRlsSpec"/> -->
     <param name="samtoolsIndex"/>
     <param name="chromSizesFile"/>
     <param name="genomicSeqsFile"/>
@@ -49,13 +47,9 @@
         <paramValue name="experimentDataDir">$$experimentDataDir$$</paramValue>
         <paramValue name="readsFile">$$readsFilePath$$/$$sampleName$$.fastq</paramValue>
         <paramValue name="pairedReadsFile">$$readsFilePath$$/$$sampleName$$.fastq.paired</paramValue> 
-<!--        <paramValue name="snpExtDbRlsSpec">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_copyNumberVariationSample_RSRC|dontcare</paramValue> -->
         <paramValue name="sampleName">$$sampleName$$</paramValue>
-<!--        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue> -->
-<!--        <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue> -->
         <paramValue name="indexDir">$$indexDir$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-<!--        <paramValue name="experimentName">$$experimentName$$</paramValue> -->
         <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
         <paramValue name="isColorspace">$$isColorspace$$</paramValue>
         <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
@@ -64,7 +58,6 @@
     </subgraph>
 
     
-    <!--Run Cufflinks-->
     <step name="runCufflinksForCNVs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunCufflinksForCNVs">
         <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
         <paramValue name="outputDir">$$sampleAnalysisDir$$/</paramValue>
@@ -73,7 +66,6 @@
         <depends name="runBowtie"/>
     </step>
 
-    <!--Calculate Ploidy-->
     <step name="calculatePloidy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculatePloidy">
         <paramValue name="outputDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="fpkmFile">$$sampleAnalysisDir$$/Cufflinks/genes.fpkm_tracking</paramValue>
@@ -82,7 +74,6 @@
         <depends name="runCufflinksForCNVs"/>
     </step>
 
-    <!--Calculate Gene CNVs -->
     <step name="calculateGeneCNVs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateGeneCNVs">
         <paramValue name="outputDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="fpkmFile">$$sampleAnalysisDir$$/Cufflinks/genes.fpkm_tracking</paramValue>
@@ -92,7 +83,6 @@
         <depends name="runCufflinksForCNVs"/>
     </step>    
 
-    <!--Write Ploidy config file -->
     <step name="writePloidyConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteCNVSampleConfig">
         <paramValue name="file">$$sampleName$$_Ploidy.txt</paramValue>
         <paramValue name="configOutputFile">$$sampleAnalysisDir$$/ploidyConfig.txt</paramValue>
@@ -102,7 +92,6 @@
         <depends name="calculatePloidy"/>
     </step>
 
-    <!--Load Ploidy -->
     <step name="insertPloidy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGeneOrChromosomeCNVs" stepLoadTypes="plugin">
         <paramValue name="inputDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="configFile">ploidyConfig.txt</paramValue>
@@ -113,7 +102,6 @@
     </step>
 
 
-    <!--Write Gene CNV config file -->
     <step name="writeCNVConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteCNVSampleConfig">
         <paramValue name="file">$$sampleName$$_geneCNVs.txt</paramValue>
         <paramValue name="configOutputFile">$$sampleAnalysisDir$$/geneCNVConfig.txt</paramValue>
@@ -123,7 +111,6 @@
         <depends name="calculateGeneCNVs"/>
     </step>
 
-    <!--Load Gene CNVs -->
     <step name="insertGeneCNVs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGeneOrChromosomeCNVs" stepLoadTypes="plugin">
         <paramValue name="inputDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="configFile">geneCNVConfig.txt</paramValue>
@@ -134,7 +121,6 @@
         <depends name="writeCNVConfigFile"/>
     </step>
 
-    <!--Make normalised coverage tracks for CNV-->
     <step name="createBinnedCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBinnedCoverageFile">
         <paramValue name="bamFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam</paramValue>
         <paramValue name="windowSize">1000</paramValue>
