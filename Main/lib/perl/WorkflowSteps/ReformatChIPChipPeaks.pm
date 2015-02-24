@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipSmoothedProfiles;
+package ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipPeaks;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -15,7 +15,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "reformatSmoothedProfiles.pl  --inputFile $workflowDataDir/$inputFile --outputFile $workflowDataDir/$outputFile";
+  my $cmd = "reformatPeaks.pl  --inputFile $workflowDataDir/$inputFile --outputFile $workflowDataDir/$outputFile";
 
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
