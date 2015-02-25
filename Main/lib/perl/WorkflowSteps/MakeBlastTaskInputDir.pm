@@ -61,7 +61,7 @@ $simSeqs
 ";
       close(F);
 
-      $blastArgs = $self->addExtraBlastArgs($worflowDataDir, $blastArgs);
+      $blastArgs = $self->addExtraBlastArgs($workflowDataDir, $blastArgs);
 
       # make blastParams file
       open(F, ">$localBlastParamsFile") || die "Can't open blast params file '$localBlastParamsFile' for writing";;
@@ -74,7 +74,7 @@ $simSeqs
 
 # can be overridden by subclasses
 sub testInput {
-    my ($self, $worflowDataDir) = @_;
+    my ($self, $workflowDataDir) = @_;
 
     my $queryFile = $self->getParamValue("queryFile");
     my $subjectFile = $self->getParamValue("subjectFile");
