@@ -36,7 +36,7 @@
 <!-- REPLACES RUM MAPPING GRAPH-->
     <subgraph name="runBowtie" xmlFile="runBowtie.xml">
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="experimentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="experimentDataDir">$$dataDir$$</paramValue>
       <paramValue name="readsFile">$$platformDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
       <paramValue name="pairedReadsFile"></paramValue>
       <paramValue name="sampleName">$$probeSetName$$</paramValue>
@@ -50,9 +50,10 @@
     </subgraph>
 
     <step name="loadReporterLocations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertReporterLocation" stepLoadTypes="plugin">
-        <paramValue name="bamFile">$$experimentDataDir$$/analyze_$$probeSetName$$/master/mainresult/$$probeSetName.bam</paramValue>
+        <paramValue name="bamFile">$$dataDir$$/analyze_$$probeSetName$$/master/mainresult/$$probeSetName$$.bam</paramValue>
         <paramValue name="platformExtDbSpec">$$probeDatasetName$$</paramValue>
         <depends name="runBowtie"/>
+        <depends name="loadReporter"/>
     </step>
 
     <step name="document-getAndMapProbes"

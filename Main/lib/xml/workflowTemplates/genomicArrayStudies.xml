@@ -12,20 +12,27 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
   <datasetTemplate class="chipChipPlatform">
     <prop name="organismAbbrev"/>
     <prop name="name"/>
     <prop name="version"/>
     
-    <subgraph name="${name}_mapGenomicArrayProbes" xmlFile="mapGenomicArrayProbes.xml">
+    <subgraph name="${name}_mapGenomicArrayProbes_CHiP" xmlFile="mapGenomicArrayProbes.xml">
         <paramValue name="dataDir">$$dataDir$$</paramValue>
         <paramValue name="probeSetName">${name}</paramValue>
         <paramValue name="probeDatasetName">${organismAbbrev}_chipChipPlatform_${name}_RSRC</paramValue>
         <paramValue name="probeDatasetVersion">${version}</paramValue>
         <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
         <paramValue name="projectName">$$projectName$$</paramValue>
-        <paramValue name="indexDir">$$bowtieDir$$</paramValue>
+        <paramValue name="indexDir">$$bowtieDir$$/genomicIndexes</paramValue>
         <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+        <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -33,20 +40,17 @@
     <prop name="organismAbbrev"/>
     <prop name="name"/>
     <prop name="version"/>
-    <prop name="hasPairedEnds"/>
-    <prop name="isColorspace"/>
-    <prop name="removePCRDuplicates"/>
-    <prop name="extraBowtieParams"/>
     
-    <subgraph name="${name}_mapGenomicArrayProbes" xmlFile="mapGenomicArrayProbes.xml">
+    <subgraph name="${name}_mapGenomicArrayProbes_CGH" xmlFile="mapGenomicArrayProbes.xml">
         <paramValue name="dataDir">$$dataDir$$</paramValue> 
         <paramValue name="probeSetName">${name}</paramValue>
         <paramValue name="probeDatasetName">${organismAbbrev}_cghArrayPlatform_${name}_RSRC</paramValue>
         <paramValue name="probeDatasetVersion">${version}</paramValue>
         <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
         <paramValue name="projectName">$$projectName$$</paramValue>
-        <paramValue name="indexDir">$$bowtieDir$$</paramValue>
+        <paramValue name="indexDir">$$bowtieDir$$/genomicIndexes</paramValue>
         <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+        <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -65,7 +69,7 @@
       <paramValue name="datasetName">${organismAbbrev}_chipChipExper_${experimentName}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="${chipChipPlatformName}_getAndMapProbes"/>
+      <depends name="${chipChipPlatformName}_mapGenomicArrayProbes_CHiP"/>
     </subgraph>
 
     <subgraph name="${experimentName}_chipChipSamples" xmlFile="generated/${projectName}/${organismAbbrev}/${experimentName}/chipChipSamples.xml">
@@ -96,7 +100,7 @@
       <paramValue name="datasetName">${organismAbbrev}_cghArrayExper_${experimentName}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="${cghArrayPlatformName}_getAndMapProbes"/>
+      <depends name="${cghArrayPlatformName}_mapGenomicArrayProbes_CGH"/>
     </subgraph>
 
     <subgraph name="${experimentName}_cghArraySamples" xmlFile="generated/${projectName}/${organismAbbrev}/${experimentName}/dnaArraySamples.xml">

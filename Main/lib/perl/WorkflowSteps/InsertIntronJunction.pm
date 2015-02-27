@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertIntronJunction;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -23,7 +23,7 @@ sub run {
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
 
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertRUMIntronFeature", $args);
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertIntronJunction", $args);
 }
 
 

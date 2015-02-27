@@ -10,7 +10,7 @@
 
     <constant name="dataDir">$$parentDataDir$$/analyze_ChIP_Chip_$$sampleName$$</constant>
     <constant name="peakFinderDataDir">$$dataDir$$/smoothedDataAndPeaks</constant>
-    <constand name="configFilesDir">$$dataDir$$/configFiles</constant>
+    <constant name="configFilesDir">$$dataDir$$/configFiles</constant>
 
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -71,7 +71,7 @@
     <step name="loadSmoothedProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
       <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_smoothedConfig.txt</paramValue>
       <paramValue name="inputDir">$$peakFinderDataDir$$</paramValue>
-      <paramValue name="extDbRlsSpec">$$sexperimentDatasetName$$</paramValue> 
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$</paramValue> 
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
       <depends name="writeSmoothedConfig"/>
     </step>
@@ -84,11 +84,11 @@
 
     <step name="writePeaksConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteGenomicArrayConfig">
       <paramValue name="configOutputFile">$$configFilesDir$$/$$sampleName$$_peaksConfig.txt</paramValue>
-      <paramValue name="file">$$peakFinderDataDir$$/peaksi_reformat.txt</paramValue> 
+      <paramValue name="file">$$peakFinderDataDir$$/peaks_reformat.txt</paramValue> 
       <paramValue name="analysisName">$$sampleName$$_peaks</paramValue>
       <paramValue name="protocolName">chipChipPeaks</paramValue>
       <paramValue name="sourceIdType">segment</paramValue>
-      <paramValue name="inputProtocolAppNode">chipChipSmoothed</paramValue>
+      <paramValue name="inputProtocolAppNode">$$sampleName$$_smoothed</paramValue>
       <depends name="reformatPeaks"/>
       <depends name="makeConfigFilesDir"/>
     </step>
@@ -96,9 +96,9 @@
     <step name="loadPeaksFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
       <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_peaksConfig.txt</paramValue>
       <paramValue name="inputDir">$$peakFinderDataDir$$</paramValue>
-      <paramValue name="extDbRlsSpec">$$sexperimentDatasetName$$</paramValue> 
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$</paramValue> 
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
-      <depends name="writeStudyConfig"/>
+      <depends name="writePeaksConfig"/>
     </step>
 
 </workflowGraph>

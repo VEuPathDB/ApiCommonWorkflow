@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeRUMTaskInputDir;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeGSNAPTaskInputDir;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -19,6 +19,7 @@ sub run {
   my $spliceSitesDatabase = $self->getParamValue("spliceSitesDatabase");
 my $gtfFile = $self->getParamValue("gtfFile");
 my $gmapDatabase = $self->getParamValue("gmapDatabase");
+my $gsnapDirectory = $self->getParamValue("gsnapDirectory");
 my $quantifyWithCufflinks = $self->getParamValue("quantifyWithCufflinks");
 my $writeBedFile = $self->getParamValue("writeBedFile");
 
@@ -51,9 +52,9 @@ my $writeBedFile = $self->getParamValue("writeBedFile");
 
       my $taskPropFileContent="
 mateA=$clusterWorkflowDataDir/$readFilePath
-genomeDatabase=$clusterWorkflowDataDir/$gmapDatabase
-gtfFile=$clusterWorkflowDataDir/$gtfFile
-iitFile=$clusterWorkflowDataDir/$spliceSitesDatabase
+genomeDatabase=$clusterWorkflowDataDir/$gsnapDirectory/$gmapDatabase
+gtfFile=$clusterWorkflowDataDir/$gsnapDirectory/$gtfFile
+iitFile=$clusterWorkflowDataDir/$gsnapDirectory/$spliceSitesDatabase
 nPaths=$limitNU
 quantifyWithCufflinks=$quantifyWithCufflinks
 writeBedFile=$writeBedFile

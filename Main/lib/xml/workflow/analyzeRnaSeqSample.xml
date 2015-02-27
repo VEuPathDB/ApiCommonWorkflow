@@ -7,10 +7,10 @@
     <param name="hasPairedEnds"/>
     <param name="limitNU"/>
     <param name="strandSpecific"/>
-      <param name="spliceSitesDatabase"/>
-      <param name="gtfFile"/>
-      <param name="gmapDatabase"/>
-
+    <param name="spliceSitesDatabase"/>
+    <param name="gtfFile"/>
+    <param name="gmapDatabase"/>
+    <param name="gsnapDirectory"/>
 
     <constant name="dataDir">$$parentDataDir$$/analyze_$$sampleName$$</constant>
 
@@ -35,6 +35,7 @@
       <paramValue name="spliceSitesDatabase">$$spliceSitesDatabase$$</paramValue>
       <paramValue name="gtfFile">$$gtfFile$$</paramValue>
       <paramValue name="gmapDatabase">$$gmapDatabase$$</paramValue>
+      <paramValue name="gsnapDirectory">$$gsnapDirectory$$</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
@@ -47,13 +48,14 @@
     </step>
 
 
-<!-- TODO:  Need to rename this table -->
-    <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRUMIntronFeature" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$dataDir$$/master/mainresult/junctions_all.rum</paramValue>
+    <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertIntronJunction" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/master/mainresult/junctions.tab</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">$$experimentExtDbRlsSpec$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
       <depends name="runGSNAPOnCluster"/>
     </step>
+
+
 
 </workflowGraph>
 
