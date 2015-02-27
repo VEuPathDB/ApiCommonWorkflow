@@ -24,15 +24,15 @@ sub getWebsiteFileCmd {
                 ||' | version='||
                sa.database_version
                 ||' | length=' ||
-               sa.length || ' | SO=' || so.term_name
+               sa.length || ' | SO=' || so.name
                as defline,
                ns.sequence
-           FROM dots.nasequence ns, sres.sequenceontology so,
+           FROM dots.nasequence ns, sres.ontologyTerm so,
                 ApidbTuning.${tuningTablePrefix}SequenceAttributes sa
           WHERE ns.na_sequence_id = sa.na_sequence_id
             AND sa.ncbi_tax_id = $ncbiTaxonId
             AND sa.is_top_level = 1 
-            AND so.so_id = sa.so_id
+            AND so.source_id = sa.so_id
 EOF
 
   my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"  --posStrand '\\+' --negStrand '-' ";
