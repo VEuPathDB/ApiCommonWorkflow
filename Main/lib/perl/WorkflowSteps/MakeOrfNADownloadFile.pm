@@ -28,14 +28,14 @@ sub getWebsiteFileCmd {
         ||'('||
        decode(fl.is_reversed, 1, '-', '+')
         ||') | length='||
-       (fl.end_max - fl.start_min + 1 )  || ' | sequence_SO=' || soseq.term_name as defline,
+       (fl.end_max - fl.start_min + 1 )  || ' | sequence_SO=' || soseq.name as defline,
        decode(fl.is_reversed,1, apidb.reverse_complement_clob(SUBSTR(enas.sequence,fl.start_min,fl.end_max - fl.start_min +1)),SUBSTR(enas.sequence,fl.start_min,fl.end_max - fl.start_min + 1))
        FROM dots.miscellaneous m,
             dots.translatedaafeature taaf,
             dots.translatedaasequence taas,
             sres.taxonname tn,
-            sres.sequenceontology so,
-            sres.sequenceontology soseq,
+            sres.ontologyTerm so,
+            sres.ontologyTerm soseq,
             ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
             dots.nasequence enas
       WHERE m.na_feature_id = taaf.na_feature_id
@@ -45,10 +45,10 @@ sub getWebsiteFileCmd {
         AND enas.na_sequence_id = fl.na_sequence_id 
         AND enas.taxon_id = $taxonId
         AND enas.taxon_id = tn.taxon_id
-        AND enas.sequence_ontology_id = soseq.sequence_ontology_id
+        AND enas.sequence_ontology_id = soseq.ontology_term_id
         AND tn.name_class = 'scientific name'
-        AND m.sequence_ontology_id = so.sequence_ontology_id
-        AND so.term_name = 'ORF'
+        AND m.sequence_ontology_id = so.ontology_term_id
+        AND so.name = 'ORF'
         AND taas.length >= $length
 EOF
 
