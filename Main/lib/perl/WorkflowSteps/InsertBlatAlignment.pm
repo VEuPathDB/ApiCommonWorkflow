@@ -44,7 +44,7 @@ sub run {
 
   if ($queryTable =~ /aasequence/i) {
       $dnaArgs = "";
-      $plugin = "ApiCommonData::Load::Plugin::LoadBLATProteinAlignments"
+      $plugin = "ApiCommonData::Load::Plugin::LoadBLATProteinAlignments";
       $loadedTable = "ApiDB.BlatProteinAlignment";
   }
       
