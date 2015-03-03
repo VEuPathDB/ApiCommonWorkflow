@@ -14,10 +14,11 @@ sub run {
   my $gusPassword = $self->getGusDatabasePassword();
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $dataDir = $self->getParamValue('dataDir');
-  my $sql="select 'alter table ' || owner || '.' || table_name || ' drop constraint ' || constraint_name || ';' as drops from all_constraints where owner = 'APIDB' and table_name in ('SNP','SEQUENCEVARIATION') and constraint_type in ('R','U','P')  order by table_name";
-  my $sql_cmd="makeFileWithSql --sql \"$sql\" --outFile $workflowDataDir/$dataDir/dropConstraintsToSnpTables.sql";
+  my $sql="select 'alter table ' || owner || '.' || table_name || ' drop constraint ' || constraint_name || ';' as drops from all_constraints where owner = 'APIDB' and table_name in ('SNP','SEQUENCEVARIATION') and constraint_type in ('R','U','P') union select 'drop index APIDB.' || index_name || ';' as drops from all_indexes where owner = 'APIDB' and table_name in ('SNP','SEQUENCEVARIATION')";
+  $self->runCmd($test, "mkdir $workflowDataDir/$dataDir") unless (-d "$workflowDataDir/$dataDir");
+  my $sql_cmd="makeFileWithSql --sql \"$sql\" --outFile $workflowDataDir/$dataDir/dropConstraintsAndIndexesFromSnpTables.sql";
   $self->runCmd($test, $sql_cmd);
-  my $drop_cmd = "sqlplus $gusLogin/$gusPassword\@$gusInstance $workflowDataDir/$dataDir/dropConstraintsToSnpTables.sql ";
+  my $drop_cmd = "sqlplus $gusLogin/$gusPassword\@$gusInstance \@$workflowDataDir/$dataDir/dropConstraintsAndIndexesFromSnpTables.sql ";
   my $add_cmd = "sqlplus $gusLogin/$gusPassword\@$gusInstance \@$ENV{GUS_HOME}/lib/sql/apidbschema/addConstraintsAndIndexesToSnpTables.sql ";
 
   if ($undo) {
