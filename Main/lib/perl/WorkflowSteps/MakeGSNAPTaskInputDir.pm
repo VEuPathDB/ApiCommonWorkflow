@@ -18,6 +18,8 @@ sub run {
   my $createJunctionsFile = $self->getParamValue("createJunctionsFile");
   my $spliceSitesDatabase = $self->getParamValue("spliceSitesDatabase");
 my $gtfFile = $self->getParamValue("gtfFile");
+  my $topLevelSeqSizeFile = $self->getParamValue("topLevelSeqSizeFile");
+
 my $gmapDatabase = $self->getParamValue("gmapDatabase");
 my $gsnapDirectory = $self->getParamValue("gsnapDirectory");
 my $quantifyWithCufflinks = $self->getParamValue("quantifyWithCufflinks");
@@ -60,6 +62,7 @@ quantifyWithCufflinks=$quantifyWithCufflinks
 writeBedFile=$writeBedFile
 isStrandSpecific=$strandSpecific
 quantifyJunctions=$createJunctionsFile
+topLevelSeqSizeFile=$clusterWorkflowDataDir/$gsnapDirectory/$topLevelSeqSizeFile
 ";
 
       $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$readFilePath.paired\n" if($hasPairedEnds);

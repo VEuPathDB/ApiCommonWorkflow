@@ -55,6 +55,12 @@
     </step>
 
 
+  <step name="makeTopLevelSeqSizeFile"
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelSeqSizeFile">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="outputFile">$$topLevelSeqSizeFile$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
 
 
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
@@ -63,15 +69,8 @@
     <depends name="makeGtfForCufflinks"/>
     <depends name="makeGtfForCufflinksCdsOnly"/>
     <depends name="makeSpliceSitesDatabase"/>
+    <depends name="makeTopLevelSeqSizeFile"/>
   </step>
-
-  <step name="makeTopLevelSeqSizeFile"
-        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelSeqSizeFile">
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="outputFile">$$topLevelSeqSizeFile$$</paramValue>
-    <depends name="makeDataDir"/>
-  </step>
-
 
 
 <datasetTemplate class="rnaSeqExperiment">
