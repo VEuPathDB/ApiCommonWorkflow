@@ -15,7 +15,7 @@ sub run {
   my $analysisName = $self->getParamValue('analysisName');
   my $protocolName = $self->getParamValue('protocolName');
   my $sourceIdType = $self->getParamValue('sourceIdType');
-  my $inputProtocolAppNode = $self->getParamValue('inputProtocol');
+  my $inputProtocolAppNode = $self->getParamValue('inputProtocolAppNode');
 
   my $paramValues = "--file $file --outputFile $workflowDataDir/$configOutputFile --name '$analysisName' --protocol '$protocolName' --sourceIdType $sourceIdType";
 

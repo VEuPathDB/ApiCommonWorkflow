@@ -53,13 +53,13 @@
 
     <step name="reformatSmoothedProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipSmoothedProfiles">
      <paramValue name="inputFile">$$peakFinderDataDir$$/smoothedProfiles.txt</paramValue>
-     <paramValue name="outputFile">$$peakFinderDataDir$$smoothedProfiles_reformat.txt</paramValue>
+     <paramValue name="outputFile">$$peakFinderDataDir$$/smoothedProfiles_reformat.txt</paramValue>
      <depends name="runChIPChipPeakFinderAndSmoother"/>
     </step>
 
-    <step name="writeSmoothedConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteGenomicArrayConfig">
+    <step name="writeSmoothedConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteGenomicArrayStudyConfig">
       <paramValue name="configOutputFile">$$configFilesDir$$/$$sampleName$$_smoothedConfig.txt</paramValue>
-      <paramValue name="file">$$peakFinderDataDir$$/smoothedProfiles_reformat.txt</paramValue> 
+      <paramValue name="file">smoothedProfiles_reformat.txt</paramValue> 
       <paramValue name="analysisName">$$sampleName$$_smoothed</paramValue>
       <paramValue name="protocolName">chipChipSmoothed</paramValue>
       <paramValue name="sourceIdType">segment</paramValue>
@@ -71,7 +71,7 @@
     <step name="loadSmoothedProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
       <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_smoothedConfig.txt</paramValue>
       <paramValue name="inputDir">$$peakFinderDataDir$$</paramValue>
-      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$</paramValue> 
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|%</paramValue> 
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
       <depends name="writeSmoothedConfig"/>
     </step>
@@ -82,9 +82,9 @@
       <depends name="runChIPChipPeakFinderAndSmoother"/>
     </step>
 
-    <step name="writePeaksConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteGenomicArrayConfig">
+    <step name="writePeaksConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteGenomicArrayStudyConfig">
       <paramValue name="configOutputFile">$$configFilesDir$$/$$sampleName$$_peaksConfig.txt</paramValue>
-      <paramValue name="file">$$peakFinderDataDir$$/peaks_reformat.txt</paramValue> 
+      <paramValue name="file">peaks_reformat.txt</paramValue> 
       <paramValue name="analysisName">$$sampleName$$_peaks</paramValue>
       <paramValue name="protocolName">chipChipPeaks</paramValue>
       <paramValue name="sourceIdType">segment</paramValue>
@@ -96,8 +96,9 @@
     <step name="loadPeaksFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
       <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_peaksConfig.txt</paramValue>
       <paramValue name="inputDir">$$peakFinderDataDir$$</paramValue>
-      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$</paramValue> 
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|%</paramValue> 
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
+      <depends name="loadSmoothedProfilesFromConfig"/>
       <depends name="writePeaksConfig"/>
     </step>
 
