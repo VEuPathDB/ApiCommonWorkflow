@@ -19,13 +19,13 @@ sub getWebsiteFileCmd {
 
   my $sql = <<"EOF";
      SELECT gf.source_id
-                || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
+                || decode(deprecated.is_deprecated, 1, ' | deprecated=true', '')
                 ||' | organism='||
-            replace( gf.organism, ' ', '_')
+            replace( tn.name, ' ', '_')
                 ||' | product='||
             product_name.product
                 ||' | location='||
-            fl.sequence_source_id
+            ns.source_id
                 ||':'||
             fl.start_min
                 ||'-'||
@@ -33,16 +33,17 @@ sub getWebsiteFileCmd {
                 ||'('||
             decode(fl.is_reversed, 1, '-', '+')
                 ||') | length='||
-            snas.length || ' | sequence_SO=' || soseq.term_name
-                || ' | SO=' || gf.so_term_name || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
+            snas.length || ' | sequence_SO=' || soseq.name
+                || ' | SO=' || so.name || decode(deprecated.is_deprecated, 1, ' | deprecated=true', '')
             as defline,
             snas.sequence
-           FROM ApidbTuning.${tuningTablePrefix}GeneAttributes gf,
+           FROM dots.GeneFeature gf,
+--              ApidbTuning.${tuningTablePrefix}GeneAttributes gf,
                 dots.transcript t,
-                dots.splicednasequence snas,
-                ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
+                dots.splicednasequence snas, dots.NaLocation fl,
+--                ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
                 dots.nasequence ns,
-                sres.sequenceontology soseq,
+                sres.ontologyTerm soseq, sres.ontologyTerm so, sres.taxonName tn,
                 (select gf.na_feature_id,
                         substr(coalesce(preferred_product.product, any_product.product, gf.product, 'unspecified product'),
                                1, 300)
@@ -75,15 +76,25 @@ sub getWebsiteFileCmd {
                    and gf.na_feature_id = any_product.na_feature_id(+)
                    and gf.na_feature_id = preferred_name.na_feature_id(+)
                    and gf.na_feature_id = any_name.na_feature_id(+)
-                ) product_name
+                ) product_name,
+                (select distinct drnf.na_feature_id, 1 as is_deprecated
+                 from dots.DbRefNaFeature drnf, sres.DbRef dr, sres.ExternalDatabaseRelease edr, sres.ExternalDatabase ed
+                 where drnf.db_ref_id = dr.db_ref_id
+                   and dr.external_database_release_id = edr.external_database_release_id
+                   and edr.external_database_id = ed.external_database_id
+                   and ed.name = 'gassAWB_dbxref_gene2Deprecated_RSRC') deprecated
       WHERE gf.na_feature_id = t.parent_id
-        AND ns.na_sequence_id = fl.na_sequence_id
+        and gf.na_feature_id = deprecated.na_feature_id(+)
+        AND gf.sequence_ontology_id = so.ontology_term_id
+        AND ns.na_sequence_id = gf.na_sequence_id
         AND t.na_sequence_id = snas.na_sequence_id
         AND gf.na_feature_id = fl.na_feature_id
-        AND gf.so_term_name != 'repeat_region'
+        AND so.name != 'repeat_region'
         AND gf.ncbi_tax_id = $ncbiTaxonId
-        AND fl.is_top_level = 1
-        AND ns.sequence_ontology_id = soseq.sequence_ontology_id
+--        AND fl.is_top_level = 1
+        AND ns.sequence_ontology_id = soseq.ontology_term_id
+        AND ns.taxon_id = tn.taxon_id
+        AND tn.name_class = 'scientific name'
         and gf.na_feature_id = product_name.na_feature_id
 EOF
 

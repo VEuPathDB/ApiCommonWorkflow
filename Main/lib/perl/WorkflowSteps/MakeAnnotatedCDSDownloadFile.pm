@@ -24,7 +24,7 @@ sub getWebsiteFileCmd {
             || least(gf.coding_start,gf.coding_end) ||'-'
             || greatest(gf.coding_start,gf.coding_end)
             || '('|| decode(fl.is_reversed, 1, '-', '+') || ') | length='
-            || (abs(gf.coding_start - gf.coding_end) + 1) || ' | sequence_SO=' || soseq.term_name
+            || (abs(gf.coding_start - gf.coding_end) + 1) || ' | sequence_SO=' || soseq.name
             || ' | SO=' || gf.so_term_name || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
             as defline,
            substr(snas.sequence,
@@ -36,7 +36,7 @@ sub getWebsiteFileCmd {
                 dots.splicednasequence snas,
                 dots.translatedaafeature taaf,
                 dots.nasequence ns,
-                sres.sequenceontology soseq,
+                sres.ontologyTerm soseq,
                 (select gf.na_feature_id,
                         substr(coalesce(preferred_product.product, any_product.product, gf.product, 'unspecified product'),
                                1, 300)
@@ -79,7 +79,7 @@ sub getWebsiteFileCmd {
         AND gf.ncbi_tax_id = $ncbiTaxonId 
         AND t.na_feature_id = taaf.na_feature_id
         AND fl.is_top_level = 1
-        AND ns.sequence_ontology_id = soseq.sequence_ontology_id
+        AND ns.sequence_ontology_id = soseq.ontology_term_id
         and gf.na_feature_id = product_name.na_feature_id
 EOF
 
