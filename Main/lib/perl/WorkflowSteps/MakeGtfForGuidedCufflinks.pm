@@ -15,8 +15,9 @@ sub run {
     my $outputFile = $self->getParamValue("outputFile");
     my $project = $self->getParamValue("project");
     my $genomeExtDbRlsSpec = $self->getParamValue("genomeExtDbRlsSpec");
+    my $cdsOnly = $self->getParamValue("cdsOnly");
 
-    my $cmd = "makeGtf.pl --outputFile $workflowDataDir/$gtfDir/$outputFile --project $project --genomeExtDbRlsSpec $genomeExtDbRlsSpec";
+    my $cmd = "makeGtf.pl --outputFile $workflowDataDir/$gtfDir/$outputFile --project $project --genomeExtDbRlsSpec '$genomeExtDbRlsSpec'";
 
     if($cdsOnly) {
       $cmd .= " --cds_only";
