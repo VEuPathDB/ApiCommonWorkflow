@@ -18,7 +18,7 @@ sub getWebsiteFileCmd {
   my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $sql = <<"EOF";
-     SELECT gf.source_id
+     SELECT t.source_id || ' | gene=' || gf.source_id
                 || decode(deprecated.is_deprecated, 1, ' | deprecated=true', '')
                 ||' | organism='||
             replace( tn.name, ' ', '_')
@@ -38,12 +38,10 @@ sub getWebsiteFileCmd {
             as defline,
             snas.sequence
            FROM dots.GeneFeature gf,
---              ApidbTuning.${tuningTablePrefix}GeneAttributes gf,
                 dots.transcript t,
                 dots.splicednasequence snas, dots.NaLocation fl,
---                ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
                 dots.nasequence ns,
-                sres.ontologyTerm soseq, sres.ontologyTerm so, sres.taxonName tn,
+                sres.ontologyTerm soseq, sres.ontologyTerm so, sres.taxonName tn, sres.Taxon,
                 (select gf.na_feature_id,
                         substr(coalesce(preferred_product.product, any_product.product, gf.product, 'unspecified product'),
                                1, 300)
@@ -90,7 +88,8 @@ sub getWebsiteFileCmd {
         AND t.na_sequence_id = snas.na_sequence_id
         AND gf.na_feature_id = fl.na_feature_id
         AND so.name != 'repeat_region'
-        AND gf.ncbi_tax_id = $ncbiTaxonId
+        AND ns.taxon_id = taxon.taxon_id
+        AND taxon.ncbi_tax_id = $ncbiTaxonId
 --        AND fl.is_top_level = 1
         AND ns.sequence_ontology_id = soseq.ontology_term_id
         AND ns.taxon_id = tn.taxon_id

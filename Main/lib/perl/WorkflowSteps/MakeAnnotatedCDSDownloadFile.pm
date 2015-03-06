@@ -31,12 +31,9 @@ sub getWebsiteFileCmd {
                   taaf.translation_start,
                   taaf.translation_stop - taaf.translation_start + 1) as sequence
            from ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
-                ApidbTuning.${tuningTablePrefix}GeneAttributes gf,
-                dots.transcript t,
-                dots.splicednasequence snas,
-                dots.translatedaafeature taaf,
-                dots.nasequence ns,
-                sres.ontologyTerm soseq,
+                ApidbTuning.${tuningTablePrefix}TranscriptAttributes gf,
+                dots.transcript t, dots.splicednasequence snas, dots.translatedaafeature taaf,
+                dots.nasequence ns, sres.ontologyTerm soseq, sres.taxon,
                 (select gf.na_feature_id,
                         substr(coalesce(preferred_product.product, any_product.product, gf.product, 'unspecified product'),
                                1, 300)
@@ -76,10 +73,11 @@ sub getWebsiteFileCmd {
         AND gf.na_feature_id = fl.na_feature_id
         AND gf.so_term_name != 'repeat_region'
         AND gf.so_term_name = 'protein_coding'
-        AND gf.ncbi_tax_id = $ncbiTaxonId 
+        AND taxon.ncbi_tax_id = $ncbiTaxonId 
         AND t.na_feature_id = taaf.na_feature_id
         AND fl.is_top_level = 1
         AND ns.sequence_ontology_id = soseq.ontology_term_id
+        AND ns.taxon_id = taxon.taxon_id
         and gf.na_feature_id = product_name.na_feature_id
 EOF
 
