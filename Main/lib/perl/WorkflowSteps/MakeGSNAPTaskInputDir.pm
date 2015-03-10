@@ -62,7 +62,7 @@ quantifyWithCufflinks=$quantifyWithCufflinks
 writeBedFile=$writeBedFile
 isStrandSpecific=$strandSpecific
 quantifyJunctions=$createJunctionsFile
-topLevelSeqSizeFile=$clusterWorkflowDataDir/$gsnapDirectory/$topLevelSeqSizeFile
+topLevelSeqSizeFile=$clusterWorkflowDataDir/$topLevelSeqSizeFile
 ";
 
       $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$readFilePath.paired\n" if($hasPairedEnds);
