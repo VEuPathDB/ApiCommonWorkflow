@@ -12,10 +12,15 @@
   <param name="isAnnotatedGenome"/>
 
   <constant name="dataDir">$$parentDataDir$$/gsnap</constant>
+  <constant name="arrayStudiesDir">$$dataDir$$/arrayStudies</constant>
   <constant name="topLevelSeqSizeFile">$$dataDir$$/topLevelSeqSizes.txt</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeArrayStudiesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$arrayStudiesDir$$</paramValue>
   </step>
 
   <step name="makeGmapDatabase" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGmapDatabase">
@@ -70,6 +75,7 @@
     <depends name="makeGtfForCufflinksCdsOnly"/>
     <depends name="makeSpliceSitesDatabase"/>
     <depends name="makeTopLevelSeqSizeFile"/>
+    <depends name="makeArrayStudiesDir"/>
   </step>
 
 
@@ -132,9 +138,6 @@
       <depends name="makeTopLevelSeqSizeFile"/>
     </subgraph>
 
-
-
-
     <subgraph name="${name}_analyze_rnaSeq_experiment" xmlFile="analyzeRnaSeqExperiment.xml">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -149,6 +152,118 @@
     </subgraph>
 
   </datasetTemplate>
+
+  <datasetTemplate class="microarrayPlatform">
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="limitNU"/>
+    <prop name="variableLengthReads"/>
+    <prop name="isAffymetrixGeneArray"/>
+    <prop name="isNimbleGenGeneArray"/>
+    <prop name="vendorMappingFileName"/>
+    <prop name="probeRows"/>
+    <prop name="probeCols"/>
+    
+    <subgraph name="${name}_getAndMapProbes" xmlFile="getAndMapProbes.xml">
+      <paramValue name="parentDataDir">$$arrayStudiesDir$$</paramValue>
+      <paramValue name="gsnapDir">$$dataDir$$</paramValue>
+      <paramValue name="probeSetName">${name}</paramValue>
+      <paramValue name="probeDatasetName">${organismAbbrev}_microarrayPlatform_${name}_RSRC</paramValue>
+      <paramValue name="probeDatasetVersion">${version}</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="limitNU">${limitNU}</paramValue>
+      <paramValue name="spliceSitesDatabase">$$organismAbbrev$$.iit</paramValue>
+      <paramValue name="gtfFile">$$organismAbbrev$$.gtf</paramValue>
+      <paramValue name="gmapDatabase">$$organismAbbrev$$</paramValue>
+      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="makeCdfFile">${isAffymetrixGeneArray}</paramValue>
+      <paramValue name="makeNdfFile">${isNimbleGenGeneArray}</paramValue>
+      <paramValue name="vendorMappingFileName">${vendorMappingFileName}</paramValue>
+      <paramValue name="outputGeneProbeMappingTabFile">$$arrayStudiesDir$$/${name}/geneProbeMapping.tab</paramValue>
+      <paramValue name="probeRows">${probeRows}</paramValue>
+      <paramValue name="probeCols">${probeCols}</paramValue>
+      
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="microarrayPlatformWithProviderMapping">
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="isAffymetrixGeneArray"/>
+    <prop name="isNimbleGenGeneArray"/>
+    
+    <subgraph name="${name}_probe_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_microarrayPlatform_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$arrayStudiesDir$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+    <step name="${name}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$arrayStudiesDir$$/${name}</paramValue>
+      <depends name="${name}_probe_RSRC"/>
+    </step>
+
+    <step name="${name}_getAndMapProbes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyProviderProbeMappingFiles">
+      <paramValue name="outputDir">$$arrayStudiesDir$$/${name}</paramValue>
+      <paramValue name="inputDir">$$arrayStudiesDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC/final</paramValue>
+      <paramValue name="providedMappingFileName">${providedMappingFileName}</paramValue>
+      <paramValue name="outputGeneProbeMappingTabFile">$$arrayStudiesDir$$/${name}/geneProbeMapping.tab</paramValue>
+      <paramValue name="makeCdfFile">${isAffymetrixGeneArray}</paramValue>
+      <paramValue name="makeNdfFile">${isNimbleGenGeneArray}</paramValue>
+      <depends name="${name}_makeDataDir"/>
+    </step>
+   </datasetTemplate>
+
+  <datasetTemplate class="microarrayExpressionExperiment">
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
+    <prop name="experimentDisplayName"/>
+    <prop name="microarrayPlatformName"/>
+    <prop name="doExpressionAnalysis"/>
+    <prop name="hasTimeSeries"/>
+    <prop name="usesAffymetrixGeneArray"/>
+    <prop name="usesNimbleGenGeneArray"/>
+
+    <subgraph name="${experimentName}" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_microarrayExpression_${experimentName}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$arrayStudiesDir$$</paramValue>
+      <depends name="${microarrayPlatformName}_getAndMapProbes"/>
+    </subgraph>
+
+    <subgraph name="${experimentName}_analyzeMicroarrayExperiment" xmlFile="analyzeMicroarrayExperiment.xml">
+      <paramValue name="parentDataDir">$$arrayStudiesDir$$</paramValue>
+      <paramValue name="experimentDatasetName">${organismAbbrev}_microarrayExpression_${experimentName}_RSRC</paramValue>
+      <paramValue name="experimentDatasetVersion">${experimentVersion}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="doExpressionAnalysis">${doExpressionAnalysis}</paramValue>
+      <paramValue name="hasTimeSeries">${hasTimeSeries}</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="platform">${microarrayPlatformName}</paramValue>
+      <paramValue name="expectCdfFile">${usesAffymetrixGeneArray}</paramValue>
+      <paramValue name="expectNdfFile">${usesNimbleGenGeneArray}</paramValue>
+
+      <depends name="${experimentName}"/>
+    </subgraph>
+  </datasetTemplate>
+
+
+
+
+
+
+
+
+
+
+
 
 <!--
 
