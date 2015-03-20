@@ -11,6 +11,7 @@
     <param name="limitNU"/>
     <param name="spliceSitesDatabase"/>
     <param name="gtfFile"/>
+    <param name="maskFile"/>
     <param name="gmapDatabase"/>
     <param name="topLevelSeqSizeFile"/>
     <param name="makeCdfFile"/>
@@ -57,6 +58,7 @@
       <paramValue name="quantifyWithCufflinks">false</paramValue>
       <paramValue name="spliceSitesDatabase">$$spliceSitesDatabase$$</paramValue>
       <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+      <paramValue name="maskFile">$$maskFile$$</paramValue>
       <paramValue name="gmapDatabase">$$gmapDatabase$$</paramValue>
       <paramValue name="gsnapDirectory">$$gsnapDir$$</paramValue>
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
@@ -64,14 +66,14 @@
     </subgraph>
 
     <step name="loadReporterLocationsUnique" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertReporterLocation" stepLoadTypes="plugin">
-        <paramValue name="bamFile">$$platformDir$$/analyze_$$probeSetName$$/master/mainresult/results_nu_sorted.bam</paramValue>
+        <paramValue name="bamFile">$$platformDir$$/master/mainresult/results_nu_sorted.bam</paramValue>
         <paramValue name="platformExtDbSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
         <depends name="runGSNAP"/>
         <depends name="loadReporter"/>
     </step>
 
     <step name="loadReporterLocationsNu" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertReporterLocation" stepLoadTypes="plugin">
-        <paramValue name="bamFile">$$platformDir$$/analyze_$$probeSetName$$/master/mainresult/results_unique_sorted.bam</paramValue>
+        <paramValue name="bamFile">$$platformDir$$/master/mainresult/results_unique_sorted.bam</paramValue>
         <paramValue name="platformExtDbSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
         <depends name="loadReporterLocationsUnique"/>
     </step>

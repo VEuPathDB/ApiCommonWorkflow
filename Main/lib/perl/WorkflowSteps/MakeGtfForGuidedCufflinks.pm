@@ -6,6 +6,9 @@ use strict;
 use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
+
+sub getSequenceOntologyTermString { $_[0]->{_sequence_ontology_term_string} }
+
 sub run {
     my ($self, $test, $undo) = @_;
 
@@ -15,9 +18,12 @@ sub run {
     my $outputFile = $self->getParamValue("outputFile");
     my $project = $self->getParamValue("project");
     my $genomeExtDbRlsSpec = $self->getParamValue("genomeExtDbRlsSpec");
-    my $cdsOnly = $self->getParamValue("cdsOnly");
+    my $cdsOnly = $self->getBooleanParamValue("cdsOnly");
 
     my $cmd = "makeGtf.pl --outputFile $workflowDataDir/$gtfDir/$outputFile --project $project --genomeExtDbRlsSpec '$genomeExtDbRlsSpec'";
+    if(my $soTermString = $self->getSequenceOntologyTermString()) {
+      $cmd .= " --sequence_ontology_term $soTermString";
+    }
 
     if($cdsOnly) {
       $cmd .= " --cds_only";

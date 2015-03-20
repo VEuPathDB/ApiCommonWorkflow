@@ -21,6 +21,7 @@
 
   <step name="makeArrayStudiesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$arrayStudiesDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </step>
 
   <step name="makeGmapDatabase" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGmapDatabase">
@@ -52,6 +53,18 @@
         <depends name="makeDataDir"/>
     </step>
 
+
+    <step name="makeMaskGtfForCufflinks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGsnapMaskFile">
+        <paramValue name="outputFile">$$organismAbbrev$$_mask.gtf</paramValue>
+        <paramValue name="gtfDir">$$dataDir$$</paramValue>
+        <paramValue name="project">$$projectName$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="cdsOnly">false</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+
     <step name="makeSpliceSitesDatabase" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSpliceSitesMapFromGtf">
         <paramValue name="gtfDir">$$dataDir$$</paramValue>
         <paramValue name="gtfFile">$$organismAbbrev$$.gtf</paramValue>
@@ -76,6 +89,7 @@
     <depends name="makeSpliceSitesDatabase"/>
     <depends name="makeTopLevelSeqSizeFile"/>
     <depends name="makeArrayStudiesDir"/>
+    <depends name="makeGtfForCufflinks"/>
   </step>
 
 
@@ -110,6 +124,7 @@
       <paramValue name="spliceSitesDatabase">$$organismAbbrev$$.iit</paramValue>
       <paramValue name="gtfFile">$$organismAbbrev$$.gtf</paramValue>
       <paramValue name="gmapDatabase">$$organismAbbrev$$</paramValue>
+      <paramValue name="maskFile">$$organismAbbrev$$_mask.gtf</paramValue>
       <depends name="mirrorToCluster"/>
       <depends name="makeTopLevelSeqSizeFile"/>
 
@@ -134,6 +149,7 @@
       <paramValue name="spliceSitesDatabase">$$organismAbbrev$$.iit</paramValue>
       <paramValue name="gtfFile">$$organismAbbrev$$_cds.gtf</paramValue>
       <paramValue name="gmapDatabase">$$organismAbbrev$$</paramValue>
+      <paramValue name="maskFile">$$organismAbbrev$$_mask.gtf</paramValue>
       <depends name="mirrorToCluster"/>
       <depends name="makeTopLevelSeqSizeFile"/>
     </subgraph>
@@ -176,6 +192,7 @@
       <paramValue name="limitNU">${limitNU}</paramValue>
       <paramValue name="spliceSitesDatabase">$$organismAbbrev$$.iit</paramValue>
       <paramValue name="gtfFile">$$organismAbbrev$$.gtf</paramValue>
+      <paramValue name="maskFile">$$organismAbbrev$$_mask.gtf</paramValue>
       <paramValue name="gmapDatabase">$$organismAbbrev$$</paramValue>
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
       <paramValue name="makeCdfFile">${isAffymetrixGeneArray}</paramValue>

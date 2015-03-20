@@ -18,6 +18,7 @@ sub run {
   my $createJunctionsFile = $self->getParamValue("createJunctionsFile");
   my $spliceSitesDatabase = $self->getParamValue("spliceSitesDatabase");
 my $gtfFile = $self->getParamValue("gtfFile");
+my $maskFile = $self->getParamValue("maskFile");
   my $topLevelSeqSizeFile = $self->getParamValue("topLevelSeqSizeFile");
 
 my $gmapDatabase = $self->getParamValue("gmapDatabase");
@@ -56,6 +57,7 @@ my $writeBedFile = $self->getParamValue("writeBedFile");
 mateA=$clusterWorkflowDataDir/$readFilePath
 genomeDatabase=$clusterWorkflowDataDir/$gsnapDirectory/$gmapDatabase
 gtfFile=$clusterWorkflowDataDir/$gsnapDirectory/$gtfFile
+maskFile=$clusterWorkflowDataDir/$gsnapDirectory/$maskFile
 iitFile=$clusterWorkflowDataDir/$gsnapDirectory/$spliceSitesDatabase
 nPaths=$limitNU
 quantifyWithCufflinks=$quantifyWithCufflinks
