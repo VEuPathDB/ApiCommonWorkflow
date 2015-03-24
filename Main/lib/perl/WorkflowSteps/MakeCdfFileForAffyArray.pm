@@ -19,7 +19,7 @@ sub run {
   my $cols = $self->getParamValue('probeCols');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd1 = "get_pbase-tbase.pl $workflowDataDir/$probename2sequenceInputFile 1 > $workflowDataDir/pbase-tbase.out";
+  my $cmd1 = "makePbaseTbase.pl $workflowDataDir/$probename2sequenceInputFile> $workflowDataDir/pbase-tbase.out";
 
   # builds the header for the .cdf file
   my $cmd2 = "makeCdfHeader.pl  --outPutFile $workflowDataDir/$outputCdfFile --gene2probes $workflowDataDir/$gene2probesInputFile --name $name --rows $rows --cols $cols --minProbes $MIN_PROBES";
