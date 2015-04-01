@@ -1,3 +1,4 @@
+
  <workflowGraph name="">
   <param name="parentDataDir"/>
   <param name="datasetLoaderXmlFileName"/>
@@ -8,17 +9,50 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
- 
-<datasetTemplate class="customOntologyEntries">
+  <step name="manuallyImproveIsolatesVocabulary" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+    <depends name="makeDataDir"/>
+  </step>
+
+  <datasetTemplate class="ontologyTerms">
     <prop name="name"/>
-    <prop name="organismAbbrev"/>
-    <subgraph name="custom_ontology_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">Custom_Ontology_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
+    <prop name="version"/>
+    <subgraph name="${name}_OntologyTerms_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">OntologyTerm_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="manuallyImproveIsolatesVocabulary"/>
     </subgraph>
   </datasetTemplate>
 
+<datasetTemplate class="projectSpecificOntologyTerms">
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="projectName"/>
+    <subgraph name="${name}_projectSpecificOntologyTerms_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">OntologyTerm_${projectName}_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+  </datasetTemplate>
+
+
+  <datasetTemplate class="isolateGeographicLocationGPS">
+    <subgraph name="geographicLocationGPS_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">geographicLocationGPS_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <dependsPattern name="*OntologyTerms*"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="isolateQualifierToVocabMapping">
+    <subgraph name="isolateVocabularyMap_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">isolateVocabularyMap_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <dependsPattern name="*OntologyTerms*"/>
+    </subgraph>
+  </datasetTemplate>
 
   <datasetTemplate class="proteinMicroarrayMetaData">
     <prop name="organismAbbrev"/>
@@ -34,7 +68,7 @@
         <paramValue name="isProfile">true</paramValue>
         <paramValue name="dataType">immuneResponse</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
-        <depends name="custom_ontology_RSRC"/>
+      <dependsPattern name="*projectSpecificOntologyTerms*"/>
       </subgraph>
 
   </datasetTemplate>
@@ -54,7 +88,7 @@
         <paramValue name="isProfile"></paramValue>
         <paramValue name="dataType">SNP</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
-        <depends name="custom_ontology_RSRC"/>
+      <dependsPattern name="*projectSpecificOntologyTerms*"/>
       </subgraph>
   </datasetTemplate>
 
@@ -73,7 +107,7 @@
         <paramValue name="isProfile"></paramValue>
         <paramValue name="dataType">SNPChip</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
-        <depends name="custom_ontology_RSRC"/>
+      <dependsPattern name="*projectSpecificOntologyTerms*"/>
       </subgraph>
   </datasetTemplate>
 
@@ -92,7 +126,7 @@
         <paramValue name="isProfile">true</paramValue>
         <paramValue name="dataType">chip-chip</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
-        <depends name="custom_ontology_RSRC"/>
+      <dependsPattern name="*projectSpecificOntologyTerms*"/>
       </subgraph>
   </datasetTemplate>
 
@@ -111,7 +145,7 @@
         <paramValue name="isProfile"></paramValue>
         <paramValue name="dataType">copyNumberVariation</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
-        <depends name="custom_ontology_RSRC"/>
+      <dependsPattern name="*projectSpecificOntologyTerms*"/>
       </subgraph>
   </datasetTemplate>
 
