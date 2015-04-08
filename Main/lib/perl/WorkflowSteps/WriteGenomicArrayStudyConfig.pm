@@ -15,9 +15,12 @@ sub run {
   my $analysisName = $self->getParamValue('analysisName');
   my $protocolName = $self->getParamValue('protocolName');
   my $sourceIdType = $self->getParamValue('sourceIdType');
+
+  my $profileSetName = $self->getParamValue('profileSetName');
+
   my $inputProtocolAppNode = $self->getParamValue('inputProtocolAppNode');
 
-  my $paramValues = "--file $file --outputFile $workflowDataDir/$configOutputFile --name '$analysisName' --protocol '$protocolName' --sourceIdType $sourceIdType";
+  my $paramValues = "--file $file --outputFile $workflowDataDir/$configOutputFile --name '$analysisName' --protocol '$protocolName' --sourceIdType $sourceIdType --profileSetName '$profileSetName'";
 
   if (defined $inputProtocolAppNode) {
     $paramValues = $paramValues." --inputProtocolAppNodes $inputProtocolAppNode";
