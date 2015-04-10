@@ -21,12 +21,19 @@ sub run{
     my $gmapFullPath = `which gmap_build`;
     my $binDir = dirname $gmapFullPath;
 
-    my $cmd = "gmap_build -d $databaseName -D $workflowDataDir/$gsnapDir $workflowDataDir/$fastaFile -B $binDir";
+    my $cmd_replace1 = "cat $workflowDataDir/$fastaFile | perl -pe 'unless (/^>/){s/[^ACGTNX]/N/g;}' > $workflowDataDir/$fastaFile.StandardUpperCase";
+    my $cmd_replace2 = "cat $workflowDataDir/$fastaFile.StandardUpperCase | perl -pe 'unless (/^>/){s/[^acgtnx]/n/g;}' > $workflowDataDir/$fastaFile.StandardLowerCase";
+
+    my $cmd = "gmap_build -d $databaseName -D $workflowDataDir/$gsnapDir $workflowDataDir/$fastaFile.StandardLowerCase -B $binDir";
     
     if ($undo) {
         $self->runCmd(0, "rm -r $workflowDataDir/$gsnapDir/$databaseName");
+        $self->runCmd(0, "rm -f $workflowDataDir/$outputFile.StandardUpperCase");
+        $self->runCmd(0, "rm -f $workflowDataDir/$outputFile.StandardLowerCase");
     }else{
-        $self->runCmd($test, $cmd);
+          $self->runCmd($test,$cmd_replace1);
+          $self->runCmd($test,$cmd_replace2);
+          $self->runCmd($test, $cmd);
     }
 }
 
