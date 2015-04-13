@@ -22,14 +22,14 @@ sub run{
     my $binDir = dirname $gmapFullPath;
 
     my $cmd_replace1 = "cat $workflowDataDir/$fastaFile | perl -pe 'unless (/^>/){s/[^ACGTNX]/N/g;}' > $workflowDataDir/$fastaFile.StandardUpperCase";
-    my $cmd_replace2 = "cat $workflowDataDir/$fastaFile.StandardUpperCase | perl -pe 'unless (/^>/){s/[^acgtnx]/n/g;}' > $workflowDataDir/$fastaFile.StandardLowerCase";
+    my $cmd_replace2 = "cat $workflowDataDir/$fastaFile.StandardUpperCase | perl -pe 'unless (/^>/){s/[^ACGTNXacgtnx]/n/g;}' > $workflowDataDir/$fastaFile.StandardLowerCase";
 
     my $cmd = "gmap_build -d $databaseName -D $workflowDataDir/$gsnapDir $workflowDataDir/$fastaFile.StandardLowerCase -B $binDir";
     
     if ($undo) {
         $self->runCmd(0, "rm -r $workflowDataDir/$gsnapDir/$databaseName");
-        $self->runCmd(0, "rm -f $workflowDataDir/$outputFile.StandardUpperCase");
-        $self->runCmd(0, "rm -f $workflowDataDir/$outputFile.StandardLowerCase");
+        $self->runCmd(0, "rm -f $workflowDataDir/$fastaFile.StandardUpperCase");
+        $self->runCmd(0, "rm -f $workflowDataDir/$fastaFile.StandardLowerCase");
     }else{
           $self->runCmd($test,$cmd_replace1);
           $self->runCmd($test,$cmd_replace2);
