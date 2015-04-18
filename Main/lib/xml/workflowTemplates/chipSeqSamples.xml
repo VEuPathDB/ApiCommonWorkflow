@@ -1,0 +1,43 @@
+<workflowGraph name="">
+<param name="projectName"/>  
+<param name="experimentDataDir"/>
+<param name="outputDir"/>
+<param name="organismAbbrev"/>
+<param name="indexDir"/>
+<param name="experimentDatasetName"/>
+<param name="experimentDatasetVersion"/>
+<param name="hasPairedEnds"/>
+<param name="extraBowtieParams"/>
+<param name="topLevelSeqSizeFile"/>
+
+  <constant name="experimentDatasetLoadersDataDir">$$experimentDataDir$$/$$experimentDatasetName$$</constant>
+  <constant name="readsFilePath">$$experimentDatasetLoadersDataDir$$/final</constant>
+
+  <datasetTemplate class="chipSeqSample">
+    <prop name="experimentName"/>
+    <prop name="sampleName"/>
+
+    <subgraph name="${sampleName}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_chipSeqSample_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+    </subgraph>
+
+    <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeChipSeqSamples.xml">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="experimentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="outputDir">$$outputDir$$</paramValue>
+      <paramValue name="sampleName">${sampleName}</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="readsFile">$$readsFilePath$$/${sampleName}</paramValue>
+      <paramValue name="sampleName">${sampleName}</paramValue>
+      <paramValue name="indexDir">$$indexDir$$</paramValue>
+      <paramValue name="experimentName">${experimentName}</paramValue>
+      <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <depends name="${sampleName}_RSRC"/>
+    </subgraph>
+  </datasetTemplate>
+
+</workflowGraph>

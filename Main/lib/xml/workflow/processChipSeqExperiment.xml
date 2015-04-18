@@ -1,0 +1,69 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="parentDataDir"/>
+    <param name="organismDatasetLoaderXmlFile"/>
+    <param name="relativeWebServicesDir"/>
+    <param name="experimentName"/>
+    <param name="hasPairedEnds"/>
+    <param name="extraBowtieParams"/>
+    <param name="experimentDatasetName"/>
+    <param name="experimentDatasetVersion"/>
+    <param name="topLevelSeqSizeFile"/>
+
+    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
+    <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesOutputDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <subgraph name="experiment_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeSamplesOutputDir"/>
+      <depends name="experiment_RSRC"/>
+    </step>
+
+    <subgraph name="analyzeChipSeqSamples" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/chipSeqSamples.xml">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="experimentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="outputDir">$$samplesOutputDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="indexDir">$$parentDataDir$$/../bowtieIndices/genomicIndexes</paramValue>
+      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
+      <paramValue name="experimentDatasetVersion">$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+<!--
+    <step name="normalizeBedGraph" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraph">
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="strandSpecific">false</paramValue>
+      <depends name="analyzeSamples"/>
+    </step>
+
+    <step name="copyNormalizedBedGraphToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyNormalizedBedGraphToWebServiceDir">
+      <paramValue name="copyFromDir">$$dataDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
+      <depends name="normalizeBedGraph"/>
+    </step>
+-->
+</workflowGraph>
