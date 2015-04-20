@@ -20,6 +20,7 @@ sub run {
 my $gtfFile = $self->getParamValue("gtfFile");
 my $maskFile = $self->getParamValue("maskFile");
   my $topLevelSeqSizeFile = $self->getParamValue("topLevelSeqSizeFile");
+  my $topLevelFastaFile = $self->getParamValue("topLevelFastaFile");
 
 my $gmapDatabase = $self->getParamValue("gmapDatabase");
 my $gsnapDirectory = $self->getParamValue("gsnapDirectory");
@@ -65,6 +66,7 @@ writeBedFile=$writeBedFile
 isStrandSpecific=$strandSpecific
 quantifyJunctions=$createJunctionsFile
 topLevelSeqSizeFile=$clusterWorkflowDataDir/$topLevelSeqSizeFile
+topLevelFastaFile=$clusterWorkflowDataDir/$topLevelFastaFile
 ";
 
       $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$readFilePath.paired\n" if($hasPairedEnds);
