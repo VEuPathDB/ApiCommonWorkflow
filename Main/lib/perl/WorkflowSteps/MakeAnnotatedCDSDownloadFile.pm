@@ -67,10 +67,10 @@ sub getWebsiteFileCmd {
                    and gf.na_feature_id = preferred_name.na_feature_id(+)
                    and gf.na_feature_id = any_name.na_feature_id(+)
                 ) product_name
-      WHERE gf.na_feature_id = t.parent_id
+      WHERE gf.gene_na_feature_id = t.parent_id
         AND fl.na_sequence_id = ns.na_sequence_id
         AND t.na_sequence_id = snas.na_sequence_id
-        AND gf.na_feature_id = fl.na_feature_id
+        AND gf.gene_na_feature_id = fl.na_feature_id
         AND gf.so_term_name != 'repeat_region'
         AND gf.so_term_name = 'protein_coding'
         AND taxon.ncbi_tax_id = $ncbiTaxonId 
@@ -78,7 +78,7 @@ sub getWebsiteFileCmd {
         AND fl.is_top_level = 1
         AND ns.sequence_ontology_id = soseq.ontology_term_id
         AND ns.taxon_id = taxon.taxon_id
-        and gf.na_feature_id = product_name.na_feature_id
+        and gf.gene_na_feature_id = product_name.na_feature_id
 EOF
 
     my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"  --verbose";
