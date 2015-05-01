@@ -298,23 +298,6 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </subgraph>
 
-  <datasetTemplate class="Pathways">
-   <prop name="projectName"/>     
-   <prop name="type"/>
-   <subgraph name="Pathways_${type}_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">Pathways_${type}_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <dependsGlobal name="enzymeDB_RSRC"/>
-   </subgraph>
-<!-- TODO:  Add this back in??
-    <step name="makePathwayDownloadFiles_${type}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePathwayDownloadFiles">
-      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="outputDirName">pathwayFiles/</paramValue>
-      <depends name="Pathways_${type}_RSRC"/> 
-    </step>
--->
-  </datasetTemplate>
 
   <!-- only reference strains have an instance of this -->
   <!-- it depends on all make and mask genomes for this organism (they all have the ref strain as a prefix) -->
@@ -337,7 +320,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <prop name="version"/> 
     <prop name="name"/>   
 
-    <subgraph name="PathwayCompounds" xmlFile="compounds.xml">
+    <subgraph name="PathwayCompounds_${name}_${version}" xmlFile="compounds.xml">
       <paramValue name="source">PathwayCompounds</paramValue>
       <paramValue name="parentDataDir"></paramValue>
       <paramValue name="version">${version}</paramValue>
@@ -348,20 +331,26 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
  </datasetTemplate>
 
- <datasetTemplate class="PathwayCompounds_Biocyc">
-    <prop name="version"/>
-    <prop name="name"/>
 
-    <subgraph name="PathwayCompounds_${name}_${version}" xmlFile="compounds.xml">
-      <paramValue name="source">PathwayCompounds_${name}_${version}</paramValue>
+  <datasetTemplate class="Pathways">
+   <prop name="projectName"/>     
+   <prop name="type"/>
+   <subgraph name="Pathways_${type}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">Pathways_${type}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="version">${version}</paramValue>
-      <paramValue name="datasetLoaderXmlFile">$$projectName$$.xml</paramValue>
-      <paramValue name="compoundName">${name}_${version}</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
-    </subgraph>
+      <dependsGlobal name="enzymeDB_RSRC"/>
+      <dependsPattern name="PathwayCompounds*"/>
+   </subgraph>
+<!-- TODO:  Add this back in??
+    <step name="makePathwayDownloadFiles_${type}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePathwayDownloadFiles">
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="outputDirName">pathwayFiles/</paramValue>
+      <depends name="Pathways_${type}_RSRC"/> 
+    </step>
+-->
+  </datasetTemplate>
 
- </datasetTemplate>
 
 
   <datasetTemplate class="ExperimentCompounds">
