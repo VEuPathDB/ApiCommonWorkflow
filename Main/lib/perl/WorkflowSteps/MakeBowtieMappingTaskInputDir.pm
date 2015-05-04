@@ -54,6 +54,7 @@ isColorspace=$isColorspace
 removePCRDuplicates=$removePCRDuplicates
 writeBedFile=$writeBedFile
 topLevelSeqSizeFile=$clusterWorkflowDataDir/$topLevelSeqSizeFile
+extraBowtieParams=$extraBowtieParams
 ";
 	  $taskPropFileContent .= "mateA=$clusterWorkflowDataDir/$readsFile\n";
 	  if($hasPairedReads){
