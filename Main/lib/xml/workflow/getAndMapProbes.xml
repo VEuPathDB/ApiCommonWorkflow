@@ -67,26 +67,19 @@
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <step name="loadReporterLocationsUnique" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertReporterLocation" stepLoadTypes="plugin">
-        <paramValue name="bamFile">$$platformDir$$/master/mainresult/results_nu_sorted.bam</paramValue>
+    <step name="loadReporterLocations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertReporterLocation" stepLoadTypes="plugin">
+        <paramValue name="bamFile">$$platformDir$$/master/mainresult/results_all_sorted.bam</paramValue>
         <paramValue name="platformExtDbSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
         <depends name="runGSNAP"/>
         <depends name="loadReporter"/>
     </step>
-
-    <step name="loadReporterLocationsNu" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertReporterLocation" stepLoadTypes="plugin">
-        <paramValue name="bamFile">$$platformDir$$/master/mainresult/results_unique_sorted.bam</paramValue>
-        <paramValue name="platformExtDbSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
-        <depends name="loadReporterLocationsUnique"/>
-    </step>
-
 
     <step name="document-getAndMapProbes"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
       <paramValue name="method">getAndMapProbes_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters">TODO: patch in later</paramValue>
-      <depends name="loadReporterLocationsNu"/>
+      <depends name="loadReporterLocations"/>
     </step>
 
 
@@ -98,7 +91,7 @@
       <paramValue name="probeExtDbSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
       <paramValue name="geneExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="isOneChannel">$$makeCdfFile$$</paramValue>
-      <depends name="loadReporterLocationsNu"/>
+      <depends name="loadReporterLocations"/>
     </step>
 
     <step name="makeCdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$makeCdfFile$$">
