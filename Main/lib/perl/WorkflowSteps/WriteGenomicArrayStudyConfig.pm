@@ -16,8 +16,7 @@ sub run {
   my $protocolName = $self->getParamValue('protocolName');
   my $sourceIdType = $self->getParamValue('sourceIdType');
 
-#  my $profileSetName = $self->getParamValue('profileSetName');
-  my $profileSetName;
+  my $profileSetName = $self->getParamValue('profileSetName');
 
   my $inputProtocolAppNode = $self->getParamValue('inputProtocolAppNode');
 
