@@ -17,10 +17,6 @@ sub run {
 
   my $instance = $self->getGusInstanceName();
 
-  my $tuningTablePrefix;
-
-  my $taxonId;
-
   my $apidbTuningPassword = $self->getConfig('apidbTuningPassword');
 
   my $dblink = $self->getConfig('dblink');
@@ -46,13 +42,7 @@ sub run {
  my $cmd = "tuningManager -instance '$instance' -propFile $stepDir/$xmlConfigFileName -doUpdate -notifyEmail none -configFile ${gusHome}/lib/xml/tuningManager/tuningManager.xml  " ;
   
  if ($organismAbbrev){
-
-	$tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
-    
-    $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
-
-    $cmd .= "-filterValue $taxonId -prefix '$tuningTablePrefix'  " ;
-
+   $cmd .= $self->prefixAndFilterValueCommandString();
   }
 
  $cmd .= "-tables $tables  " if ($tables);
@@ -65,4 +55,16 @@ sub run {
 }
 
 
+sub prefixAndFilterValueCommandString {
+  my ($self) = @_;
+  
+  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+    
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
+
+   return "-filterValue $taxonId -prefix '$tuningTablePrefix'  " ;
+}
+
+
+1;
 
