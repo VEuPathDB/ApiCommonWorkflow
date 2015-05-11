@@ -42,7 +42,7 @@ sub run {
  my $cmd = "tuningManager -instance '$instance' -propFile $stepDir/$xmlConfigFileName -doUpdate -notifyEmail none -configFile ${gusHome}/lib/xml/tuningManager/tuningManager.xml  " ;
   
  if ($organismAbbrev){
-   $cmd .= $self->prefixAndFilterValueCommandString();
+   $cmd .= $self->prefixAndFilterValueCommandString($organismAbbrev, $test);
   }
 
  $cmd .= "-tables $tables  " if ($tables);

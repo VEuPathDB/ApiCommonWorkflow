@@ -4,7 +4,9 @@ use base ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedTables;
 use strict;
 
 sub prefixAndFilterValueCommandString {
-   return "-prefix 'globalWF_'  " ;
+  my ($self, $prefix) = @_;
+
+   return "-prefix '$prefix'  " ;
 }
 
 1;
