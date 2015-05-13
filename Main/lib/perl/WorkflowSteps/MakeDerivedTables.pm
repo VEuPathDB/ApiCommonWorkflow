@@ -56,7 +56,7 @@ sub run {
 
 
 sub prefixAndFilterValueCommandString {
-  my ($self) = @_;
+  my ($self, $organismAbbrev, $test) = @_;
   
   my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
     
