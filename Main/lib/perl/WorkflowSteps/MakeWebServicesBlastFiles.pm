@@ -17,7 +17,8 @@ sub run {
 
   $self->error("Parameters useFamilyName and useSpeciesName cannot both be 'true'") if $useFamilyName && $useSpeciesName;
 
-  my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  my $dataName = $self->getParamValue('dataName');
+  my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');
+  my $dataName = $self->getParamValue('dataName');
 
   # extra params for this step
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
@@ -32,15 +33,26 @@ sub run {
 
   my $outputWebservicesFileDir = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceDir($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, $familyNameForFiles, $useFamilyName, 'blast');
 
+
+  ## prefix organismNameForFile, speciesNameForFile or familyNameForFile to blast file, refs #19220
+  my $outputDataName;
+    if ($dataName =~ /Isolates/i) {
+    $outputDataName = $familyNameForFiles.$dataName;
+  } elsif ($dataName =~ /EST/) {
+    $outputDataName = $speciesNameForFiles.$dataName;
+  } else {
+    $outputDataName = $organismNameForFiles.$dataName;
+  }
+
   my $blastPath = $self->getConfig("ncbiBlastPath");
-  my $cmd = "$blastPath/makeblastdb -in $inputDownloadFile $args -out $outputWebservicesFileDir/$dataName ";
+  my $cmd = "$blastPath/makeblastdb -in $inputDownloadFile $args -out $outputWebservicesFileDir/$outputDataName ";
   if($undo) {
     $self->runCmd(0, "rm -f $outputWebservicesFileDir/$dataName.*");
   } else{
       if($test){
 	  $self->testInputFile('inputDownloadFile', "$inputDownloadFile");
 	  $self->testInputFile('outputWebservicesFileDir', "$outputWebservicesFileDir");
-	  $self->runCmd(0, "echo test > $outputWebservicesFileDir/$dataName.xnd");
+	  $self->runCmd(0, "echo test > $outputWebservicesFileDir/$outputDataName.xnd");
       }else {
 	       $self->runCmd($test, $cmd);
       }
