@@ -46,7 +46,7 @@ sub run {
   my $blastPath = $self->getConfig("ncbiBlastPath");
   my $cmd = "$blastPath/makeblastdb -in $inputDownloadFile $args -out $outputWebservicesFileDir/$outputDataName ";
   if($undo) {
-    $self->runCmd(0, "rm -f $outputWebservicesFileDir/$dataName.*");
+    $self->runCmd(0, "rm -f $outputWebservicesFileDir/$outputDataName.*");
   } else{
     $self->testInputFile('inputDownloadFile', "$inputDownloadFile");
     $self->testInputFile('outputWebservicesFileDir', "$outputWebservicesFileDir");
