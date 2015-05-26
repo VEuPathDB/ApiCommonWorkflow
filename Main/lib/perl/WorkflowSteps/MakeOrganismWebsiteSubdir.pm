@@ -43,6 +43,8 @@ sub run {
 
   if ($undo){
       # it should be empty because child steps remove their files
+      # force deleting all gff files before removing data dirs, because gff files were created outside of a workflow.
+	  $self->runCmd(0, "rm -f $dir/data/*.gff") if ($subDir eq 'gff');
       $self->runCmd(0, "rmdir $dir/data") if $needsDataSubDir;  
       $self->runCmd(0, "rmdir $dir");  
 
