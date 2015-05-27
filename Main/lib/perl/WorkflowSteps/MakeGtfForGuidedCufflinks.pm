@@ -7,7 +7,8 @@ use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
-sub getSequenceOntologyTermString { $_[0]->{_sequence_ontology_term_string} }
+sub getSequenceOntologyTermString { }
+sub getSequenceOntologyExclude { }
 
 sub run {
     my ($self, $test, $undo) = @_;
@@ -21,8 +22,13 @@ sub run {
     my $cdsOnly = $self->getBooleanParamValue("cdsOnly");
 
     my $cmd = "makeGtf.pl --outputFile $workflowDataDir/$gtfDir/$outputFile --project $project --genomeExtDbRlsSpec '$genomeExtDbRlsSpec'";
+
     if(my $soTermString = $self->getSequenceOntologyTermString()) {
       $cmd .= " --sequence_ontology_term $soTermString";
+    }
+
+    if(my $soExclude = $self->getSequenceOntologyExclude()) {
+      $cmd .= " --so_exclude";
     }
 
     if($cdsOnly) {

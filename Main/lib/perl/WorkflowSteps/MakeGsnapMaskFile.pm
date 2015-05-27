@@ -11,4 +11,8 @@ sub getSequenceOntologyTermString {
   return "rRNA_encoding"; 
 }
 
+sub getSequenceOntologyExclude { 
+  return 1;
+}
+
 1;
