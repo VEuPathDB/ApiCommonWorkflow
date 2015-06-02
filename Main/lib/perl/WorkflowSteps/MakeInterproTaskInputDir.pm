@@ -34,7 +34,7 @@ sub run {
       my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
       print F
-"seqfile=$clusterWorkflowDataDir/$proteinsFile
+"seqfile=$clusterWorkflowDataDir/${proteinsFile}.NoAsterisks
 outputfile=iprscan_out.tsv
 seqtype=p
 appl=$applications
