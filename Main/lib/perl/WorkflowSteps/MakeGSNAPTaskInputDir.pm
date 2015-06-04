@@ -24,8 +24,8 @@ my $maskFile = $self->getParamValue("maskFile");
 
 my $gmapDatabase = $self->getParamValue("gmapDatabase");
 my $gsnapDirectory = $self->getParamValue("gsnapDirectory");
-my $quantifyWithCufflinks = $self->getParamValue("quantifyWithCufflinks");
-my $writeBedFile = $self->getParamValue("writeBedFile");
+my $quantify = $self->getParamValue("quantify");
+my $writeCovFiles = $self->getParamValue("writeCovFiles");
 
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $taskSize = $self->getConfig("taskSize");
@@ -61,8 +61,8 @@ gtfFile=$clusterWorkflowDataDir/$gsnapDirectory/$gtfFile
 maskFile=$clusterWorkflowDataDir/$gsnapDirectory/$maskFile
 iitFile=$clusterWorkflowDataDir/$gsnapDirectory/$spliceSitesDatabase
 nPaths=$limitNU
-quantifyWithCufflinks=$quantifyWithCufflinks
-writeBedFile=$writeBedFile
+quantify=$quantify
+writeCovFiles=$writeCovFiles
 isStrandSpecific=$strandSpecific
 quantifyJunctions=$createJunctionsFile
 topLevelSeqSizeFile=$clusterWorkflowDataDir/$topLevelSeqSizeFile
