@@ -30,6 +30,7 @@ sub run {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}
         $self->runCmd($test,"dumpSequencesFromTable.pl --outputFile $workflowDataDir/$outputFile --idSQL \"$sql\" --verbose");
+	$self->runCmd($test,"samtools faidx $workflowDataDir/$outputFile"); 
     }
   }
 
