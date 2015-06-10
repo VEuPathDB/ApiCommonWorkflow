@@ -65,6 +65,15 @@
         <depends name="makeDataDir"/>
     </step>
 
+    <step name="makeMaskGtfForCufflinksCdsOnly" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGsnapMaskFile">
+        <paramValue name="outputFile">$$organismAbbrev$$_cds_mask.gtf</paramValue>
+        <paramValue name="gtfDir">$$dataDir$$</paramValue>
+        <paramValue name="project">$$projectName$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="cdsOnly">true</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
 
     <step name="makeSpliceSitesDatabase" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSpliceSitesMapFromGtf">
         <paramValue name="gtfDir">$$dataDir$$</paramValue>
@@ -99,7 +108,8 @@
     <depends name="makeTopLevelGeneFootprintFile"/>
     <depends name="makeTopLevelSeqSizeFile"/>
     <depends name="makeArrayStudiesDir"/>
-    <depends name="makeGtfForCufflinks"/>
+    <depends name="makeMaskGtfForCufflinks"/>
+    <depends name="makeMaskGtfForCufflinksCdsOnly"/>
   </step>
 
 
@@ -161,7 +171,7 @@
       <paramValue name="spliceSitesDatabase">$$organismAbbrev$$.iit</paramValue>
       <paramValue name="gtfFile">$$organismAbbrev$$_cds.gtf</paramValue>
       <paramValue name="gmapDatabase">$$organismAbbrev$$</paramValue>
-      <paramValue name="maskFile">$$organismAbbrev$$_mask.gtf</paramValue>
+      <paramValue name="maskFile">$$organismAbbrev$$_cds_mask.gtf</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
@@ -306,7 +316,6 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
-      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
       <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>

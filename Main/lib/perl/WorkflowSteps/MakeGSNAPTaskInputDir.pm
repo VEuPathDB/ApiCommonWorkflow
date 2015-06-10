@@ -17,16 +17,14 @@ sub run {
   my $keepNode = $self->getParamValue("keepNode");
   my $createJunctionsFile = $self->getParamValue("createJunctionsFile");
   my $spliceSitesDatabase = $self->getParamValue("spliceSitesDatabase");
-my $gtfFile = $self->getParamValue("gtfFile");
-my $maskFile = $self->getParamValue("maskFile");
-  my $topLevelSeqSizeFile = $self->getParamValue("topLevelSeqSizeFile");
+  my $gtfFile = $self->getParamValue("gtfFile");
+  my $maskFile = $self->getParamValue("maskFile");
+  my $topLevelGeneFootprintFile = $self->getParamValue("topLevelGeneFootprintFile");
   my $topLevelFastaFile = $self->getParamValue("topLevelFastaFile");
-
-my $gmapDatabase = $self->getParamValue("gmapDatabase");
-my $gsnapDirectory = $self->getParamValue("gsnapDirectory");
-my $quantify = $self->getParamValue("quantify");
-my $writeCovFiles = $self->getParamValue("writeCovFiles");
-
+  my $gmapDatabase = $self->getParamValue("gmapDatabase");
+  my $gsnapDirectory = $self->getParamValue("gsnapDirectory");
+  my $quantify = $self->getParamValue("quantify");
+  my $writeCovFiles = $self->getParamValue("writeCovFiles");
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $taskSize = $self->getConfig("taskSize");
 
@@ -65,8 +63,8 @@ quantify=$quantify
 writeCovFiles=$writeCovFiles
 isStrandSpecific=$strandSpecific
 quantifyJunctions=$createJunctionsFile
-topLevelSeqSizeFile=$clusterWorkflowDataDir/$topLevelSeqSizeFile
-topLevelFastaFile=$clusterWorkflowDataDir/$topLevelFastaFile
+topLevelGeneFootprintFile=$clusterWorkflowDataDir/$topLevelGeneFootprintFile
+topLevelFastaFaiFile=$clusterWorkflowDataDir/$topLevelFastaFile.fai
 ";
 
       $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$readFilePath.paired\n" if($hasPairedEnds);
