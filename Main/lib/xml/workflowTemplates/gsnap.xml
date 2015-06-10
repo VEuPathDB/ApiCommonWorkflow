@@ -14,6 +14,7 @@
   <constant name="dataDir">$$parentDataDir$$/gsnap</constant>
   <constant name="arrayStudiesDir">$$dataDir$$/arrayStudies</constant>
   <constant name="topLevelSeqSizeFile">$$dataDir$$/topLevelSeqSizes.txt</constant>
+  <constant name="topLevelGeneFootprintFile">$$dataDir$$/topLevelGeneFootprintFile.txt</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -73,6 +74,14 @@
     </step>
 
 
+  <step name="makeTopLevelGeneFootprintFile"
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelGeneFootprintFile">
+    <paramValue name="outputFile">$$topLevelGeneFootprintFile$$</paramValue>
+    <paramValue name="project">$$projectName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
   <step name="makeTopLevelSeqSizeFile"
         stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelSeqSizeFile">
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -87,6 +96,7 @@
     <depends name="makeGtfForCufflinks"/>
     <depends name="makeGtfForCufflinksCdsOnly"/>
     <depends name="makeSpliceSitesDatabase"/>
+    <depends name="makeTopLevelGeneFootprintFile"/>
     <depends name="makeTopLevelSeqSizeFile"/>
     <depends name="makeArrayStudiesDir"/>
     <depends name="makeGtfForCufflinks"/>
@@ -114,6 +124,7 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
       <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
       <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
       <paramValue name="experimentDatasetVersion">${version}</paramValue>
@@ -126,7 +137,6 @@
       <paramValue name="gmapDatabase">$$organismAbbrev$$</paramValue>
       <paramValue name="maskFile">$$organismAbbrev$$_mask.gtf</paramValue>
       <depends name="mirrorToCluster"/>
-      <depends name="makeTopLevelSeqSizeFile"/>
 
     </subgraph>
 
@@ -140,6 +150,7 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
       <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
       <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
       <paramValue name="experimentDatasetVersion">${version}</paramValue>
@@ -152,7 +163,6 @@
       <paramValue name="gmapDatabase">$$organismAbbrev$$</paramValue>
       <paramValue name="maskFile">$$organismAbbrev$$_mask.gtf</paramValue>
       <depends name="mirrorToCluster"/>
-      <depends name="makeTopLevelSeqSizeFile"/>
     </subgraph>
 
     <subgraph name="${name}_analyze_rnaSeq_experiment" xmlFile="analyzeRnaSeqExperiment.xml">
@@ -195,6 +205,7 @@
       <paramValue name="maskFile">$$organismAbbrev$$_mask.gtf</paramValue>
       <paramValue name="gmapDatabase">$$organismAbbrev$$</paramValue>
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
       <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
       <paramValue name="makeCdfFile">${isAffymetrixGeneArray}</paramValue>
       <paramValue name="makeNdfFile">${isNimbleGenGeneArray}</paramValue>
@@ -295,6 +306,7 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="genomicSeqsFileForSsa">$$genomicSeqsFileForSsa$$</paramValue>
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
       <paramValue name="geneModelFileForSsa">$$geneModelFileForSsa$$</paramValue>
       <paramValue name="transcriptSeqsFileForSsa">$$transcriptSeqsFileForSsa$$</paramValue>
       <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
