@@ -27,7 +27,9 @@ sub new {
              and tn.taxon_id = t.taxon_id
              and tn.name_class = 'scientific name'";
 
-    my ($fullName, $ncbiTaxonId, $taxonId) = $workflowStep->runSqlFetchOneRow($test,$sql);
+   my ($fullName, $ncbiTaxonId, $taxonId) = $workflowStep->runSqlFetchOneRow($test,$sql);
+
+    die "Could not find taxon_id for organismAbbrev '$organismAbbrev'" unless $taxonId;
 
     $sql = "select ncbi_tax_id, taxon_id
    from
