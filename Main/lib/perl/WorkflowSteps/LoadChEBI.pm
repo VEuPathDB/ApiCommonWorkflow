@@ -14,7 +14,7 @@ sub run {
   my $chebiPassword = $self->getConfig('chebiPassword');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $dataDir = $workflowDataDir . "/" . $self->getParamValue('dataDir');
+  my $dataDir = $workflowDataDir . "/" . $self->getParamValue('dataDir'). "/" . $self->getParamValue('datasetName'). "/final" ;
 
   my $cmd = "loadChEBI.bash -d $dataDir -i $gusInstance -u $chebiLogin -p $chebiPassword";
 
@@ -22,7 +22,7 @@ sub run {
      $self->runCmd(0, "echo exit|sqlplus $chebiLogin/$chebiPassword@$gusInstance @$dataDir/disable_constraints.sql");
      $self->runCmd(0, "sqlplus $chebiLogin/$chebiPassword@$gusInstance @$ENV{GUS_HOME}/lib/sql/apidbschema/dropChebiTables.sql");
   } else {
-    $self->runCmd($test, cmd);
+    $self->runCmd($test, $cmd);
   }
 }
 
