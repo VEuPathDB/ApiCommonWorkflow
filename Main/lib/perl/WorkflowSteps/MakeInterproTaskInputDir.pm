@@ -21,8 +21,13 @@ sub run {
 
   if ($undo) {
     $self->runCmd(0,"rm -rf $workflowDataDir/$taskInputDir");
+    $self->runCmd(0, "rm -f $workflowDataDir/$proteinsFile.NoAsterisks");
   }else {
     $self->testInputFile('proteinsFile', "$workflowDataDir/$proteinsFile");
+
+    # make fasta file with no asterisks.
+    my $cmd_replace = "cat $workflowDataDir/$proteinsFile | perl -pe 'unless (/^>/){s/\\*/X/g;}' > $workflowDataDir/$proteinsFile.NoAsterisks";
+    $self->runCmd($test,$cmd_replace);
       
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
       # make controller.prop file
