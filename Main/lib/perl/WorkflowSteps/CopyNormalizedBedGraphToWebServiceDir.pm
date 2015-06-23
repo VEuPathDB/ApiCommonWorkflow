@@ -13,21 +13,23 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $relativeDir = $self->getParamValue('relativeDir');
   # my $analysisConfig = $self->getParamValue('analysisConfig'); restore for rebuild
-  my $experimentResourceName = $self->getParamValue('experimentDatasetName');
+  my $experimentDatasetName = $self->getParamValue('experimentDatasetName');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $organismNameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
 
-  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/bigwig/$experimentResourceName";
+  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/bigwig/$experimentDatasetName";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cmd_mkdir = "mkdir -p $copyToDir";
 
-  #my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir --analysisConfig $analysisConfig"; restore for rebuild
-  my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir"; 
+  my $analysisConfig = "$workflowDataDir/$copyFromDir/$experimentDatasetName/final/analysisConfig.xml";
+
+  my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir --analysisConfig $analysisConfig"; 
+  #my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir"; 
 
 
   $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");

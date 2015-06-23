@@ -10,8 +10,6 @@ sub run {
 
   # get parameter values
   my $taskInputDir = $self->getParamValue("taskInputDir");
-  my $queryFile = $self->getParamValue("queryFile");
-  my $subjectFile = $self->getParamValue("subjectFile");
   my $blastArgs = $self->getParamValue("blastArgs");
   my $idRegex = $self->getParamValue("idRegex");
   my $blastType = $self->getParamValue("blastType");
@@ -33,11 +31,9 @@ sub run {
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
-  }else {
+  } else {
 
-	  $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
-	  $self->testInputFile('subjectFile', "$workflowDataDir/$subjectFile");
-
+      $self->testInput($workflowDataDir);
 
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
@@ -50,12 +46,12 @@ sub run {
       my $vendorString = $vendor? "blastVendor=$vendor" : "";
       my $simSeqs = $makeSimSeqsFile ? "printSimSeqsFile=yes" : "";
 
+      my $pathParamsString = $self->getPathParamsString($clusterWorkflowDataDir);
+
       my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
-
       print F
-"dbFilePath=$clusterWorkflowDataDir/$subjectFile
-inputFilePath=$clusterWorkflowDataDir/$queryFile
+"$pathParamsString
 dbType=$dbType
 regex='$idRegex'
 blastProgram=$blastType
@@ -63,15 +59,44 @@ blastParamsFile=$ccBlastParamsFile
 $vendorString
 $simSeqs
 ";
-       close(F);
+      close(F);
 
-       # make blastParams file
-       open(F, ">$localBlastParamsFile") || die "Can't open blast params file '$localBlastParamsFile' for writing";;
-       print F "$cpusArg$cpus $blastArgs\n";
-       close(F);
-       #&runCmd($test, "chmod -R g+w $workflowDataDir/similarity/$queryName-$subjectName");
+      $blastArgs = $self->addExtraBlastArgs($workflowDataDir, $blastArgs);
+
+      # make blastParams file
+      open(F, ">$localBlastParamsFile") || die "Can't open blast params file '$localBlastParamsFile' for writing";;
+      print F "$cpusArg$cpus $blastArgs\n";
+      close(F);
+      #&runCmd($test, "chmod -R g+w $workflowDataDir/similarity/$queryName-$subjectName");
       
   }
+}
+
+# can be overridden by subclasses
+sub testInput {
+    my ($self, $workflowDataDir) = @_;
+
+    my $queryFile = $self->getParamValue("queryFile");
+    my $subjectFile = $self->getParamValue("subjectFile");
+
+    $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
+    $self->testInputFile('subjectFile', "$workflowDataDir/$subjectFile");
+}
+
+# can be overridden by subclasses
+sub getPathParamsString {
+    my ($self, $clusterWorkflowDataDir) = @_;
+
+    my $queryFile = $self->getParamValue("queryFile");
+    my $subjectFile = $self->getParamValue("subjectFile");
+
+    return "dbFilePath=$clusterWorkflowDataDir/$subjectFile\ninputFilePath=$clusterWorkflowDataDir/$queryFile";
+}
+
+# can be overridden by subclasses
+sub addExtraBlastArgs {
+    my ($self, $worflowDataDir, $blastArgs) = @_;
+    return $blastArgs;
 }
 
 1;

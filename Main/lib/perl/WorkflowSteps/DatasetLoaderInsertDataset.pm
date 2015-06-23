@@ -30,6 +30,7 @@ sub run {
     if ($organismAbbrev) {
 	my $t = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
 	$taxonId = "--taxonId $t";
+	die "Can't find taxon_id for organismAbbrev '$organismAbbrev'\n" unless $t;
     }
 
     my $dbPluginArgs = "--dataSourceName '$datasetName' --version '$version' --externalDatabaseName '$extDbName' $isSpeciesScope $taxonId $tp $stp";
