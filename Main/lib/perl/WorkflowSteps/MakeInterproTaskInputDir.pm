@@ -27,7 +27,7 @@ sub run {
     $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
     # make fasta file with no asterisks.
-    my $cmd_replace = "cat $workflowDataDir/$proteinsFile | perl -pe 'unless (/^>/){s/\\*/X/g;}' > $workflowDataDir/$taskInputDir/$proteinsFile.NoAsterisks";
+    my $cmd_replace = "cat $workflowDataDir/$proteinsFile | perl -pe 'unless (/^>/){s/\\*/X/g;}' > $workflowDataDir/$taskInputDir/proteins.NoAsterisks";
     $self->runCmd($test,$cmd_replace);
       
     # make controller.prop file
@@ -37,7 +37,7 @@ sub run {
     my $taskPropFile = "$workflowDataDir/$taskInputDir/task.prop";
     open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
     print F
-"seqfile=$clusterWorkflowDataDir/$taskInputDir/${proteinsFile}.NoAsterisks
+"seqfile=$clusterWorkflowDataDir/$taskInputDir/proteins.NoAsterisks
 outputfile=iprscan_out.tsv
 seqtype=p
 appl=$applications
