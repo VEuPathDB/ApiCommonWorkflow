@@ -14,7 +14,7 @@ sub run {
     my $configFile = $self->getParamValue('configFile');
 
     my $interproExtDbVer = $self->getExtDbVersion($test,$interproExtDbName);
-    my $aaSeqTable = 'AASequence';
+    my $aaSeqTable = 'TranslatedAASequence';
     my $goVersion = $self->getExtDbVersion($test, 'GO_RSRC');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
