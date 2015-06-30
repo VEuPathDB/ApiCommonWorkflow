@@ -38,7 +38,7 @@ sub run {
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
-      $self->makeDistribJobControllerPropFile($taskInputDir, $cpus, $taskSize, getTask());
+      $self->makeDistribJobControllerPropFile($taskInputDir, $cpus, $taskSize, $self->getTask());
       # make task.prop file
       my $ccBlastParamsFile = "blastParams";
       my $localBlastParamsFile = "$workflowDataDir/$taskInputDir/blastParams";
