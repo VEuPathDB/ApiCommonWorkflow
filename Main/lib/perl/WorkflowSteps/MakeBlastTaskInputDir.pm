@@ -38,8 +38,7 @@ sub run {
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
-      $self->makeDistribJobControllerPropFile($taskInputDir, $cpus, $taskSize,
-				       "DJob::DistribJobTasks::BlastSimilarityTask"); 
+      $self->makeDistribJobControllerPropFile($taskInputDir, $cpus, $taskSize, getTask());
       # make task.prop file
       my $ccBlastParamsFile = "blastParams";
       my $localBlastParamsFile = "$workflowDataDir/$taskInputDir/blastParams";
@@ -90,7 +89,12 @@ sub getPathParamsString {
     my $queryFile = $self->getParamValue("queryFile");
     my $subjectFile = $self->getParamValue("subjectFile");
 
-    return "dbFilePath=$clusterWorkflowDataDir/$subjectFile\ninputFilePath=$clusterWorkflowDataDir/$queryFile";
+    return "dbFilePath=$clusterWorkflowDataDir/$subjectFile
+inputFilePath=$clusterWorkflowDataDir/$queryFile";
+}
+
+sub getTask {
+  return "DJob::DistribJobTasks::BlastSimilarityTask";
 }
 
 # can be overridden by subclasses
