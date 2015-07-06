@@ -20,7 +20,7 @@ sub run {
       if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }
-      $self->runCmd($test,"makeGeneFootprintFile --outputFile $workflowDataDir/$outputFile --project $project --genomeExtDbRlsSpec $genomeExtDbRlsSpec --verbose");
+      $self->runCmd($test,"makeGeneFootprintFile.pl --outputFile $workflowDataDir/$outputFile --project $project --genomeExtDbRlsSpec \'$genomeExtDbRlsSpec\' --verbose");
   }
 }
 
