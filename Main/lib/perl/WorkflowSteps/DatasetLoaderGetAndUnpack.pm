@@ -20,6 +20,7 @@ sub run {
 
     if ($undo) {
       $self->runCmd(0, "rm -rf $targetDir/*");
+      $self->runCmd(0, "rm -rf $targetDir/.listing") if -e "$targetDir/.listing"; # created mysteriously by wget sometimes
     } else {
 	$self->getDataset($test, $datasetLoader, $targetDir, $datasetName);
 	$self->unpackDataset($test, $datasetLoader);
