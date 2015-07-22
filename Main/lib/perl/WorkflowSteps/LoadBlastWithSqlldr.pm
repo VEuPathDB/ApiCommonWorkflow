@@ -10,6 +10,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputFile = $self->getParamValue('inputFile');
+  my $dataDir = $self->getParamValue('dataDir');
   my $suffix = $self->getParamValue('suffix');
 
   my $gusInstance = $self->getGusInstanceName();
@@ -18,20 +19,22 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $ctlFile = "$workflowDataDir/blast.ctl";
-  my $sqlldrLog = "$workflowDataDir/sqlldr.log";
+  mkdir "$workflowDataDir/$dataDir" || die "could not create working dir '$workflowDataDir/$dataDir' \n";
+
+  my $ctlFile = "$workflowDataDir/$dataDir/blast.ctl";
+  my $sqlldrLog = "$workflowDataDir/$dataDir/sqlldr.log";
   my $cmd = "sqlldr $gusLogin/$gusPassword\@$gusInstance data=$workflowDataDir/$inputFile control=$ctlFile log=$sqlldrLog rows=25000 direct=TRUE";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $ctlFile");
+    $self->runCmd(0, "rm -f $ctlFile") if -e $ctlFile;
+    $self->runCmd(0, "rm -f $sqlldrLog") if -e $sqlldrLog;
   } else {
 
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
-
-      # run sqlldr (after writing its control file)
-      writeControlFile($ctlFile, $suffix);
-      $self->runCmd($test, $cmd);
+    # run sqlldr (after writing its control file)
+    writeControlFile($ctlFile, $suffix);
+    $self->runCmd($test, $cmd);
   }
 }
 
