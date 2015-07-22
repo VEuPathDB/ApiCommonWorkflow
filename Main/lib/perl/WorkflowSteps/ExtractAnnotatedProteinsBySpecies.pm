@@ -40,8 +40,6 @@ sub run {
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
-    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile.d*");
-	$self->runCmd(0, "rm -f $workflowDataDir/$outputFile.NoAsterisks");
   } else {  
       if ($test) {
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");

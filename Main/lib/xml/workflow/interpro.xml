@@ -2,6 +2,9 @@
 
     <param name="proteinsFile"/>
     <param name="parentDataDir"/>
+    <param name="insertVersion" default="1"/>                    <!-- optional -->
+    <param name="aaSeqTable"    default="ExternalAASequence"/>   <!-- optional, used if version > 1 -->
+    <param name="sourceIdRegex" default="(\S+)"/>                <!-- optional, used if version > 1 -->
 
     <constant name="dataDir">$$parentDataDir$$/interpro</constant>
 
@@ -37,13 +40,22 @@
     </step>
 
     <!--TODO: a missing dependency between GO terms and interpro, refs #16009-->
-    <step name="insert" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertInterpro" stepLoadTypes="plugin">
+    <step name="insert" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertInterpro" stepLoadTypes="plugin" includeIf="$$insertVersion$$ == 1">
       <paramValue name="inputDir">$$dataDir$$/master/mainresult/</paramValue>
       <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
       <paramValue name="configFile">global/InterproscanData_RSRC/iprscan/data/insertInterpro-config.xml</paramValue>
       <depends name="mirrorFromCluster"/>
       <dependsGlobal name="GO_RSRC"/>
       <dependsGlobal name="GO_evidence_codes_RSRC"/>
+    </step>
+
+    <step name="insert2" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertInterpro_2" stepLoadTypes="plugin" includeIf="$$insertVersion$$ == 2">
+      <paramValue name="inputDir">$$dataDir$$/master/mainresult/</paramValue>
+      <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
+      <paramValue name="configFile">global/InterproscanData_RSRC/iprscan/data/insertInterpro-config.xml</paramValue>
+      <paramValue name="aaSeqTable">$$aaSeqTable$$</paramValue>
+      <paramValue name="sourceIdRegex">$$sourceIdRegex$$</paramValue>
+      <depends name="mirrorFromCluster"/>
     </step>
 
 </workflowGraph>
