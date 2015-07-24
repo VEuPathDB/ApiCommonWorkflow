@@ -28,7 +28,7 @@ sub run {
     if (!$test) {
 	$self->log("Truncating apidb.similarsequences$suffix");
 	$self->runSqlFetchOneRow(0,"truncate table apidb.similarsequences$suffix");
-	my $count = $self->runSqlFetchOneRow(0,"select count(*) from apidb.similarsequences$suffix");
+	my ($count) = $self->runSqlFetchOneRow(0,"select count(*) from apidb.similarsequences$suffix");
 	$self->error("Truncate of apidb.similarsequences$suffix did not succeed.  Table is not empty ($count rows)") if $count;
 	$self->log("Done truncating");
     }
@@ -40,7 +40,7 @@ sub run {
 
     # confirm that the target table is empty.  this is required so that our undo strategy (truncating) will work
     if (!$test) {
-	my $count = $self->runSqlFetchOneRow(0,"select count(*) from apidb.similarsequences$suffix");
+	my ($count) = $self->runSqlFetchOneRow(0,"select count(*) from apidb.similarsequences$suffix");
 	$self->error("Table apidb.similarsequences$suffix is not empty ($count rows)") if $count;
     }
 
