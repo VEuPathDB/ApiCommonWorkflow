@@ -44,7 +44,7 @@
     <prop name="name"/> 
     <prop name="version"/>
     <prop name="organismAbbrev"/>
-    <prop name="isolateType"/>
+    <prop name="platform"/>
 
     <subgraph name="isolateAssay_SNP_${name}_RSRC" xmlFile="isolateAssaySNPs.xml">
       <paramValue name="name">${name}</paramValue>
@@ -53,9 +53,21 @@
       <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="isolateType">${isolateType}</paramValue>
+      <paramValue name="platform">${platform}</paramValue>
       <dependsPattern name="SNP_*_gff_RSRC"/>
     </subgraph>
 
   </datasetTemplate> 
+
+
+  <subgraph name="writeHsssFiles" xmlFile="writeHsss.xml">
+    <paramValue name="snpsDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <dependsPattern name="*_experiment"/>
+  </subgraph>
+
+
 </workflowGraph>
