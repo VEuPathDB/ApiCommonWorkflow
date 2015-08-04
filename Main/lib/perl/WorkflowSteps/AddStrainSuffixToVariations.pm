@@ -12,9 +12,13 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $suffix = $self->getParamValue('suffix');
 
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $organismStrain = $self->getOrganismInfo($test, $organismAbbrev)->getStrainAbbrev();
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "snpAddStrainSuffixToVariations.pl --inputFile $workflowDataDir/$inputFile --outputFile $workflowDataDir/$outputFile --suffix $suffix";
+  # Add suffix to variation rows except for the reference
+  my $cmd = "snpAddStrainSuffixToVariations.pl --inputFile $workflowDataDir/$inputFile --outputFile $workflowDataDir/$outputFile --suffix $suffix --referenceStrain $organismStrain --doNotOutputReference";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");

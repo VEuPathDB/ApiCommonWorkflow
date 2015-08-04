@@ -1,0 +1,44 @@
+<workflowGraph name="isolateAssaySNPs">
+  <param name="snpsDataDir"/>
+  <param name="organismAbbrev"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+
+  <constant name="dataDir">$$snpsDataDir$$/writeHsssFiles</constant>
+
+   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+    <step name="mergeSnpChipVariations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpMergeExperimentSortedTab">
+      <paramValue name="globInput">$$snpsDataDir$$/*_SNPChip_*/isolateSNPsWithSuffix.cache</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/mergedVariations</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <!-- Need to recalculate the rows for the reference strain; they were thrown away when the suffix was added -->
+    <step name="processSequenceVariations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ProcessSequenceVariations">
+      <paramValue name="newSampleFile">$$dataDir$$/mergedVariations</paramValue>
+      <paramValue name="cacheFile">$$dataDir$$/mergedVariations.cache</paramValue>
+      <paramValue name="undoneStrainsFile">$$dataDir$$/undo</paramValue>
+      <paramValue name="varscanConsDir"></paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="isLegacy">true</paramValue>
+      <depends name="mergeSnpChipVariations"/>
+    </step>
+
+
+    <step name="makeHSS0FileInWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHighSpeedSearchFiles" stepLoadTypes="hssWS">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="variantsFile">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
+      <paramValue name="varscanConsDir"></paramValue>
+      <paramValue name="readFrequency">0</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="processSequenceVariations"/>
+    </step>
+
+
+
+</workflowGraph>

@@ -19,11 +19,15 @@ sub run {
 
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
   my $organismStrain = $self->getOrganismInfo($test, $organismAbbrev)->getStrainAbbrev();
+
+
+
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $hssDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/highSpeedSnpSearch";
 
-  my $cmd = "hsssCreateStrainFiles $workflowDataDir/$variantsFile $workflowDataDir/$varscanConsDir  $hssDir $readFreq $organismStrain";
+  my $cmd = "hsssCreateStrainFiles --inputVariantsFile $workflowDataDir/$variantsFile --varscanDir $workflowDataDir/$varscanConsDir  --targetDir $hssDir --readFreqCutoff $readFreq --refStrainName $organismStrain";
   
   if ($undo) {
     $self->runCmd(0, "rm -fr $hssDir/readFreq$readFreq");

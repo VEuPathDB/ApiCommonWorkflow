@@ -36,6 +36,7 @@
       <depends name="createIsolateAssayGFF"/>
     </step>
 
+
     <step name="processSequenceVariations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ProcessSequenceVariations">
       <paramValue name="newSampleFile">$$dataDir$$/isolateSNPs.tab</paramValue>
       <paramValue name="cacheFile">$$dataDir$$/isolateSNPs.cache</paramValue>
@@ -55,12 +56,16 @@
     <depends name="processSequenceVariations"/>
   </step>
 
+
+    <!-- The file w/ the suffix added will be used for the hsss webservice files --> 
   <step name="addStrainSuffix" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddStrainSuffixToVariations">
     <paramValue name="inputFile">$$dataDir$$/isolateSNPs.cache</paramValue>
     <paramValue name="outputFile">$$dataDir$$/isolateSNPsWithSuffix.cache</paramValue>
     <paramValue name="suffix">_$$platform$$</paramValue> <!-- the underscore is not a typo -->
     <depends name="processSequenceVariations"/>
   </step>
+
+
 
 
 
