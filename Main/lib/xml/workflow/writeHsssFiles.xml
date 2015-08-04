@@ -16,6 +16,9 @@
       <depends name="makeDataDir"/>
     </step>
 
+
+
+
     <!-- Need to recalculate the rows for the reference strain; they were thrown away when the suffix was added -->
     <step name="processSequenceVariations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ProcessSequenceVariations">
       <paramValue name="newSampleFile">$$dataDir$$/mergedVariations</paramValue>
@@ -39,6 +42,13 @@
       <depends name="processSequenceVariations"/>
     </step>
 
+    <step name="addSourceIdLocationMapToHsssDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpMergeLocationMaps">
+      <paramValue name="globInput">$$snpsDataDir$$/*_SNPChip_*/locationMap</paramValue>
+      <paramValue name="outputFile">locationToSourceId.dat</paramValue>
+      <paramValue name="readFrequency">0</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="makeHSS0FileInWebServices"/>
+    </step>
 
 
 </workflowGraph>

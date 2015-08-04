@@ -16,7 +16,10 @@ sub run {
   my @inputs = glob "$workflowDataDir/$globInput";
  
 
-  unless ($undo) {
+  if ($undo) {
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
+  }
+  else {
     foreach my $inputFile (@inputs) {
 	$self->testInputFile('inputFile', "$inputFile");
     }
