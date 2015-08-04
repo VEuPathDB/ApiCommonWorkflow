@@ -315,23 +315,6 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
   </datasetTemplate>
 
-<!--
- <datasetTemplate class="PathwayCompounds">
-    <prop name="version"/> 
-    <prop name="name"/>   
-
-    <subgraph name="PathwayCompounds_${name}_${version}" xmlFile="compounds.xml">
-      <paramValue name="source">PathwayCompounds</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="version">${version}</paramValue>
-      <paramValue name="datasetLoaderXmlFile">$$projectName$$.xml</paramValue>
-      <paramValue name="compoundName">${name}</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
-    </subgraph>
-
- </datasetTemplate>
--->
-
   <datasetTemplate class="Pathways">
    <prop name="projectName"/>     
    <prop name="type"/>
@@ -339,43 +322,19 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="datasetName">Pathways_${type}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-      <dependsPattern name="PathwayCompounds*"/>
       <dependsGlobal name="enzymeDB_RSRC"/>
       <dependsGlobal name="oboOntologies"/>
+      <dependsGlobal name="chEBI_Compounds"/>
    </subgraph>
   </datasetTemplate>
 
-  <step name="makeDerivedTables"
-        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGlobalDerivedTables" stepLoadTypes="tuningManager">
-      <paramValue name="organismAbbrev">project</paramValue>
-      <paramValue name="tables">CompoundAttributes</paramValue>
-      <dependsPattern name="Pathways_*RSRC"/>
-  </step>
     <step name="makePathwayDownloadFiles_${type}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePathwayDownloadFiles">
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="outputDirName">pathwayFiles/</paramValue>
       <depends name="makeDerivedTables"/>
+      <dependsPattern name="Pathways_*RSRC"/>
+    </step>
 
-<!--TODO add global dependency on compounds-->    </step>
-
-
-<!--
-  <datasetTemplate class="ExperimentCompounds">
-    <prop name="version"/> 
-    <prop name="name"/>   
-
-    <subgraph name="ExperimentCompounds" xmlFile="compounds.xml">
-      <paramValue name="source">ExperimentCompounds</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="version">${version}</paramValue>
-      <paramValue name="datasetLoaderXmlFile">$$projectName$$.xml</paramValue>
-      <paramValue name="compoundName">${name}</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
-    </subgraph>
-
- </datasetTemplate>
-
--->
 
  <datasetTemplate class="metaboliteProfiles">
    <prop name="experimentName"/> 
