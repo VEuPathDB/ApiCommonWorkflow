@@ -17,7 +17,6 @@ sub run {
   my $keepNode = $self->getParamValue("keepNode");
   my $createJunctionsFile = $self->getParamValue("createJunctionsFile");
   my $spliceSitesDatabase = $self->getParamValue("spliceSitesDatabase");
-  my $gtfFile = $self->getParamValue("gtfFile");
   my $maskFile = $self->getParamValue("maskFile");
   my $topLevelGeneFootprintFile = $self->getParamValue("topLevelGeneFootprintFile");
   my $topLevelFastaFile = $self->getParamValue("topLevelFastaFile");
@@ -55,7 +54,6 @@ sub run {
       my $taskPropFileContent="
 mateA=$clusterWorkflowDataDir/$readFilePath
 genomeDatabase=$clusterWorkflowDataDir/$gsnapDirectory/$gmapDatabase
-gtfFile=$clusterWorkflowDataDir/$gsnapDirectory/$gtfFile
 maskFile=$clusterWorkflowDataDir/$gsnapDirectory/$maskFile
 iitFile=$clusterWorkflowDataDir/$gsnapDirectory/$spliceSitesDatabase
 nPaths=$limitNU
