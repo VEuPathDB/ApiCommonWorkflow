@@ -27,6 +27,8 @@ sub run {
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $taskSize = $self->getConfig("taskSize");
 
+  my $sraQueryString = $self->getParamValue("sraQueryString");
+
 #  my $blatExec = $self->getConfig("$clusterServer.blatExec");
  # my $mdustExec = $self->getConfig("$clusterServer.mdustExec");
 
@@ -52,7 +54,7 @@ sub run {
       open(F, ">$taskPropFile") || die "Can't open task prop file '$taskPropFile' for writing";
 
       my $taskPropFileContent="
-mateA=$clusterWorkflowDataDir/$readFilePath
+
 genomeDatabase=$clusterWorkflowDataDir/$gsnapDirectory/$gmapDatabase
 maskFile=$clusterWorkflowDataDir/$gsnapDirectory/$maskFile
 iitFile=$clusterWorkflowDataDir/$gsnapDirectory/$spliceSitesDatabase
@@ -65,7 +67,20 @@ topLevelGeneFootprintFile=$clusterWorkflowDataDir/$topLevelGeneFootprintFile
 topLevelFastaFaiFile=$clusterWorkflowDataDir/$topLevelFastaFile.fai
 ";
 
-      $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$readFilePath.paired\n" if($hasPairedEnds);
+    if(length($sraQueryString)>0){
+      $taskPropFileContent .= "mateA=none\n";
+      $taskPropFileContent .= "mateB=none\n";
+      $taskPropFileContent .= "sraSampleIdQueryList=$sraQueryString\n";
+      
+    }else {
+      $taskPropFileContent .= "mateA=$clusterWorkflowDataDir/$readFilePath\n";
+      $taskPropFileContent .= "sraSampleIdQueryList=none\n";
+      if($hasPairedReads){
+        $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$readFilePath.paired\n";
+      }else {
+        $taskPropFileContent .= "mateB=none\n";
+      }
+    }
 
       print F "$taskPropFileContent\n";
        close(F);

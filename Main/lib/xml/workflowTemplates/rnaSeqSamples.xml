@@ -46,10 +46,48 @@
       <paramValue name="gsnapDirectory">$$gsnapDirectory$$</paramValue>
       <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
       <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="sraQueryString"></paramValue>
       <depends name="${sampleName}_RSRC"/>
     </subgraph>
    <!-- might have to reformat the count and mapping stats files made by RUM -->
   </datasetTemplate>
+
+
+
+  <datasetTemplate class="rnaSeqSample_QuerySRA">
+    <prop name="experimentName"/>
+    <prop name="sampleName"/>
+    <prop name="sraQueryString"/>
+
+    <subgraph name="${sampleName}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_rnaSeqSample_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+    </subgraph>
+
+
+    <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeRnaSeqSample.xml">
+      <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="outputDir">$$outputDir$$</paramValue>
+      <paramValue name="sampleName">${sampleName}</paramValue>
+      <paramValue name="shortSeqsFile">$$experimentDatasetLoadersDataDir$$/final/${sampleName}</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="limitNU">14</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
+      <paramValue name="spliceSitesDatabase">$$spliceSitesDatabase$$</paramValue>
+      <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+      <paramValue name="maskFile">$$maskFile$$</paramValue>
+      <paramValue name="gmapDatabase">$$gmapDatabase$$</paramValue>
+      <paramValue name="gsnapDirectory">$$gsnapDirectory$$</paramValue>
+      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="sraQueryString">${sraQueryString}</paramValue>
+      <depends name="${sampleName}_RSRC"/>
+    </subgraph>
+   <!-- might have to reformat the count and mapping stats files made by RUM -->
+  </datasetTemplate>
+
 
 
 <!--
