@@ -317,23 +317,26 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
   <datasetTemplate class="Pathways">
    <prop name="projectName"/>     
+   <prop name="version"/>
    <prop name="type"/>
-   <subgraph name="Pathways_${type}_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">Pathways_${type}_RSRC</paramValue>
+   <prop name="subType"/>
+   <subgraph name="Pathways_${subType}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">Pathways_${subType}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
       <dependsGlobal name="enzymeDB_RSRC"/>
       <dependsGlobal name="oboOntologies"/>
       <dependsGlobal name="chEBI_Compounds"/>
    </subgraph>
-  </datasetTemplate>
 
-    <step name="makePathwayDownloadFiles_${type}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePathwayDownloadFiles">
-      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="outputDirName">pathwayFiles/</paramValue>
-      <dependsPattern name="Pathways_*RSRC"/>
+    <step name="makePathwayDownloadFile_${subType}" stepClass="ApiCommonWorkflow::Mail::WorkflowSteps::MakePathwayDownloadFiles">
+        <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+        <paramValue name="outputDirName">pathwayFiles/${subType}</paramValue>
+        <paramValue name="extDbRlsSpec">Pathways_${subType}_RSRC|${version}</paramValue>
+        <depends name="Pathways_${subType}_RSRC"/>
     </step>
-
+    
+  </datasetTemplate>
 
  <datasetTemplate class="metaboliteProfiles">
    <prop name="experimentName"/> 
