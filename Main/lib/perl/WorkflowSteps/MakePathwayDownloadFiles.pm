@@ -12,15 +12,14 @@ sub run {
   my $gusConfigFile= "$ENV{GUS_HOME}/config/gus.config";
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $relativeDownloadSiteDir =  $self->getParamValue('relativeDownloadSiteDir');
-  my $outputDirName = $self->getParamValue('outputDirName');
-  my $outputDir = $self->getParamValue('relativeDownloadSiteDir') . '/' . $outputDirName;
+  my $outputDir =  $self->getParamValue('outputDir');
+
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $extDbRlsId = $self->getExtDbRlsId($test, $extDbRlsSpec);
 
-  my $cmd = "makePathwayImgDataFiles.pl --gusConfigFile $gusConfigFile --outputDir $websiteFilesDir/$outputDir --pathwayList source --extDbRlsId $extDbRlsId";
+  my $cmd = "makePathwayImgDataFiles.pl --gusConfigFile $gusConfigFile --outputDir $websiteFilesDir/$outputDir  --extDbRlsId $extDbRlsId";
 
   if ($undo) {
     $self->runCmd(0, "rm -Rf $websiteFilesDir/$outputDir");
