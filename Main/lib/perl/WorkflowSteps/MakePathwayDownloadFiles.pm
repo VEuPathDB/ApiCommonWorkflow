@@ -15,9 +15,12 @@ sub run {
   my $relativeDownloadSiteDir =  $self->getParamValue('relativeDownloadSiteDir');
   my $outputDirName = $self->getParamValue('outputDirName');
   my $outputDir = $self->getParamValue('relativeDownloadSiteDir') . '/' . $outputDirName;
+  my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-  my $cmd = "makePathwayImgDataFiles.pl --gusConfigFile $gusConfigFile --outputDir $websiteFilesDir/$outputDir --pathwayList ALL";
+  my $extDbRlsId = $self->getExtDbRlsId($test, $extDbRlsSpec);
+
+  my $cmd = "makePathwayImgDataFiles.pl --gusConfigFile $gusConfigFile --outputDir $websiteFilesDir/$outputDir --pathwayList source --extDbRlsId $extDbRlsId";
 
   if ($undo) {
     $self->runCmd(0, "rm -Rf $websiteFilesDir/$outputDir");
