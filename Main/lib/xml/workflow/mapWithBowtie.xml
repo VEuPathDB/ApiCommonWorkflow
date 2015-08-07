@@ -25,7 +25,7 @@
 
   <!-- Create the bowtie 2 indexes -->
   <step name="createBowtie2Indices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
-    <paramValue name="inputFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fsa</paramValue>
+    <paramValue name="inputFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fasta</paramValue>
     <paramValue name="outputIndexDir">$$bowtieDir$$</paramValue>
     <paramValue name="colorspace">false</paramValue>
     <paramValue name="bowtieVersion">2</paramValue>
@@ -33,7 +33,7 @@
 
    <!-- Create the Bowtie 1 index for colorspace -->
   <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
-    <paramValue name="inputFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fsa</paramValue>
+    <paramValue name="inputFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fasta</paramValue>
     <paramValue name="outputIndexDir">$$bowtieDir$$</paramValue>
     <paramValue name="colorspace">true</paramValue>
     <paramValue name="bowtieVersion">1</paramValue>
@@ -48,14 +48,14 @@
 
   <!-- Create other common indices -->
   <step name="createSamtoolsIndex" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSamtoolsIndex">
-    <paramValue name="genomicSeqsFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fsa</paramValue>
-    <paramValue name="outputFile">$$indicesDir$$/topLevelGenomicSeqs.fsa.fai</paramValue>
+    <paramValue name="genomicSeqsFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fasta</paramValue>
+    <paramValue name="outputFile">$$indicesDir$$/topLevelGenomicSeqs.fasta.fai</paramValue>
     <depends name="makeIndicesDir"/>
   </step>
   
   <step name="makeChromSizesFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeChromSizesFile">
     <paramValue name="indicesDir">$$indicesDir$$</paramValue>
-    <paramValue name="genomeIndex">topLevelGenomicSeqs.fsa.fai</paramValue>
+    <paramValue name="genomeIndex">topLevelGenomicSeqs.fasta.fai</paramValue>
     <depends name="createSamtoolsIndex"/>
   </step>
 
@@ -76,7 +76,7 @@
       <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="samtoolsIndex">$$indicesDir$$/topLevelGenomicSeqs.fsa.fai</paramValue>
+      <paramValue name="samtoolsIndex">$$indicesDir$$/topLevelGenomicSeqs.fasta.fai</paramValue>
       <paramValue name="chromSizesFile">$$indicesDir$$/chrom.sizes</paramValue>
       <depends name="mirrorToCluster"/>
       <depends name="mirrorOtherToCluster"/>
@@ -88,7 +88,7 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="parentDataDir">$$organismAbbrev$$</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$organismAbbrev$$/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fsa</paramValue>
+      <paramValue name="genomicSeqsFile">$$organismAbbrev$$/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
@@ -126,7 +126,7 @@
         <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
         <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue> 
         <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-        <paramValue name="samtoolsIndex">$$indicesDir$$/topLevelGenomicSeqs.fsa.fai</paramValue>
+        <paramValue name="samtoolsIndex">$$indicesDir$$/topLevelGenomicSeqs.fasta.fai</paramValue>
         <paramValue name="chromSizesFile">$$indicesDir$$/chrom.sizes</paramValue>
         <depends name="mirrorToCluster"/>
         <depends name="mirrorOtherToCluster"/>
