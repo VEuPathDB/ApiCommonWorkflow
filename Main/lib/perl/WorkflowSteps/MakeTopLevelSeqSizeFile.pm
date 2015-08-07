@@ -1,3 +1,4 @@
+
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelSeqSizeFile;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
@@ -15,7 +16,7 @@ sub run {
   my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $sql = "select sa.source_id||chr(9)||ns.length
-            from ApidbTuning.${tuningTablePrefix}sequenceattributes sa, dots.nasequence ns
+            from ApidbTuning.${tuningTablePrefix}GenomicSeqAttributes sa, dots.nasequence ns
             where sa.is_top_level = 1
             and sa.na_sequence_id = ns.na_sequence_id
             and sa.NCBI_TAX_ID = $ncbiTaxonId";
