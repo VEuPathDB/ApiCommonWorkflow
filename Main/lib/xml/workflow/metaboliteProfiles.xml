@@ -2,46 +2,31 @@
     <param name="parentDataDir"/>
     <param name="experimentName"/>
     <param name="experimentVersion"/>
-    <param name="relativeDownloadSiteDir"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
 
-    <!-- Reusing the DoTranscriptExpression WorkflowStep here.  May consider rename -->
-    <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
+    <!-- Reusing the DoTranscriptExpression WorkflowStep here.  -->
+    <step name="makeProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
       <paramValue name="analysisConfigFile">$$parentDataDir$$/$$experimentName$$/final/analysisConfig.xml</paramValue>
       <paramValue name="inputDir">$$dataDir$$/final</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/doTranscriptExpression</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/outputDir</paramValue>
       <paramValue name="geneProbeMappingTabFile"></paramValue>
       <paramValue name="geneProbeMappingVendorFile"></paramValue>
-      <paramValue name="platformDirectory">$$parentDataDir$$/$$experimentName$$/final</paramValue>
+      <paramValue name="platformDirectory"></paramValue>
       <paramValue name="expectCdfFile">false</paramValue>
       <paramValue name="expectNdfFile">false</paramValue>
-      <paramValue name="passPlatformMappingFile">true</paramValue>
+      <paramValue name="passPlatformMappingFile">false</paramValue>
     </step>
 
-    <step name="insertCompoundAlias" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDbRefCompounds" stepLoadTypes="plugin">
-      <paramValue name="aliasFile">$$dataDir$$/final/compoundAlias.txt</paramValue>
-      <paramValue name="extDbName">$$experimentName$$</paramValue>
-      <paramValue name="extDbVersion">$$experimentVersion$$</paramValue>
-    </step>
 
-    <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$dataDir$$/doTranscriptExpression/insert_study_results_config.txt</paramValue>
-      <paramValue name="inputDir">$$dataDir$$/doTranscriptExpression</paramValue>
+  <step name="loadStudyResultsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/outputDir/insert_study_results_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/outputDir</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentName$$|$$experimentVersion$$</paramValue>
-      <paramValue name="studyName"></paramValue>
-      <depends name="doTranscriptExpression"/>
-      <depends name="insertCompoundAlias"/>
-    </step>
+    <paramValue name="studyName">$$experimentName$$</paramValue>
+    <depends name="makeProfiles"/>
+  </step>
 
-<!-- JB:These are not experssion files and are not organism specific 
-    <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
-      <paramValue name="configFile">$$dataDir$$/doTranscriptExpression/expression_profile_config.txt</paramValue>
-      <paramValue name="copyFromDir">$$dataDir$$/doTranscriptExpression</paramValue>
-      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="experimentName">$$experimentName$$</paramValue>
-      <depends name="insertExpressionProfile"/>
-    </step>
--->
+
 
 </workflowGraph>
