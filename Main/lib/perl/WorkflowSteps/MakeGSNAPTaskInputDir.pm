@@ -75,7 +75,7 @@ topLevelFastaFaiFile=$clusterWorkflowDataDir/$topLevelFastaFile.fai
     }else {
       $taskPropFileContent .= "mateA=$clusterWorkflowDataDir/$readFilePath\n";
       $taskPropFileContent .= "sraSampleIdQueryList=none\n";
-      if($hasPairedReads){
+      if($hasPairedEnds){
         $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$readFilePath.paired\n";
       }else {
         $taskPropFileContent .= "mateB=none\n";
