@@ -70,7 +70,7 @@ sub run {
        my $sql = "select count(*) from $loadedTable where row_alg_invocation_id in ($algInvIds)";
        my $cmd = "getValueFromTable --idSQL \"$sql\"";
        my $loaded = $self->runCmd($test, $cmd);
-       die "Less than 1000 rows loaded." if ($loaded < 1000);     
+       die "Less than 1000 rows loaded." if ($loaded < 100);     
   }
 }
 
