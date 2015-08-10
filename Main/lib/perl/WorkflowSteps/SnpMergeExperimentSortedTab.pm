@@ -9,7 +9,6 @@ sub run {
 
   my $globInput = $self->getParamValue('globInput');
   my $outputFile = $self->getParamValue('outputFile');
-  my $referenceStrain = $self->getParamValue('referenceStrain');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -28,7 +27,7 @@ sub run {
     } 
 
     foreach my $inputFile (@inputs) {
-	$cmd = "mergeSortedSnpTab.pl --inputFile $inputFile --cacheFile $workflowDataDir/$outputFile --undoneStrainsFile $workflowDataDir/undoFile --doNotTruncateInputFile";     
+	my $cmd = "mergeSortedSnpTab.pl --inputFile $inputFile --cacheFile $workflowDataDir/$outputFile --undoneStrainsFile $workflowDataDir/undoFile --doNotTruncateInputFile";     
 	$self->runCmd($test, $cmd);
     }
   }
