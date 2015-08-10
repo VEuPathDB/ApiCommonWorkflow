@@ -154,7 +154,7 @@ sub ifSkipOnSoTermName {
   my ($self, $organismAbbrev, $test) = @_;
 
   my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
-  my $sql = "select distinct sa.sequence_type, organism from apidbtuning.${tmPrefix}sequenceattributes sa, apidb.organism o where o.taxon_id = sa.taxon_id and o.is_annotated_genome = 1";
+  my $sql = "select distinct sa.sequence_type, organism from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o where o.taxon_id = sa.taxon_id and o.is_annotated_genome = 1";
   my $cmd = "getValueFromTable --idSQL \"$sql\"";
 
   my $result = $self->runCmd($test, $cmd);
@@ -178,7 +178,7 @@ sub getIsDraftHash {
 	my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
 	my $sql = "select count(*)
-                       from apidbtuning.${tmPrefix}sequenceattributes sa, apidb.organism o, sres.ontologyterm ot 
+                       from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o, sres.ontologyterm ot 
                        where ot.name IN ('chromosome', 'supercontig')
                        and sa.so_id = ot.source_id
                        and sa.taxon_id = o.taxon_id
