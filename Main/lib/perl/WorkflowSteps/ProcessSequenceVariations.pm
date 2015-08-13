@@ -39,7 +39,7 @@ sub run {
       $cmd .= " --is_legacy_variations --clean_cache";
   }
   else {
-      $cmd .= "--varscan_directory $workflowDataDir/$varscanConsDir";
+      $cmd .= " --varscan_directory $workflowDataDir/$varscanConsDir";
   }
 
   unless($undo) {
