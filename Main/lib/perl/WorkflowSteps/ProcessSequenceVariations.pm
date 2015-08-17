@@ -49,6 +49,9 @@ sub run {
       $self->runCmd(0, "echo test > $dirname/snpFeature.dat");
     }
     $self->runCmd($test, $cmd);
+  }else{
+      $self->runCmd(0, "rm -f $workflowDataDir/$cacheFile");
+      $self->runCmd(0, "rm -f $dirname/snpFeature.dat");     
   }
 }
 
