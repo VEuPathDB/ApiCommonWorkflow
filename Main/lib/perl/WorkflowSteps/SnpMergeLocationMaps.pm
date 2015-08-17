@@ -9,7 +9,7 @@ sub run {
 
   my $globInput = $self->getParamValue('globInput');
   my $outputFile = $self->getParamValue('outputFile');
-
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my @inputs = glob "$workflowDataDir/$globInput";
