@@ -19,7 +19,6 @@
     <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
     <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>
 
-
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
@@ -91,6 +90,15 @@
 
     <!-- end dataset loader -->
 
+
+    <step name="$$experimentName$$_addStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
+      <paramValue name="experimentName">$$experimentName$$ (NGS SNP)</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+       <depends name="experiment_RSRC"/>
+    </step>
+
+
+
     <subgraph name="map_SNPs" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/htsSnpSamples.xml">
        <paramValue name="projectName">$$projectName$$</paramValue>
        <paramValue name="experimentDir">$$dataDir$$</paramValue>
@@ -107,7 +115,7 @@
        <paramValue name="snpPercentCutoff">$$snpPercentCutoff$$</paramValue>
        <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
        
-       <depends name="experiment_RSRC"/>
+       <depends name="${experimentName}_addStudy"/>
        <depends name="getAndUnpack"/>
      </subgraph>
 
