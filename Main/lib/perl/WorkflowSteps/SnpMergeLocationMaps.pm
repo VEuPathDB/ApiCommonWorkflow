@@ -15,11 +15,12 @@ sub run {
   my @inputs = glob "$workflowDataDir/$globInput";
 
   my $readFreq = $self->getParamValue("readFrequency");
+  my $hsssDir = $self->getParamValue("hsssDir");
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
-  my $hssDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/highSpeedSnpSearch/readFreq$readFreq";
+  my $hssDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/$hsssDir/readFreq$readFreq";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $hssDir/$outputFile");
