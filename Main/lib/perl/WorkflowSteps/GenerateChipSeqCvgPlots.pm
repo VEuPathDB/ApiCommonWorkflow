@@ -12,6 +12,7 @@ sub run{
     my $clusterResultsDir = $self->getParamValue('clusterResultsDir');
     my $topLevelSeqSizeFile = $self->getParamValue('topLevelSeqSizeFile');
     my $experimentType = $self->getParamValue('experimentType');
+    my $sampleName = $self->getParamValue('sampleName');
     my $inputName = $self->getParamValue('inputName');
     my $fragmentLength = $self->getParamValue('fragmentLength');
     my $workflowDataDir = $self->getWorkflowDataDir();
