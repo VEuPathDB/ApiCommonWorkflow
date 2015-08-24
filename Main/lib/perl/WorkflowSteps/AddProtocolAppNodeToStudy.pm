@@ -11,9 +11,9 @@ sub run {
 
   my $experimentName = $self->getParamValue('experimentName');
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
-  my $snpStrain = $self->getParamValue('snpStrain');
+  my $name = $self->getParamValue('name');
 
-    my $args = "--name '$snpStrain' --extDbSpec '$extDbRlsSpec' --studyName '$experimentName'";
+    my $args = "--name '$name' --extDbSpec '$extDbRlsSpec' --studyName '$experimentName'";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::AddProtocolAppNodeToStudy", $args);
 }
