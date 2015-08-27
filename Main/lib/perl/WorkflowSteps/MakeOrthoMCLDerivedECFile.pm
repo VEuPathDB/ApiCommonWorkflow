@@ -13,21 +13,23 @@ sub run {
 
   my $cmdGenesByTaxonAndEcNumber = "getGenesByTaxonAndEcNumber.pl --gusConfigFile $gusConfigFile --outputGenesByTaxon $workflowDataDir/GenesByTaxon_summary.txt --outputGenesByEcNumber $workflowDataDir/GenesByEcNumber_summary.txt";
 
-  my $cmdOrthoMCL = "getDataFromOrthoMcl.pl --outputAllOrthoGrps $workflowDataDir/AllOrthoGrps.txt --outputOrthoSeqsWithECs $workflowDataDir/OrthoSeqsWithECs.txt";
+  my $cmdOrthoMCL = "getDataFromOrthoMCL.pl --outputAllOrthoGrps $workflowDataDir/AllOrthoGrps.txt --outputOrthoSeqsWithECs $workflowDataDir/OrthoSeqsWithECs.txt";
 
-  my $cmdAddEupathECToOmcl = "addEupathECToOmcl.pl -orthoFile $workflowDataDir/AllOrthoGrps.txt -eupathFile $workflowDataDir/EuPathDBGenesWithEC.tsv  --os $workflowDataDir/OrthoSeqsWithECs.txt > $workflowDataDir/OrthoGrpsWithEupathNewAndAdded.txt";
+  my $cmdAddEupathECToOmcl = "addEupathECToOmcl.pl -orthoFile $workflowDataDir/AllOrthoGrps.txt -eupathFile $workflowDataDir/GenesByEcNumber_summary.txt --os $workflowDataDir/OrthoSeqsWithECs.txt > $workflowDataDir/OrthoGrpsWithEupathNewAndAdded.txt";
   
-  my $cmdPropagateOrthoEcToEuPath = "propagateOrthoEcToEuPath.pl -o $workflowDataDir/OrthoGrpsWithEupathNewAndAdded.txt -e $workflowDataDir/AllEuPathGenes.tsv --lf > $workflowDataDir/ec.txt ;"
+  my $cmdPropagateOrthoEcToEuPath = "propagateOrthoEcToEuPath.pl -o $workflowDataDir/OrthoGrpsWithEupathNewAndAdded.txt -e $workflowDataDir/GenesByTaxon_summary.txt --lf > $workflowDataDir/ec.txt";
 
 
   if($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/GenesByTaxon_summary.txt");    
     $self->runCmd(0, "rm -f $workflowDataDir/GenesByEcNumber_summary.txt");    
+    $self->runCmd(0, "rm -f $workflowDataDir/OrthoSeqsWithECs.txt");    
+    $self->runCmd(0, "rm -f $workflowDataDir/AllOrthoGrps.txt");    
   } else {
-    $self->runcmd($test, $cmdGenesByTaxonAndEcNumber);
-    $self->runcmd($test, $cmdOrthoMCL);
-    $self->runcmd($test, $cmdAddEupathECToOmcl);
-    $self->runcmd($test, $cmdPropagateOrthoEcToEuPath);
+    $self->runCmd($test, $cmdGenesByTaxonAndEcNumber);
+    $self->runCmd($test, $cmdOrthoMCL);
+    $self->runCmd($test, $cmdAddEupathECToOmcl);
+    $self->runCmd($test, $cmdPropagateOrthoEcToEuPath);
   } 
 } 
 
