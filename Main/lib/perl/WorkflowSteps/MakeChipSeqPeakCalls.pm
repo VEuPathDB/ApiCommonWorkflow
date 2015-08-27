@@ -11,13 +11,13 @@ sub run{
     
     my $experimentDataDir = $self->getParamValue('experimentDataDir');
     my $experimentType = $self->getParamValue('experimentType');
+    my $experimentName = $self->getParamValue('experimentName');
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $experimentDataDir = "$workflowDataDir/$experimentDataDir/";  
     
-    my $cmd = "makeChipSeqPeakCalls.pl --experimentType $experimentType --experimentDataDir $experimentDataDir";	
+    my $cmd = "makeChipSeqPeakCalls.pl --workflowDir $workflowDir --experimentType $experimentType --experimentName $experimentName --experimentDataDir $experimentDataDir";	
 
     if ($undo){
-        $self->runCmd(0, "rm -rf $experimentDataDir/peaks/");
+        $self->runCmd(0, "rm -rf $workflowDir/$experimentDataDir/peaks/");
     }
     else{
         $self->runCmd($test, $cmd);
