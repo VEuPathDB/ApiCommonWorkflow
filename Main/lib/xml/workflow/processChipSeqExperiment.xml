@@ -77,11 +77,13 @@
     </step>
 
 <!--
-So far coverage plots have only been assessed for histonemod (HOMER software) and mnase (DANPOS2) single end data. Peak calls are made for histonemod only with HOMER, but have only been assessed for single end data. If the data are paired end or the data are not histonemod/mnase, data loaders should inspect all results: coverage plots and peak calls (these will only be generated for histonemod) before proceeding.
+So far coverage plots have only been assessed for histonemod (HOMER software) single-end data and mnase (DANPOS2) paired-end data. Peak calls are made for histonemod only with HOMER, but have only been assessed for single-end data. If the data are not of the types assessed so far, the next step will fail. Data loaders should inspect all results: coverage plots and peak calls (these will only be generated for histonemod) before the list of conditions under which the following step fails is reduced (in the step code).
 -->
 
-    <step name="manuallyAssessCoverageAndPeaks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep" includeIf="$$hasPairedEnds$$ || !('$$experimentType$$'=='histonemod' || '$$experimentType$$'=='mnase')">
-      <depends name="makeDataDir"/>
+    <step name="forceToAssessCvgAndPeaks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ForceToAssessCvgAndPeaks">
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="experimentType">$$experimentType$$</paramValue>
+      <depends name="analyzeChipSeqSamples"/>
     </step>
 
 </workflowGraph>
