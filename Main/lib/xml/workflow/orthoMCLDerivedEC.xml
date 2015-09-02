@@ -1,0 +1,27 @@
+<workflowGraph name="">
+    <param name="parentDataDir"/>
+
+    <constant name="dataDir">$$parentDataDir$$/OrthoMCLDerivedEC</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeOrthMCLDerivedECFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoMCLDerivedECFile">
+      <paramValue name="genesByTaxonOutputFile">$$dataDir$$/GenesByTaxon_summary.txt</paramValue>
+      <paramValue name="genesByEcOutputFile">$$dataDir$$/GenesByEcNumber_summary.txt</paramValue>
+      <paramValue name="allOrthoGrpsOutputFile">$$dataDir$$/AllOrthoGrps.txt</paramValue>
+      <paramValue name="orthoSeqsWithECsOutputFile">$$dataDir$$/OrthoSeqsWithECs.txt</paramValue> 
+      <paramValue name="orthoEupathOutputFile">$$dataDir$$/OrthoGrpsWithEupathNewAndAdded.txt</paramValue> 
+      <paramValue name="finalOutputFile">$$dataDir$$/ec.txt</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="insertOrthoMCLDerivedECAssociations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedEC" stepLoadTypes="plugin">
+      <paramValue name="inputFile">$$dataDir$$/ec.txt</paramValue>
+      <paramValue name="evidenceCode">OrthoMCLDerivedEC</paramValue>
+      <paramValue name="idSql">select taf.aa_sequence_id from dots.Transcript t, dots.TranslatedAAFeature taf, dots.GeneFeature gf where gf.source_id = ? and gf.na_feature_id = t.parent_id and t.na_feature_id = taf.na_feature_id</paramValue>
+      <depends name="makeOrthMCLDerivedECFile"/>
+    </step>
+
+</workflowGraph>
