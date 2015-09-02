@@ -9,22 +9,34 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $gusConfigFile= "$ENV{GUS_HOME}/config/gus.config";
+
+  my $genesByTaxonOutputFile = $self->getParamValue('genesByTaxonOutputFile');
+  my $genesByEcOutputFile = $self->getParamValue('genesByEcOutputFile');
+
+  my $allOrthoGrpsOutputFile = $self->getParamValue('allOrthoGrpsOutputFile');
+  my $orthoSeqsWithECsOutputFile = $self->getParamValue('orthoSeqsWithECsOutputFile');
+
+  my $orthoEupathOutputFile = $self->getParamValue('orthoEupathOutputFile');
+  my $finalOutputFile = $self->getParamValue('finalOutputFile');
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmdGenesByTaxonAndEcNumber = "getGenesByTaxonAndEcNumber.pl --gusConfigFile $gusConfigFile --outputGenesByTaxon $workflowDataDir/GenesByTaxon_summary.txt --outputGenesByEcNumber $workflowDataDir/GenesByEcNumber_summary.txt";
+  my $cmdGenesByTaxonAndEcNumber = "getGenesByTaxonAndEcNumber.pl --gusConfigFile $gusConfigFile --outputGenesByTaxon $workflowDataDir/$genesByTaxonOutputFile --outputGenesByEcNumber $workflowDataDir/$genesByEcOutputFile";
 
-  my $cmdOrthoMCL = "getDataFromOrthoMCL.pl --outputAllOrthoGrps $workflowDataDir/AllOrthoGrps.txt --outputOrthoSeqsWithECs $workflowDataDir/OrthoSeqsWithECs.txt";
+  my $cmdOrthoMCL = "getDataFromOrthoMCL.pl --outputAllOrthoGrps $workflowDataDir/$allOrthoGrpsOutputFile --outputOrthoSeqsWithECs $workflowDataDir/$orthoSeqsWithECsOutputFile";
 
-  my $cmdAddEupathECToOmcl = "addEupathECToOmcl.pl -orthoFile $workflowDataDir/AllOrthoGrps.txt -eupathFile $workflowDataDir/GenesByEcNumber_summary.txt --os $workflowDataDir/OrthoSeqsWithECs.txt > $workflowDataDir/OrthoGrpsWithEupathNewAndAdded.txt";
+  my $cmdAddEupathECToOmcl = "addEupathECToOmcl.pl -orthoFile $workflowDataDir/$allOrthoGrpsOutputFile -eupathFile $workflowDataDir/$genesByEcOutputFile --os $workflowDataDir/$orthoSeqsWithECsOutputFile > $workflowDataDir/$orthoEupathOutputFile";
   
-  my $cmdPropagateOrthoEcToEuPath = "propagateOrthoEcToEuPath.pl -o $workflowDataDir/OrthoGrpsWithEupathNewAndAdded.txt -e $workflowDataDir/GenesByTaxon_summary.txt --lf > $workflowDataDir/ec.txt";
+  my $cmdPropagateOrthoEcToEuPath = "propagateOrthoEcToEuPath.pl -o $workflowDataDir/$orthoEupathOutputFile -e $workflowDataDir/$genesByTaxonOutputFile --lf > $workflowDataDir/$finalOutputFile";
 
 
   if($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/GenesByTaxon_summary.txt");    
-    $self->runCmd(0, "rm -f $workflowDataDir/GenesByEcNumber_summary.txt");    
-    $self->runCmd(0, "rm -f $workflowDataDir/OrthoSeqsWithECs.txt");    
-    $self->runCmd(0, "rm -f $workflowDataDir/AllOrthoGrps.txt");    
+    $self->runCmd(0, "rm -f $workflowDataDir/$genesByTaxonOutputFile");    
+    $self->runCmd(0, "rm -f $workflowDataDir/$genesByEcOutputFile");    
+    $self->runCmd(0, "rm -f $workflowDataDir/$allOrthoGrpsOutputFile");    
+    $self->runCmd(0, "rm -f $workflowDataDir/$orthoSeqsWithECsOutputFile");    
+    $self->runCmd(0, "rm -f $workflowDataDir/$orthoEupathOutputFile");    
+    $self->runCmd(0, "rm -f $workflowDataDir/$workflowDataDir");    
   } else {
     $self->runCmd($test, $cmdGenesByTaxonAndEcNumber);
     $self->runCmd($test, $cmdOrthoMCL);
