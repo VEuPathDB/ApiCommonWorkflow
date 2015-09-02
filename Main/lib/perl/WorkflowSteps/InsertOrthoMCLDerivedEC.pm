@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthMCLDerivedEC;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedEC;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -10,10 +10,11 @@ sub run {
 
   my $inputFile = $self->getParamValue('inputFile');
   my $evidenceCode = $self->getParamValue('evidenceCode');
+  my $idSql = $self->getParamValue('idSql');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = qq(--ECMappingFile $workflowDataDir/$inputFile --evidenceCode $evidenceCode --aaSeqLocusTagMappingSql "select taf.aa_sequence_id from dots.Transcript t, dots.TranslatedAAFeature taf, dots.GeneFeature gf where gf.source_id = ? and gf.na_feature_id = t.parent_id and t.na_feature_id = taf.na_feature_id);
+  my $args = "--ECMappingFile $workflowDataDir/$inputFile --evidenceCode '$evidenceCode' --aaSeqLocusTagMappingSql '$idSql'";
 
   $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
