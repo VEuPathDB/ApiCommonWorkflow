@@ -36,7 +36,7 @@ sub run {
     $self->runCmd(0, "rm -f $workflowDataDir/$allOrthoGrpsOutputFile");    
     $self->runCmd(0, "rm -f $workflowDataDir/$orthoSeqsWithECsOutputFile");    
     $self->runCmd(0, "rm -f $workflowDataDir/$orthoEupathOutputFile");    
-    $self->runCmd(0, "rm -f $workflowDataDir/$workflowDataDir");    
+    $self->runCmd(0, "rm -f $workflowDataDir/$finalOutputFile");    
   } else {
     $self->runCmd($test, $cmdGenesByTaxonAndEcNumber);
     $self->runCmd($test, $cmdOrthoMCL);
