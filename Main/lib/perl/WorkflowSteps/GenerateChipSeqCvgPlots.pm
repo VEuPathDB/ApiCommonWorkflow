@@ -19,7 +19,7 @@ sub run{
     my $inBamFile = "$workflowDataDir/$clusterResultsDir/master/mainresult/$sampleName.bam";  
     my $outDir = "$workflowDataDir/$clusterResultsDir/master/mainresult/downstream/"; 
 
-    my $cmd = "generateChipSeqCvgPlots.pl --experimentType $experimentType --inBamFile $inBamFile --outDir $outDir --topLevelSeqSizeFile $topLevelSeqSizeFile --fragmentLength $fragmentLength";	
+    my $cmd = "generateChipSeqCvgPlots.pl --experimentType $experimentType --inBamFile $inBamFile --outDir $outDir --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile --fragmentLength $fragmentLength";	
 
     if ($undo){
         $self->runCmd(0, "rm -rf $outDir");
