@@ -23,7 +23,7 @@ sub run {
   my $paramValues = "--file $file --outputFile $workflowDataDir/$configOutputFile --name '$analysisName' --protocol '$protocolName' --sourceIdType $sourceIdType --profileSetName '$profileSetName'";
 
   if (defined $inputProtocolAppNode) {
-    $paramValues = $paramValues." --inputProtocolAppNodes $inputProtocolAppNode";
+    $paramValues = $paramValues." --inputProtocolAppNodes '$inputProtocolAppNode'";
     }
 
   my $cmd = "writeStudyConfig $paramValues";
