@@ -2164,7 +2164,10 @@
         </dir>
       </manualGet>
 
-      <pluginArgs>--file @@dataDir@@/products.txt  --organismAbbrev ${organismAbbrev}</pluginArgs>
+      <unpack> processProductAddPreferred.pl --inputFile "@@dataDir@@/products.txt" --outputFile "@@dataDir@@/processed_products.txt" </unpack> 
+
+
+      <pluginArgs>--file @@dataDir@@/processed_products.txt  --organismAbbrev ${organismAbbrev}</pluginArgs>
     </datasetLoader>
   </datasetClass>
 
@@ -3404,41 +3407,6 @@
 
      <unpack>addProductAliasToIsolateFeature.pl --file @@dataDir@@/productAlias.txt --extDbName ${organismAbbrev}_isolates_genbank_RSRC --extDbVer 'TODAY'</unpack>
      <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
-    </datasetLoader>
-  </datasetClass>
-
-  <datasetClass class="orthomclClade" category="" datasetFileHint="">
-    <purpose></purpose>
-    <prop name="cladeAbbrev"/>
-    <prop name="version">&version;</prop>
-    <prop name="ncbiTaxonId">&ncbiTaxonId;</prop>
-    <prop name="containsOnlyOneOrganism"/>
-
-    <graphTemplateFile name="orthomclProject.xml"/>
-
-    <datasetLoader datasetName="${cladeAbbrev}_orthomclClade_RSRC"
-              version="${version}"
-              plugin="ApiCommonData::Load::Plugin::LoadNothing"
-              scope="global"
-              organismAbbrev="">
-
-      <manualGet fileOrDir="common/empty">
-        <dir name="final">
-        </dir>
-      </manualGet>
-
-      <!-- validate final dir existence -->
-<!--
-      <unpack>ls @@manualDeliveryDir@@/OrthoMCL/${cladeAbbrev}/${version}/final</unpack>
-
-      <unpack>ln -s @@manualDeliveryDir@@/OrthoMCL/${cladeAbbrev}/${version}/final/ @@dataDir@@/final</unpack>
--->
-      <unpack>ls @@manualDeliveryDir@@/OrthoMCL/PlanA/${cladeAbbrev}</unpack>
-
-      <unpack>ln -s @@manualDeliveryDir@@/OrthoMCL/PlanA/${cladeAbbrev} @@dataDir@@/final</unpack>
-     <getAndUnpackOutput file="@@dataDir@@/final"/>
-     <pluginArgs>--dbRefExternalDatabaseSpec "%DATASET_NAME%|%DATASET_VERSION%"</pluginArgs>
-
     </datasetLoader>
   </datasetClass>
 
