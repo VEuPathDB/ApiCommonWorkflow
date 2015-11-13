@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::WriteGenomicArrayStudyConfig;
+package ApiCommonWorkflow::Main::WorkflowSteps::WriteStudyConfig;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
