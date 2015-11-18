@@ -35,7 +35,7 @@ sub getWebsiteFileCmd {
                   taaf.translation_stop - taaf.translation_start + 1) as sequence
            from dots.NaLocation fl, dots.geneFeature gf, dots.transcript t, sres.TaxonName tn, sres.Taxon,
                 dots.splicednasequence snas, dots.translatedaafeature taaf,
-                dots.nasequence ns, sres.ontologyTerm soseq, sres.ontologyTerm so,
+                dots.externalnasequence ns, sres.ontologyTerm soseq, sres.ontologyTerm so,
                 (select distinct drnf.na_feature_id, 1 as is_deprecated
                  from dots.DbRefNaFeature drnf, sres.DbRef dr, sres.ExternalDatabaseRelease edr, sres.ExternalDatabase ed
                  where drnf.db_ref_id = dr.db_ref_id
@@ -90,10 +90,11 @@ sub getWebsiteFileCmd {
         and ns.taxon_id = taxon.taxon_id
         and tn.name_class = 'scientific name'
         and gf.na_feature_id = product_name.na_feature_id
+      ORDER BY ns.chromosome_order_num, t.source_id, gf.source_id, fl.start_min
 EOF
 
 
-  my $cmd = " gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"";
+  my $cmd = " gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" && tar -czvf $downloadFileName.tar.gz $downloadFileName";
     return $cmd;
 }
 
