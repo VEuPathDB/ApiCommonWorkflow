@@ -40,7 +40,7 @@ sub getWebsiteFileCmd {
            FROM dots.GeneFeature gf,
                 dots.transcript t,
                 dots.splicednasequence snas, dots.NaLocation fl,
-                dots.nasequence ns,
+                dots.externalnasequence ns,
                 sres.ontologyTerm soseq, sres.ontologyTerm so, sres.taxonName tn, sres.Taxon,
                 (select gf.na_feature_id,
                         substr(coalesce(preferred_product.product, any_product.product, gf.product, 'unspecified product'),
@@ -94,10 +94,11 @@ sub getWebsiteFileCmd {
         AND ns.sequence_ontology_id = soseq.ontology_term_id
         AND ns.taxon_id = tn.taxon_id
         AND tn.name_class = 'scientific name'
-        and gf.na_feature_id = product_name.na_feature_id
+        AND gf.na_feature_id = product_name.na_feature_id
+      ORDER BY ns.chromosome_order_num, t.source_id, gf.source_id, fl.start_min
 EOF
 
-  my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" --verbose";
+  my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" --verbose && tar -czvf $downloadFileName.tar.gz $downloadFileName";
 }
 
 1;
