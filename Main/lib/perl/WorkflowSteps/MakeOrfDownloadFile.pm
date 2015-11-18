@@ -37,7 +37,7 @@ sub getWebsiteFileCmd {
             sres.ontologyTerm so,
             sres.ontologyTerm soseq,
             ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
-            dots.nasequence enas
+            dots.externalnasequence enas
       WHERE m.na_feature_id = taaf.na_feature_id
         AND taaf.aa_sequence_id = taas.aa_sequence_id
         AND m.na_feature_id = fl.na_feature_id
@@ -50,12 +50,13 @@ sub getWebsiteFileCmd {
         AND m.sequence_ontology_id = so.ontology_term_id
         AND so.name = 'ORF'
         AND taas.length >= $length
+     ORDER BY enas.chromosome_order_num, taaf.source_id, fl.start_min
 EOF
 
     my $cmd = <<"EOF";
       gusExtractSequences --outputFile $downloadFileName \\
       --idSQL \"$sql\" \\
-      --verbose
+      --verbose && tar -czvf $downloadFileName.tar.gz $downloadFileName
 EOF
     return $cmd;
 }
