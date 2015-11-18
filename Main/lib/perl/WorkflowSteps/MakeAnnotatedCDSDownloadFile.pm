@@ -78,10 +78,11 @@ sub getWebsiteFileCmd {
         AND fl.is_top_level = 1
         AND ns.sequence_ontology_id = soseq.ontology_term_id
         AND ns.taxon_id = taxon.taxon_id
-        and gf.gene_na_feature_id = product_name.na_feature_id
+        AND gf.gene_na_feature_id = product_name.na_feature_id
+     ORDER BY gf.chromosome_order_num, gf.source_id, gf.coding_start
 EOF
 
-    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"  --verbose";
+    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"  --verbose && tar -czvf $downloadFileName.tar.gz $downloadFileName";
     return $cmd;
 }
 1;
