@@ -32,9 +32,10 @@ sub getWebsiteFileCmd {
             AND sa.ncbi_tax_id = $ncbiTaxonId
             AND sa.is_top_level = 1
             AND so.source_id = sa.so_id
+          ORDER BY sa.chromosome_order_num, sa.source_id
 EOF
 
-    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" ";
+    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" && tar -czvf $downloadFileName.tar.gz $downloadFileName";
     return $cmd;
 }
 
