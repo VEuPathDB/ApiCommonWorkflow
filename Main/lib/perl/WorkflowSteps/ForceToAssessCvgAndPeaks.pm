@@ -11,19 +11,20 @@ sub run{
     
     my $hasPairedEnds = $self->getBooleanParamValue('hasPairedEnds');
     my $experimentType = $self->getParamValue('experimentType');
-  
-    if !($experimentType eq 'histonemod' && !$hasPairedEnds) && !($experimentType eq ='mnase' && $hasPairedEnds) {
-	my $note = "Please assess coverage plots.";
-	if ($experimentType eq 'histonemod') {
-	    $note .= " Moreover, after they are completed, examine peak calls.\n";
-	}
-	die $note;	
+    my $note = "Please assess coverage plots."; 
+
+ 
+    if (!($experimentType eq 'histonemod' && !$hasPairedEnds) && !($experimentType eq 'mnase' && $hasPairedEnds)) {
+		if ($experimentType eq 'histonemod') {
+	    	$note .= " Moreover, after they are completed, examine peak calls.\n";
+		}	
+		die $note;	
     }  
     
     if ($undo){
     }
     else{
-        $self->runCmd($test, $cmd);
+       # $self->runCmd($test, $cmd);
     }
 }
 
