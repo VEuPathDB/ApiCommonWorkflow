@@ -40,7 +40,7 @@ sub run {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
   }else {
 
-    $self->testInputFile('readFilePath', "$workflowDataDir/$readFilePath");
+    $self->testInputFile('readFilePath', "$workflowDataDir/$readFilePath") unless (length($sraQueryString)>0);
     # todo: test more inputs
 
 
