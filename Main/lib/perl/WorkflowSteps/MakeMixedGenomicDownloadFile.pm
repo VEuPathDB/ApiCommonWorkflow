@@ -35,7 +35,7 @@ sub getWebsiteFileCmd {
           ORDER BY sa.chromosome_order_num, sa.source_id
 EOF
 
-    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" && tar -czvf $downloadFileName.tar.gz $downloadFileName";
+    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" && gzip $downloadFileName";
     return $cmd;
 }
 
