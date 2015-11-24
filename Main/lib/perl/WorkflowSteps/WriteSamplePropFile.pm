@@ -16,6 +16,7 @@ sub run{
     my $inputName = $self->getParamValue('inputName');
     my $fragmentLength = $self->getParamValue('fragmentLength');
     
+    die "Must provide an input name\n" unless (length($inputName)>0);
 
     my $cmd = "writeSamplePropFile.pl --outFile $outFile --sampleName $sampleName --inputName $inputName --fragmentLength $fragmentLength";	
 
