@@ -15,6 +15,7 @@ sub getWebsiteFileCmd {
     my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
     my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
+=comment out - refs #21487
   my $sql = <<"EOF";
      select gf.source_id
             || decode(deprecated.is_deprecated, 1, ' | deprecated=true', '')
@@ -92,7 +93,25 @@ sub getWebsiteFileCmd {
         and gf.na_feature_id = product_name.na_feature_id
       ORDER BY ns.chromosome_order_num, t.source_id, gf.source_id, fl.start_min
 EOF
+=cut
 
+  my $sql = <<EOF;
+SELECT t.protein_source_id || ' | organism=' || replace(t.organism, ' ', '_') || 
+  ' | gene_product=' || gene_product || ' | transcript_product=' || transcript_product
+  || ' | location=' || sequence_id || ':' || coding_start || '-' || coding_end
+  || '(' || decode(is_reversed, 1, '-', '+') || ')' 
+  || ' | protein_length=' || t.protein_length 
+  || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || decode(is_deprecated, 1, ' | deprecated=true', '')
+  as defline, taas.sequence
+FROM ApidbTuning.${tuningTablePrefix}TranscriptAttributes t, DOTS.NASEQUENCE ns, sres.ontologyTerm soseq,
+     dots.translatedaasequence taas
+WHERE ns.SOURCE_ID = t.SEQUENCE_ID
+  AND ns.sequence_ontology_id = soseq.ontology_term_id
+  AND t.ncbi_tax_id = $ncbiTaxonId 
+  AND t.so_term_name = 'protein_coding'
+  AND t.protein_source_id = taas.source_id
+ORDER BY t.chromosome_order_num, t.SEQUENCE_ID,t.source_id, t.coding_start
+EOF 
 
   my $cmd = " gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" && tar -czvf $downloadFileName.tar.gz $downloadFileName";
     return $cmd;
