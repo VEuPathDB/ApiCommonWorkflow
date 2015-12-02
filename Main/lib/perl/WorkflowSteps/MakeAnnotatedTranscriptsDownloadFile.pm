@@ -16,7 +16,8 @@ sub getWebsiteFileCmd {
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
   my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
-
+ 
+=comment out in gus4, refs #21487
   my $sql = <<"EOF";
      SELECT t.source_id || ' | gene=' || gf.source_id
                 || decode(deprecated.is_deprecated, 1, ' | deprecated=true', '')
@@ -96,6 +97,25 @@ sub getWebsiteFileCmd {
         AND tn.name_class = 'scientific name'
         AND gf.na_feature_id = product_name.na_feature_id
       ORDER BY ns.chromosome_order_num, t.source_id, gf.source_id, fl.start_min
+EOF
+=cut
+
+  my $sql = <<EOF;
+SELECT t.source_id || ' | gene=' || gene_source_id || decode(is_deprecated, 1, ' | deprecated=true', '')
+  || ' | organism=' || replace(organism, ' ', '_') || ' | gene_product=' || gene_product || ' transcript_product=' || transcript_product
+  || ' | location=' || sequence_id || ':' || coding_start || '-' || coding_end
+  || '(' || decode(is_reversed, 1, '-', '+') || ')' 
+  || ' | length=' || t.length 
+  || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || decode(is_deprecated, 1, ' | deprecated=true', '')
+  as defline,
+  ts.SEQUENCE
+FROM ApidbTuning.${tuningTablePrefix}TranscriptAttributes t, ApidbTuning.${tuningTablePrefix}TranscriptSequence ts,
+  DOTS.NASEQUENCE ns, sres.ontologyTerm soseq
+WHERE t.source_id = ts.SOURCE_ID
+  AND ns.SOURCE_ID = t.SEQUENCE_ID
+  AND ns.sequence_ontology_id = soseq.ontology_term_id
+  AND t.ncbi_tax_id = $ncbiTaxonId
+ORDER BY t.chromosome_order_num, t.SEQUENCE_ID,t.source_id, t.coding_start
 EOF
 
   my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" --verbose && tar -czvf $downloadFileName.tar.gz $downloadFileName";
