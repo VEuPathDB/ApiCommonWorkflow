@@ -7,6 +7,7 @@
     <param name="peakFinderArgs"/>
     <param name="loadPeakCalls"/>
     <param name="configFilesDir"/>
+    <param name="organismAbbrev"/>
 
     <constant name="dataDir">$$parentDataDir$$/analyze_ChIP_Chip_$$sampleName$$</constant>
     <constant name="peakFinderDataDir">$$dataDir$$/smoothedDataAndPeaks</constant>
@@ -64,7 +65,7 @@
       <paramValue name="protocolName">chipChipSmoothed</paramValue>
       <paramValue name="sourceIdType">segment</paramValue>
       <paramValue name="inputProtocolAppNode"></paramValue>
-      <paramValue name="profileSetName">$$experimentDatasetName$$ - smoothed</paramValue>
+      <paramValue name="profileSetName">$$organismAbbrev$$_chipChipExper_$$experimentDatasetName$$_RSRC - smoothed</paramValue>
       <depends name="reformatSmoothedProfiles"/>
       <depends name="makeConfigFilesDir"/>
     </step>
@@ -73,7 +74,7 @@
       <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_smoothedConfig.txt</paramValue>
       <paramValue name="inputDir">$$peakFinderDataDir$$</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|%</paramValue> 
-      <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
+      <paramValue name="studyName">$$organismAbbrev$$_chipChipExper_$$experimentDatasetName$$_RSRC</paramValue>
       <depends name="writeSmoothedConfig"/>
     </step>
 
@@ -90,7 +91,7 @@
       <paramValue name="protocolName">chipChipPeaks</paramValue>
       <paramValue name="sourceIdType">segment</paramValue>
       <paramValue name="inputProtocolAppNode">$$sampleName$$_smoothed (ChIP-chip)</paramValue>
-      <paramValue name="profileSetName">$$experimentDatasetName$$ - peaks</paramValue>
+      <paramValue name="profileSetName">$$organismAbbrev$$_chipChipExper_$$experimentDatasetName$$_RSRC - peaks</paramValue>
       <depends name="reformatPeaks"/>
       <depends name="makeConfigFilesDir"/>
     </step>
@@ -99,7 +100,7 @@
       <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_peaksConfig.txt</paramValue>
       <paramValue name="inputDir">$$peakFinderDataDir$$</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|%</paramValue> 
-      <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
+      <paramValue name="studyName">$$organismAbbrev$$_chipChipExper_$$experimentDatasetName$$_RSRC</paramValue>
       <depends name="loadSmoothedProfilesFromConfig"/>
       <depends name="writePeaksConfig"/>
     </step>
