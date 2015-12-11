@@ -9,28 +9,29 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <step name="manuallyImproveIsolatesVocabulary" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
-    <depends name="makeDataDir"/>
-  </step>
-
-  <subgraph name="EuPath_Ontology_RSRC" xmlFile="loadDataset.xml">
-    <paramValue name="datasetName">OntologyTerm_EuPath_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+  <subgraph name="dumpMissingGenbankIsolateMappers" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">DumpMissingGenbankIsolateMappers_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="manuallyImproveIsolatesVocabulary"/>
   </subgraph>
 
-    <subgraph name="geographicLocationGPS_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">geographicLocationGPS_RSRC</paramValue>
+  <!-- (Optional TODO) Mapping script bioportal websercie and parse json -->
+
+  <step name="manuallyImproveIsolatesVocabulary" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+    <depends name="dumpMissingGenbankIsolateMappers"/>
+  </step>
+
+    <subgraph name="ontologySynonyms" xmlFile="generated/${projectName}/ontologySynonyms.xml">
       <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="EuPath_Ontology_RSRC"/>
+      <depends name="manuallyImproveIsolatesVocabulary"/>
     </subgraph>
 
-  <subgraph name="studyMetaData" xmlFile="generated/$$projectName$$/studyMetadata.xml" excludeIfXmlFileDoesNotExist="true">
-    <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
+  <subgraph name="ISA" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">ISA_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="EuPath_Ontology_RSRC"/>
+      <depends name="makeDataDir"/>
   </subgraph>
 
 </workflowGraph>
