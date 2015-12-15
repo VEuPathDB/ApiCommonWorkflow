@@ -16,9 +16,11 @@ sub run{
     my $inputName = $self->getParamValue('inputName');
     my $fragmentLength = $self->getParamValue('fragmentLength');
     
-    die "Must provide an input name\n" unless (length($inputName)>0);
+    $inputName = 'none' unless (length($inputName)>0);
 
-    my $cmd = "writeSamplePropFile.pl --outFile $outFile --sampleName $sampleName --inputName $inputName --fragmentLength $fragmentLength";	
+    my $cmd = "writeSamplePropFile.pl --outFile $outFile --sampleName $sampleName --inputName $inputName";	
+
+    $cmd .= " --fragmentLength $fragmentLength" if (length($fragmentLength)>0);
 
     if ($undo){
         $self->runCmd(0, "rm -f $outFile");
