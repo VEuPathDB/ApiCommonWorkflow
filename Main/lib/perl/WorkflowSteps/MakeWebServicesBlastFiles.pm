@@ -30,6 +30,8 @@ sub run {
   my $familyNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getFamilyNameForFiles();
 
   my $inputDownloadFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getDownloadFileName($websiteFilesDir, $downloadSiteRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, $familyNameForFiles, $useFamilyName, $projectName, $projectVersion, 'fasta', $dataName);
+	
+  $self->runCmd(0, "gunzip $inputDownloadFile.gz") if(-e "$inputDownloadFile.gz");
 
   my $outputWebservicesFileDir = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceDir($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, $familyNameForFiles, $useFamilyName, 'blast');
 
@@ -45,6 +47,7 @@ sub run {
 
   my $blastPath = $self->getConfig("ncbiBlastPath");
   my $cmd = "$blastPath/makeblastdb -in $inputDownloadFile $args -out $outputWebservicesFileDir/$outputDataName ";
+
   if($undo) {
     $self->runCmd(0, "rm -f $outputWebservicesFileDir/$outputDataName.*");
   } else{
@@ -56,6 +59,7 @@ sub run {
     }
     $self->runCmd($test, $cmd);
     
+	$self->runCmd($test, "gzip $inputDownloadFile") unless(-e "$inputDownloadFile.gz");  
   }
 }
 
