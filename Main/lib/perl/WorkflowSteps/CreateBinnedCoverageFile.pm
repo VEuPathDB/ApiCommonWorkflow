@@ -21,6 +21,8 @@ sub run {
     if ($undo) {
         $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
     }else{
+        $self->testInputFile("bamFile", "$workflowDataDir/$bamFile");
+        $self->testInputFile("samtoolsIndex", "$workflowDataDir/$samtoolsIndex");
         if($test) {
             $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
         }
