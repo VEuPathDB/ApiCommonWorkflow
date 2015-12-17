@@ -25,6 +25,8 @@ sub run{
         $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir/Cufflinks");
     }else{
         $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
+        $self->testInputFile('gtfFile', "$workflowDataDir/$gtfFile");
+        $self->testInputFile('bamFile', "$workflowDataDir/$bamFile");
         if ($test){
             $self->runCmd(0, "echo test > $workflowDataDir/$outputDir/Cufflinks/genes.fpkm_tracking");
             $self->runCmd(0, "echo test > $workflowDataDir/$outputDir/Cufflinks/isoforms.fpkm_tracking");
