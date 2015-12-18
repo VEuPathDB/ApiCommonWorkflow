@@ -1,121 +1,89 @@
 <workflowGraph name="">
     <param name="projectName"/>
     <param name="organismAbbrev"/>
+    <param name="snpsDir"/>
     <param name="parentDataDir"/>
     <param name="organismDatasetLoaderXmlFile"/>
-    <param name="genomicSeqsDir"/>
+    <param name="genomicSeqsFile"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="relativeWebServicesDir"/>
     <param name="samtoolsIndex"/>
     <param name="chromSizesFile"/>
     <param name="experimentName"/>
-    <param name="hasPairedEnds"/>
+    <param name="experimentVersion"/>
+<!--    <param name="hasPairedEnds"/>
     <param name="isColorspace"/>
     <param name="removePCRDuplicates"/>
-    <param name="extraBowtieParams"/>
+    <param name="extraBowtieParams"/> -->
     <param name="ploidy"/>
     <param name="experimentDatasetName"/>
+    <param name="studyName"/>
 
     <constant name="dataDir">$$parentDataDir$$/copyNumberVariations</constant>
     <constant name="gtfDir">$$dataDir$$/$$experimentDatasetName$$/gtf</constant>
-    <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>
+<!--    <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>  -->
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeExperimentDatasetLoaderDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$dataDir$$/$$experimentDatasetName$$</paramValue>
+    <subgraph name="loadCnvExperiment" xmlFile="loadDataset.xml">
+        <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
+        <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+        <paramValue name="parentDataDir">$$dataDir$$</paramValue>
         <depends name="makeDataDir"/>
-    </step>
+    </subgraph>
 
     <step name="makeGtfDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$gtfDir$$</paramValue>
-        <depends name="makeExperimentDatasetLoaderDir"/>
-    </step>
-                            
-    <!-- make an empty final dir, and mirror it to the cluster.  the samples will each mirror their own file -->
-    <!-- to the cluster, so the mirroring can be done in pieces and in parallel -->
-
-    <step name="makeFinalDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$finalDir$$</paramValue>
-        <depends name="makeExperimentDatasetLoaderDir"/>
+        <depends name="loadCnvExperiment"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-        <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-        <depends name="makeDataDir"/>
+    <step name="addCNVInvestigation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
+        <paramValue name="experimentName">$$experimentName$$</paramValue>
+        <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentVersion$$</paramValue>
+        <depends name="loadCnvExperiment"/>
     </step>
 
-    <step name="mirrorExperimentDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-        <paramValue name="fileOrDirToMirror">$$dataDir$$/$$experimentDatasetName$$</paramValue>
-        <depends name="makeExperimentDatasetLoaderDir"/>
-    </step>
-    <!-- load dataset manually so we can mirror the final dir before filling it with the sample files -->
-
-    <step name="mirrorFinalDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-        <paramValue name="fileOrDirToMirror">$$finalDir$$</paramValue>
-        <depends name="makeFinalDir"/>
+    <step name="addPloidyStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
+        <paramValue name="experimentName">$$experimentName$$ - Ploidy</paramValue>
+        <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentVersion$$</paramValue>
+        <depends name="loadCnvExperiment"/>
     </step>
 
-    <step name="insertDataset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertDataset">
-        <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-        <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-        <paramValue name="dataDir">$$finalDir$$</paramValue>
-        <depends name="makeFinalDir"/>
+    <step name="addGeneCNVStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
+        <paramValue name="experimentName">$$experimentName$$ - GeneCNV</paramValue>
+        <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentVersion$$</paramValue>
+        <depends name="loadCnvExperiment"/>
     </step>
 
-    <step name="getAndUnpack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderGetAndUnpack">
-        <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-        <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-        <paramValue name="dataDir">$$dataDir$$/$$experimentDatasetName$$</paramValue>
-        <depends name="mirrorFinalDirToCluster"/>
-    </step>
-
-    <step name="insertExtDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertExtDb" stepLoadTypes="plugin">
-        <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-        <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-        <paramValue name="dataDir">$$finalDir$$</paramValue>
-        <depends name="makeFinalDir"/>
-    </step>
-
-    <step name="experiment_RSRC" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertExtDbRls" stepLoadTypes="plugin">
-        <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-        <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-        <paramValue name="dataDir">$$finalDir$$</paramValue>
-        <depends name="insertExtDb"/>
-    </step>
-
-    <!-- end dataset loader -->
     <step name="makeGtfForCufflinks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGtfForGuidedCufflinks">
         <paramValue name="outputFile">$$organismAbbrev$$.gtf</paramValue>
         <paramValue name="gtfDir">$$gtfDir$$</paramValue>
         <paramValue name="project">$$projectName$$</paramValue>
         <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
         <paramValue name="cdsOnly">false</paramValue>
         <depends name="makeGtfDir"/>
     </step>
     
-    <subgraph name="doCnvMapping" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/cnvSamples.xml">
+    <subgraph name="doCnvMapping" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$studyName$$/cnvSamples.xml">
         <paramValue name="projectName">$$projectName$$</paramValue>
         <paramValue name="experimentDir">$$dataDir$$</paramValue>
         <paramValue name="experimentRSRC">$$dataDir$$/$$experimentDatasetName$$</paramValue>
-        <paramValue name="genomicSeqsFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fasta</paramValue>
+        <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
         <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
         <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
         <paramValue name="chromSizesFile">$$chromSizesFile$$</paramValue>
-        <paramValue name="indexDir">$$parentDataDir$$/bowtieIndices/genomicIndexes</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="experimentName">$$experimentName$$</paramValue>
-        <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
-        <paramValue name="isColorspace">$$isColorspace$$</paramValue>
-        <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
-        <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
         <paramValue name="ploidy">$$ploidy$$</paramValue>
         <paramValue name="gtfFile">$$gtfDir$$/$$organismAbbrev$$.gtf</paramValue>
         <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
-        <depends name="getAndUnpack"/>
+        <paramValue name="studyName">$$studyName$$</paramValue>
+        <paramValue name="snpsDir">$$snpsDir$$</paramValue>
+        <depends name="addCNVInvestigation"/>
+        <depends name="addPloidyStudy"/>
+        <depends name="addGeneCNVStudy"/>
         <depends name="makeGtfForCufflinks"/>
     </subgraph>
 
