@@ -5,6 +5,9 @@
   <param name="genomeExtDbRlsSpec"/>
   <param name="relativeWebServicesDir"/>
   <param name="organismAbbrev"/>
+  <!--required for CNV graph -->
+  <param name="samtoolsIndex"/>
+  <param namae="chromSizesFile"/>
 
   <constant name="dataDir">$$parentDataDir$$/SNPs_HTS</constant>
   <constant name="varscanConsDir">$$parentDataDir$$/SNPs_HTS/varscanCons</constant>
@@ -71,7 +74,32 @@
 
   </datasetTemplate>
 
+  <datasetTemplate class="copyNumberVariationExperiment">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
+    <prop name="ploidy"/>
 
+    <subgraph name="${organismAbbrev}_copyNumberVariations_${experimentName}_RSRC" xmlFile = "processCNVExperiment.xml">
+        <paramValue name="projectName">${projectName}</paramValue>
+        <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+        <paramValue name="snpsDir">$$dataDir$$</paramValue>
+        <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+        <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+        <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
+        <paramValue name="chromSizesFile">$$chromSizesFile$$</paramValue>
+        <paramValue name="experimentName">${experimentName}_CNV</paramValue>
+        <paramValue name="experimentVersion">${experimentVersion}</paramValue>
+        <paramValue name="ploidy">${ploidy}</paramValue>
+        <paramValue name="experimentDatasetName">$$organismAbbrev_copyNumberVariations_${experimentName}_RSRC</paramValue>
+        <paramValue name="studyName">${experimentName}</paramValue>
+        <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+        <depends name="${experimentName}_experiment" />
+    </subgraph>
+  </datasetTemplate> -->
 
   <subgraph name="loadSnps" xmlFile="loadSnps.xml">
     <paramValue name="snpsDataDir">$$dataDir$$</paramValue>
