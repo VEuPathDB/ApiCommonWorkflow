@@ -58,6 +58,30 @@
 		</subgraph>
 		
 	</datasetTemplate>
+
+	<datasetTemplate class="genericProfiles">
+		<prop name="name"/>
+		<prop name="version"/>
+	
+		<subgraph name="${name}" xmlFile="loadDataset.xml">
+			<paramValue name="datasetName">$$organismAbbrev$$_genericProfile_${name}_RSRC</paramValue>
+			<paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+			<paramValue name="parentDataDir">$$dataDir$$</paramValue>
+                        <depends name="makeDataDir"/>
+		</subgraph>
+  
+		<subgraph name="${name}_analyzeGenericProfileExperiment" xmlFile="analyzeGenericProfileExperiment.xml">
+			<paramValue name="parentDataDir">$$dataDir$$</paramValue>
+			<paramValue name="experimentDatasetName">$$organismAbbrev$$_genericProfile_${name}_RSRC</paramValue>
+			<paramValue name="experimentDatasetVersion">${version}</paramValue>
+                        <paramValue name="doExpressionAnalysis">false</paramValue>
+			<paramValue name="hasTimeSeries">false</paramValue>
+			<paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+			<paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+			<depends name="${name}"/>
+		</subgraph>
+		
+	</datasetTemplate>
 	
 </workflowGraph>
 
