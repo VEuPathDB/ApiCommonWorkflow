@@ -33,17 +33,17 @@ sub run {
 
 
     if($expectCdfFile) {
-      my @cdfs = grep { /\.cdf$/} @files;
+      my @cdfs = grep { /\.cdf$/i} @files;
       $self->error("cdf file error in directory $platformDirectory") if(scalar(@cdfs) != 1);
       $mappingFile = "$platformDirectory/$cdfs[0]"
     }
     elsif($expectNdfFile) {
-      my @ndfs = grep { /\.ndf$/} @files;
+      my @ndfs = grep { /\.ndf$/i} @files;
       $self->error("ndf file error in directory $platformDirectory") if(scalar(@ndfs) != 1);
       $mappingFile = "$platformDirectory/$ndfs[0]"
     }
     else {
-      $mappingFile = "$platformDirectory/$geneProbeMappingTabFile";
+      $mappingFile = $geneProbeMappingTabFile eq '' ? "$platformDirectory/ancillary.txt" : "$platformDirectory/$geneProbeMappingTabFile";
     }
     $input_file = "--input_file $mappingFile";
   }
@@ -54,16 +54,19 @@ sub run {
     $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir");
   } else {
       $self->runCmd(0, "mkdir $workflowDataDir/$outputDir");
+
+      $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
+      # $self->testInputFile('geneProbeMappingFile', "$mappingFile") if $passPlatformMappingFile;
+      $self->testInputFile('analysisConfigFile', "$workflowDataDir/$analysisConfigFile");
+
       if ($test) {
-	  $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-	  $self->testInputFile('geneProbeMappingFile', "$mappingFile") if $passPlatformMappingFile;
-	  $self->testInputFile('analysisConfigFile', "$workflowDataDir/$analysisConfigFile");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/expression_profile_config.txt");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/analysis_result_config.txt **optional**");
-      } else {
-	  $self->makeSymLinks($inputDir, $outputDir);
-	  $self->runCmd($test,$cmd);
       }
+      if(!$test) {
+        $self->makeSymLinks($inputDir, $outputDir);
+      }
+      $self->runCmd($test,$cmd);
   }
 }
 
@@ -82,9 +85,4 @@ sub makeSymLinks {
     closedir $dh;
 }
 
-sub getConfigDeclaration {
-  return (
-	  # [name, default, description]
-	 );
-}
-
+1;
