@@ -2,21 +2,24 @@
   <param name="parentDataDir"/>
   <param name="datasetLoaderXmlFileName"/>
 
-  <constant name="dataDir">$$parentDataDir$$/oboOntologies</constant>
+  <constant name="dataDir">$$parentDataDir$$/eupathCuratedOntologies</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <datasetTemplate class="oboOntology">
+  <datasetTemplate class="ontologyFromTabDelim">
     <prop name="name"/>
-    <subgraph name="OBO_Ontology_${name}_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">OBO_Ontology_${name}_RSRC</paramValue>
+    <prop name="version"/>
+
+    <subgraph name="Ontology_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">Ontology_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
   </datasetTemplate>
+
 
 
  </workflowGraph>
