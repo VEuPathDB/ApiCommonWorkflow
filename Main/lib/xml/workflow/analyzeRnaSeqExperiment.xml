@@ -6,6 +6,7 @@
     <param name="relativeDownloadSiteDir"/>
     <param name="experimentDatasetName"/>
     <param name="experimentDatasetVersion"/>
+    <param name="relativeWebServicesDir"/>
 
     <!--  these were made in the experiment graph -->
     <constant name="experimentDataDir">$$parentDataDir$$/$$experimentName$$</constant>
@@ -24,6 +25,16 @@
       <paramValue name="passPlatformMappingFile">true</paramValue>
       <paramValue name="technologyType">RNASeq</paramValue>
     </step>
+
+
+    <step name="copyNormalizedBedGraphToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyNormalizedBedGraphToWebServiceDir">
+      <paramValue name="copyFromDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
+      <depends name="doTranscriptExpression"/>
+    </step>
+
 
   <step name="loadStudyResultsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
     <paramValue name="configFile">$$experimentDataDir$$/doTranscriptExpression/insert_study_results_config.txt</paramValue>
