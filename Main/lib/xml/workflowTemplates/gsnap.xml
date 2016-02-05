@@ -291,7 +291,27 @@
     </subgraph>
   </datasetTemplate>
 
+  <datasetTemplate class="createGffBigWig">
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
 
+    <subgraph name="${name}" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeTopLevelSeqSizeFile"/>
+    </subgraph>
+
+    <subgraph name="${name}_createGffBigWig" xmlFile="processGffBigWig.xml">
+	  <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_${name}_RSRC/final</paramValue>
+      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+	  <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_RSRC</paramValue>
+	  <depends name="${name}"/>
+    </subgraph>
+  </datasetTemplate>
 
 
 
