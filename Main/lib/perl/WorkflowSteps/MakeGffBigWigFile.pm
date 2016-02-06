@@ -24,9 +24,9 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd_mkdir = "mkdir -p $$outputsDir";
+  my $cmd_mkdir = "mkdir -p $outputsDir";
 
-  my $cmd_createBigWig = "createGffBigWigFile --inputDir $workflowDataDir/$inputsDir --chromSizesFile $chromSizesFile --outputDir $outputsDir"; 
+  my $cmd_createBigWig = "createGffBigWigFile --inputDir $workflowDataDir/$inputsDir --chromSizesFile $workflowDataDir/$chromSizesFile --outputDir $outputsDir"; 
  
   $self->testInputFile('copyFromDir', "$workflowDataDir/$inputsDir");
 
