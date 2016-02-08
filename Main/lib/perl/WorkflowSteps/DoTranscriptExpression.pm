@@ -53,7 +53,7 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir");
   } else {
-      $self->runCmd(0, "mkdir $workflowDataDir/$outputDir");
+      $self->runCmd(0, "mkdir -p $workflowDataDir/$outputDir");
 
       $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
       # $self->testInputFile('geneProbeMappingFile', "$mappingFile") if $passPlatformMappingFile;
