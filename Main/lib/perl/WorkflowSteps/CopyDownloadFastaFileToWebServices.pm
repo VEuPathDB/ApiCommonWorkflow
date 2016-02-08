@@ -25,6 +25,8 @@ sub run {
 
   my $inputDownloadFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getDownloadFileName($websiteFilesDir, $downloadSiteRelativeDir, $organismNameForFiles, undef, 0, undef, 0, $projectName, $projectVersion, 'fasta', $dataName);
 
+  $self->runCmd(0, "gunzip $inputDownloadFile.gz") if(-e "$inputDownloadFile.gz");
+
   my $outputFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceFileName($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, undef, 0, undef, 0, 'fasta', $dataName, $service);
 
   if($undo) {
@@ -35,6 +37,8 @@ sub run {
 	  $self->runCmd(0, "echo test > $outputFile");
       }
     $self->runCmd($test, "cp $inputDownloadFile $outputFile");
+
+    $self->runCmd($test, "gzip $inputDownloadFile") unless(-e "$inputDownloadFile.gz");
   }
 }
 
