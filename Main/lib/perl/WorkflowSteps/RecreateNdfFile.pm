@@ -20,7 +20,7 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   } else {
-    $self->testInputFile('originalNdfFile', "$workflowDataDir/$ndfFile");
+    #$self->testInputFile('originalNdfFile', "$workflowDataDir/$ndfFile");
     $self->testInputFile('gene2probesInputFile', "$workflowDataDir/$gene2probesInputFile");
 
     if ($test) {

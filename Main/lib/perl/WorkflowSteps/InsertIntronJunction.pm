@@ -20,7 +20,7 @@ sub run {
   my $args = "--inputFile $workflowDataDir/$inputFile --extDbName $extDbName --extDbVer $extDbRlsVer --sampleName $sampleName";
 
 
-    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+  #$self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertIntronJunction", $args);

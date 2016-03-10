@@ -17,7 +17,7 @@ sub run {
 
   my $args = "--inputFile $workflowDataDir/$bamFile  --platformExtDbSpec '$platformExtDbSpec'";
 
-  $self->testInputFile('inputDir', "$workflowDataDir/$bamFile");
+  #$self->testInputFile('inputDir', "$workflowDataDir/$bamFile");
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertReporterLocation", $args);
 }

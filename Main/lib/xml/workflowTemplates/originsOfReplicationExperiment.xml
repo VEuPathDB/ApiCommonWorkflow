@@ -6,6 +6,17 @@
     <param name="relativeWebServicesDir"/>
     <param name="samtoolsIndex"/>
     <param name="chromSizesFile"/>
+
+    <constant name="dataDir">$$parentDataDir$$/originsOfReplication</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+        <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
   
     <datasetTemplate class="originsOfReplicationExperiment">
         <prop name="organismAbbev"/>
@@ -20,7 +31,7 @@
         <subgraph name="${organismAbbrev}_originsOfReplication_${experimentName}_RSRC" xmlFile="processOriginsExperiment.xml">
             <paramValue name="projectName">$$projectName$$</paramValue>
             <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-            <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
             <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
             <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
             <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
@@ -32,6 +43,7 @@
             <paramValue name="coverageWindowSize">${coverageWindowSize}</paramValue>
             <paramValue name="extraBowtieParams">${extraBowtieParams}</paramValue>
             <paramValue name="experimentDatasetName">$$organismAbbrev$$_originsOfReplication_${experimentName}_RSRC</paramValue>
+            <depends name="mirrorToCluster"/>
         </subgraph>
     </datasetTemplate>
 </workflowGraph>
