@@ -29,10 +29,11 @@
       <depends name="extractSplicedLeaderAndPolyASitesGenes"/>
     </step>
 
-    <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
+    <step name="loadExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
       <paramValue name="configFile">$$experimentDatasetDir$$/profile_config.txt</paramValue>
       <paramValue name="inputDir">$$samplesOutputDir$$</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
       <depends name="makeMinPercentileProfile"/>
     </step>
 
@@ -42,7 +43,7 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
-      <depends name="insertExpressionProfile"/>
+      <depends name="loadExpressionProfile"/>
     </step>
 
 
