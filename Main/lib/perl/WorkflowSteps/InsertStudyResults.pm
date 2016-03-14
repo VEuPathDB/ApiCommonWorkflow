@@ -23,8 +23,8 @@ sub run {
 
   
 
-    $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-    $self->testInputFile('configFile', "$workflowDataDir/$configFile");
+    #$self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
+    #$self->testInputFile('configFile', "$workflowDataDir/$configFile");
 
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertStudyResults", $args);

@@ -18,9 +18,11 @@ sub run {
   $self->runCmd($test, "mkdir $workflowDataDir/$dataDir") unless (-d "$workflowDataDir/$dataDir");
   my $sql_cmd="makeFileWithSql --sql \"$sql\" --outFile $workflowDataDir/$dataDir/dropConstraintsAndIndexesFromSnpTables.sql";
   $self->runCmd($test, $sql_cmd);
-  open(F, ">>$workflowDataDir/$dataDir/dropConstraintsAndIndexesFromSnpTables.sql") || die "Can't open task prop file '$workflowDataDir/$dataDir/dropConstraintsAndIndexesFromSnpTables.sql' for writing";
-  print F "exit;";
-  close(F);
+  unless($test){
+		open(F, ">>$workflowDataDir/$dataDir/dropConstraintsAndIndexesFromSnpTables.sql") || die "Can't open task prop file '$workflowDataDir/$dataDir/dropConstraintsAndIndexesFromSnpTables.sql' for writing";
+  		print F "exit;";
+  		close(F);
+  }
   my $drop_cmd = "sqlplus $gusLogin/$gusPassword\@$gusInstance \@$workflowDataDir/$dataDir/dropConstraintsAndIndexesFromSnpTables.sql ";
   my $add_cmd = "sqlplus $gusLogin/$gusPassword\@$gusInstance \@$ENV{GUS_HOME}/lib/sql/apidbschema/addConstraintsAndIndexesToSnpTables.sql ";
 
