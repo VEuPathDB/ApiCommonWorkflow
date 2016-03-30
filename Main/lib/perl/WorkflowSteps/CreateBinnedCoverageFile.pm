@@ -15,8 +15,9 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $outputFile = $self->getParamValue("outputFile");
     my $samtoolsIndex = $self->getParamValue("samtoolsIndex");
+    my $outputDir = $self->getParamValue("outputDir");
 
-    my $cmd = "generateBinnedCoverageFile.pl --bamFile $workflowDataDir/$bamFile --window $window --outputFile $workflowDataDir/$outputFile --samtoolsIndex $workflowDataDir/$samtoolsIndex";
+    my $cmd = "generateBinnedCoverageFile.pl --bamFile $workflowDataDir/$bamFile --window $window --outputFile $workflowDataDir/$outputFile --samtoolsIndex $workflowDataDir/$samtoolsIndex --outputDir $workflowDataDir/$outputDir";
 
     if ($undo) {
         $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");

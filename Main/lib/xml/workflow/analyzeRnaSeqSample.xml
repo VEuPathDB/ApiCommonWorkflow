@@ -55,13 +55,21 @@
       <depends name="runGSNAPOnCluster"/>
     </step>
 
-
+<!--
     <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertIntronJunction" stepLoadTypes="plugin">
       <paramValue name="inputFile">$$dataDir$$/master/mainresult/junctions.tab</paramValue>
       <paramValue name="rnaSeqExtDbRlsSpec">$$experimentExtDbRlsSpec$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
       <depends name="runGSNAPOnCluster"/>
     </step>
+-->
+
+    <step name="moveExonJunction" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MoveFile">
+      <paramValue name="inputFile">$$dataDir$$/master/mainresult/junctions.tab</paramValue>
+      <paramValue name="outputFile">$$outputDir$$/$$sampleName$$_junctions.tab</paramValue>
+      <depends name="runGSNAPOnCluster"/>
+    </step>
+
 
 
     <step name="CutFpkmFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CutFpkmFilesAndRename">

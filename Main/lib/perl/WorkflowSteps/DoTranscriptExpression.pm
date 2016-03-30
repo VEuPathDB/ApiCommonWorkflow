@@ -35,12 +35,12 @@ sub run {
 
 
     if($expectCdfFile) {
-      my @cdfs = grep { /\.cdf$/} @files;
+      my @cdfs = grep { /\.cdf$/i} @files;
       $self->error("cdf file error in directory $platformDirectory") if(scalar(@cdfs) != 1);
       $mappingFile = "$platformDirectory/$cdfs[0]"
     }
     elsif($expectNdfFile) {
-      my @ndfs = grep { /\.ndf$/} @files;
+      my @ndfs = grep { /\.ndf$/i} @files;
       $self->error("ndf file error in directory $platformDirectory") if(scalar(@ndfs) != 1);
       $mappingFile = "$platformDirectory/$ndfs[0]"
     }
