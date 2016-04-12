@@ -23,30 +23,65 @@
         <paramValue name="datasetLoaderXmlFileName">$$projectName$$/$$organismAbbrev$$/$$studyName$$.xml</paramValue>
         <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
     </subgraph>
-    
-    <step name="runCufflinksForCNVs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunCufflinksForCNVs">
-        <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-        <paramValue name="outputDir">$$sampleAnalysisDir$$/</paramValue>
-        <paramValue name="bamFile">$$snpsDir$$/$$studyName$$/analyze_$$sampleName$$/master/mainresult/result.bam</paramValue> <!--bamFile from SNPs run -->
-        <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+
+    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+        <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$</paramValue>
         <depends name="loadCnvSample"/>
+    </step>
+
+    <step name="mirrorBamFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+        <paramValue name="fileOrDirToMirror">$$snpsDir$$/$$studyName$$/analyze_$$sampleName$$/master</paramValue>
+    </step>
+
+    <step name="makeCNVTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCNVTaskInputDir">
+        <paramValue name="taskInputDir">$$sampleAnalysisDir$$/input</paramValue>
+        <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+        <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+        <paramValue name="bamFile">$$snpsDir$$/$$studyName$$/analyze_$$sampleName$$/master/mainresult/result.bam</paramValue>
+        <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
+        <paramValue name="sampleName">$$sampleName$$</paramValue>
+        <paramValue name="window">1000</paramValue>
+        <depends name="loadCnvSample"/>
+    </step>
+
+    <step name="mirrorTaskInputDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+        <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$/input</paramValue>
+        <depends name="makeCNVTaskInputDir"/>
+        <depends name="mirrorSampleAnalysisDirToCluster"/>
+    </step>
+
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster">
+        <paramValue name="taskInputDir">$$sampleAnalysisDir$$/input</paramValue>
+        <paramValue name="numNodes">1</paramValue>
+        <paramValue name="maxMemoryGigs">8</paramValue>
+        <paramValue name="processorsPerNode">4</paramValue>
+        <depends name="mirrorTaskInputDirToCluster"/>
+        <depends name="mirrorBamFileToCluster"/>
+    </step>
+
+    <step name="mirrorCufflinksOutputFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
+        <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$/master</paramValue>
+        <paramValue name="outputDir">$$sampleAnalysisDir$$/master/mainresult/Cufflinks</paramValue>
+        <paramValue name="outputFiles">$$sampleAnalysisDir$$/master/mainresult/Cufflinks/genes.fpkm_tracking,$$sampleAnalysisDir$$/master/mainresult/$$sampleName$$.bed</paramValue>
+        <paramValue name="deleteAfterCopy">true</paramValue>
+        <depends name="runClusterTask"/>
     </step>
 
     <step name="calculatePloidy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculatePloidy">
         <paramValue name="outputDir">$$sampleAnalysisDir$$</paramValue>
-        <paramValue name="fpkmFile">$$sampleAnalysisDir$$/Cufflinks/genes.fpkm_tracking</paramValue>
+        <paramValue name="fpkmFile">$$sampleAnalysisDir$$/master/mainresult/Cufflinks/genes.fpkm_tracking</paramValue>
         <paramValue name="ploidy">$$ploidy$$</paramValue>
         <paramValue name="sampleName">$$sampleName$$</paramValue>
-        <depends name="runCufflinksForCNVs"/>
+        <depends name="mirrorCufflinksOutputFromCluster"/>
     </step>
 
     <step name="calculateGeneCNVs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateGeneCNVs">
         <paramValue name="outputDir">$$sampleAnalysisDir$$</paramValue>
-        <paramValue name="fpkmFile">$$sampleAnalysisDir$$/Cufflinks/genes.fpkm_tracking</paramValue>
+        <paramValue name="fpkmFile">$$sampleAnalysisDir$$/master/mainresult/Cufflinks/genes.fpkm_tracking</paramValue>
         <paramValue name="ploidy">$$ploidy$$</paramValue>
         <paramValue name="sampleName">$$sampleName$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-        <depends name="runCufflinksForCNVs"/>
+        <depends name="mirrorCufflinksOutputFromCluster"/>
     </step>    
 
     <step name="writePloidyConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteStudyConfig">
@@ -87,22 +122,14 @@
         <depends name="writeCNVConfigFile"/>
     </step>
 
-    <step name="createBinnedCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBinnedCoverageFile">
-        <paramValue name="bamFile">$$snpsDir$$/$$studyName$$/analyze_$$sampleName$$/master/mainresult/result.bam</paramValue>
-        <paramValue name="windowSize">1000</paramValue>
-        <paramValue name="outputFile">$$sampleAnalysisDir$$/$$sampleName$$.bed</paramValue>
-        <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
-        <depends name="loadCnvSample"/>
-    </step>
-
     <step name="makeNormalisedCoverageTrack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeNormalisedCoverageTrack">
-        <paramValue name="coverageFile">$$sampleAnalysisDir$$/$$sampleName$$.bed</paramValue>
+        <paramValue name="coverageFile">$$sampleAnalysisDir$$/master/mainresult/$$sampleName$$.bed</paramValue>
         <paramValue name="ploidy">$$ploidy$$</paramValue>
         <paramValue name="sampleName">$$sampleName$$</paramValue>
         <paramValue name="outputDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="chromSizesFile">$$chromSizesFile$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-        <depends name="createBinnedCoverage"/>
+        <depends name="mirrorCufflinksOutputFromCluster"/>
     </step>
 
     <step name="copyBigWigFilesToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBigWigFilesToWebServices">

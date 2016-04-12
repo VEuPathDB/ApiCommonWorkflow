@@ -11,20 +11,20 @@
     <param name="chromSizesFile"/>
     <param name="experimentName"/>
     <param name="experimentVersion"/>
-<!--    <param name="hasPairedEnds"/>
-    <param name="isColorspace"/>
-    <param name="removePCRDuplicates"/>
-    <param name="extraBowtieParams"/> -->
     <param name="ploidy"/>
     <param name="experimentDatasetName"/>
     <param name="studyName"/>
 
     <constant name="dataDir">$$parentDataDir$$/copyNumberVariations</constant>
     <constant name="gtfDir">$$dataDir$$/$$experimentDatasetName$$/gtf</constant>
-<!--    <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>  -->
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="mirrorDataDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+        <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+        <depends name="makeDataDir"/>
     </step>
 
     <subgraph name="loadCnvExperiment" xmlFile="loadDataset.xml">
@@ -34,9 +34,21 @@
         <depends name="makeDataDir"/>
     </subgraph>
 
+    <step name="mirrorExperimentDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+        <paramValue name="fileOrDirToMirror">$$dataDir$$/$$experimentDatasetName$$</paramValue>
+        <depends name="loadCnvExperiment"/>
+        <depends name="mirrorDataDirToCluster"/>
+    </step>
+
     <step name="makeGtfDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$gtfDir$$</paramValue>
         <depends name="loadCnvExperiment"/>
+    </step>
+
+    <step name="mirrorGtfDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+        <paramValue name="fileOrDirToMirror">$$gtfDir$$</paramValue>
+        <depends name="mirrorExperimentDirToCluster"/>
+        <depends name="makeGtfDir"/>
     </step>
 
     <step name="addCNVInvestigation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
@@ -65,6 +77,12 @@
         <paramValue name="cdsOnly">false</paramValue>
         <depends name="makeGtfDir"/>
     </step>
+
+    <step name="mirrorGtfFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+        <paramValue name="fileOrDirToMirror">$$gtfDir$$/$$organismAbbrev$$.gtf</paramValue>
+        <depends name="makeGtfForCufflinks"/>
+        <depends name="mirrorGtfDirToCluster"/>
+    </step>
     
     <subgraph name="doCnvMapping" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$studyName$$/cnvSamples.xml">
         <paramValue name="projectName">$$projectName$$</paramValue>
@@ -84,7 +102,7 @@
         <depends name="addCNVInvestigation"/>
         <depends name="addPloidyStudy"/>
         <depends name="addGeneCNVStudy"/>
-        <depends name="makeGtfForCufflinks"/>
+        <depends name="mirrorGtfFileToCluster"/>
     </subgraph>
 
     <step name="document-copyNumberVariation_experiment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
