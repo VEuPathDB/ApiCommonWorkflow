@@ -15,23 +15,18 @@
     <param name="experimentDatasetName"/>
     <param name="studyName"/>
 
-    <constant name="dataDir">$$parentDataDir$$/copyNumberVariations</constant>
+    <constant name="dataDir">$$parentDataDir$$</constant>
     <constant name="gtfDir">$$dataDir$$/$$experimentDatasetName$$/gtf</constant>
 
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$dataDir$$</paramValue>
-    </step>
 
     <step name="mirrorDataDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
         <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-        <depends name="makeDataDir"/>
     </step>
 
     <subgraph name="loadCnvExperiment" xmlFile="loadDataset.xml">
         <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
         <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-        <depends name="makeDataDir"/>
     </subgraph>
 
     <step name="mirrorExperimentDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">

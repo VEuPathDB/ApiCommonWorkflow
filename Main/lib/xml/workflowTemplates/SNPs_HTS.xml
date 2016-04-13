@@ -12,6 +12,7 @@
   <constant name="dataDir">$$parentDataDir$$/SNPs_HTS</constant>
   <constant name="varscanConsDir">$$parentDataDir$$/SNPs_HTS/varscanCons</constant>
   <constant name="bowtieIndexDir">$$parentDataDir$$/bowtieIndices</constant>
+  <constant name="cnvDir">$$parentDataDir$$/copyNumberVariations</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -25,6 +26,10 @@
   <step name="makeVarscanConsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$varscanConsDir$$</paramValue>
     <depends name="makeDataDir"/>
+  </step>
+
+  <step name="makeCnvDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$cnvDir$$</paramValue>
   </step>
 
   <!-- Create the external database release -->
@@ -85,7 +90,7 @@
         <paramValue name="projectName">${projectName}</paramValue>
         <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
         <paramValue name="snpsDir">$$dataDir$$</paramValue>
-        <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+        <paramValue name="parentDataDir">$$cnvDir$$</paramValue>
         <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
         <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
         <paramValue name="chromSizesFile">$$chromSizesFile$$</paramValue>
@@ -98,6 +103,7 @@
         <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
         <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
         <depends name="${experimentName}_experiment" />
+        <depends name="makeCnvDir"/>
         <dependsGlobal name="oboOntologies"/>
     </subgraph>
   </datasetTemplate>
