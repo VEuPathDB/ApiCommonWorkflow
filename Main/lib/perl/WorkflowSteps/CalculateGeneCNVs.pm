@@ -26,16 +26,21 @@ sub run {
              dots.nasequence ns,
              dots.genefeature gf,
              dots.sequencesequencegroup ssg,
-             dots.sequencegroup sg
+             dots.sequencegroup sg,
+             sres.ontologyterm ot,
+             core.tableinfo ti
              where t.taxon_id = $taxonId
              and ns.taxon_id = t.taxon_id
              and gf.na_sequence_id = ns.na_sequence_id
-             and ssg.source_table_id = 232
+             and ti.name = 'GeneFeature'
+             and ti.table_id = ssg.source_table_id
              and ssg.sequence_id = gf.na_feature_id
              and sg.sequence_group_id = ssg.sequence_group_id
+             and ot.name like '%chromosome'
+             and ns.sequence_ontology_id = ot.ontology_term_id
              order by gf.source_id";
 
-  my $cmd = "calculateGeneCNVs --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --sql \"$sql\"";
+  my $cmd = "calculateGeneCNVs --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --sql \"$sql\" --taxonId $taxonId;
 
   if ($undo) {
     $self->runCmd(0, "rm $outputDir/$sampleName\_CNVestimations.tsv");
