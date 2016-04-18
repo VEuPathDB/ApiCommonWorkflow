@@ -40,7 +40,7 @@ sub run {
              and ns.sequence_ontology_id = ot.ontology_term_id
              order by gf.source_id";
 
-  my $cmd = "calculateGeneCNVs --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --sql \"$sql\" --taxonId $taxonId;
+  my $cmd = "calculateGeneCNVs --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --sql \"$sql\" --taxonId $taxonId";
 
   if ($undo) {
     $self->runCmd(0, "rm $outputDir/$sampleName\_CNVestimations.tsv");
