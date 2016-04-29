@@ -43,8 +43,8 @@ sub run {
   my $cmd = "calculateGeneCNVs --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --sql \"$sql\" --taxonId $taxonId";
 
   if ($undo) {
-    $self->runCmd(0, "rm $outputDir/$sampleName\_CNVestimations.tsv");
-    $self->runCmd(0, "rm $outputDir/$sampleName\_geneCNVs.txt");
+    $self->runCmd(0, "rm $outputDir/$sampleName\_CNVestimations.tsv") if -e "$outputDir/$sampleName\_CNVestimations.tsv";
+    $self->runCmd(0, "rm $outputDir/$sampleName\_geneCNVs.txt") if -e "$outputDir/$sampleName\_geneCNVs.txt";
   }else{
     $self->testInputFile('fpkmFile', "$workflowDataDir/$fpkmFile");
     if ($test) {
