@@ -14,6 +14,8 @@ sub run {
 
   my $tRNAExtDbRlsSpec = $self->getParamValue('tRNAExtDbRlsSpec');
 
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+
   my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
 
   my $soVersion = $self->getExtDbVersion($test, $soExtDbName);
@@ -24,7 +26,7 @@ sub run {
 
   my ($tRNAExtDbName,$tRNAExtDbVersion)=$self->getExtDbInfo($test,$tRNAExtDbRlsSpec);
 
-  my $args = "--data_file $workflowDataDir/$inputFile --scanDbName '$tRNAExtDbName' --scanDbVer '$tRNAExtDbVersion' --genomeDbName '$genomeExtDbName' --genomeDbVer '$genomeExtDbVersion' --soExternalDatabaseSpec '$soExtDbName|$soVersion'";
+  my $args = "--data_file $workflowDataDir/$inputFile --scanDbName '$tRNAExtDbName' --scanDbVer '$tRNAExtDbVersion' --genomeDbName '$genomeExtDbName' --genomeDbVer '$genomeExtDbVersion' --soExternalDatabaseSpec '$soExtDbName|$soVersion' --prefix '$organismAbbrev'";
 
   $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
