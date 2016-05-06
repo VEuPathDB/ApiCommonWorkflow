@@ -16,12 +16,19 @@
    
     <constant name="sampleAnalysisDir">$$experimentDataDir$$/$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_copyNumberVariationSample_RSRC</constant> 
 
+    <step name="cnvWorkflowCheckpoint" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CnvWorkflowCheckpoint">
+        <paramValue name="sampleName">$$sampleName$$</paramValue>
+        <paramValue name="experimentName">$$experimentName$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="projectName">$$projectName$$</paramValue>
+    </step>
    
  <!-- The dataset loader here does not get anything from manual delivery.  It only makes rows in sres.extdb and extdbrls -->
     <subgraph name="loadCnvSample" xmlFile="loadDataset.xml">
         <paramValue name="datasetName">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_copyNumberVariationSample_RSRC</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$projectName$$/$$organismAbbrev$$/$$studyName$$.xml</paramValue>
         <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+        <depends name="cnvWorkflowCheckpoint"/>
     </subgraph>
 
     <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
@@ -31,6 +38,7 @@
 
     <step name="mirrorBamFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
         <paramValue name="fileOrDirToMirror">$$snpsDir$$/$$studyName$$/analyze_$$sampleName$$/master</paramValue>
+        <depends name="cnvWorkflowCheckpoint"/>
     </step>
 
     <step name="makeCNVTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCNVTaskInputDir">
