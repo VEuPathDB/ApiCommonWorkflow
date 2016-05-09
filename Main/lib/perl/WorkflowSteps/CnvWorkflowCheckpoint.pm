@@ -14,7 +14,7 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $projectName = $self->getParamValue('projectName');
 
-  $experimentName =~ s/_CNV//;
+  $experimentName =~ s/_CNV$//;
   my $snpSampleExtDbSpec = "$organismAbbrev"."_$experimentName"."_$sampleName"."_HTS_SNPSample_RSRC|dontcare";
   my $snpSampleExtDbRlsId = $self->getExtDbRlsId($test, $snpSampleExtDbSpec);
 
