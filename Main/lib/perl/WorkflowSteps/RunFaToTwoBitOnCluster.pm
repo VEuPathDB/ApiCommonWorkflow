@@ -23,13 +23,13 @@ sub run {
   my $cmd = "faToTwoBit $clusterWorkflowDataDir/$inputFastaFile $clusterWorkflowDataDir/$output2bitFile";
 
   if ($undo) {
-    $self->runCmdOnCluster(0,"rm $clusterWorkflowDataDir/$output2bitFile");
+    $self->runCmdOnClusterTransferServer(0,"rm $clusterWorkflowDataDir/$output2bitFile");
   } else {
     $self->testInputFile('inputFastaFile', "$workflowDataDir/$inputFastaFile");
       if ($test) {
-	  $self->runCmdOnCluster(0, "echo test > $clusterWorkflowDataDir/$output2bitFile");
+	  $self->runCmdOnClusterTransferServer(0, "echo test > $clusterWorkflowDataDir/$output2bitFile");
       }
-    $self->runCmdOnCluster($test,$cmd);
+    $self->runCmdOnClusterTransferServer($test,$cmd);
   }
 }
 
