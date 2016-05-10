@@ -12,17 +12,18 @@ sub run {
   my $sampleName = $self->getParamValue('sampleName');
   my $experimentName = $self->getParamValue('experimentName');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $projectName = $self->getParamValue('projectName');
+  my $sampleAnalysisDir = $self->getParamValue('sampleAnalysisDir');
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
   $experimentName =~ s/_CNV$//;
   my $snpSampleExtDbSpec = "$organismAbbrev"."_$experimentName"."_$sampleName"."_HTS_SNPSample_RSRC|dontcare";
   my $snpSampleExtDbRlsId = $self->getExtDbRlsId($test, $snpSampleExtDbSpec);
 
-  my $cmd = "cnvWorkflowCheckpoint --snpSampleExtDbRlsId $snpSampleExtDbRlsId --sampleName $sampleName --experimentName $experimentName --organismAbbrev $organismAbbrev --projectName $projectName";
+  my $cmd = "cnvWorkflowCheckpoint --snpSampleExtDbRlsId $snpSampleExtDbRlsId --sampleName $sampleName --sampleAnalysisDir $workflowDataDir/$sampleAnalysisDir";
 
 
   if ($undo) {
-    $self->log("Nothing to undo\n");
+    $self->runCmd("rm -f $workflowDataDir/$sampleAnalysisDir/doNotDoAnalysis");
   } else {
       if ($test) {
       $self->log("Testing CNV checkpoint\n");;
