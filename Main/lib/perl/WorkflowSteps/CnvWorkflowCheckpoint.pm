@@ -12,18 +12,18 @@ sub run {
   my $sampleName = $self->getParamValue('sampleName');
   my $experimentName = $self->getParamValue('experimentName');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $sampleAnalysisDir = $self->getParamValue('sampleAnalysisDir');
+  my $outputSkipIfFile = $self->getParamValue('outputSkipIfFile');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   $experimentName =~ s/_CNV$//;
   my $snpSampleExtDbSpec = "$organismAbbrev"."_$experimentName"."_$sampleName"."_HTS_SNPSample_RSRC|dontcare";
   my $snpSampleExtDbRlsId = $self->getExtDbRlsId($test, $snpSampleExtDbSpec);
 
-  my $cmd = "cnvWorkflowCheckpoint --snpSampleExtDbRlsId $snpSampleExtDbRlsId --sampleName $sampleName --sampleAnalysisDir $workflowDataDir/$sampleAnalysisDir";
+  my $cmd = "cnvWorkflowCheckpoint --snpSampleExtDbRlsId $snpSampleExtDbRlsId --sampleName $sampleName --outputSkipIfFile $workflowDataDir/$outputSkipIfFile";
 
 
   if ($undo) {
-    $self->runCmd("rm -f $workflowDataDir/$sampleAnalysisDir/doNotDoAnalysis");
+    $self->runCmd("rm -f $workflowDataDir/$outputSkipIfFile");
   } else {
       if ($test) {
       $self->log("Testing CNV checkpoint\n");;
