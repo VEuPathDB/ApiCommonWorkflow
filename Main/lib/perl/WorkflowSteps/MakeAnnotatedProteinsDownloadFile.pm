@@ -113,7 +113,7 @@ WHERE ns.SOURCE_ID = t.SEQUENCE_ID
 ORDER BY t.chromosome_order_num, t.SEQUENCE_ID,t.source_id, t.coding_start
 EOF
 
-  my $cmd = " gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" && tar -czvf $downloadFileName.tar.gz $downloadFileName";
+  my $cmd = " gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" && gzip $downloadFileName";
     return $cmd;
 }
 

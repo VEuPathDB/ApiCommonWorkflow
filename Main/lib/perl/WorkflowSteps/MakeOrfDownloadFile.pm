@@ -56,7 +56,7 @@ EOF
     my $cmd = <<"EOF";
       gusExtractSequences --outputFile $downloadFileName \\
       --idSQL \"$sql\" \\
-      --verbose && tar -czvf $downloadFileName.tar.gz $downloadFileName
+      --verbose && gzip $downloadFileName
 EOF
     return $cmd;
 }
