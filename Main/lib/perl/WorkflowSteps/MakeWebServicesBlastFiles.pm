@@ -31,7 +31,6 @@ sub run {
 
   my $inputDownloadFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getDownloadFileName($websiteFilesDir, $downloadSiteRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, $familyNameForFiles, $useFamilyName, $projectName, $projectVersion, 'fasta', $dataName);
 	
-  $self->runCmd(0, "gunzip $inputDownloadFile.gz") if(-e "$inputDownloadFile.gz");
 
   my $outputWebservicesFileDir = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceDir($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, $familyNameForFiles, $useFamilyName, 'blast');
 
@@ -46,20 +45,22 @@ sub run {
   }
 
   my $blastPath = $self->getConfig("ncbiBlastPath");
-  my $cmd = "$blastPath/makeblastdb -in $inputDownloadFile $args -out $outputWebservicesFileDir/$outputDataName ";
+  my $cmd = "$blastPath/makeblastdb -in $outputWebservicesFileDir/$outputDataName $args -out $outputWebservicesFileDir/$outputDataName ";
 
   if($undo) {
     $self->runCmd(0, "rm -f $outputWebservicesFileDir/$outputDataName.*");
   } else{
-    $self->testInputFile('inputDownloadFile', "$inputDownloadFile");
+    $self->testInputFile('inputDownloadFile', "$inputDownloadFile.gz");
     $self->testInputFile('outputWebservicesFileDir', "$outputWebservicesFileDir");
 
     if($test){
       $self->runCmd(0, "echo test > $outputWebservicesFileDir/$outputDataName.xnd");
     }
+    $self->runCmd($test, "cp $inputDownloadFile.gz $outputWebservicesFileDir/$outputDataName.gz ");
+    $self->runCmd($test, "gunzip $outputWebservicesFileDir/$outputDataName.gz ");
     $self->runCmd($test, $cmd);
-    
-	$self->runCmd($test, "gzip $inputDownloadFile") unless(-e "$inputDownloadFile.gz");  
+    $self->runCmd($test, "rm -f $outputWebservicesFileDir/$outputDataName");
+  
   }
 }
 
