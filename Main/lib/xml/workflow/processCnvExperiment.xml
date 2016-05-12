@@ -46,23 +46,26 @@
         <depends name="makeGtfDir"/>
     </step>
 
+
+    <!-- Adding Study container for all CNV nodes -->
     <step name="addCNVInvestigation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
-        <paramValue name="experimentName">$$organismAbbrev$$_$$experimentName$$</paramValue>
+        <paramValue name="experimentName">$$organismAbbrev$$ $$studyName$$ (CNV)</paramValue>
         <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentVersion$$</paramValue>
-        <depends name="loadCnvExperiment"/>
     </step>
 
+
     <step name="addPloidyStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
-        <paramValue name="experimentName">$$organismAbbrev$$_$$experimentName$$ - Ploidy</paramValue>
+        <paramValue name="experimentName">$$organismAbbrev$$ $$studyName$$ - Ploidy</paramValue>
         <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentVersion$$</paramValue>
         <depends name="loadCnvExperiment"/>
     </step>
 
     <step name="addGeneCNVStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
-        <paramValue name="experimentName">$$organismAbbrev$$_$$experimentName$$ - GeneCNV</paramValue>
+        <paramValue name="experimentName">$$organismAbbrev$$ $$studyName$$ - GeneCNV</paramValue>
         <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentVersion$$</paramValue>
         <depends name="loadCnvExperiment"/>
     </step>
+
 
     <step name="makeGtfForCufflinks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGtfForGuidedCufflinks">
         <paramValue name="outputFile">$$organismAbbrev$$.gtf</paramValue>

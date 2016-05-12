@@ -16,6 +16,15 @@
    
     <constant name="sampleAnalysisDir">$$experimentDataDir$$/$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_copyNumberVariationSample_RSRC</constant> 
 
+
+    <!-- Must link assay nodes to the CNV study -->
+    <step name="addAssayProtocolAppNode" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddProtocolAppNodeToStudy" stepLoadTypes="plugin">
+      <paramValue name="experimentName">$$organismAbbrev$$ $$studyName$$ (CNV)</paramValue>
+      <paramValue name="extDbRlsSpec"></paramValue>
+      <paramValue name="name">$$sampleName$$ (DNA Sequencing)</paramValue>
+    </step>
+
+
     <step name="cnvWorkflowCheckpoint" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CnvWorkflowCheckpoint">
         <paramValue name="sampleName">$$sampleName$$</paramValue>
         <paramValue name="experimentName">$$experimentName$$</paramValue>
@@ -100,7 +109,7 @@
         <paramValue name="protocolName">Ploidy</paramValue>
         <paramValue name="sourceIdType">NASequence</paramValue>
         <paramValue name="inputProtocolAppNode">$$sampleName$$ (DNA Sequencing)</paramValue>
-        <paramValue name="profileSetName">$$organismAbbrev$$_$$experimentName$$ - Ploidy</paramValue>
+        <paramValue name="profileSetName">$$organismAbbrev$$ $$studyName$$ - Ploidy</paramValue>
         <depends name="calculatePloidy"/>
     </step>
 
@@ -108,7 +117,7 @@
         <paramValue name="inputDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="configFile">$$sampleAnalysisDir$$/ploidyConfig.txt</paramValue>
         <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|%</paramValue>
-        <paramValue name="studyName">$$organismAbbrev$$_$$experimentName$$</paramValue>
+        <paramValue name="studyName">$$organismAbbrev$$ $$studyName$$ (CNV)</paramValue>
         <depends name="writePloidyConfigFile"/>
     </step>
 
@@ -119,7 +128,7 @@
         <paramValue name="protocolName">geneCNV</paramValue>
         <paramValue name="sourceIdType">gene</paramValue>
         <paramValue name="inputProtocolAppNode">$$sampleName$$ (DNA Sequencing)</paramValue>
-        <paramValue name="profileSetName">$$organismAbbrev$$_$$experimentName$$ - GeneCNV</paramValue>
+        <paramValue name="profileSetName">$$organismAbbrev$$ $$studyName$$ - GeneCNV</paramValue>
         <depends name="calculateGeneCNVs"/>
     </step>
 
@@ -127,7 +136,7 @@
         <paramValue name="inputDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="configFile">$$sampleAnalysisDir$$/geneCNVConfig.txt</paramValue>
         <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|%</paramValue>
-        <paramValue name="studyName">$$organismAbbrev$$_$$experimentName$$</paramValue>
+        <paramValue name="studyName">$$organismAbbrev$$ $$studyName$$ (CNV)</paramValue>
         <depends name="writeCNVConfigFile"/>
     </step>
 
