@@ -15,59 +15,66 @@
     <param name="snpsDir"/>
    
     <constant name="sampleAnalysisDir">$$experimentDataDir$$/$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_copyNumberVariationSample_RSRC</constant> 
+    <constant name="checkPointDir">$$experimentDataDir$$/$$organismAbbrev$$_$$sampleName$$_checkPoint</constant>
 
-
-    <!-- Must link assay nodes to the CNV study -->
-    <step name="addAssayProtocolAppNode" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddProtocolAppNodeToStudy" stepLoadTypes="plugin">
-      <paramValue name="experimentName">$$organismAbbrev$$ $$studyName$$ (CNV)</paramValue>
-      <paramValue name="extDbRlsSpec">$$organismAbbrev$$_$$studyName$$_$$sampleName$$_HTS_SNPSample_RSRC|dontcare</paramValue>
-      <paramValue name="name">$$sampleName$$ (DNA Sequencing)</paramValue>
+    <step name="makeCheckpointDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$checkpointDir$$</paramValue>
     </step>
-
 
     <step name="cnvWorkflowCheckpoint" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CnvWorkflowCheckpoint">
         <paramValue name="sampleName">$$sampleName$$</paramValue>
         <paramValue name="experimentName">$$experimentName$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-        <paramValue name="outputSkipIfFile">$$sampleAnalysisDir$$/doNotDoAnalysis</paramValue>
+        <paramValue name="outputSkipIfFile">$$checkpointDir$$/doNotDoAnalysis</paramValue>
+        <depends name="makeCheckpointDir"/>
     </step>
+
+    <!-- link assay nodes to cnv study -->
+    <step name="addAssayProtocolAppNode" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddProtocolAppNodeToStudy" stepLoadTypes="plugin">
+      <paramValue name="experimentName">$$organismAbbrev$$ $$studyName$$ (CNV)</paramValue>
+      <paramValue name="extDbRlsSpec">$$organismAbbrev$$_$$studyName$$_$$sampleName$$_HTS_SNPSample_RSRC|dontcare</paramValue>
+      <paramValue name="name">$$sampleName$$ (DNA Sequencing)</paramValue>
+      <depends name="cnvWorkflowCheckpoint"/>
+    </step>
+
    
  <!-- The dataset loader here does not get anything from manual delivery.  It only makes rows in sres.extdb and extdbrls -->
-    <subgraph name="loadCnvSample" xmlFile="loadDataset.xml" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <subgraph name="loadCnvSample" xmlFile="loadDataset.xml" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="datasetName">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_copyNumberVariationSample_RSRC</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$projectName$$/$$organismAbbrev$$/$$studyName$$.xml</paramValue>
         <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
         <depends name="cnvWorkflowCheckpoint"/>
     </subgraph>
 
-    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$</paramValue>
         <depends name="loadCnvSample"/>
     </step>
 
-    <step name="mirrorBamFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="mirrorBamFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="fileOrDirToMirror">$$snpsDir$$/$$studyName$$/analyze_$$sampleName$$/master</paramValue>
         <depends name="cnvWorkflowCheckpoint"/>
     </step>
 
-    <step name="makeCNVTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCNVTaskInputDir" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="makeCNVTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCNVTaskInputDir" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="taskInputDir">$$sampleAnalysisDir$$/input</paramValue>
         <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
         <paramValue name="gtfFile">$$gtfFile$$</paramValue>
-        <paramValue name="bamFile">$$snpsDir$$/$$studyName$$/analyze_$$sampleName$$/master/mainresult/result.bam</paramValue>
+        <paramValue name="bamFile">result.bam</paramValue>
         <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
         <paramValue name="sampleName">$$sampleName$$</paramValue>
         <paramValue name="window">1000</paramValue>
+        <paramValue name="snpsClusterDir">$$snpsDir$$/$$studyName$$/analyze_$$sampleName$$/master/mainresult</paramValue>
         <depends name="loadCnvSample"/>
     </step>
 
-    <step name="mirrorTaskInputDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="mirrorTaskInputDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$/input</paramValue>
         <depends name="makeCNVTaskInputDir"/>
         <depends name="mirrorSampleAnalysisDirToCluster"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="taskInputDir">$$sampleAnalysisDir$$/input</paramValue>
         <paramValue name="numNodes">1</paramValue>
         <paramValue name="maxMemoryGigs">8</paramValue>
@@ -76,7 +83,7 @@
         <depends name="mirrorBamFileToCluster"/>
     </step>
 
-    <step name="mirrorCufflinksOutputFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="mirrorCufflinksOutputFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$/master</paramValue>
         <paramValue name="outputDir">$$sampleAnalysisDir$$/master/mainresult/Cufflinks</paramValue>
         <paramValue name="outputFiles">$$sampleAnalysisDir$$/master/mainresult/Cufflinks/genes.fpkm_tracking,$$sampleAnalysisDir$$/master/mainresult/$$sampleName$$.bed</paramValue>
@@ -84,7 +91,7 @@
         <depends name="runClusterTask"/>
     </step>
 
-    <step name="calculatePloidy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculatePloidy" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="calculatePloidy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculatePloidy" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="outputDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="fpkmFile">$$sampleAnalysisDir$$/master/mainresult/Cufflinks/genes.fpkm_tracking</paramValue>
         <paramValue name="ploidy">$$ploidy$$</paramValue>
@@ -93,7 +100,7 @@
         <depends name="mirrorCufflinksOutputFromCluster"/>
     </step>
 
-    <step name="calculateGeneCNVs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateGeneCNVs" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="calculateGeneCNVs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateGeneCNVs" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="outputDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="fpkmFile">$$sampleAnalysisDir$$/master/mainresult/Cufflinks/genes.fpkm_tracking</paramValue>
         <paramValue name="ploidy">$$ploidy$$</paramValue>
@@ -102,7 +109,7 @@
         <depends name="mirrorCufflinksOutputFromCluster"/>
     </step>    
 
-    <step name="writePloidyConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteStudyConfig" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="writePloidyConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteStudyConfig" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="configOutputFile">$$sampleAnalysisDir$$/ploidyConfig.txt</paramValue>
         <paramValue name="file">$$sampleName$$_Ploidy.txt</paramValue>
         <paramValue name="analysisName">$$sampleName$$_ploidy (CNV)</paramValue>
@@ -113,7 +120,7 @@
         <depends name="calculatePloidy"/>
     </step>
 
-    <step name="insertPloidy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="insertPloidy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="inputDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="configFile">$$sampleAnalysisDir$$/ploidyConfig.txt</paramValue>
         <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|%</paramValue>
@@ -121,7 +128,7 @@
         <depends name="writePloidyConfigFile"/>
     </step>
 
-    <step name="writeCNVConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteStudyConfig" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="writeCNVConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteStudyConfig" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="configOutputFile">$$sampleAnalysisDir$$/geneCNVConfig.txt</paramValue>
         <paramValue name="file">$$sampleName$$_geneCNVs.txt</paramValue>
         <paramValue name="analysisName">$$sampleName$$_geneCNV (CNV)</paramValue>
@@ -132,7 +139,7 @@
         <depends name="calculateGeneCNVs"/>
     </step>
 
-    <step name="insertGeneCNVs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="insertGeneCNVs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="inputDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="configFile">$$sampleAnalysisDir$$/geneCNVConfig.txt</paramValue>
         <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|%</paramValue>
@@ -140,7 +147,7 @@
         <depends name="writeCNVConfigFile"/>
     </step>
 
-    <step name="makeNormalisedCoverageTrack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeNormalisedCoverageTrack" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="makeNormalisedCoverageTrack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeNormalisedCoverageTrack" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="coverageFile">$$sampleAnalysisDir$$/master/mainresult/$$sampleName$$.bed</paramValue>
         <paramValue name="ploidy">$$ploidy$$</paramValue>
         <paramValue name="sampleName">$$sampleName$$</paramValue>
@@ -150,7 +157,7 @@
         <depends name="mirrorCufflinksOutputFromCluster"/>
     </step>
 
-    <step name="copyBigWigFilesToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBigWigFilesToWebServices" skipIfFile="$$sampleAnalysisDir$$/doNotDoAnalysis">
+    <step name="copyBigWigFilesToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBigWigFilesToWebServices" skipIfFile="$$checkpointDir$$/doNotDoAnalysis">
         <paramValue name="copyFromDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
