@@ -13,6 +13,7 @@ sub run {
   my $taskInputDir = $self->getParamValue("taskInputDir");
   my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
   my $bamFile = $self->getParamValue("bamFile");
+  my $snpsClusterDir = $self->getParamValue("snpsClusterDir");
   my $gtfFile = $self->getParamValue("gtfFile");
   my $samtoolsIndex = $self->getParamValue("samtoolsIndex");
   my $sampleName = $self->getParamValue("sampleName");
@@ -40,11 +41,12 @@ sub run {
 
     my $taskPropFileContent="
         genomicSeqsFile=$clusterWorkflowDataDir/$genomicSeqsFile
-        bamFile=$clusterWorkflowDataDir/$bamFile
+        bamFile=$clusterWorkflowDataDir/$snpsClusterDir/$bamFile
         gtfFile=$clusterWorkflowDataDir/$gtfFile
         samtoolsIndex=$clusterWorkflowDataDir/$samtoolsIndex
         sampleName=$sampleName
         window=$window
+        snpsClusterDir=$snpsClusterDir
         ";
 	
       
