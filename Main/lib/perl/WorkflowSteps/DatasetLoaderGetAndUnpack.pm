@@ -86,7 +86,7 @@ sub processDeclaredOutputs {
       if ($dir) {
 	$self->error("Declared output dir '$dir' was not created") unless -d $dir;
       } else {
-	$self->error("Declared output file '$file' was not created") unless  -e $file;
+	$self->error("Declared output file '$file' was not created") if (!-e $file && !-e "$file.gz");
       }
     }
   }
