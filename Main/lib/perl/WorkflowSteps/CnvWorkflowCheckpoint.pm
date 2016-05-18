@@ -23,7 +23,7 @@ sub run {
 
 
   if ($undo) {
-    $self->runCmd("rm -f $workflowDataDir/$outputSkipIfFile");
+    $self->runCmd(0,"rm -f $workflowDataDir/$outputSkipIfFile");
   } else {
       if ($test) {
       $self->log("Testing CNV checkpoint\n");;
