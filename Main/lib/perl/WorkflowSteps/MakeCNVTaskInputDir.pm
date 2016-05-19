@@ -46,7 +46,7 @@ sub run {
         samtoolsIndex=$clusterWorkflowDataDir/$samtoolsIndex
         sampleName=$sampleName
         window=$window
-        snpsClusterDir=$snpsClusterDir
+        snpsClusterDir=$clusterWorkflowDataDir/$snpsClusterDir
         ";
 	
       
