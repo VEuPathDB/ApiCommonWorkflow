@@ -21,7 +21,7 @@ sub run {
     my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
     
     # This statement will only return chromosomes.
-    my $SQL = "select ens.source_id
+    my $SQL = "select ns.source_id
                from sres.ontologyterm ot,
                dots.nasequence ns
                where ot.source_id  = 'SO:0000340'
