@@ -23,10 +23,10 @@ sub run {
     # This statement will only return chromosomes.
     my $SQL = "select ens.source_id
                from sres.ontologyterm ot,
-               dots.externalnasequence ens
+               dots.nasequence ns
                where ot.source_id  = 'SO:0000340'
-               and ot.ontology_term_id = ens.sequence_ontology_id
-               and ens.taxon_id = $taxonId";
+               and ot.ontology_term_id = ns.sequence_ontology_id
+               and ns.taxon_id = $taxonId";
 
     my $cmd = "makeNormalisedCoverageTrack --coverageFile $workflowDataDir/$coverageFile --ploidy $ploidy --sampleName $sampleName --outputDir $workflowDataDir/$outputDir --chromSizesFile $workflowDataDir/$chromSizesFile --SQL \"$SQL\"";
 
