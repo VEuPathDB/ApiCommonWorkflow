@@ -22,6 +22,7 @@ sub run {
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$outputFile");
+    $self->runCmd(0, "rm -rf $workflowDataDir/$skipIfFile");
   } else {
     if ($test) {
       $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
