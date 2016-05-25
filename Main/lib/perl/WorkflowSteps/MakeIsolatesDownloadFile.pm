@@ -53,7 +53,7 @@ sub getWebsiteFileCmd {
         and tn.name_class = 'scientific name'
 EOF
 
-  my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\" --verbose && gzip $downloadFileName";
+  my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\" --verbose ";
   return $cmd;
 }
 

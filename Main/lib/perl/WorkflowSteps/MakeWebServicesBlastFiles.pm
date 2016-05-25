@@ -50,14 +50,14 @@ sub run {
   if($undo) {
     $self->runCmd(0, "rm -f $outputWebservicesFileDir/$outputDataName.*");
   } else{
-    $self->testInputFile('inputDownloadFile', "$inputDownloadFile.gz");
+    $self->testInputFile('inputDownloadFile', "$inputDownloadFile");
     $self->testInputFile('outputWebservicesFileDir', "$outputWebservicesFileDir");
 
     if($test){
       $self->runCmd(0, "echo test > $outputWebservicesFileDir/$outputDataName.xnd");
     }
-    $self->runCmd($test, "cp $inputDownloadFile.gz $outputWebservicesFileDir/$outputDataName.gz ");
-    $self->runCmd($test, "gunzip $outputWebservicesFileDir/$outputDataName.gz ");
+    $self->runCmd($test, "cp $inputDownloadFile $outputWebservicesFileDir/$outputDataName");
+    
     $self->runCmd($test, $cmd);
     $self->runCmd($test, "rm -f $outputWebservicesFileDir/$outputDataName");
   

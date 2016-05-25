@@ -49,7 +49,7 @@ sub getWebsiteFileCmd {
         AND d.name = '$soExtDbName'
 EOF
 
-    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\" --verbose && gzip $downloadFileName";
+    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\" --verbose ";
     return $cmd;
 }
 

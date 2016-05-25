@@ -92,7 +92,7 @@ sub run {
       $self->error("Output file '$websiteFile' already exists") if -e $websiteFile;
       $self->error("Output file '$descripFile' already exists") if !$isWebServiceFile && -e $descripFile;
       if ($test) {
-	  $self->runCmd(0, "echo test > $websiteFile && gzip $websiteFile") unless $websiteFileCmd eq 'NONE';
+	  $self->runCmd(0, "echo test > $websiteFile ") unless $websiteFileCmd eq 'NONE';
 	  $self->runCmd(0, "echo test > $descripFile")  unless $isWebServiceFile;
       }
 
