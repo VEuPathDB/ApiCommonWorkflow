@@ -27,4 +27,8 @@ sub run {
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin:InsertGeneGff:", $args);
 }
 
+sub getIsSpeciesLevel {
+    return 0;
+}
+
 1;
