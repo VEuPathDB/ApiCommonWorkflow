@@ -31,4 +31,8 @@ sub getIsSpeciesLevel {
     return 0;
 }
 
+sub getIsFamilyLevel {
+    return 0;
+}
+
 1;
