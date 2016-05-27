@@ -9,6 +9,7 @@ sub run {
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $relativeDir = $self->getParamValue('relativeDir');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
   my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
   my $isSpeciesLevel = $self->getIsSpeciesLevel();
