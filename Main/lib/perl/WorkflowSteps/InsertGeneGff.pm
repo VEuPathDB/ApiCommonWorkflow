@@ -3,6 +3,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::InsertGeneGff;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
 sub run {
   my ($self, $test, $undo) = @_;
@@ -20,11 +21,11 @@ sub run {
   my $fileType = $self->getParamValue('fileType');
   my $dataName = $self->getParamValue('dataName');
 
-  my $gffFile = getDownloadFileName($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $projectName, $projectVersion, $fileType, $dataName);
+  my $gffFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getDownloadFileName($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $projectName, $projectVersion, $fileType, $dataName);
 
   my $args = "--gffFile $gffFile --projectName $projectName";
 
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin:InsertGeneGff:", $args);
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertGeneGff", $args);
 }
 
 sub getIsSpeciesLevel {
