@@ -40,6 +40,7 @@ sub run {
     $self->runCmd(0, "rm -f $workflowDataDir/$orthoEupathOutputFile");    
     $self->runCmd(0, "rm -f $workflowDataDir/$finalOutputFile");    
   } else {
+    $self->runCmd(0,"echo test > $workflowDataDir/$finalOutputFile") if ($test);
     $self->runCmd($test, $cmdGenesByTaxonAndEcNumber);
     $self->runCmd($test, $cmdOrthoMCL);
     $self->runCmd($test, $cmdAddEupathECToOmcl);
