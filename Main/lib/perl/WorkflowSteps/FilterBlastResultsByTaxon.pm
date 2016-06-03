@@ -47,8 +47,7 @@ sub run {
   my $cmd = "splitAndFilterBLASTX --taxon \"$taxonList\" --gi2taxidFile $gi2taxidFile --inputFile $workflowDataDir/$inputFile --outputFile $workflowDataDir/$filteredOutputFile";
 
   if ($undo) {
-# HACK: remove this line
-#    $self->runCmd(0, "rm -f $workflowDataDir/$unfilteredOutputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/$unfilteredOutputFile") if -e "$workflowDataDir/$unfilteredOutputFile";
     $self->runCmd(0, "rm -f $workflowDataDir/$filteredOutputFile");
   } else {  
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
