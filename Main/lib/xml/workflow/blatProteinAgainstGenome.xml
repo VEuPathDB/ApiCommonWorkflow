@@ -56,6 +56,13 @@
     <depends name="mirrorFromCluster"/>
   </step>
 
+    <!-- CAUTION: this step class has been hacked, to correct an old bug that clobbers the input file.  
+	 It now ignores the unfilteredOutputFile and filteredOutputFile params.
+	 Despite what the params say, the actual filteredOutputFile is the inputFile, with a .filtered suffix.
+	 The actual unfilteredOutputFile is simply the inputFile.
+
+         On the next rebuild, we need to fix by passing in an inputFile, outputFile and the filterByTaxon flag.  We'd remove the includeIf
+    -->
   <step name="filterResultsByTaxon" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterSimilarityResultsByTaxon" includeIf="$$filterByTaxon$$">
     <paramValue name="taxonHierarchy">$$taxonHierarchyForFilter$$</paramValue>
     <paramValue name="gi2taxidFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
@@ -66,6 +73,8 @@
     <depends name="fixGenomeSourceIdsInBlatResultFile"/>
   </step>
 
+     <!-- CAUTION: this step class has been hacked.  It appends the suffix .filtered onto the declared inputFile, 
+	  to discover if there is a filtered one available.  -->
   <step name="extractIdsFromBlatResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractIdsFromSimilarityResult" includeIf="$$loadSubjectSubset$$">
     <paramValue name="inputFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
     <paramValue name="inputFileType">blat</paramValue>
