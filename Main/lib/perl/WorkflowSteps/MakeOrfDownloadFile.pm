@@ -37,7 +37,14 @@ sub getWebsiteFileCmd {
             sres.ontologyTerm so,
             sres.ontologyTerm soseq,
             ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
-            dots.externalnasequence enas
+            (SELECT distinct * FROM (
+              SELECT na_sequence_id, taxon_id, sequence_ontology_id, chromosome_order_num 
+              FROM  dots.virtualsequence
+              UNION
+              SELECT na_sequence_id, taxon_id, sequence_ontology_id, chromosome_order_num 
+              FROM  dots.externalnasequence
+            )) enas 
+            --dots.externalnasequence enas
       WHERE m.na_feature_id = taaf.na_feature_id
         AND taaf.aa_sequence_id = taas.aa_sequence_id
         AND m.na_feature_id = fl.na_feature_id
