@@ -17,7 +17,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--analysisDir $workflowDataDir/$analysisDir --studyName '$studyName' --assayName '$sampleName (DNA Sequencing)' --sampleExtDbSpec '$sampleExtDbSpec' --seqVariationNodeName '$sampleName (Sequence Variation)' --protocolName 'DNA Sequencing'";
+  my $args = "--analysisDir $workflowDataDir/$analysisDir --studyName '$studyName' --assayName '$sampleName (DNA Sequencing)' --sampleExtDbSpec '$sampleExtDbSpec' --seqVariationNodeName '$sampleName (Sequence Variation)' --protocolName 'sequence analysis data transformation'";
 
   
     #$self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
