@@ -29,7 +29,7 @@ sub run {
   my $inputFileType = $self->getParamValue('inputFileType');
 
   # HACK
-  $filteredOuputFile = "$inputFile.filtered";
+  $filteredOutputFile = "$inputFile.filtered";
 
   $self->error("Parameter inputFileType=$inputFileType is invalid.  It must be either blat or blast") unless $inputFileType eq 'blat' || $inputFileType eq 'blastSim';
 
