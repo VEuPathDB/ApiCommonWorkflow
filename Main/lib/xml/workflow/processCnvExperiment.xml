@@ -19,7 +19,7 @@
     <constant name="gtfDir">$$dataDir$$/$$experimentDatasetName$$/gtf</constant>
 
 
-    <step name="mirrorDataDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <step name="mirrorDataDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
     </step>
 
@@ -29,7 +29,7 @@
         <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     </subgraph>
 
-    <step name="mirrorExperimentDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <step name="mirrorExperimentDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$dataDir$$/$$experimentDatasetName$$</paramValue>
         <depends name="loadCnvExperiment"/>
         <depends name="mirrorDataDirToCluster"/>
@@ -40,7 +40,7 @@
         <depends name="loadCnvExperiment"/>
     </step>
 
-    <step name="mirrorGtfDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <step name="mirrorGtfDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$gtfDir$$</paramValue>
         <depends name="mirrorExperimentDirToCluster"/>
         <depends name="makeGtfDir"/>
@@ -77,7 +77,7 @@
         <depends name="makeGtfDir"/>
     </step>
 
-    <step name="mirrorGtfFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <step name="mirrorGtfFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$gtfDir$$/$$organismAbbrev$$.gtf</paramValue>
         <depends name="makeGtfForCufflinks"/>
         <depends name="mirrorGtfDirToCluster"/>

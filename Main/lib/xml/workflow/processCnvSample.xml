@@ -46,12 +46,12 @@
         <depends name="cnvWorkflowCheckpoint"/>
     </subgraph>
 
-    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis">
+    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$</paramValue>
         <depends name="loadCnvSample"/>
     </step>
 
-    <step name="mirrorBamFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis">
+    <step name="mirrorBamFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$snpsDir$$/$$studyName$$/analyze_$$sampleName$$/master</paramValue>
         <depends name="cnvWorkflowCheckpoint"/>
     </step>
@@ -68,7 +68,7 @@
         <depends name="loadCnvSample"/>
     </step>
 
-    <step name="mirrorTaskInputDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis">
+    <step name="mirrorTaskInputDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$/input</paramValue>
         <depends name="makeCNVTaskInputDir"/>
         <depends name="mirrorSampleAnalysisDirToCluster"/>
@@ -83,7 +83,7 @@
         <depends name="mirrorBamFileToCluster"/>
     </step>
 
-    <step name="mirrorCufflinksOutputFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis">
+    <step name="mirrorCufflinksOutputFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis" stepLoadTypes="fromCluster">
         <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$/master</paramValue>
         <paramValue name="outputDir">$$sampleAnalysisDir$$/master/mainresult/Cufflinks</paramValue>
         <paramValue name="outputFiles">genes.fpkm_tracking,../$$sampleName$$.bed</paramValue>
