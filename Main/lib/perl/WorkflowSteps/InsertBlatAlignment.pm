@@ -64,13 +64,13 @@ sub run {
   } else {
       $self->log("queryFile '$workflowDataDir/$queryFile' is empty.  Doing nothing.");      
   }
-  #check the number of rows loaded. We will put a threshold for it, say if less than 1000 rows, the step will fail.
+  #check the number of rows loaded. We will put a threshold for it, say if less than 1000 rows, the step will fail. Can't do this, can't predict the number of ESTs
   if ($action eq 'load' && !$test && !$undo){
        my $algInvIds = $self->getAlgInvIds();
        my $sql = "select count(*) from $loadedTable where row_alg_invocation_id in ($algInvIds)";
        my $cmd = "getValueFromTable --idSQL \"$sql\"";
        my $loaded = $self->runCmd($test, $cmd);
-       die "Less than 1000 rows loaded." if ($loaded < 100);     
+       die "No rows loaded." if ($loaded == 0);     
   }
 }
 
