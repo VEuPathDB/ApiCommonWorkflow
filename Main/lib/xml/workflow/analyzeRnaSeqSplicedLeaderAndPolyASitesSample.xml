@@ -31,6 +31,17 @@
       <depends name="makeDataDir"/>
     </step>
 
+
+    <step name="linkDataFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+      <paramValue name="fromFile">$$dataDir$$/$$sampleName$$.bt</paramValue>
+      <paramValue name="toFile">$$outputDir$$/$$sampleName$$.bt</paramValue>
+      <depends name="runBowtie"/>
+    </step>
+
+
+
+
+<!-- These steps do not need to be run per sample     
      <step name="insertSpliceSiteFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSpliceSiteFeatures" stepLoadTypes="plugin">
       <paramValue name="configFile">$$experimentDatasetDir$$/config.txt</paramValue>
       <paramValue name="inputDir">$$dataDir$$</paramValue>
@@ -39,12 +50,6 @@
       <depends name="runBowtie"/>
     </step>
 
-    <step name="insertSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSplicedLeaderAndPolyASitesGenes">
-      <paramValue name="type">$$type$$</paramValue>
-      <paramValue name="sampleName">$$sampleName$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <depends name="insertSpliceSiteFeatures"/> 
-  </step>
 
     <step name="updateSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateSplicedLeaderAndPolyASitesGenes" undoRoot="insertSplicedLeaderAndPolyASitesGenes">
       <paramValue name="type">$$type$$</paramValue>
@@ -52,6 +57,8 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <depends name="insertSplicedLeaderAndPolyASitesGenes"/> 
   </step>
+
+-->
 
     <step name="document-RnaSeqOrChipSeqRum"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">

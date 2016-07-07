@@ -8,11 +8,49 @@
     <param name="experimentDatasetVersion"/>
     <param name="relativeDownloadSiteDir"/>
     <param name="type"/>
+    <param name="genomeExtDbRlsSpec"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
     <constant name="experimentDatasetDir">$$parentDataDir$$/$$experimentName$$/$$experimentDatasetName$$/final</constant>
 
+
+    <!-- This step makes 2 config files for the loader steps below -->
+    <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
+      <paramValue name="analysisConfigFile">$$experimentDatasetDir$$/final/analysisConfig.xml</paramValue>
+      <paramValue name="inputDir">$$samplesOutputDir$$</paramValue>
+      <paramValue name="outputDir">$$samplesOutputDir$$</paramValue>
+      <!-- The ancillary file will mostly be unused;  Only here so we can fiddle with the profiles (like scaliing)   -->
+      <paramValue name="geneProbeMappingTabFile"></paramValue>
+      <paramValue name="geneProbeMappingVendorFile"></paramValue>
+      <paramValue name="platformDirectory">$$experimentDataDir$$/$$experimentDatasetName$$/final</paramValue>
+      <paramValue name="expectCdfFile">false</paramValue>
+      <paramValue name="expectNdfFile">false</paramValue>
+      <paramValue name="passPlatformMappingFile">true</paramValue>
+      <paramValue name="technologyType">SpliceSites</paramValue>
+    </step>
+
+
+    <step name="loadSplicedLeaderFeaturesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$samplesOutputDir$$/insert_study_results_config.txt</paramValue>
+      <paramValue name="inputDir">$$samplesOutputDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
+      <depends name="doTranscriptExpression"/>
+      <dependsGlobal name="oboOntologies"/>
+    </step>
+
+
+
+    <step name="insertSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSplicedLeaderAndPolyASitesGenes">
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="loadSplicedLeaderFeaturesFromConfig"/> 
+    </step>
+
+
+
+<!-- TODO: Profiles
      <step name="extractSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSplicedLeaderAndPolyASitesGenes">
       <paramValue name="configFile">$$experimentDatasetDir$$/config.txt</paramValue>
       <paramValue name="outputUniqFile">$$samplesOutputDir$$/uniqProfile.out</paramValue>
@@ -29,22 +67,17 @@
       <depends name="extractSplicedLeaderAndPolyASitesGenes"/>
     </step>
 
-    <step name="loadExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$experimentDatasetDir$$/profile_config.txt</paramValue>
+
+
+    <step name="loadSplicedLeaderQuantsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$samplesOutputDir$$/insert_study_results_ss_config.txt</paramValue>
       <paramValue name="inputDir">$$samplesOutputDir$$</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
-      <depends name="makeMinPercentileProfile"/>
+      <depends name="TODO"/>
+      <dependsGlobal name="oboOntologies"/>
     </step>
-
-    <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
-      <paramValue name="configFile">$$experimentDatasetDir$$/profile_config.txt</paramValue>
-      <paramValue name="copyFromDir">$$samplesOutputDir$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
-      <depends name="loadExpressionProfile"/>
-    </step>
+-->
 
 
 </workflowGraph>
