@@ -32,8 +32,8 @@ sub run {
   # override will be ignored
   my $speciesOverride = $self->getConfig('speciesOverride',1);
   if ($speciesOverride) {
-    my ($speciesToOverride, $speciesThatOverrides) = split(/,\s*/, $speciesOverride)
-      || die "Config property speciesOverride has an invalid value: '$speciesOverride'.  It must be of the form 'speciesToOverride, speciesThatOverrides'\n";
+    my ($speciesToOverride, $speciesThatOverrides) = split(/,\s*/, $speciesOverride);
+      #|| die "Config property speciesOverride has an invalid value: '$speciesOverride'.  It must be of the form 'speciesToOverride, speciesThatOverrides'\n";
     $speciesName = $speciesThatOverrides if $speciesName eq $speciesToOverride;
   }
 
