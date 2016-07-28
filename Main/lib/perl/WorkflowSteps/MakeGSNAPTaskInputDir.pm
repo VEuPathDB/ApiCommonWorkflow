@@ -35,6 +35,18 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  my $useSpliceSiteDB = "false";
+  my $iitDump = `iit_dump $workflowDataDir/$gsnapDirectory/$spliceSitesDatabase`;
+
+  if($? == 0) {
+    $useSpliceSiteDB = "true";
+  }
+
+  if($? == 127) {
+    die "Command iit_dump not found";
+  }
+
+
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
@@ -65,6 +77,7 @@ isStrandSpecific=$strandSpecific
 quantifyJunctions=$createJunctionsFile
 topLevelGeneFootprintFile=$clusterWorkflowDataDir/$topLevelGeneFootprintFile
 topLevelFastaFaiFile=$clusterWorkflowDataDir/$topLevelFastaFile.fai
+hasKnownSpliceSites=$useSpliceSiteDB
 ";
 
     if(length($sraQueryString)>0){
