@@ -42,6 +42,12 @@ sub getSkipIfFile {
     return undef;
 }
 
+
+sub getNameForFilesSuffix {
+  return undef;
+}
+
+
 ##############################################################
 
 sub run {
@@ -67,14 +73,16 @@ sub run {
   my $isSpeciesLevel = $self->getIsSpeciesLevel();
   my $familyNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getFamilyNameForFiles();
   my $isFamilyLevel = $self->getIsFamilyLevel();
+
+  my $nameForFilesSuffix = $self->getNameForFilesSuffix();
   
   if ($isWebServiceFile) {
       $serviceName  = $self->getParamValue('serviceName');
-      $websiteFile = getWebServiceFileName($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $fileType, $dataName,$serviceName);
+      $websiteFile = getWebServiceFileName($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $fileType, $dataName,$serviceName, $nameForFilesSuffix);
   } else {
-      $websiteFile = getDownloadFileName($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $projectName, $projectVersion, $fileType, $dataName);
+      $websiteFile = getDownloadFileName($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $projectName, $projectVersion, $fileType, $dataName, $nameForFilesSuffix);
 
-      $descripFile = getDescripFileName($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $projectName, $projectVersion, $fileType, $dataName);
+      $descripFile = getDescripFileName($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $projectName, $projectVersion, $fileType, $dataName, $nameForFilesSuffix);
       $descripFileCmd =  "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
   }
 
@@ -106,29 +114,33 @@ sub run {
 
 # static method
 sub getWebServiceDir {
-    my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $serviceName) = @_;
+    my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $serviceName, $nameForFilesSuffix) = @_;
 
     my $nameForFiles = $organismNameForFiles;
     $nameForFiles = $speciesNameForFiles if $isSpeciesLevel;
     $nameForFiles = $familyNameForFiles if $isFamilyLevel;
+    $nameForFiles .= $nameForFilesSuffix if($nameForFilesSuffix);
+
     return "$websiteFilesDir/$relativeDir/$nameForFiles/$serviceName";
 }
 
 # static method
 sub getWebServiceFileName {
-    my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $fileType, $dataName, $serviceName) = @_;
+    my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $fileType, $dataName, $serviceName, $nameForFilesSuffix) = @_;
 
-    my $dir = getWebServiceDir($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $serviceName);
+    my $dir = getWebServiceDir($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $serviceName, $nameForFilesSuffix);
     return "$dir/$dataName.$fileType";
 }
 
 # static method
 sub getDownloadFileName {
-    my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $projectName, $projectVersion, $fileType, $dataName) = @_;
+    my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $projectName, $projectVersion, $fileType, $dataName, $nameForFilesSuffix) = @_;
 
     my $nameForFiles = $organismNameForFiles;
     $nameForFiles = $speciesNameForFiles if $isSpeciesLevel;
     $nameForFiles = $familyNameForFiles if $isFamilyLevel;
+    $nameForFiles .= $nameForFilesSuffix if($nameForFilesSuffix);
+
     my $outputDir = "$websiteFilesDir/$relativeDir/$nameForFiles/$fileType";
 
     # if this dir has a data/ dir to enable a data usage policy page, use it.
@@ -140,11 +152,13 @@ sub getDownloadFileName {
 
 # static method
 sub getDescripFileName {
-    my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $projectName, $projectVersion, $fileType, $dataName) = @_;
+    my ($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $projectName, $projectVersion, $fileType, $dataName, $nameForFilesSuffix) = @_;
 
     my $nameForFiles = $organismNameForFiles;
     $nameForFiles = $speciesNameForFiles if $isSpeciesLevel;
     $nameForFiles = $familyNameForFiles if $isFamilyLevel;
+    $nameForFiles .= $nameForFilesSuffix if($nameForFilesSuffix);
+
     my $outputDir = "$websiteFilesDir/$relativeDir/$nameForFiles/$fileType";
 
     # if this dir has a data/ dir to enable a data usage policy page 

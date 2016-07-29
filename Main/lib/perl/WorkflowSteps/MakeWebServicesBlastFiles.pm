@@ -5,6 +5,10 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
+sub getNameForFilesSuffix {
+  return undef;
+}
+
 sub run {
   my ($self, $test, $undo) = @_;
 
@@ -29,10 +33,12 @@ sub run {
   my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
   my $familyNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getFamilyNameForFiles();
 
-  my $inputDownloadFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getDownloadFileName($websiteFilesDir, $downloadSiteRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, $familyNameForFiles, $useFamilyName, $projectName, $projectVersion, 'fasta', $dataName);
+  my $nameForFilesSuffix = $self->getNameForFilesSuffix();
+
+  my $inputDownloadFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getDownloadFileName($websiteFilesDir, $downloadSiteRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, $familyNameForFiles, $useFamilyName, $projectName, $projectVersion, 'fasta', $dataName, $nameForFileSuffix);
 	
 
-  my $outputWebservicesFileDir = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceDir($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, $familyNameForFiles, $useFamilyName, 'blast');
+  my $outputWebservicesFileDir = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceDir($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, $speciesNameForFiles, $useSpeciesName, $familyNameForFiles, $useFamilyName, 'blast', undef, undef, $nameForFileSuffix);
 
   ## prefix organismNameForFile, speciesNameForFile or familyNameForFile to blast file, refs #19220
   my $outputDataName;
@@ -43,6 +49,9 @@ sub run {
   } else {
     $outputDataName = $organismNameForFiles.$dataName;
   }
+  
+  $outputDataName .= $nameForFilesSuffix if($nameForFileSuffix);
+
 
   my $blastPath = $self->getConfig("ncbiBlastPath");
   my $cmd = "$blastPath/makeblastdb -in $outputWebservicesFileDir/$outputDataName $args -out $outputWebservicesFileDir/$outputDataName ";
