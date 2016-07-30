@@ -50,7 +50,7 @@ sub run {
     $outputDataName = $organismNameForFiles.$dataName;
   }
   
-  $outputDataName .= $nameForFilesSuffix if($nameForFileSuffix);
+  $outputDataName .= $nameForFileSuffix if($nameForFileSuffix);
 
 
   my $blastPath = $self->getConfig("ncbiBlastPath");
