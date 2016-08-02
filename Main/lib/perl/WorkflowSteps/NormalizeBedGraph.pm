@@ -17,7 +17,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $ss = $strandSpecific ? "--strandSpecific" : "";
-  my $hpe = $hasPairedEnds ? "--hasPairedEnds" : "";
+  my $hpe = $hasPairedEnds ? "--isPairedEnd" : "";
 
   my $cmd= "normalizeCoverage.pl --inputDir $workflowDataDir/$inputDir --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile $ss $hpe";
 
