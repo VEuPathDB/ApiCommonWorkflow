@@ -7,6 +7,8 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeIsolatesReferenceDownloadFil
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
+use File::Basename;
+
 sub getIsFamilyLevel {
     return 1;
 }
@@ -64,6 +66,12 @@ sub getWebsiteFileCmd {
         and c.value = '1'
         and ot.name = 'isReferenceIsolate'
 EOF
+
+   # this will make the isolate reference directory 
+   my $dirname = dirname $downloadFileName;
+   unless(-d $dirname) {
+    system("mkdir -p $dirname");
+   }
 
   my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\" --verbose ";
   return $cmd;
