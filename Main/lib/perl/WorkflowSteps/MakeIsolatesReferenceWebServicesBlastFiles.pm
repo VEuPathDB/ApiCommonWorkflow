@@ -2,6 +2,8 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeIsolatesReferenceWebServices
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles);
 
+use ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles;
+
 sub getNameForFilesSuffix {
   return "Reference";
 }
