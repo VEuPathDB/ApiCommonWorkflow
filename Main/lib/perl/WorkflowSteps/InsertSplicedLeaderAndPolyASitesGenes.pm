@@ -12,7 +12,7 @@ sub run {
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
 
-  my $args = "--genomeExtDbRlsSpec $genomeExtDbRlsSpec --extDbRlsSpec $extDbRlsSpec";
+  my $args = "--genomeExtDbRlsSpec '$genomeExtDbRlsSpec' --extDbRlsSpec '$extDbRlsSpec'";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertSpliceSiteGenes", $args);
 }
