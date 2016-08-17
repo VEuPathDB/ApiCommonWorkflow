@@ -17,7 +17,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "extractSpliceSiteAndPolyAGenes.pl --analysisConfigFile $workflowDataDir/analysisConfig.xml --workingDir $workflowDataDir --type '$type' --extDbRlsSpec '$extDbRlsSpec' --ties $ties";
+  my $cmd = "extractSpliceSiteAndPolyAGenes.pl --analysisConfigFile $workflowDataDir/$analysisConfigFile --workingDir $workflowDataDir/$workingDir --type '$type' --extDbRlsSpec '$extDbRlsSpec' --ties $ties";
 
     if ($undo) {
       # undo here doesn't need to do anything
