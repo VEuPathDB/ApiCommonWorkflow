@@ -49,35 +49,24 @@
     </step>
 
 
-
-<!-- TODO: Profiles
      <step name="extractSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSplicedLeaderAndPolyASitesGenes">
-      <paramValue name="configFile">$$experimentDatasetDir$$/config.txt</paramValue>
-      <paramValue name="outputUniqFile">$$samplesOutputDir$$/uniqProfile.out</paramValue>
-      <paramValue name="outputNonUniqFile">$$samplesOutputDir$$/nonUniqProfile.out</paramValue>
-      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
+      <paramValue name="analysisConfigFile">$$experimentDatasetDir$$/analysisConfig.xml</paramValue>
+      <paramValue name="workingDir">$$dataDir$$/doTranscriptExpression</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="pctTies">min</paramValue>
       <paramValue name="type">$$type$$</paramValue>
+      <depends name="insertSplicedLeaderAndPolyASitesGenes"/>
     </step>
-
-    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
-      <paramValue name="inputFile">$$samplesOutputDir$$/uniqProfile.out</paramValue>
-      <paramValue name="outputFile">$$samplesOutputDir$$/minPercents.txt</paramValue>
-      <paramValue name="ties">min</paramValue>
-      <paramValue name="hasHeader">true</paramValue>
-      <depends name="extractSplicedLeaderAndPolyASitesGenes"/>
-    </step>
-
-
 
     <step name="loadSplicedLeaderQuantsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$samplesOutputDir$$/insert_study_results_ss_config.txt</paramValue>
-      <paramValue name="inputDir">$$samplesOutputDir$$</paramValue>
+      <paramValue name="configFile">$$dataDir$$/doTranscriptExpression/insert_study_results_ss_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/doTranscriptExpression</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
-      <depends name="TODO"/>
+      <depends name="extractSplicedLeaderAndPolyASitesGenes"/>
       <dependsGlobal name="oboOntologies"/>
     </step>
--->
+
 
 
 </workflowGraph>
