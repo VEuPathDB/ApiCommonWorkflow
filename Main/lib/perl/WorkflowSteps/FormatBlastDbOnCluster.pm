@@ -35,10 +35,10 @@ sub run {
   }
 
   if ($undo) {
-    $self->runCmdOnCluster($test,$undoCmd);
+    $self->runCmdOnClusterTransferServer($test,$undoCmd);
   } else {
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-    $self->runCmdOnCluster($test,$cmd);
+    $self->runCmdOnClusterTransferServer($test,$cmd);
   }
 }
 

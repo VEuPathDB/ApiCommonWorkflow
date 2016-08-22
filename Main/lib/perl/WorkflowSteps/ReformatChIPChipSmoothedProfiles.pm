@@ -13,15 +13,14 @@ sub run {
 
   my $outputFile =  $self->getParamValue('outputFile');
 
-  my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
-
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "reformatChIP-ChipSmoothedProfiles.pl  --inputFile $workflowDataDir/$inputFile --aefExtDbSpec '$extDbRlsSpec'> $workflowDataDir/$outputFile";
+  my $cmd = "reformatSmoothedProfiles.pl  --inputFile $workflowDataDir/$inputFile --outputFile $workflowDataDir/$outputFile";
 
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
   }else {
+      $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
       if ($test){
 	  $self->runCmd(0, "echo test > $workflowDataDir/$outputFile");
       }

@@ -1,0 +1,33 @@
+ <workflowGraph name="">
+  <param name="parentDataDir"/>
+  <param name="datasetLoaderXmlFileName"/>
+
+  <constant name="dataDir">$$parentDataDir$$/oboOntologies</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="oboOntology">
+    <prop name="name"/>
+    <subgraph name="OBO_Ontology_${name}_RSRC" xmlFile="loadDataset.xml" stepLoadTypes="runPlugin:insertOntologyTermsAndRelationships">
+      <paramValue name="datasetName">OBO_Ontology_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+
+  <datasetTemplate class="oboOntologyDummy">
+    <prop name="name"/>
+    <subgraph name="OBO_Ontology_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">OBO_Ontology_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+
+ </workflowGraph>

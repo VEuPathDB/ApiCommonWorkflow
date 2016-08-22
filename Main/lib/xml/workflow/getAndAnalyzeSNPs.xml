@@ -49,15 +49,35 @@
       <depends name="runMummer"/>
     </step>
 
-    <step name="insertSnpMummer" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="loadSnpFeature,plugin">
+
+    <step name="gffToTabSort" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SnpGffToTabSort">
       <paramValue name="inputFile">$$dataDir$$/SNPsMummer.gff</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="transcriptExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
-      <paramValue name="isNextGenSeq">false</paramValue>
-      <paramValue name="isCoverage">false</paramValue>
+      <paramValue name="outputFile">$$dataDir$$/SNPsMummer.tab</paramValue>
+      <paramValue name="gffVersion">2</paramValue>
+      <paramValue name="strain">donotcare</paramValue>
+      <paramValue name="merge3UndoneStrains">undo</paramValue>
+      <paramValue name="merge2UndoneStrains">undo</paramValue>
+      <paramValue name="merge1UndoneStrains">undo</paramValue>
       <depends name="snpMummerToGff"/>
+    </step>
+
+    <step name="processSequenceVariations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ProcessSequenceVariations">
+      <paramValue name="newSampleFile">$$dataDir$$/SNPsMummer.tab</paramValue>
+      <paramValue name="cacheFile">$$dataDir$$/SNPsMummer.cache</paramValue>
+      <paramValue name="undoneStrainsFile">$$dataDir$$/undo</paramValue>
+      <paramValue name="varscanConsDir"></paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="isLegacy">true</paramValue>
+      <depends name="gffToTabSort"/>
+    </step>
+
+    <step name="insertSnpMummer" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSnpMummer" stepLoadTypes="loadSnpFeature,plugin">
+      <paramValue name="variationFile">$$dataDir$$/SNPsMummer.cache</paramValue>
+      <paramValue name="snpFile">$$dataDir$$/snpFeature.dat</paramValue>
+      <paramValue name="snpExtDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <depends name="processSequenceVariations"/>
     </step>
 
     <step name="document-snps-mummer"

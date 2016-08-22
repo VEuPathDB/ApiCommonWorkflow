@@ -13,6 +13,9 @@ sub run {
   my $idType = $self->getParamValue('idType');
   my $outputFile = $self->getParamValue('outputFile');
 
+  # HACK: see if a filtered version of the inputFile exists, and use it if so
+  $inputFile = "${inputFile}.filtered" if -e "${inputFile}.filtered";
+
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $cmd = "makeIdFileFromBlastSimOutput --$idType --subject --blastSimFile $workflowDataDir/$inputFile --outFile $workflowDataDir/$outputFile";
 

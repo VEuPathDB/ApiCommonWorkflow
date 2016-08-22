@@ -12,7 +12,6 @@
     <param name="genomeExtDbRlsSpec"/>
     <param name="snpExtDbRlsSpec"/>
     <param name="relativeWebServicesDir"/>
-    <param name="sampleMetaDataFile"/>
     <param name="sraQueryString"/>
     <param name="snpPercentCutoff"/>
     <param name="varscanConsDir"/>
@@ -28,7 +27,7 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
@@ -101,6 +100,8 @@
       <depends name="mapSnpsOnCluster"/>
     </step>
 
+<!--
+    TODO:  Need to reevaluate how to load insdels.  (Cannot use the old SNP plugin and does not work w/ new SNP Representation
     <step name="insertInsertions" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertIndelSeqVar" stepLoadTypes="plugin,loadSnpFeature">
       <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.indels.gff</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -111,7 +112,7 @@
       <paramValue name="isCoverage">false</paramValue>
       <depends name="mapSnpsOnCluster"/>
     </step>
-
+-->
     <step name="copyBAMFileToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBAMFileToWebServices">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -130,6 +131,22 @@
       <paramValue name="snpStrain">$$snpStrain$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <depends name="mapSnpsOnCluster"/>
+    </step>
+
+
+    <step name="addProtocolAppNode" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddProtocolAppNodeToStudy" stepLoadTypes="plugin">
+      <paramValue name="experimentName">$$organismAbbrev$$ $$experimentName$$ (NGS SNP)</paramValue>
+      <paramValue name="extDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <paramValue name="name">$$snpStrain$$ (Sequence Variation)</paramValue>
+    </step>
+
+    <step name="addDNASeqMetrics" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDNASeqMetrics" stepLoadTypes="plugin">
+        <paramValue name="analysisDir">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult</paramValue>
+        <paramValue name="studyName">$$organismAbbrev$$ $$experimentName$$ (NGS SNP)</paramValue>
+        <paramValue name="sampleName">$$snpStrain$$</paramValue>
+        <paramValue name="sampleExtDbSpec">$$snpExtDbRlsSpec$$</paramValue>
+        <depends name="addProtocolAppNode"/>
+        <depends name="mapSnpsOnCluster"/>
     </step>
 
 </workflowGraph>

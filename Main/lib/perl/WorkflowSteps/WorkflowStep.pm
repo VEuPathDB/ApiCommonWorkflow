@@ -213,11 +213,11 @@ sub runPlugin {
 "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Since this plugin step FAILED, please CLEAN UP THE DATABASE by calling:
 
-  ga $undoPlugin --algInvocationId PLUGIN_ALG_INV_ID_HERE --workflowContext --commit
+  ga $undoPlugin --workflowContext --commit --algInvocationId PLUGIN_ALG_INV_ID_HERE
 
 or (for the ISF plugin):
  
-  ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapfile YOUR_ISF_MAP_FILE --algInvocationId PLUGIN_ALG_INV_ID_HERE --workflowContext --commit
+  ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapfile YOUR_ISF_MAP_FILE --workflowContext --commit --algInvocationId PLUGIN_ALG_INV_ID_HERE
 
 
 Find the plugin's row_algorithm_invocation_id by looking above in this step log

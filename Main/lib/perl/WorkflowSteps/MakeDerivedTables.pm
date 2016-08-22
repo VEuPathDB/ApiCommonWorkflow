@@ -10,13 +10,12 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
+
   my $tables = $self->getParamValue('tables');
 
   my $gusHome = $self->getSharedConfig('gusHome');
 
   my $instance = $self->getGusInstanceName();
-
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
   my $apidbTuningPassword = $self->getConfig('apidbTuningPassword');
 
@@ -40,10 +39,13 @@ sub run {
   print F $xmlConfigFileString;
   close F;
 
-  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
+ my $cmd = "tuningManager -instance '$instance' -propFile $stepDir/$xmlConfigFileName -doUpdate -notifyEmail none -configFile ${gusHome}/lib/xml/tuningManager/tuningManager.xml  " ;
+  
+ if ($organismAbbrev){
+   $cmd .= $self->prefixAndFilterValueCommandString($organismAbbrev, $test);
+  }
 
-  my $cmd = "tuningManager -prefix '$tuningTablePrefix' -instance '$instance' -propFile $stepDir/$xmlConfigFileName -doUpdate -notifyEmail none -tables $tables -configFile ${gusHome}/lib/xml/tuningManager/tuningManager.xml -filterValue $taxonId ";
-
+ $cmd .= "-tables $tables  " if ($tables);
 
   if ($undo) {
      $self->runCmd(0, "echo Doing nothing for \"undo\" Tuning Manager.\n");  
@@ -53,4 +55,16 @@ sub run {
 }
 
 
+sub prefixAndFilterValueCommandString {
+  my ($self, $organismAbbrev, $test) = @_;
+  
+  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+    
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
+
+   return "-filterValue $taxonId -prefix '$tuningTablePrefix'  " ;
+}
+
+
+1;
 

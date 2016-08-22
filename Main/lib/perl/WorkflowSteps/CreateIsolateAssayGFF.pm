@@ -13,9 +13,9 @@ sub run {
 
   my $inputFile = $self->getParamValue("inputFile");
   my $outputFile = $self->getParamValue("outputFile");
-  my $isolateType = $self->getParamValue("isolateType");
+  my $platform = $self->getParamValue("platform");
 
-  my $args = "--inputFile '$workflowDataDir/$inputFile' --outputFile '$workflowDataDir/$outputFile' --isolateType '$isolateType'";
+  my $args = "--inputFile '$workflowDataDir/$inputFile' --outputFile '$workflowDataDir/$outputFile' --platform '$platform'";
 
   my $cmd = "convertIsolateAssay2GFF $args";
 

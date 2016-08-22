@@ -1,0 +1,38 @@
+ <workflowGraph name="metadata">
+  <param name="parentDataDir"/>
+  <param name="datasetLoaderXmlFileName"/>
+  <param name="projectName"/>
+  
+  <constant name="dataDir">$$parentDataDir$$/metadata</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="dumpMissingGenbankIsolateMappers" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">DumpMissingGenbankIsolateMappers_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+	 <depends name="makeDataDir"/>
+  </subgraph>
+
+  <!-- (Optional TODO) Mapping script bioportal websercie and parse json -->
+
+  <step name="manuallyImproveIsolatesVocabulary" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+    <depends name="dumpMissingGenbankIsolateMappers"/>
+  </step>
+
+    <subgraph name="ontologySynonyms" xmlFile="generated/$$projectName$$/ontologySynonyms.xml">
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="manuallyImproveIsolatesVocabulary"/>
+    </subgraph>
+
+  <subgraph name="ISA" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">ISA_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+  </subgraph>
+
+</workflowGraph>

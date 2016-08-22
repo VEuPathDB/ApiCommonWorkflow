@@ -4,48 +4,69 @@
     <param name="experimentName"/>
     <param name="parentDataDir"/>
     <param name="organismDatasetLoaderXmlFile"/>
-    <param name="genomicSeqsFile"/>
-    <param name="genomeExtDbRlsSpec"/>
     <param name="experimentDatasetName"/>
     <param name="experimentDatasetVersion"/>
     <param name="relativeDownloadSiteDir"/>
     <param name="type"/>
+    <param name="genomeExtDbRlsSpec"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
     <constant name="experimentDatasetDir">$$parentDataDir$$/$$experimentName$$/$$experimentDatasetName$$/final</constant>
 
-     <step name="extractSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSplicedLeaderAndPolyASitesGenes">
-      <paramValue name="configFile">$$experimentDatasetDir$$/config.txt</paramValue>
-      <paramValue name="outputUniqFile">$$samplesOutputDir$$/uniqProfile.out</paramValue>
-      <paramValue name="outputNonUniqFile">$$samplesOutputDir$$/nonUniqProfile.out</paramValue>
-      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
-      <paramValue name="type">$$type$$</paramValue>
-    </step>
 
-    <step name="makeMinPercentileProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePercentileProfile">
-      <paramValue name="inputFile">$$samplesOutputDir$$/uniqProfile.out</paramValue>
-      <paramValue name="outputFile">$$samplesOutputDir$$/minPercents.txt</paramValue>
-      <paramValue name="ties">min</paramValue>
-      <paramValue name="hasHeader">true</paramValue>
-      <depends name="extractSplicedLeaderAndPolyASitesGenes"/>
-    </step>
-
-    <step name="insertExpressionProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExpressionProfiles" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$experimentDatasetDir$$/profile_config.txt</paramValue>
+    <!-- This step makes 2 config files for the loader steps below -->
+    <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
+      <paramValue name="analysisConfigFile">$$experimentDatasetDir$$/analysisConfig.xml</paramValue>
       <paramValue name="inputDir">$$samplesOutputDir$$</paramValue>
-      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
-      <depends name="makeMinPercentileProfile"/>
+      <paramValue name="outputDir">$$dataDir$$/doTranscriptExpression</paramValue>
+      <!-- The ancillary file will mostly be unused;  Only here so we can fiddle with the profiles (like scaliing)   -->
+      <paramValue name="geneProbeMappingTabFile"></paramValue>
+      <paramValue name="geneProbeMappingVendorFile"></paramValue>
+      <paramValue name="platformDirectory">$$experimentDatasetDir$$</paramValue>
+      <paramValue name="expectCdfFile">false</paramValue>
+      <paramValue name="expectNdfFile">false</paramValue>
+      <paramValue name="passPlatformMappingFile">false</paramValue>
+      <paramValue name="technologyType">SpliceSites</paramValue>
     </step>
 
-    <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
-      <paramValue name="configFile">$$experimentDatasetDir$$/profile_config.txt</paramValue>
-      <paramValue name="copyFromDir">$$samplesOutputDir$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
-      <depends name="insertExpressionProfile"/>
+
+    <step name="loadSplicedLeaderFeaturesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/doTranscriptExpression/insert_study_results_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/doTranscriptExpression</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
+      <depends name="doTranscriptExpression"/>
+      <dependsGlobal name="oboOntologies"/>
     </step>
+
+
+
+    <step name="insertSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSplicedLeaderAndPolyASitesGenes">
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="loadSplicedLeaderFeaturesFromConfig"/> 
+    </step>
+
+
+     <step name="extractSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSplicedLeaderAndPolyASitesGenes">
+      <paramValue name="analysisConfigFile">$$experimentDatasetDir$$/analysisConfig.xml</paramValue>
+      <paramValue name="workingDir">$$dataDir$$/doTranscriptExpression</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="pctTies">min</paramValue>
+      <paramValue name="type">$$type$$</paramValue>
+      <depends name="insertSplicedLeaderAndPolyASitesGenes"/>
+    </step>
+
+    <step name="loadSplicedLeaderQuantsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/doTranscriptExpression/insert_study_results_ss_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/doTranscriptExpression</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
+      <depends name="extractSplicedLeaderAndPolyASitesGenes"/>
+      <dependsGlobal name="oboOntologies"/>
+    </step>
+
 
 
 </workflowGraph>

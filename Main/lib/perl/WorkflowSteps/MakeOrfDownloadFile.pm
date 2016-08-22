@@ -28,16 +28,22 @@ sub getWebsiteFileCmd {
         ||'('||
        decode(fl.is_reversed, 1, '-', '+')
         ||') | length='||
-       taas.length || ' | sequence_SO=' || soseq.term_name as defline,
+       taas.length || ' | sequence_SO=' || soseq.name as defline,
        taas.sequence
        FROM dots.miscellaneous m,
             dots.translatedaafeature taaf,
             dots.translatedaasequence taas,
             sres.taxonname tn,
-            sres.sequenceontology so,
-            sres.sequenceontology soseq,
+            sres.ontologyTerm so,
+            sres.ontologyTerm soseq,
             ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
-            dots.nasequence enas
+            ( SELECT na_sequence_id, taxon_id, sequence_ontology_id, chromosome_order_num 
+              FROM  dots.virtualsequence
+              UNION
+              SELECT na_sequence_id, taxon_id, sequence_ontology_id, chromosome_order_num 
+              FROM  dots.externalnasequence
+            ) enas 
+            --dots.externalnasequence enas
       WHERE m.na_feature_id = taaf.na_feature_id
         AND taaf.aa_sequence_id = taas.aa_sequence_id
         AND m.na_feature_id = fl.na_feature_id
@@ -45,17 +51,18 @@ sub getWebsiteFileCmd {
         AND enas.na_sequence_id = fl.na_sequence_id 
         AND enas.taxon_id = $taxonId
         AND enas.taxon_id = tn.taxon_id
-        AND enas.sequence_ontology_id = soseq.sequence_ontology_id
+        AND enas.sequence_ontology_id = soseq.ontology_term_id
         AND tn.name_class = 'scientific name'
-        AND m.sequence_ontology_id = so.sequence_ontology_id
-        AND so.term_name = 'ORF'
+        AND m.sequence_ontology_id = so.ontology_term_id
+        AND so.name = 'ORF'
         AND taas.length >= $length
+     ORDER BY enas.chromosome_order_num, taaf.source_id, fl.start_min
 EOF
 
     my $cmd = <<"EOF";
       gusExtractSequences --outputFile $downloadFileName \\
       --idSQL \"$sql\" \\
-      --verbose
+      --verbose 
 EOF
     return $cmd;
 }

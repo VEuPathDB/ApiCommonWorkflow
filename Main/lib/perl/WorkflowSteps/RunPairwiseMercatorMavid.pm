@@ -150,15 +150,11 @@ sub findOrganismAbbrevs {
     return keys(%gffHash);
 }
 
-## based on the SO termName of the sequence in the geneattributes table, skip mercator if it is only mito- or api-
 sub ifSkipOnSoTermName {
   my ($self, $organismAbbrev, $test) = @_;
 
   my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
-  my $sql = "select distinct s.term_name 
-                  from apidbtuning.${tmPrefix}sequenceattributes sa, apidbtuning.${tmPrefix}geneattributes ga, SRES.sequenceontology s
-                  where sa.na_sequence_id = ga.na_sequence_id and sa.so_id=s.so_id and sa.na_sequence_id in
-                  (select distinct na_sequence_id from apidbtuning.${tmPrefix}geneattributes) ";
+  my $sql = "select distinct sa.sequence_type, organism from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o where o.taxon_id = sa.taxon_id and o.is_annotated_genome = 1";
   my $cmd = "getValueFromTable --idSQL \"$sql\"";
 
   my $result = $self->runCmd($test, $cmd);
@@ -182,9 +178,9 @@ sub getIsDraftHash {
 	my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
 	my $sql = "select count(*)
-                       from apidbtuning.${tmPrefix}sequenceattributes sa, apidb.organism o, sres.sequenceontology so
-                       where so.term_name IN ('chromosome', 'supercontig')
-                       and sa.so_id = so.so_id
+                       from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o, sres.ontologyterm ot 
+                       where ot.name IN ('chromosome', 'supercontig')
+                       and sa.so_id = ot.source_id
                        and sa.taxon_id = o.taxon_id
                        and o.abbrev = '$organismAbbrev'";
 	my $cmd = "getValueFromTable --idSQL \"$sql\"";

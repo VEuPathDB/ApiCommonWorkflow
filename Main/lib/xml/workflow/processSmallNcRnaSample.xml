@@ -2,10 +2,7 @@
     <param name="projectName"/>
     <param name="experimentDataDir"/>
     <param name="readsFile"/>
-    <param name="snpExtDbRlsSpec"/>
     <param name="sampleName"/>
-    <param name="genomeExtDbRlsSpec"/>
-    <param name="genomicSeqsFile"/>
     <param name="indexDir"/>
     <param name="organismAbbrev"/>
     <param name="experimentName"/>
@@ -18,6 +15,7 @@
     <param name="sequenceFormat"/>
     <param name="tRNArRNASeqsDir"/>
     <param name="relativeWebServicesDir"/>
+    <param name="topLevelSeqSizeFile"/>
    
     <constant name="sampleAnalysisDir">$$experimentDataDir$$/$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_smallNcRnaSample_RSRC</constant> 
     <constant name="lengthFilterDir">$$sampleAnalysisDir$$/lengthFilter</constant>
@@ -32,7 +30,7 @@
         <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
     </subgraph>
     
-    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$</paramValue>
         <depends name="loadSmallNcRnaSample"/>
     </step>
@@ -52,7 +50,7 @@
         <depends name="mirrorSampleAnalysisDirToCluster"/>
     </step>
 
-    <step name="mirrorFilteredReadsDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <step name="mirrorFilteredReadsDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$filteredReadsDir$$</paramValue>
         <depends name="makeFilteredReadsDir"/>
     </step>
@@ -96,23 +94,20 @@
     </subgraph>
 
 <!-- Bowtie here should run filtered reads against genome -->
-<!-- add param for additional bowtie params -->
     <subgraph name="runBowtie" xmlFile="runBowtie.xml">
         <paramValue name="projectName">$$projectName$$</paramValue>
         <paramValue name="experimentDataDir">$$experimentDataDir$$</paramValue>
         <paramValue name="readsFile">$$filteredReadsDir$$/$$sampleName$$.fastq</paramValue>
         <paramValue name="pairedReadsFile">$$filteredReadsDir$$/$$sampleName$$.fastq.paired</paramValue> 
-        <paramValue name="snpExtDbRlsSpec">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_smallNcRnaSample_RSRC|dontcare</paramValue>
         <paramValue name="sampleName">$$sampleName$$</paramValue>
-        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-        <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
         <paramValue name="indexDir">$$indexDir$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-        <paramValue name="experimentName">$$experimentName$$</paramValue>
         <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
         <paramValue name="isColorspace">$$isColorspace$$</paramValue>
         <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
         <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+        <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+        <paramValue name="writeBedFile">false</paramValue>
         <depends name="mirrorSampleFiles"/>
     </subgraph>
 
@@ -121,13 +116,11 @@
         <depends name="runBowtie"/>
     </step>
     
-    <!-- Make .bam.bai index-->
     <step name="makeBamIndex" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBamIndex">
         <paramValue name="bamFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam</paramValue>
         <depends name="runBowtie"/>
     </step>
 
-    <!-- Copy bam file and index to staging -->
     <step name="copyBamFileToStaging" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBAMFileToWebServices">
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="projectName">$$projectName$$</paramValue>

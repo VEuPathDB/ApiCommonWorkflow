@@ -13,15 +13,19 @@ sub run {
   my $readsFile = $self->getParamValue("readsFile");
   my $pairedReadsFile = $self->getParamValue("pairedReadsFile");
   my $hasPairedReads = $self->getBooleanParamValue("hasPairedReads");
-  my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
+#  my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
   my $indexDir = $self->getParamValue("indexDir");
   my $sampleName = $self->getParamValue("sampleName");
-  my $clusterServer = $self->getSharedConfig('clusterServer');
+#  my $clusterServer = $self->getSharedConfig('clusterServer');
   my $extraBowtieParams = $self->getParamValue("extraBowtieParams");
+  $extraBowtieParams = 'none' unless($extraBowtieParams);
+
+  my $topLevelSeqSizeFile = $self->getParamValue("topLevelSeqSizeFile");
 
   # expects string true/false 
   my $isColorspace = $self->getParamValue("isColorspace");
   my $removePCRDuplicates = $self->getParamValue("removePCRDuplicates");
+  my $writeBedFile = $self->getParamValue("writeBedFile");
 
   my $taskSize = $self->getConfig("taskSize");
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
@@ -48,6 +52,8 @@ bowtieIndex=$clusterWorkflowDataDir/$indexDir
 sampleName=$sampleName
 isColorspace=$isColorspace
 removePCRDuplicates=$removePCRDuplicates
+writeBedFile=$writeBedFile
+topLevelSeqSizeFile=$clusterWorkflowDataDir/$topLevelSeqSizeFile
 extraBowtieParams=$extraBowtieParams
 ";
 	  $taskPropFileContent .= "mateA=$clusterWorkflowDataDir/$readsFile\n";
@@ -57,8 +63,6 @@ extraBowtieParams=$extraBowtieParams
 	      $taskPropFileContent .= "mateB=none\n";
 	  }
       
-
-
 
       print F "$taskPropFileContent\n";
        close(F);

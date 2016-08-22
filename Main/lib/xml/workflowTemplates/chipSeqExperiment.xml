@@ -1,0 +1,48 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="parentDataDir"/>
+    <param name="organismDatasetLoaderXmlFile"/>
+    <param name="relativeWebServicesDir"/>
+    <param name="chromSizesFile"/>
+
+
+  <constant name="dataDir">$$parentDataDir$$/chipSeq</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
+  
+    <datasetTemplate class="chipSeqExperiment">
+        <prop name="projectName"/>
+        <prop name="organismAbbrev"/>
+        <prop name="name"/>
+        <prop name="version"/>
+        <prop name="hasPairedEnds"/>
+        <prop name="extraBowtieParams"/>
+	<prop name="experimentType"/>
+
+        <subgraph name="${organismAbbrev}_chipSeqExperiment_${name}_RSRC" xmlFile="processChipSeqExperiment.xml">
+            <paramValue name="projectName">$$projectName$$</paramValue>
+            <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+            <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+            <paramValue name="experimentName">${name}</paramValue>
+            <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
+            <paramValue name="extraBowtieParams">${extraBowtieParams}</paramValue>
+	    <paramValue name="experimentType">${experimentType}</paramValue>
+            <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_chipSeq_RSRC</paramValue>
+            <paramValue name="experimentDatasetVersion">${version}</paramValue>
+            <paramValue name="topLevelSeqSizeFile">$$chromSizesFile$$</paramValue>
+            <depends name="mirrorToCluster"/>
+        </subgraph>
+    </datasetTemplate>
+</workflowGraph>

@@ -39,11 +39,13 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $plugin = "GUS::Community::Plugin::LoadBLATAlignments";
+  my $loadedTable = "DoTS.BlatAlignment";
   my $dnaArgs = "--max_query_gap 5 --min_pct_id 95 --max_end_mismatch 10 --end_gap_factor 10 --min_gap_pct 90  --ok_internal_gap 15 --ok_end_gap 50 --min_query_pct 10";
 
   if ($queryTable =~ /aasequence/i) {
       $dnaArgs = "";
-      $plugin = "ApiCommonData::Load::Plugin::LoadBLATProteinAlignments"
+      $plugin = "ApiCommonData::Load::Plugin::LoadBLATProteinAlignments";
+      $loadedTable = "ApiDB.BlatProteinAlignment";
   }
       
   my $args = "--blat_files '$workflowDataDir/$blatFile' --query_file $workflowDataDir/$queryFile --action '$action' --queryRegex '$queryRegex' --query_table_id $queryTableId --query_taxon_id $queryTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId $dnaArgs";
@@ -62,11 +64,13 @@ sub run {
   } else {
       $self->log("queryFile '$workflowDataDir/$queryFile' is empty.  Doing nothing.");      
   }
-  #check the number of rows loaded. We will put a threshold for it, say if less than 1000 rows, the step will fail.
+  #check the number of rows loaded. We will put a threshold for it, say if less than 1000 rows, the step will fail. Can't do this, can't predict the number of ESTs
   if ($action eq 'load' && !$test && !$undo){
        my $algInvIds = $self->getAlgInvIds();
-       my $loaded = $self->runSqlFetchOneRow(0,"select count(*) from ApiDB.BlatProteinAlignment where row_alg_invocation_id in ($algInvIds)");
-       #die "Less than 1000 rows loaded" if ($loaded < 1000);     
+       my $sql = "select count(*) from $loadedTable where row_alg_invocation_id in ($algInvIds)";
+       my $cmd = "getValueFromTable --idSQL \"$sql\"";
+       my $loaded = $self->runCmd($test, $cmd);
+       die "No rows loaded." if ($loaded == 0);     
   }
 }
 

@@ -14,6 +14,9 @@ sub run {
   my $idType = $self->getParamValue('idType');
   my $outputFile = $self->getParamValue('outputFile');
 
+  # HACK: see if a filtered version of the inputFile exists, and use it if so
+  $inputFile = "${inputFile}.filtered" if -e "${inputFile}.filtered";
+
   $self->error("Parameter inputFileType=$inputFileType is invalid.  It must be either blat or blast") unless $inputFileType eq 'blat' || $inputFileType eq 'blastSim';
 
   my $workflowDataDir = $self->getWorkflowDataDir();

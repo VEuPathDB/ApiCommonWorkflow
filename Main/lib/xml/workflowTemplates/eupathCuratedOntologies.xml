@@ -1,0 +1,25 @@
+ <workflowGraph name="">
+  <param name="parentDataDir"/>
+  <param name="datasetLoaderXmlFileName"/>
+
+  <constant name="dataDir">$$parentDataDir$$/eupathCuratedOntologies</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="ontologyFromTabDelim">
+    <prop name="name"/>
+    <prop name="version"/>
+
+    <subgraph name="Ontology_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">Ontology_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+
+
+ </workflowGraph>

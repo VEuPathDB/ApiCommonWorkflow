@@ -12,6 +12,8 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $skipIfFile = $self->getParamValue('skipIfFile');
 
+  my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
+
   my $speciesTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
 
   my $taxonIdList = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonIdList($speciesTaxonId);
@@ -20,11 +22,12 @@ sub run {
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$outputFile");
+    $self->runCmd(0, "rm -rf $workflowDataDir/$skipIfFile");
   } else {
     if ($test) {
       $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
     }
-    $self->runCmd($test,"extractEpitopesTabFile $workflowDataDir/$outputFile $taxonIdList");
+    $self->runCmd($test,"extractEpitopesTabFile $workflowDataDir/$outputFile $taxonIdList $soExtDbName");
     if (!$test && (-s "$workflowDataDir/$outputFile" == 0)) {
 	$self->runCmd(0, "touch $workflowDataDir/$skipIfFile");
     }

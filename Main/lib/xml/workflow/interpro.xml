@@ -18,12 +18,12 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeClusterTaskInputDir"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cluster">
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="interproCluster" stepFailTypes="interproCluster">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="numNodes">20</paramValue>
       <paramValue name="maxMemoryGigs">4</paramValue>
@@ -31,19 +31,21 @@
       <depends name="mirrorToCluster"/>
     </step>
 
-    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult/</paramValue>
       <paramValue name="outputFiles"></paramValue>
+      <paramValue name="deleteAfterCopy">true</paramValue>
       <depends name="runClusterTask"/>
     </step>
 
-    <!--TODO: a missing dependency between GO terms and interpro, refs #16009-->
     <step name="insert" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertInterpro" stepLoadTypes="plugin" includeIf="$$insertVersion$$ == 1">
       <paramValue name="inputDir">$$dataDir$$/master/mainresult/</paramValue>
       <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
       <paramValue name="configFile">global/InterproscanData_RSRC/iprscan/data/insertInterpro-config.xml</paramValue>
       <depends name="mirrorFromCluster"/>
+      <dependsGlobal name="GO_RSRC"/>
+      <dependsGlobal name="GO_evidence_codes_RSRC"/>
     </step>
 
     <step name="insert2" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertInterpro_2" stepLoadTypes="plugin" includeIf="$$insertVersion$$ == 2">

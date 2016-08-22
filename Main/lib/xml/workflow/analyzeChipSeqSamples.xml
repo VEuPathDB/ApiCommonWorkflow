@@ -1,0 +1,62 @@
+<workflowGraph name="">
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="experimentDataDir"/>
+  <param name="sampleName"/>
+  <param name="hasPairedEnds"/>
+  <param name="readsFile"/>
+  <param name="sampleName"/>
+  <param name="indexDir"/>
+  <param name="experimentName"/>
+  <param name="extraBowtieParams"/>
+  <param name="topLevelSeqSizeFile"/>
+  <param name="experimentType"/>
+  <param name="inputName"/>
+  <param name="fragmentLength"/>
+
+<!-- not used  but maybe when we call peaks we want? -->
+  <param name="outputDir"/>
+
+    <constant name="sampleAnalysisDir">$$experimentDataDir$$/$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_chipSeqSample_RSRC</constant> 
+    <constant name="clusterResultsDir">$$experimentDataDir$$/analyze_$$sampleName$$</constant>
+
+    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+        <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$</paramValue>
+    </step>
+
+    <subgraph name="runBowtie" xmlFile="runBowtie.xml">
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="experimentDataDir">$$experimentDataDir$$</paramValue>
+        <paramValue name="readsFile">$$readsFile$$</paramValue>
+        <paramValue name="pairedReadsFile">$$readsFile$$.paired</paramValue> 
+        <paramValue name="sampleName">$$sampleName$$</paramValue>
+        <paramValue name="indexDir">$$indexDir$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+        <paramValue name="isColorspace">false</paramValue>
+        <paramValue name="removePCRDuplicates">false</paramValue>
+        <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+        <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+	<paramValue name="writeBedFile">false</paramValue>
+        <depends name="mirrorSampleAnalysisDirToCluster"/>
+    </subgraph>
+
+    <step name="generateChipSeqCvgPlots" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateChipSeqCvgPlots">
+        <paramValue name="clusterResultsDir">$$clusterResultsDir$$</paramValue>
+        <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+        <paramValue name="experimentType">$$experimentType$$</paramValue>
+	<paramValue name="sampleName">$$sampleName$$</paramValue>
+	<paramValue name="inputName">$$inputName$$</paramValue>
+	<paramValue name="fragmentLength">$$fragmentLength$$</paramValue>
+	<depends name="runBowtie"/>
+    </step>
+
+    <step name="writeSamplePropFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteSamplePropFile">
+        <paramValue name="clusterResultsDir">$$clusterResultsDir$$</paramValue>
+	<paramValue name="sampleName">$$sampleName$$</paramValue>
+	<paramValue name="inputName">$$inputName$$</paramValue>
+	<paramValue name="fragmentLength">$$fragmentLength$$</paramValue>
+	<depends name="runBowtie"/>
+    </step>
+
+</workflowGraph>

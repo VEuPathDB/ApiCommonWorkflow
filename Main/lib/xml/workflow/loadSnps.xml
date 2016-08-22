@@ -22,6 +22,21 @@
       <depends name="makeDataDir"/>
     </step>
 
+
+    <!-- Need protocolappnode for the reference -->
+    <step name="addStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
+      <paramValue name="experimentName">$$organismAbbrev$$ (NGS SNP)</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
+       <depends name="insertExtDbRls"/>
+    </step>
+    <step name="addProtocolAppNode" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddProtocolAppNodeToStudy" stepLoadTypes="plugin">
+      <paramValue name="experimentName">$$organismAbbrev$$ (NGS SNP)</paramValue>
+      <paramValue name="extDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
+      <paramValue name="name">$$organismAbbrev$$ (Sequence Variation)</paramValue>
+       <depends name="addStudy"/>
+    </step>
+
+
     <step name="processSequenceVariations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ProcessSequenceVariations">
       <paramValue name="newSampleFile">$$snpsDataDir$$/NewSamples.tab</paramValue>
       <paramValue name="cacheFile">$$snpsDataDir$$/SeqvarCache.dat</paramValue>
@@ -30,8 +45,10 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="snpExtDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="isLegacy">false</paramValue>
       <depends name="makeControlFiles"/>
       <depends name="insertExtDbRls"/>
+      <depends name="addProtocolAppNode"/>
     </step>
 
     <step name="makeHSS80FileInWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHighSpeedSearchFiles" stepLoadTypes="hssWS">
@@ -40,6 +57,7 @@
       <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
       <paramValue name="readFrequency">80</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="hsssDir">highSpeedSnpSearch</paramValue>
       <depends name="processSequenceVariations"/>
     </step>
 
@@ -49,6 +67,7 @@
       <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
       <paramValue name="readFrequency">60</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="hsssDir">highSpeedSnpSearch</paramValue>
       <depends name="processSequenceVariations"/>
     </step>
 
@@ -59,6 +78,7 @@
       <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
       <paramValue name="readFrequency">40</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="hsssDir">highSpeedSnpSearch</paramValue>
       <depends name="processSequenceVariations"/>
     </step>
 
@@ -69,6 +89,7 @@
       <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
       <paramValue name="readFrequency">20</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="hsssDir">highSpeedSnpSearch</paramValue>
       <depends name="processSequenceVariations"/>
     </step>
 

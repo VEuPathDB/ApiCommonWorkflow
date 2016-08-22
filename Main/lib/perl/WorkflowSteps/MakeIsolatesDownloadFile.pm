@@ -25,38 +25,35 @@ sub getWebsiteFileCmd {
   my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
   my $taxonId = $organismInfo->getTaxonId();
 
+  my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
+
   my $sql = <<"EOF";
-        SELECT
-        enas.source_id
+       select         enas.source_id
         ||' | organism='|| 
         replace(tn.name, ' ', '_')
-        ||' | description='||
-        decode (enas.description,null,'Not Available',enas.description)
         ||' | length='||
         enas.length
         as defline,
         enas.sequence
-        From dots.ExternalNASequence enas,
-             SRES.sequenceontology so,
-             sres.taxonname tn,
-             sres.externaldatabase ed,
-             sres.externaldatabaserelease edr,
-             apidb.datasource ds,
-             dots.isolatesource i
-        Where enas.taxon_id = tn.taxon_id
-            AND tn.name_class = 'scientific name'
-            AND enas.external_database_release_id = edr.external_database_release_id
-            AND edr.external_database_id = ed.external_database_id
-            AND ed.name = ds.name
-            AND ds.subtype = 'sequencing_typed'
-            AND enas.na_sequence_id = i.na_sequence_id
-            AND so.sequence_ontology_id = enas.sequence_ontology_id
-			AND tn.taxon_id in (select taxon_id from SRes.Taxon start with ncbi_tax_id in
-				(select family_ncbi_taxon_ids from apidb.organism where abbrev = '$organismAbbrev')
-				connect by prior taxon_id = parent_id)
+        from apidb.datasource ds
+           , sres.externaldatabase d
+           , sres.externaldatabaserelease r
+           , dots.externalnasequence enas
+           , apidb.organism o
+           , sres.taxonname tn
+        where ds.type = 'isolates' 
+        and ds.subtype = 'sequencing_typed'
+        and ds.name = d.name
+        and ds.version = r.version
+        and d.external_database_id = r.external_database_id
+        and r.external_database_release_id = enas.external_database_release_id
+        and ds.taxon_id = o.taxon_id
+        and o.abbrev = '$organismAbbrev'
+        and enas.taxon_id = tn.taxon_id
+        and tn.name_class = 'scientific name'
 EOF
 
-  my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\"";
+  my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\" --verbose ";
   return $cmd;
 }
 

@@ -3,8 +3,6 @@
     <param name="organismAbbrev"/>
     <param name="parentDataDir"/>
     <param name="organismDatasetLoaderXmlFile"/>
-    <param name="genomicSeqsDir"/>
-    <param name="genomeExtDbRlsSpec"/>
     <param name="relativeWebServicesDir"/>
     <param name="experimentName"/>
     <param name="hasPairedEnds"/>
@@ -15,6 +13,7 @@
     <param name="maxReadLength"/>
     <param name="sequenceFormat"/>
     <param name="experimentDatasetName"/>
+    <param name="topLevelSeqSizeFile"/>
 
     <constant name="dataDir">$$parentDataDir$$/smallNcRna</constant>
     <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>
@@ -24,7 +23,7 @@
         <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
         <depends name="makeDataDir"/>
     </step>
@@ -92,8 +91,6 @@
         <paramValue name="projectName">$$projectName$$</paramValue>
         <paramValue name="experimentDir">$$dataDir$$</paramValue>
         <paramValue name="experimentRSRC">$$dataDir$$/$$experimentDatasetName$$</paramValue>
-        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-        <paramValue name="genomicSeqsFile">$$genomicSeqsDir$$/topLevelGenomicSeqs.fsa</paramValue>
         <paramValue name="indexDir">$$parentDataDir$$/bowtieIndices/genomicIndexes</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="experimentName">$$experimentName$$</paramValue>
@@ -106,6 +103,7 @@
         <paramValue name="sequenceFormat">$$sequenceFormat$$</paramValue>
         <paramValue name="tRNArRNASeqsDir">$$tRNArRNASeqsDir$$</paramValue>
         <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+        <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
         <depends name="getAndUnpack"/>
     </subgraph>
 

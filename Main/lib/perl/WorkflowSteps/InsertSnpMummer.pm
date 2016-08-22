@@ -14,37 +14,23 @@ sub getSoTerm {
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $inputFile = $self->getParamValue('inputFile');
-  my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
-  my $transcriptExtDbRlsSpec = $self->getParamValue('transcriptExtDbRlsSpec');
+  my $variationFile = $self->getParamValue('variationFile');
+  my $snpFile = $self->getParamValue('snpFile');
+
   my $snpExtDbRlsSpec = $self->getParamValue('snpExtDbRlsSpec');
-  my $isNextGenSeq = $self->getBooleanParamValue('isNextGenSeq');
-  my $isCoverage = $self->getBooleanParamValue('isCoverage');
 
-  my ($genomExtDbName,$genomeExtDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
-  my ($snpExtDbName,$snpExtDbRlsVer) = $self->getExtDbInfo($test,$snpExtDbRlsSpec);
-  my ($transcriptExtDbName,$transcriptExtDbRlsVer) = $self->getExtDbInfo($test,$transcriptExtDbRlsSpec);
-
-  my $organismFullName = $self->getOrganismInfo($test, $organismAbbrev)->getFullName();
-  my $strainAbbrev = $self->getOrganismInfo($test, $organismAbbrev)->getStrainAbbrev();
-  
-  unless($strainAbbrev) {
-    $self->error("Strain Abbreviation for the reference [$organismAbbrev] was not defined");   
-  }
+  my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $soTerm = $self->getSoTerm();
 
-  my $args = "--reference '$strainAbbrev' --organism '$organismFullName' --snpExternalDatabaseName '$snpExtDbName' --snpExternalDatabaseVersion '$snpExtDbRlsVer' --naExternalDatabaseName '$genomExtDbName' --naExternalDatabaseVersion '$genomeExtDbRlsVer' --transcriptExternalDatabaseName '$transcriptExtDbName' --transcriptExternalDatabaseVersion '$transcriptExtDbRlsVer' --seqTable 'DoTS::ExternalNASequence' --ontologyTerm $soTerm --snpFile $workflowDataDir/$inputFile";
+  my $args = "--variationFile $workflowDataDir/$variationFile --snpFile $workflowDataDir/$snpFile --ontologyTerm $soTerm --soExtDbSpec '$soExtDbName|%' --snpExtDbRlsSpec '$snpExtDbRlsSpec'";
 
-  $args .= " --NGS_SNP" if ($isNextGenSeq);
-  $args .= " --NgsUpdateSnpFeature" if ($isCoverage);
-
-    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+    $self->testInputFile('variationFile', "$workflowDataDir/$variationFile");
+    $self->testInputFile('snpFile', "$workflowDataDir/$snpFile");
     
-    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertSnps", $args);
+    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertSnpFeatures", $args);
 }
 
 1;

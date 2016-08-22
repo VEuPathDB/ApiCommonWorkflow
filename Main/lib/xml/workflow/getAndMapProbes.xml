@@ -1,129 +1,80 @@
 <workflowGraph name="getAndMapProbes">
-    <param name="dataDir"/>
+    <param name="parentDataDir"/>
+    <param name="gsnapDir"/>    
+
     <param name="probeSetName"/>
     <param name="probeDatasetName"/>
     <param name="probeDatasetVersion"/>
+    <param name="organismDatasetLoaderXmlFile"/>
+
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="limitNU"/>
+    <param name="spliceSitesDatabase"/>
+    <param name="gtfFile"/>
+    <param name="maskFile"/>
+    <param name="gmapDatabase"/>
+    <param name="topLevelGeneFootprintFile"/>
     <param name="makeCdfFile"/>
     <param name="makeNdfFile"/>
     <param name="vendorMappingFileName"/>
+    <param name="outputGeneProbeMappingTabFile"/>
     <param name="probeRows"/>
     <param name="probeCols"/>
-    <param name="outputGeneProbeMappingTabFile"/>
-    <param name="organismDatasetLoaderXmlFile"/>
-    <param name="ssaGeneModelFile"/>
-    <param name="genomeExtDbRlsSpec"/>
-    <param name="genomicSeqsFileForSsa"/>
-    <param name="transcriptSeqsFileForSsa"/>
-    <param name="dnaHybridization"/>
-    <param name="limitNU"/>
-    <param name="numInsertions"/>
-    <param name="countMismatches"/>
-    <param name="variableLengthReads"/>
-    <param name="makeGeneProbeMappingFile"/>
+    <param name="topLevelFastaFile"/>
 
-    <!-- parent defines name of data dir so we can pass it our output files -->
+    <constant name="platformDir">$$parentDataDir$$/$$probeSetName$$</constant>
+
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <paramValue name="dataDir">$$platformDir$$</paramValue>
     </step>
 
     <subgraph name="probe_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$probeDatasetName$$</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="parentDataDir">$$platformDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <step name="runParse2fasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunParse2fasta">
-      <paramValue name="inputShortSeqsFile">$$dataDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
-      <paramValue name="outputShortSeqsFile">$$dataDir$$/cleanedProbes.fsa</paramValue>
-      <paramValue name="pairedEndFile"></paramValue>
+    <step name="loadReporter" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPlatformReporter" stepLoadTypes="plugin">
+      <paramValue name="fastaFile">$$platformDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
+      <paramValue name="extDbRlsSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
+      <paramValue name="platformName">$$probeSetName$$</paramValue>
       <depends name="probe_RSRC"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="runParse2fasta"/>
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+      <paramValue name="fileOrDirToMirror">$$platformDir$$</paramValue>
+      <depends name="probe_RSRC"/>
     </step>
 
-    <subgraph name="runRUMOnCluster"  xmlFile="runRUMOnCluster.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="readFilePath">$$dataDir$$/cleanedProbes.fsa</paramValue>
-      <paramValue name="genomeFastaFile">$$genomicSeqsFileForSsa$$</paramValue>
-      <paramValue name="geneAnnotationFile">$$ssaGeneModelFile$$</paramValue>
-      <paramValue name="transcriptFastaFile">$$transcriptSeqsFileForSsa$$</paramValue>
+<!-- REPLACES RUM MAPPING GRAPH-->
+    <subgraph name="runGSNAP" xmlFile="runGSNAPOnCluster.xml">
+      <paramValue name="parentDataDir">$$platformDir$$</paramValue>
+      <paramValue name="readFilePath">$$platformDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
       <paramValue name="hasPairedEnds">false</paramValue>
       <paramValue name="limitNU">$$limitNU$$</paramValue>
-      <paramValue name="numInsertions">$$numInsertions$$</paramValue>
-      <paramValue name="createSAMFile">false</paramValue>
-      <paramValue name="countMismatches">$$countMismatches$$</paramValue>
-      <paramValue name="isSNPs">false</paramValue>
-      <paramValue name="outputFile"></paramValue>
-      <paramValue name="createJunctionsFile">false</paramValue>
       <paramValue name="strandSpecific">false</paramValue>
-      <paramValue name="variableLengthReads">$$variableLengthReads$$</paramValue>
-      <paramValue name="topLevelSeqSizeFile"></paramValue>
-      <paramValue name="createBigWigFile">false</paramValue>
-      <depends name="runParse2fasta"/>
+      <paramValue name="createJunctionsFile">false</paramValue>
+      <paramValue name="writeBedFile">false</paramValue>
+      <paramValue name="quantifyWithCufflinks">false</paramValue>
+      <paramValue name="spliceSitesDatabase">$$spliceSitesDatabase$$</paramValue>
+      <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+      <paramValue name="maskFile">$$maskFile$$</paramValue>
+      <paramValue name="gmapDatabase">$$gmapDatabase$$</paramValue>
+      <paramValue name="gsnapDirectory">$$gsnapDir$$</paramValue>
+      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="quantify">false</paramValue>
+      <paramValue name="writeCovFiles">false</paramValue>
+      <paramValue name="sraQueryString"></paramValue>
+      <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <step name="revertProbeSeqId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RevertProbeSeqId">
-      <paramValue name="shortSeqsFile">$$dataDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
-      <paramValue name="inputUniqueFile">$$dataDir$$/master/mainresult/RUM_Unique</paramValue>
-      <paramValue name="inputNonUniqueFile">$$dataDir$$/master/mainresult/RUM_NU</paramValue>
-      <paramValue name="outputUniqueFile">$$dataDir$$/uniqueFileRevertedIds.txt</paramValue>
-      <paramValue name="outputNonUniqueFile">$$dataDir$$/nonUniqueFileRevertedIds.txt</paramValue>
-      <depends name="runRUMOnCluster"/>
-    </step>
-
-    <step name="optionallyExcludeMultiExonHits" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExcludeMultiExonHits">
-      <paramValue name="excludeMultiExonsIf">$$dnaHybridization$$</paramValue>
-      <paramValue name="inputUniqueFile">$$dataDir$$/uniqueFileRevertedIds.txt</paramValue>
-      <paramValue name="inputNonUniqueFile">$$dataDir$$/nonUniqueFileRevertedIds.txt</paramValue>
-      <paramValue name="outputUniqueFile">$$dataDir$$/uniqueFileFiltered.txt</paramValue>
-      <paramValue name="outputNonUniqueFile">$$dataDir$$/nonUniqueFileFiltered.txt</paramValue>
-      <depends name="revertProbeSeqId"/>
-    </step>
-
-    <step name="makeProbeGenomeMappingGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateGenomeMappingGff">
-      <paramValue name="inputUniqueFile">$$dataDir$$/uniqueFileFiltered.txt</paramValue>
-      <paramValue name="inputNonUniqueFile">$$dataDir$$/nonUniqueFileFiltered.txt</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/genomeMapping.gff</paramValue>
-      <paramValue name="allowedMismatches">1</paramValue>
-      <depends name="optionallyExcludeMultiExonHits"/>
-    </step>
-
-    <step name="loadProbeGenomeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadArrayElementFeature" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$dataDir$$/genomeMapping.gff</paramValue>
-      <paramValue name="extDbRlsSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
-      <depends name="makeProbeGenomeMappingGffFile"/>
-    </step>
-
-    <!-- always output this file, even when we are making a vendor-specific -->
-    <!-- file, in which case outputting this file is not really useful -->
-    <!-- but output it anyway for simplicity -->
-    <step name="makeProbeGeneMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProbeGeneMappingFile" includeIf="$$makeGeneProbeMappingFile$$">
-      <paramValue name="outputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
-      <paramValue name="probeExtDbSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
-      <paramValue name="geneExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="isOneChannel">$$makeCdfFile$$</paramValue>
-      <depends name="loadProbeGenomeMapping"/>
-    </step>
-
-    <step name="makeCdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$makeCdfFile$$">
-      <paramValue name="gene2probesInputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
-      <paramValue name="probename2sequenceInputFile">$$dataDir$$/$$probeDatasetName$$/probes.tab</paramValue>
-      <paramValue name="vendorMappingFileName">$$vendorMappingFileName$$</paramValue>
-      <paramValue name="probeRows">$$probeRows$$</paramValue>
-      <paramValue name="probeCols">$$probeCols$$</paramValue>
-      <paramValue name="outputCdfFile">$$dataDir$$/$$vendorMappingFileName$$</paramValue>
-      <depends name="makeProbeGeneMappingFile"/>
-    </step>
-
-    <step name="fixNdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RecreateNdfFile" includeIf="$$makeNdfFile$$">
-      <paramValue name="gene2probesInputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
-      <paramValue name="inputNdfFile">$$dataDir$$/$$probeDatasetName$$/final/geneProbeMapping.ndf</paramValue>
-      <paramValue name="outputNdfFile">$$dataDir$$/$$vendorMappingFileName$$</paramValue>
-      <depends name="makeProbeGeneMappingFile"/>
+    <step name="loadReporterLocations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertReporterLocation" stepLoadTypes="plugin">
+        <paramValue name="bamFile">$$platformDir$$/master/mainresult/results_sorted.bam</paramValue>
+        <paramValue name="platformExtDbSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
+        <depends name="runGSNAP"/>
+        <depends name="loadReporter"/>
     </step>
 
     <step name="document-getAndMapProbes"
@@ -131,6 +82,37 @@
       <paramValue name="method">getAndMapProbes_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters">TODO: patch in later</paramValue>
+      <depends name="loadReporterLocations"/>
     </step>
+
+
+    <!-- always output this file, even when we are making a vendor-specific -->
+    <!-- file, in which case outputting this file is not really useful -->
+    <!-- but output it anyway for simplicity -->
+    <step name="makeProbeGeneMappingFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProbeGeneMappingFile">
+      <paramValue name="outputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
+      <paramValue name="probeExtDbSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
+      <paramValue name="geneExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="isOneChannel">$$makeCdfFile$$</paramValue>
+      <depends name="loadReporterLocations"/>
+    </step>
+
+    <step name="makeCdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCdfFileForAffyArray" includeIf="$$makeCdfFile$$">
+      <paramValue name="gene2probesInputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
+      <paramValue name="probename2sequenceInputFile">$$platformDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
+      <paramValue name="vendorMappingFileName">$$vendorMappingFileName$$</paramValue>
+      <paramValue name="probeRows">$$probeRows$$</paramValue>
+      <paramValue name="probeCols">$$probeCols$$</paramValue>
+      <paramValue name="outputCdfFile">$$platformDir$$/$$vendorMappingFileName$$</paramValue>
+      <depends name="makeProbeGeneMappingFile"/>
+    </step>
+
+    <step name="fixNdfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RecreateNdfFile" includeIf="$$makeNdfFile$$">
+      <paramValue name="gene2probesInputFile">$$outputGeneProbeMappingTabFile$$</paramValue>
+      <paramValue name="inputNdfFile">$$platformDir$$/$$probeDatasetName$$/final/geneProbeMapping.ndf</paramValue>
+      <paramValue name="outputNdfFile">$$platformDir$$/$$vendorMappingFileName$$</paramValue>
+      <depends name="makeProbeGeneMappingFile"/>
+    </step>
+
 
 </workflowGraph>

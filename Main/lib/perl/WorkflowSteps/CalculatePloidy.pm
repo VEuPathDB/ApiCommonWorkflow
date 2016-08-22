@@ -15,10 +15,13 @@ sub run {
   my $fpkmFile = $self->getParamValue('fpkmFile');
   my $ploidy = $self->getParamValue('ploidy');
   my $sampleName = $self->getParamValue('sampleName');
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId(); 
 
   $outputDir = "$workflowDataDir/$outputDir";
 
-  my $cmd = "calculatePloidy --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy";
+  my $cmd = "calculatePloidy --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --taxonId $taxonId";
 
   if ($undo) {
     $self->runCmd(0, "rm $outputDir/$sampleName\_Ploidy.txt");

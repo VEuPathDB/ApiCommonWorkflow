@@ -21,7 +21,13 @@ sub run {
 
   my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbRlsVer --sequenceFile $workflowDataDir/$sequenceFile --regexSourceId '$regexSourceId' --tableName \"$tableName\" ";
 
-  $args .= "--soTermName $soTermName " if ($soTermName);
+  if ($soTermName) {
+    my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
+
+    $args .= "--soTermName $soTermName " ;
+    $args .= "--SOExtDbRlsSpec '$soExtDbName|%' ";
+  }
+
   $args .= "--ncbiTaxId $ncbiTaxId " if ($ncbiTaxId);
 
 

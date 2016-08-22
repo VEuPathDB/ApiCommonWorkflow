@@ -28,7 +28,9 @@ sub run {
   
   my $algInvIds = $self->getAlgInvIds();
 
-  my $soVersion = $self->getExtDbVersion($test, 'SO_RSRC');
+  my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
+
+  my $soVersion = $self->getExtDbVersion($test, $soExtDbName);
 
   my $args = <<"EOF";
 --extDbName '$extDbName'  \\

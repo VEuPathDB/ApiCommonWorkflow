@@ -26,9 +26,11 @@ my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbVe
   $self->testInputFile('fastaFile', "$workflowDataDir/$fastaFile");
   $self->testInputFile('idsFile', "$workflowDataDir/$idsFile");
 
-
-  $self->runPlugin($test,$undo, "GUS::Supported::Plugin::LoadFastaSequences",$args);
-
+  unless($undo){
+  	$self->runPlugin($test,0, "GUS::Supported::Plugin::LoadFastaSequences",$args);
+  }else{
+	$self->runPlugin($test,1, "ApiCommonData::Load::Plugin::LoadNothing",$args);
+  }	
 }
 
 

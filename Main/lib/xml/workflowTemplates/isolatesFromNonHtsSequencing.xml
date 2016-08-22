@@ -22,6 +22,7 @@
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
+<dependsGlobal name="oboOntologies"/>
     </subgraph>
   </datasetTemplate>
 
@@ -72,6 +73,7 @@
     </subgraph>
   </datasetTemplate>
 
+
   <datasetTemplate class="updateIsolateFeaturesByProductAlias">
     <prop name="name"/> 
     <prop name="organismAbbrev"/>
@@ -84,7 +86,7 @@
     </subgraph>
   </datasetTemplate>
 
-  <step name="makeIsolatesDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeIsolatesDownloadFile">
+  <step name="makeIsolatesDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeIsolatesDownloadFile" externalName="$$organismAbbrev$$_isolates_makeIsolatesDownloadFile">
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
@@ -111,5 +113,30 @@
     <depends name="makeIsolatesDownloadFile"/>
   </step>
 
+  <step name="makeReferenceIsolatesDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeIsolatesReferenceDownloadFile">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="fileType">fasta</paramValue>
+    <paramValue name="dataName">Isolates</paramValue>
+    <paramValue name="descripString">Reference Isolate sequences (NT)</paramValue>
+    <paramValue name="isWebServiceFile">false</paramValue>
+    <paramValue name="skipIfFile">$$skipIfFile$$_reference</paramValue>
+    <dependsPattern name="isolate*"/> 
+  </step>
+
+  <step name="formatReferenceIsolatesDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeIsolatesReferenceWebServicesBlastFiles" skipIfFile="$$skipIfFile$$_reference">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="useSpeciesName">false</paramValue>
+    <paramValue name="useFamilyName">true</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="dataName">Isolates</paramValue>
+    <paramValue name="args">-dbtype nucl</paramValue>
+    <depends name="makeReferenceIsolatesDownloadFile"/>
+  </step>
 
 </workflowGraph>

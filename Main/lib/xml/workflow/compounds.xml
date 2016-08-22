@@ -1,82 +1,27 @@
 <workflowGraph name="">
+    <param name="datasetName"/> 
     <param name="parentDataDir"/>
-    <param name="datasetLoaderXmlFile"/>
-    <param name="compoundName"/>
-    <param name="source"/> 
+    <param name="datasetLoaderXmlFileName"/>
 
-
-    <constant name="dataDir">$$parentDataDir$$/$$source$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/chEBI</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
    <subgraph name="compounds_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">compounds_$$compoundName$$_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFile$$</paramValue>
+      <paramValue name="datasetName">$$datasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
     </subgraph>
 
-    <!-- extract CID data in XML from PubChem for  Substances  -->
-    <step name="extractPubChemSubstances_CID" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractPubChemData">
-     <paramValue name="idFile">$$dataDir$$/compounds_$$compoundName$$_RSRC/sidFile.txt</paramValue>
-     <paramValue name="outFile">$$dataDir$$/substance_cids.xml</paramValue>
-     <paramValue name="type">pcsubstance</paramValue>
-     <paramValue name="property">CID</paramValue>
-    <depends name="compounds_RSRC"/>
-  </step>
-
-    <!-- insert CID data for Substances  -->
-     <step name="insertPubChemSubstances_CID" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPubChemSubstances" stepLoadTypes="plugin">
-      <paramValue name="fileDir">$$dataDir$$</paramValue>
-      <paramValue name="fileNames">substance_cids.xml</paramValue>
-      <paramValue name="compoundIdsFile">$$dataDir$$/compoundIdFile.txt</paramValue>
-     <paramValue name="property">CID</paramValue>
-    <depends name="extractPubChemSubstances_CID"/>
-  </step>
-
-    <!-- extract Synonym data in XML from PubChem for  Substances  -->
-    <step name="extractPubChemSubstances_synonyms" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractPubChemData">
-     <paramValue name="idFile">$$dataDir$$/compounds_$$compoundName$$_RSRC/sidFile.txt</paramValue>
-     <paramValue name="outFile">$$dataDir$$/substance_synonyms.xml</paramValue>
-     <paramValue name="type">pcsubstance</paramValue>
-     <paramValue name="property">Synonym</paramValue>
-    <depends name="insertPubChemSubstances_CID"/>
-  </step>
-
-    <!-- insert Synonym data for Substances  -->
-     <step name="insertPubChemSubstances_synonyms" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPubChemSubstances" stepLoadTypes="plugin">
-      <paramValue name="fileDir">$$dataDir$$</paramValue>
-      <paramValue name="fileNames">substance_synonyms.xml</paramValue>
-      <paramValue name="compoundIdsFile">$$dataDir$$/compoundIdFile.txt</paramValue>
-     <paramValue name="property">Synonym</paramValue>
-    <depends name="extractPubChemSubstances_synonyms"/>
-  </step>
-
-
-  <!-- extract properties data XML from PubChem for  Compounds  -->
-    <step name="extractPubChemCompounds_pccompound" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractPubChemData">
-     <paramValue name="idFile">$$dataDir$$/compoundIdFile.txt</paramValue>
-     <paramValue name="outFile">$$dataDir$$/compounds_pccompound.xml</paramValue>
-     <paramValue name="type">pccompound</paramValue>
-     <paramValue name="property"></paramValue>
-    <depends name="insertPubChemSubstances_CID"/>
-  </step>
-
-  <!-- insert Compounds  -->
-     <step name="insertPubChemCompounds_pccompound" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPubChemCompounds" stepLoadTypes="plugin">
-      <paramValue name="fileDir">$$dataDir$$</paramValue>
-      <paramValue name="fileNames">compounds_pccompound.xml</paramValue>
-    <depends name="extractPubChemCompounds_pccompound"/>
-  </step>
-
-
-    <step name="document-compounds"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">compounds_MTHD</paramValue>
-      <paramValue name="version">1.0</paramValue>
-      <paramValue name="parameters">TODO: patch in later</paramValue>
+    <step name="loadChEBI" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChEBI" stepLoadTypes="plugin">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <paramValue name="datasetName">$$datasetName$$</paramValue>
+      <depends name="compounds_RSRC"/>
     </step>
+
+    
 
 </workflowGraph>

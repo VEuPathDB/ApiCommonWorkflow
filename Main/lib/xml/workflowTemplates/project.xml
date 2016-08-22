@@ -79,7 +79,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="dataDir">${organismAbbrev}_strainsComparisonInput</paramValue>
     </step>
 
-    <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" groupName="${organismAbbrev}">
+    <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" groupName="${organismAbbrev}"  stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">${organismAbbrev}</paramValue>
       <depends name="${organismAbbrev}_makeDataDir"/>
       <dependsGlobal name="initClusterHomeDir"/>
@@ -133,7 +133,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
     <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml" groupName="${organismAbbrev}">
       <paramValue name="dataDir">${organismAbbrev}/makeAndMaskTopLevelGenome</paramValue>
-      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fsa</paramValue>
+      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -147,7 +147,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeCompGenomicsFiles" xmlFile="makeCompGenomicsFiles.xml" groupName="${organismAbbrev}" excludeIf="${isHugeGenome}">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="makeAndMaskTopLevelGenomeDataDir">${organismAbbrev}/makeAndMaskTopLevelGenome</paramValue>
-      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fsa</paramValue>
+      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="comparativeGenomicsDir">$$comparativeGenomicsInputDir$$</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
@@ -180,7 +180,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_specific_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/organismSpecificOnTopLevelGenome.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+    <subgraph name="${organismAbbrev}_gsnap_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/gsnap.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -189,8 +189,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
-      <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
+      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
@@ -286,6 +285,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
   </datasetTemplate>
 
     <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables">
+      <paramValue name="dataDir">Snp_Table_Constraint</paramValue>
       <dependsPattern name="*_bowtieMapping"/>
     </step>
 
@@ -298,43 +298,11 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </subgraph>
 
+
   <subgraph name="OrthoMCLDerivedEC" xmlFile="orthoMCLDerivedEC.xml">
     <paramValue name="parentDataDir"></paramValue>
     <dependsPattern name="comparativeGenomics"/>
   </subgraph> 
-
-  <datasetTemplate class="Pathways">
-   <prop name="projectName"/>     
-   <subgraph name="Pathways_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">Pathways_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <dependsGlobal name="enzymeDB_RSRC"/>
-   </subgraph>
-    <step name="makePathwayDownloadFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePathwayDownloadFiles">
-      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="outputDirName">pathwayFiles/</paramValue>
-      <depends name="Pathways_RSRC"/> 
-    </step>
-
-  </datasetTemplate>
-
-  <datasetTemplate class="Pathways_Biocyc">
-   <prop name="projectName"/>     
-   <prop name="type"/>
-   <subgraph name="Pathways_${type}_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">Pathways_${type}_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <dependsGlobal name="enzymeDB_RSRC"/>
-   </subgraph>
-    <step name="makePathwayDownloadFiles_${type}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePathwayDownloadFiles">
-      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="outputDirName">pathwayFiles/</paramValue>
-      <depends name="Pathways_${type}_RSRC"/> 
-    </step>
-
-  </datasetTemplate>
 
   <!-- only reference strains have an instance of this -->
   <!-- it depends on all make and mask genomes for this organism (they all have the ref strain as a prefix) -->
@@ -352,92 +320,77 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
   </datasetTemplate>
 
-  <!-- depends on all organism specific graphs. 
-       waits for manual improvement of the vocabularies -->
-  <subgraph name="loadIsolateVocabulary" xmlFile="generated/global/isolatesVocabulary.xml" excludeIfXmlFileDoesNotExist="true">
-    <paramValue name="datasetLoaderXmlFile">global.xml</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
-    <dependsPattern name="*specific"/>
-    <dependsPattern name="*specific_noAlias"/>
-  </subgraph>
+  <datasetTemplate class="Pathways">
+   <prop name="projectName"/>     
+   <prop name="version"/>
+   <prop name="format"/>
+   <prop name="source"/>
 
- <datasetTemplate class="PathwayCompounds">
-    <prop name="version"/> 
-    <prop name="name"/>   
-
-    <subgraph name="PathwayCompounds" xmlFile="compounds.xml">
-      <paramValue name="source">PathwayCompounds</paramValue>
+   <subgraph name="Pathways_${source}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">Pathways_${source}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="version">${version}</paramValue>
-      <paramValue name="datasetLoaderXmlFile">$$projectName$$.xml</paramValue>
-      <paramValue name="compoundName">${name}</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
-    </subgraph>
+      <dependsGlobal name="enzymeDB_RSRC"/>
+      <dependsGlobal name="oboOntologies"/>
+      <dependsGlobal name="GO_RSRC"/>
+      <dependsGlobal name="chEBI_Compounds"/>
+	  <dependsGlobal name="EuPath_Ontology_RSRC"/>
+   </subgraph>
 
- </datasetTemplate>
+    <step name="makePathwayDownloadFile_${source}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePathwayDownloadFiles">
+        <paramValue name="outputDir">$$relativeDownloadSiteDir$$/pathwayFiles/${source}</paramValue>
+        <paramValue name="extDbRlsSpec">Pathways_${source}_RSRC|${version}</paramValue>
+        <depends name="Pathways_${source}_RSRC"/>
+    </step>
+    
+  </datasetTemplate>
 
- <datasetTemplate class="PathwayCompounds_Biocyc">
+  <datasetTemplate class="ReactionsXRefs">
+    <prop name="projectName"/>
     <prop name="version"/>
-    <prop name="name"/>
-
-    <subgraph name="PathwayCompounds_${name}_${version}" xmlFile="compounds.xml">
-      <paramValue name="source">PathwayCompounds_${name}_${version}</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="version">${version}</paramValue>
-      <paramValue name="datasetLoaderXmlFile">$$projectName$$.xml</paramValue>
-      <paramValue name="compoundName">${name}_${version}</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
+    <prop name="source"/>
+    
+    <subgraph name="ReactionsXRefs_${source}_RSRC" xmlFile="loadDataset.xml">
+        <paramValue name="datasetName">ReactionsXRefs_${source}_RSRC</paramValue>
+        <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+        <paramValue name="parentDataDir"></paramValue>
+        <depends name="Pathways_KEGG_RSRC"/>
+        <depends name="Pathways_MetaCyc_RSRC"/>
     </subgraph>
+  </datasetTemplate>
 
- </datasetTemplate>
-
-
-  <datasetTemplate class="ExperimentCompounds">
-    <prop name="version"/> 
-    <prop name="name"/>   
-
-    <subgraph name="ExperimentCompounds" xmlFile="compounds.xml">
-      <paramValue name="source">ExperimentCompounds</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="version">${version}</paramValue>
-      <paramValue name="datasetLoaderXmlFile">$$projectName$$.xml</paramValue>
-      <paramValue name="compoundName">${name}</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
-    </subgraph>
-
- </datasetTemplate>
 
  <datasetTemplate class="metaboliteProfiles">
    <prop name="experimentName"/> 
     <prop name="experimentVersion"/> 
-    <prop name="doExpressionAnalysis"/> 
-    <prop name="hasTimeSeries"/> 
 
     <subgraph name="metaboliteProfiles_${experimentName}_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-      <dependsPattern name="*Compounds"/>
+      <dependsGlobal name="chEBI_Compounds"/>
     </subgraph>
 
     <subgraph name="MetaboliteProfiles" xmlFile="metaboliteProfiles.xml">
       <paramValue name="parentDataDir"></paramValue>
       <paramValue name="experimentName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
       <paramValue name="experimentVersion">${experimentVersion}</paramValue>
-      <paramValue name="doExpressionAnalysis">${doExpressionAnalysis}</paramValue>
-      <paramValue name="hasTimeSeries">${hasTimeSeries}</paramValue>
-      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <depends name="metaboliteProfiles_${experimentName}_RSRC"/>
     </subgraph>
 
 </datasetTemplate>
 
-<!--Static reference to metadata template file -->
-  <subgraph name="metadata" xmlFile="generated/$$projectName$$/metadata.xml" excludeIfXmlFileDoesNotExist="true">
+<!-- EuPath Ontology and Study MetaData -->
+<subgraph name="metadata" xmlFile="metadata.xml" >
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
     <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
     <dependsPattern name="*specific*"/>
-  </subgraph>
+    <dependsGlobal name="oboOntologies"/>
+    <dependsGlobal name="eupathCuratedOntologies"/>
+    <dependsGlobal name="EuPath_Ontology_RSRC"/>
+</subgraph>
+
 
 <!--A generic dataset template to copy and format files from EuPathDB manualDelivery to download sites and web services-->
  <datasetTemplate class="copyAndFormatDownloadFilesFromManualDelivery">
@@ -469,16 +422,29 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
   <datasetTemplate class="EcNumberGenus">
    <prop name="projectName"/>   
-
-  <step name="manuallyImproveEcNumberGenus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
-    <dependsPattern name="*_LoadGenome"/>
-  </step>
-  
+ 
+   <step name="manuallyImproveEcNumberGenus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+     <dependsPattern name="*_LoadGenome"/>
+   </step>
+ 
    <subgraph name="EcNumberGenus_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">EcNumberGenus_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
     <depends name="manuallyImproveEcNumberGenus"/>
+   </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="StudyResultsLiteral">
+   <prop name="projectName"/>     
+   <prop name="version"/>
+   <prop name="name"/>
+
+   <subgraph name="StudyResult_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">StudyResult_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+      <dependsGlobal name="oboOntologies"/>
    </subgraph>
   </datasetTemplate>
 

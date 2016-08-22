@@ -35,6 +35,7 @@ sub run {
 	  $self->runCmd(0, "echo test > $outputFile");
       }
     $self->runCmd($test, "cp $inputDownloadFile $outputFile");
+
   }
 }
 

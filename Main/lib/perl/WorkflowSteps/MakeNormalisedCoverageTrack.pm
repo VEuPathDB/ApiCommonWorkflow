@@ -21,12 +21,12 @@ sub run {
     my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
     
     # This statement will only return chromosomes.
-    my $SQL = "select ens.source_id
-               from sres.sequenceontology so,
-               dots.externalnasequence ens
-               where so.so_id = 'SO:0000340'
-               and so.sequence_ontology_id = ens.sequence_ontology_id
-               and ens.taxon_id = $taxonId";
+    my $SQL = "select ns.source_id
+               from sres.ontologyterm ot,
+               dots.nasequence ns
+               where ot.source_id  = 'SO:0000340'
+               and ot.ontology_term_id = ns.sequence_ontology_id
+               and ns.taxon_id = $taxonId";
 
     my $cmd = "makeNormalisedCoverageTrack --coverageFile $workflowDataDir/$coverageFile --ploidy $ploidy --sampleName $sampleName --outputDir $workflowDataDir/$outputDir --chromSizesFile $workflowDataDir/$chromSizesFile --SQL \"$SQL\"";
 
@@ -34,6 +34,7 @@ sub run {
         $self->runCmd(0, "rm -f $workflowDataDir/$outputDir/$sampleName.bw");
     }else{
         $self->testInputFile('coverageFile', "$workflowDataDir/$coverageFile");
+        $self->testInputFile("chromSizesFile", "$workflowDataDir/$chromSizesFile");
         if($test) {
             $self->runCmd(0, "echo test > $workflowDataDir/$outputDir/$sampleName.bw");
         }

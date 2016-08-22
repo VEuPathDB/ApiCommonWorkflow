@@ -22,6 +22,8 @@ sub run {
   my $expectCdfFile = $self->getBooleanParamValue('expectCdfFile');
   my $expectNdfFile = $self->getBooleanParamValue('expectNdfFile');
 
+  my $technologyType = $self->getParamValue("technologyType");
+
   my $workflowDataDir = $self->getWorkflowDataDir();
   $platformDirectory = "$workflowDataDir/$platformDirectory";
 
@@ -48,7 +50,7 @@ sub run {
     $input_file = "--input_file $mappingFile";
   }
 
-  my $cmd = "doTranscriptExpression.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir $input_file";
+  my $cmd = "doTranscriptExpression.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir $input_file --technology_type $technologyType";
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir");
@@ -62,6 +64,7 @@ sub run {
       if ($test) {
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/expression_profile_config.txt");
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/analysis_result_config.txt **optional**");
+	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/insert_study_results_config.txt");
       }
       if(!$test) {
         $self->makeSymLinks($inputDir, $outputDir);

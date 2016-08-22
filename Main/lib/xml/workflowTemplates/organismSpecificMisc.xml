@@ -50,6 +50,17 @@
     </subgraph>
   </datasetTemplate>
 
+  <datasetTemplate class="ECAssocGeneFeatureMappings">
+    <prop name="name"/> 
+    <prop name="organismAbbrev"/>
+    <subgraph name="${name}_ECAssociations" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_${name}_ECAssociations_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <dependsGlobal name="enzymeDB_RSRC"/>
+    </subgraph>
+  </datasetTemplate>
+
   <datasetTemplate class="ECAssocFromUniprot">
     <prop name="organismAbbrev"/>
     <subgraph name="Uniprot_ECAssociations" xmlFile="loadDataset.xml">
@@ -89,13 +100,14 @@
     </subgraph>
   </datasetTemplate>
 
-  <datasetTemplate class="phenotypeFeatures">
+  <datasetTemplate class="phenotype">
     <prop name="name"/> 
     <prop name="organismAbbrev"/>
     <subgraph name="phenotype_${name}_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${organismAbbrev}_phenotype_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <dependsGlobal name="oboOntologies"/>
     </subgraph>
   </datasetTemplate>
 
@@ -195,6 +207,7 @@
     </subgraph>
   </datasetTemplate>
 
+<!--
   <datasetTemplate class="SiRNA">
     <prop name="organismAbbrev"/> 
     <prop name="name"/> 
@@ -204,7 +217,7 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     </subgraph>
   </datasetTemplate>
-
+-->
 </workflowGraph>
 
 

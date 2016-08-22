@@ -1,0 +1,158 @@
+<workflowGraph name="">
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="organismDatasetLoaderXmlFile"/>
+  <param name="parentDataDir"/>
+  <param name="bowtieDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="chromSizesFile"/>
+
+  <constant name="dataDir">$$parentDataDir$$/genomicArrayStudies</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
+  <datasetTemplate class="chipChipPlatform">
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    
+    <subgraph name="${name}_mapGenomicArrayProbes_CHiP" xmlFile="mapGenomicArrayProbes.xml">
+        <paramValue name="dataDir">$$dataDir$$</paramValue>
+        <paramValue name="probeSetName">${name}</paramValue>
+        <paramValue name="probeDatasetName">${organismAbbrev}_chipChipPlatform_${name}_RSRC</paramValue>
+        <paramValue name="probeDatasetVersion">${version}</paramValue>
+        <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="indexDir">$$bowtieDir$$/genomicIndexes</paramValue>
+        <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+        <paramValue name="chromSizesFile">$$chromSizesFile$$</paramValue>
+        <depends name="mirrorToCluster"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="cghArrayPlatform">
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    
+    <subgraph name="${name}_mapGenomicArrayProbes_CGH" xmlFile="mapGenomicArrayProbes.xml">
+        <paramValue name="dataDir">$$dataDir$$</paramValue> 
+        <paramValue name="probeSetName">${name}</paramValue>
+        <paramValue name="probeDatasetName">${organismAbbrev}_cghArrayPlatform_${name}_RSRC</paramValue>
+        <paramValue name="probeDatasetVersion">${version}</paramValue>
+        <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="indexDir">$$bowtieDir$$/genomicIndexes</paramValue>
+        <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+        <paramValue name="chromSizesFile">$$chromSizesFile$$</paramValue>
+        <depends name="mirrorToCluster"/>
+    </subgraph>
+  </datasetTemplate>
+
+
+  <datasetTemplate class="chipChipExperiment">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
+    <prop name="chipChipPlatformName"/>
+    <prop name="chipChipPlatformVersion"/>
+    <prop name="peakFinderArgs"/>
+    <prop name="loadPeakCalls"/>
+
+    <subgraph name="${experimentName}" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_chipChipExper_${experimentName}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="${chipChipPlatformName}_mapGenomicArrayProbes_CHiP"/>
+    </subgraph>
+
+    <step name="${experimentName}_addChipChipInvestigation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
+      <paramValue name="experimentName">${organismAbbrev}_chipChipExper_${experimentName}_RSRC</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">${organismAbbrev}_chipChipExper_${experimentName}_RSRC|${experimentVersion}</paramValue>
+      <depends name="${experimentName}"/>
+    </step>
+
+    <step name="${experimentName}_addSmoothedStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
+      <paramValue name="experimentName">${organismAbbrev}_chipChipExper_${experimentName}_RSRC - smoothed</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">${organismAbbrev}_chipChipExper_${experimentName}_RSRC|${experimentVersion}</paramValue>
+      <depends name="${experimentName}"/>
+    </step>
+
+    <step name="${experimentName}_addPeaksStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin"  includeIf="${loadPeakCalls}">
+      <paramValue name="experimentName">${organismAbbrev}_chipChipExper_${experimentName}_RSRC - peaks</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">${organismAbbrev}_chipChipExper_${experimentName}_RSRC|${experimentVersion}</paramValue>
+      <depends name="${experimentName}"/>
+    </step>
+
+    <subgraph name="${experimentName}_chipChipSamples" xmlFile="generated/${projectName}/${organismAbbrev}/${experimentName}/chipChipSamples.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="experimentDatasetName">${organismAbbrev}_chipChipExper_${experimentName}_RSRC</paramValue>
+      <paramValue name="chipProbeExtDbRlsSpec">${organismAbbrev}_chipChipPlatform_${chipChipPlatformName}_RSRC|${chipChipPlatformVersion}</paramValue>
+      <paramValue name="peakFinderArgs">${peakFinderArgs}</paramValue>
+      <paramValue name="loadPeakCalls">${loadPeakCalls}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="configFilesDir">$$dataDir$$/${organismAbbrev}_chipChipExper_${experimentName}_RSRC/final</paramValue>
+      <depends name="${experimentName}_addChipChipInvestigation"/>
+      <depends name="${experimentName}_addSmoothedStudy"/>
+      <depends name="${experimentName}_addPeaksStudy"/>
+    </subgraph>
+
+  </datasetTemplate>
+
+
+  <datasetTemplate class="cghArrayExperiment">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
+    <prop name="cghArrayPlatformName"/>
+    <prop name="cghArrayPlatformVersion"/>
+
+    <subgraph name="${experimentName}" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_cghArrayExper_${experimentName}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="${cghArrayPlatformName}_mapGenomicArrayProbes_CGH"/>
+    </subgraph>
+
+
+    <step name="${experimentName}_addCghInvestigation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
+      <paramValue name="experimentName">${organismAbbrev}_cghArrayExper_${experimentName}_RSRC</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">${organismAbbrev}_cghArrayExper_${experimentName}_RSRC|${experimentVersion}</paramValue>
+      <depends name="${experimentName}"/>
+    </step>
+
+    <step name="${experimentName}_addCghProfileStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
+      <paramValue name="experimentName">${organismAbbrev}_cghArrayExper_${experimentName}_RSRC - profile</paramValue>
+      <paramValue name="experimentExtDbRlsSpec">${organismAbbrev}_cghArrayExper_${experimentName}_RSRC|${experimentVersion}</paramValue>
+      <depends name="${experimentName}"/>
+    </step>
+
+
+
+    <subgraph name="${experimentName}_cghArraySamples" xmlFile="generated/${projectName}/${organismAbbrev}/${experimentName}/dnaArraySamples.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="experimentDatasetName">${organismAbbrev}_cghArrayExper_${experimentName}_RSRC</paramValue>
+      <paramValue name="probeExtDbRlsSpec">${organismAbbrev}_cghArrayPlatform_${cghArrayPlatformName}_RSRC|${cghArrayPlatformVersion}</paramValue>
+      <paramValue name="configFilesDir">$$dataDir$$/${organismAbbrev}_cghArrayExper_${experimentName}_RSRC/final</paramValue>
+      <depends name="${experimentName}_addCghInvestigation"/>
+      <depends name="${experimentName}_addCghProfileStudy"/>
+    </subgraph>
+
+  </datasetTemplate>
+
+
+</workflowGraph>

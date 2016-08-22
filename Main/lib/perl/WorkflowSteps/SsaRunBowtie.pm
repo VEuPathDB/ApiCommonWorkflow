@@ -32,12 +32,13 @@ sub run {
     my $allowed = join(", ", keys(%fileTypes));
     $self->error("Invalid seqsFileType '$seqsFileType'.  Allowed types are: $allowed") unless $fileTypeArg;
 
-    my $colorSpaceArg = $isColorSpace? ' -C' : '';
 
+    # WE PROBABLY DON'T CARE ABOUT THESE.  THIS STEP SEEMS TO ONLY BE RELEVANT FOR SPLICEDLEADER/POLYA AND THEY ARE HARDCODED NULL
+    my $colorSpaceArg = $isColorSpace? ' -C' : '';
     my $fwdSeqsArg = $isPairedEnds? '-1 ' : '';
     my $fwdQualsArg = $isPairedEnds? '--Q1 ' : '-Q';
 
-    my $cmd = "bowtie $bowtieParams --best --strata $workflowDataDir/$inputIndexesDir/genomicIndexes $colorSpaceArg $fwdSeqsArg $fileTypeArg $workflowDataDir/$inputFwdSeqsFile";
+    my $cmd = "bowtie2 $bowtieParams $workflowDataDir/$inputIndexesDir/genomicIndexes $colorSpaceArg $fwdSeqsArg $fileTypeArg $workflowDataDir/$inputFwdSeqsFile";
 
     $cmd .= "$fwdQualsArg $fileTypeArg $workflowDataDir/$inputFwdQualsFile" if $haveQuals;
 

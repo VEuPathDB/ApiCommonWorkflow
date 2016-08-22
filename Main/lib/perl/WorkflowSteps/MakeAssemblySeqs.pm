@@ -18,7 +18,10 @@ sub run {
   my $taxonId = $organismInfo->getSpeciesTaxonId();
   my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
 
-  my $args = "--taxon_id_list '$taxonIdList' --repeatFile $vectorFile --phrapDir $phrapDir";
+  my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
+
+  # TODO:  Pass in SO external database name|version
+  my $args = "--taxon_id_list '$taxonIdList' --repeatFile $vectorFile --phrapDir $phrapDir --soExtDbSpec '$soExtDbName|%'";
 
 
   $self->runPlugin($test, $undo, "DoTS::DotsBuild::Plugin::MakeAssemblySequences", $args);

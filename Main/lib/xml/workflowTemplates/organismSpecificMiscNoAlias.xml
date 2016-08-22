@@ -19,7 +19,7 @@
       <paramValue name="isolatesExtDbName">${familyRepOrganismAbbrev}_isolates_${name}_RSRC</paramValue>
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <dependsExternal name="${familyRepOrganismAbbrev}_isolates_${name}"/>
+      <dependsExternal name="${familyRepOrganismAbbrev}_isolates_makeIsolatesDownloadFile"/>
     </subgraph>
   </datasetTemplate>
 
@@ -77,57 +77,6 @@
     </subgraph>
   </datasetTemplate>
 
-
-  <datasetTemplate class="sageTagSequences">
-    <prop name="name"/>
-    <prop name="version"/>
-    <prop name="organismAbbrev"/>
-    <prop name="sequencePrefix"/>
-    <prop name="bowtieParams"/>
-
-    <subgraph name="sageTag_${name}_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${organismAbbrev}_sageTag_${name}_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    </subgraph>
-
-    <subgraph name="${name}_mapSageTags" xmlFile="mapSageTags.xml">
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="sageTagExtDbRlsSpec">${organismAbbrev}_sageTag_${name}_RSRC|${version}</paramValue>
-      <paramValue name="sequencePrefix">${sequencePrefix}</paramValue>
-      <paramValue name="name">${name}</paramValue>   
-      <paramValue name="bowtieParams">${bowtieParams}</paramValue>   
-      <depends name="sageTag_${name}_RSRC"/>
-    </subgraph>
-  </datasetTemplate>
-
-
-  <datasetTemplate class="sageTagFrequencies">
-    <prop name="name"/>
-    <prop name="version"/>
-    <prop name="normalizeFrequencies"/>
-    <prop name="organismAbbrev"/>
-
-    <subgraph name="sageTag_${name}_frequencies_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${organismAbbrev}_sageTag_${name}_frequencies_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="${name}_mapSageTags"/>
-    </subgraph>
-
-    <step name="${name}_createSageTagNormFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSageTagNormFile" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">
-      <paramValue name="studyName">${name}</paramValue>
-      <paramValue name="outputDir">$$dataDir$$</paramValue>
-      <depends name="sageTag_${name}_frequencies_RSRC"/>
-    </step>
-
-    <step name="${name}_insertNormSageTagFreqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNormSageTagFreqs" stepLoadTypes="plugin" includeIf="${normalizeFrequencies}">
-      <paramValue name="inputDir">$$dataDir$$</paramValue>
-      <paramValue name="studyName">${name}</paramValue>
-      <depends name="${name}_createSageTagNormFile"/>
-    </step>
-  </datasetTemplate>
 
   <datasetTemplate class="genomeFeatures_GFF2">
     <prop name="name"/> 
@@ -231,7 +180,8 @@
     </subgraph>
   </datasetTemplate>
 
-  <datasetTemplate class="rnaSeqSplicedLeaderAndPolyASitesExperiment">
+  <!-- move to top level-->
+<!--  <datasetTemplate class="rnaSeqSplicedLeaderAndPolyASitesExperiment">
     <prop name="organismAbbrev"/>
     <prop name="type"/>
 
@@ -245,10 +195,10 @@
       <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeqSplicedLeaderAndPolyASites_RSRC</paramValue>
       <paramValue name="experimentDatasetVersion">${version}</paramValue>
-    </subgraph>
+    </subgraph> -->
 
     <!--  call subgraph to load profiles  -->
-    <subgraph name="${name}_rnaSeqSplicedLeaderAndPolyASites_profiles" xmlFile="rnaSeqSplicedLeaderAndPolyASitesProfiles.xml">
+<!--    <subgraph name="${name}_rnaSeqSplicedLeaderAndPolyASites_profiles" xmlFile="rnaSeqSplicedLeaderAndPolyASitesProfiles.xml">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
@@ -262,7 +212,7 @@
       <paramValue name="type">${type}</paramValue>
       <depends name="${name}_rnaSeqSplicedLeaderAndPolyASites_experiment"/>
     </subgraph>
-  </datasetTemplate>
+  </datasetTemplate> -->
 
 </workflowGraph>
 

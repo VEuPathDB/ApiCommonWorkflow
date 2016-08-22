@@ -4,10 +4,9 @@
     <param name="experimentName"/>
     <param name="parentDataDir"/>
     <param name="organismDatasetLoaderXmlFile"/>
-    <param name="genomicSeqsFile"/>
-    <param name="genomeExtDbRlsSpec"/>
     <param name="experimentDatasetName"/>
     <param name="experimentDatasetVersion"/>
+    <param name="bowtieIndicesDir"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
@@ -21,15 +20,6 @@
       <depends name="makeDataDir"/>
     </step>
 
-  <!-- Create the bowtie indexes -->
-  <step name="createBowtieIndices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBowtieIndexes">
-    <paramValue name="inputFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="outputIndexDir">$$dataDir$$/bowtie_index</paramValue>
-      <paramValue name="colorspace">false</paramValue>
-      <paramValue name="bowtieVersion">1</paramValue>
-    <depends name="makeDataDir"/>
-  </step>
-
     <subgraph name="experiment_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
@@ -40,15 +30,12 @@
     <subgraph name="analyzeSamples" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/rnaSeqSplicedLeaderAndPolyASitesSamples.xml">
       <paramValue name="experimentDataDir">$$dataDir$$</paramValue>
       <paramValue name="outputDir">$$samplesOutputDir$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
       <paramValue name="experimentDatasetVersion">$$experimentDatasetVersion$$</paramValue>
-      <paramValue name="genomicBowtieIndexDir">$$dataDir$$/bowtie_index</paramValue>
+      <paramValue name="genomicBowtieIndexDir">$$bowtieIndicesDir$$</paramValue> 
       <depends name="makeSamplesOutputDir"/>
       <depends name="experiment_RSRC"/>
-      <depends name="createBowtieIndices"/>
     </subgraph>
 
     <step name="document-rna_seq_SplicedLeaderAndPolyASites_experiment"
