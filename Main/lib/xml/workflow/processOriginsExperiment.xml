@@ -14,13 +14,18 @@
     <param name="extraBowtieParams"/>
     <param name="experimentDatasetName"/>
 
-    <constant name="coverageFilesDir">$$parentDataDir$$/$$experimentDatasetName$$/coverageFiles</constant>
-    <constant name="outputDir">$$parentDataDir$$/$$experimentDatasetName$$/output</constant>
-    <constant name="finalDir">$$parentDataDir$$/$$experimentDatasetName$$/final</constant>
+    <constant name="dataDir">$$parentDataDir$$/originsOfReplication</constant>
+    <constant name="coverageFilesDir">$$dataDir$$/$$experimentDatasetName$$/coverageFiles</constant>
+    <constant name="outputDir">$$dataDir$$/$$experimentDatasetName$$/output</constant>
+    <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>
 
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
 
     <step name="makeExperimentDatasetLoaderDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$parentDataDir$$/$$experimentDatasetName$$</paramValue>
+        <paramValue name="dataDir">$$dataDir$$/$$experimentDatasetName$$</paramValue>
+        <depends name="makeDataDir"/>
     </step>
 
     <step name="makeCoverageFilesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -42,7 +47,7 @@
     </step>
 
     <step name="mirrorExperimentDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$parentDataDir$$/$$experimentDatasetName$$</paramValue>
+        <paramValue name="fileOrDirToMirror">$$dataDir$$/$$experimentDatasetName$$</paramValue>
         <depends name="makeExperimentDatasetLoaderDir"/>
     </step>
     <!-- load dataset manually so we can mirror the final dir before filling it with the sample files -->
@@ -62,7 +67,7 @@
     <step name="getAndUnpack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderGetAndUnpack">
         <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-        <paramValue name="dataDir">$$parentDataDir$$/$$experimentDatasetName$$</paramValue>
+        <paramValue name="dataDir">$$dataDir$$/$$experimentDatasetName$$</paramValue>
         <depends name="mirrorFinalDirToCluster"/>
     </step>
 
@@ -83,8 +88,8 @@
     <!-- end dataset loader -->
     <subgraph name="doMapping" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/originsOfReplicationSamples.xml">
         <paramValue name="projectName">$$projectName$$</paramValue>
-        <paramValue name="experimentDir">$$parentDataDir$$</paramValue>
-        <paramValue name="experimentRSRC">$$parentDataDir$$/$$experimentDatasetName$$</paramValue>
+        <paramValue name="experimentDir">$$dataDir$$</paramValue>
+        <paramValue name="experimentRSRC">$$dataDir$$/$$experimentDatasetName$$</paramValue>
         <paramValue name="coverageFilesDir">$$coverageFilesDir$$</paramValue>
         <paramValue name="indexDir">$$parentDataDir$$/bowtieIndices/genomicIndexes</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
