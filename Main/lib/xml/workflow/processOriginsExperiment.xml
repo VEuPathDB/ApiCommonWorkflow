@@ -13,29 +13,29 @@
     <param name="coverageWindowSize"/>
     <param name="extraBowtieParams"/>
     <param name="experimentDatasetName"/>
+    <param name="bowtieIndexDir"/>
 
-    <constant name="dataDir">$$parentDataDir$$/originsOfReplication</constant>
-    <constant name="coverageFilesDir">$$dataDir$$/$$experimentDatasetName$$/coverageFiles</constant>
-    <constant name="outputDir">$$dataDir$$/$$experimentDatasetName$$/output</constant>
-    <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>
+    
+    <constant name="dataDir">$$parentDataDir$$/$$experimentDatasetName$$</constant>
+
+
+    <constant name="coverageFilesDir">$$dataDir$$/coverageFiles</constant>
+    <constant name="outputDir">$$dataDir$$/output</constant>
+    <constant name="finalDir">$$dataDir$$/final</constant>
+
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeExperimentDatasetLoaderDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$dataDir$$/$$experimentDatasetName$$</paramValue>
-        <depends name="makeDataDir"/>
-    </step>
-
     <step name="makeCoverageFilesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$coverageFilesDir$$</paramValue>
-        <depends name="makeExperimentDatasetLoaderDir"/>
+        <depends name="makeDataDir"/>
     </step>
                         
     <step name="makeOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$outputDir$$</paramValue>
-        <depends name="makeExperimentDatasetLoaderDir"/>
+        <depends name="makeDataDir"/>
     </step>
                             
     <!-- make an empty final dir, and mirror it to the cluster.  the samples will each mirror their own file -->
@@ -43,12 +43,12 @@
 
     <step name="makeFinalDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$finalDir$$</paramValue>
-        <depends name="makeExperimentDatasetLoaderDir"/>
+        <depends name="makeDataDir"/>
     </step>
 
     <step name="mirrorExperimentDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$dataDir$$/$$experimentDatasetName$$</paramValue>
-        <depends name="makeExperimentDatasetLoaderDir"/>
+        <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+        <depends name="makeDataDir"/>
     </step>
     <!-- load dataset manually so we can mirror the final dir before filling it with the sample files -->
 
@@ -67,7 +67,7 @@
     <step name="getAndUnpack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderGetAndUnpack">
         <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-        <paramValue name="dataDir">$$dataDir$$/$$experimentDatasetName$$</paramValue>
+        <paramValue name="dataDir">$$dataDir$$</paramValue>
         <depends name="mirrorFinalDirToCluster"/>
     </step>
 
@@ -89,9 +89,9 @@
     <subgraph name="doMapping" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/originsOfReplicationSamples.xml">
         <paramValue name="projectName">$$projectName$$</paramValue>
         <paramValue name="experimentDir">$$dataDir$$</paramValue>
-        <paramValue name="experimentRSRC">$$dataDir$$/$$experimentDatasetName$$</paramValue>
+        <paramValue name="experimentRSRC">$$finalDir$$</paramValue>
         <paramValue name="coverageFilesDir">$$coverageFilesDir$$</paramValue>
-        <paramValue name="indexDir">$$parentDataDir$$/bowtieIndices/genomicIndexes</paramValue>
+        <paramValue name="indexDir">$$bowtieIndexDir$$/genomicIndexes</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="experimentName">$$experimentName$$</paramValue>
         <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
