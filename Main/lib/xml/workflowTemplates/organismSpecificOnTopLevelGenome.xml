@@ -1,0 +1,31 @@
+<workflowGraph name="">
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="organismDatasetLoaderXmlFile"/>
+  <param name="parentDataDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/organismSpecificTopLevel</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <!--simple gff features on top level -->
+   <datasetTemplate class="GFF_topLevel">
+    <prop name="projectName"/>
+    <prop name="name"/>
+    <prop name="organismAbbrev"/>
+    <prop name="referenceStrainOrganismAbbrev"/>
+    <subgraph name="${name}_GFF_topLevel_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_${name}_GFF_topLevel_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+</workflowGraph>
+
+
+
+

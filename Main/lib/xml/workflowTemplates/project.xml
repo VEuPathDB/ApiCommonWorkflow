@@ -207,6 +207,13 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
 
+    <subgraph name="${organismAbbrev}_specific_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/organismSpecificOnTopLevelGenome.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+    </subgraph>
 
     <subgraph name="${organismAbbrev}_LoadAliases" xmlFile="generated/${projectName}/${organismAbbrev}/aliases.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
@@ -318,21 +325,6 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsPattern name="${organismAbbrev}_*_MakeCompGenomicsFiles"/>
     </subgraph>
 
-  </datasetTemplate>
-
-
-  <!--simple gff features on top level -->
-   <datasetTemplate class="GFF_topLevel">
-    <prop name="projectName"/>
-    <prop name="name"/>
-    <prop name="organismAbbrev"/>
-    <prop name="referenceStrainOrganismAbbrev"/>
-    <subgraph name="${name}_GFF_topLevel_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${organismAbbrev}_${name}_GFF_level_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
-    </subgraph>
   </datasetTemplate>
 
   <datasetTemplate class="Pathways">
