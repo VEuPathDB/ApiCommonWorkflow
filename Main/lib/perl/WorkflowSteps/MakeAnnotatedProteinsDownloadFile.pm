@@ -17,7 +17,7 @@ sub getWebsiteFileCmd {
 
 =comment out - refs #21487
   my $sql = <<"EOF";
-     select taaf.source_id || ' | gene=' || gf.source_id
+     select taaf.source_id || ' | transcript=' || t.source_id || ' | gene=' || gf.source_id
             || decode(deprecated.is_deprecated, 1, ' | deprecated=true', '')
             || ' | organism=' || replace( tn.name, ' ', '_')
             || ' | product=' || product_name.product || ' | location='
