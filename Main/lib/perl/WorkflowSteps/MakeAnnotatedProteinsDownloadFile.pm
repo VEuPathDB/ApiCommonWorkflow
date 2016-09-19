@@ -96,7 +96,7 @@ EOF
 =cut
 
   my $sql = <<EOF;
-SELECT t.protein_source_id || ' | organism=' || replace(t.organism, ' ', '_') || 
+SELECT t.protein_source_id || ' | transcript=' || t.source_id || ' | gene=' || t.gene_source_id || ' | organism=' || replace(t.organism, ' ', '_') || 
   ' | gene_product=' || gene_product || ' | transcript_product=' || transcript_product
   || ' | location=' || sequence_id || ':' || coding_start || '-' || coding_end
   || '(' || decode(is_reversed, 1, '-', '+') || ')' 
