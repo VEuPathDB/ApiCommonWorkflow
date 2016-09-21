@@ -44,7 +44,6 @@ sub getWebsiteFileCmd {
         where ds.type = 'isolates' 
         and ds.subtype = 'sequencing_typed'
         and ds.name = d.name
-        and ds.version = r.version
         and d.external_database_id = r.external_database_id
         and r.external_database_release_id = enas.external_database_release_id
         and ds.taxon_id = o.taxon_id
