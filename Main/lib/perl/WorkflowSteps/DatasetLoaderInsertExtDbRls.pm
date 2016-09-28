@@ -37,7 +37,7 @@ sub run {
     else {
       $idType = $idType? "--idType '$idType'" : "";
       $idIsAlias = $idIsAlias? "--idIsAlias" : "";
-      $self->error("DatasetLoader $datasetName declares releaseDate=$releaseDate.  The value is not in dd-mmm-yy format (eg 27-MAR-12).") if ($releaseDate && $releaseDate !~ /^\d\d-\D\D\D-\d\d$/);
+      $self->error("DatasetLoader $datasetName declares releaseDate=$releaseDate.  The value is not in yy-mmm-dd format (eg 12-MAR-2712-MAR-27$releaseDate && $releaseDate !~ /^\d\d-\D\D\D-\d\d$/);
       my $rlsDt = $releaseDate? "--releaseDate $releaseDate" : "";
       if ($idUrl) {
 	  $idUrl = $idUrlUseSecondary? "--secondaryIdUrl '$idUrl'" : "--idUrl '$idUrl'";
