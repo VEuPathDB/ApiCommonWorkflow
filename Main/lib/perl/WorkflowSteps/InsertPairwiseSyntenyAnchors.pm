@@ -101,7 +101,12 @@ sub run {
 #	    unlink($outputFile);
 	} else {
 	    # allow for restart; skip those already in db.   any partially done pair needs to be fully backed out before restart.
-	    my $exists = $self->runSqlFetchOneRow($test,"select name from sres.externaldatabase where name = '$databaseName'");
+	    my $exists = $self->runSqlFetchOneRow($test,"select distinct d.name 
+from sres.externaldatabase d, sres.externaldatabaserelease r, apidb.synteny s
+where d.name = '$databaseName'
+and d.EXTERNAL_DATABASE_ID = r.EXTERNAL_DATABASE_ID
+and r.EXTERNAL_DATABASE_RELEASE_ID = s.EXTERNAL_DATABASE_RELEASE_ID");
+
 	    if ($exists) {
 		$self->log("Pair $pair was previously loaded.  Skipping.");
 		next;
