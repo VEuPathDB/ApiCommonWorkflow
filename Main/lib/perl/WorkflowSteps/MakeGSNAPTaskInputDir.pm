@@ -51,7 +51,7 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
   }else {
-    $self->error("Declared input file '$workflowDataDir/$readFilePath' for param 'readFilePath' does not exist") if (!-e "$workflowDataDir/$readFilePath" && !-e "$workflowDataDir/$readFilePath.gz");
+    $self->error("Declared input file '$workflowDataDir/$readFilePath' for param 'readFilePath' does not exist") if (!length($sraQueryString)>0 && !-e "$workflowDataDir/$readFilePath" && !-e "$workflowDataDir/$readFilePath.gz");
     #$self->testInputFile('readFilePath', "$workflowDataDir/$readFilePath") unless (length($sraQueryString)>0);
     # todo: test more inputs
 
