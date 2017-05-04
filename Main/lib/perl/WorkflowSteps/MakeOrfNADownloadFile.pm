@@ -36,7 +36,7 @@ sub getWebsiteFileCmd {
             sres.taxonname tn,
             sres.ontologyTerm so,
             sres.ontologyTerm soseq,
-            ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
+            apidb.FeatureLocation fl,
             dots.nasequence enas
       WHERE m.na_feature_id = taaf.na_feature_id
         AND taaf.aa_sequence_id = taas.aa_sequence_id

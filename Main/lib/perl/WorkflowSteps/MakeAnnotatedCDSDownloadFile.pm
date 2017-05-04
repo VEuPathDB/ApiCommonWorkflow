@@ -30,7 +30,7 @@ sub getWebsiteFileCmd {
            substr(snas.sequence,
                   taaf.translation_start,
                   taaf.translation_stop - taaf.translation_start + 1) as sequence
-           from ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
+           from apidb.FeatureLocation fl,
                 ApidbTuning.${tuningTablePrefix}TranscriptAttributes gf,
                 dots.transcript t, dots.splicednasequence snas, dots.translatedaafeature taaf,
                 dots.nasequence ns, sres.ontologyTerm soseq, sres.taxon,

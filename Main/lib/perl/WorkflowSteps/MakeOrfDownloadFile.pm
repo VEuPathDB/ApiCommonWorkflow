@@ -36,7 +36,7 @@ sub getWebsiteFileCmd {
             sres.taxonname tn,
             sres.ontologyTerm so,
             sres.ontologyTerm soseq,
-            ApidbTuning.${tuningTablePrefix}FeatureLocation fl,
+            apidb.FeatureLocation fl,
             ( SELECT na_sequence_id, taxon_id, sequence_ontology_id, chromosome_order_num 
               FROM  dots.virtualsequence
               UNION

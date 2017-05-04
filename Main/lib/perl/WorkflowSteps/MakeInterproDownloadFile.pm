@@ -40,7 +40,7 @@ sub getWebsiteFileCmd {
     dots.translatedaasequence tas,
     sres.externaldatabase xd1,
     sres.externaldatabaserelease xdr1,
-    ApidbTuning.${tuningTablePrefix}FeatureLocation fl
+    apidb.FeatureLocation fl
   WHERE
    gf.external_database_release_id = $genomeDbRlsId
      AND gf.na_feature_id = t.parent_id 
