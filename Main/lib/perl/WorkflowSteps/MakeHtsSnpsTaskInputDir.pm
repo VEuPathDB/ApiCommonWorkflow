@@ -34,7 +34,11 @@ sub run {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
   }else {
 
-    $self->testInputFile('readsFile', "$workflowDataDir/$readsFile");
+
+    if (!length($sraQueryString)>0 && !-e "$workflowDataDir/$readsFile") {
+      $self->error("Declared input file '$workflowDataDir/$readsFile' for param 'readsFile' does not exist");
+    }
+
     $self->testInputFile('genomicSeqsFile', "$workflowDataDir/$genomicSeqsFile");
 
 
