@@ -20,25 +20,56 @@ sub run {
   $outputDir = "$workflowDataDir/$outputDir";
   my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
 
-  my $sql = "select gf.source_id as geneid,
-             sg.name as orthomcl_id
-             from sres.taxon t,
-             dots.nasequence ns,
-             dots.genefeature gf,
-             dots.sequencesequencegroup ssg,
-             dots.sequencegroup sg,
-             sres.ontologyterm ot,
-             core.tableinfo ti
-             where t.taxon_id = $taxonId
-             and ns.taxon_id = t.taxon_id
-             and gf.na_sequence_id = ns.na_sequence_id
-             and ti.name = 'GeneFeature'
-             and ti.table_id = ssg.source_table_id
-             and ssg.sequence_id = gf.na_feature_id
-             and sg.sequence_group_id = ssg.sequence_group_id
-             and ot.name like '%chromosome'
-             and ns.sequence_ontology_id = ot.ontology_term_id
-             order by gf.source_id";
+
+  my $sql = "with sequence as (
+                select gf.source_id as gene_source_id
+                , gf.na_feature_id
+                , ns.source_id as contig_source_id
+                , ns.source_id as sequence_source_id
+                , ns.TAXON_ID
+                from dots.genefeature gf
+                , DOTS.NASEQUENCE ns
+                , SRES.ONTOLOGYTERM ot
+                where gf.na_sequence_id = ns.na_sequence_id
+                and ot.name = 'chromosome'
+                and ns.SEQUENCE_ONTOLOGY_ID = ot.ONTOLOGY_TERM_ID
+                and ns.taxon_id = $taxonId
+                union
+                select gf.SOURCE_ID AS gene_source_id
+                , gf.na_feature_id
+                , contig.source_id as contig_source_id
+                , scaffold.SOURCE_ID as chromosome_source_id
+                , scaffold.TAXON_ID
+                from dots.genefeature gf
+                , dots.nasequence contig
+                , dots.nasequence scaffold
+                , dots.sequencepiece sp
+                , SRES.ONTOLOGYTERM ot
+                where gf.na_sequence_id = sp.PIECE_NA_SEQUENCE_ID
+                and gf.na_sequence_id = contig.na_sequence_id
+                and sp.VIRTUAL_NA_SEQUENCE_ID = scaffold.NA_SEQUENCE_ID
+                and ot.name = 'chromosome'
+                and scaffold.SEQUENCE_ONTOLOGY_ID = ot.ONTOLOGY_TERM_ID
+                and scaffold.taxon_id = $taxonId
+            )
+  
+            , orthologs as (
+                select gf.na_feature_id, sg.name
+                from dots.genefeature gf
+                , dots.SequenceSequenceGroup ssg
+                , dots.SequenceGroup sg
+                , core.TableInfo ti
+                where gf.na_feature_id = ssg.sequence_id
+                and ssg.sequence_group_id = sg.sequence_group_id
+                and ssg.source_table_id = ti.table_id
+                and ti.name = 'GeneFeature'
+            )
+
+            select s.gene_source_id
+            , o.name
+            from sequence s
+            , orthologs o
+            where s.na_feature_id = o.na_feature_id";
 
   my $cmd = "calculateGeneCNVs --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --sql \"$sql\" --taxonId $taxonId";
 
