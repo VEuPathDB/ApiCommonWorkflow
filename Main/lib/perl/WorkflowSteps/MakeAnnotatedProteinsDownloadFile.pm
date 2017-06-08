@@ -101,7 +101,7 @@ SELECT t.protein_source_id || ' | transcript=' || t.source_id || ' | gene=' || t
   || ' | location=' || sequence_id || ':' || coding_start || '-' || coding_end
   || '(' || decode(is_reversed, 1, '-', '+') || ')' 
   || ' | protein_length=' || t.protein_length 
-  || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || decode(is_deprecated, 1, ' | deprecated=true', '')
+  || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || decode(is_deprecated, 1, ' | deprecated=true', '') || ' | is_pseudo=' || decode(t.is_pseudo, 1, 'true','false')
   as defline, taas.sequence
 FROM ApidbTuning.${tuningTablePrefix}TranscriptAttributes t, DOTS.NASEQUENCE ns, sres.ontologyTerm soseq,
      dots.translatedaasequence taas
