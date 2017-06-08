@@ -107,6 +107,7 @@ SELECT t.source_id || ' | gene=' || gene_source_id || decode(is_deprecated, 1, '
   || '(' || decode(is_reversed, 1, '-', '+') || ')' 
   || ' | length=' || t.length 
   || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || decode(is_deprecated, 1, ' | deprecated=true', '')
+  || ' | is_pseudo=' || decode(t.is_pseudo, 1, 'true','false')
   as defline,
   ts.SEQUENCE
 FROM ApidbTuning.${tuningTablePrefix}TranscriptAttributes t, ApidbTuning.${tuningTablePrefix}TranscriptSequence ts,
