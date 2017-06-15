@@ -1,0 +1,47 @@
+ <workflowGraph name="">
+  <param name="parentDataDir"/>
+  <param name="datasetLoaderXmlFileName"/>
+
+  <constant name="dataDir">$$parentDataDir$$/updateOntologies</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="updateOntologyFromTabDelim">
+    <prop name="name"/>
+    <prop name="version"/>
+
+    <subgraph name="Ontology_UPDATE_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">Ontology_INTERNAL_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="updateOntologyFromOWL">
+    <prop name="name"/>
+    <prop name="version"/>
+
+    <subgraph name="Ontology_UPDATE_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">Ontology_INTERNAL_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+
+  <datasetTemplate class="updateOboOntology">
+    <prop name="name"/>
+    <subgraph name="OBO_Ontology_UPDATE_${name}_RSRC" xmlFile="loadDataset.xml" stepLoadTypes="runPlugin:insertOntologyTermsAndRelationships">
+      <paramValue name="datasetName">OBO_Ontology_INTERNAL_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+
+ </workflowGraph>
