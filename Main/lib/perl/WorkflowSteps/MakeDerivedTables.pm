@@ -39,7 +39,7 @@ sub run {
   print F $xmlConfigFileString;
   close F;
 
- my $cmd = "tuningManager -instance '$instance' -propFile $stepDir/$xmlConfigFileName -doUpdate -notifyEmail none -configFile ${gusHome}/lib/xml/tuningManager/tuningManager.xml  " ;
+ my $cmd = "tuningManager -instance '$instance' -propFile $stepDir/$xmlConfigFileName -doUpdate -notifyEmail none -configFile ${gusHome}/lib/xml/tuningManager/apiTuningManager.xml  " ;
   
  if ($organismAbbrev){
    $cmd .= $self->prefixAndFilterValueCommandString($organismAbbrev, $test);
