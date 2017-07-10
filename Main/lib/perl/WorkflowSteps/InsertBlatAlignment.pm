@@ -18,7 +18,9 @@ sub run {
   my $queryExtDbName = $self->getParamValue('queryExtDbName');
   my $queryTable = $self->getParamValue('queryTable');
   my $queryFile = $self->getParamValue('queryFile');
-  my $queryRegex = $self->getParamValue('queryIdRegex');
+  
+  my $queryRegex = '>(\S+)'; # this is the default and is used for all DNA Blat
+
   my $action = $self->getParamValue('action');
   my $percentTop = $self->getParamValue('percentTop');
   my $blatFile = $self->getParamValue('blatFile');
@@ -46,6 +48,7 @@ sub run {
       $dnaArgs = "";
       $plugin = "ApiCommonData::Load::Plugin::LoadBLATProteinAlignments";
       $loadedTable = "ApiDB.BlatProteinAlignment";
+      $queryRegex = $self->getParamValue('queryIdRegex');
   }
       
   my $args = "--blat_files '$workflowDataDir/$blatFile' --query_file $workflowDataDir/$queryFile --action '$action' --queryRegex '$queryRegex' --query_table_id $queryTableId --query_taxon_id $queryTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId $dnaArgs";
