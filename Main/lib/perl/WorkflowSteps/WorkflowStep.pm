@@ -173,6 +173,13 @@ sub getSoIds {
 sub runPlugin {
     my ($self, $test, $undo, $plugin, $args) = @_;
 
+    my $skipPluginsStepNameRegex = $self->getSharedConfigRelaxed('skipPluginsStepNameRegex');
+    if ($skipPluginsStepNameRegex && $self->getName() =~ /$skipPluginsStepNameRegex/) {
+
+      $self->log("Skipping running plugin because step " + $self->getName() + " matches the regex in shared config property 'skipPluginsStepNameRegex=$skipPluginsStepNameRegex'.  The plugin we would have run is: $plugin $args (undo=$undo)");
+      return 1;
+    }
+
     my $className = ref($self);
 
     if ($test != 1 && $test != 0) {
