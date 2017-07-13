@@ -39,6 +39,15 @@ sub run {
   }
 
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $checkEsts = `head -n 1 $queryFile`;
+  if ($checkEsts =~/assemblySeqids/){
+      my $cmd = "mapAssemblySeqIdsSourceIds -q $queryFile -b $blatFile";
+      my ($mappedQueryFh, $mappedBlatFh) = $self->runCmd(0, $cmd);
+      $self->setParamValue('queryFile', $mappedQueryFh);
+      $self->setParamValue('blatFile', $mappedBlatFh);
+  }
+  $queryFile = $self->getParamValue('queryFile');
+  $blatFile = $self->getParamValue('blatFile');
 
   my $plugin = "GUS::Community::Plugin::LoadBLATAlignments";
   my $loadedTable = "DoTS.BlatAlignment";
