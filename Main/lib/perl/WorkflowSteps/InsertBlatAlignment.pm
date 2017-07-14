@@ -4,6 +4,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment;
 
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use File::Temp qw/ tempfile /;
 
 sub run {
   my ($self, $test, $undo) = @_;
@@ -41,10 +42,12 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $checkEsts = `head -n 1 $queryFile`;
   if ($checkEsts =~/assemblySeqids/){
-      my $cmd = "mapAssemblySeqIdsSourceIds -q $queryFile -b $blatFile";
-      my ($mappedQueryFh, $mappedBlatFh) = $self->runCmd(0, $cmd);
-      $self->setParamValue('queryFile', $mappedQueryFh);
-      $self->setParamValue('blatFile', $mappedBlatFh);
+      my ($queryTempFh, $queryTempfile) = tempfile();
+      my ($blatTempFh, $blatTempfile) = tempfile();
+      my $cmd = "mapAssemblySeqIdsSourceIds --queryFile $queryFile -blatFile $blatFile -queryOut $queryTempfile -blatOut $blatTempfile";
+      $self->runCmd(0, $cmd);
+      $self->setParamValue('queryFile', $queryTempfile);
+      $self->setParamValue('blatFile', $blatTempfile);
   }
   $queryFile = $self->getParamValue('queryFile');
   $blatFile = $self->getParamValue('blatFile');
