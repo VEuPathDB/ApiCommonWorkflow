@@ -48,7 +48,7 @@ sub run {
       my ($blatTempFh, $blatTempfile) = tempfile();
       my $cmd = "mapAssemblySeqIdsSourceIds --queryFile $queryFile -blatFile $blatFile -queryOut $queryTempfile -blatOut $blatTempfile";
       $self->runCmd(0, $cmd);
-      print "query Temp file is $queryTempdile\n";
+      print "query Temp file is $queryTempfile\n";
       $self->setParamValue('queryFile', $queryTempfile);
       $self->setParamValue('blatFile', $blatTempfile);
   }
