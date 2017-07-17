@@ -73,7 +73,7 @@ sub run {
       $queryRegex = $self->getParamValue('queryIdRegex');
   }
       
-  my $args = "--blat_files '$toloadBlatFile' --query_file $toloadQueryFile --action '$action' --queryRegex '$queryRegex' --query_table_id $queryTableId --query_taxon_id $queryTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId $dnaArgs";
+  my $args = "--blat_files $toloadBlatFile --query_file $toloadQueryFile --action '$action' --queryRegex '$queryRegex' --query_table_id $queryTableId --query_taxon_id $queryTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId $dnaArgs";
 
   $args .= " --query_db_rel_id $queryExtDbRlsId" if $queryExtDbRlsId;
 
