@@ -49,11 +49,13 @@ sub run {
       my $cmd = "mapAssemblySeqIdsSourceIds --queryFile $workflowDataDir/$queryFile -blatFile $workflowDataDir/$blatFile -queryOut $queryTempfile -blatOut $blatTempfile";
       $self->runCmd(0, $cmd);
       print "query Temp file is $queryTempfile\n";
-      $self->setParamValue('queryFile', $queryTempfile);
-      $self->setParamValue('blatFile', $blatTempfile);
-  }
-  $queryFile = $self->getParamValue('queryFile');
-  $blatFile = $self->getParamValue('blatFile');
+#      $self->setParamValue('queryFile', $queryTempfile);
+#      $self->setParamValue('blatFile', $blatTempfile);
+      $queryFile = $queryTempfile;
+      $blatFile = $blatTempfile;
+ }
+ # $queryFile = $self->getParamValue('queryFile');
+ # $blatFile = $self->getParamValue('blatFile');
 
   print "queryFile is $queryFile\n";
   my $plugin = "GUS::Community::Plugin::LoadBLATAlignments";
