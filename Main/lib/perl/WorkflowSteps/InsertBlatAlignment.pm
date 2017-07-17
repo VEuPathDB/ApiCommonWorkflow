@@ -43,7 +43,7 @@ sub run {
   my $checkEsts = `head -n 1 $workflowDataDir/$queryFile`;
   print "EST header is $checkEsts\n";
   my $toloadQueryFile = $workflowDataDir."/".$queryFile;
-  my $toloadBlatFile = $workflowDataDir."/".$queryFile;
+  my $toloadBlatFile = $workflowDataDir."/".$blatFile;
   if ($checkEsts =~/^>assemblySeqIds/){
       print "matching regex >assemblySeqIds\n";
       my ($queryTempFh, $queryTempfile) = tempfile();
