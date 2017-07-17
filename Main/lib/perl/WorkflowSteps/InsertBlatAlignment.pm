@@ -41,17 +41,21 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $checkEsts = `head -n 1 $queryFile`;
-  if ($checkEsts =~/assemblySeqIds/){
+  print "EST header is $checkEsts\n";
+  if ($checkEsts =~/^>assemblySeqIds/){
+      print "matching regex >assemblySeqIds\n";
       my ($queryTempFh, $queryTempfile) = tempfile();
       my ($blatTempFh, $blatTempfile) = tempfile();
       my $cmd = "mapAssemblySeqIdsSourceIds --queryFile $queryFile -blatFile $blatFile -queryOut $queryTempfile -blatOut $blatTempfile";
       $self->runCmd(0, $cmd);
+      print "query Temp file is $queryTempdile\n";
       $self->setParamValue('queryFile', $queryTempfile);
       $self->setParamValue('blatFile', $blatTempfile);
   }
   $queryFile = $self->getParamValue('queryFile');
   $blatFile = $self->getParamValue('blatFile');
 
+  print "queryFile is $queryFile\n";
   my $plugin = "GUS::Community::Plugin::LoadBLATAlignments";
   my $loadedTable = "DoTS.BlatAlignment";
   my $dnaArgs = "--max_query_gap 5 --min_pct_id 95 --max_end_mismatch 10 --end_gap_factor 10 --min_gap_pct 90  --ok_internal_gap 15 --ok_end_gap 50 --min_query_pct 10";
