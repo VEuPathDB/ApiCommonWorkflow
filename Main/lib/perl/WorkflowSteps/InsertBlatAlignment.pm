@@ -42,6 +42,8 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $checkEsts = `head -n 1 $workflowDataDir/$queryFile`;
   print "EST header is $checkEsts\n";
+  my $toloadQueryFile = $workflowDataDir."/".$queryFile;
+  my $toloadBlatFile = $workflowDataDir."/".$queryFile;
   if ($checkEsts =~/^>assemblySeqIds/){
       print "matching regex >assemblySeqIds\n";
       my ($queryTempFh, $queryTempfile) = tempfile();
@@ -53,6 +55,8 @@ sub run {
 #      $self->setParamValue('blatFile', $blatTempfile);
       $queryFile = $queryTempfile;
       $blatFile = $blatTempfile;
+      $toloadQueryFile =$queryTempfile;
+      $toloadBlatFile = $blatTempfile;
  }
  # $queryFile = $self->getParamValue('queryFile');
  # $blatFile = $self->getParamValue('blatFile');
@@ -69,21 +73,21 @@ sub run {
       $queryRegex = $self->getParamValue('queryIdRegex');
   }
       
-  my $args = "--blat_files '$workflowDataDir/$blatFile' --query_file $workflowDataDir/$queryFile --action '$action' --queryRegex '$queryRegex' --query_table_id $queryTableId --query_taxon_id $queryTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId $dnaArgs";
+  my $args = "--blat_files 'toloadBlatFile' --query_file $toloadQueryFile --action '$action' --queryRegex '$queryRegex' --query_table_id $queryTableId --query_taxon_id $queryTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId $dnaArgs";
 
   $args .= " --query_db_rel_id $queryExtDbRlsId" if $queryExtDbRlsId;
 
   $args .= " --percentTop $percentTop" if $percentTop;
 
 
-    $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
-    $self->testInputFile('blatFile', "$workflowDataDir/$blatFile");
+    $self->testInputFile('queryFile', "$toloadQueryFile");
+    $self->testInputFile('blatFile', "$toloadBlatFile");
 
 
-  if (-s "$workflowDataDir/$queryFile" || $test) {
+  if (-s "$toloadQueryFile" || $test) {
       $self->runPlugin($test, $undo, $plugin, $args);
   } else {
-      $self->log("queryFile '$workflowDataDir/$queryFile' is empty.  Doing nothing.");      
+      $self->log("queryFile '$toloadQueryFile' is empty.  Doing nothing.");      
   }
   #check the number of rows loaded. We will put a threshold for it, say if less than 1000 rows, the step will fail. Can't do this, can't predict the number of ESTs
   if ($action eq 'load' && !$test && !$undo){
