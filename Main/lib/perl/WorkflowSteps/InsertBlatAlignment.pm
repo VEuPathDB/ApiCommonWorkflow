@@ -41,7 +41,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $checkEsts = `head -n 1 $queryFile`;
-  if ($checkEsts =~/assemblySeqids/){
+  if ($checkEsts =~/assemblySeqIds/){
       my ($queryTempFh, $queryTempfile) = tempfile();
       my ($blatTempFh, $blatTempfile) = tempfile();
       my $cmd = "mapAssemblySeqIdsSourceIds --queryFile $queryFile -blatFile $blatFile -queryOut $queryTempfile -blatOut $blatTempfile";
