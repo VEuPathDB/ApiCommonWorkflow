@@ -40,7 +40,7 @@ sub run {
   }
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $checkEsts = `head -n 1 $queryFile`;
+  my $checkEsts = `head -n 1 $workflowDataDir/$queryFile`;
   print "EST header is $checkEsts\n";
   if ($checkEsts =~/^>assemblySeqIds/){
       print "matching regex >assemblySeqIds\n";
