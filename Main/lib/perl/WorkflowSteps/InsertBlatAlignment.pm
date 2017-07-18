@@ -46,8 +46,8 @@ sub run {
   my $toloadBlatFile = $workflowDataDir."/".$blatFile;
   if ($checkEsts =~/^>assemblySeqIds/){
       print "matching regex >assemblySeqIds\n";
-      my ($queryTempFh, $queryTempfile) = tempfile();
-      my ($blatTempFh, $blatTempfile) = tempfile();
+      my ($queryTempFh, $queryTempfile) = tempfile(DIR =>$workflowDataDir);
+      my ($blatTempFh, $blatTempfile) = tempfile(DIR =>$workflowDataDir);
       my $cmd = "mapAssemblySeqIdsSourceIds --queryFile $workflowDataDir/$queryFile -blatFile $workflowDataDir/$blatFile -queryOut $queryTempfile -blatOut $blatTempfile";
       $self->runCmd(0, $cmd);
       print "query Temp file is $queryTempfile\n";
@@ -55,8 +55,8 @@ sub run {
 #      $self->setParamValue('blatFile', $blatTempfile);
       $queryFile = $queryTempfile;
       $blatFile = $blatTempfile;
-      $toloadQueryFile =$queryTempfile;
-      $toloadBlatFile = $blatTempfile;
+      $toloadQueryFile =$workflowDataDir."/".$queryTempfile;
+      $toloadBlatFile = $workflowDataDir."/".$blatTempfile;
  }
  # $queryFile = $self->getParamValue('queryFile');
  # $blatFile = $self->getParamValue('blatFile');
