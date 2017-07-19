@@ -55,8 +55,8 @@ sub run {
 #      $self->setParamValue('blatFile', $blatTempfile);
       $queryFile = $queryTempfile;
       $blatFile = $blatTempfile;
-      $queryFile =~ s/$workflowDataDir//;
-      $blatFile =~ s/$workflowDataDir//;
+      $queryFile =~ s/$workflowDataDir\///;
+      $blatFile =~ s/$workflowDataDir\///;
       $toloadQueryFile =$queryTempfile;
       $toloadBlatFile = $blatTempfile;
  }
