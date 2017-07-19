@@ -55,6 +55,8 @@ sub run {
 #      $self->setParamValue('blatFile', $blatTempfile);
       $queryFile = $queryTempfile;
       $blatFile = $blatTempfile;
+      $queryFile =~ s/$workflowDataDir//;
+      $blatFile =~ s/$workflowDataDir//;
       $toloadQueryFile =$queryTempfile;
       $toloadBlatFile = $blatTempfile;
  }
@@ -80,8 +82,8 @@ sub run {
   $args .= " --percentTop $percentTop" if $percentTop;
 
 
-    $self->testInputFile('queryFile', "$toloadQueryFile");
-    $self->testInputFile('blatFile', "$toloadBlatFile");
+    $self->testInputFile('queryFile', "QueryFile");
+    $self->testInputFile('blatFile', "BlatFile");
 
 
   if (-s "$toloadQueryFile" || $test) {
