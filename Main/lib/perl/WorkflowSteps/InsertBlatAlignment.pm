@@ -82,8 +82,8 @@ sub run {
   $args .= " --percentTop $percentTop" if $percentTop;
 
 
-    $self->testInputFile('queryFile', "QueryFile");
-    $self->testInputFile('blatFile', "BlatFile");
+    $self->testInputFile('queryFile', "$queryFile");
+    $self->testInputFile('blatFile', "$blatFile");
 
 
   if (-s "$toloadQueryFile" || $test) {
