@@ -40,25 +40,32 @@ sub run {
   }
 
   my $workflowDataDir = $self->getWorkflowDataDir();
+
+  my $queryTempFile = $queryFile;
+  my $blatTempFile = $blatFile;
+  $queryTempFile =~ s/blocked.seq/tempMappingBlocked.seq/;
+  $blatTempFile =~ s/out.psl/tempMappingOut.psl/;
+  my $hasTempFiles = 0;
   my $checkEsts = `head -n 1 $workflowDataDir/$queryFile`;
-  print "EST header is $checkEsts\n";
-  my $toloadQueryFile = $workflowDataDir."/".$queryFile;
-  my $toloadBlatFile = $workflowDataDir."/".$blatFile;
+#  print "EST header is $checkEsts\n";
+#  my $toloadQueryFile = $workflowDataDir."/".$queryFile;
+#  my $toloadBlatFile = $workflowDataDir."/".$blatFile;
   if ($checkEsts =~/^>assemblySeqIds/){
+      $hasTempFiles = 1;
       print "matching regex >assemblySeqIds\n";
-      my ($queryTempFh, $queryTempfile) = tempfile(DIR =>$workflowDataDir);
-      my ($blatTempFh, $blatTempfile) = tempfile(DIR =>$workflowDataDir);
-      my $cmd = "mapAssemblySeqIdsSourceIds --queryFile $workflowDataDir/$queryFile -blatFile $workflowDataDir/$blatFile -queryOut $queryTempfile -blatOut $blatTempfile";
+#      my ($queryTempFh,$queryTempfile) = tempfile(DIR =>$workflowDataDir);
+#      my ($blatTempFh, $blatTempfile) = tempfile(DIR =>$workflowDataDir);
+     my $cmd = "mapAssemblySeqIdsSourceIds --queryFile $workflowDataDir/$queryFile -blatFile $workflowDataDir/$blatFile -queryOut $workflowDataDir/$queryTempfile -blatOut $workflowDataDir/$blatTempfile";
       $self->runCmd(0, $cmd);
-      print "query Temp file is $queryTempfile\n";
+      print "query Temp file is $workflowDataDir/$queryTempfile\n";
 #      $self->setParamValue('queryFile', $queryTempfile);
 #      $self->setParamValue('blatFile', $blatTempfile);
       $queryFile = $queryTempfile;
       $blatFile = $blatTempfile;
-      $queryFile =~ s/$workflowDataDir\///;
-      $blatFile =~ s/$workflowDataDir\///;
-      $toloadQueryFile =$queryTempfile;
-      $toloadBlatFile = $blatTempfile;
+#      $queryFile =~ s/$workflowDataDir\///;
+#      $blatFile =~ s/$workflowDataDir\///;
+#      $toloadQueryFile =$queryTempfile;
+#      $toloadBlatFile = $blatTempfile;
  }
  # $queryFile = $self->getParamValue('queryFile');
  # $blatFile = $self->getParamValue('blatFile');
@@ -75,7 +82,7 @@ sub run {
       $queryRegex = $self->getParamValue('queryIdRegex');
   }
       
-  my $args = "--blat_files $toloadBlatFile --query_file $toloadQueryFile --action '$action' --queryRegex '$queryRegex' --query_table_id $queryTableId --query_taxon_id $queryTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId $dnaArgs";
+  my $args = "--blat_files $workflowDataDir/$blatFile --query_file $workflowDataDir/$queryFile --action '$action' --queryRegex '$queryRegex' --query_table_id $queryTableId --query_taxon_id $queryTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId $dnaArgs";
 
   $args .= " --query_db_rel_id $queryExtDbRlsId" if $queryExtDbRlsId;
 
@@ -86,10 +93,10 @@ sub run {
     $self->testInputFile('blatFile', "$blatFile");
 
 
-  if (-s "$toloadQueryFile" || $test) {
+  if (-s "$workflowDataDir/$queryFile" || $test) {
       $self->runPlugin($test, $undo, $plugin, $args);
   } else {
-      $self->log("queryFile '$toloadQueryFile' is empty.  Doing nothing.");      
+      $self->log("queryFile '$workflowDataDir/$queryFile' is empty.  Doing nothing.");      
   }
   #check the number of rows loaded. We will put a threshold for it, say if less than 1000 rows, the step will fail. Can't do this, can't predict the number of ESTs
   if ($action eq 'load' && !$test && !$undo){
@@ -98,6 +105,12 @@ sub run {
        my $cmd = "getValueFromTable --idSQL \"$sql\"";
        my $loaded = $self->runCmd($test, $cmd);
        die "No rows loaded." if ($loaded == 0);     
+  }
+  if ($undo) {
+      if ($hasTempFiles == 1) {
+	  my $cmd = "rm $workflowDataDir/$queryTempFile $workflowDataDir/$blatTempFile";
+	  $self->runCmd(0,$cmd);
+      }
   }
 }
 
