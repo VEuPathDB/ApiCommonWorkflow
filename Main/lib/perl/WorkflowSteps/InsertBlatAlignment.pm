@@ -89,8 +89,8 @@ sub run {
   $args .= " --percentTop $percentTop" if $percentTop;
 
 
-    $self->testInputFile('queryFile', "$queryFile");
-    $self->testInputFile('blatFile', "$blatFile");
+    $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
+    $self->testInputFile('blatFile', "$workflowDataDir/$blatFile");
 
 
   if (-s "$workflowDataDir/$queryFile" || $test) {
