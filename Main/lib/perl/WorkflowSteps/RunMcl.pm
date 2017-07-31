@@ -14,8 +14,9 @@ sub run {
   my $inflation = $self->getParamValue('inflation');
   my $inputFile = "$workflowDataDir/" . $self->getParamValue('inputFile');
   my $outputFile = "$workflowDataDir/" . $self->getParamValue('outputFile');
+  my $mclPath = $self->getConfig('mclPath');
 
-  my $cmd = "mcl $inputFile --abc -I $inflation -o $outputFile ";
+  my $cmd = "$mclPath $inputFile --abc -I $inflation -o $outputFile ";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $outputFile");
