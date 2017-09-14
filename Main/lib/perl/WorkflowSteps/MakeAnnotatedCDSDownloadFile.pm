@@ -68,6 +68,7 @@ sub getWebsiteFileCmd {
                    and gf.na_feature_id = any_name.na_feature_id(+)
                 ) product_name
       WHERE gf.gene_na_feature_id = t.parent_id
+        AND gf.transcript_source_id = t.source_id
         AND fl.na_sequence_id = ns.na_sequence_id
         AND t.na_sequence_id = snas.na_sequence_id
         AND gf.gene_na_feature_id = fl.na_feature_id
