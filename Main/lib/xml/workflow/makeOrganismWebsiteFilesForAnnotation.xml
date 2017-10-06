@@ -13,6 +13,8 @@
     <constant name="gffDescripString">Genome sequences and annotations in GFF3 format</constant>
     <constant name="interproDescripString">Interpro domains mapped to genes</constant>
     <constant name="codonDescripString">Codon usage</constant>
+    <constant name="gafDescripString">GO annotation file in GAF format</constant>
+    <constant name="gafFileDataName">GO</constant>
     <constant name="annotatedCDSsDataName">AnnotatedCDSs</constant>
 
     <step name="makeAnnotatedCDSDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAnnotatedCDSDownloadFile">
@@ -49,6 +51,29 @@
       <paramValue name="fileType">gff</paramValue>
       <paramValue name="dataName"></paramValue>
       <depends name="makeGffDownloadFile"/>
+    </step>
+
+    <step name="makeGafDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGafDownloadDir">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="useSpeciesName">false</paramValue>
+      <paramValue name="useFamilyName">false</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    </step>
+
+    <step name="makeGafDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGafDownloadFile">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="fileType">gaf</paramValue>
+      <paramValue name="dataName">$$gafFileDataName$$</paramValue>
+      <paramValue name="descripString">$$gafDescripString$$</paramValue>
+      <paramValue name="organismSource">$$genomeSource$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="isWebServiceFile">false</paramValue>
+      <depends name="makeGafDownloadDir"/>
     </step>
 
     <step name="formatAnnotatedCDSDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles">
