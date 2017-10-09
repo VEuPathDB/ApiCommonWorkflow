@@ -26,7 +26,7 @@ sub run {
   my $writeCovFiles = $self->getParamValue("writeCovFiles");
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $taskSize = $self->getConfig("taskSize");
-
+  my $hasPairedEnds = $self->getParamValue("hasPairedEnds");
   my $sraQueryString = $self->getParamValue("sraQueryString");
 
 #  my $blatExec = $self->getConfig("$clusterServer.blatExec");
@@ -78,6 +78,7 @@ quantifyJunctions=$createJunctionsFile
 topLevelGeneFootprintFile=$clusterWorkflowDataDir/$topLevelGeneFootprintFile
 topLevelFastaFaiFile=$clusterWorkflowDataDir/$topLevelFastaFile.fai
 hasKnownSpliceSites=$useSpliceSiteDB
+hasPairedEnds=$hasPairedEnds
 ";
 
     if(length($sraQueryString)>0){
