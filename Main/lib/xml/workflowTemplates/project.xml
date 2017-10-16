@@ -274,6 +274,20 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${organismAbbrev}_LoadAliases"/>
     </subgraph>
 
+    <subgraph name="${organismAbbrev}_EarlyVirtualLocations" xmlFile="virtualLocations.xml" groupName="${organismAbbrev}">
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="mode">early</paramValue>
+      <depends name="${organismAbbrev}_PostLoadGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+    </subgraph>
+
+    <subgraph name="${organismAbbrev}_LateVirtualLocations" xmlFile="virtualLocations.xml" groupName="${organismAbbrev}">
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="mode">late</paramValue>
+      <dependsPattern name="${organismAbbrev}_specific*"/>
+      <depends name="${organismAbbrev}_PostLoadGenome"/>
+    </subgraph>
+
     <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml" groupName="${organismAbbrev}">
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
@@ -287,19 +301,8 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="isHugeGenome">${isHugeGenome}</paramValue>
       <depends name="${organismAbbrev}_PostLoadGenome"/>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
-    </subgraph>
-
-    <subgraph name="${organismAbbrev}_EarlyVirtualLocations" xmlFile="virtualLocations.xml" groupName="${organismAbbrev}">
-      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <paramValue name="mode">early</paramValue>
-      <depends name="${organismAbbrev}_PostLoadGenome"/>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
-    </subgraph>
-
-    <subgraph name="${organismAbbrev}_LateVirtualLocations" xmlFile="virtualLocations.xml" groupName="${organismAbbrev}">
-      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <paramValue name="mode">late</paramValue>
-      <dependsPattern name="${organismAbbrev}_specific*"/>
+      <depends name="${organismAbbrev}_LateVirtualLocations"/>
+      <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
     </subgraph>
 
   </datasetTemplate>
