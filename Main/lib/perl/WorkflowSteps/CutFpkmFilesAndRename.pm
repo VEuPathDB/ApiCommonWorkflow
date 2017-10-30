@@ -18,7 +18,8 @@ sub run {
   my $cmd = "renameRnaseqIntensityFiles.pl --inputDirectory $workflowDataDir/$inputDirectory --outputDirectory $workflowDataDir/$outputDirectory --sampleName '$sampleName'";
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $workflowDataDir/$outputDirectory/$sampleName*");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputDirectory/$sampleName*.counts");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputDirectory/$sampleName*.fpkm");
   } else {
       if ($test) {
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDirectory/$sampleName");
