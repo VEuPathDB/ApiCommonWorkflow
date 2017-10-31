@@ -55,6 +55,11 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir");
   } else {
+      # clean up previous failure
+      if(-d $workflowDataDir/$outputDir) {
+        $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir");
+      }
+  
       $self->runCmd(0, "mkdir $workflowDataDir/$outputDir");
 
       $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
