@@ -23,7 +23,7 @@ sub run {
 
   # expects string true/false
   my $isColorspace = $self->getParamValue("isColorspace");
-  my $hasPairedEnds =$self->getParamValue("hasPairedEnds");
+ # my $hasPairedEnds =$self->getParamValue("hasPairedEnds");
   my $sraQueryString = $self->getParamValue("sraQueryString");
 
   my $taskSize = $self->getConfig("taskSize");
@@ -58,7 +58,7 @@ fastaFile=$clusterWorkflowDataDir/$genomicSeqsFile
 bowtieIndex=$clusterWorkflowDataDir/$indexDir
 strain=$strain
 isColorspace=$isColorspace
-hasPairedEnds=$hasPairedEnds
+hasPairedEnds=$hasPairedReads
 ";
       $taskPropFileContent .= "snpPercentCutoff=$snpPercentCutoff\n" if $snpPercentCutoff;
 
