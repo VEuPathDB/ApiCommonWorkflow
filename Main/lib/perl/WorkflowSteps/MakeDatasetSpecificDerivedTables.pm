@@ -57,7 +57,7 @@ sub run {
 sub prefixAndFilterValueCommandString {
   my ($self, $datasetName, $test) = @_;
   
-  my $tuningTablePrefix = "D" . substr(sha1_hex("ISASimple_Gates_GEMS_gems1_case_control_RSRC"), 0, 10);
+  my $tuningTablePrefix = "D" . substr(sha1_hex($datasetName), 0, 10);
     
   return "-filterValue $datasetName -prefix '$tuningTablePrefix'  " ;
 }
