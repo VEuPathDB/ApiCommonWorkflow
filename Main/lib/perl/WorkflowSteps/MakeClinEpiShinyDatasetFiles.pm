@@ -36,9 +36,9 @@ where pa.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = ea.PAN_ID
 "; 
 
-  my $participantsFile = "$datasetName/$outputFileBaseName_participants.txt";
-  my $householdsFile = "$datasetName/$outputFileBaseName_households.txt";
-  my $observationsFile = "$datasetName/$outputFileBaseName_obsevations.txt";
+  my $participantsFile = "$datasetName/${outputFileBaseName}_participants.txt";
+  my $householdsFile = "$datasetName/${outputFileBaseName}_households.txt";
+  my $observationsFile = "$datasetName/${outputFileBaseName}_obsevations.txt";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -52,9 +52,9 @@ and io.OUTPUT_PAN_ID = ea.PAN_ID
 	    $self->runCmd(0,"echo test > $workflowDataDir/$householdsFile");
 	    $self->runCmd(0,"echo test > $workflowDataDir/$observationsFile");
       }
-      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$participants --sql \"$shinyParticipantsSql\" --verbose");
-      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$households --sql \"$shinyHouseholdsSql\" --verbose");
-      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$observations --sql \"$shinyObservationsSql\" --verbose");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$participantsFile --sql \"$shinyParticipantsSql\" --verbose --includeHeader");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$householdsFile --sql \"$shinyHouseholdsSql\" --verbose --includeHeader");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$observationsFile --sql \"$shinyObservationsSql\" --verbose --includeHeader");
   }
 }
 
