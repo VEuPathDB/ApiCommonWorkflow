@@ -1,3 +1,4 @@
+# This package will no longer MOVE a file.  It will make a symlink with a new name
 package ApiCommonWorkflow::Main::WorkflowSteps::MoveFile;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
@@ -14,7 +15,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "mv $workflowDataDir/$inputFile $workflowDataDir/$outputFile";
+  my $cmd = "ln -s $workflowDataDir/$inputFile $workflowDataDir/$outputFile";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");
