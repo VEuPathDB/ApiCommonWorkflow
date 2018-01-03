@@ -24,24 +24,24 @@ sub run {
   my $cmd;
   if ($makeCdfFile || $makeNdfFile) {
       $self->error("Input provider file '$inputFile' does not exist") unless (-e "$inputFile");
-      $cmd = "cp $inputFile $workflowDataDir/$providedMappingFileName";
+      $cmd = "cp $inputFile $workflowDataDir/$outputDir/$providedMappingFileName";
   } else {
-      $cmd = "cp $inputFile $workflowDataDir/$outputTabFile";
+      $cmd = "cp $inputFile $workflowDataDir/$outputDir/$outputTabFile";
   }
 
   if ($test) {
       if ($makeCdfFile || $makeNdfFile) {
-	  $self->runCmd(0, "echo test > $workflowDataDir/$providedMappingFileName");
+	  $self->runCmd(0, "echo test > $workflowDataDir/$outputDir/$providedMappingFileName");
       } else {
-	  $self->runCmd(0, "echo test > $workflowDataDir/$outputTabFile");
+	  $self->runCmd(0, "echo test > $workflowDataDir/$outputDir/$outputTabFile");
       }
   }
 
   if ($undo) {
       if ($makeCdfFile || $makeNdfFile) {
-	  $self->runCmd(0, "rm -f $workflowDataDir/$providedMappingFileName");
+	  $self->runCmd(0, "rm -f $workflowDataDir/$outputDir/$providedMappingFileName");
       } else {
-	  $self->runCmd(0, "rm -f $workflowDataDir/$outputTabFile");
+	  $self->runCmd(0, "rm -f $workflowDataDir/$outputDir/$outputTabFile");
       }
   } else {
     $self->runCmd($test, $cmd);
