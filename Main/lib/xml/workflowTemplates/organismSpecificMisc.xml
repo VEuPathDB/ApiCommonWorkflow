@@ -27,6 +27,29 @@
     </step>
   </datasetTemplate> 
 
+
+  <datasetTemplate class="NAFeaturePhenotypeImage">
+    <prop name="name"/>
+    <prop name="organismAbbrev"/>
+    <subgraph name="${name}_NAFeaturePhenotypeImage" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_${name}_NAFeaturePhenotypeImage_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+
+    <step name="copyImageFileToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyImageFileToWebServices">
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/${organismAbbrev}_${name}_NAFeaturePhenotypeImage_RSRC/final/images/</paramValue>
+      <paramValue name="datasetName">${organismAbbrev}_${name}_NAFeaturePhenotypeImage_RSRC</paramValue>
+      <paramValue name="relativeAuxiliaryDir">$$relativeAuxiliaryDir$$</paramValue>
+      <depends name="${name}_NAFeaturePhenotypeImage"/>
+    </step>
+  </datasetTemplate> 
+
+
+
+
   <datasetTemplate class="GeneOntologyAssociations">
     <prop name="name"/> 
     <prop name="organismAbbrev"/>
