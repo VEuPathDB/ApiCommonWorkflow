@@ -46,7 +46,9 @@ sub run {
     die "Command iit_dump not found";
   }
 
+  my $wfName = $self->getWorkflowConfig('name');
 
+  if ($wfName eq "TriTrypDB" || $wfName eq "HostDB"){$useSpliceSiteDB = "false";}
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$taskInputDir/");
@@ -80,6 +82,8 @@ topLevelFastaFaiFile=$clusterWorkflowDataDir/$topLevelFastaFile.fai
 hasKnownSpliceSites=$useSpliceSiteDB
 hasPairedEnds=$hasPairedEnds
 ";
+
+$taskPropFileContent .= "findNovelSpliceSites=false\n" if ($useSpliceSiteDB eq 'false');
 
     if(length($sraQueryString)>0){
       $taskPropFileContent .= "mateA=none\n";
