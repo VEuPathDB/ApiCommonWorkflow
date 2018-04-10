@@ -26,7 +26,8 @@ sub run {
   my $copyToDir = "$websiteFilesDir/$relativeAuxiliaryDir/$organismNameForFiles/image/$datasetName/";
 
   if($undo) {
-    $self->runCmd(0, "rm -f $copyToDir/*");
+    #$self->runCmd(0, "rm -f $copyToDir/*");
+    $self->runCmd(0, "find $copyToDir -name '*' -exec rm -f {} \;");
   } else{
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
     if($test){
