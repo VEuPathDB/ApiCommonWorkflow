@@ -40,7 +40,7 @@ sub run {
   print F $xmlConfigFileString;
   close F;
 
- my $cmd = "tuningManager -instance '$instance' -propFile $stepDir/$xmlConfigFileName -doUpdate -notifyEmail none -configFile ${gusHome}/lib/xml/tuningManager/studyTuningManager.xml  " ;
+ my $cmd = "tuningManager -instance '$instance' -propFile $stepDir/$xmlConfigFileName -doUpdate -notifyEmail none -configFile ${gusHome}/lib/xml/tuningManager/tuningManager.xml  " ;
   $cmd .= $self->prefixAndFilterValueCommandString($datasetName, $test);
 
 
