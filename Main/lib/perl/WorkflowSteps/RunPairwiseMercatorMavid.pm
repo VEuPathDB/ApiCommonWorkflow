@@ -25,9 +25,11 @@ sub run {
 		my $cndSrcBin = $self->getConfig('cndSrcBin');
 	my $mavid = $self->getConfig('mavidExe');
 
-	my $workflowDataDir = $self->getWorkflowDataDir();
+	my $masterWorkflowDataDir = $self->getSharedConfigRelaxed('masterWorkflowDataDir'); # defined only in UniDB context
+	my $unidb = defined($masterWorkflowDataDir);
+	my $workflowDataDir = $unidb ? $masterWorkflowDataDir : $self->getWorkflowDataDir();
 
-	if ($undo) {
+	if ($undo && !$unidb) {
 		$self->runCmd(0, "rm -fr $workflowDataDir/$mercatorOutputsDir");
 		return;
 	}
@@ -36,22 +38,24 @@ sub run {
 		my $isDraftHash = $self->getIsDraftHash(\@organismAbbrevs, $test);  # hash of 0/1 for each organism
 
 # create and clean out needed dirs
-	$self->runCmd(0, "rm -r $workflowDataDir/$mercatorOutputsDir") if -e "$workflowDataDir/$mercatorOutputsDir";
-	mkdir("$workflowDataDir/$mercatorOutputsDir")
-		|| $self->error("Could not make dir '$workflowDataDir/$mercatorOutputsDir'");
-
-	$self->runCmd($test, "rm -r $workflowDataDir/$mercatorTmpDir") if -e "$workflowDataDir/$mercatorTmpDir";
-	mkdir("$workflowDataDir/$mercatorTmpDir")
-		|| $self->error("Could not make dir '$workflowDataDir/$mercatorTmpDir'");
-
 	my $cacheDir = "$workflowDataDir/$mercatorCacheDir";
-	mkdir("$workflowDataDir/$mercatorCacheDir");
-
-# always re-run unaligned pairs
 	my $skippedDir = "$workflowDataDir/pairsWithNoAlignment";
-	$self->runCmd($test, "rm -r $skippedDir") if -e "$skippedDir";
-	mkdir("$skippedDir")
-		|| $self->error("Could not make dir '$skippedDir'");
+	unless($unidb){
+		$self->runCmd(0, "rm -r $workflowDataDir/$mercatorOutputsDir") if -e "$workflowDataDir/$mercatorOutputsDir";
+		mkdir("$workflowDataDir/$mercatorOutputsDir")
+			|| $self->error("Could not make dir '$workflowDataDir/$mercatorOutputsDir'");
+
+		$self->runCmd($test, "rm -r $workflowDataDir/$mercatorTmpDir") if -e "$workflowDataDir/$mercatorTmpDir";
+		mkdir("$workflowDataDir/$mercatorTmpDir")
+			|| $self->error("Could not make dir '$workflowDataDir/$mercatorTmpDir'");
+	
+		mkdir("$workflowDataDir/$mercatorCacheDir");
+	
+	# always re-run unaligned pairs
+		$self->runCmd($test, "rm -r $skippedDir") if -e "$skippedDir";
+		mkdir("$skippedDir")
+			|| $self->error("Could not make dir '$skippedDir'");
+	}
 
 
 	foreach my $orgA (@organismAbbrevs) {
@@ -66,7 +70,7 @@ sub run {
 			my $pairOutputDir = "$workflowDataDir/$mercatorOutputsDir/${orgA}-${orgB}";
 			my $pairCacheDir = "$cacheDir/${orgA}-${orgB}";
 
-			if ($test) {
+			if ($test && ! $unidb) {
 				$self->runCmd(0,"mkdir $pairOutputDir");
 				$self->runCmd(0,"echo hello > $pairOutputDir/${orgA}-${orgB}.align");
 				next;
@@ -74,7 +78,7 @@ sub run {
 
 			if ($self->cacheHit($orgA, $orgB, $cacheDir, "$workflowDataDir/$mercatorInputsDir", $test)) {
 				$self->runCmd($test, "ln -s $pairCacheDir $pairOutputDir");
-			} else {
+			} elsif(!$unidb) { ## must have cacheHit in unidb context
 
 # the strategy here is:
 #  - set up a tmp dir with input files.
