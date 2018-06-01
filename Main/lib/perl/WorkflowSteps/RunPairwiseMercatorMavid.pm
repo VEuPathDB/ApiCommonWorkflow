@@ -67,7 +67,8 @@ sub run {
 
 			next unless $orgA gt $orgB;  # only do each pair once, and don't do self-self
 
-			my $pairOutputDir = "$workflowDataDir/$mercatorOutputsDir/${orgA}-${orgB}";
+			# assign $pairOutputDir using self->getWorkflowDataDir() in case $workflowDataDir was assigned to $masterWorkflowDataDir for unidb context; works for non-unidb context too
+			my $pairOutputDir = sprintf("%s/%s/%s-%s",$self->getWorkflowDataDir(),$mercatorOutputsDir,$orgA,$orgB);
 			my $pairCacheDir = "$cacheDir/${orgA}-${orgB}";
 
 			if ($test && ! $unidb) {
