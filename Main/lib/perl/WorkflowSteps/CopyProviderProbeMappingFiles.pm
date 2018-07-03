@@ -26,14 +26,14 @@ sub run {
       $self->error("Input provider file '$inputFile' does not exist") unless (-e "$inputFile");
       $cmd = "cp $inputFile $workflowDataDir/$outputDir/$providedMappingFileName";
   } else {
-      $cmd = "cp $inputFile $workflowDataDir/$outputDir/$outputTabFile";
+      $cmd = "cp $inputFile $workflowDataDir/$outputTabFile";
   }
 
   if ($test) {
       if ($makeCdfFile || $makeNdfFile) {
 	  $self->runCmd(0, "echo test > $workflowDataDir/$outputDir/$providedMappingFileName");
       } else {
-	  $self->runCmd(0, "echo test > $workflowDataDir/$outputDir/$outputTabFile");
+	  $self->runCmd(0, "echo test > $workflowDataDir/$outputTabFile");
       }
   }
 
