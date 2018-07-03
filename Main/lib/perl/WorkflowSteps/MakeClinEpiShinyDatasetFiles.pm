@@ -36,25 +36,44 @@ where pa.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = ea.PAN_ID
 "; 
 
+  my $shinySamplesSql = "select pa.name as source_id, sa.*
+from apidbtuning.${tblPrefix}Observations ea
+   , apidbtuning.${tblPrefix}Participants pa
+   , apidbtuning.${tblPrefix}Samples sa
+   , apidbtuning.${tblPrefix}PANIO io
+   , apidbtuning.${tblPrefix}PANIO pio
+where pa.PAN_ID = io.INPUT_PAN_ID
+and io.OUTPUT_PAN_ID = ea.PAN_ID
+and ea.PAN_ID = pio.INPUT_PAN_ID
+and pio.OUTPUT_PAN_ID = sa.PAN_ID
+";
+
   my $participantsFile = "$datasetName/${outputFileBaseName}_participants.txt";
   my $householdsFile = "$datasetName/${outputFileBaseName}_households.txt";
-  my $observationsFile = "$datasetName/${outputFileBaseName}_obsevations.txt";
+  my $observationsFile = "$datasetName/${outputFileBaseName}_observations.txt";
+  my $samplesFile = "$datasetName/${outputFileBaseName}_samples.txt";
+  my $outFile = "$datasetName/${outputFileBaseName}_masterDataTable.txt";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   if ($undo) {
-      $self->runCmd(0, "rm -f $workflowDataDir/$participantsFile");
-      $self->runCmd(0, "rm -f $workflowDataDir/$householdsFile");
-      $self->runCmd(0, "rm -f $workflowDataDir/$observationsFile");
+      $self->runCmd(0, "rm -f $workflowDataDir/$outFile");
   } else {
       if ($test) {
-	    $self->runCmd(0,"echo test > $workflowDataDir/$participantsFile");
-	    $self->runCmd(0,"echo test > $workflowDataDir/$householdsFile");
-	    $self->runCmd(0,"echo test > $workflowDataDir/$observationsFile");
+	    $self->runCmd(0,"echo test > $workflowDataDir/shiny_masterDataTable.txt");
       }
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$participantsFile --sql \"$shinyParticipantsSql\" --verbose --includeHeader --outDelimiter '\\t'");
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$householdsFile --sql \"$shinyHouseholdsSql\" --verbose --includeHeader --outDelimiter '\\t'");
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$observationsFile --sql \"$shinyObservationsSql\" --verbose --includeHeader --outDelimiter '\\t'");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$samplesFile --sql \"$shinySamplesSql\" --verbose --includeHeader --outDelimiter '\\t'");
+
+      #merge all files using Rscript
+      $cmd = "Rscript $ENV{GUS_HOME}/bin/mergeClinEpiShinyDatasetFiles.R $workflowDataDir/$datasetName $outputFileBaseName"; 
+      $self->runCmd($test, $cmd);
+      $self->runCmd($test, "rm -f $workflowDataDir/$participantsFile");
+      $self->runCmd($test, "rm -f $workflowDataDir/$householdsFile");
+      $self->runCmd($test, "rm -f $workflowDataDir/$observationsFile");
+      $self->runCmd($test, "rm -f $workflowDataDir/$samplesFile");
   }
 }
 
