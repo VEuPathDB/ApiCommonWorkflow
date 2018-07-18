@@ -68,7 +68,7 @@ and pio.OUTPUT_PAN_ID = sa.PAN_ID
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$samplesFile --sql \"$shinySamplesSql\" --verbose --includeHeader --outDelimiter '\\t'");
 
       #merge all files using Rscript
-      $cmd = "Rscript $ENV{GUS_HOME}/bin/mergeClinEpiShinyDatasetFiles.R $workflowDataDir/$datasetName $outputFileBaseName"; 
+      my $cmd = "Rscript $ENV{GUS_HOME}/bin/mergeClinEpiShinyDatasetFiles.R $workflowDataDir/$datasetName $outputFileBaseName"; 
       $self->runCmd($test, $cmd);
       $self->runCmd($test, "rm -f $workflowDataDir/$participantsFile");
       $self->runCmd($test, "rm -f $workflowDataDir/$householdsFile");
