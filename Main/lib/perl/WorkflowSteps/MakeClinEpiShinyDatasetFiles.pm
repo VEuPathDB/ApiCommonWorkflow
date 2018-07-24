@@ -48,11 +48,24 @@ and ea.PAN_ID = pio.INPUT_PAN_ID
 and pio.OUTPUT_PAN_ID = sa.PAN_ID
 ";
 
+my $ontologyMetadataSql = "
+select distinct o.ontology_term_source_id as source_id
+      , o.ontology_term_name as property
+      , o.type as type
+      , o.parent_ontology_term_name as parent
+      , m.category as category
+from apidbtuning.${tblPrefix}Ontology o 
+left join apidbtuning.${tblPrefix}Metadata m 
+on o.ontology_term_source_id = m.property_source_id 
+where o.ontology_term_source_id is not null
+";
+
   my $participantsFile = "$datasetName/${outputFileBaseName}_participants.txt";
   my $householdsFile = "$datasetName/${outputFileBaseName}_households.txt";
   my $observationsFile = "$datasetName/${outputFileBaseName}_observations.txt";
   my $samplesFile = "$datasetName/${outputFileBaseName}_samples.txt";
   my $outFile = "$datasetName/${outputFileBaseName}_masterDataTable.txt";
+  my $ontologyMetadataFile = "$datasetName/ontologyMetadata.txt";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -66,9 +79,10 @@ and pio.OUTPUT_PAN_ID = sa.PAN_ID
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$householdsFile --sql \"$shinyHouseholdsSql\" --verbose --includeHeader --outDelimiter '\\t'");
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$observationsFile --sql \"$shinyObservationsSql\" --verbose --includeHeader --outDelimiter '\\t'");
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$samplesFile --sql \"$shinySamplesSql\" --verbose --includeHeader --outDelimiter '\\t'");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$ontologyMetadataFile --sql \"$ontologyMetadataSql\" --verbose --includeHeader --outDelimiter '\\t'");
 
-      #merge all files using Rscript
-      my $cmd = "Rscript $ENV{GUS_HOME}/bin/mergeClinEpiShinyDatasetFiles.R $workflowDataDir/$datasetName $outputFileBaseName"; 
+      #merge all outputFileBaseName* files using Rscript
+       my $cmd = "Rscript $ENV{GUS_HOME}/bin/mergeClinEpiShinyDatasetFiles.R $workflowDataDir/$datasetName $outputFileBaseName"; 
       $self->runCmd($test, $cmd);
       $self->runCmd($test, "rm -f $workflowDataDir/$participantsFile");
       $self->runCmd($test, "rm -f $workflowDataDir/$householdsFile");
