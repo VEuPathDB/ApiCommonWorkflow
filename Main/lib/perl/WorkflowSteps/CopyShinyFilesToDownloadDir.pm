@@ -18,7 +18,8 @@ sub run {
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $copyToDir = "$websiteFilesDir/$downloadDir/$groupName";
+  my $digest = sha1_hex($datasetName);
+  my $copyToDir = "$websiteFilesDir/$downloadDir/ClinEpiDB/$digest";
 
   if($undo) {
     $self->runCmd(0, "rm -f $copyToDir/*");
@@ -27,8 +28,8 @@ sub run {
 	  $self->runCmd(0, "mkdir -p $copyToDir");
       }
     $self->runCmd($test, "mkdir -p $copyToDir");
-    my $digest = sha1_hex($datasetName);
-    $self->runCmd($test, "cp $workflowDataDir/$datasetName/$inputFileBaseName.txt $copyToDir/$digest.txt");
+    $self->runCmd($test, "cp $workflowDataDir/$datasetName/$inputFileBaseName.txt $copyToDir/$datasetName.txt");
+    $self->runCmd($test, "cp $workflowDataDir/$datasetName/ontologyMapping.txt $copyToDir/$datasetName.ontologyMapping.txt");
   }
 }
 
