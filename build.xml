@@ -57,7 +57,11 @@
   
   <target name="ApiCommonWorkflow-ChildCheckout">
     <available file="../ApiCommonData" type="dir" property="ApiCommonData.present" />
+    <available file="../ReFlow" type="dir" property="ReFlow.present" />
+    <available file="../GGTools" type="dir" property="GGTools.present" />
     <antcall target="ApiCommonData-Checkout" />
+    <antcall target="ReFlow-Checkout" />
+    <antcall target="GGTools-Checkout" />
   </target>
   
   
@@ -68,6 +72,8 @@
   <target name="ApiCommonWorkflow-ChildUpdate" >
     <ant target="defaultProjectUpdate">
       <property name="project" value="ApiCommonData"/>
+      <property name="project" value="GGTools"/>
+      <property name="project" value="ReFlow"/>
     </ant>
   </target>
 
@@ -76,8 +82,8 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <target name="ApiCommonWorkflow-Installation" depends="ApiCommonData-Installation,
-                                            ReFlow-Installation,
-                                            GGTools-Installation,
+                                                         ReFlow-Installation,
+                                                         GGTools-Installation,
                                             ApiCommonWorkflow/Main-Installation">
 
     <ant target="defaultProjectInstall"/>
