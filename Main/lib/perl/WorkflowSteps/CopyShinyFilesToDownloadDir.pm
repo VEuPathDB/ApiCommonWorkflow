@@ -29,7 +29,7 @@ sub run {
       }
     $self->runCmd($test, "mkdir -p $copyToDir");
     $self->runCmd($test, "cp $workflowDataDir/$datasetName/$inputFileBaseName.txt $copyToDir/$datasetName.txt");
-    $self->runCmd($test, "cp $workflowDataDir/$datasetName/ontologyMapping.txt $copyToDir/$datasetName.ontologyMapping.txt");
+    $self->runCmd($test, "cp $workflowDataDir/$datasetName/ontologyMetadata.txt $copyToDir/$datasetName.ontologyMetadata.txt");
   }
 }
 
