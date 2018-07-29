@@ -36,16 +36,12 @@ where pa.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = ea.PAN_ID
 "; 
 
-  my $shinySamplesSql = "select pa.name as source_id, sa.*
+  my $shinySamplesSql = "select ea.name as observation_id, sa.*
 from apidbtuning.${tblPrefix}Observations ea
-   , apidbtuning.${tblPrefix}Participants pa
    , apidbtuning.${tblPrefix}Samples sa
    , apidbtuning.${tblPrefix}PANIO io
-   , apidbtuning.${tblPrefix}PANIO pio
-where pa.PAN_ID = io.INPUT_PAN_ID
-and io.OUTPUT_PAN_ID = ea.PAN_ID
-and ea.PAN_ID = pio.INPUT_PAN_ID
-and pio.OUTPUT_PAN_ID = sa.PAN_ID
+where ea.PAN_ID = io.INPUT_PAN_ID
+and io.OUTPUT_PAN_ID = sa.PAN_ID
 ";
 
 my $ontologyMetadataSql = "
