@@ -19,7 +19,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $digest = sha1_hex($datasetName);
-  my $copyToDir = "$websiteFilesDir/$downloadDir/ClinEpiDB/$digest";
+  my $copyToDir = "$websiteFilesDir/$downloadDir/$digest";
 
   if($undo) {
     $self->runCmd(0, "rm -f $copyToDir/*");
