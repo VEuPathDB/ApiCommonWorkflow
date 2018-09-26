@@ -4,6 +4,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeClinEpiShinyDatasetFiles;
 
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use ApiCommonData::Load::OwlReader;
 
 use Digest::SHA qw(sha1_hex); 
 
@@ -13,6 +14,8 @@ sub run {
   my $outputFileBaseName = $self->getParamValue('outputFileBaseName');
 
   my $datasetName = $self->getParamValue('datasetName');
+
+  my $owlFile = $self->getParamValue('owlFile');
 
   my $tblPrefix = "D" . substr(sha1_hex($datasetName), 0, 10);
 
@@ -50,6 +53,7 @@ select distinct o.ontology_term_source_id as source_id
       , o.type as type
       , o.parent_ontology_term_name as parent
       , m.category as category
+      , o.description as description
 from apidbtuning.${tblPrefix}Ontology o 
 left join apidbtuning.${tblPrefix}Metadata m 
 on o.ontology_term_source_id = m.property_source_id 
@@ -62,6 +66,7 @@ where o.ontology_term_source_id is not null
   my $samplesFile = "$datasetName/${outputFileBaseName}_samples.txt";
   my $outFile = "$datasetName/${outputFileBaseName}_masterDataTable.txt";
   my $ontologyMetadataFile = "$datasetName/ontologyMetadata.txt";
+  my $ontologyMappingFile = "$datasetName/ontologyMapping.txt";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -77,13 +82,45 @@ where o.ontology_term_source_id is not null
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$samplesFile --sql \"$shinySamplesSql\" --verbose --includeHeader --outDelimiter '\\t'");
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$ontologyMetadataFile --sql \"$ontologyMetadataSql\" --verbose --includeHeader --outDelimiter '\\t'");
 
-      #merge all outputFileBaseName* files using Rscript
+      my $owl = ApiCommonData::Load::OwlReader->new($owlFile);
+      my $it = $owl->execute('get_column_sourceID');
+      my %terms;
+      while (my $row = $it->next) {
+        my $iri = $row->{entity}->as_hash()->{iri}|| $row->{entity}->as_hash()->{URI};
+        my $sid = $owl->getSourceIdFromIRI($iri);
+        my $dataDictColNames = $row->{vars}->as_hash()->{literal};
+        if(ref($dataDictColNames) ne 'ARRAY'){
+          $dataDictColNames = [ $dataDictColNames ];
+        }
+        #consolidate sparql rows with same sid to single entry in $terms
+        if(defined($terms{$sid})){
+          my %allnames;
+          for my $n (@$dataDictColNames){
+            $allnames{$n} = 1;
+          }
+          for my $n (@{ $terms{$sid}->{names} } ){
+            $allnames{$n} = 1;
+          }
+          @$dataDictColNames = sort keys %allnames;
+        }
+        $terms{$sid} = { 'names' =>  $dataDictColNames };
+      }
+      open (my $fh, '>', "$workflowDataDir/$ontologyMappingFile") or die "Could not open file for writing! $!";
+      print $fh "source_id\tdataDictNames\n";
+      foreach my $sid (sort keys %terms) {
+        my $names = join(",", @{$terms{$sid}->{names}});
+        print $fh "$sid\t$names\n";
+      }
+      close $fh;
+  
+      #merge all outputFileBaseName* files using Rscript and merge two ontology files
        my $cmd = "Rscript $ENV{GUS_HOME}/bin/mergeClinEpiShinyDatasetFiles.R $workflowDataDir/$datasetName $outputFileBaseName"; 
       $self->runCmd($test, $cmd);
       $self->runCmd($test, "rm -f $workflowDataDir/$participantsFile");
       $self->runCmd($test, "rm -f $workflowDataDir/$householdsFile");
       $self->runCmd($test, "rm -f $workflowDataDir/$observationsFile");
       $self->runCmd($test, "rm -f $workflowDataDir/$samplesFile");
+      $self->runCmd($test, "rm -f $workflowDataDir/$ontologyMappingFile");
   }
 }
 
