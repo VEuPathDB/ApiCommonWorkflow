@@ -37,6 +37,20 @@ from apidbtuning.${tblPrefix}Observations ea
    , apidbtuning.${tblPrefix}PANIO io
 where pa.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = ea.PAN_ID
+union
+select oa.name as source_id, ea.*
+from apidbtuning.${tblPrefix}Observations ea
+   , apidbtuning.${tblPrefix}Observations oa
+   , apidbtuning.${tblPrefix}PANIO io
+where oa.PAN_ID = io.INPUT_PAN_ID
+and io.OUTPUT_PAN_ID = ea.PAN_ID
+union
+select ha.name as source_id, ea.*
+from apidbtuning.${tblPrefix}Observations ea
+   , apidbtuning.${tblPrefix}Households ha
+   , apidbtuning.${tblPrefix}PANIO io
+where ha.PAN_ID = io.INPUT_PAN_ID
+and io.OUTPUT_PAN_ID = ea.PAN_ID
 "; 
 
   my $shinySamplesSql = "select ea.name as observation_id, sa.*
