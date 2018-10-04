@@ -30,72 +30,22 @@
     <prop name="projectName"/>
     <prop name="workflowVersion"/>
 
-    <constant name="component_project_directory">${projectName}_${workflowVersion}</constant>
-    <constant name="component_project_datasets_directory">$$component_project_directory$$/datasets</constant>
-    <constant name="component_project_presenters_directory">$$component_project_directory$$/presenters</constant>
-    <constant name="component_project_loader_directory">$$component_project_directory$$/loader</constant>
-
-    <step name="makeComponentProjectDir_${databaseInstance}" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$component_project_directory$$</paramValue>
-    </step>
-
-    <step name="makeComponentProjectDatasetsDir_${databaseInstance}" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$component_project_datasets_directory$$</paramValue>
-      <depends name="makeComponentProjectDir_${databaseInstance}"/>
-    </step>
-
-    <step name="makeComponentProjectPresentersDir_${databaseInstance}" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$component_project_presenters_directory$$</paramValue>
-      <depends name="makeComponentProjectDir_${databaseInstance}"/>
-    </step>
-
-    <step name="makeComponentProjectLoaderDir_${databaseInstance}" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$component_project_loader_directory$$</paramValue>
-      <depends name="makeComponentProjectDir_${databaseInstance}"/>
-    </step>
 
 
-    <step name="lock_${databaseInstance}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBLockComponentProject">
+    <subgraph name="unidbComponent_${databaseInstance}" xmlFile="unidbComponent.xml">
       <paramValue name="databaseInstance">${databaseInstance}</paramValue>
-      <depends name="initUserGroupProject"/>
-    </step>
-
-    <step name="copyWebserviceAndDownload_${databaseInstance}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBCopyWebserviceAndDownloadFiles" undoRoot="lock_${databaseInstance}">
-      <paramValue name="componentProjectName">${projectName}</paramValue>
-      <paramValue name="componentWorkflowVersion">${workflowVersion}</paramValue>
-      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="workflowVersion">${workflowVersion}</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="relativeAuxiliaryDir">$$relativeAuxiliaryDir$$</paramValue>
-      <depends name="lock_${databaseInstance}"/>
-      <depends name="makeProjectReleaseDownloadDir"/>
-      <depends name="makeProjectReleaseWebServicesDir"/>
-      <depends name="makeProjectReleaseAuxiliaryDir"/>
-    </step>
-
-    <step name="copyDatasetAndPresenter_${databaseInstance}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBCopyDatasetAndPresenter" undoRoot="lock_${databaseInstance}">
-      <paramValue name="componentProjectName">${projectName}</paramValue>
-      <paramValue name="datasetsDir">$$component_project_datasets_directory$$</paramValue>
-      <paramValue name="presentersDir">$$component_project_presenters_directory$$</paramValue>
-      <depends name="lock_${databaseInstance}"/>
-      <depends name="makeComponentProjectDatasetsDir_${databaseInstance}"/>
-      <depends name="makeComponentProjectPresentersDir_${databaseInstance}"/>
-    </step>
+      <depends name="makeProjectReleaseDownloadDir"/>  
+      <depends name="makeProjectReleaseWebServicesDir"/>  
+      <depends name="makeProjectReleaseAuxiliaryDir"/>  
+    </subgraph>
 
 
-<!--
-    <step name="load_${databaseInstance}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBLoadInstance" undoRoot="lock_${databaseInstance}" stepLoadType="unidbPlugin">
-      <paramValue name="databaseInstance">${databaseInstance}</paramValue>
-      <paramValue name="readerClass">ApiCommonData::Load::GUSTableReader</paramValue>
-      <depends name="lock_${databaseInstance}"/>
-      <depends name="makeComponentProjectLoaderDir_${databaseInstance}"/>
-    </step>
--->
-    <step name="unlock_${databaseInstance}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBUnLockComponentProject">
-      <paramValue name="databaseInstance">${databaseInstance}</paramValue>
-      <depends name="copyWebserviceAndDownload_${databaseInstance}"/>
-      <depends name="copyDatasetAndPresenter_${databaseInstance}"/>
-<!--      <depends name="load_${databaseInstance}"/> -->
-    </step>
   </datasetTemplate>
 
   <!-- ?? -->

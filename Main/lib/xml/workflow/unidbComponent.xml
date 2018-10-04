@@ -1,0 +1,75 @@
+<workflowGraph name="unidbComponent">
+  <param name="databaseInstance"/>
+  <param name="projectName"/>
+  <param name="workflowVersion"/>
+  <param name="parentDataDir"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="relativeAuxiliaryDir"/>
+  
+
+  <constant name="component_project_directory">$$parentDataDir$$/$$projectName$$_$$workflowVersion$$</constant>
+  <constant name="component_project_datasets_directory">$$component_project_directory$$/datasets</constant>
+  <constant name="component_project_presenters_directory">$$component_project_directory$$/presenters</constant>
+  <constant name="component_project_loader_directory">$$component_project_directory$$/loader</constant>
+
+  <step name="makeComponentProjectDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$component_project_directory$$</paramValue>
+  </step>
+  
+  <step name="makeComponentProjectDatasetsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$component_project_datasets_directory$$</paramValue>
+    <depends name="makeComponentProjectDir"/>
+  </step>
+
+  <step name="makeComponentProjectPresentersDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$component_project_presenters_directory$$</paramValue>
+    <depends name="makeComponentProjectDir"/>
+  </step>
+
+  <step name="makeComponentProjectLoaderDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$component_project_loader_directory$$</paramValue>
+    <depends name="makeComponentProjectDir"/>
+  </step>
+
+
+  <step name="lock" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBLockComponentProject">
+    <paramValue name="databaseInstance">$$databaseInstance$$</paramValue>
+  </step>
+
+  <step name="copyWebserviceAndDownload" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBCopyWebserviceAndDownloadFiles" undoRoot="lock">
+    <paramValue name="componentProjectName">$$projectName$$</paramValue>
+    <paramValue name="componentWorkflowVersion">$$workflowVersion$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeAuxiliaryDir">$$relativeAuxiliaryDir$$</paramValue>
+    <depends name="lock"/>
+  </step>
+
+  <step name="copyDatasetAndPresenter" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBCopyDatasetAndPresenter" undoRoot="lock">
+    <paramValue name="componentProjectName">$$projectName$$</paramValue>
+    <paramValue name="datasetsDir">$$component_project_datasets_directory$$</paramValue>
+    <paramValue name="presentersDir">$$component_project_presenters_directory$$</paramValue>
+    <depends name="lock"/>
+    <depends name="makeComponentProjectDatasetsDir"/>
+    <depends name="makeComponentProjectPresentersDir"/>
+  </step>
+
+
+  <!--
+    <step name="load" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBLoadInstance" undoRoot="lock" stepLoadType="unidbPlugin">
+      <paramValue name="databaseInstance">$$databaseInstance$$</paramValue>
+      <paramValue name="readerClass">ApiCommonData::Load::GUSTableReader</paramValue>
+      <depends name="lock"/>
+      <depends name="makeComponentProjectLoaderDir"/>
+    </step>
+-->
+  <step name="unlock" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBUnLockComponentProject">
+    <paramValue name="databaseInstance">$$databaseInstance$$</paramValue>
+    <depends name="copyWebserviceAndDownload"/>
+    <depends name="copyDatasetAndPresenter"/>
+    <!--      <depends name="load"/> -->
+  </step>
+
+
+</workflowGraph>

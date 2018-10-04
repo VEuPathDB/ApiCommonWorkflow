@@ -33,7 +33,7 @@ sub run {
                         [$fromDownloadSiteDir, $toDownloadSiteDir]);
 
   unless($test) {
-    foreach $pair(@directoryPairs) {
+    foreach my $pair(@directoryPairs) {
       my $from = $pair->[0];
       my $to = $pair->[1];
 
