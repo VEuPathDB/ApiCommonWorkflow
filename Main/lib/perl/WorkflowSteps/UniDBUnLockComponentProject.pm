@@ -13,7 +13,7 @@ sub run {
   my $cmd = "lockWorkflowInstance --instance $databaseInstance";
 
   unless($undo) {
-    $cmd =. " --unlock";
+    $cmd .= " --unlock";
   } 
 
   unless($test) {
