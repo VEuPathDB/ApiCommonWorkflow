@@ -11,10 +11,11 @@ sub run {
 
   my $databaseInstance = $self->getParamValue('databaseInstance');
   my $readerClass = $self->getParamValue('readerClass');
+  my $loaderLogDir = $self->getParamValue('loaderLogDir');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--database $databaseInstance --table_reader '$readerClass'";
+  my $args = "--database $databaseInstance --table_reader '$readerClass' --logDir $workflowDataDir/$loaderLogDir";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertUniDB", $args);
 
