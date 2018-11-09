@@ -55,12 +55,21 @@
     <depends name="makeComponentProjectPresentersDir"/>
   </step>
 
+
+  <step name="undo" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBUndoInstance" undoRoot="lock" stepLoadTypes="unidbPlugin">
+    <paramValue name="databaseInstance">$$databaseInstance$$</paramValue>
+    <paramValue name="readerClass">ApiCommonData::Load::GUSPrimaryKeyTableReader</paramValue>
+    <paramValue name="loaderLogDir">$$component_project_loader_directory$$</paramValue>
+    <depends name="lock"/>
+    <depends name="makeComponentProjectLoaderDir"/>
+  </step>
+
+
   <step name="load" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBLoadInstance" undoRoot="lock" stepLoadTypes="unidbPlugin">
     <paramValue name="databaseInstance">$$databaseInstance$$</paramValue>
     <paramValue name="readerClass">ApiCommonData::Load::GUSTableReader</paramValue>
     <paramValue name="loaderLogDir">$$component_project_loader_directory$$</paramValue>
-    <depends name="lock"/>
-    <depends name="makeComponentProjectLoaderDir"/>
+    <depends name="undo"/>
   </step>
 
   <step name="unlock" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBUnLockComponentProject">

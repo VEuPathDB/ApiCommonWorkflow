@@ -11,7 +11,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--rebuildIndexsAndEnableConstraintsOnly --logDir $workflowDataDir --table_reader 'ApiCommonData::Load::UniDBTableReader'";
+  my $args = "--mode rebuildIndexesAndEnableConstraints --logDir $workflowDataDir --table_reader 'ApiCommonData::Load::UniDBTableReader'";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertUniDB", $args);
 
