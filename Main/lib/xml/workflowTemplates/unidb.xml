@@ -45,29 +45,24 @@
       <depends name="makeProjectReleaseAuxiliaryDir"/>  
     </subgraph>
 
-
   </datasetTemplate>
 
-  <!-- ?? -->
-<!--
-  <subgraph name="OrthoMCLDerivedEC" xmlFile="orthoMCLDerivedEC.xml">
-    <paramValue name="parentDataDir"></paramValue>
-    <dependsPattern name="comparativeGenomics"/>
-  </subgraph> 
-
+    <step name="addAllIndexesAndConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBAddIndexesAndConstraints">
+      <dependsPattern name="unidbComponent_*"/>
+    </step>
 
 
   <subgraph name="chEBI_Compounds" xmlFile="compounds.xml">
     <paramValue name="datasetName">compounds_chEBI_RSRC</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
     <depends name="initUserGroupProject"/>  
   </subgraph>
 
   <subgraph name="HMDB_Compounds" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">compounds_HMDB_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
@@ -83,7 +78,7 @@
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
       <depends name="chEBI_Compounds"/>
-      <dependsPattern name="*project*"/>
+      <depends name="addAllIndexesAndConstraints"/>  
    </subgraph>
   </datasetTemplate>
 
@@ -109,73 +104,25 @@
     <subgraph name="metaboliteProfiles_${experimentName}_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="parentDataDir">.</paramValue>
       <depends name="chEBI_Compounds"/>
     </subgraph>
 
-    <subgraph name="MetaboliteProfiles" xmlFile="metaboliteProfiles.xml">
-      <paramValue name="parentDataDir"></paramValue>
+    <subgraph name="MetaboliteProfiles" xmlFile="metaboliteProfilesUniDB.xml">
+      <paramValue name="parentDataDir">.</paramValue>
       <paramValue name="experimentName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
       <paramValue name="experimentVersion">${experimentVersion}</paramValue>
       <depends name="metaboliteProfiles_${experimentName}_RSRC"/>
     </subgraph>
-
 </datasetTemplate>
 
 
-<subgraph name="metadata" xmlFile="metadata.xml" >
+  <subgraph name="ISASimple" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">ISASimple_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <dependsPattern name="*project*"/>
-</subgraph>
+    <paramValue name="parentDataDir">.</paramValue>
+    <depends name="addAllIndexesAndConstraints"/>  
+  </subgraph>
 
-
-
- <datasetTemplate class="copyAndFormatDownloadFilesFromManualDelivery">
-   <prop name="projectName"/>
-   <prop name="relativeManualDeliveryDir"/>
-   <prop name="relativeDownloadSiteDir"/>
-   <prop name="relativeWebServiceDir"/>
-   <prop name="datasetName"/>
-   <prop name="formatDownloadFile"/>
-   <prop name="argsOfFormatingDownloadFile"/> 
-   <prop name="formattedOutputName"/>
-   <prop name="inputFileNameRegex"/>
-
-
-    <subgraph name="CopyAndFormatDownloadFilesFromManualDelivery" xmlFile="copyAndFormatDownloadFilesFromManualDelivery.xml">
-      <paramValue name="relativeManualDeliveryDir">${relativeManualDeliveryDir}</paramValue>
-      <paramValue name="relativeDownloadSiteDir">${relativeDownloadSiteDir}</paramValue>
-      <paramValue name="relativeWebServiceDir">${relativeWebServiceDir}</paramValue>
-      <paramValue name="datasetName">${datasetName}</paramValue>
-      <paramValue name="projectName">${projectName}</paramValue>
-      <paramValue name="formatDownloadFile">${formatDownloadFile}</paramValue>
-      <paramValue name="argsOfFormatingDownloadFile">${argsOfFormatingDownloadFile}</paramValue>
-      <paramValue name="formattedOutputName">${formattedOutputName}</paramValue>
-      <paramValue name="inputFileNameRegex">${inputFileNameRegex}</paramValue>
-      <depends name="initUserGroupProject"/>
-    </subgraph>
-
- </datasetTemplate>
-
--->
-
- <!-- don't think i need this 
-  <datasetTemplate class="EcNumberGenus">
-   <prop name="projectName"/>   
- 
-   <step name="manuallyImproveEcNumberGenus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
-     <dependsPattern name="*_LoadGenome"/>
-   </step>
- 
-   <subgraph name="EcNumberGenus_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">EcNumberGenus_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-    <depends name="manuallyImproveEcNumberGenus"/>
-   </subgraph>
-  </datasetTemplate>
--->
 
 </workflowGraph>

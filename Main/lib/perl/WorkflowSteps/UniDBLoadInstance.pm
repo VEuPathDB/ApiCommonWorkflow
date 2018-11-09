@@ -15,7 +15,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--database $databaseInstance --table_reader '$readerClass' --logDir $workflowDataDir/$loaderLogDir";
+  my $args = "--database $databaseInstance --table_reader '$readerClass' --logDir $workflowDataDir/$loaderLogDir --skipUndo";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertUniDB", $args);
 

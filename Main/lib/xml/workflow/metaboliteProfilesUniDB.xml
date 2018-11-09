@@ -1,0 +1,33 @@
+<workflowGraph name="analyzeMetaboliteProfiles">
+    <param name="parentDataDir"/>
+    <param name="experimentName"/>
+    <param name="experimentVersion"/>
+
+    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
+
+    <!-- Reusing the DoTranscriptExpression WorkflowStep here.  -->
+    <step name="makeProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
+      <paramValue name="analysisConfigFile">$$parentDataDir$$/$$experimentName$$/final/analysisConfig.xml</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/final</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/outputDir</paramValue>
+      <paramValue name="geneProbeMappingTabFile"></paramValue>
+      <paramValue name="geneProbeMappingVendorFile"></paramValue>
+      <paramValue name="platformDirectory"></paramValue>
+      <paramValue name="expectCdfFile">false</paramValue>
+      <paramValue name="expectNdfFile">false</paramValue>
+      <paramValue name="passPlatformMappingFile">false</paramValue>
+      <paramValue name="technologyType">metabolite_massSpec</paramValue>
+    </step>
+
+
+  <step name="loadStudyResultsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/outputDir/insert_study_results_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/outputDir</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentName$$|$$experimentVersion$$</paramValue>
+    <paramValue name="studyName">$$experimentName$$</paramValue>
+    <depends name="makeProfiles"/>
+  </step>
+
+
+
+</workflowGraph>
