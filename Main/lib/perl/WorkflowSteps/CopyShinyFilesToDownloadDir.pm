@@ -30,8 +30,8 @@ sub run {
     $self->runCmd($test, "mkdir -p $copyToDir");
     $self->runCmd($test, "printf \"IndexIgnore *\" > $websiteFilesDir/$downloadDir/.htaccess");
     $self->runCmd($test, "printf \"IndexIgnoreReset ON\nIndexIgnore ..\" > $copyToDir/.htaccess");
-    $self->runCmd($test, "cp $workflowDataDir/$datasetName/$inputFileBaseName.txt $copyToDir/$datasetName.txt");
-    $self->runCmd($test, "cp $workflowDataDir/$datasetName/ontologyMetadata.txt $copyToDir/$datasetName.ontologyMetadata.txt");
+    $self->runCmd($test, "rename $inputFileBaseName $datasetName $workflowDataDir/$datasetName/$inputFileBaseName*");
+    $self->runCmd($test, "cp $workflowDataDir/$datasetName/$datasetName* $copyToDir/");
   }
 }
 
