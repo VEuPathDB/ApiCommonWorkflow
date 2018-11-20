@@ -31,6 +31,8 @@ and io.OUTPUT_PAN_ID = pa.PAN_ID
 from apidbtuning.${tblPrefix}Participants pa
 ";
 
+
+  #TODO change this and household sql to reflect changes to houseObs vars
   my $shinyObservationsSql = "select pa.name as source_id, ea.*
 from apidbtuning.${tblPrefix}Observations ea
    , apidbtuning.${tblPrefix}Participants pa
@@ -69,6 +71,18 @@ where ea.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = sa.PAN_ID
 ";
 
+  my $shinyLightTrapSql = "select pa.name as source_id, ha.name as Household_Id, lt.*
+from apidbtuning.${tblPrefix}LightTraps
+   , apidbtuning.${tblPrefix}Households ha
+   , apidbtuning.${tblPrefix}Participants pa
+   , apidbtuning.${tblPrefix}PANIO io
+   , apidbtuning.${tblPrefix}PANIO io2
+where lt.PAN_ID = io.OUTPUT_PAN_ID
+and io.INPUT_PAN_ID = ha.PAN_ID
+and ha.PAN_ID = io2.INPUT_PAN_ID
+and io2.OUTPUT_PAN_ID = pa.PAN_ID
+";
+
 my $ontologyMetadataSql = "
 select distinct o.ontology_term_source_id as source_id
       , o.ontology_term_name as property
@@ -86,6 +100,7 @@ where o.ontology_term_source_id is not null
   my $householdsFile = "$datasetName/${outputFileBaseName}_households.txt";
   my $observationsFile = "$datasetName/${outputFileBaseName}_observations.txt";
   my $samplesFile = "$datasetName/${outputFileBaseName}_samples.txt";
+  my $lightTrapFile = "$datasetName/${outputFileBaseName}_lightTrap.txt";
   my $outFile = "$datasetName/${outputFileBaseName}_masterDataTable.txt";
   my $ontologyMetadataFile = "$datasetName/ontologyMetadata.txt";
   my $ontologyMappingFile = "$datasetName/ontologyMapping.txt";
@@ -103,6 +118,7 @@ where o.ontology_term_source_id is not null
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$observationsFile --sql \"$shinyObservationsSql\" --verbose --includeHeader --outDelimiter '\\t'");
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$samplesFile --sql \"$shinySamplesSql\" --verbose --includeHeader --outDelimiter '\\t'");
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$ontologyMetadataFile --sql \"$ontologyMetadataSql\" --verbose --includeHeader --outDelimiter '\\t'");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$lightTrapFile --sql \"$shinyLightTrapSql\" --verbose --includeHeader --outDelimiter '\\t'");
 
       my $owl = ApiCommonData::Load::OwlReader->new($owlFile);
       my $it = $owl->execute('get_column_sourceID');
@@ -134,7 +150,7 @@ where o.ontology_term_source_id is not null
         print $fh "$sid\t$names\n";
       }
       close $fh;
-  
+ 
       #merge all outputFileBaseName* files using Rscript and merge two ontology files
        my $cmd = "Rscript $ENV{GUS_HOME}/bin/mergeClinEpiShinyDatasetFiles.R $workflowDataDir/$datasetName $outputFileBaseName"; 
       $self->runCmd($test, $cmd);
@@ -143,6 +159,7 @@ where o.ontology_term_source_id is not null
       $self->runCmd($test, "rm -f $workflowDataDir/$observationsFile");
       $self->runCmd($test, "rm -f $workflowDataDir/$samplesFile");
       $self->runCmd($test, "rm -f $workflowDataDir/$ontologyMappingFile");
+      $self->runCmd($test, "rm -f $workflowDataDir/$lightTrapFile");
   }
 }
 
