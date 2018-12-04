@@ -25,6 +25,17 @@ from apidbtuning.${tblPrefix}Households ha
    , apidbtuning.${tblPrefix}PANIO io
 where ha.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = pa.PAN_ID
+union
+select pa.name as source_id, ha2.*
+from apidbtuning.${tblPrefix}Households ha
+   , apidbtuning.${tblPrefix}Households ha2
+   , apidbtuning.${tblPrefix}Participants pa
+   , apidbtuning.${tblPrefix}PANIO io
+   , apidbtuning.${tblPrefix}PANIO io2
+where pa.pan_id = io2.output_pan_id
+and io2.input_pan_id = ha.pan_id
+and ha.PAN_ID = io.INPUT_PAN_ID
+and io.OUTPUT_PAN_ID = ha2.PAN_ID
 ";
 
   my $shinyParticipantsSql = "select pa.name as source_id, pa.*
@@ -32,7 +43,6 @@ from apidbtuning.${tblPrefix}Participants pa
 ";
 
 
-  #TODO change this and household sql to reflect changes to houseObs vars
   my $shinyObservationsSql = "select pa.name as source_id, ea.*
 from apidbtuning.${tblPrefix}Observations ea
    , apidbtuning.${tblPrefix}Participants pa
@@ -49,17 +59,6 @@ from apidbtuning.${tblPrefix}Observations ea
 where pa.pan_id = io2.input_pan_id
 and io2.output_pan_id = oa.pan_id
 and oa.PAN_ID = io.INPUT_PAN_ID
-and io.OUTPUT_PAN_ID = ea.PAN_ID
-union
-select pa.name as source_id, ea.*
-from apidbtuning.${tblPrefix}Observations ea
-   , apidbtuning.${tblPrefix}Participants pa
-   , apidbtuning.${tblPrefix}Households ha
-   , apidbtuning.${tblPrefix}PANIO io
-   , apidbtuning.${tblPrefix}PANIO io2
-where ha.PAN_ID = io2.INPUT_PAN_ID
-and io2.OUTPUT_PAN_ID = pa.PAN_ID
-and ha.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = ea.PAN_ID
 "; 
 
