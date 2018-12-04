@@ -71,7 +71,7 @@ and io.OUTPUT_PAN_ID = sa.PAN_ID
 ";
 
   my $shinyLightTrapSql = "select pa.name as source_id, ha.name as Household_Id, lt.*
-from apidbtuning.${tblPrefix}LightTraps
+from apidbtuning.${tblPrefix}LightTraps lt
    , apidbtuning.${tblPrefix}Households ha
    , apidbtuning.${tblPrefix}Participants pa
    , apidbtuning.${tblPrefix}PANIO io
@@ -83,12 +83,12 @@ and io2.OUTPUT_PAN_ID = pa.PAN_ID
 ";
 
 my $ontologyMetadataSql = "
-select distinct o.ontology_term_source_id as source_id
-      , o.ontology_term_name as property
+select distinct o.ontology_term_source_id as iri
+      , o.ontology_term_name as label
       , o.type as type
-      , o.parent_ontology_term_name as parent
+      , o.parent_ontology_term_name as parentLabel
       , m.category as category
-      , o.description as description
+      , o.description as definition
 from apidbtuning.${tblPrefix}Ontology o 
 left join apidbtuning.${tblPrefix}Metadata m 
 on o.ontology_term_source_id = m.property_source_id 
@@ -143,7 +143,7 @@ where o.ontology_term_source_id is not null
         $terms{$sid} = { 'names' =>  $dataDictColNames };
       }
       open (my $fh, '>', "$workflowDataDir/$ontologyMappingFile") or die "Could not open file for writing! $!";
-      print $fh "source_id\tdataDictNames\n";
+      print $fh "iri\tvariable\n";
       foreach my $sid (sort keys %terms) {
         my $names = join(",", @{$terms{$sid}->{names}});
         print $fh "$sid\t$names\n";
