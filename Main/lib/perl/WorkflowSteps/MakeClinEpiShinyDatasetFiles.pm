@@ -70,7 +70,7 @@ where ea.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = sa.PAN_ID
 ";
 
-  my $shinyLightTrapSql = "select pa.name as source_id, ha.name as Household_Id, lt.*
+  my $shinyLightTrapSql = "select pa.name as source_id, lt.*
 from apidbtuning.${tblPrefix}LightTraps lt
    , apidbtuning.${tblPrefix}Households ha
    , apidbtuning.${tblPrefix}Participants pa
