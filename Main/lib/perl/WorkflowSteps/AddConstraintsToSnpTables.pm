@@ -14,7 +14,25 @@ sub run {
   my $gusPassword = $self->getGusDatabasePassword();
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $dataDir = $self->getParamValue('dataDir');
-  my $sql="select 'alter table ' || owner || '.' || table_name || ' drop constraint ' || constraint_name || ';' as drops from all_constraints where owner = 'APIDB' and table_name in ('SNP','SEQUENCEVARIATION') and constraint_type in ('R','U','P') union select 'drop index APIDB.' || index_name || ';' as drops from all_indexes where owner = 'APIDB' and table_name in ('SNP','SEQUENCEVARIATION')";
+
+  my $sql=<<SQL;
+    select drops from (
+	select 'WHENEVER SQLERROR EXIT SQL.SQLCODE;' as drops, 1 as num from dual
+	union
+	select 'alter table ' || owner || '.' || table_name || ' drop constraint ' || constraint_name || ';' as drops,
+	       DECODE(constraint_type,'R',2,'U',3,'P',4) as num
+	from all_constraints
+	where owner = 'APIDB' and table_name in ('SNP','SEQUENCEVARIATION') and constraint_type in ('R','U','P') 
+	union
+	select 'drop index APIDB.' || index_name || ';' as drops, 5 as num
+	from all_indexes
+	where owner = 'APIDB' and table_name in ('SNP','SEQUENCEVARIATION')
+	      and index_name not in (select constraint_name from all_constraints where owner = 'APIDB' 
+				     and table_name in ('SNP','SEQUENCEVARIATION') and constraint_type in ('R','U','P'))
+    )
+    order by num
+SQL
+
   $self->runCmd($test, "mkdir $workflowDataDir/$dataDir") unless (-d "$workflowDataDir/$dataDir");
   my $sql_cmd="makeFileWithSql --sql \"$sql\" --outFile $workflowDataDir/$dataDir/dropConstraintsAndIndexesFromSnpTables.sql";
   $self->runCmd($test, $sql_cmd);
