@@ -89,9 +89,18 @@ select distinct o.ontology_term_source_id as iri
       , o.parent_ontology_term_name as parentLabel
       , m.category as category
       , o.description as definition
+      , ms.min as min
+      , ms.max as max
+      , ms.average as average
+      , ms.upper_quartile as upper_quartile
+      , ms.lower_quartile as lower_quartile
+      , ms.number_distinct_values as number_distinct_values
+      , ms.distinct_values as distinct_values
 from apidbtuning.${tblPrefix}Ontology o 
-left join apidbtuning.${tblPrefix}Metadata m 
-on o.ontology_term_source_id = m.property_source_id 
+left join apidbtuning.${tblPrefix}Metadata m
+  on o.ontology_term_source_id = m.property_source_id
+left join apidbtuning.${tblPrefix}MetadataSummary ms
+  on o.ontology_term_source_id = ms.property_source_id
 where o.ontology_term_source_id is not null
 ";
 

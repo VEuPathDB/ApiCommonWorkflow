@@ -25,6 +25,7 @@ sub run {
       }
     $self->runCmd($test, "mkdir -p $copyToDir");
     $self->runCmd($test, "cp $workflowDataDir/$datasetName/$inputFileBaseName* $copyToDir");
+    $self->runCmd($test, "mv $copyToDir/shiny_masterDataTable_ontologyMetadata.tab $copyToDir/ontologyMetadata.tab");
   }
 }
 
