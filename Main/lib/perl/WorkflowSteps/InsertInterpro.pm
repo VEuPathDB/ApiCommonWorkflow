@@ -31,8 +31,11 @@ EOF
 
 $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
 
-
+    if($undo) {
+    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertInterproscanResultsTSV --limit 400000", $args);
+    } else {
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertInterproscanResultsTSV", $args);
+    }
 
 }
 
