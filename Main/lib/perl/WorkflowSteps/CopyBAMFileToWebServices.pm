@@ -5,6 +5,8 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
+use File::Basename;
+
 sub run {
   my ($self, $test, $undo) = @_;
 
@@ -22,17 +24,33 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  my $isBamFile = $inputFile =~ /\.bam$/ ? 1 : 0;
+
   my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/bam/$experimentName/$snpStrain/";
+
+  my $bwCopyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/bigwig/$experimentName/$snpStrain/";
+
+  my $dirname = dirname("$workflowDataDir/$inputFile");
+  my $basename = basename("$workflowDataDir/$inputFile");
 
   if($undo) {
     $self->runCmd(0, "rm -f $copyToDir/*");
+    $self->runCmd(0, "rm -f $bwCopyToDir/*") if($isBamFile);
   } else{
       if($test){
 	  $self->runCmd(0, "mkdir -p $copyToDir");
+	  $self->runCmd(0, "mkdir -p $bwCopyToDir") if($isBamFile);
       }
     $self->runCmd($test, "mkdir -p $copyToDir");
     $self->runCmd($test, "cp $workflowDataDir/$inputFile $copyToDir");
 
+    # We need BOTH BAM and bigwig files for jbrowse (applies to ncRNASeq and DNASEq)
+    if($isBamFile) {
+      $self->runCmd($test, "mkdir -p $bwCopyToDir");
+      $self->runCmd($test, "bedtools genomecov -ibam $workflowDataDir/$inputFile -bg |sort -k1,1 -k2,2n >${dirname}/tmpResult.bw");
+      $self->runCmd($test, "bedGraphToBigWig ${dirname}/tmpResult.bw ${dirname}/genome.txt ${bwCopyToDir}/${basename}");
+      $self->runCmd(0, "rm -f ${dirname}/tmpResult.bw");
+    }
   }
 }
 
