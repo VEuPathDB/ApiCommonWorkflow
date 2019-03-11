@@ -19,14 +19,14 @@ sub run {
 
   my $tblPrefix = "D" . substr(sha1_hex($datasetName), 0, 10);
 
-  my $shinyHouseholdsSql = "select pa.name as source_id, ha.*
+  my $shinyHouseholdsSql = "select ha.*
 from apidbtuning.${tblPrefix}Households ha
    , apidbtuning.${tblPrefix}Participants pa
    , apidbtuning.${tblPrefix}PANIO io
 where ha.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = pa.PAN_ID
 union
-select pa.name as source_id, ha2.*
+select ha2.*
 from apidbtuning.${tblPrefix}Households ha
    , apidbtuning.${tblPrefix}Households ha2
    , apidbtuning.${tblPrefix}Participants pa
@@ -38,8 +38,12 @@ and ha.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = ha2.PAN_ID
 ";
 
-  my $shinyParticipantsSql = "select pa.name as source_id, pa.*
+  my $shinyParticipantsSql = "select pa.name as source_id, ha.name as household_id, pa.*
 from apidbtuning.${tblPrefix}Participants pa
+   , apidbtuning.${tblPrefix}Households ha
+   , apidbtuning.${tblPrefix}PANIO io
+where ha.PAN_ID = io.INPUT_PAN_ID
+and io.OUTPUT_PAN_ID = pa.PAN_ID
 ";
 
 
