@@ -6,12 +6,6 @@
     <param name="configFilesDir"/>
     <param name="organismAbbrev"/>
 
-    <constant name="dataDir">$$parentDataDir$$/analyze_dna_Array_$$sampleName$$</constant>
-
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-    </step>
-
     <step name="writeStudyConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteStudyConfig">
         <paramValue name="configOutputFile">$$configFilesDir$$/$$sampleName$$_config.txt</paramValue>
         <paramValue name="file">$$inputSampleFile$$</paramValue> 
@@ -25,10 +19,10 @@
 
     <step name="loadDnaArrayFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
         <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_config.txt</paramValue>
-        <paramValue name="inputDir">$$dataDir$$</paramValue>
+        <paramValue name="inputDir">$$configFilesDir$$</paramValue>
         <paramValue name="extDbRlsSpec">$$experimentDatasetName$$</paramValue> 
         <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
         <depends name="writeStudyConfig"/>
     </step>
 
-  </workflowGraph>
+</workflowGraph>
