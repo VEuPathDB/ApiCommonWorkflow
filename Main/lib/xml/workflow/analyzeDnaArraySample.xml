@@ -1,11 +1,11 @@
 <workflowGraph name="analyzeDnaArraySample">
     <param name="parentDataDir"/>
-    <param name="experimentDatasetName"/>
+    <param name="extDbRlsSpec"/>
     <param name="inputSampleFile"/>
     <param name="sampleName"/>
     <param name="configFilesDir"/>
     <param name="organismAbbrev"/>
-    <param name="probeExtDbRlsSpec"/>
+    <param name="platformExtDbSpec"/>
 
     <step name="writeStudyConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteStudyConfig">
         <paramValue name="configOutputFile">$$configFilesDir$$/$$sampleName$$_config.txt</paramValue>
@@ -14,15 +14,15 @@
         <paramValue name="protocolName">cghArrayQuantification</paramValue>
         <paramValue name="sourceIdType">reporter</paramValue>
         <paramValue name="inputProtocolAppNode"></paramValue>
-        <paramValue name="profileSetName">$$experimentDatasetName$$ - profile</paramValue>
+        <paramValue name="profileSetName">$$extDbRlsSpec$$ - profile</paramValue>
     </step>
 
-    <step name="loadDnaArrayFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
+    <step name="loadDnaArrayFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResultsWithPlatform" stepLoadTypes="plugin">
         <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_config.txt</paramValue>
         <paramValue name="inputDir">$$configFilesDir$$</paramValue>
-        <paramValue name="extDbRlsSpec">$$experimentDatasetName$$</paramValue> 
-        <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
-        <paramValue name="probeExtDbRlsSpec">$$probeExtDbRlsSpec$$</paramValue>
+        <paramValue name="extDbRlsSpec">$$extDbRlsSpec$$</paramValue> 
+        <paramValue name="studyName">$$extDbRlsSpec$$</paramValue>
+        <paramValue name="platformExtDbSpec">$$platformExtDbSpec$$</paramValue>
         <depends name="writeStudyConfig"/>
     </step>
 
