@@ -19,7 +19,7 @@ sub getWebsiteFileCmd {
      select gf.source_id
             || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
             || ' | organism=' || replace( gf.organism, ' ', '_')
-            || ' | product=' || product_name.product || ' | location='
+            || ' | product=' || gf.transcript_product || ' | location='
             || fl.sequence_source_id || ':'
             || least(gf.coding_start,gf.coding_end) ||'-'
             || greatest(gf.coding_start,gf.coding_end)
@@ -33,40 +33,7 @@ sub getWebsiteFileCmd {
            from apidb.FeatureLocation fl,
                 ApidbTuning.${tuningTablePrefix}TranscriptAttributes gf,
                 dots.transcript t, dots.splicednasequence snas, dots.translatedaafeature taaf,
-                dots.nasequence ns, sres.ontologyTerm soseq, sres.taxon,
-                (select gf.na_feature_id,
-                        substr(coalesce(preferred_product.product, any_product.product, gf.product, 'unspecified product'),
-                               1, 300)
-                        || case
-                             when (coalesce(preferred_name.name, any_name.name) is not null)
-                             then ' (' || coalesce(preferred_name.name, any_name.name) || ')'
-                             else ''
-                            end
-                        as product
-                 from dots.GeneFeature gf,
-                      (select na_feature_id, max(product) as product
-                       from apidb.GeneFeatureProduct
-                       where is_preferred = 1
-                       group by na_feature_id
-                      ) preferred_product,
-                      (select na_feature_id, max(product) as product
-                       from apidb.GeneFeatureProduct
-                       group by na_feature_id
-                      ) any_product,
-                      (select na_feature_id, max(name) as name
-                       from apidb.GeneFeatureName
-                       where is_preferred = 1
-                       group by na_feature_id
-                      ) preferred_name,
-                      (select na_feature_id, max(name) as name
-                       from apidb.GeneFeatureName
-                       group by na_feature_id
-                      ) any_name
-                 where gf.na_feature_id = preferred_product.na_feature_id(+)
-                   and gf.na_feature_id = any_product.na_feature_id(+)
-                   and gf.na_feature_id = preferred_name.na_feature_id(+)
-                   and gf.na_feature_id = any_name.na_feature_id(+)
-                ) product_name
+                dots.nasequence ns, sres.ontologyTerm soseq, sres.taxon
       WHERE gf.gene_na_feature_id = t.parent_id
         AND gf.transcript_source_id = t.source_id
         AND fl.na_sequence_id = ns.na_sequence_id
@@ -79,7 +46,6 @@ sub getWebsiteFileCmd {
         AND fl.is_top_level = 1
         AND ns.sequence_ontology_id = soseq.ontology_term_id
         AND ns.taxon_id = taxon.taxon_id
-        AND gf.gene_na_feature_id = product_name.na_feature_id
      ORDER BY gf.chromosome_order_num, gf.source_id, gf.coding_start
 EOF
 
