@@ -322,6 +322,14 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </subgraph>
 
+<!-- depends on comparativeGenomics AND VIRTUAL FEATURE LOCATIONS-->
+    <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin" excludeIf="$$areBigGenomes$$" >
+      <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
+      <paramValue name="mercatorOutputsDir">mercatorOutput</paramValue>
+      <depends name="comparativeGenomics"/>
+      <dependsPattern name="*_EarlyVirtualLocations"/>
+    </step>
+
 
   <subgraph name="OrthoMCLDerivedEC" xmlFile="orthoMCLDerivedEC.xml">
     <paramValue name="parentDataDir"></paramValue>
