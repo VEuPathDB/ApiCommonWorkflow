@@ -22,7 +22,7 @@ sub run {
 
   #specific to clinepi.. maybe rename module?? TODO
   my $digest = sha1_hex($datasetName);
-  my $outputDir = "$websiteFilesDir/downloadSite/$projectName/release-CURRENT/$relativeDownloadSiteDir/$digest";
+  my $outputDir = "$websiteFilesDir/$relativeDownloadSiteDir/$digest";
 
   if($undo) {
     $self->runCmd(0, "rm -r $outputDir");
