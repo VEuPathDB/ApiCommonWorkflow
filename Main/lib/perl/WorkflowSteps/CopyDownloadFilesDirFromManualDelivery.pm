@@ -5,10 +5,13 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 
+use Digest::SHA qw(sha1_hex);
+
 sub run {
   my ($self, $test, $undo) = @_;
 
   my $projectName = $self->getParamValue('projectName');
+  my $datasetName = $self->getParamValue('datasetName');
   my $relativeManualDeliveryDir = $self->getParamValue('relativeManualDeliveryDir');  
   my $relativeDownloadSiteDir = $self->getParamValue('relativeDownloadSiteDir');
 
@@ -16,7 +19,10 @@ sub run {
   my $manualDeliveryDir = $self->getSharedConfig('manualDeliveryDir');
 
   my $inputDir = "$manualDeliveryDir/$projectName/$relativeManualDeliveryDir";
-  my $outputDir = "$websiteFilesDir/downloadSite/$projectName/release-CURRENT/$relativeDownloadSiteDir";
+
+  #specific to clinepi.. maybe rename module?? TODO
+  my $digest = sha1_hex($datasetName);
+  my $outputDir = "$websiteFilesDir/downloadSite/$projectName/release-CURRENT/$relativeDownloadSiteDir/$digest";
 
   if($undo) {
     $self->runCmd(0, "rm -r $outputDir");
