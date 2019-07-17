@@ -49,7 +49,8 @@ sub run {
     # We need BOTH BAM and bigwig files for jbrowse (applies to ncRNASeq and DNASEq)
     if($isBamFile) {
       $self->runCmd($test, "mkdir -p $bwCopyToDir");
-      $self->runCmd($test, "bedtools genomecov -ibam $workflowDataDir/$inputFile -bg |sort -k1,1 -k2,2n >${dirname}/tmpResult.bg");
+#      $self->runCmd($test, "bedtools genomecov -ibam $workflowDataDir/$inputFile -bg |sort -k1,1 -k2,2n >${dirname}/tmpResult.bg");
+      $self->runCmd($test, "bedtools genomecov -ibam $workflowDataDir/$inputFile -bg |LC_COLLATE=C sort -k1,1 -k2,2n >${dirname}/tmpResult.bg");
       $self->runCmd($test, "bedGraphToBigWig ${dirname}/tmpResult.bg ${dirname}/genome.txt ${bwCopyToDir}/${basename}");
       $self->runCmd(0, "rm -f ${dirname}/tmpResult.bg");
     }
