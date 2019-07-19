@@ -50,7 +50,10 @@ sub run {
     if($isBamFile) {
 
       my $genomeFile = "${dirname}/genome.txt";
-      if(!-e $genomeFile) {
+
+      my $genomeFileExists = -e $genomeFile;
+
+      if(!$genomeFileExists) {
         my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
         my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
@@ -69,6 +72,10 @@ sub run {
       $self->runCmd($test, "bedtools genomecov -ibam $workflowDataDir/$inputFile -bg |LC_COLLATE=C sort -k1,1 -k2,2n >${dirname}/tmpResult.bg");
       $self->runCmd($test, "bedGraphToBigWig ${dirname}/tmpResult.bg $genomeFile ${bwCopyToDir}/${basename}");
       $self->runCmd(0, "rm -f ${dirname}/tmpResult.bg");
+
+      $self->runCmd(0, "rm -f $genomeFile") if(!$genomeFileExists);
+
+
     }
   }
 }
