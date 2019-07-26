@@ -6,13 +6,14 @@
   <param name="relativeDownloadSiteDir"/>
   <param name="relativeWebServicesDir"/>
   <param name="relativeAuxiliaryDir"/>
-  <param name="fromManualDeliveryDir"/>
-  
+  <param name="datasetLoaderXmlFileName"/>
 
-  <constant name="component_project_directory">UniDB_$$parentDataDir$$/$$projectName$$_$$workflowVersion$$</constant>
+
+  <constant name="component_project_directory">$$parentDataDir$$/$$projectName$$_$$workflowVersion$$</constant>
   <constant name="component_project_datasets_directory">$$component_project_directory$$/datasets</constant>
   <constant name="component_project_presenters_directory">$$component_project_directory$$/presenters</constant>
   <constant name="component_project_loader_directory">$$component_project_directory$$/loader</constant>
+  <constant name="component_project_fromManualDelivery_directory">$$component_project_directory$$/fromManualDelivery</constant>
 
   <step name="makeComponentProjectDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$component_project_directory$$</paramValue>
@@ -31,6 +32,19 @@
   <step name="makeComponentProjectLoaderDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$component_project_loader_directory$$</paramValue>
     <depends name="makeComponentProjectDir"/>
+  </step>
+
+  <step name="makeComponentProjectManualDeliveryDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$component_project_fromManualDelivery_directory$$</paramValue>
+    <depends name="makeComponentProjectDir"/>
+  </step>
+
+
+  <step name="getAndUnpack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderGetAndUnpack">
+    <paramValue name="datasetName">$$projectName$$_$$databaseInstance$$_$$workflowVersion$$_UniDB_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+    <paramValue name="dataDir">$$component_project_fromManualDelivery_directory$$</paramValue>
+    <depends name="makeComponentProjectManualDeliveryDir"/>
   </step>
 
 
@@ -70,8 +84,8 @@
     <paramValue name="databaseInstance">$$databaseInstance$$</paramValue>
     <paramValue name="readerClass">ApiCommonData::Load::GUSTableReader</paramValue>
     <paramValue name="loaderLogDir">$$component_project_loader_directory$$</paramValue>
-    <paramValue name="forceSkipDatasetFile">$$fromManualDeliveryDir$$/forceSkipDatasets</paramValue>
-    <paramValue name="forceLoadDatasetFile">$$fromManualDeliveryDir$$/forceLoadDatasets</paramValue>
+    <paramValue name="forceSkipDatasetFile">$$component_project_fromManualDelivery_directory$$/final/forceSkipDatasets</paramValue>
+    <paramValue name="forceLoadDatasetFile">$$component_project_fromManualDelivery_directory$$/final/forceLoadDatasets</paramValue>
     <depends name="lock"/>
     <depends name="makeComponentProjectLoaderDir"/>
     <depends name="undo"/>

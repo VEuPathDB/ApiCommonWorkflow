@@ -30,18 +30,6 @@
     <prop name="projectName"/>
     <prop name="workflowVersion"/>
 
-    <constant name="dataDir">UniDB_${projectName}_fromManualDelivery</constant>
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-    </step>
-    <step name="getAndUnpack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderGetAndUnpack">
-      <paramValue name="datasetName">"${projectName}_${databaseInstance}_${workflowVersion}_UniDB_RSRC"</paramValue>
-    	<paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-
-
     <subgraph name="unidbComponent_${databaseInstance}" xmlFile="unidbComponent.xml">
       <paramValue name="databaseInstance">${databaseInstance}</paramValue>
       <paramValue name="projectName">${projectName}</paramValue>
@@ -51,6 +39,7 @@
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="relativeAuxiliaryDir">$$relativeAuxiliaryDir$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
       <depends name="makeProjectReleaseDownloadDir"/>  
       <depends name="makeProjectReleaseWebServicesDir"/>  
       <depends name="makeProjectReleaseAuxiliaryDir"/>  
