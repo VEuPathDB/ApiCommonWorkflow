@@ -35,7 +35,6 @@
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="workflowVersion">${workflowVersion}</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-      <paramValue name="fromManualDeliveryDir">$$dataDir$$</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="relativeAuxiliaryDir">$$relativeAuxiliaryDir$$</paramValue>
@@ -43,7 +42,6 @@
       <depends name="makeProjectReleaseDownloadDir"/>  
       <depends name="makeProjectReleaseWebServicesDir"/>  
       <depends name="makeProjectReleaseAuxiliaryDir"/>  
-      <depends name="getAndUnpack"/>  
     </subgraph>
 
   </datasetTemplate>
@@ -98,25 +96,6 @@
   </datasetTemplate>
 
 
- <datasetTemplate class="metaboliteProfiles">
-   <prop name="experimentName"/> 
-    <prop name="experimentVersion"/> 
-
-    <subgraph name="metaboliteProfiles_${experimentName}_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-      <paramValue name="parentDataDir">.</paramValue>
-      <depends name="chEBI_Compounds"/>
-      <depends name="HMDB_Compounds"/>
-    </subgraph>
-
-    <subgraph name="MetaboliteProfiles" xmlFile="metaboliteProfilesUniDB.xml">
-      <paramValue name="parentDataDir">.</paramValue>
-      <paramValue name="experimentName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
-      <paramValue name="experimentVersion">${experimentVersion}</paramValue>
-      <depends name="metaboliteProfiles_${experimentName}_RSRC"/>
-    </subgraph>
-</datasetTemplate>
 
   <subgraph name="UPDATE_Ontologies" xmlFile="generated/UniDB/updateOntologies.xml">
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
@@ -130,6 +109,30 @@
     <paramValue name="parentDataDir">.</paramValue>
     <depends name="addAllIndexesAndConstraints"/>  
   </subgraph>
+
+
+ <datasetTemplate class="metaboliteProfiles">
+   <prop name="experimentName"/> 
+    <prop name="experimentVersion"/> 
+
+    <subgraph name="metaboliteProfiles_${experimentName}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
+      <paramValue name="parentDataDir">.</paramValue>
+      <depends name="chEBI_Compounds"/>
+      <depends name="HMDB_Compounds"/>
+      <depends name="UPDATE_Ontologies"/>
+      <depends name="UPDATE_EuPath_Ontology_RSRC"/>
+    </subgraph>
+
+    <subgraph name="MetaboliteProfiles" xmlFile="metaboliteProfilesUniDB.xml">
+      <paramValue name="parentDataDir">.</paramValue>
+      <paramValue name="experimentName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
+      <paramValue name="experimentVersion">${experimentVersion}</paramValue>
+      <depends name="metaboliteProfiles_${experimentName}_RSRC"/>
+    </subgraph>
+</datasetTemplate>
+
 
 
   <subgraph name="ISASimple" xmlFile="loadDataset.xml">
