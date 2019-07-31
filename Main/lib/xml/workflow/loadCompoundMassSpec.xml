@@ -1,16 +1,15 @@
 <workflowGraph name="loadCompoundMassSpec">
+    <param name="datasetName"/>
+    <param name="datasetLoaderXmlFileName"/>
     <param name="parentDataDir"/>
-    <param name="experimentName"/>
-
-    <constant name="parentDataDir">metabolomics</constant>   
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$parentDataDir$$</paramValue>
     </step>
 
     <subgraph name="compoundMassSpec_${experimentName}_RSRC" xmlFile="loadDataset.xml">
-        <paramValue name="datasetName">compoundMassSpec_${experimentName}_RSRC</paramValue>
-        <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
+        <paramValue name="datasetName">$$datasetName$$</paramValue>
+        <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
         <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
         <depends name="makeDataDir"/>
     </subgraph>
