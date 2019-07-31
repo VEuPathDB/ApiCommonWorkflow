@@ -41,6 +41,8 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <paramValue name="dataDir">$$comparativeGenomicsInputDir$$</paramValue>
   </step>
 
+
+
   <datasetTemplate class="organism">
     <prop name="organismAbbrev"/>
     <prop name="projectName"/>
@@ -409,19 +411,21 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
  </datasetTemplate>
 
   <!-- new template for untargeted metabolomics -->                                                                               
+  <step name="makeMetabolomicsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">metabolomics</paramValue>
+  </step>    
+
   <datasetTemplate class="compoundMassSpec">
     <prop name="experimentName"/>
 
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$parentDataDir$$</paramValue>
-    </step>    
-
-    <subgraph name="compoundMassSpec_${experimentName}_RSRC" xmlFile="loadCompoundMassSpec.xml">
+    <subgraph name="compoundMassSpec_${experimentName}_RSRC" xmlFile="loadDataset.xml">
         <paramValue name="datasetName">compoundMassSpec_${experimentName}_RSRC</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
         <paramValue name="parentDataDir">metabolomics</paramValue>
         <dependsGlobal name="chEBI_Compounds"/>
+        <depends name="makeMetabolomicsDataDir"/>
     </subgraph>
+
   </datasetTemplate>
 
 
