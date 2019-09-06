@@ -24,36 +24,36 @@ sub run {
     # the alg inv ids from the workflow linking table, and the rest of the plugin undos
     # will not be able to find them.
     # Divide into chunks of 100 to avoid overwhelming the command line
-    if ($undo) {
-      my $algInvIdsFull = $self->getAlgInvIds();
-      if ($algInvIdsFull) {
-	  my @algInvIdsArray = split(/,/, $algInvIdsFull);
-	  my $count = scalar(@algInvIdsArray);
-	  my @algInvIdsChunks;
-          for (my $i=0; $i<$count; $i+=99){
-	      my @subArray = splice(@algInvIdsArray, 0, 99);
-	      my $algInvIds = join(",", @subArray);
-              push(@algInvIdsChunks, $algInvIds);
-	  }
+    # if ($undo) {
+    #   my $algInvIdsFull = $self->getAlgInvIds();
+    #   if ($algInvIdsFull) {
+    #       my @algInvIdsArray = split(/,/, $algInvIdsFull);
+    #       my $count = scalar(@algInvIdsArray);
+    #       my @algInvIdsChunks;
+    #       for (my $i=0; $i<$count; $i+=99){
+    #           my @subArray = splice(@algInvIdsArray, 0, 99);
+    #           my $algInvIds = join(",", @subArray);
+    #           push(@algInvIdsChunks, $algInvIds);
+    #       }
 
-          my $chunk_count = scalar(@algInvIdsChunks);
-	  for (my $i=0; $i<$chunk_count; $i++) {
-	      my $algInvIds = $algInvIdsChunks[$i];
-	      my $cmd = "ga GUS::Community::Plugin::Undo --plugin ApiCommonData::Load::Plugin::InsertSyntenySpans --workflowContext --algInvocationId '$algInvIds' --commit";
-	      $self->runCmd($test, $cmd);;
-	  }
-	  for (my $i=0; $i<$chunk_count; $i++) {
-	      my $algInvIds = $algInvIdsChunks[$i];
-	      my $cmd = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabaseRls --workflowContext --algInvocationId '$algInvIds' --commit";
-	      $self->runCmd($test, $cmd);;
-	  }
-	  for (my $i=0; $i<$chunk_count; $i++) {
-	      my $algInvIds = $algInvIdsChunks[$i];
-	      my $cmd = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabase --workflowContext --algInvocationId '$algInvIds' --commit";
-	      $self->runCmd($test, $cmd);;
-	  }
-      }
-    }
+    #       my $chunk_count = scalar(@algInvIdsChunks);
+    #       for (my $i=0; $i<$chunk_count; $i++) {
+    #           my $algInvIds = $algInvIdsChunks[$i];
+    #           my $cmd = "ga GUS::Community::Plugin::Undo --plugin ApiCommonData::Load::Plugin::InsertSyntenySpans --workflowContext --algInvocationId '$algInvIds' --commit";
+    #           $self->runCmd($test, $cmd);;
+    #       }
+    #       for (my $i=0; $i<$chunk_count; $i++) {
+    #           my $algInvIds = $algInvIdsChunks[$i];
+    #           my $cmd = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabaseRls --workflowContext --algInvocationId '$algInvIds' --commit";
+    #           $self->runCmd($test, $cmd);;
+    #       }
+    #       for (my $i=0; $i<$chunk_count; $i++) {
+    #           my $algInvIds = $algInvIdsChunks[$i];
+    #           my $cmd = "ga GUS::Community::Plugin::Undo --plugin GUS::Supported::Plugin::InsertExternalDatabase --workflowContext --algInvocationId '$algInvIds' --commit";
+    #           $self->runCmd($test, $cmd);;
+    #       }
+    #   }
+    # }
 
     opendir(INPUT, "$workflowDataDir/$mercatorOutputsDir") or $self->error("Could not open mercator outputs dir '$mercatorOutputsDir' for reading.\n");
 
