@@ -29,7 +29,7 @@ sub run {
   <schema>ApidbTuning</schema>
   <housekeepingSchema>apidb</housekeepingSchema>
   <dblink>$dblink</dblink>
-  <logTable>apidb_r.TuningTableLog$dblink</logTable>
+  <logTable>apidb_r.TuningTableLog\@$dblink</logTable>
   <dbaEmail>eupath-admin\@pcbi.upenn.edu</dbaEmail>
   <fromEmail>tuningMgr\@pcbi.upenn.edu</fromEmail>
 </tuningProps>
