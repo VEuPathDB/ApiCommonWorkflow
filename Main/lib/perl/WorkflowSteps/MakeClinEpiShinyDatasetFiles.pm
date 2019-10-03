@@ -38,16 +38,12 @@ and ha.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = ha2.PAN_ID
 ";
 
-  my $shinyParticipantsSql = "select p.name as source_id, h.household as household, p.*
-from apidbtuning.${tblPrefix}Participants p
-left join (
-	select pa.name as source_id, ha.name as household, pa.*
-	from apidbtuning.${tblPrefix}Participants pa
-   	   , apidbtuning.${tblPrefix}Households ha
-   	   , apidbtuning.${tblPrefix}PANIO io
-	where ha.PAN_ID = io.INPUT_PAN_ID
-	and io.OUTPUT_PAN_ID = pa.PAN_ID) h
-on p.name = h.name
+  my $shinyParticipantsSql = "select pa.name as source_id, ha.name as household, pa.*
+from apidbtuning.${tblPrefix}Participants pa
+   , apidbtuning.${tblPrefix}Households ha
+   , apidbtuning.${tblPrefix}PANIO io
+where ha.PAN_ID = io.INPUT_PAN_ID
+and io.OUTPUT_PAN_ID = pa.PAN_ID
 ";
 
 
