@@ -13,6 +13,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $outputDir = $self->getParamValue('outputDir');
   my $fpkmFile = $self->getParamValue('fpkmFile');
+  my $geneFootprintFile = $self->getParamValue('geneFootprintFile');
   my $ploidy = $self->getParamValue('ploidy');
   my $sampleName = $self->getParamValue('sampleName');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
@@ -71,7 +72,7 @@ sub run {
             , orthologs o
             where s.na_feature_id = o.na_feature_id";
 
-  my $cmd = "calculateGeneCNVs --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --sql \"$sql\" --taxonId $taxonId";
+  my $cmd = "calculateGeneCNVs --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --sql \"$sql\" --taxonId $taxonId --geneFootPrints $geneFootprintFile";
 
   if ($undo) {
     $self->runCmd(0, "rm $outputDir/$sampleName\_CNVestimations.tsv") if -e "$outputDir/$sampleName\_CNVestimations.tsv";
