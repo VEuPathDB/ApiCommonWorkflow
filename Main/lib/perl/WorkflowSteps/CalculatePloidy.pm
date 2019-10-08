@@ -22,7 +22,7 @@ sub run {
 
   $outputDir = "$workflowDataDir/$outputDir";
 
-  my $cmd = "calculatePloidy --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --taxonId $taxonId --geneFootprints $geneFootprintFile";
+  my $cmd = "calculatePloidy --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --taxonId $taxonId --geneFootprints $workflowDataDir/$geneFootprintFile";
 
   if ($undo) {
     $self->runCmd(0, "rm $outputDir/$sampleName\_Ploidy.txt");

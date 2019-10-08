@@ -72,7 +72,7 @@ sub run {
             , orthologs o
             where s.na_feature_id = o.na_feature_id";
 
-  my $cmd = "calculateGeneCNVs --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --sql \"$sql\" --taxonId $taxonId --geneFootPrints $geneFootprintFile";
+  my $cmd = "calculateGeneCNVs --outputDir $outputDir --sampleName $sampleName --fpkmFile $workflowDataDir/$fpkmFile --ploidy $ploidy --sql \"$sql\" --taxonId $taxonId --geneFootPrints $workflowDataDir/$geneFootprintFile";
 
   if ($undo) {
     $self->runCmd(0, "rm $outputDir/$sampleName\_CNVestimations.tsv") if -e "$outputDir/$sampleName\_CNVestimations.tsv";
