@@ -44,7 +44,7 @@ sub run {
         genomicSeqsFile=$clusterWorkflowDataDir/$genomicSeqsFile
         bamFile=$clusterWorkflowDataDir/$snpsClusterDir/$bamFile
         gtfFile=$clusterWorkflowDataDir/$gtfFile
-        geneFootprintFile=$clusterWorkflowDataDir/$geneFootprintFile;
+        geneFootprintFile=$clusterWorkflowDataDir/$geneFootprintFile
         samtoolsIndex=$clusterWorkflowDataDir/$samtoolsIndex
         sampleName=$sampleName
         window=$window
