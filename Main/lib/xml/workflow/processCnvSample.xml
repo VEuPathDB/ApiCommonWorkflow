@@ -9,6 +9,7 @@
     <param name="experimentName"/>
     <param name="ploidy"/>
     <param name="gtfFile"/>
+    <param name="geneFootprintFile"/>
     <param name="relativeWebServicesDir"/>
     <param name="experimentDatasetName"/>
     <param name="studyName"/>
@@ -60,6 +61,7 @@
         <paramValue name="taskInputDir">$$sampleAnalysisDir$$/input</paramValue>
         <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
         <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+        <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
         <paramValue name="bamFile">result.bam</paramValue>
         <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
         <paramValue name="sampleName">$$sampleName$$</paramValue>
@@ -78,22 +80,23 @@
         <paramValue name="taskInputDir">$$sampleAnalysisDir$$/input</paramValue>
         <paramValue name="numNodes">1</paramValue>
         <paramValue name="maxMemoryGigs">8</paramValue>
-        <paramValue name="processorsPerNode">4</paramValue>
+        <paramValue name="processorsPerNode">1</paramValue>
         <depends name="mirrorTaskInputDirToCluster"/>
         <depends name="mirrorBamFileToCluster"/>
     </step>
 
     <step name="mirrorCufflinksOutputFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis" stepLoadTypes="fromCluster">
         <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$/master</paramValue>
-        <paramValue name="outputDir">$$sampleAnalysisDir$$/master/mainresult/Cufflinks</paramValue>
-        <paramValue name="outputFiles">genes.fpkm_tracking,../$$sampleName$$.bed</paramValue>
+        <paramValue name="outputDir">$$sampleAnalysisDir$$/master/mainresult</paramValue>
+        <paramValue name="outputFiles">counts_$$sampleName$$.txt,fpkm_$$sampleName$$.txt,$$sampleName$$.bed</paramValue>
         <paramValue name="deleteAfterCopy">true</paramValue>
         <depends name="runClusterTask"/>
     </step>
 
     <step name="calculatePloidy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculatePloidy" skipIfFile="$$checkPointDir$$/doNotDoAnalysis">
         <paramValue name="outputDir">$$sampleAnalysisDir$$</paramValue>
-        <paramValue name="fpkmFile">$$sampleAnalysisDir$$/master/mainresult/Cufflinks/genes.fpkm_tracking</paramValue>
+        <paramValue name="fpkmFile">$$sampleAnalysisDir$$/master/mainresult/fpkm_$$sampleName$$.txt</paramValue>
+        <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
         <paramValue name="ploidy">$$ploidy$$</paramValue>
         <paramValue name="sampleName">$$sampleName$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -102,7 +105,8 @@
 
     <step name="calculateGeneCNVs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateGeneCNVs" skipIfFile="$$checkPointDir$$/doNotDoAnalysis">
         <paramValue name="outputDir">$$sampleAnalysisDir$$</paramValue>
-        <paramValue name="fpkmFile">$$sampleAnalysisDir$$/master/mainresult/Cufflinks/genes.fpkm_tracking</paramValue>
+        <paramValue name="fpkmFile">$$sampleAnalysisDir$$/master/mainresult/fpkm_$$sampleName$$.txt</paramValue>
+        <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
         <paramValue name="ploidy">$$ploidy$$</paramValue>
         <paramValue name="sampleName">$$sampleName$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
