@@ -32,6 +32,10 @@
     <paramValue name="dataDir">$$cnvDir$$</paramValue>
   </step>
 
+    <step name="mirrorCnvDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
+      <paramValue name="fileOrDirToMirror">$$cnvDir$$</paramValue>
+      <depends name="makeCnvDir"/>
+    </step>
   <!-- Create the external database release -->
 <!--
   <step name="insertHTSExtDbRls" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateExtDbAndDbRls" stepLoadTypes="plugin">
@@ -103,7 +107,7 @@
         <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
         <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
         <depends name="${experimentName}_experiment" />
-        <depends name="makeCnvDir"/>
+        <depends name="mirrorCnvDirToCluster"/>
         <dependsGlobal name="oboOntologies"/>
     </subgraph>
   </datasetTemplate>
