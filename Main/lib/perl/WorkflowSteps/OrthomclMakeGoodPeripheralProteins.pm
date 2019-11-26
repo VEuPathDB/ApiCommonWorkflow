@@ -16,18 +16,21 @@ sub run {
   my $poorFastaFile = $self->getParamValue('poorFastaFile');
   my $minLength = $self->getParamValue('minLength');
   my $maxStopPercent = $self->getParamValue('maxStopPercent');
+  my $abbrev = $self->getParamValue('abbrev');
 
-  my $cmd = "orthomclFilterPeripheralFasta $fastaDir $fastaFile $goodFastaFile $poorFastaFile $minLength $maxStopPercent";
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
-  $self->testInputFile('fastaFile', "$fastaDir/$fastaFile");
+  my $cmd = "orthomclFilterPeripheralFasta '$workflowDataDir/$fastaDir' $fastaFile $goodFastaFile $poorFastaFile $minLength $maxStopPercent $abbrev";
+
+  $self->testInputFile('fastaFile', "$workflowDataDir/$fastaDir/$fastaFile");
 
   if ($undo) {
-      $self->runCmd(0, "rm -f $fastaDir/$goodFastaFile");
-      $self->runCmd(0, "rm -f $fastaDir/$poorFastaFile");
+      $self->runCmd(0, "rm -f $workflowDataDir/$fastaDir/$goodFastaFile");
+      $self->runCmd(0, "rm -f $workflowDataDir/$fastaDir/$poorFastaFile");
   }else {
     if ($test){
-      $self->runCmd(0, "echo test> $fastaDir/$goodFastaFile");
-      $self->runCmd(0, "echo test> $fastaDir/$poorFastaFile");
+      $self->runCmd(0, "echo test> $workflowDataDir/$fastaDir/$goodFastaFile");
+      $self->runCmd(0, "echo test> $workflowDataDir/$fastaDir/$poorFastaFile");
     }
     $self->runCmd($test, $cmd);
   }

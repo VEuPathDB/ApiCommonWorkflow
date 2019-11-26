@@ -5,7 +5,6 @@ package ApiCommonWorkflow::Main::WorkflowSteps::OrthomclLoadBlastWithSqlldr;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
-
 sub run {
   my ($self, $test, $undo) = @_;
 
@@ -26,11 +25,19 @@ sub run {
 
   if ($undo) {
     if (!$test) {
-	$self->log("Truncating apidb.similarsequences$suffix");
-	$self->runSqlFetchOneRow(0,"truncate table apidb.similarsequences$suffix");
-	my ($count) = $self->runSqlFetchOneRow(0,"select count(*) from apidb.similarsequences$suffix");
-	$self->error("Truncate of apidb.similarsequences$suffix did not succeed.  Table is not empty ($count rows)") if $count;
-	$self->log("Done truncating");
+	my $tableName = uc("similarsequences$suffix");
+	my ($numTables) = $self->runSqlFetchOneRow(0,"select count(*) from all_tables where owner = 'APIDB' and table_name = '$tableName'");
+	if ($numTables == 0) {
+	    $self->log("Table apidb.similarsequences$suffix does not exist so the undo is complete.");
+	} elsif ($numTables == 1) {
+	    $self->log("Truncating apidb.similarsequences$suffix");
+	    $self->runSqlFetchOneRow(0,"truncate table apidb.similarsequences$suffix");
+	    my ($count) = $self->runSqlFetchOneRow(0,"select count(*) from apidb.similarsequences$suffix");
+	    $self->error("Truncate of apidb.similarsequences$suffix did not succeed.  Table is not empty ($count rows).") if $count;
+	    $self->log("Finished truncating.");
+	}  else {
+	    $self->log("There was an error truncating apidb.similarsequences$suffix.");
+	}
     }
     $self->runCmd(0, "rm -f $ctlFile") if -e $ctlFile;
     $self->runCmd(0, "rm -f $sqlldrLog") if -e $sqlldrLog;
