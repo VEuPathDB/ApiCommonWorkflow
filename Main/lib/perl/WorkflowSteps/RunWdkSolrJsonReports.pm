@@ -12,9 +12,11 @@ sub run {
 
     my $batchType = $self->getParamValue('batchType');
     my $batchName = $self->getParamValue('batchName');
-    my $outputDir = $self->getParamValue('outputDir');
+    my $relativeOutputDir = $self->getParamValue('relativeOutputDir');  # relative to web services dir
     my $paramName = $self->getParamValue('paramName');
     my $paramValue = $self->getParamValue('paramValue');
+
+    my $outputDirFullPath = $self->getWebsiteFilesDir($test) + "/$relativeOutputDir";
 
     my $paramStr = "";
 
