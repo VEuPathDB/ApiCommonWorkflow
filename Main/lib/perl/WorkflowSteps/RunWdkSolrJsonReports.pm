@@ -15,18 +15,18 @@ sub run {
     my $relativeOutputDir = $self->getParamValue('relativeOutputDir');  # relative to web services dir
     my $paramName = $self->getParamValue('paramName');
     my $paramValue = $self->getParamValue('paramValue');
-
-    my $outputDirFullPath = $self->getWebsiteFilesDir($test) + "/$relativeOutputDir";
+    my $outputDirFullPath = $self->getWebsiteFilesDir($test) . "/${relativeOutputDir}";
 
     my $paramStr = "";
 
     if ($paramName ne "" && $paramValue ne "") {
       $paramStr = " --paramName $paramName --paramValue $paramValue";
     }
-    #need Steve to fix it
+
+    elsif ($paramName ne "" || $paramValue ne "") {
     #elsif !($paramName eq "" && $paramValue eq "") {
-    #  $self->error("parameters 'paramName' and 'paramValue' must both either be empty or provided together");
-    #}
+      $self->error("parameters 'paramName' and 'paramValue' must both either be empty or provided together");
+    }
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
