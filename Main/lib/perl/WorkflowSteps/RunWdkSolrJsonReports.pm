@@ -28,13 +28,13 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "runWdkReports $batchType $batchName 'http://localhost:7781' $outputDir $paramStr";
+    my $cmd = "/usr/bin/python3 $ENV{GUS_HOME}/bin/runWdkReports $batchType $batchName 'http://localhost:7781' $outputDir $paramStr";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $outputDir/solr-json-batch_$batchType_$batchName_*");  # we don't know the timestamp, so use wildcard
     } else {
       if ($test) {
-        $self->runCmd(0,"echo test > $outputDir/solr-json-batch_$batchType_$batchName_" + time);
+        $self->runCmd(0,"mkdir $outputDir/solr-json-batch_$batchType_$batchName_" + time);
       }
       $self->runCmd($test, $cmd);
     }
