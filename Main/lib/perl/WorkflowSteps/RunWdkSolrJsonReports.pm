@@ -15,7 +15,9 @@ sub run {
     my $relativeOutputDir = $self->getParamValue('relativeOutputDir');  # relative to web services dir
     my $paramName = $self->getParamValue('paramName');
     my $paramValue = $self->getParamValue('paramValue');
-    my $outputDirFullPath = $self->getWebsiteFilesDir($test) . "/${relativeOutputDir}";
+    my $subDir = $self->getParamValue('subDir');
+    my $organismNameForFiles = $self->getOrganismInfo($test, $batchName)->getNameForFiles();
+    my $outputDirFullPath = $self->getWebsiteFilesDir($test) . "/${relativeOutputDir}/${organismNameForFiles}/${subDir}";
 
     my $paramStr = "";
 
@@ -24,7 +26,6 @@ sub run {
     }
 
     elsif ($paramName ne "" || $paramValue ne "") {
-    #elsif !($paramName eq "" && $paramValue eq "") {
       $self->error("parameters 'paramName' and 'paramValue' must both either be empty or provided together");
     }
 
