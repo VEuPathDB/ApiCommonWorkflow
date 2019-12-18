@@ -55,14 +55,13 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <!-- TODO add step for ebiDumper 
-    make mysql_directory
-    make output_directory
-
-ebiDumper.pl -init_directory /home/jbrestel/tmp/mysql/init --mysql_directory /home/jbrestel/tmp/mysql/data --output_directory /home/jbrestel/tmp/mysql/out --schema_definition_file /home/jbrestel/projects/ebi2gus/lib/xml/gusSchemaDefinitions.xml 
---chromosome_map_file /home/jbrestel/projects/ebi2gus/conf/chromosomeMap.conf.sample --ncbi_tax_id 22 --container_name anopheles --dataset_name test_rsrc --dataset_version blah
--->
-
+    <step name="runEbiDumper" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunEbiDumper" >
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="ebiVersion">${ebiVersion}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="primary_genome_RSRC"/>
+    </step>
 
   <!-- TODO: runPlugin (JB will test plugin)-->
 
