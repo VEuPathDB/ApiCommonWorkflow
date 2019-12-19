@@ -15,6 +15,7 @@ sub run {
   my $bamFile = $self->getParamValue("bamFile");
   my $snpsClusterDir = $self->getParamValue("snpsClusterDir");
   my $gtfFile = $self->getParamValue("gtfFile");
+  my $geneFootprintFile = $self -> getParamValue("geneFootprintFile");
   my $samtoolsIndex = $self->getParamValue("samtoolsIndex");
   my $sampleName = $self->getParamValue("sampleName");
   my $window = $self->getParamValue("window");
@@ -43,6 +44,7 @@ sub run {
         genomicSeqsFile=$clusterWorkflowDataDir/$genomicSeqsFile
         bamFile=$clusterWorkflowDataDir/$snpsClusterDir/$bamFile
         gtfFile=$clusterWorkflowDataDir/$gtfFile
+        geneFootprintFile=$clusterWorkflowDataDir/$geneFootprintFile
         samtoolsIndex=$clusterWorkflowDataDir/$samtoolsIndex
         sampleName=$sampleName
         window=$window

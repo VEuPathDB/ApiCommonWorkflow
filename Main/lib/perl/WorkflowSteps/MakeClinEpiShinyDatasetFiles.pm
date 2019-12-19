@@ -68,10 +68,18 @@ where pa.pan_id = io2.input_pan_id
 and io2.output_pan_id = oa.pan_id
 and oa.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = ea.PAN_ID
+";
+
+  my $shinyEmptyObservationsSql = "select pa.name as source_id, ea.pan_id, ea.pan_name as name, '' AS description, ea.pan_type_id, ea.pan_type
+from apidbtuning.${tblPrefix}PANRecord ea
+   , apidbtuning.${tblPrefix}Participants pa
+   , apidbtuning.${tblPrefix}PANIO io
+where pa.PAN_ID = io.INPUT_PAN_ID
+and io.OUTPUT_PAN_ID = ea.PAN_ID
 "; 
 
-  my $shinySamplesSql = "select ea.name as observation_id, sa.*
-from apidbtuning.${tblPrefix}Observations ea
+  my $shinySamplesSql = "select ea.pan_name as observation_id, sa.*
+from apidbtuning.${tblPrefix}PanRecord ea
    , apidbtuning.${tblPrefix}Samples sa
    , apidbtuning.${tblPrefix}PANIO io
 where ea.PAN_ID = io.INPUT_PAN_ID
@@ -131,7 +139,10 @@ where o.ontology_term_source_id is not null
       }
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$participantsFile --sql \"$shinyParticipantsSql\" --verbose --includeHeader --outDelimiter '\\t'");
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$householdsFile --sql \"$shinyHouseholdsSql\" --verbose --includeHeader --outDelimiter '\\t'");
-      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$observationsFile --sql \"$shinyObservationsSql\" --verbose --includeHeader --outDelimiter '\\t'");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$observationsFile --sql \"$shinyObservationsSql\" --verbose --includeHeader --outDelimiter '\\t' --noEmptyFile");
+      unless( -e "$workflowDataDir/$observationsFile"){
+        $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$observationsFile --sql \"$shinyEmptyObservationsSql\" --verbose --includeHeader --outDelimiter '\\t'");
+      }
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$samplesFile --sql \"$shinySamplesSql\" --verbose --includeHeader --outDelimiter '\\t'");
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$ontologyMetadataFile --sql \"$ontologyMetadataSql\" --verbose --includeHeader --outDelimiter '\\t'");
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$lightTrapFile --sql \"$shinyLightTrapSql\" --verbose --includeHeader --outDelimiter '\\t'");

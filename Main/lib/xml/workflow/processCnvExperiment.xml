@@ -18,11 +18,6 @@
     <constant name="dataDir">$$parentDataDir$$</constant>
     <constant name="gtfDir">$$dataDir$$/$$experimentDatasetName$$/gtf</constant>
 
-
-    <step name="mirrorDataDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    </step>
-
     <subgraph name="loadCnvExperiment" xmlFile="loadDataset.xml">
         <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
@@ -32,7 +27,6 @@
     <step name="mirrorExperimentDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$dataDir$$/$$experimentDatasetName$$</paramValue>
         <depends name="loadCnvExperiment"/>
-        <depends name="mirrorDataDirToCluster"/>
     </step>
 
     <step name="makeGtfDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -77,9 +71,22 @@
         <depends name="makeGtfDir"/>
     </step>
 
+    <step name="makeTopLevelGeneFootprintFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelGeneFootprintFile">
+        <paramValue name="outputFile">$$gtfDir$$/$$organismAbbrev$$_footprint.txt</paramValue>
+        <paramValue name="project">$$projectName$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <depends name="makeGtfDir"/>
+    </step>
+
     <step name="mirrorGtfFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
         <paramValue name="fileOrDirToMirror">$$gtfDir$$/$$organismAbbrev$$.gtf</paramValue>
         <depends name="makeGtfForCufflinks"/>
+        <depends name="mirrorGtfDirToCluster"/>
+    </step>
+
+    <step name="mirrorFootprintFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+        <paramValue name="fileOrDirToMirror">$$gtfDir$$/$$organismAbbrev$$_footprint.txt</paramValue>
+        <depends name="makeTopLevelGeneFootprintFile"/>
         <depends name="mirrorGtfDirToCluster"/>
     </step>
     
@@ -95,6 +102,7 @@
         <paramValue name="experimentName">$$experimentName$$</paramValue>
         <paramValue name="ploidy">$$ploidy$$</paramValue>
         <paramValue name="gtfFile">$$gtfDir$$/$$organismAbbrev$$.gtf</paramValue>
+        <paramValue name="geneFootprintFile">$$gtfDir$$/$$organismAbbrev$$_footprint.txt</paramValue>
         <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
         <paramValue name="studyName">$$studyName$$</paramValue>
         <paramValue name="snpsDir">$$snpsDir$$</paramValue>
@@ -102,6 +110,7 @@
         <depends name="addPloidyStudy"/>
         <depends name="addGeneCNVStudy"/>
         <depends name="mirrorGtfFileToCluster"/>
+        <depends name="mirrorFootprintFileToCluster"/>
     </subgraph>
 
     <step name="document-copyNumberVariation_experiment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
