@@ -15,6 +15,7 @@
   <param name="relativeDownloadSiteDir"/>
   <param name="relativeWebServicesDir"/>
   <param name="isHugeGenome"/>
+  <param name="isNotEbiGenome"/>
 
   <constant name="dataDir">$$parentDataDir$$/genome</constant>
   <constant name="blastxArgs">-topcomboN=1 W=4 T=18 V=100 B=1000000 -hspmax=1000000 -gi E=1e-3 -wordmask=seg+xnu -hspsepQmax=4000 -span1</constant>
@@ -29,6 +30,7 @@
       <depends name="makeDataDir"/>
     </step>
 
+<!-- MOVE TO TOP LEVEL
   <subgraph name="blatNrdbAgainstGenome" xmlFile="blatProteinAgainstGenome.xml"  excludeIf="$$isHugeGenome$$">
     <paramValue name="dataDir">$$dataDir$$/blatNrdbAgainstGenome</paramValue>
     <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
@@ -54,6 +56,8 @@
       <paramValue name="parameters"></paramValue>
       <depends name="blatNrdbAgainstGenome"/>
     </step>
+
+-->
 
     <step name="runTRNAScan"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTRNAScan" excludeIf="$$annotationIncludesTRNAs$$">
@@ -102,6 +106,7 @@
       <depends name="makeOrfFile"/>
     </step>
 
+<!-- no longer load orfs
     <step name="loadOrfFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrfFile" stepLoadTypes="plugin" excludeIf="$$isHugeGenome$$">
       <paramValue name="inputFile">$$dataDir$$/Orf50.gff</paramValue>
@@ -111,7 +116,7 @@
       <paramValue name="isfMappingFile">orf2gus.xml</paramValue>
       <depends name="makeOrfFile"/>
     </step>
-
+-->
   
   <subgraph name="massSpecDatasetLoaders" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/massSpec.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
@@ -121,7 +126,7 @@
   </subgraph>
 
     <step name="findTandemRepeats"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindTandemRepeats" excludeIf="$$isHugeGenome$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindTandemRepeats" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
       <paramValue name="seqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="repeatFinderArgs">$$trfArgs$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/tandemRepeats.out</paramValue>
@@ -129,7 +134,7 @@
     </step>
 
     <step name="document-findTandemRepeats"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" excludeIf="$$isHugeGenome$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
       <paramValue name="method">TRF_MTHD</paramValue>
       <paramValue name="version">3.21</paramValue>
       <paramValue name="parameters">$$trfArgs$$</paramValue>
@@ -137,14 +142,14 @@
     </step>
 
     <step name="loadTandemRepeats"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTandemRepeats" stepLoadTypes="plugin" excludeIf="$$isHugeGenome$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTandemRepeats" stepLoadTypes="plugin" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
       <paramValue name="inputFile">$$dataDir$$/tandemRepeats.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="findTandemRepeats"/>
     </step>
 
    <step name="runLowComplexityFilter"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunLowComplexityFilter" excludeIf="$$isHugeGenome$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunLowComplexityFilter" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
 
       <paramValue name="seqFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="outputFile">$$genomicSeqsFile$$.dust</paramValue>
@@ -154,7 +159,7 @@
     </step>
 
     <step name="document-runLowComplexityFilter"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" excludeIf="$$isHugeGenome$$" >
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
       <paramValue name="method">dust_genome_MTHD</paramValue>
       <paramValue name="version">2.0</paramValue>
       <paramValue name="parameters"></paramValue>
@@ -162,7 +167,7 @@
     </step>
 
     <step name="loadLowComplexityFile"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertLowComplexitySequences" stepLoadTypes="plugin" excludeIf="$$isHugeGenome$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertLowComplexitySequences" stepLoadTypes="plugin" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
       <paramValue name="inputFile">$$genomicSeqsFile$$.dust</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="seqType">dna</paramValue>
