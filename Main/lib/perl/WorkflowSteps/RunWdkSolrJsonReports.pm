@@ -6,7 +6,7 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
-# runWdkReports organism pfal3d7 "http://localhost:7781" ~/junk/solr-batches --paramName organismAbbrev --paramValue "pfal3D7"
+# createWdkRecordsSolrJsonBatch organism pfal3d7 "http://localhost:7781" ~/junk/solr-batches --paramName organismAbbrev --paramValue "pfal3D7"
 sub run {
     my ($self, $test, $undo) = @_;
 
@@ -32,7 +32,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "/usr/bin/python3 $ENV{GUS_HOME}/bin/runWdkReports $batchType $batchName 'http://localhost:7781' $outputDirFullPath $paramStr";
+    my $cmd = "/usr/bin/python3 $ENV{GUS_HOME}/bin/createWdkRecordsSolrJsonBatch $batchType $batchName 'http://localhost:7781' $outputDirFullPath $paramStr";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $outputDirFullPath/solr-json-batch_${batchType}_${batchName}_*");  # we don't know the timestamp, so use wildcard
