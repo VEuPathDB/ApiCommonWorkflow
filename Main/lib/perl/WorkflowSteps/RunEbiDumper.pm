@@ -25,7 +25,7 @@ sub run {
   $self->runCmd(0, "mkdir -p $mysqlDir");
   $self->runCmd(0, "mkdir -p $outputDir");   
   
-  my $cmd = "ebiDumper.pl -init_directory $initDir --mysql_directory $mysqlDir --output_directory $outputDir  --schema_definition_file $ENV{GUS_HOME}/lib/xml/gusSchemaDefinitions.xml --chromosome_map_file $ENV{GUS_HOME}/conf/chromosomeMap.conf.sample --ncbi_tax_id $ncbiTaxonId --container_name $organismAbbrev --dataset_name $datasetName --dataset_version $ebiVersion --project_name $project_name --project_release $project_release";
+  my $cmd = "ebiDumper.pl -init_directory $initDir --mysql_directory $mysqlDir --output_directory $outputDir  --schema_definition_file $ENV{GUS_HOME}/lib/xml/gusSchemaDefinitions.xml --chromosome_map_file $ENV{GUS_HOME}/conf/chromosomeMap.conf.sample --ncbi_tax_id $ncbiTaxonId --container_name $organismAbbrev --dataset_name $datasetName --dataset_version $ebiVersion --project_name $project_name --project_release $project_release --ebi2gus_tag $ebiVersion --organism_abbrev $organismAbbrev";
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $mysqlDir");
