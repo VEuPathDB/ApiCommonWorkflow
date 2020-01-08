@@ -106,6 +106,20 @@
       <depends name="makeOrfFile"/>
     </step>
 
+   <step name="copyOrfGffToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOrfGffToDownloadDir">
+    <paramValue name="copyFromFile">$$dataDir$$/Orf50.gff</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeDownloadDir">$$relativeDownloadSiteDir$$</paramValue>
+    <depends name="makeOrfFile"/>
+   </step>
+
+    <step name="copyOrfGffToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOrfGffToWebServices">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="copyFromFile">$$dataDir$$/Orf50.gff</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="makeOrfFile"/>
+    </step>
+
 <!-- no longer load orfs
     <step name="loadOrfFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrfFile" stepLoadTypes="plugin" excludeIf="$$isHugeGenome$$">
