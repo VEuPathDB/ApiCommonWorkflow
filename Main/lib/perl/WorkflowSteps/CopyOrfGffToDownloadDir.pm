@@ -9,7 +9,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   # get parameters
-  my $relativeCopyFromFile = $self->getParamValue('relativeCopyFromFile');
+  my $copyFromFile = $self->getParamValue('copyFromFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $relativeDownloadDir = $self->getParamValue('relativeDownloadDir');
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
@@ -18,10 +18,10 @@ sub run {
   my $copyToDir = "$websiteFilesDir/$relativeDownloadDir/$organismNameForFiles/gff/data";
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd_copy = "cp $workflowDataDir/$organismAbbrev/$relativeCopyFromFile $copyToDir";
+  my $cmd_copy = "cp $workflowDataDir/$copyFromFile $copyToDir";
 
 
-  $self->testInputFile('relativeCopyFromFile', "$workflowDataDir/$organismAbbrev/$relativeCopyFromFile");
+  $self->testInputFile('copyFromFile', "$workflowDataDir/$copyFromFile");
   if ($undo) {
     $self->runCmd(0, "rm -f $copyToDir/Orf50.gff");
   } else {
