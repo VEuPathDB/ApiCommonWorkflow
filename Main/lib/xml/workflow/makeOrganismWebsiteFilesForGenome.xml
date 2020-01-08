@@ -39,6 +39,7 @@
       <depends name="makeMixedGenomicDownloadFile"/>
     </step>
 
+<!--Replaced by Orf Gff
     <step name="makeOrfDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfDownloadFile" excludeIf="$$isHugeGenome$$">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
@@ -74,6 +75,19 @@
       <paramValue name="dataName">ORFs_AA</paramValue>
       <paramValue name="service">motif</paramValue>
       <depends name="makeOrfDownloadFile"/>
+    </step>
+-->
+
+   <step name="copyOrfGffToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOrfGffToDownloadDir">
+    <paramValue name="relativeCopyFromFile">postLoadGenome/genome/Orf50.gff</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeDownloadDir">$$relativeDownloadSiteDir$$</paramValue>
+   </step>
+
+    <step name="copyOrfGffToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOrfGffToWebServices">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="relativeCopyFromFile">postLoadGenome/genome/Orf50.gff</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
     </step>
 
 <!-- comment out - will be removed unless there is an objection from users
