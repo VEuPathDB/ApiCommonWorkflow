@@ -12,7 +12,7 @@ sub run {
 
   # standard parameters for making download files
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $relativeCopyFromFile = $self->getParamValue('relativeCopyFromFile');
+  my $copyFromFile = $self->getParamValue('copyFromFile');
   my $relativeWebServicesDir = $self->getParamValue('relativeWebServicesDir');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
@@ -23,11 +23,11 @@ sub run {
 
   my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/gff/";
 
-  $self->testInputFile('relativeCopyFromFile', "$workflowDataDir/$organismAbbrev/$relativeCopyFromFile");
+  $self->testInputFile('copyFromFile', "$workflowDataDir/$copyFromFile");
   if($undo) {
     $self->runCmd(0, "rm -f $copyToDir/Orf50.gff");
   } else{
-    $self->runCmd($test, "cp $workflowDataDir/$organismAbbrev/$relativeCopyFromFile $copyToDir");
+    $self->runCmd($test, "cp $workflowDataDir/$copyFromFile $copyToDir");
   }
 }
 
