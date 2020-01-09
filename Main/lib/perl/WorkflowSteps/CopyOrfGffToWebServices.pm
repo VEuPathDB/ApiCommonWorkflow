@@ -21,7 +21,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/gff/";
+  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/gff/";
 
   $self->testInputFile('copyFromFile', "$workflowDataDir/$copyFromFile");
   if($undo) {
