@@ -49,11 +49,11 @@ sub run {
     $self->runCmd(0, "rm -rf $initSqlDir");
     $self->runCmd(0, "rm -rf $unpackDir");
   } else {
-    $self->runCmd("wget --ftp-user ${ebiFtpUser} --ftp-password ${ebiFtpPassword} -O ${unpackDir}/init.sql.gz ftp://ftp-private.ebi.ac.uk:/EBIout/${ebiVersion}/coredb/${ebiOrganismName}/${ebiOrganismName}_core_*.gz");
-    $self->runCmd("gunzip -c ${unpackDir}/init.sql.gz >${initSqlDir}/init.sql");
-    $self->runCmd("generateDatabaseSchemaXml >$gusSchemaDefFullPath");
+    $self->runCmd($test,"wget --ftp-user ${ebiFtpUser} --ftp-password ${ebiFtpPassword} -O ${unpackDir}/init.sql.gz ftp://ftp-private.ebi.ac.uk:/EBIout/${ebiVersion}/coredb/${ebiOrganismName}/${ebiOrganismName}_core_*.gz");
+    $self->runCmd($test,"gunzip -c ${unpackDir}/init.sql.gz >${initSqlDir}/init.sql");
+    $self->runCmd($test,"generateDatabaseSchemaXml >$gusSchemaDefFullPath");
 
-    $self->testInputFile('initSqlFile', "$initSqlDir/*.sql");
+    #$self->testInputFile('initSqlFile', "$initSqlDir/*.sql");
 
     $self->runCmd($test,$cmd);
   }
