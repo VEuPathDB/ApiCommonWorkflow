@@ -372,7 +372,6 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsGlobal name="chEBI_Compounds"/>
 	  <dependsGlobal name="EuPath_Ontology_RSRC"/>
    </subgraph>
-    
   </datasetTemplate>
 
   <datasetTemplate class="ReactionsXRefs">
@@ -388,6 +387,23 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
         <depends name="Pathways_MetaCyc_RSRC"/>
     </subgraph>
   </datasetTemplate>
+
+  <!-- for pathways graph -->
+  <step name="makePathwaySolrJsonDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeWebServicesDir$$/pathway/solrJson</paramValue>
+      <dependsPattern name="Pathways_*_RSRC"/>
+      <dependsPattern name="ReactionsXRefs_*_RSRC"/>
+  </step>
+
+  <step name="runPathwaySolrJsonReports" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunWdkSolrJsonReports" stepLoadTypes="runSolrJsonReports">
+      <paramValue name="batchType">pathway</paramValue>
+      <paramValue name="batchName">all</paramValue>
+      <paramValue name="relativeOutputDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="subDir">solrJson</paramValue>
+      <paramValue name="paramName"></paramValue>
+      <paramValue name="paramValue"></paramValue>
+      <depends name="makePathwaySolrJsonDir"/>
+  </step>
 
 <!-- old template deprecated-->
  <datasetTemplate class="metaboliteProfiles">
@@ -428,6 +444,24 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
   </datasetTemplate>
 
+<!-- for compounds graph -->
+  <step name="makeCompoundSolrJsonDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeWebServicesDir$$/compound/solrJson</paramValue>
+    <dependsGlobal name="chEBI_Compounds"/>
+    <dependsGlobal name="HMDB_Compounds"/>
+    <dependsPattern name="compoundMassSpec_*_RSRC"/>
+  </step>
+
+  <step name="runCompoundSolrJsonReports"        
+      stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunWdkSolrJsonReports" stepLoadTypes="runSolrJsonReports">
+      <paramValue name="batchType">compound</paramValue>
+      <paramValue name="batchName">all</paramValue>
+      <paramValue name="relativeOutputDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="subDir">solrJson</paramValue>
+      <paramValue name="paramName"></paramValue>
+      <paramValue name="paramValue"></paramValue>
+      <depends name="makeCompoundSolrJsonDir"/>
+  </step> 
 
 <!-- EuPath Ontology and Study MetaData -->
 <subgraph name="metadata" xmlFile="metadata.xml" >
