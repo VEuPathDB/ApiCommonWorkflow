@@ -33,13 +33,9 @@ sub run {
   my $unpackDir = "$fullGenomeDir/unpack";
   my $initSqlDir = "$fullGenomeDir/sql";
   my $mysqlDir = "$fullGenomeDir/mysql_data";
+  $outputDir = "$workflowDataDir/${outputDir}";
 
   my $gusSchemaDefFullPath = "${unpackDir}/gusSchemaDefinitions.xml";
-
-  $self->runCmd(0, "mkdir -p $mysqlDir");
-  $self->runCmd(0, "mkdir -p $outputDir");   
-  $self->runCmd(0, "mkdir -p $unpackDir");   
-  $self->runCmd(0, "mkdir -p $initSqlDir");   
 
   my $cmd = "ebiDumper.pl -init_directory $initSqlDir --mysql_directory $mysqlDir --output_directory $outputDir --schema_definition_file $gusSchemaDefFullPath --chromosome_map_file $chromosomeMapFullPath --ncbi_tax_id $ncbiTaxonId --container_name $organismAbbrev --dataset_name $datasetName --dataset_version $ebiVersion --project_name $project_name --project_release $project_release --ebi2gus_tag $ebi2gusTag --organism_abbrev $organismAbbrev";
 
@@ -49,6 +45,10 @@ sub run {
     $self->runCmd(0, "rm -rf $initSqlDir");
     $self->runCmd(0, "rm -rf $unpackDir");
   } else {
+    $self->runCmd($test, "mkdir -p $mysqlDir");
+    $self->runCmd($test, "mkdir -p $outputDir");
+    $self->runCmd($test, "mkdir -p $unpackDir");
+    $self->runCmd($test, "mkdir -p $initSqlDir");
     $self->runCmd($test,"wget --ftp-user ${ebiFtpUser} --ftp-password ${ebiFtpPassword} -O ${unpackDir}/init.sql.gz ftp://ftp-private.ebi.ac.uk:/EBIout/${ebiVersion}/coredb/${ebiOrganismName}/${ebiOrganismName}_core_*.gz");
     $self->runCmd($test,"gunzip -c ${unpackDir}/init.sql.gz >${initSqlDir}/init.sql");
     $self->runCmd($test,"generateDatabaseSchemaXml >$gusSchemaDefFullPath");
