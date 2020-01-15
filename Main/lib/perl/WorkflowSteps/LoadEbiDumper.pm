@@ -18,11 +18,14 @@ sub run {
   my $args = "--logDir $workflowDataDir/$loaderDir --table_reader 'ApiCommonData::Load::EBITableReader' --databaseDir $workflowDataDir/$databaseDir --database $organismAbbrev --mode load";
 
 
-  #$self->testInputFile('inputFile', "$workflowDataDir/$databaseDir");
-
+  
+  if ($undo) {
+    $self->runCmd(0, "rm -rf $workflowDataDir/$loaderDir");
+  } else {
+    $self->runCmd($test, "mkdir -p $workflowDataDir/$loaderDir");
+  }  
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertUniDB", $args);
 }
-
 
 
 1;
