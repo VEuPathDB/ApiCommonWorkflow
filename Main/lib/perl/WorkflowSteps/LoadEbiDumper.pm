@@ -20,6 +20,8 @@ sub run {
 
   
   if ($undo) {
+    $self->runCmd(0, "ApiCommonData::Load::Plugin::InsertUniDB --database $organismAbbrev --table_reader 'ApiCommonData::Load::EBIReaderForUndo' --logDir $workflowDataDir/$loaderDir --mode undo --commit");
+
     $self->runCmd(0, "rm -rf $workflowDataDir/$loaderDir");
   } else {
     $self->runCmd($test, "mkdir -p $workflowDataDir/$loaderDir");
