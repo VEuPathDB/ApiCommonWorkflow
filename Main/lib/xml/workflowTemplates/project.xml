@@ -146,6 +146,27 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
     </subgraph>
 
+  <subgraph name="${organismAbbrev}_blatNrdbAgainstGenome" xmlFile="blatProteinAgainstGenome.xml"  excludeIf="${isHugeGenome}">
+    <paramValue name="dataDir">${organismAbbrev}/blatNrdbAgainstGenome</paramValue>
+    <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
+    <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+    <paramValue name="targetSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue> 
+    <paramValue name="queryFile">global/NRDB_RSRC/nrdb-short-defline.fsa</paramValue>        
+    <paramValue name="filterByTaxon">true</paramValue>
+    <paramValue name="taxonHierarchyForFilter">${taxonHierarchyForBlastxFilter}</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+    <dependsGlobal name="mirrorToCluster"/>
+  </subgraph>
+
+    <step name="${organismAbbrev}_document-blatGenomicSeqsNrdb"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" excludeIf="${isHugeGenome}">
+      <paramValue name="method">BLAT_genome_NRDB_MTHD</paramValue>
+      <paramValue name="version">31</paramValue>
+      <paramValue name="parameters"></paramValue>
+      <depends name="${organismAbbrev}_blatNrdbAgainstGenome"/>
+    </step>
+
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
     <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeCompGenomicsFiles" xmlFile="makeCompGenomicsFiles.xml" groupName="${organismAbbrev}" excludeIf="${isHugeGenome}">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
