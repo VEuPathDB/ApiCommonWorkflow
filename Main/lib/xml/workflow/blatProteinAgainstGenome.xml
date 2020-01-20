@@ -3,17 +3,11 @@
   <param name="maxIntronSize"/>       <!-- ??? -->
   <param name="organismAbbrev"/>      <!-- ${organismAbbrev} -->
   <param name="targetSeqsDir"/>       <!-- genomeSeqsDir -->
-  <param name="targetExtDbName"/>     <!-- ${organismAbbrev}_primary_genome_RSRC -->
   <param name="queryFile"/>           <!-- nrdb proteins file -->
-  <param name="queryTable"/>          <!-- DoTS::ExternalAASequence -->
-  <param name="queryExtDbName"/>      <!-- NRDB_RSRC-->
-  <param name="queryIdRegex"/>        <!-- gi\\|(\\d+)\\| -->
-  <param name="loadSubjectSubset"/>   <!-- true -->
   <param name="filterByTaxon"/>       <!-- true -->
   <param name="taxonHierarchyForFilter"/> <!-- Eukaryota Apicomplexa Neospora -->
-  <param name="shortenSubjectSourceIdTo"/>
-
-
+  <param name="relativeWebServicesDir"/>
+  
   <constant name="blatOutputFile">$$dataDir$$/blat.out</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -73,10 +67,17 @@
     <depends name="fixGenomeSourceIdsInBlatResultFile"/>
   </step>
 
+  <step name="proteinBlatToGFF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ProteinBlatToGFF">
+    <paramValue name="inputFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
+    <paramValue name="unsortedOutputFile">$$dataDir$$/master/mainresult/nrdbBlat.gff</paramValue>
+    <paramValue name="sortedOutputFile">$$dataDir$$/master/mainresult/nrdbBlat_sorted.gff</paramValue>
+    <depends name="filterResultsByTaxon"/>
+  </step>
 
-<!-- TODO:  Add steps to make gff from psl here -->
-
-
-
-
+  <step name="copyNrdbBlatGffFileToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyNrdbBlatGffFileToWebServices">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="nrdbBlatGff">$$dataDir$$/master/mainresult/nrdbBlat_sorted.gff</paramValue>
+    <depends name="proteinBlatToGFF"/>
+  </step>
 </workflowGraph>
