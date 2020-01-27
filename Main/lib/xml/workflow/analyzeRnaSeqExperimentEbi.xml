@@ -1,0 +1,62 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="organismDatasetLoaderXmlFile"/>
+    <param name="experimentName"/>
+    <param name="parentDataDir"/><!--TODO:check-->
+    <param name="genomeExtDbRlsSpec"/><!--TODO-->
+    <param name="topLevelSeqSizeFile"/><!--TODO: make in parent-->
+    <param name="experimentDatasetName"/><!--TODO-->
+    <param name="experimentDatasetVersion"/><!--TODO-->
+    <param name="isPairedEnd"/><!--TODO-->
+    <param name="strandSpecific"/><!--TODO-->
+    <param name="topLevelFastaFile"/><!--TODO-->
+    <param name="topLevelGeneFootprintFile"/><!--TODO: make in parent-->
+
+    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
+    <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant><!--TODO: think all output files need to go here-->
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$samplesOutputDir$$</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <!--load dataset-->
+    <!--TODO: make class-->
+    <!--TODO: does the loader have to fetch analysisConfig from manual delivery??-->
+
+    <subgraph name="experiment_RSRC" xmlFile="loadDataset.xml">
+        <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
+        <paramValue name="datasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+        <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+        <depends name="makeDataDir"/>
+    </subgraph>
+
+    <!--download from EBI ftp-->
+
+    <!--calculate TPM-->
+
+    <!--doTranscriptExpression-->
+    <!--TODO: make new class for this-->
+    <!--TODO: check that munger can read data structure-->
+    <!--TODO: set params for DESeq2 as standard (not in analysisConfig)-->
+
+    <!--run InsertStudyResults-->
+    <!--TODO: check TPM (should be fine after munging-->
+    <!--TODO: check intron junctions and fix sequence-->
+    <!--TODO: do I need to run the dataset loader for each sample first??-->
+
+    <!--run normalise coverage-->
+    <!--TODO: check directory structure of output-->
+
+    <!--cp bigwig to web services (do this in parent??)-->
+
+    <!--load RNAseq metrics (do this in parent??)-->
+
+</workflowGraph>
+
+
