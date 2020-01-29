@@ -6,6 +6,7 @@
       <param name="organismDatasetLoaderXmlFile"/>
       <param name="isAnnotatedGenome"/>
       <param name="isHugeGenome"/>
+      <param name="isNotEbiGenome"/>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -34,7 +35,7 @@
       <depends name="makeDerivedTables"/> 
     </step>
 
-    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomeRepeatMaskTaskInputDir" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$">
+    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomeRepeatMaskTaskInputDir" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="seqsFile">$$topLevelFastaFile$$</paramValue>
       <paramValue name="dangleMax">0</paramValue>
@@ -45,12 +46,12 @@
     </step>
 
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$" stepLoadTypes="toCluster">
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$" stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeClusterTaskInputDir"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="MaskTopLevelCluster" stepFailTypes="blatProteinCluster" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$">
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="MaskTopLevelCluster" stepFailTypes="blatProteinCluster" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="numNodes">10</paramValue>
       <paramValue name="maxMemoryGigs">1.75</paramValue>
@@ -58,13 +59,31 @@
       <depends name="mirrorToCluster"/>
     </step>
 
-    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$" stepLoadTypes="fromCluster">
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$" stepLoadTypes="fromCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blocked.err,blocked.seq</paramValue>
       <paramValue name="deleteAfterCopy">true</paramValue>
       <depends name="runClusterTask"/>
     </step>
+
+    <step name="makeMasterDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isNotEbiGenome$$">
+      <paramValue name="dataDir">$$dataDir$$/master</paramValue>
+    <depends name="makeDataDir"/> 
+    </step>
+
+    <step name="makeMainResultDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isNotEbiGenome$$">
+      <paramValue name="dataDir">$$dataDir$$/master/mainresult</paramValue>
+    <depends name="makeMasterDir"/> 
+    </step>
+
+
+    <step name="copyRepeatMaskedFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isNotEbiGenome$$">
+      <paramValue name="fromFile">$$dataDir$$/../loadGenome/*_primary_genome_RSRC/ebi2gus_output/blocked.seq</paramValue>
+      <paramValue name="toFile">$$dataDir$$/master/mainresult/blocked.seq</paramValue>
+    <depends name="makeMainResultDir"/> 
+    </step>
+
 
     <step name="document-mask_top_level_genome"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
