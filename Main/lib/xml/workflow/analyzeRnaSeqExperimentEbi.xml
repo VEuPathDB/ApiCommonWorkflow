@@ -14,20 +14,15 @@
     <param name="topLevelGeneFootprintFile"/><!--TODO: make in parent-->
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
-    <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant><!--TODO: think all output files need to go here-->
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$samplesOutputDir$$</paramValue>
-        <depends name="makeDataDir"/>
-    </step>
-
     <!--load dataset-->
     <!--TODO: make class-->
-    <!--TODO: does the loader have to fetch analysisConfig from manual delivery??-->
+    <!--TODO: loader will have to fetch analysisConfig from manual delivery??-->
+    <!--TODO: run loadNothing-->
 
     <subgraph name="experiment_RSRC" xmlFile="loadDataset.xml">
         <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
@@ -37,25 +32,27 @@
     </subgraph>
 
     <!--download from EBI ftp-->
+    <!--TODO: need script for this-->
 
     <!--calculate TPM-->
+    <!--TODO: requires a step class-->
+    <!--TODO: run makeTpmFromHtseqCounts.pl-->
 
     <!--doTranscriptExpression-->
-    <!--TODO: make new class for this-->
-    <!--TODO: get DESeq2 working-->
+    <!--TODO: use DoTranscriptExpressionEbi.pm StepClass - already written-->
 
-    <!--sampleGraph-->
-    <!--TODO: simple graph to read sample dataset class and load rows in study tables-->
 
     <!--run InsertStudyResults-->
-    <!--TODO: do I need to run the dataset loader for each sample first??-->
+    <!-- should be able to copy plugin call from old graph-->
 
     <!--run normalise coverage-->
+    <!-- TODO: use NormalizeBedGraphEbi.pm StepClass - already written-->
 
     <!--cp bigwig to web services (do this in parent??)-->
-    <!--TODO: make sure this can use directory structure-->
+    <!--TODO: make sure bigwig files are in the correct locations for this script-->
+    <!--should be able to use WorkflowStepClass from old graph-->
 
-    <!--load RNAseq metrics (do this in parent??)-->
+    <!--load RNAseq metrics (not sure what we use these for? Haven't looked at this step)-->
 
 </workflowGraph>
 
