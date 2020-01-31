@@ -1,0 +1,59 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="organismDatasetLoaderXmlFile"/>
+    <param name="experimentName"/>
+    <param name="parentDataDir"/><!--TODO:check-->
+    <param name="genomeExtDbRlsSpec"/><!--TODO-->
+    <param name="topLevelSeqSizeFile"/><!--TODO: make in parent-->
+    <param name="experimentDatasetName"/><!--TODO-->
+    <param name="experimentDatasetVersion"/><!--TODO-->
+    <param name="isPairedEnd"/><!--TODO-->
+    <param name="strandSpecific"/><!--TODO-->
+    <param name="topLevelFastaFile"/><!--TODO-->
+    <param name="topLevelGeneFootprintFile"/><!--TODO: make in parent-->
+
+    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <!--load dataset-->
+    <!--TODO: make class-->
+    <!--TODO: loader will have to fetch analysisConfig from manual delivery??-->
+    <!--TODO: run loadNothing-->
+
+    <subgraph name="experiment_RSRC" xmlFile="loadDataset.xml">
+        <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
+        <paramValue name="datasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+        <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+        <depends name="makeDataDir"/>
+    </subgraph>
+
+    <!--download from EBI ftp-->
+    <!--TODO: need script for this-->
+
+    <!--calculate TPM-->
+    <!--TODO: requires a step class-->
+    <!--TODO: run makeTpmFromHtseqCounts.pl-->
+
+    <!--doTranscriptExpression-->
+    <!--TODO: use DoTranscriptExpressionEbi.pm StepClass - already written-->
+
+
+    <!--run InsertStudyResults-->
+    <!-- should be able to copy plugin call from old graph-->
+
+    <!--run normalise coverage-->
+    <!-- TODO: use NormalizeBedGraphEbi.pm StepClass - already written-->
+
+    <!--cp bigwig to web services (do this in parent??)-->
+    <!--TODO: make sure bigwig files are in the correct locations for this script-->
+    <!--should be able to use WorkflowStepClass from old graph-->
+
+    <!--load RNAseq metrics (not sure what we use these for? Haven't looked at this step)-->
+
+</workflowGraph>
+
+

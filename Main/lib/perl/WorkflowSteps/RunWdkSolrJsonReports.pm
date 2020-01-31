@@ -16,9 +16,15 @@ sub run {
     my $paramName = $self->getParamValue('paramName');
     my $paramValue = $self->getParamValue('paramValue');
     my $subDir = $self->getParamValue('subDir');
-    my $organismNameForFiles = $self->getOrganismInfo($test, $batchName)->getNameForFiles();
-    my $outputDirFullPath = $self->getWebsiteFilesDir($test) . "/${relativeOutputDir}/${organismNameForFiles}/${subDir}";
-
+    my $organismNameForFiles = "";
+    my $outputDirFullPath = "";
+    
+    if ($batchType eq "organism") {	
+        $organismNameForFiles = $self->getOrganismInfo($test, $batchName)->getNameForFiles();
+    	$outputDirFullPath = $self->getWebsiteFilesDir($test) . "/${relativeOutputDir}/${organismNameForFiles}/${subDir}";
+	}else {
+		$outputDirFullPath = $self->getWebsiteFilesDir($test) . "/${relativeOutputDir}/${batchType}/${subDir}";
+    }
     my $paramStr = "";
 
     if ($paramName ne "" && $paramValue ne "") {
@@ -35,7 +41,7 @@ sub run {
     my $cmd = "/usr/bin/python3 $ENV{GUS_HOME}/bin/createWdkRecordsSolrJsonBatch $batchType $batchName 'http://localhost:7781' $outputDirFullPath $paramStr";
 
     if ($undo) {
-	$self->runCmd(0, "rm -f $outputDirFullPath/solr-json-batch_${batchType}_${batchName}_*");  # we don't know the timestamp, so use wildcard
+	$self->runCmd(0, "rm -r $outputDirFullPath/solr-json-batch_${batchType}_${batchName}_*");  # we don't know the timestamp, so use wildcard
     } else {
       if ($test) {
         $self->runCmd(0,"mkdir $outputDirFullPath/solr-json-batch_${batchType}_${batchName}_" + time);
