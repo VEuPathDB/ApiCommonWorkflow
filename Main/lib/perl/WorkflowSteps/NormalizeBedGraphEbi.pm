@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraph;
+package ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraphiEbi;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
