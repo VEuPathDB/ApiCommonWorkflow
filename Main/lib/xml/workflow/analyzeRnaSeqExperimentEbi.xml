@@ -3,36 +3,51 @@
     <param name="organismAbbrev"/>
     <param name="organismDatasetLoaderXmlFile"/>
     <param name="experimentName"/>
-    <param name="parentDataDir"/><!--TODO:check-->
-    <param name="genomeExtDbRlsSpec"/><!--TODO-->
-    <param name="topLevelSeqSizeFile"/><!--TODO: make in parent-->
-    <param name="experimentDatasetName"/><!--TODO-->
-    <param name="experimentDatasetVersion"/><!--TODO-->
-    <param name="isPairedEnd"/><!--TODO-->
-    <param name="strandSpecific"/><!--TODO-->
-    <param name="topLevelFastaFile"/><!--TODO-->
-    <param name="topLevelGeneFootprintFile"/><!--TODO: make in parent-->
+    <param name="parentDataDir"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="experimentDatasetName"/>
+    <param name="experimentDatasetVersion"/>
+    <param name="strandSpecific"/>
+    <param name="topLevelSeqSizeFile"/>
+    <param name="topLevelFastaFile"/>
+    <param name="topLevelGeneFootprintFile"/>
+    <param name="relativeDownloadSiteDir"/>
+    <param name="relativeWebServicesDir"/>
+    <param name="ebiOrganismName"/>
+    <param name="ebiVersion"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
+    <constant name="samplesOutputDir">$$dataDir$$/samples</constant>
 
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$dataDir$$</paramValue>
-    </step>
-
-    <!--load dataset-->
-    <!--TODO: make class-->
-    <!--TODO: loader will have to fetch analysisConfig from manual delivery??-->
-    <!--TODO: run loadNothing-->
-
-    <subgraph name="experiment_RSRC" xmlFile="loadDataset.xml">
-        <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-        <paramValue name="datasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
-        <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-        <depends name="makeDataDir"/>
+    <!-- this will make the dataDir as defined by the constant above-->
+    <subgraph name="loadDataset" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
     </subgraph>
 
+    <!-- we will download the sample directories here -->
+    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$samplesOutputDir$$</paramValue>
+      <depends name="loadDataset"/>
+    </step>
+
     <!--download from EBI ftp-->
-    <!--TODO: need script for this-->
+    <step name="fetchEbiRNASeq" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FetchEbiRNASeq">
+      <paramValue name="ebiVersion">$$ebiVersion$$</paramValue>
+      <paramValue name="ebiOrganismName">$$ebiOrganismName$$</paramValue>
+      <paramValue name="experimentName">$$experimentName$$</paramValue>
+      <paramValue name="samplesDir">$$samplesOutputDir$$</paramValue>
+      <depends name="makeSamplesOutputDir"/>
+    </step>
+
+    <!-- for junctions and bed files, prepend the organismAbbrev to a fixed version of the file-->
+    <step name="fixSeqIdEbiRNASeq" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixSeqIdEbiRNASeq">
+      <paramValue name="samplesDir">$$samplesOutputDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <depends name="fetchEbiRNASeq"/>
+    </step>
+
 
     <!--calculate TPM-->
     <!--TODO: requires a step class-->
@@ -40,7 +55,6 @@
 
     <!--doTranscriptExpression-->
     <!--TODO: use DoTranscriptExpressionEbi.pm StepClass - already written-->
-
 
     <!--run InsertStudyResults-->
     <!-- should be able to copy plugin call from old graph-->
