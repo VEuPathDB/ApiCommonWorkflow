@@ -12,11 +12,14 @@ sub run {
   my $taskInputDir = $self->getParamValue("taskInputDir");
   my $readsFile = $self->getParamValue("readsFile");
   my $pairedReadsFile = $self->getParamValue("pairedReadsFile");
-  my $hasPairedReads = $self->getBooleanParamValue("hasPairedReads");
-#  my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
+  #my $hasPairedReads = $self->getBooleanParamValue("hasPairedReads");
+  my $hasPairedReads = $self->getParamValue("hasPairedReads");
+  #my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
   my $indexDir = $self->getParamValue("indexDir");
   my $sampleName = $self->getParamValue("sampleName");
-#  my $clusterServer = $self->getSharedConfig('clusterServer');
+  my $sraQueryString = $self->getParamValue("sraQueryString");
+
+  #my $clusterServer = $self->getSharedConfig('clusterServer');
   my $extraBowtieParams = $self->getParamValue("extraBowtieParams");
   $extraBowtieParams = 'none' unless($extraBowtieParams);
 
@@ -37,7 +40,6 @@ sub run {
 
     $self->testInputFile('readsFile', "$workflowDataDir/$readsFile");
 
-
       $self->runCmd(0,"mkdir -p $workflowDataDir/$taskInputDir");
 
       # make controller.prop file
@@ -55,15 +57,27 @@ removePCRDuplicates=$removePCRDuplicates
 writeBedFile=$writeBedFile
 topLevelSeqSizeFile=$clusterWorkflowDataDir/$topLevelSeqSizeFile
 extraBowtieParams=$extraBowtieParams
+hasPairedEnds=$hasPairedReads
 ";
-	  $taskPropFileContent .= "mateA=$clusterWorkflowDataDir/$readsFile\n";
-	  if($hasPairedReads){
-	      $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$pairedReadsFile\n";
-	  }else {
-	      $taskPropFileContent .= "mateB=none\n";
-	  }
-      
 
+    if (!length($sraQueryString)>0 && !-e "$workflowDataDir/$readsFile") {
+      $self->error("Declared input file '$workflowDataDir/$readsFile' for param 'readsFile' does not exist");
+    }   
+
+    if(length($sraQueryString)>0){
+	    $taskPropFileContent .= "mateA=none\n";
+	    $taskPropFileContent .= "mateB=none\n";
+	    $taskPropFileContent .= "sraSampleIdQueryList=$sraQueryString\n";
+
+    }else {
+	    $taskPropFileContent .= "mateA=$clusterWorkflowDataDir/$readsFile\n";
+	    $taskPropFileContent .= "sraSampleIdQueryList=none\n";
+	    if($hasPairedReads){
+	      $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$pairedReadsFile\n";
+	    }else {
+	      $taskPropFileContent .= "mateB=none\n";
+	    }
+    }
       print F "$taskPropFileContent\n";
        close(F);
   }
