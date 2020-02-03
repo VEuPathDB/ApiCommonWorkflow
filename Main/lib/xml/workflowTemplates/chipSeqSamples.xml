@@ -42,9 +42,45 @@
       <paramValue name="experimentType">$$experimentType$$</paramValue>
       <paramValue name="inputName">${inputName}</paramValue>
       <paramValue name="fragmentLength">${fragmentLength}</paramValue>
+      <paramValue name="sraQueryString"></paramValue>
 
       <depends name="${sampleName}_RSRC"/>
     </subgraph>
   </datasetTemplate>
+
+
+  <datasetTemplate class="chipSeqSample_QuerySRA">
+    <prop name="experimentName"/>
+    <prop name="sampleName"/>
+    <prop name="inputName"/>
+    <prop name="fragmentLength"/>
+    <prop name="sraQueryString"/>
+
+    <subgraph name="${sampleName}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_chipSeqSample_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+    </subgraph>
+
+    <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeChipSeqSamples.xml">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="experimentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="outputDir">$$outputDir$$</paramValue>
+      <paramValue name="sampleName">${sampleName}</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="readsFile">$$readsFilePath$$/${sampleName}</paramValue>
+      <paramValue name="sraQueryString">${sraQueryString}</paramValue>
+      <paramValue name="indexDir">$$indexDir$$</paramValue>
+      <paramValue name="experimentName">${experimentName}</paramValue>
+      <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="experimentType">$$experimentType$$</paramValue>
+      <paramValue name="inputName">${inputName}</paramValue>
+      <paramValue name="fragmentLength">${fragmentLength}</paramValue>
+
+      <depends name="${sampleName}_RSRC"/>
+    </subgraph>
+  </datasetTemplate> 
 
 </workflowGraph>
