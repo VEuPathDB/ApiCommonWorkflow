@@ -114,7 +114,7 @@ sub run {
 					$self->runCmd($test,"mv $pairTmpDir/mercator-output/*.agp $pairOutputDir");
 
 # remove the big files from the alignments directory and move the rest to the real output directory                                        
-					$self->runCmd($test,"rm $pairTmpDir/mercator-output/alignments/*/*.{mfa,phy,fasta,masked}");
+					$self->runCmd($test,"rm -f $pairTmpDir/mercator-output/alignments/*/*.{mfa,phy,fasta,masked}");
 					$self->runCmd($test,"mv $pairTmpDir/mercator-output/alignments $pairOutputDir");
 
 # delete tmp dir
