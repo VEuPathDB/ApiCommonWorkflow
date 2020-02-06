@@ -18,7 +18,7 @@
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesOutputDir">$$dataDir$$/samples</constant>
-    <constant name="samplesOutputDir">$$dataDir$$/doTranscriptExpression</constant>
+    <constant name="doTranscriptExpression">$$asmplesOutputDir$$/doTranscriptExpression</constant>
 
     <!-- this will make the dataDir as defined by the constant above-->
     <subgraph name="loadDataset" xmlFile="loadDataset.xml">
@@ -27,7 +27,7 @@
       <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
     </subgraph>
 
-    <constant name="analysisConfig">TODO</constant>
+    <constant name="analysisConfig">$$dataDir$$/final/$$experimentName$$.xml</constant>
 
     <!-- we will download the sample directories here -->
     <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -36,7 +36,7 @@
     </step>
 
     <!-- analysis here -->
-    <step name="makeDoTranscriptExpression" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <step name="makeDoTranscriptExpressionDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$doTranscriptExpression$$</paramValue>
       <depends name="loadDataset"/>
     </step>
@@ -67,7 +67,7 @@
     </step>
 
     <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpressionEbi">
-      <paramValue name="analysisConfigFile">$$dataDir$$/final/analysisConfig.xml</paramValue>
+      <paramValue name="analysisConfigFile">$$analysisConfig$$</paramValue>
       <paramValue name="inputDir">$$samplesOutputDir$$</paramValue>
       <paramValue name="outputDir">$$doTranscriptExpression$$</paramValue>
       <paramValue name="technologyType">RNASeq</paramValue>
@@ -94,7 +94,7 @@
 
     <!-- TODO: sample directory paths need to be updated here -->
     <step name="loadRNASeqMetrics" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRNASeqMetrics" stepLoadTypes="plugin">
-      <paramValue name="experimentDir">$$samplesOutuptDir$$</paramValue>
+      <paramValue name="experimentDir">$$samplesOutputDir$$</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <depends name="loadStudyResultsFromConfig"/>
       <dependsGlobal name="oboOntologies"/>
@@ -104,8 +104,9 @@
 
     <!--TODO:  update this to use the "fixed bed files  -->
     <step name="normalizeCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraphiEbi">
-      <paramValue name="inputDir">$$samplesOutputDir$$</paramValue> <!-- TODO:  theck this -->
+      <paramValue name="inputDir">$$samplesOutputDir$$</paramValue> <!-- TODO:  check this -->
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
       <depends name="fixSeqIdEbiRNASeq"/>
     </step>
 
