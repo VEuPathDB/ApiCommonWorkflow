@@ -12,13 +12,12 @@ sub run {
   my $analysisConfigFile = $self->getParamValue('analysisConfigFile');
   my $inputDir = $self->getParamValue('inputDir');
   my $outputDir = $self->getParamValue('outputDir');
-  my $seqIdPrefix = $self->getParamValue('seqIdPrefix');
   my $technologyType = $self->getParamValue("technologyType");
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
 
-  my $cmd = "doTranscriptExpression.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir $input_file --technology_type $technologyType --seq_id_prefix $seqIdPrefix";
+  my $cmd = "doTranscriptExpression.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir --technology_type $technologyType";
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir");

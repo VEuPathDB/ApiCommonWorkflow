@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraphiEbi;
+package ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraphEbi;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -11,18 +11,22 @@ sub run {
 
   my $inputDir = $self->getParamValue('inputDir');
   my $topLevelSeqSizeFile = $self->getParamValue('topLevelSeqSizeFile');
-  my $seqIdPrefix = $self->getParamValue('seqIdPrefix');
+  my $analysisConfig = $self->getParamValue('analysisConfig');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd= "normalizeCoverage.pl --inputDir $workflowDataDir/$inputDir --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile --seqIdPrefix $seqIdPrefix";
+  my $cmd= "normalizeCoverageEbi.pl --inputDir $workflowDataDir/$inputDir --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile --analysisConfig $analysisConfig";
 
   if($undo){
       # can't undo this step.  must undo cluster task
   }else{
-    $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-    $self->testInputFile('topLevelSeqSizeFile', "$workflowDataDir/$topLevelSeqSizeFile");
-    $self->runCmd($test, $cmd);
+    if ($test) {
+        $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
+        $self->testInputFile('topLevelSeqSizeFile', "$workflowDataDir/$topLevelSeqSizeFile");
+        $self->testInputFile('analysisConfig', "$workflowDataDir/$analysisConfig");
+    } else {
+        $self->runCmd($test, $cmd);
+    }
   }
 }
 
