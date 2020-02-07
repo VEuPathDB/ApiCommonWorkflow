@@ -1,24 +1,23 @@
-<orkflowGraph name="">
+<workflowGraph name="">
     <param name="projectName"/>
     <param name="organismAbbrev"/>
     <param name="organismDatasetLoaderXmlFile"/>
     <param name="experimentName"/>
     <param name="parentDataDir"/>
-    <param name="genomeExtDbRlsSpec"/>
     <param name="experimentDatasetName"/>
     <param name="experimentDatasetVersion"/>
     <param name="strandSpecific"/>
     <param name="topLevelSeqSizeFile"/>
-    <param name="topLevelFastaFile"/>
     <param name="topLevelGeneFootprintFile"/>
-    <param name="relativeDownloadSiteDir"/>
     <param name="relativeWebServicesDir"/>
     <param name="ebiOrganismName"/>
     <param name="ebiVersion"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
-    <constant name="samplesOutputDir">$$dataDir$$/samples</constant>
-    <constant name="doTranscriptExpression">$$asmplesOutputDir$$/doTranscriptExpression</constant>
+    <!--<constant name="samplesOutputDir">$$dataDir$$/samples</constant>-->
+    <!--<constant name="doTranscriptExpression">$$samplesOutputDir$$/doTranscriptExpression</constant>-->
+    <constant name="doTranscriptExpression">$$dataDir$$/doTranscriptExpression</constant>
+    <constant name="analysisConfig">$$parentDataDir$$/$$experimentDatasetName$$/final/analysisConfig.xml</constant>
 
     <!-- this will make the dataDir as defined by the constant above-->
     <subgraph name="loadDataset" xmlFile="loadDataset.xml">
@@ -27,18 +26,18 @@
       <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
     </subgraph>
 
-    <constant name="analysisConfig">$$dataDir$$/final/$$experimentName$$.xml</constant>
 
     <!-- we will download the sample directories here -->
     <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$samplesOutputDir$$</paramValue>
+      <!--<paramValue name="dataDir">$$samplesOutputDir$$</paramValue>-->
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
       <depends name="loadDataset"/>
     </step>
 
     <!-- analysis here -->
     <step name="makeDoTranscriptExpressionDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$doTranscriptExpression$$</paramValue>
-      <depends name="loadDataset"/>
+      <depends name="makeSamplesOutputDir"/>
     </step>
 
     <!--download from EBI ftp-->
@@ -46,30 +45,34 @@
       <paramValue name="ebiVersion">$$ebiVersion$$</paramValue>
       <paramValue name="ebiOrganismName">$$ebiOrganismName$$</paramValue>
       <paramValue name="experimentName">$$experimentName$$</paramValue>
-      <paramValue name="samplesDir">$$samplesOutputDir$$</paramValue>
+      <!--<paramValue name="samplesDir">$$samplesOutputDir$$</paramValue>-->
+      <paramValue name="samplesDir">$$dataDir$$</paramValue>
       <depends name="makeSamplesOutputDir"/>
     </step>
 
     <!-- for junctions and bed files, prepend the organismAbbrev to a fixed version of the file-->
     <step name="fixSeqIdEbiRNASeq" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixSeqIdEbiRNASeq">
-      <paramValue name="samplesDir">$$samplesOutputDir$$</paramValue>
+      <!--<paramValue name="samplesDir">$$samplesOutputDir$$</paramValue>-->
+      <paramValue name="samplesDir">$$dataDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <depends name="fetchEbiRNASeq"/>
     </step>
 
     <step name="tpmFromHtseqCounts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TpmFromHtseqCounts">
-      <paramValue name="samplesDir">$$samplesOutputDir$$</paramValue>
+      <!--<paramValue name="samplesDir">$$samplesOutputDir$$</paramValue>-->
+      <paramValue name="samplesDir">$$dataDir$$</paramValue>
       <paramValue name="geneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
-      <paramValue name="strandSpecific">$$strandSpecific</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
       <depends name="fixSeqIdEbiRNASeq"/>
     </step>
 
     <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpressionEbi">
       <paramValue name="analysisConfigFile">$$analysisConfig$$</paramValue>
-      <paramValue name="inputDir">$$samplesOutputDir$$</paramValue>
+      <!--<paramValue name="inputDir">$$samplesOutputDir$$</paramValue>-->
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
       <paramValue name="outputDir">$$doTranscriptExpression$$</paramValue>
-      <paramValue name="technologyType">RNASeq</paramValue>
+      <paramValue name="technologyType">RNASeqEbi</paramValue>
       <!-- If subclass of DoTranscriptExpression... will need these. otherwise leave out
       <paramValue name="geneProbeMappingTabFile"></paramValue>
       <paramValue name="geneProbeMappingVendorFile"></paramValue>
@@ -88,21 +91,23 @@
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
       <depends name="doTranscriptExpression"/>
-      <dependsGlobal name="oboOntologies"/>
+      <!--<dependsGlobal name="oboOntologies"/>-->
     </step>
 
     <!-- TODO: sample directory paths need to be updated here -->
     <step name="loadRNASeqMetrics" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRNASeqMetrics" stepLoadTypes="plugin">
-      <paramValue name="experimentDir">$$samplesOutputDir$$</paramValue>
+      <!--<paramValue name="experimentDir">$$samplesOutputDir$$</paramValue>-->
+      <paramValue name="experimentDir">$$dataDir$$</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <depends name="loadStudyResultsFromConfig"/>
-      <dependsGlobal name="oboOntologies"/>
-      <dependsGlobal name="eupathCuratedOntologies"/>
+      <!--<dependsGlobal name="oboOntologies"/>
+      <dependsGlobal name="eupathCuratedOntologies"/>-->
     </step>
 
 
-    <step name="normalizeCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraphiEbi">
-      <paramValue name="inputDir">$$samplesOutputDir$$</paramValue> <!-- TODO:  check this -->
+    <step name="normalizeCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraphEbi">
+      <!--<paramValue name="inputDir">$$samplesOutputDir$$</paramValue>--> <!-- TODO:  check this -->
+      <paramValue name="inputDir">$$dataDir$$</paramValue> <!-- TODO:  check this -->
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
       <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
       <depends name="fixSeqIdEbiRNASeq"/>
