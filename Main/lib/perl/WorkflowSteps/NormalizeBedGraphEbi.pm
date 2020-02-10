@@ -15,7 +15,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd= "normalizeCoverageEbi.pl --inputDir $workflowDataDir/$inputDir --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile --analysisConfig $analysisConfig";
+  my $cmd= "normalizeCoverageEbi.pl --inputDir $workflowDataDir/$inputDir --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile --analysisConfig $workflowDataDir/$analysisConfig";
 
   if($undo){
       # can't undo this step.  must undo cluster task
