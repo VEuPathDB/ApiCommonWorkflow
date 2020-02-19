@@ -12,8 +12,9 @@ sub run {
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $chromosomeMapFile = $self->getParamValue('chromosomeMapFile');
     my $genomeVersion = $self->getParamValue('genomeVersion');
+    my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $cmd = "patchChrAndChrOrderNum.pl --extDbRlsId $extDbRlsId --organismAbbrev $organismAbbrev --chromosomeMapFile $chromosomeMapFile --genomeVersion $genomeVersion";
+    my $cmd = "patchChrAndChrOrderNum.pl --extDbRlsId $extDbRlsId --organismAbbrev $organismAbbrev --chromosomeMapFile $workflowDataDir/$chromosomeMapFile --genomeVersion $genomeVersion";
 
     if ($undo) {
       $self->runCmd(0,"echo undoing LoadChromosomeMap ... nothing to be done");
