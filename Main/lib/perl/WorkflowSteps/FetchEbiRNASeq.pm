@@ -29,7 +29,10 @@ sub run {
 
     # exclude/reject bw files; 
     # cut-dirs=6 makes it so we only get sample directories
-    $self->runCmd($test,"wget --reject '.bw' -nH --cut-dirs=6 --recursive --no-parent --ftp-user $ebiFtpUser --ftp-password $ebiFtpPassword ftp://ftp-private.ebi.ac.uk:/EBIout/$ebiVersion/rnaseq/alignments/$ebiOrganismName/$experimentName/*");
+    # for experiments in format SRPXXXXXX_SRPYYYYYY we need to retrieve from each project separately
+    foreach my $experiment  (split('_', $experimentName)) {
+        $self->runCmd($test,"wget --reject '.bw' -nH --cut-dirs=6 --recursive --no-parent --ftp-user $ebiFtpUser --ftp-password $ebiFtpPassword ftp://ftp-private.ebi.ac.uk:/EBIout/$ebiVersion/rnaseq/alignments/$ebiOrganismName/$experiment/*");
+    }
 
   }
 
