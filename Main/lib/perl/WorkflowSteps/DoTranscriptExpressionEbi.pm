@@ -19,6 +19,7 @@ sub run {
   my $cmd = "doTranscriptExpression.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir --technology_type $technologyType";
 
   if ($undo) {
+    $self->runCmd(0, "rm $workflowDataDir/$outputDir/insert_study_results_config.txt");
   } else {
 
       $self->testInputFile('analysisConfigFile', "$workflowDataDir/$analysisConfigFile");
