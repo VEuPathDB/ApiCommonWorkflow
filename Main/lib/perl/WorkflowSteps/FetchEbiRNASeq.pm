@@ -15,6 +15,8 @@ sub run {
   my $ebiVersion = $self->getParamValue('ebiVersion');
   my $ebiOrganismName = $self->getParamValue('ebiOrganismName');
   my $experimentName = $self->getParamValue('experimentName');
+  #for experiments in formatn SRPXXXXXX_SRPYYYYYYY only the first part of this identifier is used in the ftp path
+  my $ftpExperimentDir = (split('_', $experimentName))[0];
   my $samplesDir = $self->getParamValue('samplesDir');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -29,10 +31,7 @@ sub run {
 
     # exclude/reject bw files; 
     # cut-dirs=6 makes it so we only get sample directories
-    # for experiments in format SRPXXXXXX_SRPYYYYYY we need to retrieve from each project separately
-    foreach my $experiment  (split('_', $experimentName)) {
-        $self->runCmd($test,"wget --reject '.bw' -nH --cut-dirs=6 --recursive --no-parent --ftp-user $ebiFtpUser --ftp-password $ebiFtpPassword ftp://ftp-private.ebi.ac.uk:/EBIout/$ebiVersion/rnaseq/alignments/$ebiOrganismName/$experiment/*");
-    }
+    $self->runCmd($test,"wget --reject '.bw' -nH --cut-dirs=6 --recursive --no-parent --ftp-user $ebiFtpUser --ftp-password $ebiFtpPassword ftp://ftp-private.ebi.ac.uk:/EBIout/$ebiVersion/rnaseq/alignments/$ebiOrganismName/$ftpExperimentDir/*");
 
   }
 
