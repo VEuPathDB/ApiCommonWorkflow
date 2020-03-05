@@ -28,17 +28,9 @@ sub run {
 
   } else {
 
-    foreach my $bed (glob "$fullPath/*/*.bed") {
-      my $oldBed = "$bed.old";
-      $self->runCmd(0, "mv $bed $oldBed");
-      $self->runCmd(0, "awk '{print \"${organismAbbrev}_\"\$0}' $oldBed >$bed");
-    }
 
-    foreach my $junction (glob "$fullPath/*/junctions.tab") {
-      my $oldJunction = "$junction.old";
-      $self->runCmd(0, "mv $junction $oldJunction");
-      $self->runCmd(0, "awk '{if(NR==1) {print \$0} else{print \"${organismAbbrev}_\"\$0}}' $oldJunction >$junction");
-    }
+    $self->runCmd("ebiRNASeqSeqRegionNameMapping.pl --samples_directory $fullPath --organism_abbrev $organismAbbrev");
+
 
   }
 
