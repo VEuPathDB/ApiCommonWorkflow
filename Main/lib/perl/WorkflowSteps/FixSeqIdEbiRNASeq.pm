@@ -29,7 +29,7 @@ sub run {
   } else {
 
 
-    $self->runCmd("ebiRNASeqSeqRegionNameMapping.pl --samples_directory $fullPath --organism_abbrev $organismAbbrev");
+    $self->runCmd($test, "ebiRNASeqSeqRegionNameMapping.pl --samples_directory $fullPath --organism_abbrev $organismAbbrev");
 
 
   }
