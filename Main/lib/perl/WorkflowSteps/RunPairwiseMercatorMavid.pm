@@ -114,7 +114,12 @@ sub run {
 					$self->runCmd($test,"mv $pairTmpDir/mercator-output/*.agp $pairOutputDir");
 
 # remove the big files from the alignments directory and move the rest to the real output directory                                        
-					$self->runCmd($test,"rm -f $pairTmpDir/mercator-output/alignments/*/*.{mfa,phy,fasta,masked}");
+# split the "rm *.{mfa,phy,fasta,masked}" to each individual file types to fix "Argument list too long" failure
+					#$self->runCmd($test,"rm -f $pairTmpDir/mercator-output/alignments/*/*.{mfa,phy,fasta,masked}");
+                    $self->runCmd($test,"rm -f $pairTmpDir/mercator-output/alignments/*/*.mfa");
+                    $self->runCmd($test,"rm -f $pairTmpDir/mercator-output/alignments/*/*.phy");
+                    $self->runCmd($test,"rm -f $pairTmpDir/mercator-output/alignments/*/*.fasta");
+                    $self->runCmd($test,"rm -f $pairTmpDir/mercator-output/alignments/*/*.masked");
 					$self->runCmd($test,"mv $pairTmpDir/mercator-output/alignments $pairOutputDir");
 
 # delete tmp dir
