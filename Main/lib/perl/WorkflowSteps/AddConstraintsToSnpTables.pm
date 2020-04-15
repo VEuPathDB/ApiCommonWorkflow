@@ -29,8 +29,6 @@ sub run {
 	where owner = 'APIDB' and table_name in ('SNP','SEQUENCEVARIATION')
 	      and index_name not in (select constraint_name from all_constraints where owner = 'APIDB' 
 				     and table_name in ('SNP','SEQUENCEVARIATION') and constraint_type in ('R','U','P'))
-	union
-	select 'exit;' as drops, 6 as num from dual
     )
     order by num
 SQL

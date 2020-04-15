@@ -20,7 +20,7 @@ sub run {
 
  # my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbRlsVer --sequenceFile $workflowDataDir/$fastaFile --sourceIdsFile  $workflowDataDir/$idsFile --regexSourceId  '>gi\\|\\d+\\|\\w+\\|(\\w+\\.?\\w+)\\|' --regexDesc '^>gi\\|\\d+\\|\\w+\\|\\w+\\.?\\w+\\|(\.+)' --regexSecondaryId '>gi\\|(\\d+)\\|' --tableName DoTS::ExternalAASequence";
 
-  my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbVer --sequenceFile $workflowDataDir/$fastaFile --sourceIdsFile  $workflowDataDir/$idsFile --regexSecondaryId '^>(\\S+)' --regexDesc '^>\\S+ (.+?])' --regexSourceId '^>(\\S+)' --tableName DoTS::ExternalAASequence";
+my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbVer --sequenceFile $workflowDataDir/$fastaFile --sourceIdsFile  $workflowDataDir/$idsFile --regexSecondaryId '>gi\\|\\d+\\|\\w+\\|(\\w+\\.?\\w+)\\|' --regexDesc '^>gi\\|\\d+\\|\\w+\\|\\w+\\.?\\w+\\|(\.+)' --regexSourceId '>gi\\|(\\d+)\\|' --tableName DoTS::ExternalAASequence";
 
 
   $self->testInputFile('fastaFile', "$workflowDataDir/$fastaFile");
