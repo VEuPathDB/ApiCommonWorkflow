@@ -1,0 +1,41 @@
+<workflowGraph name="">
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="organismDatasetLoaderXmlFile"/>
+  <param name="parentDataDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
+
+
+  <constant name="dataDir">$$parentDataDir$$/ebiVCF</constant>
+
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+<datasetTemplate class="ebiVCFfile">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="ebiOrganismName"/>
+    <prop name="ebiVersion"/>
+
+
+    <subgraph name="${name}_ebi_VCF" xmlFile="loadVCFebi.xml">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="experimentName">${name}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_ebi_VCF_RSRC</paramValue>
+      <paramValue name="experimentDatasetVersion">dont_care</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="ebiOrganismName">${ebiOrganismName}</paramValue>
+      <paramValue name="ebiVersion">${ebiVersion}</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+  </datasetTemplate>
+</workflowGraph>
