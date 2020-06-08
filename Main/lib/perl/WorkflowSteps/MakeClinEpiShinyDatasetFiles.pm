@@ -86,16 +86,12 @@ where ea.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = sa.PAN_ID
 ";
 
-  my $shinyLightTrapSql = "select pa.name as source_id, lt.*
+  my $shinyLightTrapSql = "select ha.name as household, lt.*
 from apidbtuning.${tblPrefix}LightTraps lt
    , apidbtuning.${tblPrefix}Households ha
-   , apidbtuning.${tblPrefix}Participants pa
    , apidbtuning.${tblPrefix}PANIO io
-   , apidbtuning.${tblPrefix}PANIO io2
 where lt.PAN_ID = io.OUTPUT_PAN_ID
 and io.INPUT_PAN_ID = ha.PAN_ID
-and ha.PAN_ID = io2.INPUT_PAN_ID
-and io2.OUTPUT_PAN_ID = pa.PAN_ID
 ";
 
 my $ontologyMetadataSql = "
