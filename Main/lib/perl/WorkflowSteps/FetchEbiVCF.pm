@@ -17,6 +17,7 @@ sub run {
 #  my $experimentName = $self->getParamValue('experimentName');
   my $samplesDir = $self->getParamValue('samplesDir');
   my $vcf = $self->getParamValue('vcfFile');
+#  my $vcf = $self->getParamValue($$parentDataDir$$/$$experimentDatasetName$$/final/$$experimentName$$.vcf.gz);
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $fullPath = "$workflowDataDir/$samplesDir";
