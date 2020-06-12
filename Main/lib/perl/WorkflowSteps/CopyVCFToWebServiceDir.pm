@@ -37,7 +37,7 @@ sub run {
   } else {
     $self->runCmd($test, $cmd_mkdir);
     $self->runCmd($test, $cmd_copy);
-    $self->runCmd($test, "cp $$workflowDataDir/$vcfFile.tbi $copyToDir");
+    $self->runCmd($test, "cp $workflowDataDir/$vcfFile.tbi $copyToDir");
   }
 
 }
