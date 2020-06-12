@@ -9,6 +9,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $vcf = $self->getParamValue('vcfFile');
+#  my $vcf = $self->getParamValue('$$parentDataDir$$/$$experimentDatasetName$$/final/$$experimentName$$.vcf.gz');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -16,9 +17,12 @@ sub run {
 
   if ($undo) {
 #      foreach my $vcf (glob "$fullPath/*.vcf.gz") {
-        my $oldVcf = "$vcf.old";
+
+#        my $oldVcf = "$vcf.old";
+        $vcf =~ s/final\///; 
         $self->runCmd(0, "rm $vcf");
-        $self->runCmd(0, "mv $oldVcf $vcf");
+#        $self->runCmd(0, "mv $oldVcf $vcf");
+
 #      }
 #      foreach my $index (glob "$fullPath/*.tbi") {
         $self->runCmd(0, "rm $vcf.tbi");
