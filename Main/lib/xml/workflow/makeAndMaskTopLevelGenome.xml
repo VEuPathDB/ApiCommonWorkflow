@@ -13,18 +13,19 @@
     </step>
 
   <!-- optional dataset.  the subgraph might be empty -->
+<!--This will be replaced by a new plugin for core genomes from EBI
   <subgraph name="insertPrimaryVirtualGenome" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/primaryVirtualGenome.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/> 
   </subgraph>
-
+-->
   <step name="makeDerivedTables"
         stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedTables" stepLoadTypes="tuningManager">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="tables">SequencePieceClosure,GenomicSeqAttributes,TaxonSpecies</paramValue> 
-    <depends name="insertPrimaryVirtualGenome"/> 
+    <depends name="makeDataDir"/> 
   </step>
 
   <!-- ApidbTuning.GenomicSeqAttributes -->
@@ -35,7 +36,7 @@
       <depends name="makeDerivedTables"/> 
     </step>
 
-    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomeRepeatMaskTaskInputDir" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
+    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomeRepeatMaskTaskInputDir" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ >
       <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
       <paramValue name="seqsFile">$$topLevelFastaFile$$</paramValue>
       <paramValue name="dangleMax">0</paramValue>
@@ -46,7 +47,7 @@
     </step>
 
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$" stepLoadTypes="toCluster">
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeClusterTaskInputDir"/>
     </step>
