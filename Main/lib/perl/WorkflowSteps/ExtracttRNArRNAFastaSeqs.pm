@@ -22,7 +22,7 @@ sub run {
     , dots.genefeature gf
     where tn.taxon_id = $taxonId
     and sns.taxon_id = tn.taxon_id
-    and ot.name in ('tRNA_encoding', 'rRNA_encoding')
+    and ot.name in ('tRNA_encoding', 'rRNA_encoding', 'ncRNA_gene')
     and gf.sequence_ontology_id = ot.ontology_term_id
     and t.parent_id = gf.na_feature_id
     and t.na_sequence_id = sns.na_sequence_id";
