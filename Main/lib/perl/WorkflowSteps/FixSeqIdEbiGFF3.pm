@@ -27,7 +27,7 @@ sub run {
 #              $self->runCmd(0, "mv $oldGff3 $gff3");
 #             }
 #             foreach my $index (glob "$fullPath/*.tbi") {
-#             $self->runCmd(0, "rm $vcf.tbi");
+             $self->runCmd(0, "rm $vcf.tbi");
 #             }
 
 
