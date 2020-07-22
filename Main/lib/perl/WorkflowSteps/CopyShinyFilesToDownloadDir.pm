@@ -10,6 +10,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $datasetName = $self->getParamValue('datasetName');
+  my $nameForFilenames= $self->getParamValue('nameForFilenames');
   my $groupName = $self->getParamValue('groupName');
   my $inputFileBaseName = $self->getParamValue('inputFileBaseName');
   my $downloadDir = $self->getParamValue('relativeDownloadSiteDir');
@@ -30,8 +31,14 @@ sub run {
     $self->runCmd($test, "mkdir -p $copyToDir");
     $self->runCmd($test, "printf \"IndexIgnore *\" > $websiteFilesDir/$downloadDir/.htaccess");
     $self->runCmd($test, "printf \"IndexIgnoreReset ON\nIndexIgnore ..\" > $copyToDir/.htaccess");
-    $self->runCmd($test, "rename $inputFileBaseName $datasetName $workflowDataDir/$datasetName/$inputFileBaseName*");
-    $self->runCmd($test, "cp $workflowDataDir/$datasetName/$datasetName* $copyToDir/");
+    if($nameForFilenames){
+      $self->runCmd($test, "rename $inputFileBaseName $nameForFilenames $workflowDataDir/$datasetName/$inputFileBaseName*");
+      $self->runCmd($test, "cp $workflowDataDir/$datasetName/$nameForFilenames* $copyToDir/");
+    }
+    else{
+      $self->runCmd($test, "rename $inputFileBaseName $datasetName $workflowDataDir/$datasetName/$inputFileBaseName*");
+      $self->runCmd($test, "cp $workflowDataDir/$datasetName/$datasetName* $copyToDir/");
+    }
   }
 }
 
