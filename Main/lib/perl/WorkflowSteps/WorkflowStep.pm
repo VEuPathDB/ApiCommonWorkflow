@@ -317,6 +317,34 @@ sub getParentInfoFromSpeciesNcbiTaxId {
 }
 
 
+sub getClusterQueue {
+  my ($self) = @_;
+
+  my $clusterServer = $self->getSharedConfig('clusterServer');
+  return $self->getSharedConfig("$clusterServer.clusterQueue");
+}
+
+sub getClusterExecutor {
+  my ($self) = @_;
+
+  my $clusterServer = $self->getSharedConfig('clusterServer');
+
+  my $nodeClass = $self->getSharedConfig("$clusterServer.nodeClass");
+  if($nodeClass eq 'DJob::DistribJob::LsfNode') {
+    return 'lsf'
+  }
+
+  if($nodeClass eq 'DJob::DistribJob::SgeNode') {
+    return 'sge'
+  }
+
+  if($nodeClass eq 'DJob::DistribJob::PbsNode') {
+    return 'pbs'
+  }
+
+  die "Could not determine executor for nodeClass $nodeClass";
+}
+
 
 1;
 

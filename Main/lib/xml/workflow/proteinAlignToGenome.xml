@@ -1,0 +1,94 @@
+<workflowGraph name="proteinAlignToGenome">
+  <param name="dataDir"/>             <!-- any dir -->
+  <param name="targetFile"/>
+  <param name="nrProteinsFile"/>
+  <param name="taxaFilter"/>
+  <param name="maxIntronSize"/>
+<!--
+  <param name="organismAbbrev"/>
+  <param name="relativeWebServicesDir"/>
+-->
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="copyTargetFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+    <paramValue name="fromFile">$$targetFile$$</paramValue>
+    <paramValue name="toFile">$$dataDir$$/target.fa</paramValue>
+    <depends name="makeDataDir"/> 
+  </step>
+
+  <step name="makeQueryFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterNrProteinsByTaxon">
+    <paramValue name="nrFile">$$nrProteinsFile$$</paramValue>
+    <paramValue name="taxaFilter">$$taxaFilter$$</paramValue>
+    <paramValue name="queryFile">$$dataDir$$/query.fa</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeQueryFile"/>
+    <depends name="copyTargetFile"/>
+  </step>
+
+
+  <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProteinAlignConfig">
+    <paramValue name="targetFile">$$dataDir$$/target.fa</paramValue>
+    <paramValue name="queryFile">$$dataDir$$/query.fa</paramValue>
+    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+    <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+    <paramValue name="configFileName">$$dataDir$$/nextflow.config</paramValue>
+    <paramValue name="queryChunkSize">100</paramValue>
+    <paramValue name="esd2esiMemoryLimit">2048</paramValue>
+    <paramValue name="exonerateFsmmemory">2048</paramValue>
+    <paramValue name="exonerateMaxForks">20</paramValue>
+<!--
+    <paramValue name="exonerateServerMemory">2G</paramValue>
+-->
+    <depends name="makeQueryFile"/>
+    <depends name="copyTargetFile"/>
+  </step>
+
+  <step name="mirrorConfigToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$/nextflow.config</paramValue>
+    <depends name="mirrorToCluster"/>
+    <depends name="makeNextflowConfig"/>
+  </step>
+
+  <step name="mirrorResultsDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
+    <depends name="mirrorToCluster"/>
+    <depends name="makeNextflowConfig"/>
+  </step>
+
+
+  <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow" stepLoadTypes="blatProteinCluster" stepFailTypes="blatProteinCluster">
+    <paramValue name="workingDir">$$dataDir$$</paramValue>
+    <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/proteinToGenomeAlignment</paramValue>
+    <paramValue name="isGitRepo">true</paramValue>    
+    <depends name="mirrorResultsDirToCluster"/>
+  </step>
+
+
+<!--
+  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
+    <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+    <paramValue name="outputFiles"></paramValue>
+    <paramValue name="deleteAfterCopy">true</paramValue>
+    <depends name="runClusterTask"/>
+  </step>
+
+
+  <step name="copyNrdbBlatGffFileToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyNrdbBlatGffFileToWebServices">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="nrdbBlatGff">$$dataDir$$/master/mainresult/nrdbBlat_sorted.gff</paramValue>
+    <depends name="proteinBlatToGFF"/>
+  </step>
+
+-->
+  
+</workflowGraph>
