@@ -19,6 +19,7 @@ sub run {
   my $esd2esiMemoryLimit = $self->getParamValue("esd2esiMemoryLimit");
   my $exonerateFsmmemory = $self->getParamValue("exonerateFsmmemory");
   my $exonerateMaxForks = $self->getParamValue("exonerateMaxForks");
+  my $exonerateMemory = $self->getParamValue("exonerateMemory");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -26,8 +27,11 @@ sub run {
   my $executor = $self->getClusterExecutor();
   my $queue = $self->getClusterQueue();
 
+  my $configFile = "$workflowDataDir/$configFileName";
+
   if ($undo) {
     $self->runCmd(0,"rm -rf $workflowDataDir/$outputDir");
+    $self->runCmd(0,"rm -rf $configFile");
   }else {
     $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
     $self->testInputFile('targetDir', "$workflowDataDir/$targetFile");
@@ -53,7 +57,8 @@ sub run {
 process {
   executor = '$executor'
   queue = '$queue'
-  withName: 'exonerate' { maxForks = $exonerateMaxForks }
+  withName: 'exonerate' { maxForks = $exonerateMaxForks
+                          memory = '$exonerateMemory' }
 }
 
 ";
