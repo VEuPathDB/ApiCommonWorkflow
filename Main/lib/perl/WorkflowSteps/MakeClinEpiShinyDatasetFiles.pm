@@ -144,6 +144,13 @@ where o.ontology_term_source_id is not null
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$lightTrapFile --sql \"$shinyLightTrapSql\" --verbose --includeHeader --outDelimiter '\\t'");
 
       my $owl = ApiCommonData::Load::OwlReader->new($owlFile);
+      my $itr = $owl->execute('get_replaces');
+      my %replaces;
+      while (my $row = $itr->next) {
+        my $iri = $row->{entity}->as_hash()->{iri}|| $row->{entity}->as_hash()->{URI};
+        my $sid = $owl->getSourceIdFromIRI($iri);
+        $replaces{$sid} = $row->{replaces}->as_hash()->{literal};
+      }
       my $it = $owl->execute('get_column_sourceID');
       my %terms;
       while (my $row = $it->next) {
@@ -165,12 +172,16 @@ where o.ontology_term_source_id is not null
           @$dataDictColNames = sort keys %allnames;
         }
         $terms{$sid} = { 'names' =>  $dataDictColNames };
+        if($replaces{$sid}){ $terms{$sid}->{replaces} = $replaces{$sid} }
       }
+
+
+
       open (my $fh, '>', "$workflowDataDir/$ontologyMappingFile") or die "Could not open file for writing! $!";
-      print $fh "iri\tvariable\n";
+      print $fh "iri\tvariable\treplaces\n";
       foreach my $sid (sort keys %terms) {
         my $names = join(",", @{$terms{$sid}->{names}});
-        print $fh "$sid\t$names\n";
+        printf $fh ("%s\n", join("\t",  $sid, $names, $terms{$sid}->{replaces} || ""));
       }
       close $fh;
  
