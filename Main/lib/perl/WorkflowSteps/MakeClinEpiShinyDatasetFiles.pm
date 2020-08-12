@@ -94,8 +94,55 @@ where lt.PAN_ID = io.OUTPUT_PAN_ID
 and io.INPUT_PAN_ID = ha.PAN_ID
 ";
 
+# Temporary fix, I think, to fix date format in ontologyMetdata.txt
+#
+# my $ontologyMetadataSql = "
+# select distinct o.ontology_term_source_id as iri
+#       , o.ontology_term_name as label
+#       , o.type as type
+#       , o.parent_ontology_term_name as parentLabel
+#       , m.category as category
+#       , o.description as definition
+#       , ms.min as min
+#       , ms.max as max
+#       , ms.average as average
+#       , ms.upper_quartile as upper_quartile
+#       , ms.lower_quartile as lower_quartile
+#       , ms.number_distinct_values as number_distinct_values
+#       , ms.distinct_values as distinct_values
+# from apidbtuning.${tblPrefix}Ontology o 
+# left join apidbtuning.${tblPrefix}Metadata m
+#   on o.ontology_term_source_id = m.property_source_id
+# left join apidbtuning.${tblPrefix}MetadataSummary ms
+#   on o.ontology_term_source_id = ms.property_source_id
+# where o.ontology_term_source_id is not null
+# ";
+
+
 my $ontologyMetadataSql = "
+SELECT * from (
 select distinct o.ontology_term_source_id as iri
+      , o.ontology_term_name as label
+      , o.type as type
+      , o.parent_ontology_term_name as parentLabel
+      , m.category as category
+      , o.description as definition
+      , to_char(to_date(ms.min, 'DD-MON-YY'),'YYYY-MM-DD') as min
+      , to_char(to_date(ms.max, 'DD-MON-YY'),'YYYY-MM-DD') as max
+      , ms.average as average
+      , to_char(to_date(ms.upper_quartile, 'DD-MON-YY'),'YYYY-MM-DD') as upper_quartile
+      , to_char(to_date(ms.lower_quartile, 'DD-MON-YY'),'YYYY-MM-DD') as lower_quartile
+      , ms.number_distinct_values as number_distinct_values
+      , ms.distinct_values as distinct_values
+from apidbtuning.${tblPrefix}Ontology o 
+left join apidbtuning.${tblPrefix}Metadata m
+  on o.ontology_term_source_id = m.property_source_id
+left join apidbtuning.${tblPrefix}MetadataSummary ms
+  on o.ontology_term_source_id = ms.property_source_id
+where o.ontology_term_source_id is not NULL
+AND o.type='date'
+) UNION
+(select distinct o.ontology_term_source_id as iri
       , o.ontology_term_name as label
       , o.type as type
       , o.parent_ontology_term_name as parentLabel
@@ -114,7 +161,9 @@ left join apidbtuning.${tblPrefix}Metadata m
 left join apidbtuning.${tblPrefix}MetadataSummary ms
   on o.ontology_term_source_id = ms.property_source_id
 where o.ontology_term_source_id is not null
-";
+AND o.TYPE!='date'
+)";
+
 
   my $participantsFile = "$datasetName/${outputFileBaseName}_participants.txt";
   my $householdsFile = "$datasetName/${outputFileBaseName}_households.txt";
