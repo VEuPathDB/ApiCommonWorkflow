@@ -159,6 +159,14 @@
       <depends name="runLowComplexityFilter"/>
     </step>
 
+
+    <step name="loadScaffoldGapFeatures"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertScaffoldGapFeatures" stepLoadTypes="plugin" includeIf="!$$isHugeGenome$$">
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+
   <subgraph name="ESTDatasetLoaders" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/ESTs.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
