@@ -116,11 +116,60 @@ left join apidbtuning.${tblPrefix}MetadataSummary ms
 where o.ontology_term_source_id is not null
 ";
 
+
+# Temporary fix, to fix date format in ontologyMetdata.txt in older studies that will not be reloaded
+#
+# my $ontologyMetadataSql = "
+# SELECT * from (
+# select distinct o.ontology_term_source_id as iri
+#       , o.ontology_term_name as label
+#       , o.type as type
+#       , o.parent_ontology_term_name as parentLabel
+#       , m.category as category
+#       , o.description as definition
+#       , to_char(to_date(ms.min, 'DD-MON-YY'),'YYYY-MM-DD') as min
+#       , to_char(to_date(ms.max, 'DD-MON-YY'),'YYYY-MM-DD') as max
+#       , ms.average as average
+#       , to_char(to_date(ms.upper_quartile, 'DD-MON-YY'),'YYYY-MM-DD') as upper_quartile
+#       , to_char(to_date(ms.lower_quartile, 'DD-MON-YY'),'YYYY-MM-DD') as lower_quartile
+#       , ms.number_distinct_values as number_distinct_values
+#       , ms.distinct_values as distinct_values
+# from apidbtuning.${tblPrefix}Ontology o 
+# left join apidbtuning.${tblPrefix}Metadata m
+#   on o.ontology_term_source_id = m.property_source_id
+# left join apidbtuning.${tblPrefix}MetadataSummary ms
+#   on o.ontology_term_source_id = ms.property_source_id
+# where o.ontology_term_source_id is not NULL
+# AND o.type='date'
+# ) UNION
+# (select distinct o.ontology_term_source_id as iri
+#       , o.ontology_term_name as label
+#       , o.type as type
+#       , o.parent_ontology_term_name as parentLabel
+#       , m.category as category
+#       , o.description as definition
+#       , ms.min as min
+#       , ms.max as max
+#       , ms.average as average
+#       , ms.upper_quartile as upper_quartile
+#       , ms.lower_quartile as lower_quartile
+#       , ms.number_distinct_values as number_distinct_values
+#       , ms.distinct_values as distinct_values
+# from apidbtuning.${tblPrefix}Ontology o 
+# left join apidbtuning.${tblPrefix}Metadata m
+#   on o.ontology_term_source_id = m.property_source_id
+# left join apidbtuning.${tblPrefix}MetadataSummary ms
+#   on o.ontology_term_source_id = ms.property_source_id
+# where o.ontology_term_source_id is not null
+# AND o.TYPE!='date'
+# )";
+
+
   my $participantsFile = "$datasetName/${outputFileBaseName}_participants.txt";
   my $householdsFile = "$datasetName/${outputFileBaseName}_households.txt";
   my $observationsFile = "$datasetName/${outputFileBaseName}_observations.txt";
   my $samplesFile = "$datasetName/${outputFileBaseName}_samples.txt";
-  my $lightTrapFile = "$datasetName/${outputFileBaseName}_lightTrap.txt";
+  my $lightTrapFile = "$datasetName/${outputFileBaseName}_entomology.txt";
   my $outFile = "$datasetName/${outputFileBaseName}_masterDataTable.txt";
   my $ontologyMetadataFile = "$datasetName/ontologyMetadata.txt";
   my $ontologyMappingFile = "$datasetName/ontologyMapping.txt";
@@ -144,6 +193,13 @@ where o.ontology_term_source_id is not null
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$lightTrapFile --sql \"$shinyLightTrapSql\" --verbose --includeHeader --outDelimiter '\\t'");
 
       my $owl = ApiCommonData::Load::OwlReader->new($owlFile);
+      my $itr = $owl->execute('get_replaces');
+      my %replaces;
+      while (my $row = $itr->next) {
+        my $iri = $row->{entity}->as_hash()->{iri}|| $row->{entity}->as_hash()->{URI};
+        my $sid = $owl->getSourceIdFromIRI($iri);
+        $replaces{$sid} = $row->{replaces}->as_hash()->{literal};
+      }
       my $it = $owl->execute('get_column_sourceID');
       my %terms;
       while (my $row = $it->next) {
@@ -165,12 +221,16 @@ where o.ontology_term_source_id is not null
           @$dataDictColNames = sort keys %allnames;
         }
         $terms{$sid} = { 'names' =>  $dataDictColNames };
+        if($replaces{$sid}){ $terms{$sid}->{replaces} = $replaces{$sid} }
       }
+
+
+
       open (my $fh, '>', "$workflowDataDir/$ontologyMappingFile") or die "Could not open file for writing! $!";
-      print $fh "iri\tvariable\n";
+      print $fh "iri\tvariable\treplaces\n";
       foreach my $sid (sort keys %terms) {
         my $names = join(",", @{$terms{$sid}->{names}});
-        print $fh "$sid\t$names\n";
+        printf $fh ("%s\n", join("\t",  $sid, $names, $terms{$sid}->{replaces} || ""));
       }
       close $fh;
  
