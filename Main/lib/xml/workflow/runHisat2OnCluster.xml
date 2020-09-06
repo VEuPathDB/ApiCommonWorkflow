@@ -1,0 +1,58 @@
+<workflowGraph name="runHisat2OnCluster">
+      <param name="parentDataDir"/>
+      <param name="readFilePath"/>
+      <param name="hasPairedEnds"/>
+      <param name="strandSpecific"/>
+      <param name="createJunctionsFile"/>
+      <param name="writeCovFiles"/>
+      <param name="quantify"/>
+      <param name="maskFile"/>
+      <param name="hisatIndex"/>
+      <param name="hisatDirectory"/>
+      <param name="topLevelGeneFootprintFile"/>
+      <param name="topLevelFastaFile"/>
+      <param name="sraQueryString"/>
+
+    <constant name="dataDir">$$parentDataDir$$</constant>
+  
+    <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHisat2TaskInputDir">
+      <paramValue name="readFilePath">$$readFilePath$$</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
+      <paramValue name="keepNode">yes</paramValue>
+      <paramValue name="createJunctionsFile">$$createJunctionsFile$$</paramValue>
+      <paramValue name="maskFile">$$maskFile$$</paramValue>
+      <paramValue name="hisatIndex">$$hisatIndex$$</paramValue>
+      <paramValue name="quantify">$$quantify$$</paramValue>
+      <paramValue name="writeCovFiles">$$writeCovFiles$$</paramValue>
+      <paramValue name="hisatDirectory">$$hisatDirectory$$</paramValue>
+      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
+    </step>
+ 
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/input</paramValue>
+      <depends name="makeTaskInputDir"/>
+    </step>
+
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="hisatCluster" stepFailTypes="hisatCluster">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="numNodes">1</paramValue>
+      <paramValue name="maxMemoryGigs">15</paramValue>
+      <paramValue name="processorsPerNode">8</paramValue>
+      <depends name="mirrorToCluster"/>
+    </step>
+
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputFiles">TODO</paramValue>
+      <paramValue name="deleteAfterCopy">true</paramValue>
+      <depends name="runClusterTask"/>
+    </step>
+
+
+</workflowGraph>
