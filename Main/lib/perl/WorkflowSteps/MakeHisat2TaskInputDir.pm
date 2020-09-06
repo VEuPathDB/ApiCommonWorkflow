@@ -68,7 +68,7 @@ isStrandSpecific=$strandSpecific
 quantifyJunctions=$createJunctionsFile
 topLevelGeneFootprintFile=$clusterWorkflowDataDir/$topLevelGeneFootprintFile
 hasPairedEnds=$hasPairedEnds
-ppn=4
+ppn=8
 maxIntronLen=$maxIntronLen
 ";
 
