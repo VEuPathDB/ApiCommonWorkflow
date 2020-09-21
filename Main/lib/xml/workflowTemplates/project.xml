@@ -397,11 +397,21 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </subgraph>
 
-<!-- depends on comparativeGenomics AND VIRTUAL FEATURE LOCATIONS-->
+<!-- depends on MakeAndMaskTopLevelGenome, MakeCompGenomicsFiles AND VIRTUAL FEATURE LOCATIONS-->
+
+    <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid" excludeIf="$$areBigGenomes$$" >
+      <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
+      <paramValue name="mercatorOutputsDir">mercatorOutput</paramValue>
+      <paramValue name="mercatorCacheDir">mercatorCache</paramValue>
+      <paramValue name="mercatorTmpDir">mercatorTmp</paramValue>
+      <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
+      <dependsPattern name="*_MakeCompGenomicsFiles"/>
+    </step>
+
     <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin" excludeIf="$$areBigGenomes$$" >
       <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
       <paramValue name="mercatorOutputsDir">mercatorOutput</paramValue>
-      <depends name="comparativeGenomics"/>
+      <depends name="runPairwiseMercatorMavid"/>
       <dependsPattern name="*_EarlyVirtualLocations"/>
     </step>
 
