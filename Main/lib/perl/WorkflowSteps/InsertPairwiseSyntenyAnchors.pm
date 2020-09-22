@@ -14,7 +14,7 @@ sub run {
   my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir');
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $mercatorPairsDir = join("/", $workflowDataDir,$mercatorOutputsDir);
-  my $nextflowDataDir = join("/", $workflowDataDir, "Mercator_Nextflow");
+  my $nextflowDataDir = join("/", $workflowDataDir, "insertPairwiseSyntenyAnchors");
   mkdir ($nextflowDataDir) unless ( -d $nextflowDataDir );
 
 # in test mode, there are no input files to iterate over, so just leave
