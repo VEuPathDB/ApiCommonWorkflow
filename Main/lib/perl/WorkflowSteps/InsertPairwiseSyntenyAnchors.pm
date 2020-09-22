@@ -30,7 +30,7 @@ sub run {
 #TODO
   # Consider moving the config file to Datasets, or encoding maxForksin Datasets, or something else
   # For now we assume the config file doesn't exist
-  my $nfConfigFile= join("/", $workflowDataDir, 'Mercator_Nextflow.config');
+  my $nfConfigFile= join("/", $nextflowDataDir, 'Mercator_Nextflow.config');
   unless (-e $nfConfigFile){
     my $nfConfig = <<CONFIG;
 params {
