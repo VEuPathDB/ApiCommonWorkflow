@@ -46,7 +46,7 @@ CONFIG
     close(FH);
   }
 
-  my $cmd = "nextflow -C $nfConfigFile run processSytenyPairs";
+  my $cmd = "nextflow -C $nfConfigFile run processSyntenyPairs";
   $self->log("Running: $cmd\n");
   $self->runCmd($test,$cmd);
 }
