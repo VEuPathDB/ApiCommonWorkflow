@@ -14,6 +14,8 @@ sub run {
   my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir');
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $mercatorPairsDir = join("/", $workflowDataDir,$mercatorOutputsDir);
+  my $nextflowDataDir = join("/", $workflowDataDir, "Mercator_Nextflow");
+  mkdir ($nextflowDataDir) unless ( -d $nextflowDataDir );
 
 # in test mode, there are no input files to iterate over, so just leave
   if ($test) {
@@ -22,7 +24,7 @@ sub run {
   }
 
   if($undo){
-#TODO
+    $self->runCmd($test,"rm -rf $nextflowDataDir") if( -d $nextflowDataDir );
   }
 
 #TODO
