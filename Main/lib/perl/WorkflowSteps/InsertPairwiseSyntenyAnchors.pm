@@ -25,6 +25,7 @@ sub run {
 
   if($undo){
     $self->runCmd($test,"rm -rf $nextflowDataDir") if( -d $nextflowDataDir );
+    return;
   }
 
 #TODO
