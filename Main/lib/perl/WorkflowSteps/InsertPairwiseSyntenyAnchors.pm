@@ -49,7 +49,7 @@ CONFIG
 
   my $executable = join("/", $ENV{'GUS_HOME'}, 'bin', 'processSyntenyPairs');
 
-  my $cmd = "nextflow -C $nfConfigFile run $executable";
+  my $cmd = "nextflow -w $nextflowDataDir -C $nfConfigFile run $executable";
   $self->log("Running: $cmd\n");
   $self->runCmd($test,$cmd);
 }
