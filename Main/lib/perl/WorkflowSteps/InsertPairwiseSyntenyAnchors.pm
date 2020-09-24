@@ -15,6 +15,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $mercatorPairsDir = join("/", $workflowDataDir,$mercatorOutputsDir);
   my $nextflowDataDir = join("/", $workflowDataDir, "insertPairwiseSyntenyAnchors");
+  my $stepDir = $self->getStepDir();
   mkdir ($nextflowDataDir) unless ( -d $nextflowDataDir );
 
 # in test mode, there are no input files to iterate over, so just leave
@@ -25,6 +26,7 @@ sub run {
 
   if($undo){
     $self->runCmd($test,"rm -rf $nextflowDataDir") if( -d $nextflowDataDir );
+    $self->runCmd($test,"rm -rf $stepDir/.nextflow") if( -d "$stepDir/.nextflow" );
     return;
   }
 
@@ -48,8 +50,15 @@ CONFIG
   }
 
   my $executable = join("/", $ENV{'GUS_HOME'}, 'bin', 'processSyntenyPairs');
+  my $logFile = join("/", $stepDir, "step.err");
 
-  my $cmd = "export NXF_WORK=$nextflowDataDir && nextflow -C $nfConfigFile run $executable";
+  my $cmd = "export NXF_WORK=$nextflowDataDir/work && nextflow -bg -C $nfConfigFile -log $logFile run $executable";
+
+## If you are here to look at an example of nextflow usage:
+# -bg run in background option: nextflow will not run if you run your workflow (rf run real) in a background shell
+# -log : override the default (.nextflow.log)
+# NXF_WORK will contain logs for individual jobs (building and loading sqlldr files)
+
   $self->log("Running: $cmd\n");
   $self->runCmd($test,$cmd);
 }
