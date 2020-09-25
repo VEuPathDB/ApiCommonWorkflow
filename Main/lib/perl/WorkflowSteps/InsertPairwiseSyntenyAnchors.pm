@@ -27,7 +27,41 @@ sub run {
   if($undo){
     $self->runCmd($test,"rm -rf $nextflowDataDir") if( -d $nextflowDataDir );
     $self->runCmd($test,"rm -rf $stepDir/.nextflow") if( -d "$stepDir/.nextflow" );
-    
+    my $errMsg = <<ERRMSG;
+NOTICE: this UNDO does not clean up the database! if you wish to clean up, run this SQL to delete ALL synteny datasets:
+
+==================
+DELETE FROM apidb.SYNTENICGENE;
+DELETE FROM apidb.SYNTENY;
+DELETE FROM sres.EXTERNALDATABASERELEASE WHERE EXTERNAL_DATABASE_ID IN (SELECT EXTERNAL_DATABASE_ID FROM sres.EXTERNALDATABASE WHERE name LIKE '%Mercator_synteny');
+DELETE FROM sres.EXTERNALDATABASE WHERE name LIKE '%Mercator_synteny';
+SG;
+==================
+
+OR to delete one pair:
+==================
+DELETE FROM apidb.SYNTENICGENE WHERE SYNTENY_ID IN (
+  SELECT SYNTENY_ID FROM apidb.SYNTENY WHERE EXTERNAL_DATABASE_RELEASE_ID=(
+    SELECT EXTERNAL_DATABASE_RELEASE_ID FROM sres.EXTERNALDATABASERELEASE WHERE EXTERNAL_DATABASE_ID=(
+      SELECT EXTERNAL_DATABASE_ID FROM sres.EXTERNALDATABASE WHERE name LIKE '[species1]-[species2]_Mercator_synteny'
+    )
+  )
+);
+DELETE FROM apidb.SYNTENY WHERE EXTERNAL_DATABASE_RELEASE_ID=(
+  SELECT EXTERNAL_DATABASE_RELEASE_ID FROM sres.EXTERNALDATABASERELEASE WHERE EXTERNAL_DATABASE_ID=(
+    SELECT EXTERNAL_DATABASE_ID FROM sres.EXTERNALDATABASE WHERE name LIKE '[species1]-[species2]_Mercator_synteny'
+  )
+);
+DELETE FROM sres.EXTERNALDATABASERELEASE WHERE EXTERNAL_DATABASE_ID=(
+  SELECT EXTERNAL_DATABASE_ID FROM sres.EXTERNALDATABASE WHERE name LIKE '[species1]-[species2]_Mercator_synteny'
+);
+DELETE FROM sres.EXTERNALDATABASE WHERE name LIKE '[species1]-[species2]_Mercator_synteny';
+==================
+
+Undo complete
+
+ERRMSG
+    printf STDERR ($errMsg);
     return;
   }
 
@@ -64,16 +98,6 @@ CONFIG
   $self->runCmd($test,$cmd,"Nextflow failed, see $logFile for details");
   if($self->scanNextflowLogForFailures($logFile)){
     $self->runCmd($test, "false", "Nextflow failed, see $logFile for details");
-my $errMsg = <<ERRMSG;
-NOTICE: this UNDO does not clean up the database! if you wish to clean up, run this SQL to delete ALL synteny datasets:
-
-DELETE FROM apidb.SYNTENICGENE;
-DELETE FROM apidb.SYNTENY;
-DELETE FROM sres.EXTERNALDATABASERELEASE WHERE EXTERNAL_DATABASE_ID IN (SELECT EXTERNAL_DATABASE_ID FROM sres.EXTERNALDATABASE WHERE name LIKE '%Mercator_synteny');
-DELETE FROM sres.EXTERNALDATABASE WHERE name LIKE '%Mercator_synteny';
-SG;
-ERRMSG
-    printf STDERR ($errMsg);
   }
 }
 
