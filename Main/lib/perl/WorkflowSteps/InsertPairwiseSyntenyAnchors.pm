@@ -27,6 +27,7 @@ sub run {
   if($undo){
     $self->runCmd($test,"rm -rf $nextflowDataDir") if( -d $nextflowDataDir );
     $self->runCmd($test,"rm -rf $stepDir/.nextflow") if( -d "$stepDir/.nextflow" );
+    
     return;
   }
 
@@ -50,7 +51,7 @@ CONFIG
   }
 
   my $executable = join("/", $ENV{'GUS_HOME'}, 'bin', 'processSyntenyPairs');
-  my $logFile = join("/", $stepDir, "step.err");
+  my $logFile = join("/", $stepDir, "nextflow.log");
 
   my $cmd = "export NXF_WORK=$nextflowDataDir/work && nextflow -bg -C $nfConfigFile -log $logFile run $executable";
 
@@ -59,8 +60,42 @@ CONFIG
 # -log : override the default (.nextflow.log)
 # NXF_WORK will contain logs for individual jobs (building and loading sqlldr files)
 
-  $self->log("Running: $cmd\n");
-  $self->runCmd($test,$cmd);
+  printf STDERR ("Running: $cmd\nSee $logFile for further details\n");
+  $self->runCmd($test,$cmd,"Nextflow failed, see $logFile for details");
+  if($self->scanNextflowLogForFailures($logFile)){
+    $self->runCmd($test, "false", "Nextflow failed, see $logFile for details");
+my $errMsg = <<ERRMSG;
+NOTICE: this UNDO does not clean up the database! if you wish to clean up, run this SQL to delete ALL synteny datasets:
+
+DELETE FROM apidb.SYNTENICGENE;
+DELETE FROM apidb.SYNTENY;
+DELETE FROM sres.EXTERNALDATABASERELEASE WHERE EXTERNAL_DATABASE_ID IN (SELECT EXTERNAL_DATABASE_ID FROM sres.EXTERNALDATABASE WHERE name LIKE '%Mercator_synteny');
+DELETE FROM sres.EXTERNALDATABASE WHERE name LIKE '%Mercator_synteny';
+SG;
+ERRMSG
+    printf STDERR ($errMsg);
+  }
+}
+
+sub scanNextflowLogForFailures {
+  my ($self,$logFile) = @_;
+  my $info;
+  open(FH, "<$logFile") or die "Cannot read $logFile:$!\n";
+  while(my $line=<FH>){
+    if( $line =~ /nextflow\.trace\.WorkflowStatsObserver/ ){
+      $info = $line;
+    }
+  }
+  close(FH);
+  $info =~ s/^.*\[|\].*$//g;
+  my @stats = split /\s*;\s*/, $info;
+  printf STDERR ("Nextflow Stats:\n%s\n", join("\n", @stats));
+  my %statValues;
+  foreach my $stat(@stats){
+    my ($k,$v) = split /=/, $stat;
+    $statValues{$k} = $v;
+  }
+  return $statValues{failedCount};
 }
 
 1;
