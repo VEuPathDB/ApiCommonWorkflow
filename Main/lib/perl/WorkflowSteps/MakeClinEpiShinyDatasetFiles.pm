@@ -19,7 +19,15 @@ sub run {
 
   my $tblPrefix = "D" . substr(sha1_hex($datasetName), 0, 10);
 
-  my $shinyHouseholdsSql = "select ha.name as household, ha.*
+  my $CommunitySql = "select com.name as community_id
+                           , h.name as household, com.*
+from apidbtuning.${tblPrefix}communitys com
+   , apidbtuning.${tblPrefix}households h
+   , apidbtuning.${tblPrefix}comhouseio io
+where com.pan_id = io.community_id
+and io.household_id = h.pan_id;";
+
+  my $HouseholdsSql = "select ha.name as household, ha.*
 from apidbtuning.${tblPrefix}Households ha
    , apidbtuning.${tblPrefix}Participants pa
    , apidbtuning.${tblPrefix}PANIO io
@@ -38,7 +46,7 @@ and ha.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = ha2.PAN_ID
 ";
 
-  my $shinyParticipantsSql = "select p.name as source_id, h.household as household, p.*
+  my $ParticipantsSql = "select p.name as source_id, h.household as household, p.*
 from apidbtuning.${tblPrefix}Participants p
 left join (
 	select pa.name as source_id, ha.name as household, pa.*
@@ -51,7 +59,7 @@ on p.name = h.name
 ";
 
 
-  my $shinyObservationsSql = "select pa.name as source_id, ea.*
+  my $ObservationsSql = "select pa.name as source_id, ea.*
 from apidbtuning.${tblPrefix}Observations ea
    , apidbtuning.${tblPrefix}Participants pa
    , apidbtuning.${tblPrefix}PANIO io
@@ -70,7 +78,7 @@ and oa.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = ea.PAN_ID
 ";
 
-  my $shinyEmptyObservationsSql = "select pa.name as source_id, ea.pan_id, ea.pan_name as name, '' AS description, ea.pan_type_id, ea.pan_type
+  my $EmptyObservationsSql = "select pa.name as source_id, ea.pan_id, ea.pan_name as name, '' AS description, ea.pan_type_id, ea.pan_type
 from apidbtuning.${tblPrefix}PANRecord ea
    , apidbtuning.${tblPrefix}Participants pa
    , apidbtuning.${tblPrefix}PANIO io
@@ -78,7 +86,7 @@ where pa.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = ea.PAN_ID
 "; 
 
-  my $shinySamplesSql = "select ea.pan_name as observation_id, sa.*
+  my $SamplesSql = "select ea.pan_name as observation_id, sa.*
 from apidbtuning.${tblPrefix}PanRecord ea
    , apidbtuning.${tblPrefix}Samples sa
    , apidbtuning.${tblPrefix}PANIO io
@@ -86,7 +94,7 @@ where ea.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = sa.PAN_ID
 ";
 
-  my $shinyLightTrapSql = "select ha.name as household, lt.*
+  my $LightTrapSql = "select ha.name as household, lt.*
 from apidbtuning.${tblPrefix}LightTraps lt
    , apidbtuning.${tblPrefix}Households ha
    , apidbtuning.${tblPrefix}PANIO io
@@ -165,6 +173,7 @@ where o.ontology_term_source_id is not null
 # )";
 
 
+  my $communityFile = "$datasetName/${outputFileBaseName}_community.txt";
   my $participantsFile = "$datasetName/${outputFileBaseName}_participants.txt";
   my $householdsFile = "$datasetName/${outputFileBaseName}_households.txt";
   my $observationsFile = "$datasetName/${outputFileBaseName}_observations.txt";
@@ -180,17 +189,18 @@ where o.ontology_term_source_id is not null
       $self->runCmd(0, "rm -f $workflowDataDir/$outFile");
   } else {
       if ($test) {
-	    $self->runCmd(0,"echo test > $workflowDataDir/shiny_masterDataTable.txt");
+	    $self->runCmd(0,"echo test > $workflowDataDir/_masterDataTable.txt");
       }
-      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$participantsFile --sql \"$shinyParticipantsSql\" --verbose --includeHeader --outDelimiter '\\t'");
-      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$householdsFile --sql \"$shinyHouseholdsSql\" --verbose --includeHeader --outDelimiter '\\t'");
-      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$observationsFile --sql \"$shinyObservationsSql\" --verbose --includeHeader --outDelimiter '\\t' --noEmptyFile");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$communityFile --sql \"$CommunitySql\" --verbose --includeHeader --outDelimiter '\\t'");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$participantsFile --sql \"$ParticipantsSql\" --verbose --includeHeader --outDelimiter '\\t'");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$householdsFile --sql \"$HouseholdsSql\" --verbose --includeHeader --outDelimiter '\\t'");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$observationsFile --sql \"$ObservationsSql\" --verbose --includeHeader --outDelimiter '\\t' --noEmptyFile");
       unless( -e "$workflowDataDir/$observationsFile"){
-        $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$observationsFile --sql \"$shinyEmptyObservationsSql\" --verbose --includeHeader --outDelimiter '\\t'");
+        $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$observationsFile --sql \"$EmptyObservationsSql\" --verbose --includeHeader --outDelimiter '\\t'");
       }
-      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$samplesFile --sql \"$shinySamplesSql\" --verbose --includeHeader --outDelimiter '\\t'");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$samplesFile --sql \"$SamplesSql\" --verbose --includeHeader --outDelimiter '\\t'");
       $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$ontologyMetadataFile --sql \"$ontologyMetadataSql\" --verbose --includeHeader --outDelimiter '\\t'");
-      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$lightTrapFile --sql \"$shinyLightTrapSql\" --verbose --includeHeader --outDelimiter '\\t'");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$lightTrapFile --sql \"$LightTrapSql\" --verbose --includeHeader --outDelimiter '\\t'");
 
       my $owl = ApiCommonData::Load::OwlReader->new($owlFile);
       my $itr = $owl->execute('get_replaces');
@@ -237,6 +247,7 @@ where o.ontology_term_source_id is not null
       #merge all outputFileBaseName* files using Rscript and merge two ontology files
        my $cmd = "Rscript $ENV{GUS_HOME}/bin/mergeClinEpiShinyDatasetFiles.R $workflowDataDir/$datasetName $outputFileBaseName"; 
       $self->runCmd($test, $cmd);
+      $self->runCmd($test, "rm -f $workflowDataDir/$communityFile");
       $self->runCmd($test, "rm -f $workflowDataDir/$participantsFile");
       $self->runCmd($test, "rm -f $workflowDataDir/$householdsFile");
       $self->runCmd($test, "rm -f $workflowDataDir/$observationsFile");
