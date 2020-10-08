@@ -21,6 +21,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <paramValue name="projectName">$$projectName$$</paramValue>
   </globalSubgraph>
 
+<!-- eutestdb dont need download dir and webservice dir
   <step name="makeProjectReleaseDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
       <dependsGlobal name="initUserGroupProject"/>
@@ -35,7 +36,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <paramValue name="relativeDir">$$relativeAuxiliaryDir$$</paramValue>
       <dependsGlobal name="initUserGroupProject"/>
   </step>
-
+-->
 
   <step name="makeComparativeGenomicsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$comparativeGenomicsInputDir$$</paramValue>
@@ -81,6 +82,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="dataDir">${organismAbbrev}_strainsComparisonInput</paramValue>
     </step>
 
+<!-- eutestdb need this to run MakeAndMaskTopLevelSequence  -->
     <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" groupName="${organismAbbrev}"  stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">${organismAbbrev}</paramValue>
       <depends name="${organismAbbrev}_makeDataDir"/>
@@ -124,8 +126,6 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
       <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <paramValue name="genomeSource">${genomeSource}</paramValue>
-      <depends name="makeProjectReleaseDownloadDir"/>
-      <depends name="makeProjectReleaseWebServicesDir"/>
       <depends name="${organismAbbrev}_mirrorToCluster"/>
       <depends name="${organismAbbrev}_loadTemporaryNcbiTaxonId"/>
       <dependsGlobal name="taxonomy_RSRC"/> 
@@ -146,6 +146,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
+<!-- eutestdb does not need it
     <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeCompGenomicsFiles" xmlFile="makeCompGenomicsFiles.xml" groupName="${organismAbbrev}" excludeIf="${isHugeGenome}">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="makeAndMaskTopLevelGenomeDataDir">${organismAbbrev}/makeAndMaskTopLevelGenome</paramValue>
@@ -158,6 +159,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
+-->
 
     <subgraph name="${organismAbbrev}_PostLoadGenome" xmlFile="postLoadGenome.xml" groupName="${organismAbbrev}">
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
@@ -196,7 +198,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
 
-
+<!-- eutestdb does not need it
     <subgraph name="${organismAbbrev}_bowtieMapping" xmlFile="mapWithBowtie.xml"  excludeIfXmlFileDoesNotExist="true"  groupName="${organismAbbrev}">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -208,6 +210,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
+-->
 
     <subgraph name="${organismAbbrev}_specific_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/organismSpecificOnTopLevelGenome.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -228,7 +231,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
-
+<!-- eutestdb it is fine because exludeIfXmlFileDoesNotExist -->
     <subgraph name="${organismAbbrev}_specific_noAlias" xmlFile="OrganismSpecificNoAlias.xml"  groupName="${organismAbbrev}">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -247,6 +250,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
+<!-- eutestdb it is fine because exludeIfXmlFileDoesNotExist -->
     <subgraph name="${organismAbbrev}_specific" xmlFile="OrganismSpecific.xml"  groupName="${organismAbbrev}">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -276,6 +280,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${organismAbbrev}_LoadAliases"/>
     </subgraph>
 
+<!-- eutestdb does not need them
     <subgraph name="${organismAbbrev}_EarlyVirtualLocations" xmlFile="virtualLocations.xml" groupName="${organismAbbrev}">
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="mode">early</paramValue>
@@ -289,6 +294,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsPattern name="${organismAbbrev}_specific*"/>
       <depends name="${organismAbbrev}_PostLoadGenome"/>
     </subgraph>
+-->
 
     <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml" groupName="${organismAbbrev}">
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
@@ -304,12 +310,11 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${organismAbbrev}_PostLoadGenome"/>
       <depends name="${organismAbbrev}_specific"/>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
-      <depends name="${organismAbbrev}_LateVirtualLocations"/>
-      <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
     </subgraph>
 
   </datasetTemplate>
 
+<!-- eutestdb does not need them
     <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables">
       <paramValue name="dataDir">Snp_Table_Constraint</paramValue>
       <dependsPattern name="*_bowtieMapping"/>
@@ -323,8 +328,10 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </subgraph>
+-->
 
 <!-- depends on comparativeGenomics AND VIRTUAL FEATURE LOCATIONS-->
+<!-- eutestdb does not need them
     <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin" excludeIf="$$areBigGenomes$$" >
       <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
       <paramValue name="mercatorOutputsDir">mercatorOutput</paramValue>
@@ -339,6 +346,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <dependsPattern name="*_specific"/>
     <dependsGlobal name="enzymeDB_RSRC"/>
   </subgraph> 
+-->
 
   <!-- only reference strains have an instance of this -->
   <!-- it depends on all make and mask genomes for this organism (they all have the ref strain as a prefix) -->
@@ -346,6 +354,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <prop name="organismAbbrev"/>      <!-- same as referenceStrainOrganismAbbrev -->
     <prop name="isAnnotatedGenome"/>  <!-- if ref strain is annotated -->
 
+<!-- eutestdb does not need them
     <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml" includeIf="${isAnnotatedGenome} &amp;&amp; !$$areBigGenomes$$" groupName="${organismAbbrev}" >
       <paramValue name="parentDataDir"></paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${organismAbbrev}</paramValue>
@@ -353,9 +362,11 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsPattern name="${organismAbbrev}_*_MakeAndMaskTopLevelGenome"/>
       <dependsPattern name="${organismAbbrev}_*_MakeCompGenomicsFiles"/>
     </subgraph>
+-->
 
   </datasetTemplate>
 
+<!-- eutestdb does not need them
   <datasetTemplate class="Pathways">
    <prop name="projectName"/>     
    <prop name="version"/>
@@ -387,6 +398,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
         <depends name="Pathways_MetaCyc_RSRC"/>
     </subgraph>
   </datasetTemplate>
+-->
 
   <!-- for pathways graph -->
 <!--
@@ -407,6 +419,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
   </step>
 -->
 <!-- old template deprecated-->
+<!-- eutestdb does not need them
  <datasetTemplate class="metaboliteProfiles">
    <prop name="experimentName"/> 
     <prop name="experimentVersion"/> 
@@ -426,8 +439,10 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
  </datasetTemplate>
+-->
 
   <!-- new template for untargeted metabolomics -->                                                                               
+<!-- eutestdb does not need them
   <step name="makeMetabolomicsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">metabolomics</paramValue>
   </step>    
@@ -444,6 +459,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
   </datasetTemplate>
+-->
 
 <!-- for compounds graph -->
 <!--
@@ -466,6 +482,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
   </step> 
 -->
 <!-- EuPath Ontology and Study MetaData -->
+<!-- eutestdb does not need them
 <subgraph name="metadata" xmlFile="metadata.xml" >
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
     <paramValue name="parentDataDir"></paramValue>
@@ -477,9 +494,10 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <dependsGlobal name="eupathCuratedOntologies"/>
     <dependsGlobal name="EuPath_Ontology_RSRC"/>
 </subgraph>
-
+-->
 
 <!--A generic dataset template to copy and format files from EuPathDB manualDelivery to download sites and web services-->
+<!-- eutestdb does not need them
  <datasetTemplate class="copyAndFormatDownloadFilesFromManualDelivery">
    <prop name="projectName"/>
    <prop name="relativeManualDeliveryDir"/>
@@ -534,5 +552,5 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsGlobal name="oboOntologies"/>
    </subgraph>
   </datasetTemplate>
-
+-->
 </workflowGraph>

@@ -21,6 +21,7 @@
       <depends name="makeDataDir"/>
     </step>
 
+<!-- eutestdb does not need it
     <step name="calcAASequenceAttributes"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateAASeqAttributes" stepLoadTypes="plugin">
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -43,6 +44,7 @@
       <paramValue name="parameters"></paramValue>
       <depends name="calcAASequenceAttributes"/>
     </step>
+-->
 
   <subgraph name="loadProductName" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/productNames.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
@@ -55,6 +57,7 @@
       <paramValue name="genomeExtDbRlsSpecList">$$genomeExtDbRlsSpec$$</paramValue>
     </step>
 -->
+<!-- eutestdb does not need it
     <step name="runTmhmm"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTmhmm">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
@@ -121,8 +124,9 @@
       <paramValue name="parameters">$$signalpArgs$$</paramValue>
       <depends name="insertSignalP"/>
     </step>
-
+-->
     <!-- this step could also be in loadGenome, after protein extract -->
+<!-- eutestdb does not need it
     <step name="makeProteinsBlastDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatNcbiBlastFile">
       <paramValue name="sequencesFile">$$proteinsFile$$</paramValue>
       <paramValue name="formatterArgs">T</paramValue>
@@ -135,9 +139,11 @@
       <paramValue name="skipIfFile">$$organismAbbrev$$/foundZeroEpitopes</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
+-->
 
     <!-- a step in this subgraph uses a dependsExternal to depend on the
          reference strain loading of epitopes -->
+<!-- eutestdb does not need it
     <subgraph name="mapEpitopesToProteins" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/mapEpitopes.xml" excludeIfXmlFileDoesNotExist="true">
       <paramValue name="proteinsFileWithBlastDb">$$proteinsFile$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -221,7 +227,6 @@
       <paramValue name="">true</paramValue>
       <paramValue name="filterByTaxon">false</paramValue>
       <paramValue name="taxonHierarchyForFilter"></paramValue>
-      <paramValue name="loadOptions">--subjectsLimit 50</paramValue>
       <paramValue name="maxMemoryGigs">8</paramValue>
       <paramValue name="loadSimilarities">true</paramValue>
       <paramValue name="makeSimSeqsFile"></paramValue>
@@ -254,7 +259,6 @@
       <paramValue name="shortenSubjectSourceIdTo">4</paramValue>
       <paramValue name="filterByTaxon">false</paramValue>
       <paramValue name="taxonHierarchyForFilter"></paramValue>
-      <paramValue name="loadOptions">--noHSPs --subjectPvalue 1e-05 --subjectPctIdent 30</paramValue>
       <paramValue name="maxMemoryGigs">1.5</paramValue>
       <paramValue name="loadSimilarities">true</paramValue>
       <paramValue name="makeSimSeqsFile"></paramValue>
@@ -284,5 +288,6 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <depends name="findNrdbXrefs"/>
     </step>
+-->
 
 </workflowGraph>

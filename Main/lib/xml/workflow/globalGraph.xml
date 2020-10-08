@@ -125,6 +125,7 @@
     <depends name="initUserGroupProject"/>
   </subgraph>
 
+<!-- eutestdb does not need it for testing workflow
   <subgraph name="NRDB_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">NRDB_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
@@ -138,7 +139,7 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
-
+-->
 
 <!--
   <subgraph name="BibRefType_RSRC" xmlFile="loadDataset.xml">
@@ -157,10 +158,11 @@
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
     <depends name="initClusterHomeDir"/>
-    <depends name="NRDB_RSRC"/>
-    <depends name="PDBProteinSequences_RSRC"/>
+<!--    <depends name="NRDB_RSRC"/> -->
+<!--    <depends name="PDBProteinSequences_RSRC"/> -->
   </step>
 
+<!-- eutestdb does not need it for testing workflow
   <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster">
     <paramValue name="inputFile">$$global_NRDBOutputFile_shortDeflineSP$$</paramValue>
     <paramValue name="vendor">wu</paramValue>
@@ -176,7 +178,6 @@
   </step>
 
 
-
   <subgraph name="chEBI_Compounds" xmlFile="compounds.xml">
     <paramValue name="datasetName">compounds_chEBI_RSRC</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -190,6 +191,7 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
+-->
 
   <subgraph name="OBO_Ontology_efo" xmlFile="loadDataset.xml" stepLoadTypes="runPlugin:insertOntologyTermsAndRelationships">
     <paramValue name="datasetName">OBO_Ontology_efo_RSRC</paramValue>

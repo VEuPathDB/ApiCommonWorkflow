@@ -29,6 +29,7 @@
       <depends name="makeDataDir"/>
     </step>
 
+<!-- eutestdb does not need it
   <subgraph name="blatNrdbAgainstGenome" xmlFile="blatProteinAgainstGenome.xml"  excludeIf="$$isHugeGenome$$">
     <paramValue name="dataDir">$$dataDir$$/blatNrdbAgainstGenome</paramValue>
     <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
@@ -54,7 +55,8 @@
       <paramValue name="parameters"></paramValue>
       <depends name="blatNrdbAgainstGenome"/>
     </step>
-
+-->
+<!-- eutestdb does not need it
     <step name="runTRNAScan"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTRNAScan" excludeIf="$$annotationIncludesTRNAs$$">
       <paramValue name="seqFile">$$genomicSeqsFile$$</paramValue>
@@ -77,7 +79,8 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <depends name="runTRNAScan"/>
     </step>
-
+-->
+<!-- eutestdb does not need it
     <subgraph name="unofficialGeneFeatures" xmlFile="unofficialGeneFeatures.xml">
      <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
      <paramValue name="parentDataDir">$$dataDir$$</paramValue> 
@@ -98,7 +101,6 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" excludeIf="$$isHugeGenome$$">
       <paramValue name="method">orfFinder_MTHD</paramValue>
       <paramValue name="version">unknown</paramValue>
-      <paramValue name="parameters">--minPepLength 50</paramValue>
       <depends name="makeOrfFile"/>
     </step>
 
@@ -111,8 +113,8 @@
       <paramValue name="isfMappingFile">orf2gus.xml</paramValue>
       <depends name="makeOrfFile"/>
     </step>
-
-  
+-->
+<!-- eutestdb does not need it
   <subgraph name="massSpecDatasetLoaders" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/massSpec.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -167,7 +169,6 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="seqType">dna</paramValue>
       <paramValue name="mask">N</paramValue> 
-      <paramValue name="options">--LowComplexityName 'dust'</paramValue>
       <depends name="runLowComplexityFilter"/>
     </step>
 
@@ -182,11 +183,12 @@
     <paramValue name="skipIfFile">$$organismAbbrev$$/foundZeroESTs</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
-
-
+-->
   <!-- this subraph does not need a depends because the first step inside it
        has an externalDepends to the reference strain's dbEST dataset
        inside the reference strain's ESTs graph -->
+
+<!-- eutestdb does not need it
   <subgraph name="mapTranscripts" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/mapTranscriptsToGenome.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
@@ -196,6 +198,7 @@
     <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
     <depends name="mirrorToCluster"/>
   </subgraph>
+-->
 
 </workflowGraph>
 
