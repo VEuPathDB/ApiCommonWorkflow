@@ -25,7 +25,7 @@ from apidbtuning.${tblPrefix}communitys com
    , apidbtuning.${tblPrefix}households h
    , apidbtuning.${tblPrefix}comhouseio io
 where com.pan_id = io.community_id
-and io.household_id = h.pan_id;";
+and io.household_id = h.pan_id";
 
   my $HouseholdsSql = "select ha.name as household, ha.*
 from apidbtuning.${tblPrefix}Households ha
