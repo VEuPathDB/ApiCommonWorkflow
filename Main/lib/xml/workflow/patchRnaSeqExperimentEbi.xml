@@ -1,0 +1,74 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="organismDatasetLoaderXmlFile"/>
+    <param name="experimentName"/>
+    <param name="parentDataDir"/>
+    <param name="fullDataDir"/>
+    <param name="patchDatasetName"/>
+    <param name="experimentDatasetName"/>
+    <param name="experimentDatasetVersion"/>
+    <param name="strandSpecific"/>
+    <param name="topLevelSeqSizeFile"/>
+    <param name="topLevelGeneFootprintFile"/>
+    <param name="relativeWebServicesDir"/>
+    <param name="ebiOrganismName"/>
+    <param name="ebiVersion"/>
+
+    <constant name="dataDir">$$parentDataDir$$/$$patchDatasetName$$</constant>
+    <constant name="analysisConfig">$$fullDataDir$$/final/analysisConfig.xml</constant>
+
+    <subgraph name="loadDataset" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$patchDatasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    </subgraph>
+
+
+    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <depends name="loadDataset"/>
+    </step>
+
+
+    <step name="fetchEbiRNASeqPatch" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FetchEbiRNASeqPatch">
+      <paramValue name="ebiVersion">$$ebiVersion$$</paramValue>
+      <paramValue name="ebiOrganismName">$$ebiOrganismName$$</paramValue>
+      <paramValue name="experimentName">$$experimentName$$</paramValue>
+      <paramValue name="samplesDir">$$parentDataDir$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <depends name="makeSamplesOutputDir"/>
+    </step>
+
+    <step name="tpmFromHtseqCounts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TpmFromHtseqCounts">
+      <paramValue name="samplesDir">$$dataDir$$</paramValue>
+      <paramValue name="geneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
+      <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
+      <depends name="fetchEbiRNASeqPatch"/>
+    </step>
+
+    <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PatchTranscriptExpression">
+      <paramValue name="analysisConfigFile">$$analysisConfig$$</paramValue>
+      <paramValue name="outputDir">$$dataDir$$</paramValue>
+      <paramValue name="technologyType">RNASeqEbi</paramValue>
+      <depends name="tpmFromHtseqCounts"/>
+    </step>
+    
+    <step name="unloadProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UnloadProfiles">
+      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
+      <depends name="doTranscriptExpression"/><!--no technical dependencies, but don't want to run until the updates have processed successfully as we can't undo this-->
+    </step>
+
+    <step name="loadStudyResultsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRnaSeqPatch" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/insert_study_results_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
+      <depends name="unloadProfiles"/>
+      <dependsGlobal name="oboOntologies"/>
+    </step>
+
+</workflowGraph>
+
+
