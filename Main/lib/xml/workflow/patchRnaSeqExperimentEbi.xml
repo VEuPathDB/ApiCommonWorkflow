@@ -15,7 +15,7 @@
     <param name="ebiOrganismName"/>
     <param name="ebiVersion"/>
 
-    <constant name="dataDir">$$parentDataDir$$/$$patchDatasetName$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/$$patchDatasetName$$/$$experimentName$$</constant>
     <constant name="analysisConfig">$$fullDataDir$$/final/analysisConfig.xml</constant>
 
     <subgraph name="loadDataset" xmlFile="loadDataset.xml">
@@ -24,18 +24,16 @@
       <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
     </subgraph>
 
-
     <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
       <depends name="loadDataset"/>
     </step>
 
-
     <step name="fetchEbiRNASeqPatch" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FetchEbiRNASeqPatch">
       <paramValue name="ebiVersion">$$ebiVersion$$</paramValue>
       <paramValue name="ebiOrganismName">$$ebiOrganismName$$</paramValue>
       <paramValue name="experimentName">$$experimentName$$</paramValue>
-      <paramValue name="samplesDir">$$parentDataDir$$</paramValue>
+      <paramValue name="samplesDir">$$parentDataDir$$/$$patchDatasetName$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <depends name="makeSamplesOutputDir"/>
     </step>
