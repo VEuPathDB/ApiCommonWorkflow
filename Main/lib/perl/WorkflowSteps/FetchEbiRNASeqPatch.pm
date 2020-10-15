@@ -19,7 +19,7 @@ sub run {
   my $projectName = $self->getParamValue('projectName');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $fullPath = "$workflowDataDir/$samplesDir/$experimentName";
+  my $fullPath = "$workflowDataDir/$samplesDir";
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $fullPath/*");
