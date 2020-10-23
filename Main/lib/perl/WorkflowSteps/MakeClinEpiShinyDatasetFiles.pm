@@ -27,23 +27,33 @@ from apidbtuning.${tblPrefix}communitys com
 where com.pan_id = io.community_id
 and io.household_id = h.pan_id";
 
-  my $HouseholdsSql = "select ha.name as household, ha.*
+  my $HouseholdsSql = "select ha.name as household 
+                            , com.name as community_id, ha.*
 from apidbtuning.${tblPrefix}Households ha
+   , apidbtuning.${tblPrefix}Communitys com
    , apidbtuning.${tblPrefix}Participants pa
    , apidbtuning.${tblPrefix}PANIO io
+   , apidbtuning.${tblPrefix}ComHouseIO ch
 where ha.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = pa.PAN_ID
+and ch.household_id = ha.pan_id
+and ch.community_id = com.pan_id
 union
-select ha.name as household, ha2.*
+select ha.name as household
+     , com.name as community_id, ha2.*
 from apidbtuning.${tblPrefix}Households ha
    , apidbtuning.${tblPrefix}Households ha2
+   , apidbtuning.${tblPrefix}Communitys com
    , apidbtuning.${tblPrefix}Participants pa
    , apidbtuning.${tblPrefix}PANIO io
    , apidbtuning.${tblPrefix}PANIO io2
+   , apidbtuning.${tblPrefix}ComHouseIO ch
 where pa.pan_id = io2.output_pan_id
 and io2.input_pan_id = ha.pan_id
 and ha.PAN_ID = io.INPUT_PAN_ID
 and io.OUTPUT_PAN_ID = ha2.PAN_ID
+and ha.pan_id = ch.household_id
+and ch.community_id = com.pan_id
 ";
 
   my $ParticipantsSql = "select p.name as source_id, h.household as household, p.*
