@@ -36,7 +36,7 @@ sub run {
   my $queryExtDbRlsId;
   if ($queryExtDbName) {
       my $queryExtDbVer = $self->getExtDbVersion($test,$queryExtDbName);
-      my $queryExtDbRlsId = $self->getExtDbRlsId($test, "$queryExtDbName|$queryExtDbVer");
+      $queryExtDbRlsId = $self->getExtDbRlsId($test, "$queryExtDbName|$queryExtDbVer");
   }
 
   my $workflowDataDir = $self->getWorkflowDataDir();
