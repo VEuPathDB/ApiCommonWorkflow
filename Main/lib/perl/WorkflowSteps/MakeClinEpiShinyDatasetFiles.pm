@@ -126,6 +126,7 @@ select distinct o.ontology_term_source_id as iri
       , ms.lower_quartile as lower_quartile
       , ms.number_distinct_values as number_distinct_values
       , ms.distinct_values as distinct_values
+      , o.variable
 from apidbtuning.${tblPrefix}Ontology o 
 left join apidbtuning.${tblPrefix}Metadata m
   on o.ontology_term_source_id = m.property_source_id
@@ -247,10 +248,10 @@ where o.ontology_term_source_id is not null
 
 
       open (my $fh, '>', "$workflowDataDir/$ontologyMappingFile") or die "Could not open file for writing! $!";
-      print $fh "iri\tvariable\treplaces\n";
+      print $fh "iri\treplaces\n";
       foreach my $sid (sort keys %terms) {
         my $names = join(",", @{$terms{$sid}->{names}});
-        printf $fh ("%s\n", join("\t",  $sid, $names, $terms{$sid}->{replaces} || ""));
+        printf $fh ("%s\n", join("\t",  $sid, $terms{$sid}->{replaces} || ""));
       }
       close $fh;
  
