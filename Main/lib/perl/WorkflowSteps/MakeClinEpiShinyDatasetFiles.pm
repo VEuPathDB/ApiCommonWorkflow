@@ -27,8 +27,15 @@ from apidbtuning.${tblPrefix}communitys com
 where com.pan_id = io.community_id
 and io.household_id = h.pan_id";
 
-  my $HouseholdsSql = "select ha.name as household 
-                            , com.name as community_id, ha.*
+  my $HouseholdsSql = "select ha.name as household, '' as community_id, ha.*
+from apidbtuning.${tblPrefix}Households ha
+   , apidbtuning.${tblPrefix}Participants pa
+   , apidbtuning.${tblPrefix}PANIO io
+where ha.PAN_ID = io.INPUT_PAN_ID
+and io.OUTPUT_PAN_ID = pa.PAN_ID
+AND ha.PAN_ID NOT IN (SELECT household_id FROM apidbtuning.${tblPrefix}ComHouseIO) 
+union
+select ha.name as household, com.name as community_id, ha.*
 from apidbtuning.${tblPrefix}Households ha
    , apidbtuning.${tblPrefix}Communitys com
    , apidbtuning.${tblPrefix}Participants pa
@@ -39,8 +46,7 @@ and io.OUTPUT_PAN_ID = pa.PAN_ID
 and ch.household_id = ha.pan_id
 and ch.community_id = com.pan_id
 union
-select ha.name as household
-     , com.name as community_id, ha2.*
+select ha.name as household, com.name as community_id, ha2.*
 from apidbtuning.${tblPrefix}Households ha
    , apidbtuning.${tblPrefix}Households ha2
    , apidbtuning.${tblPrefix}Communitys com
