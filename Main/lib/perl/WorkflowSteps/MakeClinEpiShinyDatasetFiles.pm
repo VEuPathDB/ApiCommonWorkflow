@@ -19,13 +19,19 @@ sub run {
 
   my $tblPrefix = "D" . substr(sha1_hex($datasetName), 0, 10);
 
-  my $CommunitySql = "select com.name as community_id
-                           , h.name as household, com.*
+  my $CommunitySql = "select com.name AS community_observation_id, com.name as community_id, com.*
 from apidbtuning.${tblPrefix}communitys com
-   , apidbtuning.${tblPrefix}households h
-   , apidbtuning.${tblPrefix}comhouseio io
-where com.pan_id = io.community_id
-and io.household_id = h.pan_id";
+WHERE com.pan_id NOT IN
+(SELECT community_observation_id
+FROM apidbtuning.${tblPrefix}ComComObsIO)
+UNION
+select com.name AS community_observation_id, cc.name as community_id, com.*
+from apidbtuning.${tblPrefix}communitys com
+LEFT JOIN apidbtuning.${tblPrefix}ComComObsIO io ON com.pan_id=io.community_observation_id
+LEFT JOIN apidbtuning.${tblPrefix}Communitys cc ON io.community_id=cc.pan_id
+WHERE com.pan_id IN
+(SELECT community_observation_id
+FROM apidbtuning.${tblPrefix}ComComObsIO)";
 
   my $HouseholdsSql = "select ha.name as household, '' as community_id, ha.*
 from apidbtuning.${tblPrefix}Households ha
