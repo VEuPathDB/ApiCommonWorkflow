@@ -32,7 +32,7 @@ sub run {
     #foreach my $experiment  (split('_', $experimentName)) {
     #    $self->runCmd($test,"wget --reject '.bw' -nH --cut-dirs=6 --recursive --no-parent --ftp-user $ebiFtpUser --ftp-password $ebiFtpPassword ftp://ftp-private.ebi.ac.uk:/EBIout/$ebiVersion/rnaseq/alignments/$ebiOrganismName/$experiment/*");
     #}
-    $self->runCmd($test,"wget --reject '.bw' -nH --cut-dirs=6 --recursive --no-parent --ftp-user $ebiFtpUser --ftp-password $ebiFtpPassword ftp://ftp-private.ebi.ac.uk:/EBIout/$ebiVersion/rnaseq/new/$projectName/$ebiOrganismName/$experimentName/*");
+    $self->runCmd($test,"wget --reject '.bw' -nH --cut-dirs=7 --recursive --no-parent --ftp-user $ebiFtpUser --ftp-password $ebiFtpPassword ftp://ftp-private.ebi.ac.uk:/EBIout/$ebiVersion/rnaseq/new/$projectName/$ebiOrganismName/$experimentName/*");
     }
 }
 
