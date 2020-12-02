@@ -69,6 +69,14 @@
       <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
       <depends name="analyzeSamples"/>
     </step>
+    
+    <step name="makeMergedBigwig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RNAseqMerge">
+        <paramValue name="inputsDir">$$dataDir$$</paramValue>
+        <paramValue name="experimentName">$$experimentName$$</paramValue>
+        <paramValue name="chromSizesFile">$$topLevelSeqSizeFile$$</paramValue>
+        <paramValue name="analysisConfig">$$dataDir$$/$$experimentDatasetName$$/final/analysisConfig.xml</paramValue>
+        <depends name="normalizeBedGraph"/>
+    </step>
 
     <step name="document-rna_seq_experiment"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
@@ -76,15 +84,5 @@
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters">TODO: patch in later</paramValue>
     </step>
-
-<!-- mergeBigwig step
-         <step name="makeMergedBigwig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RNAseqMerge">
-        <paramValue name="inputsDir">$$parentDataDir$$</paramValue>
-        <paramValue name="chromSizesFile">$$topLevelSeqSizeFile$$</paramValue>
-        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-        <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
-        <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
-        <depends name="analyzeSamples"/>
-    </step> -->
 
 </workflowGraph>

@@ -93,15 +93,22 @@
       <depends name="normalizeCoverage"/>
     </step>
     
-<!-- mergeBigwig step
-    <step name="makeMergedBigwig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RNAseqMerge">
-        <paramValue name="inputsDir">$$parentDataDir$$</paramValue>
+    <step name="makeMergedBigwigs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RNAseqMerge">
+        <paramValue name="inputsDir">$$dataDir$$</paramValue>
+        <paramValue name="experimentName">$$experimentName$$</paramValue>
         <paramValue name="chromSizesFile">$$topLevelSeqSizeFile$$</paramValue>
+        <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
+        <depends name="normalizeCoverage"/>
+    </step>
+
+    <step name="copyMergedBigwigsToWebSvc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyRnaSeqMergedBigwigsToWebSvc">
+        <paramValue name="copyFromDir">$$dataDir$$/mergedBigwigs</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
         <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
-        <depends name="normalizeCoverage"/>
-    </step> -->
+        <depends name="makeMergedBigwigs"/>
+        <depends name="copyNormalizedBedGraphToWebServiceDir"/>
+    </step>
 
 </workflowGraph>
 
