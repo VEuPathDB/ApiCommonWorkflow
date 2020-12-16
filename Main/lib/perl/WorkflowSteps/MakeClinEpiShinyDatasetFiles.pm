@@ -125,7 +125,7 @@ and io.INPUT_PAN_ID = ha.PAN_ID
 ";
 
 my $ontologyMetadataSql = "
-select distinct o.ontology_term_source_id as iri
+select distinct upper(o.ontology_term_source_id) as IRI
       , o.ontology_term_name as label
       , o.type as type
       , o.parent_ontology_term_name as parentLabel
@@ -230,14 +230,14 @@ where o.ontology_term_source_id is not null
       my %replaces;
       while (my $row = $itr->next) {
         my $iri = $row->{entity}->as_hash()->{iri}|| $row->{entity}->as_hash()->{URI};
-        my $sid = $owl->getSourceIdFromIRI($iri);
+        my $sid = uc($owl->getSourceIdFromIRI($iri));
         $replaces{$sid} = $row->{replaces}->as_hash()->{literal};
       }
       my $it = $owl->execute('get_column_sourceID');
       my %terms;
       while (my $row = $it->next) {
         my $iri = $row->{entity}->as_hash()->{iri}|| $row->{entity}->as_hash()->{URI};
-        my $sid = $owl->getSourceIdFromIRI($iri);
+        my $sid = uc($owl->getSourceIdFromIRI($iri));
         my $dataDictColNames = $row->{vars}->as_hash()->{literal};
         if(ref($dataDictColNames) ne 'ARRAY'){
           $dataDictColNames = [ $dataDictColNames ];
