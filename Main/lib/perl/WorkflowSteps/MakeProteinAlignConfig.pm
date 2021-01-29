@@ -19,12 +19,12 @@ sub run {
   my $esd2esiMemoryLimit = $self->getParamValue("esd2esiMemoryLimit");
   my $exonerateFsmmemory = $self->getParamValue("exonerateFsmmemory");
   my $exonerateMaxForks = $self->getParamValue("exonerateMaxForks");
-  my $exonerateMemory = $self->getParamValue("exonerateMemory");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $executor = $self->getClusterExecutor();
+  my $exonerateProcessMemoryRequirement = processMemoryRequirement($executor, $self->getParamValue("exonerateMemory"));
   my $queue = $self->getClusterQueue();
 
   my $configFile = "$workflowDataDir/$configFileName";
@@ -57,14 +57,36 @@ sub run {
 process {
   executor = '$executor'
   queue = '$queue'
-  withName: 'exonerate' { maxForks = $exonerateMaxForks
-                          memory = '$exonerateMemory' }
+  withName: 'exonerate' {
+    maxForks = $exonerateMaxForks
+    $exonerateProcessMemoryRequirement
+  }
 }
 
 ";
 
   close(F);
  }
+}
+
+sub processMemoryRequirement {
+  my ($executor, $memoryParameter) = @_;
+
+  return "memory = '$memoryParameter'" unless $executor eq 'lsf';
+
+  # On PMACS, the parameters don't correctly translate to memory requirements
+  # Prepare a submission string instead
+
+  if ($memoryParameter =~ m{(\d+) GB}){
+    my $gbs = $1;
+    return "clusterOptions = '-M ${gbs}000 -R \"rusage [mem=${gbs}000] span[hosts=1]\"'";
+  }
+  elsif ($memoryParameter =~ m{(\d+) MB}){
+    my $mbs = $1;
+    return "clusterOptions = '-M ${mbs} -R \"rusage [mem=${mbs}] span[hosts=1]\"'";
+  } else {
+    return "";
+  }
 }
 
 1;
