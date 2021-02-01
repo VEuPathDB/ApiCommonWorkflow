@@ -69,24 +69,41 @@ process {
  }
 }
 
+sub clusterOptionsForMemMbs {
+  my ($mbs) = @_;
+  return "-M ${mbs} -R \"rusage [mem=${mbs}] span[hosts=1]\"";
+}
+
 sub processMemoryRequirement {
   my ($executor, $memoryParameter) = @_;
 
+  # If not on LSF:
+  # Assume the Nextflow shorthands for memory use are correct
+  # Also, don't attempt the three tries
   return "memory = '$memoryParameter'" unless $executor eq 'lsf';
 
-  # On PMACS, the parameters don't correctly translate to memory requirements
+  # On PMACS LSF, the parameters don't correctly translate to memory requirements
   # Prepare a submission string instead
-
-  if ($memoryParameter =~ m{(\d+) GB}){
-    my $gbs = $1;
-    return "clusterOptions = '-M ${gbs}000 -R \"rusage [mem=${gbs}000] span[hosts=1]\"'";
-  }
-  elsif ($memoryParameter =~ m{(\d+) MB}){
-    my $mbs = $1;
-    return "clusterOptions = '-M ${mbs} -R \"rusage [mem=${mbs}] span[hosts=1]\"'";
+  my $mbs;
+  if ($memoryParameter =~ m{(^\d+(?:\.\d+)?) GB}){
+    $mbs = int($1 * 1000);
+  } elsif ($memoryParameter =~ m{(\d+) MB}){
+    $mbs = int($1);
   } else {
-    return "";
+    die "Could not extract num MB/GB from memory parameter: $memoryParameter";
   }
+  my $s1 = clusterOptionsForMemMbs(0.5 * $mbs);
+  my $s2 = clusterOptionsForMemMbs($mbs);
+  my $s3 = clusterOptionsForMemMbs(2 * $mbs);
+  return <<"EOF";
+    errorStrategy = { task.exitStatus in 130..140 ? 'retry' : 'terminate' }
+    maxRetries = 3
+    clusterOptions = {
+      task.attempt == 1 ? '$s1'
+      : task.attempt == 2 ?'$s2'
+      : '$s3'
+    }
+EOF
 }
 
 1;
