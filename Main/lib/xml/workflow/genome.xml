@@ -60,22 +60,25 @@
      <depends name="makeDataDir"/> 
     </subgraph> 
 
+<!-- Mark remove excludeIf="$$isHugeGenome$$" for the mini-flow -->
     <step name="makeOrfFile"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfFile" excludeIf="$$isHugeGenome$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfFile">
       <paramValue name="seqFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="minPepLength">50</paramValue>
       <paramValue name="outputFile">$$dataDir$$/Orf50.gff</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
+<!-- Mark remove excludeIf="$$isHugeGenome$$" for the mini-flow -->
     <step name="document-makeOrfFile"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" excludeIf="$$isHugeGenome$$">
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
       <paramValue name="method">orfFinder_MTHD</paramValue>
       <paramValue name="version">unknown</paramValue>
       <paramValue name="parameters">--minPepLength 50</paramValue>
       <depends name="makeOrfFile"/>
     </step>
 
+<!-- Mark remove for mini-flow
    <step name="copyOrfGffToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOrfGffToDownloadDir">
     <paramValue name="copyFromFile">$$dataDir$$/Orf50.gff</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -89,6 +92,7 @@
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <depends name="makeOrfFile"/>
     </step>
+-->
 
 <!-- no longer load orfs
     <step name="loadOrfFile"
