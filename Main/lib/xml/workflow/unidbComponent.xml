@@ -1,5 +1,4 @@
 <workflowGraph name="unidbComponent">
-  <param name="databaseInstance"/>
   <param name="projectName"/>
   <param name="workflowVersion"/>
   <param name="parentDataDir"/>
@@ -41,7 +40,7 @@
 
 
   <step name="getAndUnpack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderGetAndUnpack">
-    <paramValue name="datasetName">$$projectName$$_$$databaseInstance$$_$$workflowVersion$$_UniDB_RSRC</paramValue>
+    <paramValue name="datasetName">$$projectName$$_$$workflowVersion$$_UniDB_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
     <paramValue name="dataDir">$$component_project_fromManualDelivery_directory$$</paramValue>
     <depends name="makeComponentProjectManualDeliveryDir"/>
@@ -49,7 +48,7 @@
 
 
   <step name="lock" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBLockComponentProject">
-    <paramValue name="databaseInstance">$$databaseInstance$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
   </step>
 
   <step name="copyWebserviceAndDownload" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBCopyWebserviceAndDownloadFiles" undoRoot="lock">
@@ -72,7 +71,7 @@
 
 
   <step name="undo" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBUndoInstance" undoRoot="lock" stepLoadTypes="unidbPlugin">
-    <paramValue name="databaseInstance">$$databaseInstance$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="readerClass">ApiCommonData::Load::GUSPrimaryKeyTableReader</paramValue>
     <paramValue name="loaderLogDir">$$component_project_loader_directory$$</paramValue>
     <depends name="lock"/>
@@ -81,7 +80,7 @@
 
 
   <step name="load" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBLoadInstance" undoRoot="lock" stepLoadTypes="unidbPlugin">
-    <paramValue name="databaseInstance">$$databaseInstance$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="readerClass">ApiCommonData::Load::GUSTableReader</paramValue>
     <paramValue name="loaderLogDir">$$component_project_loader_directory$$</paramValue>
     <paramValue name="forceSkipDatasetFile">$$component_project_fromManualDelivery_directory$$/final/forceSkipDatasets</paramValue>
@@ -93,7 +92,7 @@
   </step>
 
   <step name="unlock" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBUnLockComponentProject">
-    <paramValue name="databaseInstance">$$databaseInstance$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
     <depends name="copyWebserviceAndDownload"/>
     <depends name="copyDatasetAndPresenter"/>
     <depends name="load"/>

@@ -9,7 +9,9 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $databaseInstance = $self->getParamValue('databaseInstance');
+  my $projectName = $self->getParamValue('projectName');
+  my $databaseInstance = $self->getSharedConfig($projectName . "_instance");
+
   my $readerClass = $self->getParamValue('readerClass');
   my $loaderLogDir = $self->getParamValue('loaderLogDir');
   my $forceSkipDatasetFile = $self->getParamValue('forceSkipDatasetFile');
