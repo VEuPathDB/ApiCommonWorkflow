@@ -2,6 +2,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::UniDBCopyDatasetAndPresenter;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
+use Cwd qw(getcwd);
 
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
@@ -21,14 +22,17 @@ sub run {
   unless($test) {
 
     if($undo) {
-      $self->runCmd($test, "rm -rf $workflowDataDir/$datasetsDir/${componentProjectName}*");
-      $self->runCmd($test, "rm -rf $workflowDataDir/$presentersDir/${componentProjectName}*");
+      # $self->runCmd($test, "rm -rf $workflowDataDir/$datasetsDir/${componentProjectName}*");
+      # $self->runCmd($test, "rm -rf $workflowDataDir/$presentersDir/${componentProjectName}*");
     }
     else {
-      $self->runCmd($test, "svn export $svnDatasets/$componentProjectName $workflowDataDir/$datasetsDir/$componentProjectName");
-      $self->runCmd($test, "svn export $svnDatasets/${componentProjectName}.xml $workflowDataDir/$datasetsDir/${componentProjectName}.xml");
-
-      $self->runCmd($test, "svn export $svnPresenters/${componentProjectName}.xml $workflowDataDir/$presentersDir/${componentProjectName}.xml");
+      $self->runCmd($test, "mkdir -p $workflowDataDir/git/$componentProjectName");
+      chdir "$workflowDataDir/git/$componentProjectName";
+      $self->runCmd($test, "git clone git@github.com:EuPathDB/ApiCommonDatasets.git");
+      chdir "ApiCommonDatasets";
+      $self->runCmd($test, "git checkout unidb_website");
+      $self->runCmd($test, "git checkout ebibrc4 Datasets/lib/xml/datasets/${componentProjectName}*");
+      $self->runCmd($test, "git push");
     }
   }
 }
