@@ -30,8 +30,10 @@ sub run {
       chdir "$workflowDataDir/git/$componentProjectName";
       $self->runCmd($test, "git clone git\@github.com:VEuPathDB/ApiCommonDatasets.git");
       chdir "ApiCommonDatasets";
+      $self->runCmd($test, "git checkout ebibrc4");
       $self->runCmd($test, "git checkout unidb_website");
       $self->runCmd($test, "git checkout ebibrc4 Datasets/lib/xml/datasets/${componentProjectName}*");
+      $self->runCmd($test, "git commit -m workflow");
       $self->runCmd($test, "git push");
     }
   }
