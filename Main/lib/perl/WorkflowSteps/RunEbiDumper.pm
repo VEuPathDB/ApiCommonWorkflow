@@ -38,7 +38,10 @@ sub run {
 
   my $gusSchemaDefFullPath = "${unpackDir}/gusSchemaDefinitions.xml";
 
-  my $cmd = "ebiDumper.pl -init_directory $initSqlDir --mysql_directory $mysqlDir --output_directory $outputDir --schema_definition_file $gusSchemaDefFullPath --chromosome_map_file $chromosomeMapFullPath --ncbi_tax_id $ncbiTaxonId --container_name $organismAbbrev --dataset_name $datasetName --dataset_version $genomeVersion --project_name $project_name --project_release $project_release --ebi2gus_tag $ebi2gusTag --organism_abbrev $organismAbbrev";
+  my $containerName = $organismAbbrev;
+  $containerName =~ s/[aeiou-]//ig; # shorten the organism abbrev;
+
+  my $cmd = "ebiDumper.pl -init_directory $initSqlDir --mysql_directory $mysqlDir --output_directory $outputDir --schema_definition_file $gusSchemaDefFullPath --chromosome_map_file $chromosomeMapFullPath --ncbi_tax_id $ncbiTaxonId --container_name $containerName --dataset_name $datasetName --dataset_version $genomeVersion --project_name $project_name --project_release $project_release --ebi2gus_tag $ebi2gusTag --organism_abbrev $organismAbbrev";
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $mysqlDir");
