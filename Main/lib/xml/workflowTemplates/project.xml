@@ -363,6 +363,11 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${organismAbbrev}_PostLoadGenome"/>
     </subgraph>
 
+    <subgraph name="${organismAbbrev}_PARFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARFeatures"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
+      <paramValue name="mappingFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
+      <depends name="${organismAbbrev}_LateVirtualLocations"/>
+    </subgraph>
+
     <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml" groupName="${organismAbbrev}">
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
@@ -379,6 +384,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
       <depends name="${organismAbbrev}_LateVirtualLocations"/>
       <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
+      <depends name="${organismAbbrev}_PARFeatures"/>
     </subgraph>
 
   </datasetTemplate>
