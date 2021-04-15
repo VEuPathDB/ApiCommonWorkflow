@@ -15,24 +15,25 @@ sub run {
   my $datasetsDir = $self->getParamValue('datasetsDir');
   my $presentersDir = $self->getParamValue('presentersDir');
 
-  # get step properties
-  my $svnDatasets = $self->getConfig('svnDatasets');
-  my $svnPresenters = $self->getConfig('svnPresenters');
+  my $unidbWebsiteBranch = $self->getSharedConfig("unidbWebsiteBranch");
+
+  my $componentProps = $self->getSharedConfig($componentProjectName . "_PROPS");
+  my $componentPropsHash = eval $componentProps;
+  $self->error("error in PROPS object in stepsShared.prop for $componentProjectName") if($@);
+  my $datasetsBranch = $componentPropsHash->{datasetsBranch};
+  my $presentersBranch = $componentPropsHash->{presentersBranch};
+  unless($datasetsBranch && $presentersBranch) {
+    $self->error("datasetsBranch and presentersBranch must be specified in PROPS object in stepsShared.prop for $componentProjectName");
+  }
 
   unless($test) {
-
     if($undo) {
-      # $self->runCmd($test, "rm -rf $workflowDataDir/$datasetsDir/${componentProjectName}*");
-      # $self->runCmd($test, "rm -rf $workflowDataDir/$presentersDir/${componentProjectName}*");
+      $self->runCmd($test, "rm -rf $workflowDataDir/git/$componentProjectName");
     }
     else {
       $self->runCmd($test, "mkdir -p $workflowDataDir/git/$componentProjectName");
       chdir "$workflowDataDir/git/$componentProjectName";
-      $self->runCmd($test, "git clone git@github.com:EuPathDB/ApiCommonDatasets.git");
-      chdir "ApiCommonDatasets";
-      $self->runCmd($test, "git checkout unidb_website");
-      $self->runCmd($test, "git checkout ebibrc4 Datasets/lib/xml/datasets/${componentProjectName}*");
-      $self->runCmd($test, "git push");
+      $self->runCmd($test, "unidbSnapshotDatasetsAndPresenters.bash -d $datasetsBranch -p $presentersBranch -t $unidbWebsiteBranch -c $componentProjectName");
     }
   }
 }
