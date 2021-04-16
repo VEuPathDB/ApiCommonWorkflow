@@ -12,13 +12,11 @@ sub run {
   my $evidenceCode = $self->getParamValue('evidenceCode');
   my $idSql = $self->getParamValue('idSql');
 
-  my $workflowDataDir = $self->getWorkflowDataDir();
+  my $args = "--ECMappingFile $inputFile --evidenceCode '$evidenceCode' --aaSeqLocusTagMappingSql '$idSql'";
 
-  my $args = "--ECMappingFile $workflowDataDir/$inputFile --evidenceCode '$evidenceCode' --aaSeqLocusTagMappingSql '$idSql'";
+  $self->testInputFile('inputFile', "$inputFile");
 
-  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-
-  $self->runPlugin($test, $undo, "GUS::Community::Plugin::InsertECMapping", $args);
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertEcMappingFromOrtho", $args);
 
 }
 
