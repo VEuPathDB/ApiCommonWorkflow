@@ -25,7 +25,12 @@ sub run {
   my $outputDir = "$websiteFilesDir/$relativeDownloadSiteDir/$digest";
 
   if($undo) {
-    $self->runCmd(0, "rm -r $outputDir");
+    if(-d $outputDir){
+      $self->runCmd(0, "rm -r $outputDir");
+    }
+    else {
+      warn "Manual download dir not found:\n$outputDir\nEither it was not created, or this is not the correct directory.\nThis undo step did NOT fail. Have a nice day!";
+    }
   } else {
     if (-e $inputDir) {
       my @files = glob "$inputDir";
