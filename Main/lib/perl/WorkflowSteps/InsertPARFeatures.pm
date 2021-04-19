@@ -12,12 +12,15 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--mappingFile '$workflowDataDir/$mappingFile';
+  my $args = "--mappingFile '$workflowDataDir/$mappingFile'";
 
-  $self->testInputFile('mappingFile', "$workflowDataDir/$mappingFile");
+  #$self->testInputFile('mappingFile', "$workflowDataDir/$mappingFile");
 
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertPARFeatures", $args);
-
+  if (-e "$workflowDataDir/$mappingFile"){
+    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertPARFeatures", $args);
+  }else{
+   $self->log("No mappingFile Exists!\n") 
+  }
 }
 
 1;
