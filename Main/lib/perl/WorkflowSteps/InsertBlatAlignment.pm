@@ -110,6 +110,7 @@ sub run {
       if ($hasTempFiles == 1) {
 	  my $cmd = "rm $workflowDataDir/$queryTempFile $workflowDataDir/$blatTempFile";
 	  $self->runCmd(0,$cmd);
+      $self->runPlugin($test, $undo, $plugin, $args);
       }
   }
 }
