@@ -245,6 +245,11 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
 
+   <step name="${organismAbbrev}_PARJunctions" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARJunctions"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
+      <paramValue name="mappingFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
+      <depends name="${organismAbbrev}_ebi_rnaseq_topLevel"/>
+    </step>
+
     <subgraph name="${organismAbbrev}_ebi_VCF" xmlFile="generated/${projectName}/${organismAbbrev}/ebiVCFfile.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -366,6 +371,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
    <step name="${organismAbbrev}_PARFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARFeatures"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
       <paramValue name="mappingFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
       <depends name="${organismAbbrev}_LateVirtualLocations"/>
+      <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
     </step>
 
     <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml" groupName="${organismAbbrev}">
