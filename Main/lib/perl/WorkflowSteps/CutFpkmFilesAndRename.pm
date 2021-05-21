@@ -20,6 +20,7 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputDirectory/$sampleName*.counts");
     $self->runCmd(0, "rm -f $workflowDataDir/$outputDirectory/$sampleName*.fpkm");
+    $self->runCmd(0, "rm -f $workflowDataDir/$outputDirectory/$sampleName*.tpm");
   } else {
       if ($test) {
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDirectory/$sampleName");

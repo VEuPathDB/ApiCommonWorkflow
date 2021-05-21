@@ -1,0 +1,170 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="organismDatasetLoaderXmlFile"/>
+    <param name="parentDataDir"/>
+    <param name="genomeExtDbRlsSpec"/>
+    <param name="relativeDownloadSiteDir"/>
+    <param name="relativeWebServicesDir"/>
+    <param name="topLevelFastaFile"/>
+
+    <constant name="dataDir">$$parentDataDir$$/hisat2</constant>
+    <constant name="topLevelSeqSizeFile">$$dataDir$$/topLevelSeqSizes.txt</constant>
+    <constant name="topLevelGeneFootprintFile">$$dataDir$$/topLevelGeneFootprintFile.txt</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeHisat2Index" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeHisat2Index">
+        <paramValue name="hisat2Dir">$$dataDir$$</paramValue>
+        <paramValue name="indexName">$$organismAbbrev$$</paramValue>
+        <paramValue name="fastaFile">$$topLevelFastaFile$$</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeGtfForCufflinks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGtfForGuidedCufflinks">
+        <paramValue name="outputFile">$$organismAbbrev$$.gtf</paramValue>
+        <paramValue name="gtfDir">$$dataDir$$</paramValue>
+        <paramValue name="project">$$projectName$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="cdsOnly">false</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeGtfForCufflinksCdsOnly" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGtfForGuidedCufflinks">
+        <paramValue name="outputFile">$$organismAbbrev$$_cds.gtf</paramValue>
+        <paramValue name="gtfDir">$$dataDir$$</paramValue>
+        <paramValue name="project">$$projectName$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="cdsOnly">true</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+
+    <step name="makeMaskGtfForCufflinks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGsnapMaskFile">
+        <paramValue name="outputFile">$$organismAbbrev$$_mask.gtf</paramValue>
+        <paramValue name="gtfDir">$$dataDir$$</paramValue>
+        <paramValue name="project">$$projectName$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="cdsOnly">false</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeMaskGtfForCufflinksCdsOnly" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGsnapMaskFile">
+        <paramValue name="outputFile">$$organismAbbrev$$_cds_mask.gtf</paramValue>
+        <paramValue name="gtfDir">$$dataDir$$</paramValue>
+        <paramValue name="project">$$projectName$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="cdsOnly">true</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+
+    <step name="makeTopLevelGeneFootprintFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelGeneFootprintFile">
+        <paramValue name="outputFile">$$topLevelGeneFootprintFile$$</paramValue>
+        <paramValue name="project">$$projectName$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeTopLevelSeqSizeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelSeqSizeFile">
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="outputFile">$$topLevelSeqSizeFile$$</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
+        <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+        <depends name="makeHisat2Index"/>
+        <depends name="makeGtfForCufflinks"/>
+        <depends name="makeGtfForCufflinksCdsOnly"/>
+        <depends name="makeTopLevelGeneFootprintFile"/>
+        <depends name="makeTopLevelSeqSizeFile"/>
+        <depends name="makeMaskGtfForCufflinks"/>
+        <depends name="makeMaskGtfForCufflinksCdsOnly"/>
+    </step>
+
+
+    <datasetTemplate class="rnaSeqExperiment">
+        <prop name="projectName"/>
+        <prop name="organismAbbrev"/>
+        <prop name="name"/>
+        <prop name="version"/>
+        <prop name="limitNU"/>
+        <prop name="hasPairedEnds"/>
+        <prop name="isStrandSpecific"/>
+        <prop name="alignWithCdsCoordinates"/>
+
+   <!-- NOTE: we have duplication here for CDS.  be sure to make changes to both -->
+ 
+   <!-- transcript coords -->
+        <subgraph name="${name}_rnaSeq_experiment" xmlFile="hisatRnaSeqExperiment.xml" excludeIf="${alignWithCdsCoordinates}">
+            <paramValue name="projectName">$$projectName$$</paramValue>
+            <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+            <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+            <paramValue name="experimentName">${name}</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+            <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+            <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+            <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+            <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
+            <paramValue name="experimentDatasetVersion">${version}</paramValue>
+            <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
+            <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
+            <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+            <paramValue name="gtfFile">$$organismAbbrev$$.gtf</paramValue>
+            <paramValue name="hisatIndex">$$organismAbbrev$$</paramValue>
+            <paramValue name="maskFile">$$organismAbbrev$$_mask.gtf</paramValue>
+            <depends name="mirrorToCluster"/>
+        </subgraph>
+
+
+   <!-- CDS coords -->
+        <subgraph name="${name}_rnaSeq_experiment_CDS" xmlFile="hisatRnaSeqExperiment.xml" includeIf="${alignWithCdsCoordinates}">
+            <paramValue name="projectName">$$projectName$$</paramValue>
+            <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+            <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+            <paramValue name="experimentName">${name}</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+            <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+            <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+            <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+            <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
+            <paramValue name="experimentDatasetVersion">${version}</paramValue>
+            <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
+            <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
+            <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+            <paramValue name="gtfFile">$$organismAbbrev$$_cds.gtf</paramValue>
+            <paramValue name="hisatIndex">$$organismAbbrev$$</paramValue>
+            <paramValue name="maskFile">$$organismAbbrev$$_cds_mask.gtf</paramValue>
+            <depends name="mirrorToCluster"/>
+        </subgraph>
+
+        <subgraph name="${name}_analyze_rnaSeq_experiment" xmlFile="analyzeRnaSeqExperiment.xml">
+            <paramValue name="projectName">$$projectName$$</paramValue>
+            <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+            <paramValue name="experimentName">${name}</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
+            <paramValue name="experimentDatasetVersion">${version}</paramValue>
+            <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+            <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+            <depends name="${name}_rnaSeq_experiment"/>
+            <depends name="${name}_rnaSeq_experiment_CDS"/> 
+        </subgraph>
+
+  </datasetTemplate>
+
+
+</workflowGraph>
+
+
+

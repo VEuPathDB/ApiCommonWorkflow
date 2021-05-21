@@ -17,6 +17,9 @@ sub run {
       $self->runCmd(0, "rm -f $workflowDataDir/$toFile");
   } else {  
     $self->testInputFile('fromFile', "$workflowDataDir/$fromFile");
+    unless(-s $fromFile) {
+	warn "No from File or from File is empty.\n";
+    }
     $self->runCmd(0, "cp $workflowDataDir/$fromFile $workflowDataDir/$toFile");
   }
 }

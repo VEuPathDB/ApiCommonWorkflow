@@ -1,0 +1,52 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="organismDatasetLoaderXmlFile"/>
+    <param name="experimentName"/>
+    <param name="experimentDatasetVersion"/>
+    <param name="parentDataDir"/>
+    <param name="experimentDatasetName"/>
+    <param name="relativeWebServicesDir"/>
+    <param name="ebiOrganismName"/>
+    <param name="ebiVersion"/>
+
+
+
+    <subgraph name="loadDataset" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    </subgraph>
+
+
+
+<!--
+    <step name="fetchEbiVCF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FetchEbiVCF">
+      <paramValue name="ebiVersion">$$ebiVersion$$</paramValue>
+      <paramValue name="ebiOrganismName">$$ebiOrganismName$$</paramValue>
+      <paramValue name="vcfFile">$$dataDir$$/$$experimentName$$.vcf.gz</paramValue>
+      <paramValue name="samplesDir">$$dataDir$$</paramValue>
+      <depends name="makeSamplesOutputDir"/>
+    </step>-->
+
+
+    <!-- for VCF files -->
+    <step name="fixSeqIdEbiVCF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixSeqIdEbiVCF">
+      <paramValue name="vcfFile">$$parentDataDir$$/$$experimentDatasetName$$/final/$$experimentName$$.vcf.gz</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <depends name="loadDataset"/>
+    </step>
+
+
+    <step name="copyVCFToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyVCFToWebServiceDir">
+      <paramValue name="vcfFile">$$parentDataDir$$/$$experimentDatasetName$$/$$experimentName$$.vcf.gz</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
+      <depends name="fixSeqIdEbiVCF"/>
+    </step>
+    
+
+</workflowGraph>
+
+

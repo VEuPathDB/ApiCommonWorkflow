@@ -26,9 +26,10 @@ sub run {
 
   my $cmd_mkdir = "mkdir -p $copyToDir";
 
-  my $analysisConfig = "$workflowDataDir/$copyFromDir/$experimentDatasetName/final/analysisConfig.xml";
+  #use legacy or EBI dir structure
+  my $analysisConfig = -e "$workflowDataDir/$copyFromDir/$experimentDatasetName/final/analysisConfig.xml" ? "$workflowDataDir/$copyFromDir/$experimentDatasetName/final/analysisConfig.xml" : "$workflowDataDir/$copyFromDir/../$experimentDatasetName/final/analysisConfig.xml";
 
-  my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir  --outputDir $copyToDir --analysisConfig $analysisConfig"; 
+  my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir --outputDir $copyToDir --analysisConfig $analysisConfig"; 
 
 
 

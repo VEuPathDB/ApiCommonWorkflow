@@ -38,7 +38,8 @@ sub run {
     $self->runCmd(0, "rm -f $workflowDataDir/$allOrthoGrpsOutputFile.tmp");    
     $self->runCmd(0, "rm -f $workflowDataDir/$orthoSeqsWithECsOutputFile.tmp");    
     $self->runCmd(0, "rm -f $workflowDataDir/$orthoEupathOutputFile");    
-    $self->runCmd(0, "rm -f $workflowDataDir/$finalOutputFile");    
+    $self->runCmd(0, "rm -f $workflowDataDir/$finalOutputFile");
+    $self->runCmd(0, "rm -f $workflowDataDir/OrthoMCLDerivedEC/*.log");    
   } else {
     $self->runCmd(0,"echo test > $workflowDataDir/$finalOutputFile") if ($test);
     $self->runCmd($test, $cmdGenesByTaxonAndEcNumber);

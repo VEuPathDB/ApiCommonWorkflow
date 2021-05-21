@@ -35,24 +35,32 @@
       <depends name="doTranscriptExpression"/>
     </step>
 
-
-  <step name="loadStudyResultsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-    <paramValue name="configFile">$$experimentDataDir$$/doTranscriptExpression/insert_study_results_config.txt</paramValue>
-    <paramValue name="inputDir">$$experimentDataDir$$/doTranscriptExpression</paramValue>
-    <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
-    <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
-	<depends name="doTranscriptExpression"/>
- <dependsGlobal name="oboOntologies"/>
-  </step>
+    <step name="copyMergedBigwigsToWebSvc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyRnaSeqMergedBigwigsToWebSvc">
+        <paramValue name="copyFromDir">$$experimentDataDir$$/mergedBigwigs</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+        <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
+        <depends name="copyNormalizedBedGraphToWebServiceDir"/>
+    </step>
 
 
-  <step name="loadRNASeqMetrics" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRNASeqMetrics" stepLoadTypes="plugin">
-    <paramValue name="experimentDir">$$experimentDataDir$$</paramValue>
-    <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
-    <depends name="loadStudyResultsFromConfig"/>
-    <dependsGlobal name="oboOntologies"/>
-    <dependsGlobal name="eupathCuratedOntologies"/>
-  </step>
+    <step name="loadStudyResultsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
+        <paramValue name="configFile">$$experimentDataDir$$/doTranscriptExpression/insert_study_results_config.txt</paramValue>
+        <paramValue name="inputDir">$$experimentDataDir$$/doTranscriptExpression</paramValue>
+        <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+        <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
+	    <depends name="doTranscriptExpression"/>
+        <dependsGlobal name="oboOntologies"/>
+    </step>
+
+
+    <step name="loadRNASeqMetrics" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRNASeqMetrics" stepLoadTypes="plugin">
+        <paramValue name="experimentDir">$$experimentDataDir$$</paramValue>
+        <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+        <depends name="loadStudyResultsFromConfig"/>
+        <dependsGlobal name="oboOntologies"/>
+        <dependsGlobal name="eupathCuratedOntologies"/>
+    </step>
 
 
 

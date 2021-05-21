@@ -5,13 +5,11 @@
     <param name="shortSeqsFile"/>
     <param name="experimentExtDbRlsSpec"/>
     <param name="hasPairedEnds"/>
-    <param name="limitNU"/>
     <param name="strandSpecific"/>
-    <param name="spliceSitesDatabase"/>
     <param name="gtfFile"/>
     <param name="maskFile"/>
-    <param name="gmapDatabase"/>
-    <param name="gsnapDirectory"/>
+    <param name="hisatIndex"/>
+    <param name="hisatDirectory"/>
     <param name="topLevelFastaFile"/>
     <param name="topLevelGeneFootprintFile"/>
     <param name="sraQueryString"/>
@@ -27,58 +25,45 @@
       <depends name="makeDataDir"/>
     </step>
  
-    <subgraph name="runGSNAPOnCluster"  xmlFile="runGSNAPOnCluster.xml">
+    <subgraph name="runHisat2OnCluster" xmlFile="runHisat2OnCluster.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="readFilePath">$$shortSeqsFile$$</paramValue>
       <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
-      <paramValue name="limitNU">$$limitNU$$</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="createJunctionsFile">true</paramValue>
       <paramValue name="writeCovFiles">true</paramValue>
       <paramValue name="quantify">true</paramValue>
-      <paramValue name="spliceSitesDatabase">$$spliceSitesDatabase$$</paramValue>
-      <paramValue name="gtfFile">$$gtfFile$$</paramValue>
       <paramValue name="maskFile">$$maskFile$$</paramValue>
-      <paramValue name="gmapDatabase">$$gmapDatabase$$</paramValue>
-      <paramValue name="gsnapDirectory">$$gsnapDirectory$$</paramValue>
+      <paramValue name="hisatIndex">$$hisatIndex$$</paramValue>
+      <paramValue name="hisatDirectory">$$hisatDirectory$$</paramValue>
       <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
       <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
       <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
-    <step name="document-RnaSeqOrChipSeqGSNAP"
+    <step name="document-RnaSeqHisat"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">rum_rna_or_chip_seq_MTHD</paramValue>
+      <paramValue name="method">hisat2_rna_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters"></paramValue>
-      <depends name="runGSNAPOnCluster"/>
+      <depends name="runHisat2OnCluster"/>
     </step>
-
-<!--
-    <step name="loadExonJunctionCall" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertIntronJunction" stepLoadTypes="plugin">
-      <paramValue name="inputFile">$$dataDir$$/master/mainresult/junctions.tab</paramValue>
-      <paramValue name="rnaSeqExtDbRlsSpec">$$experimentExtDbRlsSpec$$</paramValue>
-      <paramValue name="sampleName">$$sampleName$$</paramValue>
-      <depends name="runGSNAPOnCluster"/>
-    </step>
--->
 
 
    <!-- THIS WILL NOT MOVE.. it will make a symlink with a new name -->
     <step name="moveExonJunction" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MoveFile">
       <paramValue name="inputFile">$$dataDir$$/master/mainresult/junctions.tab</paramValue>
       <paramValue name="outputFile">$$outputDir$$/$$sampleName$$_junctions.tab</paramValue>
-      <depends name="runGSNAPOnCluster"/>
+      <depends name="runHisat2OnCluster"/>
     </step>
-
 
 
     <step name="CutFpkmFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CutFpkmFilesAndRename">
       <paramValue name="inputDirectory">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputDirectory">$$outputDir$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
-      <depends name="runGSNAPOnCluster"/>
+      <depends name="runHisat2OnCluster"/>
     </step>
 
 </workflowGraph>

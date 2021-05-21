@@ -2,12 +2,14 @@
   <param name="organismDatasetLoaderXmlFile"/>
   <param name="dataDir"/>
 
-  <constant name="dataDir">$$dataDir$$/loadGenome</constant>
-
+<!--  
+<constant name="dataDir">$$dataDir$$/loadGenome</constant>
+-->
+<!--duplicate step
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
-
+-->
 
   <!-- double check that values passed into the organism's datasets match the db -->
   <datasetTemplate class="validateOrganismInfo">
@@ -35,7 +37,6 @@
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
     </subgraph>
   </datasetTemplate>
 
@@ -46,26 +47,36 @@
     <prop name="ncbiTaxonId"/>
     <prop name="ebiOrganismName"/>
     <prop name="ebiVersion"/>
+    <prop name="genomeVersion"/>
+    <prop name="ebi2gusTag"/>
     <prop name="releaseDate"/>
 
     <subgraph name="primary_genome_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
     </subgraph>
 
-    <step name="runEbiDumper" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunEbiDumper" >
+    <step name="runEbiDumper" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunEbiDumper" stepLoadTypes="runEbiDumper">
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="ebiVersion">${ebiVersion}</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="genomeVersion">${genomeVersion}</paramValue>
+      <paramValue name="ebiOrganismName">${ebiOrganismName}</paramValue>
+      <paramValue name="ebi2gusTag">${ebi2gusTag}</paramValue>
+      <paramValue name="chromosomeMapFile">$$dataDir$$/${organismAbbrev}_primary_genome_RSRC/final/chromosomeMap.txt</paramValue>
+      <paramValue name="genomeDir">$$dataDir$$/${organismAbbrev}_primary_genome_RSRC</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/${organismAbbrev}_primary_genome_RSRC/ebi2gus_output</paramValue>
+      <paramValue name="datasetName">${organismAbbrev}_primary_genome_RSRC</paramValue>
       <depends name="primary_genome_RSRC"/>
     </step>
 
-  <!-- TODO: runPlugin (JB will test plugin)-->
-
-
+    <step name="loadEbiDumper" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadEbiDumper" stepLoadTypes="InsertUniDB">
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="databaseDir">$$dataDir$$/${organismAbbrev}_primary_genome_RSRC/ebi2gus_output</paramValue>
+      <paramValue name="loaderDir">$$dataDir$$/${organismAbbrev}_primary_genome_RSRC/logDir</paramValue>
+      <depends name="runEbiDumper"/>
+    </step>
 
   </datasetTemplate>
 
@@ -77,7 +88,6 @@
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
     </subgraph>
   </datasetTemplate>
 
@@ -87,7 +97,6 @@
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
     </subgraph>
   </datasetTemplate>
 
@@ -149,7 +158,6 @@
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
       <depends name="primary_genome_RSRC"/>
     </subgraph>
   </datasetTemplate>
@@ -162,7 +170,6 @@
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
       <depends name="primary_genome_RSRC"/>
     </subgraph>
   </datasetTemplate>
@@ -176,7 +183,6 @@
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
       <depends name="primary_genome_RSRC"/>
     </subgraph>
   </datasetTemplate>
@@ -199,7 +205,6 @@
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
       <depends name="primary_genome_RSRC"/>
     </subgraph>
   </datasetTemplate>
@@ -212,7 +217,6 @@
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
       <depends name="primary_genome_RSRC"/>
     </subgraph>
   </datasetTemplate>
@@ -226,7 +230,6 @@
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
       <depends name="primary_genome_RSRC"/>
     </subgraph>
   </datasetTemplate>

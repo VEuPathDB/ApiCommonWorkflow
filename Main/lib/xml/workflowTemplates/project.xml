@@ -66,10 +66,11 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <prop name="genomeVersion"/>
     <prop name="annotationIncludesTRNAs"/>
     <prop name="runExportPred"/>
-    <prop name="taxonHierarchyForBlastxFilter"/>
+    <prop name="taxonFilterForNRProteinsAlignedToGenome"/>
     <prop name="isHugeGenome"/>
 
     <prop name="maxIntronSize"/>
+    <prop name="isNotEbiGenome"/>
 
     <step name="${organismAbbrev}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir" groupName="${organismAbbrev}">
       <paramValue name="dataDir">${organismAbbrev}</paramValue>
@@ -132,6 +133,15 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsGlobal name="SO_RSRC"/>
     </subgraph>
 
+    <!-- a step to load chromosomeMap.txt file, nothing should be depended on this step -->
+    <step name="${organismAbbrev}_LoadGenome_LoadChromosomeMap" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChromosomeMap" excludeIf="${isNotEbiGenome}" groupName="${organismAbbrev}">
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="genomeVersion">${genomeVersion}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="chromosomeMapFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/chromosomeMap.txt</paramValue>
+      <depends name="${organismAbbrev}_LoadGenome"/>
+    </step>
+
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
     <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml" groupName="${organismAbbrev}">
       <paramValue name="dataDir">${organismAbbrev}/makeAndMaskTopLevelGenome</paramValue>
@@ -141,9 +151,23 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <paramValue name="isHugeGenome">${isHugeGenome}</paramValue>
+      <paramValue name="isNotEbiGenome">${isNotEbiGenome}</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
     </subgraph>
+
+
+  <subgraph name="${organismAbbrev}_nrdbProteinsAlignAgainstGenome" xmlFile="proteinAlignToGenome.xml"  excludeIf="${isHugeGenome}">
+    <paramValue name="dataDir">${organismAbbrev}/nrdbProteinsAlignAgainstGenome</paramValue>
+    <paramValue name="targetFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue> 
+    <paramValue name="nrProteinsFile">global/NRDB_RSRC/nr</paramValue>        
+    <paramValue name="taxaFilter">${taxonFilterForNRProteinsAlignedToGenome}</paramValue>
+    <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
+    <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+    <dependsGlobal name="mirrorToCluster"/>
+  </subgraph>
 
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
     <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeCompGenomicsFiles" xmlFile="makeCompGenomicsFiles.xml" groupName="${organismAbbrev}" excludeIf="${isHugeGenome}">
@@ -169,7 +193,6 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="annotationIncludesTRNAs">${annotationIncludesTRNAs}</paramValue>
       <paramValue name="runExportPred">${runExportPred}</paramValue>
       <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
-      <paramValue name="taxonHierarchyForBlastxFilter">${taxonHierarchyForBlastxFilter}</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <paramValue name="isReferenceStrain">${isReferenceStrain}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -179,6 +202,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome</paramValue>
       <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <paramValue name="isHugeGenome">${isHugeGenome}</paramValue>
+      <paramValue name="isNotEbiGenome">${isNotEbiGenome}</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
@@ -195,6 +219,60 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
+
+    <subgraph name="${organismAbbrev}_hisat_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/hisat.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
+      <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+    </subgraph>
+
+    <subgraph name="${organismAbbrev}_ebi_rnaseq_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/ebiRNASeq.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+    </subgraph>
+
+   <step name="${organismAbbrev}_PARJunctions" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARJunctions"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
+      <paramValue name="mappingFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
+      <depends name="${organismAbbrev}_ebi_rnaseq_topLevel"/>
+    </step>
+
+    <subgraph name="${organismAbbrev}_ebi_VCF" xmlFile="generated/${projectName}/${organismAbbrev}/ebiVCFfile.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+    </subgraph>
+
+
+    <subgraph name="${organismAbbrev}_ebi_GFF3" xmlFile="generated/${projectName}/${organismAbbrev}/ebiGFF3file.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+    </subgraph>
+
 
 
     <subgraph name="${organismAbbrev}_bowtieMapping" xmlFile="mapWithBowtie.xml"  excludeIfXmlFileDoesNotExist="true"  groupName="${organismAbbrev}">
@@ -290,6 +368,12 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${organismAbbrev}_PostLoadGenome"/>
     </subgraph>
 
+   <step name="${organismAbbrev}_PARFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARFeatures"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
+      <paramValue name="mappingFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
+      <depends name="${organismAbbrev}_LateVirtualLocations"/>
+      <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
+    </step>
+
     <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml" groupName="${organismAbbrev}">
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
@@ -306,6 +390,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
       <depends name="${organismAbbrev}_LateVirtualLocations"/>
       <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
+      <depends name="${organismAbbrev}_PARFeatures"/>
     </subgraph>
 
   </datasetTemplate>
@@ -324,11 +409,21 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </subgraph>
 
-<!-- depends on comparativeGenomics AND VIRTUAL FEATURE LOCATIONS-->
+<!-- depends on MakeAndMaskTopLevelGenome, MakeCompGenomicsFiles AND VIRTUAL FEATURE LOCATIONS-->
+
+    <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid" excludeIf="$$areBigGenomes$$" >
+      <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
+      <paramValue name="mercatorOutputsDir">mercatorOutput</paramValue>
+      <paramValue name="mercatorCacheDir">mercatorCache</paramValue>
+      <paramValue name="mercatorTmpDir">mercatorTmp</paramValue>
+      <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
+      <dependsPattern name="*_MakeCompGenomicsFiles"/>
+    </step>
+
     <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin" excludeIf="$$areBigGenomes$$" >
       <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
       <paramValue name="mercatorOutputsDir">mercatorOutput</paramValue>
-      <depends name="comparativeGenomics"/>
+      <depends name="runPairwiseMercatorMavid"/>
       <dependsPattern name="*_EarlyVirtualLocations"/>
     </step>
 
@@ -347,7 +442,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
   <datasetTemplate class="referenceStrain">
     <prop name="organismAbbrev"/>      <!-- same as referenceStrainOrganismAbbrev -->
     <prop name="isAnnotatedGenome"/>  <!-- if ref strain is annotated -->
-
+<!--remove strainsComparison steps from workflow
     <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml" includeIf="${isAnnotatedGenome} &amp;&amp; !$$areBigGenomes$$" groupName="${organismAbbrev}" >
       <paramValue name="parentDataDir"></paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${organismAbbrev}</paramValue>
@@ -355,7 +450,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsPattern name="${organismAbbrev}_*_MakeAndMaskTopLevelGenome"/>
       <dependsPattern name="${organismAbbrev}_*_MakeCompGenomicsFiles"/>
     </subgraph>
-
+-->
   </datasetTemplate>
 
   <datasetTemplate class="Pathways">
@@ -537,4 +632,16 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
    </subgraph>
   </datasetTemplate>
 
+  <datasetTemplate class="ExternalResourceUrl">
+   <prop name="projectName"/>
+   <prop name="version"/>
+   <prop name="name"/>
+
+   <subgraph name="ExternalResourceUrl_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">ExternalResourceUrl_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+      <dependsGlobal name="initUserGroupProject"/>
+   </subgraph>
+  </datasetTemplate>
 </workflowGraph>

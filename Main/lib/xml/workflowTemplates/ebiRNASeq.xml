@@ -60,5 +60,38 @@
       <depends name="makeTopLevelGeneFootprintFile"/>
     </subgraph>
 
-  </datasetTemplate>
+</datasetTemplate>
+
+<!--After a patch build, back out and reload count-based data only-->
+<datasetTemplate class="ebiRnaSeqExperimentPatch">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="isStrandSpecific"/>
+    <prop name="ebiOrganismName"/>
+    <prop name="ebiVersion"/>
+
+
+    <subgraph name="${name}_ebi_rnaSeq_experiment_patch" xmlFile="patchRnaSeqExperimentEbi.xml">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="experimentName">${name}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="fullDataDir">$$dataDir$$/${organismAbbrev}_${name}_ebi_rnaSeq_RSRC</paramValue>
+      <paramValue name="patchDatasetName">${organismAbbrev}_${name}_ebi_rnaSeq_patch_RSRC</paramValue>
+      <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_ebi_rnaSeq_RSRC</paramValue>
+      <paramValue name="experimentDatasetVersion">${version}</paramValue>
+      <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
+      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="ebiOrganismName">${ebiOrganismName}</paramValue>
+      <paramValue name="ebiVersion">${ebiVersion}</paramValue>
+      <depends name="${name}_ebi_rnaSeq_experiment"/>
+    </subgraph>
+
+</datasetTemplate>
+
 </workflowGraph>

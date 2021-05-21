@@ -36,7 +36,7 @@ sub run {
   my $queryExtDbRlsId;
   if ($queryExtDbName) {
       my $queryExtDbVer = $self->getExtDbVersion($test,$queryExtDbName);
-      my $queryExtDbRlsId = $self->getExtDbRlsId($test, "$queryExtDbName|$queryExtDbVer");
+      $queryExtDbRlsId = $self->getExtDbRlsId($test, "$queryExtDbName|$queryExtDbVer");
   }
 
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -56,7 +56,7 @@ sub run {
 #      my ($queryTempFh,$queryTempfile) = tempfile(DIR =>$workflowDataDir);
 #      my ($blatTempFh, $blatTempfile) = tempfile(DIR =>$workflowDataDir);
      my $cmd = "mapAssemblySeqIdsSourceIds --queryFile $workflowDataDir/$queryFile -blatFile $workflowDataDir/$blatFile -queryOut $workflowDataDir/$queryTempFile -blatOut $workflowDataDir/$blatTempFile";
-      $self->runCmd(0, $cmd);
+      $self->runCmd(0, $cmd) if ($action eq 'load' && !$undo);
       print "query Temp file is $workflowDataDir/$queryTempFile\n";
 #      $self->setParamValue('queryFile', $queryTempfile);
 #      $self->setParamValue('blatFile', $blatTempfile);
@@ -110,6 +110,7 @@ sub run {
       if ($hasTempFiles == 1) {
 	  my $cmd = "rm $workflowDataDir/$queryTempFile $workflowDataDir/$blatTempFile";
 	  $self->runCmd(0,$cmd);
+      $self->runPlugin($test, $undo, $plugin, $args);
       }
   }
 }

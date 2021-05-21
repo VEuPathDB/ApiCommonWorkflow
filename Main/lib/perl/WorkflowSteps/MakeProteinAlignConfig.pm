@@ -24,10 +24,14 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $executor = $self->getClusterExecutor();
+  my $exonerateProcessMemoryRequirement = processMemoryRequirement($executor, $self->getParamValue("exonerateMemory"));
   my $queue = $self->getClusterQueue();
+
+  my $configFile = "$workflowDataDir/$configFileName";
 
   if ($undo) {
     $self->runCmd(0,"rm -rf $workflowDataDir/$outputDir");
+    $self->runCmd(0,"rm -rf $configFile");
   }else {
     $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
     $self->testInputFile('targetDir', "$workflowDataDir/$targetFile");
@@ -53,13 +57,53 @@ sub run {
 process {
   executor = '$executor'
   queue = '$queue'
-  withName: 'exonerate' { maxForks = $exonerateMaxForks }
+  withName: 'exonerate' {
+    maxForks = $exonerateMaxForks
+    $exonerateProcessMemoryRequirement
+  }
 }
 
 ";
 
   close(F);
  }
+}
+
+sub clusterOptionsForMemMbs {
+  my ($mbs) = @_;
+  return "-M ${mbs} -R \"rusage [mem=${mbs}] span[hosts=1]\"";
+}
+
+sub processMemoryRequirement {
+  my ($executor, $memoryParameter) = @_;
+
+  # If not on LSF:
+  # Assume the Nextflow shorthands for memory use are correct
+  # Also, don't attempt the three tries
+  return "memory = '$memoryParameter'" unless $executor eq 'lsf';
+
+  # On PMACS LSF, the parameters don't correctly translate to memory requirements
+  # Prepare a submission string instead
+  my $mbs;
+  if ($memoryParameter =~ m{(^\d+(?:\.\d+)?) GB}){
+    $mbs = int($1 * 1000);
+  } elsif ($memoryParameter =~ m{(\d+) MB}){
+    $mbs = int($1);
+  } else {
+    die "Could not extract num MB/GB from memory parameter: $memoryParameter";
+  }
+  my $s1 = clusterOptionsForMemMbs(0.5 * $mbs);
+  my $s2 = clusterOptionsForMemMbs($mbs);
+  my $s3 = clusterOptionsForMemMbs(2 * $mbs);
+  return <<"EOF";
+    errorStrategy = { task.exitStatus in 130..140 ? 'retry' : 'terminate' }
+    maxRetries = 3
+    clusterOptions = {
+      task.attempt == 1 ? '$s1'
+      : task.attempt == 2 ?'$s2'
+      : '$s3'
+    }
+EOF
 }
 
 1;

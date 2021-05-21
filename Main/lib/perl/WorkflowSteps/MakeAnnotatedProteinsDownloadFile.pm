@@ -81,7 +81,7 @@ sub getWebsiteFileCmd {
         AND t.na_sequence_id = snas.na_sequence_id
         AND gf.na_feature_id = fl.na_feature_id
         AND so.name != 'repeat_region'
-        AND so.name = 'protein_coding'
+        AND so.name like 'protein_coding%'
         AND taxon.ncbi_tax_id = $ncbiTaxonId 
         AND t.na_feature_id = taaf.na_feature_id
         and gf.na_feature_id = deprecated.na_feature_id(+)
@@ -108,7 +108,7 @@ FROM ApidbTuning.${tuningTablePrefix}TranscriptAttributes t, DOTS.NASEQUENCE ns,
 WHERE ns.SOURCE_ID = t.SEQUENCE_ID
   AND ns.sequence_ontology_id = soseq.ontology_term_id
   AND t.ncbi_tax_id = $ncbiTaxonId 
-  AND t.so_term_name = 'protein_coding'
+  AND t.so_term_name like 'protein_coding%'
   AND t.protein_source_id = taas.source_id
 ORDER BY t.chromosome_order_num, t.SEQUENCE_ID,t.source_id, t.coding_start
 EOF
