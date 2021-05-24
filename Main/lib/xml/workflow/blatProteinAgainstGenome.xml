@@ -3,18 +3,11 @@
   <param name="maxIntronSize"/>       <!-- ??? -->
   <param name="organismAbbrev"/>      <!-- ${organismAbbrev} -->
   <param name="targetSeqsDir"/>       <!-- genomeSeqsDir -->
-  <param name="targetExtDbName"/>     <!-- ${organismAbbrev}_primary_genome_RSRC -->
   <param name="queryFile"/>           <!-- nrdb proteins file -->
-  <param name="queryTable"/>          <!-- DoTS::ExternalAASequence -->
-  <param name="queryExtDbName"/>      <!-- NRDB_RSRC-->
-  <param name="queryIdRegex"/>        <!-- gi\\|(\\d+)\\| -->
-  <param name="loadSubjectSubset"/>   <!-- true -->
   <param name="filterByTaxon"/>       <!-- true -->
   <param name="taxonHierarchyForFilter"/> <!-- Eukaryota Apicomplexa Neospora -->
-  <param name="shortenSubjectSourceIdTo"/>
-
-
-  <!-- TEST -->
+  <param name="relativeWebServicesDir"/>
+  
   <constant name="blatOutputFile">$$dataDir$$/blat.out</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -74,44 +67,17 @@
     <depends name="fixGenomeSourceIdsInBlatResultFile"/>
   </step>
 
-     <!-- CAUTION: this step class has been hacked.  It appends the suffix .filtered onto the declared inputFile, 
-	  to discover if there is a filtered one available.  -->
-  <step name="extractIdsFromBlatResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractIdsFromSimilarityResult" includeIf="$$loadSubjectSubset$$">
+  <step name="proteinBlatToGFF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ProteinBlatToGFF">
     <paramValue name="inputFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
-    <paramValue name="inputFileType">blat</paramValue>
-    <paramValue name="idType">subject</paramValue>
-    <paramValue name="outputFile">$$dataDir$$/similarityIds.out</paramValue>
+    <paramValue name="unsortedOutputFile">$$dataDir$$/master/mainresult/nrdbBlat.gff</paramValue>
+    <paramValue name="sortedOutputFile">$$dataDir$$/master/mainresult/nrdbBlat_sorted.gff</paramValue>
     <depends name="filterResultsByTaxon"/>
   </step>
 
-  <!-- this step needs a loadBalance=1 to avoid a race condition -->
-  <step name="loadQuerySubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertFastaSubset" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin">
-    <paramValue name="extDbName">$$queryExtDbName$$</paramValue>
-    <paramValue name="fastaFile">$$queryFile$$</paramValue>
-    <paramValue name="idsFile">$$dataDir$$/similarityIds.out</paramValue>
-    <depends name="extractIdsFromBlatResult"/>
-  </step>
-
-  <step name="updateTaxonFieldForQuerySubset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateTaxonFieldFromFile" includeIf="$$loadSubjectSubset$$" stepLoadTypes="loadSubjectSubset,plugin" undoRoot="loadQuerySubset">
-    <paramValue name="extDbName">$$queryExtDbName$$</paramValue>
-    <paramValue name="taxIdFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
-    <paramValue name="shortenSubjectSourceIdTo">$$shortenSubjectSourceIdTo$$</paramValue>
-    <depends name="loadQuerySubset"/>
-  </step>
-
-  <step name="insertBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
-
+  <step name="copyNrdbBlatGffFileToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyNrdbBlatGffFileToWebServices">
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="targetExtDbName">$$targetExtDbName$$</paramValue>
-    <paramValue name="targetTable">ExternalNASequence</paramValue>
-    <paramValue name="queryExtDbName">$$queryExtDbName$$</paramValue>
-    <paramValue name="queryTable">$$queryTable$$</paramValue>
-    <paramValue name="queryIdRegex">$$queryIdRegex$$</paramValue>
-    <paramValue name="action">load</paramValue>
-    <paramValue name="percentTop"></paramValue>
-    <paramValue name="blatFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
-    <paramValue name="queryFile">$$queryFile$$</paramValue>
-    <depends name="loadQuerySubset"/>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="nrdbBlatGff">$$dataDir$$/master/mainresult/nrdbBlat_sorted.gff</paramValue>
+    <depends name="proteinBlatToGFF"/>
   </step>
-
 </workflowGraph>

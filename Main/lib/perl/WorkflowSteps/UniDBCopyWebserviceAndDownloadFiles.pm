@@ -47,8 +47,8 @@ sub run {
     $toDownloadSiteDir = "$toDownloadSiteDir/release-CURRENT";
     $toWebServicesDir = "$toWebServicesDir/release-CURRENT";
 
-    $self->runCmd("mkdir -p $toDownloadSiteDir");
-    $self->runCmd("mkdir -p $toWebServicesDir");
+    $self->runCmd($test, "mkdir -p $toDownloadSiteDir");
+    $self->runCmd($test, "mkdir -p $toWebServicesDir");
   }
 
   my @directoryPairs = ([$fromAuxiliaryDir, $toAuxiliaryDir],

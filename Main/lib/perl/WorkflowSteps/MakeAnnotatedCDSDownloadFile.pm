@@ -40,7 +40,7 @@ sub getWebsiteFileCmd {
         AND t.na_sequence_id = snas.na_sequence_id
         AND gf.gene_na_feature_id = fl.na_feature_id
         AND gf.so_term_name != 'repeat_region'
-        AND gf.so_term_name = 'protein_coding'
+        AND gf.so_term_name like 'protein_coding%'
         AND taxon.ncbi_tax_id = $ncbiTaxonId 
         AND t.na_feature_id = taaf.na_feature_id
         AND fl.is_top_level = 1

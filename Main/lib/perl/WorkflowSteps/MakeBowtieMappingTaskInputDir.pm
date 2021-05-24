@@ -72,7 +72,7 @@ hasPairedEnds=$hasPairedReads
     }else {
 	    $taskPropFileContent .= "mateA=$clusterWorkflowDataDir/$readsFile\n";
 	    $taskPropFileContent .= "sraSampleIdQueryList=none\n";
-	    if($hasPairedReads){
+	    if($hasPairedReads eq 'true' && length($pairedReadsFile)>0){
 	      $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$pairedReadsFile\n";
 	    }else {
 	      $taskPropFileContent .= "mateB=none\n";

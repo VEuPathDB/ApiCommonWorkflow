@@ -19,7 +19,7 @@ sub run {
 
   my $args = "--inputFile $workflowDataDir/$fastaFile  --extDbSpec '$extDbRlsSpec' --arrayDesignName '$platformName'";
 
-  $self->testInputFile('inputDir', "$workflowDataDir/$fastaFile");
+  $self->testInputFile('inputDir', "$workflowDataDir/$fastaFile") if $test;
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertPlatformReporter", $args);
 }
