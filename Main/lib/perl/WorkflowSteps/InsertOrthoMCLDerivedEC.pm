@@ -14,7 +14,7 @@ sub run {
 
   my $args = "--ECMappingFile $inputFile --evidenceCode '$evidenceCode' --aaSeqLocusTagMappingSql '$idSql'";
 
-  $self->testInputFile('inputFile', "$inputFile");
+  $self->testInputFile('inputFile', "$inputFile") unless $undo;
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertEcMappingFromOrtho", $args);
 
