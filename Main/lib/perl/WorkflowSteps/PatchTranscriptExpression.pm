@@ -21,7 +21,7 @@ sub run {
 
   my $cmd = "doTranscriptExpression.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir --technology_type $technologyType --patch";
 
-  $cmd = $cmd . "--input_file $workflowDataDir/$ancillaryFile" if (-e "$workflowDataDir/$ancillaryFile");
+  $cmd = $cmd . " --input_file $workflowDataDir/$ancillaryFile" if (-e "$workflowDataDir/$ancillaryFile");
 
   if ($undo) {
     $self->runCmd(0, "rm $workflowDataDir/$outputDir/insert_study_results_config.txt");
