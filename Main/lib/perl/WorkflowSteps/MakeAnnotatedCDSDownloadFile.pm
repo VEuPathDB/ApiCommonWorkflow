@@ -35,7 +35,7 @@ sub getWebsiteFileCmd {
                 dots.transcript t, dots.splicednasequence snas, dots.translatedaafeature taaf,
                 dots.nasequence ns, sres.ontologyTerm soseq, sres.taxon
       WHERE gf.gene_na_feature_id = t.parent_id
-        AND gf.transcript_source_id = t.source_id
+        AND gf.source_id = t.source_id
         AND fl.na_sequence_id = ns.na_sequence_id
         AND t.na_sequence_id = snas.na_sequence_id
         AND gf.gene_na_feature_id = fl.na_feature_id
