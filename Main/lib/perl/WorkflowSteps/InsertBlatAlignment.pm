@@ -89,8 +89,8 @@ sub run {
   $args .= " --percentTop $percentTop" if $percentTop;
 
 
-    $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
-    $self->testInputFile('blatFile', "$workflowDataDir/$blatFile");
+    $self->testInputFile('queryFile', "$workflowDataDir/$queryFile") if ($action eq 'load' && !$undo);;
+    $self->testInputFile('blatFile', "$workflowDataDir/$blatFile") if ($action eq 'load' && !$undo);;
 
 
   if (-s "$workflowDataDir/$queryFile" || $test) {
@@ -108,7 +108,7 @@ sub run {
   }
   if ($undo) {
       if ($hasTempFiles == 1) {
-	  my $cmd = "rm $workflowDataDir/$queryTempFile $workflowDataDir/$blatTempFile";
+	  my $cmd = "rm -f $workflowDataDir/$queryTempFile $workflowDataDir/$blatTempFile";
 	  $self->runCmd(0,$cmd);
       $self->runPlugin($test, $undo, $plugin, $args);
       }
