@@ -36,6 +36,11 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
       commit
       extDbRlsSpec
       / ],
+    'ApiCommonData::Load::Plugin::MakeEntityDownloadFiles' => [ qw/
+      extDbRlsSpec
+      ontologyExtDbRlsSpec
+      outputDir
+      / ],
   );
 
 
@@ -82,6 +87,9 @@ sub run {
       }
       when ('valueMappingFile') {
 		  	$params{'valueMappingFile'} = $self->getMetadataPath("valueMap.txt");
+      }
+      when ('outputDir') {
+		  	$params{'outputDir'} = $self->getMetadataPath($self->getParamValue('outputDir'));
       }
     }
   }
