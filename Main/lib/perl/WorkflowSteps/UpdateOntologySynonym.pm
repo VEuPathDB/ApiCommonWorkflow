@@ -7,7 +7,6 @@ use warnings;
 
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
-use GUS::Model::SRes::OntologySynonym;
 
 sub run {
   my ($self, $test, $undo) = @_;
@@ -18,6 +17,7 @@ sub run {
   
 	$params{'extDbRlsSpec'} = sprintf( "OntologyTerm_%s_RSRC\\|dontcare",$self->getParamValue('webDisplayOntologyName'));
   $params{'attributesFile'} = $self->getMetadataPath($self->getParamValue("attributesFile"));
+  $params{'append'} = 1;
 
   my $args = join(" ", map { sprintf("--%s %s", $_, $params{$_}) } keys %params );
   
