@@ -12,6 +12,8 @@
   <constant name="component_project_datasets_directory">$$component_project_directory$$/datasets</constant>
   <constant name="component_project_presenters_directory">$$component_project_directory$$/presenters</constant>
   <constant name="component_project_loader_directory">$$component_project_directory$$/loader</constant>
+  <constant name="component_project_snp_loader_directory">$$component_project_directory$$/snp_loader</constant>
+
   <constant name="component_project_fromManualDelivery_directory">$$component_project_directory$$/fromManualDelivery</constant>
 
   <step name="makeComponentProjectDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -32,6 +34,13 @@
     <paramValue name="dataDir">$$component_project_loader_directory$$</paramValue>
     <depends name="makeComponentProjectDir"/>
   </step>
+
+
+  <step name="makeComponentProjectSnpLoaderDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$component_project_snp_loader_directory$$</paramValue>
+    <depends name="makeComponentProjectDir"/>
+  </step>
+
 
   <step name="makeComponentProjectManualDeliveryDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$component_project_fromManualDelivery_directory$$</paramValue>
@@ -91,6 +100,17 @@
     <depends name="undo"/>
 
   </step>
+
+
+  <step name="snpLoad" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBLoadSNPs" undoRoot="lock" stepLoadTypes="unidbSnpLoad">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="loaderLogDir">$$makeComponentProjectSnpLoaderDir$$</paramValue>
+    <paramValue name="componentWorkflowVersion">$$workflowVersion$$</paramValue>
+    <depends name="lock"/>
+    <depends name="makeComponentProjectSnpLoaderDir"/>
+    <depends name="load"/>
+  </step>
+
 
   <step name="unlock" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UniDBUnLockComponentProject">
     <paramValue name="projectName">$$projectName$$</paramValue>
