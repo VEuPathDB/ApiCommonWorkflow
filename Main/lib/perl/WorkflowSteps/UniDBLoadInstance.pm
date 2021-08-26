@@ -33,6 +33,10 @@ sub run {
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertUniDB", $args);
 
+  if($undo) {
+    $self->runCmd($test, "rm $workflowDataDir/$loaderLogDir/*");
+  } 
+
 }
 
 1;
