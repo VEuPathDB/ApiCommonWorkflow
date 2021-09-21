@@ -8,6 +8,7 @@ use feature "switch";
 
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
+  # Each of these lists are the list of arguments for each plugin
   my %paramSet = (
     'ApiCommonData::Load::Plugin::InsertEntityGraph' => [ qw/
       commit
@@ -19,27 +20,32 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
       ontologyMappingFile
       ontologyMappingOverrideFileBaseName
       valueMappingFile
+      schema
       / ],
    'ApiCommonData::Load::Plugin::LoadAttributesFromEntityGraph' => [ qw/ 
      commit
      extDbRlsSpec
      logDir
      ontologyExtDbRlsSpec
+      schema
       / ],
     'ApiCommonData::Load::Plugin::LoadEntityTypeAndAttributeGraphs' => [ qw/
       commit
       extDbRlsSpec
       logDir
       ontologyExtDbRlsSpec
+      schema
       / ],
     'ApiCommonData::Load::Plugin::LoadDatasetSpecificEntityGraph' => [ qw/
       commit
       extDbRlsSpec
+      schema
       / ],
     'ApiCommonData::Load::Plugin::MakeEntityDownloadFiles' => [ qw/
       extDbRlsSpec
       ontologyExtDbRlsSpec
       outputDir
+      schema
       / ],
   );
 
@@ -58,14 +64,14 @@ sub run {
 		  	$params{'commit'} = $test ? 0 : 1;
       }
       when ('dateObfuscationFile') {
-		  	$params{'dateObfuscationFile'} = $self->getMetadataPath("dateObfuscation.txt");
+		  	$params{'dateObfuscationFile'} = $self->getMetadataPath($self->getParamValue($param));
       }
       when ('extDbRlsSpec') {
 		  	$params{'extDbRlsSpec'} = $self->getParamValue('extDbRlsSpec');
         $params{'extDbRlsSpec'} =~ s/[|]/\\|/g;
       }
       when ('investigationBaseName') {
-		  	$params{'investigationBaseName'} = "investigation.xml";
+		  	$params{'investigationBaseName'} = $self->getParamValue($param);
       }
       when ('isSimpleConfiguration') {
 		  	$params{'isSimpleConfiguration'} = "1";
@@ -83,13 +89,16 @@ sub run {
 		  	$params{'ontologyMappingFile'} = sprintf("%s/ontology/release/production/%s.owl", $ENV{GUS_HOME}, $self->getParamValue('webDisplayOntologyName'));
       }
       when ('ontologyMappingOverrideFileBaseName') {
-		  	$params{'ontologyMappingOverrideFileBaseName'} = "ontologyMapping.xml";
+		  	$params{'ontologyMappingOverrideFileBaseName'} = $self->getParamValue($param);
       }
       when ('valueMappingFile') {
-		  	$params{'valueMappingFile'} = $self->getMetadataPath("valueMap.txt");
+		  	$params{'valueMappingFile'} = $self->getMetadataPath($self->getParamValue($param));
       }
       when ('outputDir') {
 		  	$params{'outputDir'} = $self->getMetadataPath($self->getParamValue('outputDir'));
+      }
+      when ('schema') {
+		    $params{'schema'} = $self->getParamValue('schema');
       }
     }
   }
