@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeNCBILinkoutsFiles;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeNCBILinkoutsFiles_Protein;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker);
 use strict;
@@ -11,7 +11,7 @@ sub getWebsiteFileCmd {
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   
-  my $cmd = "makeNCBILinkoutsFiles.pl --output $downloadFileName --organismAbbrev $organismAbbrev ";
+  my $cmd = "makeNCBILinkoutsFiles_Protein.pl --output $downloadFileName --organismAbbrev $organismAbbrev ";
   
   return $cmd;
 }
