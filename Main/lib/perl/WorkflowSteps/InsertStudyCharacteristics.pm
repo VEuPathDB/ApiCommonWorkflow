@@ -8,7 +8,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
   my ($self, $test, $undo) = @_;
-  my $args = sprintf("--datasetName %s --file %s --owlFile --schema %s",
+  my $args = sprintf("--datasetName %s --file %s --owlFile %s --schema %s",
     $self->getParamValue('datasetName'),
     $self->getParamValue('file'),
     $self->getParamValue('owlFile'),
