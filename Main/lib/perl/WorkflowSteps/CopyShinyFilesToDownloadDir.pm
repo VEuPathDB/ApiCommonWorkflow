@@ -11,7 +11,6 @@ sub run {
 
   my $datasetName = $self->getParamValue('datasetName');
   my $nameForFilenames= $self->getParamValue('nameForFilenames');
-  my $groupName = $self->getParamValue('groupName');
   my $inputFileBaseName = $self->getParamValue('inputFileBaseName');
   my $downloadDir = $self->getParamValue('relativeDownloadSiteDir');
 
