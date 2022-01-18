@@ -47,6 +47,12 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
       outputDir
       schema
       / ],
+    'ApiCommonData::Load::Plugin::InsertEntityStudy' => [ qw/
+      commit
+      extDbRlsSpec
+      stableId
+      schema
+      / ],
   );
 
 
@@ -99,6 +105,9 @@ sub run {
       }
       when ('schema') {
 		    $params{'schema'} = $self->getParamValue('schema');
+      }
+      when ('stableId') {
+		    $params{'stableId'} = $self->getParamValue('stableId');
       }
     }
   }
