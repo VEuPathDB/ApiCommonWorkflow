@@ -63,17 +63,20 @@ sub run {
       my $unzippedName = $file;
       # Remove a prefix
       $unzippedName =~ s/^.*PREFIX_//;
-      if($nameForFilenames) {
-        $unzippedName = $nameForFilenames . ".txt";
+      if($nameForFilenames && $nameForFilenames =~ /^s\/.*\/.*\//) {
+        eval sprintf("\$unzippedName =~ %s", $nameForFilenames);
       }
-      my $zipFile = basename($unzippedName, ".txt") . ".zip";
+      #my $zipFile = basename($unzippedName, ".txt") . ".zip";
+      my $zipFile = $unzippedName . ".zip";
       zip("$workflowDataDir/$datasetName/$file" => "$copyToDir/$zipFile", "Name" => $unzippedName) or die "Zip failed: $!";
+      printf STDERR ("$workflowDataDir/$datasetName/$file => \n\t$copyToDir/$zipFile\n");
     }
-    # clean up data dir
-    foreach my $file (@files){
-      unlink("$workflowDataDir/$datasetName/$file");
-    }
+    # Don't clean up data dir
+    # foreach my $file (@files){
+    #   unlink("$workflowDataDir/$datasetName/$file");
+    # }
   }
+  printf STDERR ("done.");
 }
 
 1;
