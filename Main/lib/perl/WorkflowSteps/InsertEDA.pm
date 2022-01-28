@@ -45,6 +45,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
       extDbRlsSpec
       ontologyExtDbRlsSpec
       outputDir
+      fileBasename
       schema
       / ],
     'ApiCommonData::Load::Plugin::InsertEntityStudy' => [ qw/
@@ -108,6 +109,9 @@ sub run {
       }
       when ('stableId') {
 		    $params{'stableId'} = $self->getParamValue('stableId');
+      }
+      when ('fileBasename') {
+		    $params{'fileBasename'} = $self->getParamValue('fileBasename');
       }
     }
   }
