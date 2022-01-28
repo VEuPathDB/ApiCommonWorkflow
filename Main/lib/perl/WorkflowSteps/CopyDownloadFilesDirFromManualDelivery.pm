@@ -42,7 +42,7 @@ sub run {
           $self->runCmd(0, "echo test > $outputDir/test");
         }
         $self->runCmd($test, "mkdir -p $outputDir");
-        $self->runCmd($test, "cp $inputDir/* $outputDir");
+        $self->runCmd($test, "cp -r $inputDir/* $outputDir");
       }
     } else {
       warn "Directory not found: $inputDir";
