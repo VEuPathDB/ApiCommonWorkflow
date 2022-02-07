@@ -44,7 +44,7 @@ sub getDataset {
 	my $cmd = "wget --directory-prefix=$targetDir --output-file=$logFile $WgetArgs \"$UrlArg\"";
 	$self->runCmd($test, $cmd);
 	unless ($test){
-	    my $wgetLogTail = $self->runCmd($test, "tail -2 $logFile|grep -i '[saved|FINISHED]'");
+	    my $wgetLogTail = $self->runCmd($test, "tail -3 $logFile|grep -i '[saved|FINISHED]'");
 	    $self->error ("Wget did not successfully run. Check log file: $logFile\n") unless ($wgetLogTail);
 	}
     } else {

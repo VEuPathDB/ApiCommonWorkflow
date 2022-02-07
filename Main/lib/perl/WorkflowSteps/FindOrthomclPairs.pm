@@ -21,10 +21,10 @@ sub run {
 
   my $suf = $suffix? "suffix=$suffix" : "";
 
-  my $cmd = "orthomclPairs $configFile orthomclPairs.log cleanup=no $suf startAfter=useLog";
+  my $cmd = "orthomclPairs $configFile orthomclPairs.log cleanup=yes $suf startAfter=useLog";
 
   if ($undo) {
-    $self->runCmd($test, "mv orthomclPairs.log  orthoMclPairs.log.sv.$$");  
+    $self->runCmd($test, "mv orthomclPairs.log  orthoMclPairs.log.sv.$$");
     $self->runCmd($test, "orthomclPairs $configFile orthomclPairsUndo.log cleanup=all $suf");
   } else {
       $self->runCmd($test,$cmd);
