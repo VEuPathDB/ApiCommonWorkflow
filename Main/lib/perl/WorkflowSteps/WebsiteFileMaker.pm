@@ -83,7 +83,8 @@ sub run {
       $websiteFile = getDownloadFileName($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $projectName, $projectVersion, $fileType, $dataName, $nameForFilesSuffix);
 
       $descripFile = getDescripFileName($websiteFilesDir, $relativeDir, $organismNameForFiles, $speciesNameForFiles, $isSpeciesLevel, $familyNameForFiles, $isFamilyLevel, $projectName, $projectVersion, $fileType, $dataName, $nameForFilesSuffix);
-      $descripFileCmd =  "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
+      #The descriptions are set with static apache configuration based on name matches of the files. .desc aren't used for display in downloads. Stop generating them to reduce confusions.
+      #$descripFileCmd =  "writeDownloadFileDecripWithDescripString --descripString '$descripString' --outputFile $descripFile";
   }
 
   my $wfDataDir = $self->getWorkflowDataDir();
@@ -94,14 +95,14 @@ sub run {
 
   if($undo){
     $self->runCmd(0, "rm -f $websiteFile") unless $websiteFileCmd eq 'NONE';
-    $self->runCmd(0, "rm -f $descripFile") unless $isWebServiceFile;
+    $self->runCmd(0, "rm -f $descripFile") if !$isWebServiceFile && -e $descripFile;;
     unlink("$wfDataDir/$skipIfFile") if -e "$wfDataDir/$skipIfFile";
   }else {
       $self->error("Output file '$websiteFile' already exists") if -e $websiteFile;
-      $self->error("Output file '$descripFile' already exists") if !$isWebServiceFile && -e $descripFile;
+      #$self->error("Output file '$descripFile' already exists") if !$isWebServiceFile && -e $descripFile;
       if ($test) {
 	  $self->runCmd(0, "echo test > $websiteFile ") unless $websiteFileCmd eq 'NONE';
-	  $self->runCmd(0, "echo test > $descripFile")  unless $isWebServiceFile;
+	  #$self->runCmd(0, "echo test > $descripFile")  unless $isWebServiceFile;
       }
 
       $self->runCmd($test, $websiteFileCmd) unless $websiteFileCmd eq 'NONE';
