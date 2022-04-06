@@ -5,6 +5,8 @@ package ApiCommonWorkflow::Main::WorkflowSteps::InsertEDA;
 use strict;
 use warnings;
 use feature "switch";
+use File::Basename qw/dirname/;
+use Fcntl qw(:flock LOCK_EX LOCK_UN);
 
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
@@ -28,6 +30,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
      logDir
      ontologyExtDbRlsSpec
       schema
+      __FLOCK__
       / ],
     'ApiCommonData::Load::Plugin::LoadEntityTypeAndAttributeGraphs' => [ qw/
       commit
@@ -64,9 +67,15 @@ sub run {
   my $plugin = $self->getParamValue("plugin");
 
   my %params;
+
+  my $lockfile = '';
   
   foreach my $param (@{$paramSet{$plugin}}){
     given($param){
+      when ('__FLOCK__'){
+        my ($lfbase) = ( $plugin =~ /ApiCommonData::Load::Plugin::(.*)/ );
+        $lockfile = sprintf("%s/%s.lock", dirname($self->getStepDir()),$lfbase);
+      }
       when ('commit') {
 		  	$params{'commit'} = $test ? 0 : 1;
       }
@@ -120,9 +129,19 @@ sub run {
 
   unless($paramSet{$plugin}){ die "Plugin $plugin not supported\n" }
 
-  my $args = join(" ", map { sprintf("--%s %s", $_, $params{$_}) } @{$paramSet{$plugin}} );
-  
-  $self->runPlugin($test, $undo, $plugin, $args);
+  my $args = join(" ", map { sprintf("--%s %s", $_, $params{$_}) } grep { !/__FLOCK__/ } @{$paramSet{$plugin}} );
+
+  if($lockfile){ 
+    open(my $fh, ">>$lockfile");
+    flock($fh, LOCK_EX);
+    printf $fh ("%s\n", $params{'logDir'});
+    $self->runPlugin($test, $undo, $plugin, $args);
+    flock($fh, LOCK_UN);
+    close($fh);
+  }
+  else {
+    $self->runPlugin($test, $undo, $plugin, $args);
+  } 
 }
 
 sub getMetadataPath {
