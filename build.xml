@@ -1,4 +1,4 @@
-<project name="ApiCommonWorkflow" default="Installation" basedir=".">
+<project name="ApiCommonWorkflow" basedir=".">
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo  Dependencies  oooooooooooooooooooooooooo -->
@@ -9,7 +9,6 @@
   <import file="${projectsDir}/GGTools/build.xml" />
   <import file="${projectsDir}/EbrcModelCommon/build.xml" />
 
-
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo  Installation  oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
@@ -19,62 +18,18 @@
                                                          GGTools-Installation,
                                                          EbrcModelCommon-Installation,
                                                          ApiCommonWorkflow/Main-Installation">
-    <ant target="defaultProjectInstall" />
+    <ant target="defaultProjectInstall">
+      <property name="project" value="ApiCommonWorkflow" />
+    </ant>
   </target>
-
-
-  <!-- oooooooooooooooooo  Installation Postprocess  ooooooooooooooooooooo -->
-
-  <target name="ApiCommonWorkflow-Installation-postprocess">
-    <echo message="Postprocessing the ApiCommonWorkflow installation" />
-
-    <replace dir="${targetDir}/bin"
-             propertyFile="${targetDir}/config/replacements.prop">
-      <include name="**/*" />
-      <replacefilter token="@perl@" property="perl" />
-    </replace>
-
-  </target>
-
 
   <!-- ooooooooooooooooooooooo  Install Components  ooooooooooooooooooooooo -->
 
-  <target name="ApiCommonWorkflow/Main-Installation" depends="ProjectTree">
+  <target name="ApiCommonWorkflow/Main-Installation">
     <ant target="defaultComponentInstall">
       <property name="project" value="ApiCommonWorkflow" />
       <property name="component" value="Main" />
     </ant>
-
-    <!-- call a command to resolve out-dated master files -->
-    <!--
-        <exec executable="workflowResolveAll">
-        </exec>
-    -->
-
-  </target>
-
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooo  Distributable  ooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-
-  <target name="ApiCommonWorkflow-Distributable" depends="ProjectTree">
-
-    <copy todir="${targetDir}">
-      <fileset dir="${projectsDir}">
-        <exclude name="**/CVS/*" />
-      </fileset>
-    </copy>
-  </target>
-
-
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooo  ProjectTree  ooooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-
-  <target name="ProjectTree" if="${checkout}">
-    <ant target="projectCheckOut" />
   </target>
 
 </project>
-
-
