@@ -15,7 +15,7 @@ sub run {
 # my $userName = $self->getParamValue('userName');
 # my $groupName = $self->getParamValue('groupName');
 # my $wfName = $self->getWorkflowConfig('name');
-  my ($projectName, $projectRelease, $groupName, $userName) = qw/DIYPROJ DIYREL DIYGROUP joeuser/;
+  my ($projectName, $projectRelease, $groupName, $userName) = qw/DIYPROJ DIYREL DIYGROUP ApidbUserDatasets/;
 
   if ($undo) {
   } else {

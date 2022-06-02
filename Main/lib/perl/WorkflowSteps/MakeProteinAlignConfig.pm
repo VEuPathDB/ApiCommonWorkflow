@@ -62,6 +62,7 @@ process {
     $exonerateProcessMemoryRequirement
   }
 }
+cleanup = true
 
 ";
 
