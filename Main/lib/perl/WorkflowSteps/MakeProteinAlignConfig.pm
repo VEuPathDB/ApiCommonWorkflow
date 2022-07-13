@@ -62,6 +62,8 @@ process {
     $exonerateProcessMemoryRequirement
   }
 }
+docker=false
+cleanup = true
 
 ";
 
