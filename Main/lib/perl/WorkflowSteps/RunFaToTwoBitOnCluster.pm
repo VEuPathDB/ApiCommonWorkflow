@@ -20,7 +20,10 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
 
-  my $cmd = "faToTwoBit $clusterWorkflowDataDir/$inputFastaFile $clusterWorkflowDataDir/$output2bitFile";
+  my $clusterServer = $self->getSharedConfig('clusterServer');
+  my $clusterQueue = $self->getSharedConfig("$clusterServer.clusterQueue");
+
+  my $cmd = "bsub -q $clusterQueue faToTwoBit $clusterWorkflowDataDir/$inputFastaFile $clusterWorkflowDataDir/$output2bitFile";
 
   if ($undo) {
     $self->runCmdOnClusterTransferServer(0,"rm $clusterWorkflowDataDir/$output2bitFile");
@@ -29,7 +32,7 @@ sub run {
       if ($test) {
 	  $self->runCmdOnClusterTransferServer(0, "echo test > $clusterWorkflowDataDir/$output2bitFile");
       }
-    $self->runCmdOnClusterTransferServer($test,$cmd);
+    $self->runCmdOnCluster($test,$cmd);
   }
 }
 
