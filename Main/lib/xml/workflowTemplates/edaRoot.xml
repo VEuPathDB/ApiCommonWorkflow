@@ -1,0 +1,58 @@
+<workflowGraph name="">
+  <param name="projectName"/>
+  <param name="projectVersionForWebsiteFiles"/>
+
+
+  <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
+  <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
+  <constant name="relativeAuxiliaryDir">auxiliary/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
+
+  <globalSubgraph name="edaGlobal" xmlFile="edaGlobal.xml">
+    <paramValue name="globalDatasetLoaderXmlFile">edaGlobal.xml</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+  </globalSubgraph>
+  
+
+  <step name="makeProjectReleaseDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <dependsGlobal name="initUserGroupProject"/>
+  </step>
+  
+  <step name="makeProjectReleaseWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+    <dependsGlobal name="initUserGroupProject"/>
+  </step>
+  
+  <step name="makeProjectReleaseAuxiliaryDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeAuxiliaryDir$$</paramValue>
+    <dependsGlobal name="initUserGroupProject"/>
+  </step>
+
+  <subgraph name="edaStudies" xmlFile="generated/$$projectName$$/edaStudies.xml">
+      <paramValue name="datasetLoaderXmlFile">${projectName}.xml</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+      <depends name="makeProjectReleaseWebServicesDir"/>
+      <depends name="makeProjectReleaseDownloadDir"/>
+
+  </subgraph>
+
+
+
+  <!-- add other templates or this shouldn't be a template file -->
+  <datasetTemplate class="EDADummy">
+    <prop name="projectName"/>
+    <prop name="name"/>
+
+    <subgraph name="EDADummy_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">EDADummy_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+    </subgraph>
+
+  </datasetTemplate>
+
+
+</workflowGraph>
