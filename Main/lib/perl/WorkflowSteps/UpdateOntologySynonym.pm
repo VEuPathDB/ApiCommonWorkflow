@@ -12,7 +12,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $plugin = $self->getParamValue("plugin");
-
+  my $enableUndo = $self->getParamValue("enableUndo");
   my %params;
   
   $params{'extDbRlsSpec'} = $self->getParamValue('webDisplayOntologyName');
