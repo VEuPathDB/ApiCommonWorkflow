@@ -68,6 +68,7 @@ sub run {
       }
       #my $zipFile = basename($unzippedName, ".txt") . ".zip";
       my $zipFile = $unzippedName . ".zip";
+      $unzippedName = basename($unzippedName);
       zip("$workflowDataDir/$datasetName/$file" => "$copyToDir/$zipFile", "Name" => $unzippedName) or die "Zip failed: $!";
       printf STDERR ("$workflowDataDir/$datasetName/$file => \n\t$copyToDir/$zipFile\n");
     }
