@@ -134,8 +134,9 @@ sub run {
   if($lockfile){ 
     open(my $fh, ">>$lockfile");
     flock($fh, LOCK_EX);
-    printf $fh ("%s\n", $params{'logDir'});
+    printf $fh ("%s\t%s -- Lock\n",localtime(), $params{'logDir'});
     $self->runPlugin($test, $undo, $plugin, $args);
+    printf $fh ("%s\t%s -- Unlocked\n",localtime(), $params{'logDir'});
     flock($fh, LOCK_UN);
     close($fh);
   }
