@@ -33,7 +33,7 @@ sub run {
     }
   } else {
     if (-e $inputDir) {
-      my @files = grep { /^\./ } glob "$inputDir";
+      my @files = grep { ! /^\./ } glob "$inputDir";
       if (scalar @files<1) {
         warn "No input files. Please check inputDir: $inputDir\n";
       } else {
