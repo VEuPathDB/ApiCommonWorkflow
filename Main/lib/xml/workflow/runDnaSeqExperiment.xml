@@ -1,0 +1,52 @@
+<workflowGraph name="runDnaSeqExperiment">
+  <param name="parentDir"/>
+  <param name="organismAbbrev"/>
+  <param name="resultDir"/>
+  <param name="isPaired"/>
+  <param name="ploidy"/>
+  <param name="fromBAM"/>
+  <param name="isLocal"/>
+
+  <constant name="dataDir">$$parentDataDir$$/${organismAbbrev}_experiment_RSRC/</constant>
+
+  <step name="${organismAbbrev}_makeClusterInputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeDnaSeqSingleExperimentNextflowConfigNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqSingleExperimentNextflowConfig">
+    <paramValue name="analysisDir">$$dataDir$$</paramValue>
+    <paramValue name="inputDir">un the bam file retrieval inside of the nextflow workflow. Replace this with whatever is needed to retrieve the correct BAM Files</paramValue>
+    <paramValue name="genomeFastaFile">Relative cluster path to genome fasta generated in dnaseq.xml</paramValue>
+    <paramValue name="gtfFile">Relative cluster path to gtfFile generated in dnaseq.xml</paramValue>
+    <paramValue name="clusterResultDir">$$dataDir$$/results</paramValue>
+    <paramValue name="configFileName">nextflow.config</paramValue>
+    <paramValue name="isPaired">$$isPaired$$</paramValue>
+    <paramValue name="ploidy">$$ploidy$$</paramValue>
+    <paramValue name="footprintFile">Relative cluster path to footprint file generated in dnaseq.xml</paramValue>
+    <paramValue name="fromBAM">$$fromBAM$$</paramValue>
+    <paramValue name="isLocal">$$isLocal$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <depends name="${organismAbbrev}_makeClusterInputDir"/>
+  </step>
+
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeDnaSeqSingleExperimentNextflowConfig"/>
+  </step>
+
+  <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+    <paramValue name="workingDir">$$dataDir$$</paramValue>
+    <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/dnaseqAnalysis</paramValue>
+    <paramValue name="isGitRepo">true</paramValue>    
+    <paramValue name="entryPoint">processSingleExperiment</paramValue>
+    <depends name="mirrorToCluster"/>
+  </step>
+
+  <step name="retrieveProcessSingleExperimentResultsFromComputeCluster" stepClass="ApiCommonWorkflow::Main::RetrieveDnaSeqSingleExperimentResultsFromComputeCluster" stepLoadTypes="fromCluster">
+    <paramValue name="clusterDir">$$dataDir$$/results</paramValue>
+    <paramValue name="targetDir">$$resultDir$$</paramValue>
+    <depends name="runClusterTask"/>
+  </step>
+</workflowGraph>
