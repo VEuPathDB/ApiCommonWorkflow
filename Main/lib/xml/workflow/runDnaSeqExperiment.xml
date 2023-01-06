@@ -10,32 +10,33 @@
   <param name="gtfFile"/>
   <param name="topLevelGeneFootprintFile"/>
   <param name="entry"/>
+  <param name="name"/>
 
-  <constant name="dataDir">$$parentDataDir$$/${organismAbbrev}_experiment_RSRC/</constant>
+  <constant name="dataDir">$$parentDataDir$$/$$organismAbbrev$$_dnaseqExperiment_$$name$$_RSRC/</constant>
 
-  <step name="${organismAbbrev}_makeClusterInputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+  <step name="makeClusterInputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <step name="${organismAbbrev}_makeDnaSeqSingleExperimentNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqSingleExperimentNextflowConfig">
+  <step name="makeDnaSeqSingleExperimentNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqSingleExperimentNextflowConfig">
     <paramValue name="analysisDir">$$dataDir$$</paramValue>
-    <paramValue name="input">$$parentDataDir$$/accessions.tsv</paramValue>
-    <paramValue name="genomeFastaFile">$$topLevelFastaFile$$</paramValue>
-    <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+    <paramValue name="input">$$dataDir$$/accessions.tsv</paramValue>
+    <paramValue name="genomeFastaFile">$$topLevelFastaFile$$/</paramValue>
+    <paramValue name="gtfFile">$$parentDataDir$$/$$organismAbbrev$$.gtf</paramValue>
     <paramValue name="clusterResultDir">$$dataDir$$/results</paramValue>
     <paramValue name="configFileName">nextflow.config</paramValue>
     <paramValue name="isPaired">$$isPaired$$</paramValue>
     <paramValue name="ploidy">$$ploidy$$</paramValue>
-    <paramValue name="footprintFile">$$topLevelFastaFile$$</paramValue>
+    <paramValue name="footprintFile">$$parentDataDir$$/topLevelGeneFootprintFile.txt</paramValue>
     <paramValue name="fromBAM">$$fromBAM$$</paramValue>
     <paramValue name="isLocal">$$isLocal$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <depends name="${organismAbbrev}_makeClusterInputDir"/>
+    <depends name="makeClusterInputDir"/>
   </step>
 
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="${organismAbbrev}_makeDnaSeqSingleExperimentNextflowConfig"/>
+    <depends name="makeDnaSeqSingleExperimentNextflowConfig"/>
   </step>
 
   <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">

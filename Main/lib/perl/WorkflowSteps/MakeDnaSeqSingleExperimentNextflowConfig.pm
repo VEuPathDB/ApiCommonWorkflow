@@ -9,20 +9,19 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $input = $self->getParamValue("input")
-  my $fromBAM = $self->getParamValue("fromBAM")
-  my $isLocal= $self->getParamValue("isLocal")
+  my $input = $self->getParamValue("input");
+  my $fromBAM = $self->getParamValue("fromBAM");
+  my $isLocal= $self->getParamValue("isLocal");
   my $isPaired = $self->getParamValue("isPaired") ? "paired" : "single";
-  my $analysisDir = $self->getParamValue("analysisDir")
-  my $genomeFastaFile = $self->getParamValue("genomeFastaFile")
-  my $gtfFile = $self->getParamValue("gtfFile")
-  my $clusterResultDir = $self->getParamValue("clusterResultDir")
-  my $configFileName = $self->getParamValue("configFileName")
-  my $ploidy = $self->getParamValue("ploidy")
-  my $organismAbbrev = $self->getParamValue("organismAbbrev")
-  my $footprintFile = $self->getParamValue("footprintFile")
+  my $analysisDir = $self->getParamValue("analysisDir");
+  my $genomeFastaFile = $self->getParamValue("genomeFastaFile");
+  my $gtfFile = $self->getParamValue("gtfFile");
+  my $clusterResultDir = $self->getParamValue("clusterResultDir");
+  my $configFileName = $self->getParamValue("configFileName");
+  my $ploidy = $self->getParamValue("ploidy");
+  my $organismAbbrev = $self->getParamValue("organismAbbrev");
+  my $footprintFile = $self->getParamValue("footprintFile");
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
-  my $clusterResultDir = join("/", $self->getClusterWorkflowDataDir(), $self->getParamValue("clusterResultDir"));
   my $hisat2Threads = $self->getConfig("hisat2Threads");
   my $samtoolsThreads = $self->getConfig("samtoolsThreads");
   my $minCoverage = $self->getConfig("minCoverage");
@@ -60,11 +59,11 @@ params {
   footprintFile = \"$footprintFile\"
   winLen = $winLen 
   ploidy= $ploidy
-  hisat2Index = \"$hisat4Index\"
+  hisat2Index = \"$hisat2Index\"
   createIndex = $createIndex
   outputDir = \"$clusterResultDir\"
   trimmomaticAdaptorsFile = \"$trimmomaticAdaptorsFile\"
-  varscanPValue = $varscanPvalue
+  varscanPValue = $varscanPValue
   varscanMinVarFreqSnp = $varscanMinVarFreqSnp
   varscanMinVarFreqCons = $varscanMinVarFreqCons
   maxNumberOfReads = $maxNumberOfReads
