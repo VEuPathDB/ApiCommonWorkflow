@@ -48,7 +48,7 @@ sub run {
     print F
 "
 params {
-  inputDir = \"$baseDir/data/haploid_paired/chr1\"
+  inputDir = \"$input\"
   fromBAM = $fromBAM
   hisat2Threads = $hisat2Threads
   isPaired = $isPaired
