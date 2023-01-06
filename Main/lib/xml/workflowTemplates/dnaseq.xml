@@ -6,10 +6,6 @@
   <param name="genomeExtDbRlsSpec"/>
   <param name="relativeWebServicesDir"/>
   <param name="topLevelFastaFile"/>
-  <param name="isPaired"/>
-  <param name="ploidy"/>
-  <param name="fromBAM"/>
-  <param name="isLocal"/>
 
   <constant name="dataDir">$$parentDataDir$$/dnaseq</constant>
   <constant name="topLevelGeneFootprintFile">$$dataDir$$/topLevelGeneFootprintFile.txt</constant>
@@ -24,7 +20,7 @@
     <prop name="version"/>
     
     <subgraph name="${organismAbbrev}_dnaseq_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${organismAbbrev}_processSingleExperiment_${name}_RSRC</paramValue>
+      <paramValue name="datasetName">${organismAbbrev}_dnaseqExperiment_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -40,7 +36,7 @@
         <depends name="makeDataDir"/>
     </step>
 
-    <step name="${organismAbrev}_makeTopLevelGeneFootprintFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelGeneFootprintFile">
+    <step name="${organismAbbrev}_makeTopLevelGeneFootprintFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelGeneFootprintFile">
         <paramValue name="outputFile">$$topLevelGeneFootprintFile$$</paramValue>
         <paramValue name="project">$$projectName$$</paramValue>
         <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -61,10 +57,11 @@
       <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
       <paramValue name="gtfFile">$$organismAbbrev$$.gtf</paramValue>
       <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
-      <paramValue name="isPaired">$$isPaired$$</paramValue>
-      <paramValue name="ploidy">$$ploidy$$</paramValue>
-      <paramValue name="fromBAM">$$fromBAM$$</paramValue> 
-      <paramValue name="isLocal">$$isLocal$$</paramValue> 
+      <paramValue name="isPaired">${isPaired}</paramValue>
+      <paramValue name="ploidy">${ploidy}</paramValue>
+      <paramValue name="fromBAM">${fromBAM}</paramValue> 
+      <paramValue name="isLocal">${isLocal}</paramValue> 
+      <paramValue name="entry">${entry}</paramValue> 
       <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
