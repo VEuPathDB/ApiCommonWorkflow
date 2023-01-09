@@ -8,19 +8,20 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
   my ($self, $test, $undo) = @_;
-
-  my $input = $self->getParamValue("input");
+ 
+  my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
+  my $input = join("/", $clusterWorkflowDataDir, $self->getParamValue("input"));
   my $fromBAM = $self->getParamValue("fromBAM");
   my $isLocal= $self->getParamValue("isLocal");
-  my $isPaired = $self->getParamValue("isPaired") ? "paired" : "single";
+  my $isPaired = $self->getParamValue("isPaired");
   my $analysisDir = $self->getParamValue("analysisDir");
-  my $genomeFastaFile = $self->getParamValue("genomeFastaFile");
-  my $gtfFile = $self->getParamValue("gtfFile");
-  my $clusterResultDir = $self->getParamValue("clusterResultDir");
+  my $genomeFastaFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("genomeFastaFile"));
+  my $gtfFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("gtfFile"));
+  my $clusterResultDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("clusterResultDir"));
   my $configFileName = $self->getParamValue("configFileName");
   my $ploidy = $self->getParamValue("ploidy");
   my $organismAbbrev = $self->getParamValue("organismAbbrev");
-  my $footprintFile = $self->getParamValue("footprintFile");
+  my $footprintFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("footprintFile"));
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
   my $hisat2Threads = $self->getConfig("hisat2Threads");
   my $samtoolsThreads = $self->getConfig("samtoolsThreads");
@@ -47,7 +48,7 @@ sub run {
     print F
 "
 params {
-  inputDir = \"$input\"
+  input = \"$input\"
   fromBAM = $fromBAM
   hisat2Threads = $hisat2Threads
   isPaired = $isPaired
@@ -59,10 +60,10 @@ params {
   footprintFile = \"$footprintFile\"
   winLen = $winLen 
   ploidy= $ploidy
-  hisat2Index = \"$hisat2Index\"
+  hisat2Index = $hisat2Index
   createIndex = $createIndex
   outputDir = \"$clusterResultDir\"
-  trimmomaticAdaptorsFile = \"$trimmomaticAdaptorsFile\"
+  trimmomaticAdaptorsFile = $trimmomaticAdaptorsFile
   varscanPValue = $varscanPValue
   varscanMinVarFreqSnp = $varscanMinVarFreqSnp
   varscanMinVarFreqCons = $varscanMinVarFreqCons

@@ -20,7 +20,7 @@ sub run {
   my $bambai = ".bam.bai";
   my $concatvcfgztbi = ".concat.vcf.gz.tbi";  
   my $pileup = ".result.pileup";
-  my $resultvcfgztbi "result.vcf.gz.tbi";
+  my $resultvcfgztbi = "result.vcf.gz.tbi";
   my $bigwig = ".bw";
   my $consensus = "consensus.fa.gz";
   my $varscan = ".varscan.cons.gz";

@@ -12,12 +12,12 @@
   <param name="entry"/>
   <param name="name"/>
 
-  <constant name="dataDir">$$parentDataDir$$/$$organismAbbrev$$_dnaseqExperiment_$$name$$_RSRC/</constant>
-
+  <constant name="dataDir">$$parentDataDir$$/$$organismAbbrev$$_dnaseqExperiment_$$name$$_RSRC</constant>
+<!--
   <step name="makeClusterInputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
-
+-->
   <step name="makeDnaSeqSingleExperimentNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqSingleExperimentNextflowConfig">
     <paramValue name="analysisDir">$$dataDir$$</paramValue>
     <paramValue name="input">$$dataDir$$/accessions.tsv</paramValue>
@@ -31,7 +31,7 @@
     <paramValue name="fromBAM">$$fromBAM$$</paramValue>
     <paramValue name="isLocal">$$isLocal$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <depends name="makeClusterInputDir"/>
+    <!--<depends name="makeClusterInputDir"/>-->
   </step>
 
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
@@ -39,7 +39,7 @@
     <depends name="makeDnaSeqSingleExperimentNextflowConfig"/>
   </step>
 
-  <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+  <step name="runDnaSeqSingleExperimentClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
     <paramValue name="workingDir">$$dataDir$$</paramValue>
     <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
     <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
@@ -52,6 +52,6 @@
   <step name="retrieveProcessSingleExperimentResultsFromComputeCluster" stepClass="ApiCommonWorkflow::Main::RetrieveDnaSeqSingleExperimentResultsFromComputeCluster" stepLoadTypes="fromCluster">
     <paramValue name="clusterDir">$$dataDir$$/results</paramValue>
     <paramValue name="targetDir">$$resultDir$$</paramValue>
-    <depends name="runClusterTask"/>
+    <depends name="runDnaSeqSingleExperimentClusterTask"/>
   </step>
 </workflowGraph>
