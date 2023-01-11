@@ -15,7 +15,7 @@ done
 #   just running the undo's serially in reverse order from the logs
 
 # First get the most recent nextflow run
-LAST=$(nextflow log |tail -n 1|cut -f 3)
+LAST=$(nextflow log -q |tail -n 1)
 
 # user can call with named run (default is most recent)
 NAME=${namearg:-$LAST}
