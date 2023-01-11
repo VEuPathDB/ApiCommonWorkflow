@@ -52,7 +52,7 @@ params {
   fromBAM = $fromBAM
   hisat2Threads = $hisat2Threads
   isPaired = $isPaired
-  isLocal = $isLocal
+  local = $isLocal
   organismAbbrev = \"$organismAbbrev\"
   minCoverage = $minCoverage
   genomeFastaFile = \"$genomeFastaFile\"
@@ -70,10 +70,31 @@ params {
   maxNumberOfReads = $maxNumberOfReads
 }
 
- singularity {
-     enabled = true
-     runOptions = \"--user root\"
- }
+process {
+  executor = \'lsf\'
+  queue = \'eupathdb\'
+  withName: \'bedtoolsWindowed\' {
+    errorStrategy = {
+      if ( task.attempt < 4 ) {
+        return \'retry\'
+      } else {
+        return \'finish\'
+      }
+  }
+  maxRetries = 10
+  maxForks = 5
+  clusterOptions = {
+      (task.attempt > 1 && task.exitStatus in 130..140)
+        ? \'-M 12000 -R \"rusage [mem=12000] span[hosts=1]\"\'
+        : \'-M 4000 -R \"rusage [mem=4000] span[hosts=1]\"\'
+    }
+  }
+}
+
+singularity {
+  enabled = true
+  autoMounts = true
+}
 ";
   close(F);
  }

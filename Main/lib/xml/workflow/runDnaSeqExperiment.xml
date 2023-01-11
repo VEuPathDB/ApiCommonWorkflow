@@ -21,7 +21,7 @@
   <step name="makeDnaSeqSingleExperimentNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqSingleExperimentNextflowConfig">
     <paramValue name="analysisDir">$$dataDir$$</paramValue>
     <paramValue name="input">$$dataDir$$/accessions.tsv</paramValue>
-    <paramValue name="genomeFastaFile">$$topLevelFastaFile$$/</paramValue>
+    <paramValue name="genomeFastaFile">$$topLevelFastaFile$$</paramValue>
     <paramValue name="gtfFile">$$parentDataDir$$/$$organismAbbrev$$.gtf</paramValue>
     <paramValue name="clusterResultDir">$$dataDir$$/results</paramValue>
     <paramValue name="configFileName">nextflow.config</paramValue>
@@ -49,9 +49,12 @@
     <depends name="mirrorToCluster"/>
   </step>
 
-  <step name="retrieveProcessSingleExperimentResultsFromComputeCluster" stepClass="ApiCommonWorkflow::Main::RetrieveDnaSeqSingleExperimentResultsFromComputeCluster" stepLoadTypes="fromCluster">
-    <paramValue name="clusterDir">$$dataDir$$/results</paramValue>
-    <paramValue name="targetDir">$$resultDir$$</paramValue>
+  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
+    <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+    <paramValue name="outputFiles">TODO</paramValue>
+    <paramValue name="deleteAfterCopy">false</paramValue>
     <depends name="runDnaSeqSingleExperimentClusterTask"/>
   </step>
+
 </workflowGraph>
