@@ -13,8 +13,6 @@ sub run {
 
   my $tables = $self->getParamValue('tables');
 
-  $tables="GeneGoTerms,GeneId,GeneLocations,GenomicSeqAttributes,GoTermSummary,OntologyLevels,ProjectTaxon,ProteinAttributes,SequencePieceClosure,SnpAttributes,TaxonSpecies,TranscriptAttributes,TranscriptSequence";
-  
   my $gusHome = $self->getSharedConfig('gusHome');
 
   my $instance = $self->getGusInstanceName();
