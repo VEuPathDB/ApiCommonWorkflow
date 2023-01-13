@@ -13,11 +13,7 @@
   <param name="name"/>
 
   <constant name="dataDir">$$parentDataDir$$/$$organismAbbrev$$_dnaseqExperiment_$$name$$_RSRC</constant>
-<!--
-  <step name="makeClusterInputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-  </step>
--->
+
   <step name="makeDnaSeqSingleExperimentNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqSingleExperimentNextflowConfig">
     <paramValue name="analysisDir">$$dataDir$$</paramValue>
     <paramValue name="input">$$dataDir$$/accessions.tsv</paramValue>
@@ -31,12 +27,33 @@
     <paramValue name="fromBAM">$$fromBAM$$</paramValue>
     <paramValue name="isLocal">$$isLocal$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <!--<depends name="makeClusterInputDir"/>-->
+  </step>
+
+  <step name="makeLoadCNVNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeLoadCNVNextflowConfig">
+    <paramValue name="analysisDir">$$dataDir$$</paramValue>
+    <paramValue name="input">$$dataDir$$/results</paramValue>
+    <paramValue name="gusConfig">$$dataDir$$/gusConfig.txt</paramValue>
+    <paramValue name="clusterResultDir">$$dataDir$$/output</paramValue>
+    <paramValue name="configFileName">loadCNVnextflow.config</paramValue>
+    <paramValue name="footprintFile">$$parentDataDir$$/topLevelGeneFootprintFile.txt</paramValue>
+    <paramValue name="ploidy">$$ploidy$$</paramValue>
+    <paramValue name="taxonId">1577702</paramValue>
+    <depends name="makeDnaSeqSingleExperimentNextflowConfig"/>
+  </step>
+
+  <step name="makeLoadSingleExperimentNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeLoadSingleExperimentNextflowConfig">
+    <paramValue name="analysisDir">$$dataDir$$</paramValue>
+    <paramValue name="input">$$dataDir$$/results</paramValue>
+    <paramValue name="configFileName">loadSingleExperimentnextflow.config</paramValue>
+    <paramValue name="extDbRlsSpec">"RDEMKO_TEST|dontcare"</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">"RDEMK_TEST|dontcare"</paramValue>
+    <paramValue name="webServicesDir">$$dataDir$$/webservices</paramValue>
+    <depends name="makeLoadCNVNextflowConfig"/>
   </step>
 
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeDnaSeqSingleExperimentNextflowConfig"/>
+    <depends name="makeLoadSingleExperimentNextflowConfig"/>
   </step>
 
   <step name="runDnaSeqSingleExperimentClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
