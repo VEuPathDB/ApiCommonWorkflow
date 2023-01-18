@@ -8,14 +8,14 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
   my ($self, $test, $undo) = @_;
-
-  my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
-  my $input = join("/", $clusterWorkflowDataDir, $self->getParamValue("input")); 
+  
+  my $workflowDataDir = $self->getWorkflowDataDir();
+  my $input = join("/", $workflowDataDir, $self->getParamValue("input")); 
   my $configFileName = $self->getParamValue("configFileName");
-  my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
+  my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
   my $extDbRlsSpec = $self->getParamValue("extDbRlsSpec");
   my $genomeExtDbRlsSpec = $self->getParamValue("genomeExtDbRlsSpec");
-  my $webServicesDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("webServicesDir"));
+  my $webServicesDir = join("/", $workflowDataDir, $self->getParamValue("webServicesDir"));
 
   my $executor = $self->getClusterExecutor();
   my $queue = $self->getClusterQueue();
@@ -32,11 +32,6 @@ params {
   extDbRlsSpec = \'$extDbRlsSpec\'
   genomeExtDbRlsSpec = \"$genomeExtDbRlsSpec\"
   webServicesDir = \"$webServicesDir\"
-}
-
-process {
-  executor = \'lsf\'
-  queue = \'eupathdb\'
 }
 
 singularity {
