@@ -38,11 +38,6 @@ params {
   taxonId = \"$taxonId\"
 }
 
-process {
-  executor = \'lsf\'
-  queue = \'eupathdb\'
-}
-
 singularity {
   enabled = true
   autoMounts = true

@@ -44,10 +44,10 @@ sub run {
 
         # after the plugins have been Undone.. we can remove the working dir
         $self->runCmd(0, "rm -rf $workflowDir/work");
-        $self->runCmd(0, "rm -f $nextflowConfigFile");
+        $self->runCmd(0, "rm -f $workflowNextflowConfigFile");
         $self->runCmd(0, "rm -f ${logFile}*");
         $self->runCmd(0, "rm -f ${traceFile}*");
-        $self->runCmd(0, "rm $analysisDir/.nextflow* -rf");
+        $self->runCmd(0, "rm $workflowDir/.nextflow* -rf");
     }
     else {
         if(-d  ".nextflow/") {
