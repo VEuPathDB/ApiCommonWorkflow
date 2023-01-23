@@ -1,0 +1,38 @@
+<workflowGraph name="dnaSeqMergeExperiments">
+  <param name="parentDataDir"/>
+  <param name="organismAbbrev"/>
+  <param name="outputDir"/>
+  <param name="inputDir"/>
+  <param name="ploidy"/>
+  <param name="fromBAM"/>
+  <param name="isLocal"/>
+  <param name="genomeFastaFile"/>
+  <param name="gtfFile"/>
+  <param name="topLevelGeneFootprintFile"/>
+  <param name="name"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="referenceStrain"/>
+  <param name="cacheFile"/>
+  <param name="undoneStrains"/>
+  <param name="extDbRlsSpec"/>
+  <param name="varscanDirectory"/>
+
+  <constant name="dataDir">$$parentDataDir$$/$$referenceStrain$$_mergeExperiments</constant>
+
+  <step name="makeDnaSeqMergeExperimentsNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqMergeExperimentsNextflowConfig">
+    <paramValue name="analysisDir">$$dataDir$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="inputDir">$$parentDataDir$$/$$organismAbbrev$$_dnaseqExperiment_${name}_RSRC/results</paramValue>
+    <paramValue name="genomeFastaFile">$$topLevelFastaFile$$</paramValue>
+    <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="referenceStrain">${referenceStrainOrganismAbbrev}</paramValue>
+    <paramValue name="outputDir">$$dataDir$$/output</paramValue>
+    <paramValue name="cacheFile">cache.txt</paramValue>
+    <paramValue name="undoneStrains">undoneStrains.txt</paramValue>
+    <paramValue name="extDbRlsSpec">$$organismAbbrev$$_dnaseqExperiment_${name}_RSRC|${version}</paramValue>
+    <paramValue name="varscanDirectory">varscanCons</paramValue>
+    <paramValue name="configFileName">nextflow.config</paramValue>
+  </step>     
+           
+</workflowGraph>
