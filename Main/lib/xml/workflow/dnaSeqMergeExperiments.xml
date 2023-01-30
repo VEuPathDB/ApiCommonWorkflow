@@ -3,36 +3,40 @@
   <param name="organismAbbrev"/>
   <param name="outputDir"/>
   <param name="inputDir"/>
-  <param name="ploidy"/>
-  <param name="fromBAM"/>
-  <param name="isLocal"/>
   <param name="genomeFastaFile"/>
   <param name="gtfFile"/>
-  <param name="topLevelGeneFootprintFile"/>
-  <param name="name"/>
-  <param name="genomeExtDbRlsSpec"/>
   <param name="referenceStrain"/>
   <param name="cacheFile"/>
   <param name="undoneStrains"/>
-  <param name="extDbRlsSpec"/>
   <param name="varscanDirectory"/>
+  <param name="varscanFilePath"/>
 
   <constant name="dataDir">$$parentDataDir$$/$$referenceStrain$$_mergeExperiments</constant>
 
   <step name="makeDnaSeqMergeExperimentsNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqMergeExperimentsNextflowConfig">
     <paramValue name="analysisDir">$$dataDir$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="inputDir">$$parentDataDir$$/$$organismAbbrev$$_dnaseqExperiment_${name}_RSRC/results</paramValue>
-    <paramValue name="genomeFastaFile">$$topLevelFastaFile$$</paramValue>
+    <paramValue name="inputDir">$$inputDir$$</paramValue>
+    <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
     <paramValue name="gtfFile">$$gtfFile$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="referenceStrain">${referenceStrainOrganismAbbrev}</paramValue>
+    <paramValue name="referenceStrain">$$referenceStrain$$</paramValue>
     <paramValue name="outputDir">$$dataDir$$/output</paramValue>
     <paramValue name="cacheFile">cache.txt</paramValue>
     <paramValue name="undoneStrains">undoneStrains.txt</paramValue>
-    <paramValue name="extDbRlsSpec">$$organismAbbrev$$_dnaseqExperiment_${name}_RSRC|${version}</paramValue>
-    <paramValue name="varscanDirectory">varscanCons</paramValue>
+    <paramValue name="varscanDirectory">$$dataDir$$/varscanCons/</paramValue>
     <paramValue name="configFileName">nextflow.config</paramValue>
+    <paramValue name="varscanFilePath">$$varscanFilePath$$</paramValue>
   </step>     
+
+  <step name="runDnaSeqMergeExperiments" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNextflowWithEntry">
+    <paramValue name="analysisDir">$$dataDir$$</paramValue>
+    <paramValue name="resultsDir">$$dataDir$$/output</paramValue>
+    <paramValue name="nextflowConfigFile">nextflow.config</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/dnaseqAnalysis</paramValue>
+    <paramValue name="isGitRepo">true</paramValue>
+    <paramValue name="entry">mergeExperiments</paramValue>
+    <paramValue name="gitBranch">main</paramValue>
+    <depends name="makeDnaSeqMergeExperimentsNextflowConfig"/>
+  </step>
            
 </workflowGraph>

@@ -13,8 +13,6 @@ sub run {
   my $input = join("/", $workflowDataDir, $self->getParamValue("input")); 
   my $configFileName = $self->getParamValue("configFileName");
   my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
-  my $extDbRlsSpec = $self->getParamValue("extDbRlsSpec");
-  my $genomeExtDbRlsSpec = $self->getParamValue("genomeExtDbRlsSpec");
   my $webServicesDir = join("/", $workflowDataDir, $self->getParamValue("webServicesDir"));
 
   my $executor = $self->getClusterExecutor();
@@ -29,8 +27,6 @@ sub run {
 "
 params {
   input = \"$input\"
-  extDbRlsSpec = \'$extDbRlsSpec\'
-  genomeExtDbRlsSpec = \"$genomeExtDbRlsSpec\"
   webServicesDir = \"$webServicesDir\"
 }
 

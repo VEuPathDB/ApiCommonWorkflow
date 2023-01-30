@@ -14,15 +14,14 @@ sub run {
   my $outputDir = join("/", $workflowDataDir, $self->getParamValue("outputDir")); 
   my $configFileName = $self->getParamValue("configFileName");
   my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
-  my $gtfFile = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("gtfFile"));
-  my $genomeFastaFile = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("genomeFastaFile"));
-  my $extDbRlsSpec = $self->getParamValue("extDbRlsSpec");
-  my $genomeExtDbRlsSpec = $self->getParamValue("genomeExtDbRlsSpec");
+  my $gtfFile = join("/", $workflowDataDir, $self->getParamValue("gtfFile"));
+  my $genomeFastaFile = join("/", $workflowDataDir, $self->getParamValue("genomeFastaFile"));
   my $organismAbbrev = $self->getParamValue("organismAbbrev");
   my $referenceStrain = $self->getParamValue("referenceStrain");
   my $cacheFile = $self->getParamValue("cacheFile");
-  my $undoneStrains = $self->getParamValue("referenceStrain");
-  my $varscanDirectory = $self->getParamValue("varscanDirectory");
+  my $undoneStrains = $self->getParamValue("undoneStrains");
+  my $varscanDirectory = join("/", $workflowDataDir, $self->getParamValue("varscanDirectory"));
+  my $varscanFilePath = join("/", $workflowDataDir, $self->getParamValue("varscanFilePath"));
   
   if ($undo) {
     $self->runCmd(0,"rm -rf $configPath");
@@ -38,13 +37,12 @@ params {
   gusConfig = \"\$GUS_HOME/config/gus.config\"
   cacheFile = \"$cacheFile\"
   undoneStrains = \"$undoneStrains\"
-  genomeExtDbRlsSpec = \'$genomeExtDbRlsSpec\'
   organism_abbrev = \'$organismAbbrev\' 
   reference_strain = \'$referenceStrain\'
-  extDbRlsSpec = \'$extDbRlsSpec\'
   varscan_directory = \"$varscanDirectory\"
   genomeFastaFile = \"$genomeFastaFile\"
   gtfFile = \"$gtfFile\"
+  varscanFilePath = \"$varscanFilePath\"
 
 }
 
