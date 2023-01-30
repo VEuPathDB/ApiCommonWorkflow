@@ -1,0 +1,138 @@
+<workflowGraph name="dnaseq">
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="organismDatasetLoaderXmlFile"/>
+  <param name="parentDataDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="topLevelFastaFile"/>
+  <param name="referenceStrainOrganismAbbrev"/>
+
+  <constant name="dataDir">$$parentDataDir$$/dnaseq</constant>
+  <constant name="topLevelGeneFootprintFile">$$dataDir$$/topLevelGeneFootprintFile.txt</constant>
+  <constant name="gtfFile">$$dataDir$$/$$organismAbbrev$$.gtf</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeGtfFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGtfForGuidedCufflinks">
+    <paramValue name="outputFile">$$organismAbbrev$$.gtf</paramValue>
+    <paramValue name="gtfDir">$$dataDir$$</paramValue>
+    <paramValue name="project">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="cdsOnly">false</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="makeTopLevelGeneFootprintFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelGeneFootprintFile">
+    <paramValue name="outputFile">$$topLevelGeneFootprintFile$$</paramValue>
+    <paramValue name="project">$$projectName$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <depends name="makeGtfFile"/>
+  </step>
+
+  <datasetTemplate class="dnaSeqExperimentFromAccession">
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="referenceStrainOrganismAbbrev"/>
+    
+    <subgraph name="${organismAbbrev}_dnaseq_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$organismAbbrev$$_dnaseqExperiment_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>  
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="${organismAbbrev}_dnaseq_RSRC"/>
+      <depends name="makeTopLevelGeneFootprintFile"/>
+      <depends name="makeGtfFile"/>
+    </step>
+
+    <subgraph name="${organismAbbrev}_ProcessDnaSeqExperiment" xmlFile="runDnaSeqExperiment.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue> 
+      <paramValue name="resultDir">$$dataDir$$/results</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+      <paramValue name="isPaired">${isPaired}</paramValue>
+      <paramValue name="ploidy">${ploidy}</paramValue>
+      <paramValue name="fromBAM">${fromBAM}</paramValue> 
+      <paramValue name="isLocal">${isLocal}</paramValue> 
+      <paramValue name="name">${name}</paramValue> 
+      <paramValue name="version">${version}</paramValue> 
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue> 
+      <paramValue name="taxonId">${taxonId}</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+  </datasetTemplate>
+
+  <datasetTemplate class="dnaSeqExperimentFromLocal">
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="referenceStrainOrganismAbbrev"/>
+    
+    <subgraph name="${organismAbbrev}_dnaseq_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$organismAbbrev$$_dnaseqExperiment_${name}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>  
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="${organismAbbrev}_dnaseq_RSRC"/>
+      <depends name="makeTopLevelGeneFootprintFile"/>
+      <depends name="makeGtfFile"/>
+    </step>
+
+    <subgraph name="${organismAbbrev}_ProcessDnaSeqExperiment" xmlFile="runDnaSeqExperiment.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue> 
+      <paramValue name="resultDir">$$dataDir$$/results</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+      <paramValue name="isPaired">${isPaired}</paramValue>
+      <paramValue name="ploidy">${ploidy}</paramValue>
+      <paramValue name="fromBAM">${fromBAM}</paramValue> 
+      <paramValue name="isLocal">${isLocal}</paramValue> 
+      <paramValue name="name">${name}</paramValue> 
+      <paramValue name="version">${version}</paramValue> 
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue> 
+      <paramValue name="taxonId">${taxonId}</paramValue>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+  </datasetTemplate>
+
+  <step name="makeMergeExperimentsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$/$$referenceStrainOrganismAbbrev$$_mergeExperiments</paramValue>
+    <dependsPattern name="*_ProcessDnaSeqExperiment"/>
+  </step>
+
+  <subgraph name="runDnaSeqMergeExperiments" xmlFile="dnaSeqMergeExperiments.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="inputDir">$$dataDir$$/**/results</paramValue>
+    <paramValue name="genomeFastaFile">$$topLevelFastaFile$$</paramValue>
+    <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+    <paramValue name="referenceStrain">$$referenceStrainOrganismAbbrev$$</paramValue>
+    <paramValue name="outputDir">$$dataDir$$/mergeExperiments/output</paramValue>
+    <paramValue name="cacheFile">cache.txt</paramValue>
+    <paramValue name="undoneStrains">undoneStrains.txt</paramValue>
+    <paramValue name="varscanFilePath">$$dataDir$$/**/results/varscanCons</paramValue>
+    <paramValue name="varscanDirectory">varscanCons</paramValue>
+    <depends name="makeMergeExperimentsDataDir"/>
+  </subgraph>
+
+</workflowGraph>
