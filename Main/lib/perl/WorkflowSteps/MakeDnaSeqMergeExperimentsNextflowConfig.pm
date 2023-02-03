@@ -22,6 +22,7 @@ sub run {
   my $undoneStrains = $self->getParamValue("undoneStrains");
   my $varscanDirectory = join("/", $workflowDataDir, $self->getParamValue("varscanDirectory"));
   my $varscanFilePath = join("/", $workflowDataDir, $self->getParamValue("varscanFilePath"));
+  my $webServicesDir = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("webServicesDir"));
   
   if ($undo) {
     $self->runCmd(0,"rm -rf $configPath");
@@ -43,6 +44,7 @@ params {
   genomeFastaFile = \"$genomeFastaFile\"
   gtfFile = \"$gtfFile\"
   varscanFilePath = \"$varscanFilePath\"
+  webServicesDir = \"$webServicesDir\"
 
 }
 

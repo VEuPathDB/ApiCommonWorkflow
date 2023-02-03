@@ -72,7 +72,7 @@ params {
 
 process {
   executor = \'lsf\'
-  queue = \'eupathdb\'
+  queue = \'test\'
   withName: \'bedtoolsWindowed\' {
     errorStrategy = {
       if ( task.attempt < 4 ) {

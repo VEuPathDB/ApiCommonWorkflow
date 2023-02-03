@@ -20,18 +20,6 @@
     <paramValue name="dataDir">$$dataDir$$/loadCNV</paramValue>
   </step>
 
-  <step name="makeLoadSingleExperimentDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$/loadSingleExperiment</paramValue>
-    <depends name="makeLoadCNVDataDir"/>
-  </step>
-<!---
-  <step name="addAssayProtocolAppNode" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddProtocolAppNodeToStudy" stepLoadTypes="plugin">
-      <paramValue name="experimentName">$$organismAbbrev$$</paramValue>
-      <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="name">$$name$$ (DNA Sequencing)</paramValue>
-      <depends name="makeLoadSingleExperimentDataDir"/>
-  </step>
--->
   <step name="makeDnaSeqSingleExperimentNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqSingleExperimentNextflowConfig">
     <paramValue name="analysisDir">$$dataDir$$</paramValue>
     <paramValue name="input">$$dataDir$$/accessions.tsv</paramValue>
@@ -45,15 +33,12 @@
     <paramValue name="fromBAM">$$fromBAM$$</paramValue>
     <paramValue name="isLocal">$$isLocal$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <depends name="makeLoadSingleExperimentDataDir"/>
+    <depends name="makeLoadCNVDataDir"/>
   </step>
-<!---
+
   <step name="makeLoadCNVNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeLoadCNVNextflowConfig">
     <paramValue name="analysisDir">$$dataDir$$/loadCNV</paramValue>
     <paramValue name="input">$$dataDir$$/results</paramValue>
-    <paramValue name="experimentName">$$organismAbbrev$$</paramValue>
-    <paramValue name="gusConfig">$$dataDir$$/gusConfig.txt</paramValue>
-    <paramValue name="extDbSpec">$$organismAbbrev$$_dnaseqExperiment_$$name$$_RSRC|$$version$$</paramValue>
     <paramValue name="clusterResultDir">$$dataDir$$/loadCNV/output</paramValue>
     <paramValue name="configFileName">nextflow.config</paramValue>
     <paramValue name="footprintFile">$$parentDataDir$$/topLevelGeneFootprintFile.txt</paramValue>
@@ -61,18 +46,10 @@
     <paramValue name="taxonId">$$taxonId$$</paramValue>
     <depends name="makeDnaSeqSingleExperimentNextflowConfig"/>
   </step>
--->
-  <step name="makeLoadSingleExperimentNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeLoadSingleExperimentNextflowConfig">
-    <paramValue name="analysisDir">$$dataDir$$/loadSingleExperiment</paramValue>
-    <paramValue name="input">$$dataDir$$/results</paramValue>
-    <paramValue name="configFileName">nextflow.config</paramValue>
-    <paramValue name="webServicesDir">$$dataDir$$/loadSingleExperiment/webservices</paramValue>
-    <depends name="makeDnaSeqSingleExperimentNextflowConfig"/>
-  </step>
 
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeLoadSingleExperimentNextflowConfig"/>
+    <depends name="makeDnaSeqSingleExperimentNextflowConfig"/>
   </step>
 
   <step name="runDnaSeqSingleExperimentClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflowWithEntry">
@@ -93,17 +70,6 @@
     <depends name="runDnaSeqSingleExperimentClusterTask"/>
   </step>
 
-  <step name="runLoadSingleExperimentClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNextflowWithEntry">
-    <paramValue name="analysisDir">$$dataDir$$/loadSingleExperiment</paramValue>
-    <paramValue name="resultsDir">$$dataDir$$/loadSingleExperiment/results</paramValue>
-    <paramValue name="nextflowConfigFile">nextflow.config</paramValue>
-    <paramValue name="nextflowWorkflow">VEuPathDB/dnaseqAnalysis</paramValue>
-    <paramValue name="isGitRepo">true</paramValue>    
-    <paramValue name="entry">loadSingleExperiment</paramValue>
-    <paramValue name="gitBranch">main</paramValue>
-    <depends name="mirrorFromCluster"/>
-  </step>
-<!--
   <step name="runLoadCNVClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNextflowWithEntry">
     <paramValue name="analysisDir">$$dataDir$$/loadCNV</paramValue>
     <paramValue name="resultsDir">$$dataDir$$/loadCNV/results</paramValue>
@@ -112,8 +78,7 @@
     <paramValue name="isGitRepo">true</paramValue>    
     <paramValue name="entry">loadCNV</paramValue>
     <paramValue name="gitBranch">main</paramValue>
-    <depends name="runLoadSingleExperimentClusterTask"/>
+    <depends name="mirrorFromCluster"/>
   </step>
--->
 
 </workflowGraph>
