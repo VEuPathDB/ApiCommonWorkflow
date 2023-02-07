@@ -4,11 +4,6 @@
   <param name="projectName"/>
 
   <globalConstant name="global_PDBOutputFile">global/PDBProteinSequences_RSRC/pdb.fsa</globalConstant>
-<!-- JB: only used for BLAST
-  <globalConstant name="global_NRDBOutputFile_shortDefline">global/NRDB_RSRC/nrdb-short-defline.fsa</globalConstant>
-  <globalConstant name="global_NRDBOutputFile_shortDeflineSP">global/NRDB_RSRC/nrdb-short-defline-sp.fsa</globalConstant>
-  <globalConstant name="global_NRDBOutputFile">global/NRDB_RSRC/nr</globalConstant>
--->
 
   <constant name="dataDir">global</constant>
 
@@ -22,7 +17,7 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <depends name="makeDataDir"/>
   </step>
-
+<!-- 
   <subgraph name="GO_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">GO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
@@ -30,7 +25,7 @@
     <depends name="initUserGroupProject"/>
   </subgraph>
 
-<!-- to do make a GOSlim_RSRC as above--> 
+
   <subgraph name="GOSlim_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">GOSlim_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
@@ -140,14 +135,6 @@
     <depends name="initUserGroupProject"/>
   </subgraph>
 
-
-<!--
-  <subgraph name="BibRefType_RSRC" xmlFile="loadDataset.xml">
-    <paramValue name="datasetName">BibRefType_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
-  </subgraph>
 -->
 
   <step name="initClusterHomeDir"
@@ -155,6 +142,7 @@
     <depends name="initUserGroupProject"/>
   </step>
 
+<!--
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
     <depends name="initClusterHomeDir"/>
@@ -162,14 +150,6 @@
     <depends name="PDBProteinSequences_RSRC"/>
   </step>
 
-<!-- JB: no longer needed
-  <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster">
-    <paramValue name="inputFile">$$global_NRDBOutputFile_shortDeflineSP$$</paramValue>
-    <paramValue name="vendor">wu</paramValue>
-    <paramValue name="seqType">p</paramValue>
-    <depends name="mirrorToCluster"/>
-  </step>
---> 
 
 
   <step name="makePdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster">
@@ -230,7 +210,7 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
-
+-->
 </workflowGraph>
 
  
