@@ -25,37 +25,52 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBlastTaskInputDir">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="queryFile">$$queryFile$$</paramValue>
-      <paramValue name="subjectFile">$$subjectFile$$</paramValue>
+   <step name="makeBlastSimilarityNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBlastSimilarityNextflowConfig" >
+      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+      <paramValue name="configFileName">nextflow.config</paramValue>
+      <paramValue name="analysisDir">$$dataDir$$</paramValue>
+      <paramValue name="blastProgram">$$blastType$$</paramValue>
+      <paramValue name="seqFile">$$queryFile$$</paramValue>
+      <paramValue name="preconfiguredDatabase">false</paramValue>
+      <paramValue name="databaseDir"></paramValue>
+      <paramValue name="databaseBaseName">newdb.fasta</paramValue>
+      <paramValue name="databaseFasta">$$subjectFile$$</paramValue>
+      <paramValue name="dataFile">blastSimilarity.out</paramValue>
+      <paramValue name="logFile">blastSimilarity.log</paramValue>
+      <paramValue name="saveAllBlastFiles">false</paramValue>
+      <paramValue name="saveGoodBlastFiles">true</paramValue>
+      <paramValue name="doNotParse">false</paramValue>
+      <paramValue name="printSimSeqsFile">$$makeSimSeqsFile$$</paramValue>
       <paramValue name="blastArgs">$$blastArgs$$</paramValue>
-      <paramValue name="idRegex">$$idRegex$$</paramValue>
-      <paramValue name="blastType">$$blastType$$</paramValue>
-      <paramValue name="vendor">$$vendor$$</paramValue>
-      <paramValue name="makeSimSeqsFile">$$makeSimSeqsFile$$</paramValue>
+      <paramValue name="fastaSubsetSize">1</paramValue>
+      <paramValue name="pValCutoff">1e-5</paramValue>
+      <paramValue name="lengthCutoff">1</paramValue>
+      <paramValue name="percentCutoff">1</paramValue>
+      <paramValue name="outputType">both</paramValue>
+      <paramValue name="adjustMatchLength">false</paramValue>
       <depends name="makeDataDir"/>
-    </step>
+   </step>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeClusterTaskInputDir"/>
+      <depends name="makeBlastSimilarityNextflowConfig"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="blastCluster" stepFailTypes="blatProteinCluster">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="numNodes">20</paramValue>
-      <paramValue name="maxMemoryGigs">$$maxMemoryGigs$$</paramValue>
-      <paramValue name="processorsPerNode">1</paramValue>
+    <step name="runBlastSimilarityClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+      <paramValue name="workingDir">$$dataDir$$</paramValue>
+      <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
+      <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/blastSimilarity</paramValue>
+      <paramValue name="isGitRepo">true</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blastSimilarity.out</paramValue>
       <paramValue name="deleteAfterCopy">true</paramValue>
-      <depends name="runClusterTask"/>
+      <depends name="runBlastSimilarityClusterTask"/>
     </step>
 
     <!-- CAUTION: this step class has been hacked, to correct an old bug that clobbers the input file.  

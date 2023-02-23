@@ -15,19 +15,19 @@ sub run {
     my $configFileName = $self->getParamValue("configFileName");
     my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
     my $blastProgram = $self->getParamValue("blastProgram");
-    my $seqFile = $self->getParamValue("seqFile");
+    my $seqFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("seqFile");
     my $preConfiguredDatabase = $self->getParamValue("preConfiguredDatabase");
     my $databaseDir = $self->getParamValue("databaseDir");
     my $databaseBaseName = $self->getParamValue("databaseBaseName");
-    my $databaseFasta = $self->getParamValue("databaseFasta");
-    my $databaseType = $self->getParamValue("databaseType");
+    my $databaseFasta = join("/", $clusterWorkflowDataDir, $self->getParamValue("databaseFasta"));
+    my $databaseType = ($blastProgram =~ m/blastn|tblastx/i) ? 'nucl' : 'prot';
     my $dataFile = $self->getParamValue("dataFile");
     my $logFile = $self->getParamValue("logFile");
     my $saveAllBlastFiles = $self->getParamValue("saveAllBlastFiles");
     my $saveGoodBlastFiles = $self->getParamValue("saveGoodBlastFiles");
     my $doNotParse = $self->getParamValue("doNotParse");
     my $printSimSeqsFile = $self->getParamValue("printSimSeqsFile");
-    my $blastParamsFile = $self->getParamValue("blastParamsFile");
+    my $blastArgs = $self->getParamValue("blastArgs");
     my $fastaSubsetSize = $self->getParamValue("fastaSubsetSize");
     my $pValCutoff = $self->getParamValue("pValCutoff");
     my $lengthCutoff = $self->getParamValue("lengthCutoff");
@@ -45,7 +45,7 @@ sub run {
 params {
   blastProgram = \"$blastProgram\"
   seqFile = \"$seqFile\"
-  preConfiguredDatabase = $preConfiguredDatabase
+  preConfiguredDatabase = $preconfiguredDatabase
   databaseDir = \"$databaseDir\"
   databaseBaseName = \"$databaseBaseName\"
   databaseFasta = \"$databaseFasta\"
@@ -57,7 +57,7 @@ params {
   saveGoodBlastFiles = $saveGoodBlastFiles
   doNotParse = $doNotParse
   printSimSeqsFile = $printSimSeqsFile
-  blastParamsFile = \"$blastParamsFile\"
+  blastArgs = \"$blastArgs\"
   fastaSubsetSize = $fastaSubsetSize
   pValCutoff = $pValCutoff 
   lengthCutoff = $lengthCutoff

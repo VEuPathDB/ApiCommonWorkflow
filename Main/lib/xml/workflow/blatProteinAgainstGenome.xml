@@ -14,35 +14,42 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDir">
-    <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-    <paramValue name="queryFile">$$queryFile$$</paramValue>
-    <paramValue name="queryType">prot</paramValue>
-    <paramValue name="targetDir">$$targetSeqsDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </step>
+    <step name="makeBlatNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBlatNextflowConfig" >
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="fastaSubsetSize">1</paramValue>
+      <paramValue name="queryFile">$$queryFile$$</paramValue>
+      <paramValue name="queryType">prot</paramValue>
+      <paramValue name="dbType">dna</paramValue>
+      <paramValue name="databasePath">$$targetSeqsDir$$</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+      <paramValue name="analysisDir">$$dataDir$$</paramValue>
+      <paramValue name="configFileName">nextflow.config</paramValue>
+      <paramValue name="blatParams"></paramValue>
+      <paramValue name="trans">false</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
 
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeTaskInputDir"/>
-  </step>
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeBlatNextflowConfig"/>
+    </step>
 
-  <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="blatProteinCluster" stepFailTypes="blatProteinCluster">
-    <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-    <paramValue name="numNodes">20</paramValue>
-    <paramValue name="maxMemoryGigs">1.5</paramValue>
-    <paramValue name="processorsPerNode">1</paramValue>
-    <depends name="mirrorToCluster"/>
-  </step>
+    <step name="runBlatClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+      <paramValue name="workingDir">$$dataDir$$</paramValue>
+      <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
+      <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/blat</paramValue>
+      <paramValue name="isGitRepo">true</paramValue>
+      <depends name="mirrorToCluster"/>
+    </step>
 
-  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
-    <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
-    <paramValue name="outputFiles">out.psl</paramValue>
-    <paramValue name="deleteAfterCopy">true</paramValue>
-    <depends name="runClusterTask"/>
-  </step>
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputFiles">out.psl</paramValue>
+      <paramValue name="deleteAfterCopy">true</paramValue>
+      <depends name="runBlatClusterTask"/>
+    </step>
 
   <step name="fixGenomeSourceIdsInBlatResultFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixGenomeSourceIdsInBlatResultFile">
     <paramValue name="inputFile">$$dataDir$$/master/mainresult/out.psl</paramValue>

@@ -1,4 +1,3 @@
-
 <workflowGraph name="blatDnaAgainstGenome">
     <param name="dataDir"/>
     <param name="maxIntronSize"/>
@@ -9,41 +8,47 @@
     <param name="queryTable"/>
     <param name="queryExtDbName"/>
 
-
     <constant name="blatOutputFile">$$dataDir$$/blat.out</constant>
 
-  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$</paramValue>
-  </step>
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
 
-    <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGfClientTaskInputDir">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+    <step name="makeBlatNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBlatNextflowConfig" >
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="fastaSubsetSize">1</paramValue>
       <paramValue name="queryFile">$$queryFile$$</paramValue>
       <paramValue name="queryType">dna</paramValue>
-      <paramValue name="targetDir">$$targetSeqsDir$$</paramValue>
+      <paramValue name="dbType">dna</paramValue>
+      <paramValue name="databasePath">$$targetSeqsDir$$</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+      <paramValue name="analysisDir">$$dataDir$$</paramValue>
+      <paramValue name="configFileName">nextflow.config</paramValue>
+      <paramValue name="blatParams"></paramValue>
+      <paramValue name="trans">false</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeTaskInputDir"/>
+      <depends name="makeBlatNextflowConfig"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="blatDnaCluster" stepFailTypes="blatDnaCluster">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="numNodes">5</paramValue>
-      <paramValue name="maxMemoryGigs">1.5</paramValue>
-      <paramValue name="processorsPerNode">1</paramValue>
+    <step name="runBlatClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+      <paramValue name="workingDir">$$dataDir$$</paramValue>
+      <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
+      <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/blat</paramValue>
+      <paramValue name="isGitRepo">true</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">out.psl</paramValue>
       <paramValue name="deleteAfterCopy">true</paramValue>
-      <depends name="runClusterTask"/>
+      <depends name="runBlatClusterTask"/>
     </step>
 
     <step name="fixGenomeSourceIdsInBlatResultFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixGenomeSourceIdsInBlatResultFile">
@@ -53,7 +58,6 @@
      </step>
 
     <step name="insertBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
-
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="targetExtDbName">$$targetExtDbName$$</paramValue>
       <paramValue name="targetTable">ExternalNASequence</paramValue>
@@ -68,7 +72,6 @@
     </step>
 
     <step name="setBestBlatAlignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment" stepLoadTypes="plugin">
-
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="targetExtDbName">$$targetExtDbName$$</paramValue>
       <paramValue name="queryExtDbName">$$queryExtDbName$$</paramValue>
