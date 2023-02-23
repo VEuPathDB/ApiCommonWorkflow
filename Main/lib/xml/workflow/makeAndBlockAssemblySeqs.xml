@@ -28,35 +28,40 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskTaskInputDir">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="seqsFile">$$dataDir$$/assemblySeqs.fsa</paramValue>
+    <step name="makeRepeatMaskerNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig" >
+      <paramValue name="inputFilePath">$$dataDir$$/assemblySeqs.fsa</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+      <paramValue name="analysisDir">$$dataDir$$</paramValue>
+      <paramValue name="configFileName">nextflow.config</paramValue>
+      <paramValue name="fastaSubsetSize">1</paramValue>
+      <paramValue name="trimDangling">true</paramValue>
       <paramValue name="dangleMax">30</paramValue>
-      <paramValue name="trimDangling">y</paramValue>
-      <paramValue name="options"></paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="rmParams"></paramValue>
+      <paramValue name="outputFileName">blocked.seq</paramValue>
+      <paramValue name="errorFileName">blocked.err</paramValue>
       <depends name="extractAssemblySeqs"/>
     </step>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeClusterTaskInputDir"/>
+      <depends name="makeRepeatMaskerNextflowConfig"/>
     </step>
 
-    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="blockAssemblySeqsCluster" stepFailTypes="blockAssemblySeqsCluster">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="numNodes">10</paramValue>
-      <paramValue name="maxMemoryGigs">1.75</paramValue>
-      <paramValue name="processorsPerNode">1</paramValue>
+    <step name="runRepeatMaskerClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+      <paramValue name="workingDir">$$dataDir$$</paramValue>
+      <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
+      <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/repeatMasker</paramValue>
+      <paramValue name="isGitRepo">true</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blocked.err,blocked.seq</paramValue>
       <paramValue name="deleteAfterCopy">false</paramValue>
-      <depends name="runClusterTask"/>
+      <depends name="runRepeatMaskerClusterTask"/>
     </step>
 
     <step name="document-maskAssemblySeqs"
