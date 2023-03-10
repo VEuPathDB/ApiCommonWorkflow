@@ -49,4 +49,18 @@ sub getDownloadFileBaseName {
     return "TODO";
 }
 
+sub getSpeciesReconciliationOntologySpec {
+    my ($self) = @_;
+
+    return $self->getParamValue('speciesReconciliationOntologySpec');
+
+}
+
+sub getSpeciesReconciliationFallbackSpecies {
+    my ($self) = @_;
+
+    return $self->getParamValue('speciesReconciliationFallbackSpecies');
+}
+
+
 1;

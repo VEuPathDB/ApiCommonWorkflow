@@ -32,6 +32,9 @@ sub getOptionalOrdinalsFile {}
 
 sub getDownloadFileBaseName {}
 
+sub getSpeciesReconciliationOntologySpec {}
+sub getSpeciesReconciliationFallbackSpecies {}
+
 sub getSchema {
     return "EDA"
 }
@@ -62,6 +65,8 @@ sub nextflowConfigAsString {
     my $optionalOwlAttributesFile = $self->getOptionalOwlAttributesFile() || "NA";
     my $optionalOrdinalsFile = $self->getOptionalOrdinalsFile() || "NA";
     my $downloadFileBaseName = $self->getDownloadFileBaseName() || "NA";
+    my $speciesReconciliationOntologySpec = $self->getSpeciesReconciliationOntologySpec() || "NA";
+    my $speciesReconciliationFallbackSpecies = $self->getSpeciesReconciliationFallbackSpecies() || "NA";
 
 
     my $config = <<CONFIG;
@@ -97,6 +102,10 @@ params.optionalOwlAttributesFile = "$optionalOwlAttributesFile"
 params.optionalOrdinalsFile = "$optionalOrdinalsFile"
 
 params.downloadFileBaseName = "$downloadFileBaseName"
+
+
+params.speciesReconciliationOntologySpec = "$speciesReconciliationOntologySpec"
+params.speciesReconciliationFallbackSpecies = "$speciesReconciliationFallbackSpecies"
 
 trace.enabled = true
 trace.fields = 'task_id,hash,process,tag,status,exit,submit,realtime,%cpu,rss'
