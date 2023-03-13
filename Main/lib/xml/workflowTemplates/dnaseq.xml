@@ -39,21 +39,21 @@
     <prop name="version"/>
     <prop name="referenceStrainOrganismAbbrev"/>
     
-    <subgraph name="${organismAbbrev}_dnaseq_RSRC" xmlFile="loadDataset.xml">
+    <subgraph name="${organismAbbrev}_dnaseqExperiment_${name}_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$organismAbbrev$$_dnaseqExperiment_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
-    </subgraph>  
+    </subgraph>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="${organismAbbrev}_dnaseq_RSRC"/>
+      <depends name="${organismAbbrev}_dnaseqExperiment_${name}_RSRC"/>
       <depends name="makeTopLevelGeneFootprintFile"/>
       <depends name="makeGtfFile"/>
     </step>
 
-    <subgraph name="${organismAbbrev}_ProcessDnaSeqExperiment" xmlFile="runDnaSeqExperiment.xml">
+    <subgraph name="${organismAbbrev}_${name}_ProcessDnaSeqExperiment" xmlFile="runDnaSeqExperiment.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue> 
       <paramValue name="resultDir">$$dataDir$$/results</paramValue>
@@ -80,7 +80,7 @@
     <prop name="version"/>
     <prop name="referenceStrainOrganismAbbrev"/>
     
-    <subgraph name="${organismAbbrev}_dnaseq_RSRC" xmlFile="loadDataset.xml">
+    <subgraph name="${organismAbbrev}_dnaseqExperiment_${name}_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$organismAbbrev$$_dnaseqExperiment_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -89,12 +89,12 @@
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="${organismAbbrev}_dnaseq_RSRC"/>
+      <depends name="${organismAbbrev}_dnaseqExperiment_${name}_RSRC"/>
       <depends name="makeTopLevelGeneFootprintFile"/>
       <depends name="makeGtfFile"/>
     </step>
 
-    <subgraph name="${organismAbbrev}_ProcessDnaSeqExperiment" xmlFile="runDnaSeqExperiment.xml">
+    <subgraph name="${organismAbbrev}_${name}_ProcessDnaSeqExperiment" xmlFile="runDnaSeqExperiment.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue> 
       <paramValue name="resultDir">$$dataDir$$/results</paramValue>

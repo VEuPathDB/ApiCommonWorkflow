@@ -8,9 +8,12 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
   my ($self, $test, $undo) = @_;
- 
+
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $input = join("/", $clusterWorkflowDataDir, $self->getParamValue("input"));
+  my $geneSourceIdOrthologFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("geneSourceIdOrthologFile"));
+  my $chrsForCalcFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("chrsForCalcFile"));
+  my $taxonId = $self->getParamValue("taxonId");
   my $fromBAM = $self->getParamValue("fromBAM");
   my $isLocal= $self->getParamValue("isLocal");
   my $isPaired = $self->getParamValue("isPaired");
@@ -68,11 +71,14 @@ params {
   varscanMinVarFreqSnp = $varscanMinVarFreqSnp
   varscanMinVarFreqCons = $varscanMinVarFreqCons
   maxNumberOfReads = $maxNumberOfReads
+  taxonId = \"$taxonId\"
+  geneSourceIdOrthologFile = \"$geneSourceIdOrthologFile\"
+  chrsForCalcFile = \"$chrsForCalcFile\"
 }
 
 process {
-  executor = \'lsf\'
-  queue = \'test\'
+  executor = \'$executor\'
+  queue = \'$queue\'
   withName: \'bedtoolsWindowed\' {
     errorStrategy = {
       if ( task.attempt < 4 ) {

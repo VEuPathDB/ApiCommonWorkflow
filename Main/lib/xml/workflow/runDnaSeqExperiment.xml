@@ -16,8 +16,10 @@
 
   <constant name="dataDir">$$parentDataDir$$/$$organismAbbrev$$_dnaseqExperiment_$$name$$_RSRC</constant>
 
-  <step name="makeLoadCNVDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$/loadCNV</paramValue>
+  <step name="RetrieveGeneCNVAndPloidyQueries" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RetrieveGeneCNVAndPloidyQueries">
+    <paramValue name="taxonId">$$taxonId$$</paramValue>
+    <paramValue name="geneSourceIdOrthologFile">$$dataDir$$/geneSourceIdOrthologFile.tsv</paramValue>
+    <paramValue name="chrsForCalcsFile">$$dataDir$$/chrsForCalcsFile.tsv</paramValue>
   </step>
 
   <step name="makeDnaSeqSingleExperimentNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqSingleExperimentNextflowConfig">
@@ -33,18 +35,10 @@
     <paramValue name="fromBAM">$$fromBAM$$</paramValue>
     <paramValue name="isLocal">$$isLocal$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <depends name="makeLoadCNVDataDir"/>
-  </step>
-
-  <step name="makeLoadCNVNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeLoadCNVNextflowConfig">
-    <paramValue name="analysisDir">$$dataDir$$/loadCNV</paramValue>
-    <paramValue name="input">$$dataDir$$/results</paramValue>
-    <paramValue name="clusterResultDir">$$dataDir$$/loadCNV/output</paramValue>
-    <paramValue name="configFileName">nextflow.config</paramValue>
-    <paramValue name="footprintFile">$$parentDataDir$$/topLevelGeneFootprintFile.txt</paramValue>
-    <paramValue name="ploidy">$$ploidy$$</paramValue>
     <paramValue name="taxonId">$$taxonId$$</paramValue>
-    <depends name="makeDnaSeqSingleExperimentNextflowConfig"/>
+    <paramValue name="geneSourceIdOrthologFile">$$dataDir$$/geneSourceIdOrthologFile.tsv</paramValue>
+    <paramValue name="chrsForCalcFile">$$dataDir$$/chrsForCalcsFile.tsv</paramValue>
+    <depends name="RetrieveGeneCNVAndPloidyQueries"/>
   </step>
 
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
@@ -68,17 +62,6 @@
     <paramValue name="outputFiles">TODO</paramValue>
     <paramValue name="deleteAfterCopy">false</paramValue>
     <depends name="runDnaSeqSingleExperimentClusterTask"/>
-  </step>
-
-  <step name="runLoadCNVClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNextflowWithEntry">
-    <paramValue name="analysisDir">$$dataDir$$/loadCNV</paramValue>
-    <paramValue name="resultsDir">$$dataDir$$/loadCNV/results</paramValue>
-    <paramValue name="nextflowConfigFile">nextflow.config</paramValue> 
-    <paramValue name="nextflowWorkflow">VEuPathDB/dnaseqAnalysis</paramValue>
-    <paramValue name="isGitRepo">true</paramValue>    
-    <paramValue name="entry">loadCNV</paramValue>
-    <paramValue name="gitBranch">main</paramValue>
-    <depends name="mirrorFromCluster"/>
   </step>
 
 </workflowGraph>
