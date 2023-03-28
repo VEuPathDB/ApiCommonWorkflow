@@ -32,8 +32,12 @@ sub getOptionalOrdinalsFile {}
 
 sub getDownloadFileBaseName {}
 
+sub getOptionalAnnotationPropertiesFile {}
+
 sub getSpeciesReconciliationOntologySpec {}
 sub getSpeciesReconciliationFallbackSpecies {}
+
+sub getLoadProtocolTypeAsVariable {}
 
 sub getSchema {
     return "EDA"
@@ -67,7 +71,8 @@ sub nextflowConfigAsString {
     my $downloadFileBaseName = $self->getDownloadFileBaseName() || "NA";
     my $speciesReconciliationOntologySpec = $self->getSpeciesReconciliationOntologySpec() || "NA";
     my $speciesReconciliationFallbackSpecies = $self->getSpeciesReconciliationFallbackSpecies() || "NA";
-
+    my $loadProtocolTypeAsVariable = $self->getLoadProtocolTypeAsVariable() || "false";
+    my $optionalAnnotationPropertiesFile = $self->getOptionalAnnotationPropertiesFile() || "NA";
 
     my $config = <<CONFIG;
 params.studyDirectory = "$studyDirectory"
@@ -103,9 +108,13 @@ params.optionalOrdinalsFile = "$optionalOrdinalsFile"
 
 params.downloadFileBaseName = "$downloadFileBaseName"
 
+params.optionalAnnotationPropertiesFile = "optionalAnnotationPropertiesFile"
 
 params.speciesReconciliationOntologySpec = "$speciesReconciliationOntologySpec"
 params.speciesReconciliationFallbackSpecies = "$speciesReconciliationFallbackSpecies"
+
+params.loadProtocolTypeAsVariable = $loadProtocolTypeAsVariable
+
 
 trace.enabled = true
 trace.fields = 'task_id,hash,process,tag,status,exit,submit,realtime,%cpu,rss'

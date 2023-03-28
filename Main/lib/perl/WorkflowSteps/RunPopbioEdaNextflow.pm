@@ -4,6 +4,10 @@ package ApiCommonWorkflow::Main::WorkflowSteps::RunPopbioEdaNextflow;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig;;
 
+# could override in worfklow step if needed
+my $INVESTIGATION_BASENAME = "i_investigation.txt";
+
+
 sub getStudyDirectory {
     my ($self) = @_;
 
@@ -30,6 +34,10 @@ sub getWebDisplayOntologySpec {
     return "$webDisplayOntologyName|%"
 }
 
+sub getLoadProtocolTypeAsVariable {
+    return "true";
+}
+
 sub getLoadWebDisplayOntologyFile {
     return "false";
 }
@@ -42,7 +50,7 @@ sub getIsaFormat {
     return "isatab";
 }
 sub getInvestigationBaseName {
-    return "i_investigation.txt";
+    return $INVESTIGATION_BASENAME;;
 }
 
 sub getDownloadFileBaseName {
