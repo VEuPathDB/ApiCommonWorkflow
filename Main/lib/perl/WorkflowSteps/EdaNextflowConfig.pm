@@ -108,7 +108,7 @@ params.optionalOrdinalsFile = "$optionalOrdinalsFile"
 
 params.downloadFileBaseName = "$downloadFileBaseName"
 
-params.optionalAnnotationPropertiesFile = "optionalAnnotationPropertiesFile"
+params.optionalAnnotationPropertiesFile = "$optionalAnnotationPropertiesFile"
 
 params.speciesReconciliationOntologySpec = "$speciesReconciliationOntologySpec"
 params.speciesReconciliationFallbackSpecies = "$speciesReconciliationFallbackSpecies"

@@ -11,10 +11,12 @@
   <param name="loadStudyCharacteristics"/>
   <param name="context"/>
   <param name="optionalMegaStudyStableId"/>
+  <param name="studyClassificationsYaml"/>
+  <param name="studyClassificationsOwl"/>
 
   <constant name="dataDir">$$parentDataDir$$/$$datasetName$$</constant>
 
-  <!-- This will make the dataDir -->
+  <!-- loadDataset makes the dataDir -->
   <subgraph name="loadDataset" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">$$datasetName$$</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
@@ -66,10 +68,10 @@
     <depends name="nextflowEntityGraph"/>
   </step>
 
-  <!-- TODO -->
   <step name="studyCharacteristics" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyCharacteristics" includeIf="$$loadStudyCharacteristics$$">
     <paramValue name="datasetName">$$datasetName$$</paramValue>
-    <paramValue name="webDisplayOntologyName">$$webDisplayOntologyName$$</paramValue>
+    <paramValue name="file">$$studyClassificationsYaml$$</paramValue>
+    <paramValue name="owlFile">$$studyClassificationsOwl$$</paramValue>
     <depends name="nextflowAnnPropsAndArtifacts"/>
   </step>
 
