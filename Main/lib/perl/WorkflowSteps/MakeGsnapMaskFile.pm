@@ -8,7 +8,7 @@ use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::MakeGtfForGuidedCufflinks;
 
 sub getSequenceOntologyTermString { 
-  return "rRNA_encoding"; 
+  return "rRNA"; 
 }
 
 sub getSequenceOntologyExclude { 
