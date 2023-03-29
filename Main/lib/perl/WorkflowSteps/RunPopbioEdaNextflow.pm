@@ -43,7 +43,7 @@ sub getLoadWebDisplayOntologyFile {
 }
 
 sub getInvestigationSubset {
-    return "final";
+    return "../final";
 }
 
 sub getIsaFormat {
