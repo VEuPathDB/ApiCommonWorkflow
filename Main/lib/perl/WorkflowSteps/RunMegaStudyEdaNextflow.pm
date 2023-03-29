@@ -5,8 +5,8 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig;;
 
 # couls override these defaults in worflow if necessary;
-my $MEGASTUDY_YAML = "/final/megaStudy.yaml";
-my $OWLATTRIBUTES_FILE = "/final/owlAttributes.txt";
+my $MEGASTUDY_YAML = "/../final/megaStudy.yaml";
+my $OWLATTRIBUTES_FILE = "/../final/owlAttributes.txt";
 
 
 sub getStudyDirectory {
