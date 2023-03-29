@@ -39,6 +39,10 @@ sub run {
   my $trimmomaticAdaptorsFile = $self->getConfig("trimmomaticAdaptorsFile");  
   my $ebiFtpUser = $self->getConfig("ebiFtpUser");  
   my $ebiFtpPassword = $self->getConfig("ebiFtpPassword");  
+  my $increasedMemory = $self->getParamValue("increasedMemory");
+  my $initialMemory = $self->getParamValue("initialMemory");
+  my $maxForks = $self->getParamValue("maxForks");
+  my $maxRetries = $self->getParamValue("maxRetries");
 
   my $executor = $self->getClusterExecutor();
   my $queue = $self->getClusterQueue();
@@ -79,21 +83,15 @@ params {
 process {
   executor = \'$executor\'
   queue = \'$queue\'
-  withName: \'bedtoolsWindowed\' {
-    errorStrategy = {
-      if ( task.attempt < 4 ) {
-        return \'retry\'
-      } else {
-        return \'finish\'
-      }
-  }
-  maxRetries = 10
-  maxForks = 5
-  clusterOptions = {
+  maxForks = $maxForks
+  maxRetries = $maxRetries
+  withName: \'blastSimilarity\' {
+    errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' } 
+    clusterOptions = { 
       (task.attempt > 1 && task.exitStatus in 130..140)
-        ? \'-M 12000 -R \"rusage [mem=12000] span[hosts=1]\"\'
-        : \'-M 4000 -R \"rusage [mem=4000] span[hosts=1]\"\'
-    }
+        ? \'-M $increasedMemory -R \"rusage [mem=$increasedMemory] span[hosts=1]\"\'
+        : \'-M $initialMemory -R \"rusage [mem=$initialMemory] span[hosts=1]\"\'                                                                                                                      
+    }                                                                                                                                                                                                    
   }
 }
 

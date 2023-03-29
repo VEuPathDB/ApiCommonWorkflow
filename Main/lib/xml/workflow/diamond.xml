@@ -19,49 +19,49 @@
     <param name="maxMemoryGigs"/>
     <param name="loadSimilarities"/>
     <param name="makeSimSeqsFile"/>
+
     <constant name="dataDir">$$parentDataDir$$/$$nickName$$</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-   <step name="makeBlastSimilarityNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBlastSimilarityNextflowConfig" >
-      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+    <step name="makeDiamondSimilarityNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDiamondSimilarityNextflowConfig">
+      <paramValue name="clusterResultDir">$$dataDir$$/master/mainresult/</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>
       <paramValue name="analysisDir">$$dataDir$$</paramValue>
-      <paramValue name="blastProgram">$$blastType$$</paramValue>
       <paramValue name="seqFile">$$queryFile$$</paramValue>
-      <paramValue name="preconfiguredDatabase">false</paramValue>
-      <paramValue name="databaseDir"></paramValue>
-      <paramValue name="databaseBaseName">newdb.fasta</paramValue>
-      <paramValue name="databaseFasta">$$subjectFile$$</paramValue>
+      <paramValue name="blastProgram">$$blastType$$</paramValue>
       <paramValue name="dataFile">blastSimilarity.out</paramValue>
       <paramValue name="logFile">blastSimilarity.log</paramValue>
-      <paramValue name="printSimSeqsFile">$$makeSimSeqsFile$$</paramValue>
-      <paramValue name="blastArgs">$$blastArgs$$</paramValue>
-      <paramValue name="fastaSubsetSize">1</paramValue>
+      <paramValue name="preConfiguredDatabase">false</paramValue>
+      <paramValue name="database"></paramValue>
+      <paramValue name="databaseFasta">$$subjectFile$$</paramValue>
       <paramValue name="pValCutoff">1e-5</paramValue>
-      <paramValue name="lengthCutoff">1</paramValue>
-      <paramValue name="percentCutoff">1</paramValue>
+      <paramValue name="lengthCutoff">10</paramValue>
+      <paramValue name="percentCutoff">20</paramValue>
+      <paramValue name="printSimSeqs">$$makeSimSeqsFile$$</paramValue>
       <paramValue name="outputType">both</paramValue>
       <paramValue name="adjustMatchLength">false</paramValue>
+      <paramValue name="fastaSubsetSize">2000000</paramValue>
+      <paramValue name="blastArgs">--dbsize 824802617</paramValue>
       <paramValue name="initialMemory">4000</paramValue>
       <paramValue name="increasedMemory">12000</paramValue>
       <paramValue name="maxForks">40</paramValue>
       <paramValue name="maxRetries">2</paramValue>
       <depends name="makeDataDir"/>
-   </step>
+    </step>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeBlastSimilarityNextflowConfig"/>
+      <depends name="makeDiamondSimilarityNextflowConfig"/>
     </step>
 
-    <step name="runBlastSimilarityClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+    <step name="runDiamondSimilarityClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
       <paramValue name="workingDir">$$dataDir$$</paramValue>
       <paramValue name="resultsDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
-      <paramValue name="nextflowWorkflow">VEuPathDB/blastSimilarity</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/diamondSimilarity</paramValue>
       <paramValue name="isGitRepo">true</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
@@ -71,7 +71,7 @@
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
       <paramValue name="outputFiles">blastSimilarity.out</paramValue>
       <paramValue name="deleteAfterCopy">true</paramValue>
-      <depends name="runBlastSimilarityClusterTask"/>
+      <depends name="runDiamondSimilarityClusterTask"/>
     </step>
 
     <!-- CAUTION: this step class has been hacked, to correct an old bug that clobbers the input file.  

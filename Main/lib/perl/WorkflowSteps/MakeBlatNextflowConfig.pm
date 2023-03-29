@@ -22,6 +22,13 @@ sub run {
     my $queryType = $self->getParamValue("queryType");
     my $blatParams = $self->getParamValue("blatParams");
     my $trans = $self->getParamValue("trans");
+    my $increasedMemory = $self->getParamValue("increasedMemory");
+    my $initialMemory = $self->getParamValue("initialMemory");
+    my $maxForks = $self->getParamValue("maxForks");
+    my $maxRetries = $self->getParamValue("maxRetries");
+
+    my $executor = $self->getClusterExecutor();
+    my $queue = $self->getClusterQueue();
   
     if ($undo) {
 	$self->runCmd(0,"rm -rf $configPath");
@@ -41,9 +48,23 @@ params {
   trans = $trans
   outputDir = \"$$outputDir\"
 }
-process {
+                                                                                                                                                                      
+process{
   container = 'veupathdb/blat:latest'
+  executor = \'$executor\'
+  queue = \'$queue\'
+  maxForks = $maxForks
+  maxRetries = $maxRetries
+  withName: 'runBlat' {
+    errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' }
+    clusterOptions = {
+      (task.attempt > 1 && task.exitStatus in 130..140)
+        ? \'-M $increasedMemory -R \"rusage [mem=$increasedMemory] span[hosts=1]\"\'
+        : \'-M $initialMemory -R \"rusage [mem=$initialMemory] span[hosts=1]\"\'
+    }
+  }                                                                                                                                                                             \
 }
+
 singularity {
   enabled = true
   autoMounts = true
