@@ -51,10 +51,10 @@ sub getOptionalMegaStudyYaml {
 }
 
 
-# sub getOptionalAnnotationPropertiesFile {
-#     my ($self) = @_;
-#     return $self->getWorkingDirectory() . $OWLATTRIBUTES_FILE;
-# }
+ sub getOptionalAnnotationPropertiesFile {
+     my ($self) = @_;
+     return $self->getWorkingDirectory() . $OWLATTRIBUTES_FILE;
+ }
 
 sub getDownloadFileBaseName {
     return "TODO";

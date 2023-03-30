@@ -26,9 +26,6 @@ sub getSampleDetailsFile {}
 sub getOptionalDateObfuscationFile {}
 sub getOptionalValueMappingFile {}
 sub getOptionalOntologyMappingOverrideBaseName {}
-sub getOptionalEntityTypeFile {}
-sub getOptionalOwlAttributesFile {}
-sub getOptionalOrdinalsFile {}
 
 sub getDownloadFileBaseName {}
 
@@ -65,9 +62,7 @@ sub nextflowConfigAsString {
     my $optionalDateObfuscationFile = $self->getOptionalDateObfuscationFile() || "NA";
     my $optionalValueMappingFile = $self->getOptionalValueMappingFile() || "NA";
     my $optionalOntologyMappingOverrideBaseName = $self->getOptionalOntologyMappingOverrideBaseName() || "NA";
-    my $optionalEntityTypeFile = $self->getOptionalEntityTypeFile() || "NA";
-    my $optionalOwlAttributesFile = $self->getOptionalOwlAttributesFile() || "NA";
-    my $optionalOrdinalsFile = $self->getOptionalOrdinalsFile() || "NA";
+
     my $downloadFileBaseName = $self->getDownloadFileBaseName() || "NA";
     my $speciesReconciliationOntologySpec = $self->getSpeciesReconciliationOntologySpec() || "NA";
     my $speciesReconciliationFallbackSpecies = $self->getSpeciesReconciliationFallbackSpecies() || "NA";
@@ -102,13 +97,9 @@ params.optionalValueMappingFile = "$optionalValueMappingFile"
 params.optionalOntologyMappingOverrideBaseName = "$optionalOntologyMappingOverrideBaseName"
 
 // optional ontology files
-params.optionalEntityTypeFile = "$optionalEntityTypeFile"
-params.optionalOwlAttributesFile = "$optionalOwlAttributesFile"
-params.optionalOrdinalsFile = "$optionalOrdinalsFile"
+params.optionalAnnotationPropertiesFile = "$optionalAnnotationPropertiesFile"
 
 params.downloadFileBaseName = "$downloadFileBaseName"
-
-params.optionalAnnotationPropertiesFile = "$optionalAnnotationPropertiesFile"
 
 params.speciesReconciliationOntologySpec = "$speciesReconciliationOntologySpec"
 params.speciesReconciliationFallbackSpecies = "$speciesReconciliationFallbackSpecies"
