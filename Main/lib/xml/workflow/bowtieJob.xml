@@ -13,44 +13,46 @@
   <param name="sraQueryString"/>
 
   <constant name="dataDir">$$clusterDataDir$$</constant>
-  
-<!--Can probably re-use this step?? No - this is where the distribJob task is defined - will need to create a new script here-->
-     <step name="makeTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBowtieMappingTaskInputDir">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="readsFile">$$readsFile$$</paramValue>
-      <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
-      <paramValue name="hasPairedReads">$$hasPairedReads$$</paramValue>
-      <paramValue name="indexDir">$$indexDir$$</paramValue>
-      <paramValue name="sampleName">$$sampleName$$</paramValue>
-      <paramValue name="isColorspace">$$isColorspace$$</paramValue>
-      <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
-      <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
-      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
-      <paramValue name="writeBedFile">$$writeBedFile$$</paramValue>
-      <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
-    </step>
 
+  <step name="makeBowtieMappingNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBowtieMappingNextflowConfig">
+    <paramValue name="analysisDir">$$dataDir$$</paramValue>
+    <paramValue name="clusterResultDir">$$dataDir$$/master/</paramValue>
+    <paramValue name="configFileName">nextflow.config</paramValue>
+    <paramValue name="input">none</paramValue>
+    <paramValue name="readsFile">$$readsFile$$</paramValue>
+    <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
+    <paramValue name="hasPairedReads">$$hasPairedReads$$</paramValue>
+    <paramValue name="indexDir">$$indexDir$$</paramValue>
+    <paramValue name="sampleName">$$sampleName$$</paramValue>
+    <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
+    <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+    <paramValue name="databaseFasta">none</paramValue>
+    <paramValue name="downloadMethod">local</paramValue>
+    <paramValue name="preconfiguredDatabase">true</paramValue>
+    <paramValue name="writeBedFile">$$writeBedFile$$</paramValue>        
+  </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/input</paramValue>
-      <depends name="makeTaskInputDir"/>
-    </step>
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeBowtieMappingNextflowConfig"/>
+  </step>
 
-    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="bowtieCluster" stepFailTypes="bowtieCluster">
-      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
-      <paramValue name="numNodes">1</paramValue>
-      <paramValue name="maxMemoryGigs">5</paramValue>
-      <paramValue name="processorsPerNode">4</paramValue>
-      <depends name="mirrorToCluster"/>
-    </step>
+  <step name="runBowtieMappingTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+    <paramValue name="workingDir">$$dataDir$$</paramValue>
+    <paramValue name="resultsDir">$$dataDir$$/master/</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/bowtieMapping</paramValue>
+    <paramValue name="isGitRepo">true</paramValue>
+    <depends name="mirrorToCluster"/>
+  </step>
 
-    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
-      <paramValue name="outputFiles">${sampleName}.bam</paramValue>
-      <paramValue name="deleteAfterCopy">true</paramValue>
-      <depends name="runClusterTask"/>
-    </step>
+  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$/master/</paramValue>
+    <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+    <paramValue name="outputFiles">${sampleName}.bam</paramValue>
+    <paramValue name="deleteAfterCopy">true</paramValue>
+    <depends name="runBowtieMappingTask"/>
+  </step>
 
 </workflowGraph>
 
