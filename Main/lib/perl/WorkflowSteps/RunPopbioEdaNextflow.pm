@@ -70,5 +70,10 @@ sub getSpeciesReconciliationFallbackSpecies {
     return $self->getParamValue('speciesReconciliationFallbackSpecies');
 }
 
+sub getUseOntologyTermTableForTaxonTerms {
+    return "true"
+}
+
+
 
 1;

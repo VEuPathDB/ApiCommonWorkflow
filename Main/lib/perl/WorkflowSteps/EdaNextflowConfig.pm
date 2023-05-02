@@ -36,6 +36,11 @@ sub getSpeciesReconciliationFallbackSpecies {}
 
 sub getLoadProtocolTypeAsVariable {}
 
+sub getUseOntologyTermTableForTaxonTerms {
+    return "false"
+}
+
+
 sub getSchema {
     return "EDA"
 }
@@ -68,6 +73,8 @@ sub nextflowConfigAsString {
     my $speciesReconciliationFallbackSpecies = $self->getSpeciesReconciliationFallbackSpecies() || "NA";
     my $loadProtocolTypeAsVariable = $self->getLoadProtocolTypeAsVariable() || "false";
     my $optionalAnnotationPropertiesFile = $self->getOptionalAnnotationPropertiesFile() || "NA";
+
+    my $useOntologyTermTableForTaxonTerms = $self->getUseOntologyTermTableForTaxonTerms();
 
     my $config = <<CONFIG;
 params.studyDirectory = "$studyDirectory"
@@ -103,6 +110,7 @@ params.downloadFileBaseName = "$downloadFileBaseName"
 
 params.speciesReconciliationOntologySpec = "$speciesReconciliationOntologySpec"
 params.speciesReconciliationFallbackSpecies = "$speciesReconciliationFallbackSpecies"
+params.useOntologyTermTableForTaxonTerms = $useOntologyTermTableForTaxonTerms
 
 params.loadProtocolTypeAsVariable = $loadProtocolTypeAsVariable
 
