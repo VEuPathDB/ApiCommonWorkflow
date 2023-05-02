@@ -35,7 +35,10 @@ sub getWebDisplayOntologySpec {
     return "$webDisplayOntologyName|%"
 }
 
-sub getWebDisplayOntologyFile {} # for mapping, can be ontologyMapping.xml or dataset-specific owl
+sub getWebDisplayOntologyFile {
+    return sprintf("%s/ontology/release/production/%s.owl",
+      $ENV{GUS_HOME}, $_[0]->getParamValue('webDisplayOntologyName'));
+} # for mapping, can be ontologyMapping.xml or dataset-specific owl
 
 sub getLoadProtocolTypeAsVariable {
     return "false";
@@ -63,14 +66,17 @@ sub getDownloadFileBaseName {
 
 # TODO:
 # relative paths: '/../final/owlAttributes.txt'
-sub getOptionalDateObfuscationFile {return "dateObfuscation.txt" }
-sub getOptionalValueMappingFile { return "valueMap.txt" }
-sub getOptionalOntologyMappingOverrideBaseName { return "ontologyMapping.xml" }
+sub getOptionalDateObfuscationFile {return $_[0]->workflowDataPath("../final/dateObfuscation.txt") }
+sub getOptionalValueMappingFile { return $_[0]->workflowDataPath("../final/valueMap.txt") }
+sub getOptionalOntologyMappingOverrideFile { return $_[0]->workflowDataPath("../final/ontologyMapping.xml") }
 # sub getOptionalEntityTypeFile { return "entities.txt" }
 # sub getOptionalOwlAttributesFile { return "owlAttributes.txt" }
 # sub getOptionalOrdinalsFile { return "ordinals.txt" }
-sub getOptionalAnnotationPropertiesFile { "annotationProperites.txt" }
+sub getOptionalAnnotationPropertiesFile { $_[0]->workflowDataPath("../annotationProperties.txt") }
 
-
+sub workflowDataPath {
+  my ($self, $file) = @_;
+  return join("/",$self->getStudyDirectory() , $file);
+}
 
 1;

@@ -2,6 +2,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::RunNextflow);
 
 use strict;
+use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunNextflow;
 
 sub getStudyDirectory {}
@@ -25,7 +26,7 @@ sub getSampleDetailsFile {}
 
 sub getOptionalDateObfuscationFile {}
 sub getOptionalValueMappingFile {}
-sub getOptionalOntologyMappingOverrideBaseName {}
+sub getOptionalOntologyMappingOverrideFile {}
 
 sub getDownloadFileBaseName {}
 
@@ -61,7 +62,7 @@ sub nextflowConfigAsString {
     my $sampleDetailsFile = $self->getSampleDetailsFile() || "NA";
     my $optionalDateObfuscationFile = $self->getOptionalDateObfuscationFile() || "NA";
     my $optionalValueMappingFile = $self->getOptionalValueMappingFile() || "NA";
-    my $optionalOntologyMappingOverrideBaseName = $self->getOptionalOntologyMappingOverrideBaseName() || "NA";
+    my $optionalOntologyMappingOverrideFile = $self->getOptionalOntologyMappingOverrideFile() || "NA";
 
     my $downloadFileBaseName = $self->getDownloadFileBaseName() || "NA";
     my $speciesReconciliationOntologySpec = $self->getSpeciesReconciliationOntologySpec() || "NA";
@@ -94,7 +95,7 @@ params.sampleDetailsFile = "$sampleDetailsFile"
 // optional files when isaFormat = simple
 params.optionalDateObfuscationFile = "$optionalDateObfuscationFile"
 params.optionalValueMappingFile = "$optionalValueMappingFile"
-params.optionalOntologyMappingOverrideBaseName = "$optionalOntologyMappingOverrideBaseName"
+params.optionalOntologyMappingOverrideFile = "$optionalOntologyMappingOverrideFile"
 
 // optional ontology files
 params.optionalAnnotationPropertiesFile = "$optionalAnnotationPropertiesFile"

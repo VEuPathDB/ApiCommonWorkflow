@@ -5,6 +5,7 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 use ApiCommonWorkflow::Main::WorkflowSteps::RunPopbioEdaNextflow;
+use ApiCommonWorkflow::Main::WorkflowSteps::RunClinEpiEdaNextflow;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunMegaStudyEdaNextflow;
 
 sub new {
@@ -22,9 +23,9 @@ sub new {
       $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunMegaStudyEdaNextflow->new(@_);
   }
   # TODO:  implement these
-  # elsif($conext eq 'clinepi') {
-  #     $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunMegaStudyEdaNextflow->new(@_);
-  # }
+  elsif($context eq 'clinepi') {
+      $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunClinEpiEdaNextflow->new(@_);
+  }
   # elsif($conext eq 'microbiome') {
   #     $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunMegaStudyEdaNextflow->new(@_);
   # }
