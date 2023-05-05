@@ -8,6 +8,7 @@
   <param name="projectName"/>
   <param name="relativeAuxiliaryDir"/>
   <param name="relativeWebServicesDir"/>
+  <param name="relativeDownloadSiteDir"/>
 
   <datasetTemplate class="GeneImage">
     <prop name="name"/>
@@ -266,6 +267,36 @@
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     </subgraph>
+  </datasetTemplate>
+ 
+  <datasetTemplate class="stableIdsEvents">
+    <prop name="organismAbbrev"/>
+    <prop name="buildNumber"/>
+    <prop name="name"/>
+
+    <subgraph name="${name}_stableIdsEvents" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_${name}_stableIdsEvents_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+
+    <step name="fetchStableIdsEvents" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FetchStableIdsEvents">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="buildNumber">${buildNumber}</paramValue>
+      <paramValue name="samplesDir">$$dataDir$$/${organismAbbrev}_${name}_stableIdsEvents_RSRC</paramValue>
+      <paramValue name="name">${name}</paramValue>
+      <depends name="${name}_stableIdsEvents"/>
+    </step>
+
+    <step name="copyStableIdsEventsToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyStableIdsEventsToDownloadDir">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="copyFromFile">$$dataDir$$/${organismAbbrev}_${name}_stableIdsEvents_RSRC/${name}.tab</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="experimentName">${name}</paramValue>
+      <depends name="fetchStableIdsEvents"/>
+    </step>
   </datasetTemplate>
 
 <!--
