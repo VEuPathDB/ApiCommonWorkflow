@@ -7,7 +7,7 @@ use strict;
 
 sub run {
     my ($self, $test, $undo) = @_;
-    my $taxonId = $self->getParamValue('taxonId');
+    my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $geneSourceIdOrthologFile = join("/", $self->getWorkflowDataDir(), $self->getParamValue("geneSourceIdOrthologFile"));
     my $chrsForCalcsFile = join("/", $self->getWorkflowDataDir(), $self->getParamValue('chrsForCalcsFile'));
   
@@ -19,7 +19,7 @@ sub run {
             $self->runCmd($test,"echo test > $geneSourceIdOrthologFile");
 	    $self->runCmd($test,"echo test > $chrsForCalcsFile");
 	} else { 
-            $self->runCmd($test,"runGeneCNVAndPloidyQuery --taxonId $taxonId --geneSourceIdOrthologFile $geneSourceIdOrthologFile --chrsForCalcsFile $chrsForCalcsFile");
+            $self->runCmd($test,"runGeneCNVAndPloidyQuery --organismAbbrev $organismAbbrev --geneSourceIdOrthologFile $geneSourceIdOrthologFile --chrsForCalcsFile $chrsForCalcsFile");
 	}
     }
 }

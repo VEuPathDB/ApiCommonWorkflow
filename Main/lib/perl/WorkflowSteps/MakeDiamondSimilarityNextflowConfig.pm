@@ -12,7 +12,7 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $seqFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("seqFile"));
   my $analysisDir = $self->getParamValue("analysisDir");
-  my $clusterResultDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("clusterResultDir"));
+  my $clusterResultsDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("clusterResultDir"));
   my $blastProgram = $self->getParamValue("blastProgram");
   my $dataFile = $self->getParamValue("dataFile");
   my $logFile = $self->getParamValue("logFile");
@@ -31,6 +31,7 @@ sub run {
   my $initialMemory = $self->getParamValue("initialMemory");
   my $maxForks = $self->getParamValue("maxForks");
   my $maxRetries = $self->getParamValue("maxRetries");
+  my $databaseFasta = join("/", $clusterWorkflowDataDir, $self->getParamValue("databaseFasta"));
 
   my $executor = $self->getClusterExecutor();
   my $queue = $self->getClusterQueue();
@@ -62,7 +63,7 @@ params {
 }
 
 process{
-  container = \'rdemko2332/diamondsimilarity\'
+  container = \'veupathdb/diamondsimilarity\'
   executor = \'$executor\'
   queue = \'$queue\'
   maxForks = $maxForks

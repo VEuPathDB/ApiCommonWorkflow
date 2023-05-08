@@ -5,6 +5,9 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqSingleExperimentNextfl
 use strict;
 use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use GUS::ObjRelP::DbiDatabase;
+use GUS::Supported::GusConfig;
+use CBIL::Util::PropertySet;
 
 sub run {
   my ($self, $test, $undo) = @_;
@@ -13,7 +16,6 @@ sub run {
   my $input = join("/", $clusterWorkflowDataDir, $self->getParamValue("input"));
   my $geneSourceIdOrthologFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("geneSourceIdOrthologFile"));
   my $chrsForCalcFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("chrsForCalcFile"));
-  my $taxonId = $self->getParamValue("taxonId");
   my $fromBAM = $self->getParamValue("fromBAM");
   my $isLocal= $self->getParamValue("isLocal");
   my $isPaired = $self->getParamValue("isPaired");
@@ -42,6 +44,31 @@ sub run {
 
   my $executor = $self->getClusterExecutor();
   my $queue = $self->getClusterQueue();
+
+  my $gusConfigFile = $ENV{GUS_HOME}."/config/gus.config";
+  die "Config file $gusConfigFile does not exist" unless -e $gusConfigFile;
+
+  my @properties = ();
+  my $gusConfig = CBIL::Util::PropertySet -> new ($gusConfigFile, \@properties, 1);
+
+  my $taxonSql = "select taxon_id from apidb.organism where abbrev = '$organismAbbrev'";
+
+  my $db = GUS::ObjRelP::DbiDatabase-> new($gusConfig->{props}->{dbiDsn},
+					   $gusConfig->{props}->{databaseLogin},
+					   $gusConfig->{props}->{databasePassword},
+                                         0,0,1, # verbose, no insert, default
+					   $gusConfig->{props}->{coreSchemaName});
+
+  my $dbh = $db->getQueryHandle();
+
+  my $taxonStmt = $dbh->prepare($taxonSql);
+  $taxonStmt->execute();
+
+  my $taxonId;
+
+  while (my @row = $taxonStmt->fetchrow_array()){
+      $taxonId = $row[0];
+  }
 
   if ($undo) {
     $self->runCmd(0,"rm -rf $configPath");
@@ -79,7 +106,14 @@ params {
 process {
   executor = \'$executor\'
   queue = \'$queue\'
-  maxForks = $maxForks
+  withName: 'gatk' {
+    errorStrategy = { task.exitStatus in 130..140 ? 'retry' : 'finish' }
+    maxRetries = 2
+    clusterOptions = { task.attempt == 1 ?
+      '-M 12000 -R \"rusage [mem=12000] span[hosts=1]\"'
+      : '-M 18000 -R \"rusage [mem=18000] span[hosts=1]\"'
+    }
+  }
 }
 
 singularity {

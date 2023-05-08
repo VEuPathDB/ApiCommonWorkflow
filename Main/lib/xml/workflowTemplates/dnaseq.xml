@@ -33,6 +33,12 @@
     <depends name="makeGtfFile"/>
   </step>
 
+  <step name="${name}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeTopLevelGeneFootprintFile"/>
+    <depends name="makeGtfFile"/>
+  </step>
+
   <datasetTemplate class="dnaSeqExperimentFromAccession">
     <prop name="organismAbbrev"/>
     <prop name="name"/>
@@ -45,13 +51,6 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
-
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="${organismAbbrev}_dnaseqExperiment_${name}_RSRC"/>
-      <depends name="makeTopLevelGeneFootprintFile"/>
-      <depends name="makeGtfFile"/>
-    </step>
 
     <subgraph name="${organismAbbrev}_${name}_ProcessDnaSeqExperiment" xmlFile="runDnaSeqExperiment.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -68,8 +67,7 @@
       <paramValue name="name">${name}</paramValue> 
       <paramValue name="version">${version}</paramValue> 
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue> 
-      <paramValue name="taxonId">${taxonId}</paramValue>
-      <depends name="mirrorToCluster"/>
+      <depends name="${organismAbbrev}_dnaseqExperiment_${name}_RSRC"/>
     </subgraph>
 
   </datasetTemplate>
@@ -87,13 +85,6 @@
       <depends name="makeDataDir"/>
     </subgraph>  
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="${organismAbbrev}_dnaseqExperiment_${name}_RSRC"/>
-      <depends name="makeTopLevelGeneFootprintFile"/>
-      <depends name="makeGtfFile"/>
-    </step>
-
     <subgraph name="${organismAbbrev}_${name}_ProcessDnaSeqExperiment" xmlFile="runDnaSeqExperiment.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue> 
@@ -109,8 +100,7 @@
       <paramValue name="name">${name}</paramValue> 
       <paramValue name="version">${version}</paramValue> 
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue> 
-      <paramValue name="taxonId">${taxonId}</paramValue>
-      <depends name="mirrorToCluster"/>
+      <depends name="${name}_mirrorToCluster"/>
     </subgraph>
 
   </datasetTemplate>
