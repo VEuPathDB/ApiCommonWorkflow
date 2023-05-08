@@ -74,9 +74,5 @@ sub getOptionalOntologyMappingOverrideFile { return $_[0]->workflowDataPath("../
 # sub getOptionalOrdinalsFile { return "ordinals.txt" }
 sub getOptionalAnnotationPropertiesFile { $_[0]->workflowDataPath("../annotationProperties.txt") }
 
-sub workflowDataPath {
-  my ($self, $file) = @_;
-  return join("/",$self->getStudyDirectory() , $file);
-}
 
 1;

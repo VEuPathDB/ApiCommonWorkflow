@@ -5,6 +5,11 @@ use strict;
 use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunNextflow;
 
+sub workflowDataPath {
+  my ($self, $file) = @_;
+  return join("/",$self->getStudyDirectory() , $file);
+}
+
 sub getStudyDirectory {}
 sub getProject {}
 sub getExtDbRlsSpec {}
