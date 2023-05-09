@@ -10,35 +10,34 @@ use File::Basename;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $proteomesDir = $self->getParamValue('proteomesDir');
-  my $outputGoodProteinsFile = $self->getParamValue('outputGoodProteinsFile');
-  my $outputBadProteinsFile = $self->getParamValue('outputBadProteinsFile');
-
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $outputGoodProteinsFile = join("/", $workflowDataDir, $self->getParamValue('outputGoodProteinsFile'));
+  my $outputBadProteinsFile = join("/", $workflowDataDir, $self->getParamValue('outputBadProteinsFile'));
+  my $proteomesDir = join("/", $workflowDataDir, $self->getParamValue("proteomesDir"));
 
   if ($undo) {
-      $self->runCmd(0, "rm -f $workflowDataDir/$outputGoodProteinsFile");
-      $self->runCmd(0, "rm -f $workflowDataDir/$outputBadProteinsFile");
+      $self->runCmd(0, "rm -f $outputGoodProteinsFile");
+      $self->runCmd(0, "rm -f $outputBadProteinsFile");
   }
   elsif ($test) {
-      $self->runCmd(0, "echo test> $workflowDataDir/$outputGoodProteinsFile");
-      $self->runCmd(0, "echo test> $workflowDataDir/$outputBadProteinsFile");
+      $self->runCmd(0, "echo test> $outputGoodProteinsFile");
+      $self->runCmd(0, "echo test> $outputBadProteinsFile");
   }
   else {
+
       opendir(DIR, $proteomesDir) || die "Can't open input directory '$proteomesDir'\n";
-      my @goodFiles = readdir('DIR/*_CoreFromEbi_RSRC/good.fasta');
-      my @badFiles = readdir('DIR/*_CoreFromEbi_RSRC/bad.fasta');
+          my @directories = readdir('DIR');
       closedir(DIR);
 
-      die "Input directory $inputDir does not contain any files" unless scalar(@files);
+      die "Input directory $proteomesDir does not contain any files" unless scalar(@directories);
 
-      foreach my $file (@goodFiles) {
-          system("cat $file >> $outputGoodProteinsFile");
+      foreach my $directory (@directories) {
+	  if ($directory ne '.' && $directory ne '..') {
+	      system("cat ${proteomesDir}/${directory}/*_good.fasta >> $outputGoodProteinsFile");
+	      system("cat ${proteomesDir}/${directory}/*_bad.fasta >> $outputBadProteinsFile");
+	  }
       }
 
-      foreach my $file (@badFiles) {
-          system("cat $file >> $outputBadProteinsFile");
-      }
   }
 
 }
