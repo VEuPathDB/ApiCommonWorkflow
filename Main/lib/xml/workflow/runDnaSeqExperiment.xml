@@ -57,9 +57,17 @@
   <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
     <paramValue name="outputDir">$$dataDir$$/results</paramValue>
-    <paramValue name="outputFiles">TODO</paramValue>
+    <paramValue name="outputFiles">*</paramValue>
     <paramValue name="deleteAfterCopy">false</paramValue>
     <depends name="runDnaSeqSingleExperimentClusterTask"/>
+  </step>
+
+<!-- Need to figured out extDbRlsSpec? -->
+  <step name="insertIndels" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertIndels">
+    <paramValue name="indelFile">$$dataDir$$/results/*.indel.tsv</paramValue>
+    <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <depends name="mirrorFromCluster"/>
   </step>
 
 </workflowGraph>

@@ -19,11 +19,17 @@
     <param name="maxMemoryGigs"/>
     <param name="loadSimilarities"/>
     <param name="makeSimSeqsFile"/>
+
     <constant name="dataDir">$$parentDataDir$$/$$nickName$$</constant>
 
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-    </step>
+   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+     <paramValue name="dataDir">$$dataDir$$</paramValue>
+   </step>
+
+   <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+     <paramValue name="dataDir">$$dataDir$$/master/</paramValue>
+     <depends name="makeDataDir"/>
+   </step>
 
    <step name="makeBlastSimilarityNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBlastSimilarityNextflowConfig" >
       <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
@@ -49,7 +55,7 @@
       <paramValue name="increasedMemory">12000</paramValue>
       <paramValue name="maxForks">40</paramValue>
       <paramValue name="maxRetries">2</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="makeResultDir"/>
    </step>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
