@@ -12,6 +12,7 @@
   <step name="initUserGroupProject" 
 	stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
     <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="makeDataDir"/>
   </step>
 
   <!--
@@ -37,29 +38,29 @@
   </subgraph>
 
 
-  <subgraph name="EuPath_Ontology_RSRC" xmlFile="loadDataset.xml" stepLoadTypes="runPlugin:insertOntologyTermsAndRelationships">
-    <paramValue name="datasetName">OntologyTerm_EuPath_RSRC</paramValue>
+  <subgraph name="oboOntologies" xmlFile="generated/edaGlobal/oboOntologies.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="Ontology_Relationship_Types_RSRC"/>
-  </subgraph>
-
-
-  <subgraph name="UPDATE_EuPath_Ontology_RSRC" xmlFile="loadDataset.xml" stepLoadTypes="runPlugin:insertOntologyTermsAndRelationships">
-    <paramValue name="datasetName">OntologyTerm_INTERNAL_EuPath_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="EuPath_Ontology_RSRC"/>
   </subgraph>
 
 
 
  <subgraph name="eupathCuratedOntologies" xmlFile="generated/edaGlobal/eupathCuratedOntologies.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="Ontology_Relationship_Types_RSRC"/>
   </subgraph>
 
+<!--  TODO:  add this to update eupath ontology
+  <subgraph name="UPDATE_Ontologies" xmlFile="generated/global/updateOntologies.xml">
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="eupathCuratedOntologies"/>
+    <depends name="oboOntologies"/>
+  </subgraph>
+
+-->
 
 </workflowGraph>
 

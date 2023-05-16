@@ -44,9 +44,14 @@ sub run {
     my $nextflowWorkflow = $self->getParamValue('nextflowWorkflow');
     my $isGitRepo = $self->getBooleanParamValue("isGitRepo");
     my $gitBranch = $self->getParamValue("gitBranch");
+    my $nextflowEntry = $self->getParamValue("nextflowEntry");
 
+    my $entry;
+    if($nextflowEntry) {
+        $entry = "-entry $nextflowEntry";
+    }
 
-    my $cmd = "export NXF_WORK=$nextflowWork && nextflow -log $nextflowLog -C $nextflowConfig run -ansi-log false -r $gitBranch $nextflowWorkflow -with-trace -resume 1>&2";
+    my $cmd = "export NXF_WORK=$nextflowWork && nextflow -log $nextflowLog -C $nextflowConfig run -ansi-log false -r $gitBranch $nextflowWorkflow $entry -with-trace -resume 1>&2";
     if($isGitRepo){
         $cmd = "nextflow pull $nextflowWorkflow; $cmd";
     }
@@ -66,7 +71,20 @@ sub run {
         $self->runCmd(0, "rm $workingDirectory/.nextflow* -rf");
     }
     else {
-        $self->runCmd($test, $cmd);
+
+        my $msgForError=
+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Since this nextflow step FAILED, please CLEAN UP by calling:
+
+  pushd $workingDirectory; undoNextflowPlugins.bash; rm -rf .nextflow/; popd
+
+(You need to do this cleanup EVEN IF the step did not write any data to *its*
+tables.  ga most likely wrote to WorkflowStepAlgInvocation, and those rows
+must be cleaned out.)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+";
+
+        $self->runCmd($test, $cmd, $msgForError);
     }
 }
 

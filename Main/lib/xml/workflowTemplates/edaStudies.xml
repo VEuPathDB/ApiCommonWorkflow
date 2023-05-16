@@ -8,87 +8,84 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-
   <datasetTemplate class="ISATabPopBio">
     <prop name="projectName"/>
     <prop name="studyName"/>
     <prop name="version"/>
     <prop name="webDisplayOntologyName"/>
+    <prop name="speciesReconciliationOntologySpec"/>
+    <prop name="speciesReconciliationFallbackSpecies"/>
 
-
-    <subgraph name="ISATab_${studyName}_RSRC" xmlFile="loadDataset.xml">
+    <subgraph name="ISATab_${studyName}" xmlFile="loadEdaStudy.xml">
       <paramValue name="datasetName">ISATab_${studyName}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
-
-    <step name="edaNextflow_${studyName}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPopbioEdaNextflow" stepLoadTypes="edaStudyLoader">
-      <paramValue name="datasetName">ISATab_${studyName}_RSRC</paramValue>
       <paramValue name="datasetVersion">${version}</paramValue>
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="webDisplayOntologyName">${webDisplayOntologyName}</paramValue>
-      <paramValue name="workingDir">$$dataDir$$/ISATab_${studyName}_RSRC</paramValue>
-      <!-- TODO need to write download files and webservice files -->
-      <paramValue name="resultsDir">$$dataDir$$/ISATab_${studyName}_RSRC/results</paramValue>
-      <paramValue name="nextflowWorkflow">VEuPathDB/eda-nextflow</paramValue>
-      <paramValue name="isGitRepo">true</paramValue>
-      <paramValue name="gitBranch">main</paramValue>
-      <depends name="ISATab_${studyName}_RSRC"/>
-      <!-- TODO why do these not work?
-      <dependsGlobal name="edaGlobal.eupathCuratedOntologies.OntologyTerm_popbio_RSRC.runPlugin"/>
-      <dependsGlobal name="edaGlobal.taxonomy_RSRC.runPlugin"/>
-      -->
-    </step>
-
-    <step name="studyCharacteristics_${studyName}"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyCharacteristics">
-      <paramValue name="datasetName">ISATab_${studyName}_RSRC</paramValue>
-      <paramValue name="file">$GUS_HOME/ontology/General/study_classifications/yaml/popbio.yaml</paramValue>
-      <paramValue name="owlFile">$GUS_HOME/ontology/General/study_classifications/classifications.owl</paramValue>
-      <paramValue name="schema">EDA</paramValue>
-      <depends name="edaNextflow_${studyName}"/>
-    </step>
-
-
+      <paramValue name="speciesReconciliationOntologySpec">${speciesReconciliationOntologySpec}</paramValue>
+      <paramValue name="speciesReconciliationFallbackSpecies">${speciesReconciliationFallbackSpecies}</paramValue>
+      <paramValue name="loadStudyCharacteristics">true</paramValue>
+      <paramValue name="context">popbio</paramValue>
+      <paramValue name="optionalMegaStudyStableId"></paramValue>
+      <paramValue name="studyClassificationsYaml">ontology/General/study_classifications/yaml/popbio.yaml</paramValue>
+      <paramValue name="studyClassificationsOwl">ontology/popbio/popbio.owl</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
   </datasetTemplate>
 
-  <!-- TODO should this be called Popbio megastudy?? -->
+
+
+  <datasetTemplate class="SingleISATabPopBio">
+    <prop name="projectName"/>
+    <prop name="studyName"/>
+    <prop name="version"/>
+    <prop name="webDisplayOntologyName"/>
+    <prop name="speciesReconciliationOntologySpec"/>
+    <prop name="speciesReconciliationFallbackSpecies"/>
+
+    <subgraph name="Single_ISATab_${studyName}" xmlFile="loadEdaStudy.xml">
+      <paramValue name="datasetName">ISATab_${studyName}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="datasetVersion">${version}</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="webDisplayOntologyName">${webDisplayOntologyName}</paramValue>
+      <paramValue name="speciesReconciliationOntologySpec">${speciesReconciliationOntologySpec}</paramValue>
+      <paramValue name="speciesReconciliationFallbackSpecies">${speciesReconciliationFallbackSpecies}</paramValue>
+      <paramValue name="loadStudyCharacteristics">true</paramValue>
+      <paramValue name="context">popbio</paramValue>
+      <paramValue name="optionalMegaStudyStableId"></paramValue>
+      <paramValue name="studyClassificationsYaml">ontology/General/study_classifications/yaml/popbio.yaml</paramValue>
+      <paramValue name="studyClassificationsOwl">ontology/popbio/popbio.owl</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+
+
   <datasetTemplate class="EDAMegaStudy">
     <prop name="projectName"/>
     <prop name="studyStableId"/>
     <prop name="version"/>
     <prop name="webDisplayOntologyName"/>
 
-    <subgraph name="EDAMegaStudy_${studyStableId}_RSRC" xmlFile="loadDataset.xml">
+    <subgraph name="EDAMegaStudy_${studyStableId}" xmlFile="loadEdaStudy.xml">
       <paramValue name="datasetName">EDAMegaStudy_${studyStableId}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-      <dependsPattern name="edaNextflow_*"/>
-      <dependsPattern name="studyCharacteristics_*"/>
-    </subgraph>
-
-    <step name="EDAMegaStudy_${studyStableId}" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunMegaStudyEdaNextflow" stepLoadTypes="edaStudyLoader">
-      <paramValue name="studyStableId">${studyStableId}</paramValue>
-      <paramValue name="megaStudyYamlBaseName">megaStudy.yaml</paramValue>
-      <paramValue name="datasetName">EDAMegaStudy_${studyStableId}_RSRC</paramValue>
       <paramValue name="datasetVersion">${version}</paramValue>
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="webDisplayOntologyName">${webDisplayOntologyName}</paramValue>
-      <paramValue name="workingDir">$$dataDir$$/EDAMegaStudy_${studyStableId}_RSRC</paramValue>
-      <paramValue name="resultsDir">$$dataDir$$/EDAMegaStudy_${studyStableId}_RSRC/results</paramValue>
-      <paramValue name="nextflowWorkflow">VEuPathDB/eda-nextflow</paramValue>
-      <paramValue name="isGitRepo">true</paramValue>
-      <paramValue name="gitBranch">main</paramValue>
-      <depends name="EDAMegaStudy_${studyStableId}_RSRC"/>
-      <!-- TODO why do these not work?
-      <dependsGlobal name="edaGlobal.eupathCuratedOntologies.OntologyTerm_popbio_RSRC.runPlugin"/>
-      <dependsGlobal name="edaGlobal.taxonomy_RSRC.runPlugin"/>
-      -->
-    </step>
-
-
+      <paramValue name="speciesReconciliationOntologySpec"></paramValue>
+      <paramValue name="speciesReconciliationFallbackSpecies"></paramValue>
+      <paramValue name="optionalMegaStudyStableId">${studyStableId}</paramValue>
+      <paramValue name="loadStudyCharacteristics">false</paramValue>
+      <paramValue name="studyClassificationsYaml"></paramValue>
+      <paramValue name="studyClassificationsOwl"></paramValue>
+      <paramValue name="context">mega</paramValue>
+      <dependsPattern name="ISATab_*"/>
+    </subgraph>
   </datasetTemplate>
 
 
