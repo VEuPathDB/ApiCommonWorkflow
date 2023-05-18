@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::RunClinEpiEdaNextflow;
+package ApiCommonWorkflow::Main::WorkflowSteps::RunMBioEdaNextflow;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig);
 
 use strict;
@@ -6,7 +6,6 @@ use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig;;
 
 # could override in worfklow step if needed
-my $INVESTIGATION_BASENAME = "investigation.xml";
 
 
 sub getStudyDirectory {
@@ -56,17 +55,19 @@ sub getInvestigationSubset {
 sub getIsaFormat {
     return "simple";
 }
-sub getInvestigationBaseName {
-    return $INVESTIGATION_BASENAME;
-}
+sub getInvestigationBaseName { return sprintf("../final/%s.xml", $_[0]->getParamValue("studyStableId")) }
 
 sub getDownloadFileBaseName {
     return "TODO";
 }
 
+sub getSampleDetailsFile { return sprintf("../final/%s.txt", $_[0]->getParamValue("studyStableId")) }
+sub getAssayResultsDirectory { return "../final" }
+sub getAssayResultsFileExtensionsJson { sprintf("%s/ApiCommonData/Load/ontology/Microbiome/assayExtensions", $ENV{PROJECT_HOME} ) }
+
 # TODO:
 # relative paths: '/../final/owlAttributes.txt'
-sub getOptionalDateObfuscationFile {return $_[0]->workflowDataPath("../final/dateObfuscation.txt") }
+# sub getOptionalDateObfuscationFile {return $_[0]->workflowDataPath("../final/dateObfuscation.txt") }
 sub getOptionalValueMappingFile { return $_[0]->workflowDataPath("../final/valueMap.txt") }
 sub getOptionalOntologyMappingOverrideFile { return $_[0]->workflowDataPath("../final/ontologyMapping.xml") }
 # sub getOptionalEntityTypeFile { return "entities.txt" }

@@ -99,7 +99,7 @@ sub run {
 		  	$params{'metaDataRoot'} = $self->getMetadataPath();
       }
       when ('ontologyExtDbRlsSpec') {
-		  	$params{'ontologyExtDbRlsSpec'} = sprintf( "OntologyTerm_%s_RSRC\\|dontcare",$self->getParamValue('webDisplayOntologyName'));
+		  	$params{'ontologyExtDbRlsSpec'} = sprintf( "%s\\|dontcare",$self->getParamValue('webDisplayOntologyName'));
       }
       when ('ontologyMappingFile') {
 		  	$params{'ontologyMappingFile'} = sprintf("%s/ontology/release/production/%s.owl", $ENV{GUS_HOME}, $self->getParamValue('webDisplayOntologyName'));
