@@ -74,6 +74,6 @@ sub getUseOntologyTermTableForTaxonTerms {
     return "true"
 }
 
-
+sub getOptionalAnnotationPropertiesFile { $_[0]->workflowDataPath("../annotationProperties.txt") }
 
 1;
