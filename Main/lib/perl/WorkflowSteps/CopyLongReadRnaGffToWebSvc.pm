@@ -1,4 +1,4 @@
- package ApiCommonWorkflow::Main::WorkflowSteps::CopyLongReadRnaGffToEebSvc;
+ package ApiCommonWorkflow::Main::WorkflowSteps::CopyLongReadRnaGffToWebSvc;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;

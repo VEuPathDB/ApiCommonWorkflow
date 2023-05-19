@@ -12,7 +12,7 @@ sub run {
 my ($self, $test, $undo) = @_;
 my $workflowDataDir = $self->getWorkflowDataDir();
 
-my $splitChunk = 10000; 
+my $splitChunk = $self->getParamValue("splitChunck"); 
 my $annotation = join("/", $workflowDataDir, $self->getParamValue("annotation"));
 my $reference =  join("/", $workflowDataDir, $self->getParamValue("reference"));
 #my $reads = $self->getParamValue("parentDataDir");
@@ -24,6 +24,9 @@ my $results = join("/", $workflowDataDir, $self->getParamValue("clusterResultDir
 my $databaseDir = join("/", $workflowDataDir, $self->getParamValue("databaseDir"));
 my $database = join("/",$workflowDataDir, $self->getParamValue("databaseDir"), $self->getParamValue("talonDataBase"));
 my $local = 'true';
+my $maxFracA = $self->getParamValue("maxFracA");
+my $minCount = $self->getParamValue("minCount");
+my $minDatasets = $self->getParamValue("minDatasets");
 my $configPath = join("/", $workflowDataDir, $self->getParamValue("configFileName"));
 
 
@@ -46,6 +49,9 @@ if ($undo) {
     databaseDir = \"$databaseDir\"
     database = \"$database\"
     local = $local
+    maxFracA = $maxFracA
+    minCount = $minCount
+    minDatasets = $minDatasets
 }
 
 singularity {
