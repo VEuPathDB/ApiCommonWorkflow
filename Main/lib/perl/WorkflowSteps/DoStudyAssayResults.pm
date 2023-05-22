@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression;
+package ApiCommonWorkflow::Main::WorkflowSteps::DoStudyAssayResults;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -50,7 +50,7 @@ sub run {
     $input_file = "--input_file $mappingFile";
   }
 
-  my $cmd = "doTranscriptExpression.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir $input_file --technology_type $technologyType";
+  my $cmd = "doStudyAssayResults.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir $input_file --technology_type $technologyType";
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir");

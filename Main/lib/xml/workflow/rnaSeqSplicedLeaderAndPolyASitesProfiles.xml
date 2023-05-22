@@ -16,10 +16,10 @@
 
 
     <!-- This step makes 2 config files for the loader steps below -->
-    <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
+    <step name="doStudyAssayResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoStudyAssayResults">
       <paramValue name="analysisConfigFile">$$experimentDatasetDir$$/analysisConfig.xml</paramValue>
       <paramValue name="inputDir">$$samplesOutputDir$$</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/doTranscriptExpression</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/doStudyAssayResults</paramValue>
       <!-- The ancillary file will mostly be unused;  Only here so we can fiddle with the profiles (like scaliing)   -->
       <paramValue name="geneProbeMappingTabFile"></paramValue>
       <paramValue name="geneProbeMappingVendorFile"></paramValue>
@@ -32,11 +32,11 @@
 
 
     <step name="loadSplicedLeaderFeaturesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$dataDir$$/doTranscriptExpression/insert_study_results_config.txt</paramValue>
-      <paramValue name="inputDir">$$dataDir$$/doTranscriptExpression</paramValue>
+      <paramValue name="configFile">$$dataDir$$/doStudyAssayResults/insert_study_results_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/doStudyAssayResults</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
-      <depends name="doTranscriptExpression"/>
+      <depends name="doStudyAssayResults"/>
       <dependsGlobal name="oboOntologies"/>
     </step>
 
@@ -51,7 +51,7 @@
 
      <step name="extractSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSplicedLeaderAndPolyASitesGenes">
       <paramValue name="analysisConfigFile">$$experimentDatasetDir$$/analysisConfig.xml</paramValue>
-      <paramValue name="workingDir">$$dataDir$$/doTranscriptExpression</paramValue>
+      <paramValue name="workingDir">$$dataDir$$/doStudyAssayResults</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="pctTies">min</paramValue>
       <paramValue name="type">$$type$$</paramValue>
@@ -59,8 +59,8 @@
     </step>
 
     <step name="loadSplicedLeaderQuantsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$dataDir$$/doTranscriptExpression/insert_study_results_ss_config.txt</paramValue>
-      <paramValue name="inputDir">$$dataDir$$/doTranscriptExpression</paramValue>
+      <paramValue name="configFile">$$dataDir$$/doStudyAssayResults/insert_study_results_ss_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/doStudyAssayResults</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
       <depends name="extractSplicedLeaderAndPolyASitesGenes"/>

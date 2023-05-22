@@ -15,10 +15,11 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 -->
-    <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
+
+    <step name="doStudyAssayResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoStudyAssayResults">
       <paramValue name="analysisConfigFile">$$parentDataDir$$/$$experimentDatasetName$$/final/analysisConfig.xml</paramValue>
       <paramValue name="inputDir">$$dataDir$$/final</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/doTranscriptExpression</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/doStudyAssayResults</paramValue>
       <paramValue name="geneProbeMappingTabFile">geneProbeMapping.tab</paramValue>
       <paramValue name="platformDirectory">$$parentDataDir$$/$$platform$$</paramValue>
       <paramValue name="expectCdfFile">$$expectCdfFile$$</paramValue>
@@ -28,11 +29,11 @@
     </step>
 
   <step name="loadStudyResultsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-    <paramValue name="configFile">$$dataDir$$/doTranscriptExpression/insert_study_results_config.txt</paramValue>
-    <paramValue name="inputDir">$$dataDir$$/doTranscriptExpression</paramValue>
+    <paramValue name="configFile">$$dataDir$$/doStudyAssayResults/insert_study_results_config.txt</paramValue>
+    <paramValue name="inputDir">$$dataDir$$/doStudyAssayResults</paramValue>
     <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
     <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
-	<depends name="doTranscriptExpression"/>
+	<depends name="doStudyAssayResults"/>
 <dependsGlobal name="oboOntologies"/>
   </step>
 
@@ -41,7 +42,7 @@
       <paramValue name="method">one_channel_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters"></paramValue>
-      <depends name="doTranscriptExpression"/>
+      <depends name="doStudyAssayResults"/>
     </step>
 
     <step name="document-twoChannel"
@@ -49,7 +50,7 @@
       <paramValue name="method">two_channel_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters"></paramValue>
-      <depends name="doTranscriptExpression"/>
+      <depends name="doStudyAssayResults"/>
     </step>
 
     <step name="document-PaGE"
@@ -57,7 +58,7 @@
       <paramValue name="method">PaGE_MTHD</paramValue>
       <paramValue name="version">5.1.6.1</paramValue>
       <paramValue name="parameters"></paramValue>
-      <depends name="doTranscriptExpression"/>
+      <depends name="doStudyAssayResults"/>
     </step>
 
 </workflowGraph>

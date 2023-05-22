@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpressionEbi;
+package ApiCommonWorkflow::Main::WorkflowSteps::DoStudyAssayResultsEbi;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -17,7 +17,7 @@ sub run {
 
   my $ancillaryFile = $analysisConfigFile;
   $ancillaryFile =~ s/analysisConfig.xml/ancillary.txt/; 
-  my $cmd = "doTranscriptExpression.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir --technology_type $technologyType";
+  my $cmd = "doStudyAssayResults.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir --technology_type $technologyType";
   $cmd = $cmd . " --input_file $workflowDataDir/$ancillaryFile" if (-e "$workflowDataDir/$ancillaryFile");
   if ($undo) {
     $self->runCmd(0, "rm $workflowDataDir/$outputDir/insert_study_results_config.txt");

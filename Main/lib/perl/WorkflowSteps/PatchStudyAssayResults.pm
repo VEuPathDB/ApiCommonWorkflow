@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::PatchTranscriptExpression;
+package ApiCommonWorkflow::Main::WorkflowSteps::PatchStudyAssayResults;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -19,7 +19,7 @@ sub run {
   $ancillaryFile =~ s/analysisConfig.xml/ancillary.txt/;
 
 
-  my $cmd = "doTranscriptExpression.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir --technology_type $technologyType --patch";
+  my $cmd = "doStudyAssayResults.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir --technology_type $technologyType --patch";
 
   $cmd = $cmd . " --input_file $workflowDataDir/$ancillaryFile" if (-e "$workflowDataDir/$ancillaryFile");
 

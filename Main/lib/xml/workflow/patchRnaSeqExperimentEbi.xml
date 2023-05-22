@@ -46,7 +46,7 @@
       <depends name="fetchEbiRNASeqPatch"/>
     </step>
 
-    <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PatchTranscriptExpression">
+    <step name="doStudyAssayResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PatchStudyAssayResults">
       <paramValue name="analysisConfigFile">$$analysisConfig$$</paramValue>
       <paramValue name="outputDir">$$dataDir$$</paramValue>
       <paramValue name="technologyType">RNASeqEbi</paramValue>
@@ -55,7 +55,7 @@
     
     <step name="unloadProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UnloadProfiles">
       <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-      <depends name="doTranscriptExpression"/><!--no technical dependencies, but don't want to run until the updates have processed successfully as we can't undo this-->
+      <depends name="doStudyAssayResults"/><!--no technical dependencies, but don't want to run until the updates have processed successfully as we can't undo this-->
     </step>
 
     <step name="loadStudyResultsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRnaSeqPatch" stepLoadTypes="plugin">

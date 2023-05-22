@@ -12,10 +12,10 @@
     <constant name="experimentDataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesOutputDir">$$experimentDataDir$$/samplesOutput</constant>
 
-    <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
+    <step name="doStudyAssayResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoStudyAssayResults">
       <paramValue name="analysisConfigFile">$$experimentDataDir$$/$$experimentDatasetName$$/final/analysisConfig.xml</paramValue>
       <paramValue name="inputDir">$$samplesOutputDir$$</paramValue>
-      <paramValue name="outputDir">$$experimentDataDir$$/doTranscriptExpression</paramValue>
+      <paramValue name="outputDir">$$experimentDataDir$$/doStudyAssayResults</paramValue>
       <!-- The ancillary file will mostly be unused;  Only here so we can fiddle with the profiles (like scaliing)   -->
       <paramValue name="geneProbeMappingTabFile"></paramValue>
       <paramValue name="geneProbeMappingVendorFile"></paramValue>
@@ -32,7 +32,7 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
-      <depends name="doTranscriptExpression"/>
+      <depends name="doStudyAssayResults"/>
     </step>
 
     <step name="copyMergedBigwigsToWebSvc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyRnaSeqMergedBigwigsToWebSvc">
@@ -45,11 +45,11 @@
 
 
     <step name="loadStudyResultsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-        <paramValue name="configFile">$$experimentDataDir$$/doTranscriptExpression/insert_study_results_config.txt</paramValue>
-        <paramValue name="inputDir">$$experimentDataDir$$/doTranscriptExpression</paramValue>
+        <paramValue name="configFile">$$experimentDataDir$$/doStudyAssayResults/insert_study_results_config.txt</paramValue>
+        <paramValue name="inputDir">$$experimentDataDir$$/doStudyAssayResults</paramValue>
         <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
         <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
-	    <depends name="doTranscriptExpression"/>
+	    <depends name="doStudyAssayResults"/>
         <dependsGlobal name="oboOntologies"/>
     </step>
 
@@ -61,10 +61,5 @@
         <dependsGlobal name="oboOntologies"/>
         <dependsGlobal name="eupathCuratedOntologies"/>
     </step>
-
-
-
-
-
 
 </workflowGraph>
