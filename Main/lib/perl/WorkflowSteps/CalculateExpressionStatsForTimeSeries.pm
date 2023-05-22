@@ -9,7 +9,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
   my @configLines;
-  my $dataDir = $self->getParamValue('doTranscriptExpressionDir');
+  my $dataDir = $self->getParamValue('doStudyAssayResultsDir');
   my $configFile = $self->getParamValue('configFile');
   my $workflowDataDir = $self->getWorkflowDataDir();
 

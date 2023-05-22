@@ -22,7 +22,7 @@ sub run {
   my $organismNameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
 
-  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/transcriptExpression/$experimentResourceName";
+  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/StudyAssayResults/$experimentResourceName";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
