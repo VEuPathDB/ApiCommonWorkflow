@@ -5,6 +5,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeLongReadRnaSeqNextflowConfig
 use warnings;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+
 sub run {
 
 my ($self, $test, $undo) = @_;
