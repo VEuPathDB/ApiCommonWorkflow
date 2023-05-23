@@ -1,6 +1,3 @@
-#!/usr/bin/perl
-#use lib "$ENV{GUS_HOME}/lib/perl";
-
 package ApiCommonWorkflow::Main::WorkflowSteps::MakeBulkRnaSeqNextflowConfig;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
@@ -12,10 +9,10 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
  my ($self, $test, $undo) = @_;
 
- my $workflowDataDir = $self->getWorkflowDataDir();
+ my $workflowDataDir = $self->getClusterWorkflowDataDir();
  my $dir = join("/", $workflowDataDir, $self->getParamValue("inputDir")); 
 
- open(INTRON, "$workflowDataDir/maxIntronLen") or die "Cannot read max intron len from $workflowDataDir/$dir/maxIntronLen\n$!\n";
+ open(INTRON, "$dir/maxIntronLen") or die "Cannot read max intron len from $dir/maxIntronLen\n$!\n";
 
 # read the file, and push every line into an array
  my @lines;
@@ -26,7 +23,7 @@ sub run {
 
 # there should only be one line in this file, so check that this is true
  if (scalar @lines != 1) {
-    die "File $workflowDataDir/$dir/maxIntronLen should only contain one line\n";
+    die "File $dir/maxIntronLen should only contain one line\n";
  }
 
 # if it is true, read the first line - this is your intron length value
@@ -70,6 +67,7 @@ sub run {
 }
 singularity {
     enabled = true
+    autoMounts = true
 } 
  ";
 
