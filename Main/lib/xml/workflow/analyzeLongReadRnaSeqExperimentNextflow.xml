@@ -10,7 +10,7 @@
     <param name="topLevelFastaFile"/>
     <param name="sequencePlatform"/>
     <param name="relativeWebServicesDir"/> 
-
+    <param name="isSRA"/> 
 
     
 
@@ -33,8 +33,10 @@
 
     <step name="makeLongReadNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeLongReadRnaSeqNextflowConfig">
 	<paramValue name="analysisDir">$$parentDataDir$$</paramValue> 
-      	<paramValue name="FastqFiles">$$parentDataDir$$/$$experimentDatasetName$$/final</paramValue>
+      	<paramValue name="dataSource">$$parentDataDir$$/$$experimentDatasetName$$/final</paramValue>
 	<paramValue name="splitChunck">10000</paramValue> 
+	<!-- <paramValue name="local">true</paramValue> --> 
+	<paramValue name="isSRA">$$isSRA$$</paramValue>
       	<paramValue name="clusterResultDir">$$parentDataDir$$/$$experimentName$$</paramValue>
     	<paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
 	<paramValue name="annotation">$$parentDataDir$$/$$gtfFile$$</paramValue>
@@ -55,7 +57,7 @@
 
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-	<paramValue name="fileOrDirToMirror">$$parentDataDir$$</paramValue>
+	<paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       	<depends name="makeLongReadNextflowConfig"/>
     </step>
 
@@ -89,6 +91,8 @@
       <paramValue name="gffFile">$$dataDir$$/Gtf/$$experimentDatasetName$$_sorted.gff.gz</paramValue>
       <paramValue name="countFile">$$dataDir$$/counts/results_no_filter_talon_abundance.tsv</paramValue>
       <paramValue name="extDbRlsSpec">"$$experimentDatasetName$$|$$experimentDatasetVersion$$"</paramValue>
+      <!-- step below migth be change for undoing -->
+      <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
       <depends name="runLongReadRnaSeqExperiment"/>
      <!--  <dependsGlobal name="oboOntologies"/> -->
     </step>

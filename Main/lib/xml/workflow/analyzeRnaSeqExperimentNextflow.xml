@@ -12,7 +12,7 @@
     <param name="topLevelSeqSizeFile"/>
     <param name="topLevelGeneFootprintFile"/>
     <param name="gtfFile"/>
-    <param name="isLocal"/>
+    <param name="isSRA"/>
     <param name="relativeWebServicesDir"/>
     <param name="hisatIndex"/>
     <!--<param name="ebiOrganismName"/>-->
@@ -46,12 +46,12 @@
     <step name="makeBulkRnaSeqNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBulkRnaSeqNextflowConfig">
       <paramValue name="inputDir">$$dataDir$$</paramValue>
       <paramValue name="analysisDir">$$parentDataDir$$</paramValue>
-      <paramValue name="FastqFiles">$$parentDataDir$$/$$experimentDatasetName$$/final</paramValue>
+      <paramValue name="dataSource">$$parentDataDir$$/$$experimentDatasetName$$/final</paramValue>
       <paramValue name="clusterResultDir">$$parentDataDir$$/$$experimentName$$/</paramValue>
       <paramValue name="annotation">$$parentDataDir$$/$$gtfFile$$</paramValue>
       <paramValue name="hisat2Index">$$parentDataDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="isLocal">$$isLocal$$</paramValue>
+      <paramValue name="isSRA">$$isSRA$$</paramValue>
       <paramValue name="isPaired">$$isPairedEnd$$</paramValue>
       <paramValue name="isStrandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="isCDS">$$isCDS$$</paramValue>
@@ -69,7 +69,7 @@
    -->
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$parentDataDir$$</paramValue>
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
       <depends name="makeBulkRnaSeqNextflowConfig"/>
     </step>
 
