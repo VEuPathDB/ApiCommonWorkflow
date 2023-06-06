@@ -37,7 +37,7 @@ sub run {
  my $isPaired = $self->getParamValue("isPaired");
  my $isStranded = $self->getParamValue("isStrandSpecific");
  my $isCds = $self->getParamValue("isCDS");
- my $results = join("/", $workflowDataDir, $self->getParamValue("clusterResultDir"), "results");
+ my $results = join("/", $workflowDataDir, $self->getParamValue("clusterResultDir"));
  my $annotation = join("/", $workflowDataDir, $self->getParamValue("annotation"));
  my $hisat2Index = join("/", $workflowDataDir, $self->getParamValue("hisat2Index"));
  my $createIndex = "false";

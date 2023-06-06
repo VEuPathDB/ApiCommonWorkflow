@@ -24,6 +24,13 @@
      	<paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
     </subgraph>
 
+   <!-- mirror $$parentDataDir$$/$$experimentDatasetName$$ here dependent on loadDataset -->
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+        <paramValue name="fileOrDirToMirror">$$parentDataDir$$/$$experimentDatasetName$$</paramValue>
+        <depends name="loadDataset"/>
+    </step>
+
+
 
    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -37,7 +44,7 @@
 	<paramValue name="splitChunck">10000</paramValue> 
 	<!-- <paramValue name="local">true</paramValue> --> 
 	<paramValue name="isSRA">$$isSRA$$</paramValue>
-      	<paramValue name="clusterResultDir">$$parentDataDir$$/$$experimentName$$</paramValue>
+      	<paramValue name="clusterResultDir">$$parentDataDir$$/$$experimentName$$/results</paramValue>
     	<paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
 	<paramValue name="annotation">$$parentDataDir$$/$$gtfFile$$</paramValue>
 	<paramValue name="configFileName">$$parentDataDir$$/$$experimentName$$/nextflow.config</paramValue>	
@@ -63,16 +70,17 @@
 
     <step name="runLongReadRnaSeqExperiment" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
      	<paramValue name="workingDir">$$dataDir$$</paramValue>
-      	<paramValue name="resultsDir">$$dataDir$$</paramValue>
+      	<paramValue name="resultsDir">$$dataDir$$/results</paramValue>
       	<paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
       	<paramValue name="nextflowWorkflow">VEuPathDB/longReadRnaSeq</paramValue>
       	<paramValue name="isGitRepo">true</paramValue>
       	<paramValue name="revision">main</paramValue>
       	<depends name="mirrorToCluster"/>
     </step>
+<!-- Add mirror from cluster -->
 
     <step name="copyGffFilesToWebSvc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyLongReadRnaGffToWebSvc">
-        <paramValue name="copyFromDir">$$dataDir$$/Gtf</paramValue>
+        <paramValue name="copyFromDir">$$dataDir$$/results/Gtf</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
         <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
@@ -80,7 +88,7 @@
     </step>
     
     <step name="copyBamFilesToWebSvc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyLongReadRnaBamToWebSvc">
-        <paramValue name="copyFromDir">$$dataDir$$/bam</paramValue>
+        <paramValue name="copyFromDir">$$dataDir$$/results/bam</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
         <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
@@ -88,8 +96,8 @@
     </step>
    
     <step name="loadLongReadRnaSeqCounts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertLongReadCounts" stepLoadTypes="plugin">
-      <paramValue name="gffFile">$$dataDir$$/Gtf/$$experimentDatasetName$$_sorted.gff.gz</paramValue>
-      <paramValue name="countFile">$$dataDir$$/counts/results_no_filter_talon_abundance.tsv</paramValue>
+      <paramValue name="gffFile">$$dataDir$$/results/Gtf/$$experimentDatasetName$$_sorted.gff.gz</paramValue>
+      <paramValue name="countFile">$$dataDir$$/results/counts/results_no_filter_talon_abundance.tsv</paramValue>
       <paramValue name="extDbRlsSpec">"$$experimentDatasetName$$|$$experimentDatasetVersion$$"</paramValue>
       <!-- step below migth be change for undoing -->
       <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>

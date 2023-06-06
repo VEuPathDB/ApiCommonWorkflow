@@ -27,6 +27,10 @@
       <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
     </subgraph>
 
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+        <paramValue name="fileOrDirToMirror">$$parentDataDir$$/$$experimentDatasetName$$</paramValue>
+        <depends name="loadDataset"/>
+    </step>
 
     <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -47,7 +51,7 @@
       <paramValue name="inputDir">$$dataDir$$</paramValue>
       <paramValue name="analysisDir">$$parentDataDir$$</paramValue>
       <paramValue name="dataSource">$$parentDataDir$$/$$experimentDatasetName$$/final</paramValue>
-      <paramValue name="clusterResultDir">$$parentDataDir$$/$$experimentName$$</paramValue>
+      <paramValue name="clusterResultDir">$$parentDataDir$$/$$experimentName$$/results</paramValue>
       <paramValue name="annotation">$$parentDataDir$$/$$gtfFile$$</paramValue>
       <paramValue name="hisat2Index">$$parentDataDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -75,7 +79,7 @@
 
     <step name="runBulkRnaSeqExperiment" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
       <paramValue name="workingDir">$$dataDir$$</paramValue>
-      <paramValue name="resultsDir">$$dataDir$$</paramValue>
+      <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
       <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
       <paramValue name="nextflowWorkflow">VEuPathDB/bulkRnaSeq</paramValue>
       <paramValue name="isGitRepo">true</paramValue>
