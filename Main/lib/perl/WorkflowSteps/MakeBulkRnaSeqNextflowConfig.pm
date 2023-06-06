@@ -11,9 +11,9 @@ sub run {
 
  my $workflowDataDir = $self->getWorkflowDataDir();
  #my $workflowDataDir = $self->getClusterWorkflowDataDir();
- my $dir = join("/", $workflowDataDir, $self->getParamValue("inputDir")); 
+ my $dir = join("/", $workflowDataDir, $self->getParamValue("analysisDir")); 
 
- open(INTRON, "$workflowDataDir/maxIntronLen") or die "Cannot read max intron len from $workflowDataDir/maxIntronLen\n$!\n";
+ open(INTRON, "$dir/maxIntronLen") or die "Cannot read max intron len from $dir/maxIntronLen\n$!\n";
 
 # read the file, and push every line into an array
  my @lines;
@@ -37,7 +37,7 @@ sub run {
  my $isPaired = $self->getParamValue("isPaired");
  my $isStranded = $self->getParamValue("isStrandSpecific");
  my $isCds = $self->getParamValue("isCDS");
- my $results = join("/", $workflowDataDir, $self->getParamValue("clusterResultDir"));
+ my $results = join("/", $workflowDataDir, $self->getParamValue("clusterResultDir"), "results");
  my $annotation = join("/", $workflowDataDir, $self->getParamValue("annotation"));
  my $hisat2Index = join("/", $workflowDataDir, $self->getParamValue("hisat2Index"));
  my $createIndex = "false";
