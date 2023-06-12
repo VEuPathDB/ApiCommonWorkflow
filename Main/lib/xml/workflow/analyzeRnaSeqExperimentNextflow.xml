@@ -88,12 +88,21 @@
       <depends name="mirrorToClusterData"/>
     </step>
 
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
+        <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
+        <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+        <paramValue name="outputFiles">TODO</paramValue>
+        <paramValue name="deleteAfterCopy">false</paramValue>
+        <depends name="runBulkRnaSeqExperiment"/>
+    </step>
+
+
     <step name="tpmFromHtseqCounts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TpmFromHtseqCounts">
       <paramValue name="samplesDir">$$dataDir$$/results</paramValue>
       <paramValue name="geneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
-      <depends name="runBulkRnaSeqExperiment"/>
+      <depends name="mirrorFromCluster"/>
     </step>
 
     <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpressionEbi">
@@ -108,7 +117,7 @@
       <paramValue name="inputDir">$$dataDir$$/results</paramValue>
       <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
       <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
-      <depends name="runBulkRnaSeqExperiment"/>
+      <depends name="mirrorFromCluster"/>
     </step>
     
    <step name="makeMergedBigwigs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RNAseqMerge">
@@ -124,7 +133,6 @@
     	<paramValue name="outputDir">$$dataDir$$/results</paramValue>
     	<paramValue name="outputFiles">TODO</paramValue>
     	<paramValue name="deleteAfterCopy">false</paramValue>
-    	<depends name="runBulkRnaSeqExperiment"/>
     	<depends name="normalizeCoverage"/>
     	<depends name="doTranscriptExpression"/>
     </step>
@@ -136,7 +144,6 @@
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
       <depends name="doTranscriptExpression"/>
-      <depends name="mirrorFromCluster"/>
       <!--<dependsGlobal name="oboOntologies"/>-->
     </step>
 
@@ -155,7 +162,6 @@
       <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
       <depends name="doTranscriptExpression"/>
       <depends name="normalizeCoverage"/>
-      <depends name="mirrorFromCluster"/>
     </step>
     
 
@@ -166,7 +172,6 @@
         <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
         <depends name="makeMergedBigwigs"/>
         <depends name="copyNormalizedBedGraphToWebServiceDir"/>
-        <depends name="mirrorFromCluster"/>
     </step>
 </workflowGraph>
 
