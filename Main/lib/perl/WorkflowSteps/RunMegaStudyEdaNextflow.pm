@@ -4,6 +4,11 @@ package ApiCommonWorkflow::Main::WorkflowSteps::RunMegaStudyEdaNextflow;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig;;
 
+# couls override these defaults in worflow if necessary;
+my $MEGASTUDY_YAML = "/../final/megaStudy.yaml";
+my $OWLATTRIBUTES_FILE = "/../final/owlAttributes.txt";
+
+
 sub getStudyDirectory {
     my ($self) = @_;
 
@@ -42,8 +47,14 @@ sub getMegaStudyStableId {
 
 sub getOptionalMegaStudyYaml {
     my ($self) = @_;
-    return $self->getWorkingDirectory() . "/final/" . $self->getParamValue('megaStudyYamlBaseName');
+    return $self->getWorkingDirectory() . $MEGASTUDY_YAML;;
 }
+
+
+ sub getOptionalAnnotationPropertiesFile {
+     my ($self) = @_;
+     return $self->getWorkingDirectory() . $OWLATTRIBUTES_FILE;
+ }
 
 sub getDownloadFileBaseName {
     return "TODO";

@@ -1,11 +1,12 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::RunPopbioEdaNextflow;
+package ApiCommonWorkflow::Main::WorkflowSteps::RunClinEpiEdaNextflow;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig);
 
 use strict;
+use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig;;
 
 # could override in worfklow step if needed
-my $INVESTIGATION_BASENAME = "i_investigation.txt";
+my $INVESTIGATION_BASENAME = "investigation.xml";
 
 
 sub getStudyDirectory {
@@ -34,12 +35,18 @@ sub getWebDisplayOntologySpec {
     return "$webDisplayOntologyName|%"
 }
 
+sub getWebDisplayOntologyFile {
+    return sprintf("%s/ontology/release/production/%s.owl",
+      $ENV{GUS_HOME}, $_[0]->getParamValue('webDisplayOntologyName'));
+} # for mapping, can be ontologyMapping.xml or dataset-specific owl
+
 sub getLoadProtocolTypeAsVariable {
-    return "true";
+    return "false";
 }
 
 sub getLoadWebDisplayOntologyFile {
-    return "false";
+    return "true"; # if you want to load the getWebDisplayOntologyFile above IF IT IS OWL
+## SEE eda-nextflow/main.nf
 }
 
 sub getInvestigationSubset {
@@ -47,33 +54,25 @@ sub getInvestigationSubset {
 }
 
 sub getIsaFormat {
-    return "isatab";
+    return "simple";
 }
 sub getInvestigationBaseName {
-    return $INVESTIGATION_BASENAME;;
+    return $INVESTIGATION_BASENAME;
 }
 
 sub getDownloadFileBaseName {
     return "TODO";
 }
 
-sub getSpeciesReconciliationOntologySpec {
-    my ($self) = @_;
-
-    return $self->getParamValue('speciesReconciliationOntologySpec');
-
-}
-
-sub getSpeciesReconciliationFallbackSpecies {
-    my ($self) = @_;
-
-    return $self->getParamValue('speciesReconciliationFallbackSpecies');
-}
-
-sub getUseOntologyTermTableForTaxonTerms {
-    return "true"
-}
-
+# TODO:
+# relative paths: '/../final/owlAttributes.txt'
+sub getOptionalDateObfuscationFile {return $_[0]->workflowDataPath("../final/dateObfuscation.txt") }
+sub getOptionalValueMappingFile { return $_[0]->workflowDataPath("../final/valueMap.txt") }
+sub getOptionalOntologyMappingOverrideFile { return $_[0]->workflowDataPath("../final/ontologyMapping.xml") }
+# sub getOptionalEntityTypeFile { return "entities.txt" }
+# sub getOptionalOwlAttributesFile { return "owlAttributes.txt" }
+# sub getOptionalOrdinalsFile { return "ordinals.txt" }
 sub getOptionalAnnotationPropertiesFile { $_[0]->workflowDataPath("../annotationProperties.txt") }
+
 
 1;

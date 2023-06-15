@@ -2,7 +2,13 @@ package ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::RunNextflow);
 
 use strict;
+use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunNextflow;
+
+sub workflowDataPath {
+  my ($self, $file) = @_;
+  return join("/",$self->getStudyDirectory() , $file);
+}
 
 sub getStudyDirectory {}
 sub getProject {}
@@ -25,12 +31,21 @@ sub getSampleDetailsFile {}
 
 sub getOptionalDateObfuscationFile {}
 sub getOptionalValueMappingFile {}
-sub getOptionalOntologyMappingOverrideBaseName {}
-sub getOptionalEntityTypeFile {}
-sub getOptionalOwlAttributesFile {}
-sub getOptionalOrdinalsFile {}
+sub getOptionalOntologyMappingOverrideFile {}
 
 sub getDownloadFileBaseName {}
+
+sub getOptionalAnnotationPropertiesFile {}
+
+sub getSpeciesReconciliationOntologySpec {}
+sub getSpeciesReconciliationFallbackSpecies {}
+
+sub getLoadProtocolTypeAsVariable {}
+
+sub getUseOntologyTermTableForTaxonTerms {
+    return "false"
+}
+
 
 sub getSchema {
     return "EDA"
@@ -57,12 +72,15 @@ sub nextflowConfigAsString {
     my $sampleDetailsFile = $self->getSampleDetailsFile() || "NA";
     my $optionalDateObfuscationFile = $self->getOptionalDateObfuscationFile() || "NA";
     my $optionalValueMappingFile = $self->getOptionalValueMappingFile() || "NA";
-    my $optionalOntologyMappingOverrideBaseName = $self->getOptionalOntologyMappingOverrideBaseName() || "NA";
-    my $optionalEntityTypeFile = $self->getOptionalEntityTypeFile() || "NA";
-    my $optionalOwlAttributesFile = $self->getOptionalOwlAttributesFile() || "NA";
-    my $optionalOrdinalsFile = $self->getOptionalOrdinalsFile() || "NA";
-    my $downloadFileBaseName = $self->getDownloadFileBaseName() || "NA";
+    my $optionalOntologyMappingOverrideFile = $self->getOptionalOntologyMappingOverrideFile() || "NA";
 
+    my $downloadFileBaseName = $self->getDownloadFileBaseName() || "NA";
+    my $speciesReconciliationOntologySpec = $self->getSpeciesReconciliationOntologySpec() || "NA";
+    my $speciesReconciliationFallbackSpecies = $self->getSpeciesReconciliationFallbackSpecies() || "NA";
+    my $loadProtocolTypeAsVariable = $self->getLoadProtocolTypeAsVariable() || "false";
+    my $optionalAnnotationPropertiesFile = $self->getOptionalAnnotationPropertiesFile() || "NA";
+
+    my $useOntologyTermTableForTaxonTerms = $self->getUseOntologyTermTableForTaxonTerms();
 
     my $config = <<CONFIG;
 params.studyDirectory = "$studyDirectory"
@@ -89,14 +107,19 @@ params.sampleDetailsFile = "$sampleDetailsFile"
 // optional files when isaFormat = simple
 params.optionalDateObfuscationFile = "$optionalDateObfuscationFile"
 params.optionalValueMappingFile = "$optionalValueMappingFile"
-params.optionalOntologyMappingOverrideBaseName = "$optionalOntologyMappingOverrideBaseName"
+params.optionalOntologyMappingOverrideFile = "$optionalOntologyMappingOverrideFile"
 
 // optional ontology files
-params.optionalEntityTypeFile = "$optionalEntityTypeFile"
-params.optionalOwlAttributesFile = "$optionalOwlAttributesFile"
-params.optionalOrdinalsFile = "$optionalOrdinalsFile"
+params.optionalAnnotationPropertiesFile = "$optionalAnnotationPropertiesFile"
 
 params.downloadFileBaseName = "$downloadFileBaseName"
+
+params.speciesReconciliationOntologySpec = "$speciesReconciliationOntologySpec"
+params.speciesReconciliationFallbackSpecies = "$speciesReconciliationFallbackSpecies"
+params.useOntologyTermTableForTaxonTerms = $useOntologyTermTableForTaxonTerms
+
+params.loadProtocolTypeAsVariable = $loadProtocolTypeAsVariable
+
 
 trace.enabled = true
 trace.fields = 'task_id,hash,process,tag,status,exit,submit,realtime,%cpu,rss'

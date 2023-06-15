@@ -19,12 +19,10 @@ sub run {
   my $organismAbbrev = $self->getParamValue("organismAbbrev");
   my $referenceStrain = $self->getParamValue("referenceStrain");
   my $cacheFile = $self->getParamValue("cacheFile");
-  my $cacheFileDir = $self->getParamValue("cacheFileDir");
-  my $undoneStrainsFile = $self->getParamValue("undoneStrainsFile");
+  my $undoneStrains = $self->getParamValue("undoneStrains");
   my $varscanDirectory = join("/", $workflowDataDir, $self->getParamValue("varscanDirectory"));
   my $varscanFilePath = join("/", $workflowDataDir, $self->getParamValue("varscanFilePath"));
   my $webServicesDir = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("webServicesDir"));
-  my $extDbRlsSpec = $self->getParamValue("extDbRlsSpec");
   
   if ($undo) {
     $self->runCmd(0,"rm -rf $configPath");
@@ -38,9 +36,8 @@ params {
   inputDir = \"$inputDir\"
   outputDir = \"$outputDir\"
   gusConfig = \"\$GUS_HOME/config/gus.config\"
-  cacheFile = \"$cacheFileDir/$cacheFile\"
-  cacheFileDir = \"$cacheFileDir\"
-  undoneStrains = \"$undoneStrainsFile\"
+  cacheFile = \"$cacheFile\"
+  undoneStrains = \"$undoneStrains\"
   organism_abbrev = \'$organismAbbrev\' 
   reference_strain = \'$referenceStrain\'
   varscan_directory = \"$varscanDirectory\"
@@ -48,7 +45,6 @@ params {
   gtfFile = \"$gtfFile\"
   varscanFilePath = \"$varscanFilePath\"
   webServicesDir = \"$webServicesDir\"
-  extDbRlsSpec = '\"$extDbRlsSpec\"'
 
 }
 
