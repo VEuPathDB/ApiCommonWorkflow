@@ -9,7 +9,6 @@ use ApiCommonWorkflow::Main::Util::OrganismInfo;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    #get parameters
     my $copyFromDir = $self->getParamValue('copyFromDir');
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $relativeDir = $self->getParamValue('relativeDir');

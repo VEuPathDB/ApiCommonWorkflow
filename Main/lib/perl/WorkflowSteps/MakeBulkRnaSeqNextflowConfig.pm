@@ -9,8 +9,8 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
  my ($self, $test, $undo) = @_;
 
- my $workflowDataDir = $self->getWorkflowDataDir();
- #my $workflowDataDir = $self->getClusterWorkflowDataDir();
+ #my $workflowDataDir = $self->getWorkflowDataDir();
+ my $workflowDataDir = $self->getClusterWorkflowDataDir();
  my $dir = join("/", $workflowDataDir, $self->getParamValue("analysisDir")); 
 
  open(INTRON, "$dir/maxIntronLen") or die "Cannot read max intron len from $dir/maxIntronLen\n$!\n";
@@ -22,13 +22,10 @@ sub run {
     push (@lines,  $line);
  }
 
-# there should only be one line in this file, so check that this is true
  if (scalar @lines != 1) {
     die "File $dir/maxIntronLen should only contain one line\n";
  }
 
-# if it is true, read the first line - this is your intron length value
-# it may be worth adding an additional check that this is numeric
  my $maxIntronLen = $lines[0];
 
  my $configPath = join("/", $workflowDataDir, $self->getParamValue("configFileName"));
