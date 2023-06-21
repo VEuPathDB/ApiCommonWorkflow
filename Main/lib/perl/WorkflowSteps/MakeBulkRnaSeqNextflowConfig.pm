@@ -9,8 +9,8 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
  my ($self, $test, $undo) = @_;
 
- #my $workflowDataDir = $self->getWorkflowDataDir();
- my $workflowDataDir = $self->getClusterWorkflowDataDir();
+ my $workflowDataDir = $self->getWorkflowDataDir();
+ #my $workflowDataDir = $self->getClusterWorkflowDataDir();
  my $dir = join("/", $workflowDataDir, $self->getParamValue("analysisDir")); 
 
  open(INTRON, "$dir/maxIntronLen") or die "Cannot read max intron len from $dir/maxIntronLen\n$!\n";
