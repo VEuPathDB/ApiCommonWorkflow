@@ -12,42 +12,35 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeInterproNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeIprscan5NextflowConfig">
-      <paramValue name="outputDir">$$dataDir$$/mainresult/</paramValue>
-      <paramValue name="configFileName">nextflow.config</paramValue>    
-      <paramValue name="analysisDir">$$dataDir$$</paramValue>
-      <paramValue name="input">$$proteinsFile$$.NoAsterisks</paramValue>
-      <paramValue name="fastaSubsetSize">1</paramValue>
-      <paramValue name="appls">pirsf,pfama,smart,tigrfam,superfamily</paramValue>
-      <paramValue name="outputFile">iprscan_out.tsv</paramValue>
-      <paramValue name="interproscanDatabase">/home/rdemko/interproData/data</paramValue>
+    <step name="makeClusterTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeInterproTaskInputDir">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
-   
+
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeInterproNextflowConfig"/>
+      <depends name="makeClusterTaskInputDir"/>
     </step>
-  
-    <step name="runInterproClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
-      <paramValue name="workingDir">$$dataDir$$</paramValue>
-      <paramValue name="resultsDir">$$dataDir$$/mainresult</paramValue>
-      <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
-      <paramValue name="nextflowWorkflow">VEuPathDB/Iprscan5</paramValue>
-      <paramValue name="isGitRepo">true</paramValue>
+
+    <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="interproCluster" stepFailTypes="interproCluster">
+      <paramValue name="taskInputDir">$$dataDir$$/input</paramValue>
+      <paramValue name="numNodes">20</paramValue>
+      <paramValue name="maxMemoryGigs">4</paramValue>
+      <paramValue name="processorsPerNode">1</paramValue>
       <depends name="mirrorToCluster"/>
     </step>
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/mainresult</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/mainresult</paramValue>
-      <paramValue name="outputFiles">iprscan_out.tsv</paramValue>
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/master/mainresult/</paramValue>
+      <paramValue name="outputFiles"></paramValue>
       <paramValue name="deleteAfterCopy">true</paramValue>
-      <depends name="runInterproClusterTask"/>
+      <depends name="runClusterTask"/>
     </step>
 
     <step name="insert" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertInterpro" stepLoadTypes="plugin" includeIf="$$insertVersion$$ == 1">
-      <paramValue name="inputDir">$$dataDir$$/mainresult/</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/master/mainresult/</paramValue>
       <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
       <paramValue name="configFile">global/InterproscanData_RSRC/iprscan/data/insertInterpro-config.xml</paramValue>
       <depends name="mirrorFromCluster"/>
@@ -56,7 +49,7 @@
     </step>
 
     <step name="insert2" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertInterpro_2" stepLoadTypes="plugin" includeIf="$$insertVersion$$ == 2">
-      <paramValue name="inputDir">$$dataDir$$/mainresult/</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/master/mainresult/</paramValue>
       <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
       <paramValue name="configFile">global/InterproscanData_RSRC/iprscan/data/insertInterpro-config.xml</paramValue>
       <paramValue name="aaSeqTable">$$aaSeqTable$$</paramValue>
