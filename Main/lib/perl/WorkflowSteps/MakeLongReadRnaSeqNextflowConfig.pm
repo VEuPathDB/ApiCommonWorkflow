@@ -11,8 +11,8 @@ sub run {
 
 
 my ($self, $test, $undo) = @_;
-#my $workflowDataDir = $self->getWorkflowDataDir();
-my $workflowDataDir = $self->getClusterWorkflowDataDir();
+my $workflowDataDir = $self->getWorkflowDataDir();
+#my $workflowDataDir = $self->getClusterWorkflowDataDir();
 
 my $isSRA = $self->getParamValue("isSRA");
 my $splitChunk = $self->getParamValue("splitChunck"); 
