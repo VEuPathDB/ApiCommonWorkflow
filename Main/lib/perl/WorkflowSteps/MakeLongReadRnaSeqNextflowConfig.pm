@@ -11,8 +11,8 @@ sub run {
 
 
 my ($self, $test, $undo) = @_;
-my $workflowDataDir = $self->getWorkflowDataDir();
-#my $workflowDataDir = $self->getClusterWorkflowDataDir();
+#my $workflowDataDir = $self->getWorkflowDataDir();
+my $workflowDataDir = $self->getClusterWorkflowDataDir();
 
 my $isSRA = $self->getParamValue("isSRA");
 my $splitChunk = $self->getParamValue("splitChunck"); 
@@ -28,7 +28,7 @@ my $database = join("/",$workflowDataDir, $self->getParamValue("databaseDir"), $
 my $maxFracA = $self->getParamValue("maxFracA");
 my $minCount = $self->getParamValue("minCount");
 my $minDatasets = $self->getParamValue("minDatasets");
-my $configPath = join("/", $workflowDataDir, $self->getParamValue("configFileName"));
+my $configPath = join("/", $self->getWorkflowDataDir(), $self->getParamValue("configFileName"));
 
 
 if ($undo) {

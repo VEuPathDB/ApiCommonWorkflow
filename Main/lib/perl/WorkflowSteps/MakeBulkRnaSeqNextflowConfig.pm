@@ -9,8 +9,8 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
  my ($self, $test, $undo) = @_;
 
- my $workflowDataDir = $self->getWorkflowDataDir();
- #my $workflowDataDir = $self->getClusterWorkflowDataDir();
+ #my $workflowDataDir = $self->getWorkflowDataDir();
+ my $workflowDataDir = $self->getClusterWorkflowDataDir();
  my $dir = join("/", $workflowDataDir, $self->getParamValue("analysisDir")); 
 
  open(INTRON, "$dir/maxIntronLen") or die "Cannot read max intron len from $dir/maxIntronLen\n$!\n";
@@ -28,7 +28,7 @@ sub run {
 
  my $maxIntronLen = $lines[0];
 
- my $configPath = join("/", $workflowDataDir, $self->getParamValue("configFileName"));
+ my $configPath = join("/", $self->getWorkflowDataDir(), $self->getParamValue("configFileName"));
  my $splitChunk = 1000000;                                                                                                                      
  my $reads =  join("/", $workflowDataDir, $self->getParamValue("dataSource"));
  my $isPaired = $self->getParamValue("isPaired");
