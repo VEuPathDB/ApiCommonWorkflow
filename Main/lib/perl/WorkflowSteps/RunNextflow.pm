@@ -76,7 +76,7 @@ sub run {
 "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Since this nextflow step FAILED, please CLEAN UP by calling:
 
-  pushd $workingDirectory; undoNextflowPlugins.bash; rm -rf .nextflow/; popd
+  pushd $workingDirectory; undoNextflowPlugins.bash && rm -rf .nextflow/; popd
 
 (You need to do this cleanup EVEN IF the step did not write any data to *its*
 tables.  ga most likely wrote to WorkflowStepAlgInvocation, and those rows
