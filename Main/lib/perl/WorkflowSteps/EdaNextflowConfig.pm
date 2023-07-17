@@ -10,6 +10,21 @@ sub workflowDataPath {
   return join("/",$self->getStudyDirectory() , $file);
 }
 
+
+# eda nextflow makes an extra directory in the working directory for downloads
+sub run {
+    my ($self, $test, $undo) = @_;
+
+    $self::SUPER->run($self, $test, $undo);
+
+    if($undo) {
+        my $workingDirectory = $self->getWorkingDirectory();
+        $self->runCmd(0, "rm -rf $workingDirectory/forDownload");
+    }
+
+}
+
+
 sub getStudyDirectory {}
 sub getProject {}
 sub getExtDbRlsSpec {}
@@ -41,6 +56,7 @@ sub getSpeciesReconciliationOntologySpec {}
 sub getSpeciesReconciliationFallbackSpecies {}
 
 sub getLoadProtocolTypeAsVariable {}
+sub getProtocolVariableSourceId {}
 
 sub getUseOntologyTermTableForTaxonTerms {
     return "false"
@@ -78,6 +94,7 @@ sub nextflowConfigAsString {
     my $speciesReconciliationOntologySpec = $self->getSpeciesReconciliationOntologySpec() || "NA";
     my $speciesReconciliationFallbackSpecies = $self->getSpeciesReconciliationFallbackSpecies() || "NA";
     my $loadProtocolTypeAsVariable = $self->getLoadProtocolTypeAsVariable() || "false";
+    my $protocolVariableSourceId = $self->getProtocolVariableSourceId() || "NA";
     my $optionalAnnotationPropertiesFile = $self->getOptionalAnnotationPropertiesFile() || "NA";
 
     my $useOntologyTermTableForTaxonTerms = $self->getUseOntologyTermTableForTaxonTerms();
@@ -119,7 +136,7 @@ params.speciesReconciliationFallbackSpecies = "$speciesReconciliationFallbackSpe
 params.useOntologyTermTableForTaxonTerms = $useOntologyTermTableForTaxonTerms
 
 params.loadProtocolTypeAsVariable = $loadProtocolTypeAsVariable
-
+params.protocolVariableSourceId = "$protocolVariableSourceId"
 
 trace.enabled = true
 trace.fields = 'task_id,hash,process,tag,status,exit,submit,realtime,%cpu,rss'
