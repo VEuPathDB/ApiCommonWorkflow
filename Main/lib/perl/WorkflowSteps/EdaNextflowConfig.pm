@@ -19,9 +19,9 @@ sub run {
 
     if($undo) {
         my $workingDirectory = $self->getWorkingDirectory();
-        $self->runCmd(0, "rm -rf $workingDirectory/forDownload");
+        my $resultsDir = $self->getParamValue("resultsDir")
+        $self->runCmd(0, "rm -rf $workingDirectory/$resultsDir");
     }
-
 }
 
 
@@ -44,7 +44,9 @@ sub getOptionalMegaStudyYaml {}
 sub getResultsDirectory {
   my ($self) = @_;
 
-  return $self->getParamValue("resultsDir");
+  my $workingDirectory = $self->getWorkingDirectory();
+
+  return $workingDirectory . "/" . $self->getParamValue("resultsDir");
 }
 
 sub getAssayResultsDirectory {}
