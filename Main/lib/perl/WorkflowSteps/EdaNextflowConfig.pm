@@ -40,6 +40,13 @@ sub getInvestigationBaseName {}
 sub getMegaStudyStableId {}
 sub getOptionalMegaStudyYaml {}
 
+# this one is for any files written by nextflow (downloads ...)
+sub getResultsDirectory {
+  my ($self) = @_;
+
+  return $self->getParamValue("resultsDir");
+}
+
 sub getAssayResultsDirectory {}
 sub getAssayResultsFileExtensionsJson {}
 sub getSampleDetailsFile {}
@@ -83,6 +90,8 @@ sub nextflowConfigAsString {
     my $investigationBaseName = $self->getInvestigationBaseName() || "NA";
     my $megaStudyStableId = $self->getMegaStudyStableId() || "NA";
     my $optionalMegaStudyYaml = $self->getOptionalMegaStudyYaml() || "NA";
+
+    my $resultsDir = $self->getResultsDirectory() || "NA";
     my $assayResultsDirectory = $self->getAssayResultsDirectory() || "NA";
     my $assayResultsFileExtensionsJson = $self->getAssayResultsFileExtensionsJson() || "NA";
     my $sampleDetailsFile = $self->getSampleDetailsFile() || "NA";
@@ -116,6 +125,8 @@ params.investigationBaseName = "$investigationBaseName"
 
 params.megaStudyStableId = "$megaStudyStableId"
 params.optionalMegaStudyYaml = "$optionalMegaStudyYaml"
+
+params.resultsDirectory = "$resultsDir"
 
 params.assayResultsDirectory = "$assayResultsDirectory"
 params.assayResultsFileExtensionsJson = "$assayResultsFileExtensionsJson"
