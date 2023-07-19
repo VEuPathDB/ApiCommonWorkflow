@@ -49,6 +49,10 @@ sub getResultsDirectory {
   return $workingDirectory . "/" . $self->getParamValue("resultsDir");
 }
 
+
+sub getIsRelativeAbundance {
+  return "false";
+}
 sub getAssayResultsDirectory {}
 sub getAssayResultsFileExtensionsJson {}
 sub getSampleDetailsFile {}
@@ -94,6 +98,8 @@ sub nextflowConfigAsString {
     my $optionalMegaStudyYaml = $self->getOptionalMegaStudyYaml() || "NA";
 
     my $resultsDir = $self->getResultsDirectory() || "NA";
+
+    my $isRelativeAbundance = $self->getIsRelativeAbundance();
     my $assayResultsDirectory = $self->getAssayResultsDirectory() || "NA";
     my $assayResultsFileExtensionsJson = $self->getAssayResultsFileExtensionsJson() || "NA";
     my $sampleDetailsFile = $self->getSampleDetailsFile() || "NA";
@@ -150,6 +156,9 @@ params.useOntologyTermTableForTaxonTerms = $useOntologyTermTableForTaxonTerms
 
 params.loadProtocolTypeAsVariable = $loadProtocolTypeAsVariable
 params.protocolVariableSourceId = "$protocolVariableSourceId"
+
+// needed for Mbio otu data
+params.isRelativeAbundance = $isRelativeAbundance;
 
 trace.enabled = true
 trace.fields = 'task_id,hash,process,tag,status,exit,submit,realtime,%cpu,rss'
