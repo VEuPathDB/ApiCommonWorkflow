@@ -1,0 +1,148 @@
+<workflowGraph name="">
+    <param name="projectName"/>
+    <param name="organismAbbrev"/>
+    <param name="organismDatasetLoaderXmlFile"/>
+    <param name="experimentName"/>
+    <param name="parentDataDir"/>
+    <param name="experimentDatasetName"/>
+    <param name="experimentDatasetVersion"/>
+    <param name="isPairedEnd"/>
+    <param name="strandSpecific"/>
+    <param name="isCDS"/>
+    <param name="topLevelSeqSizeFile"/>
+    <param name="topLevelGeneFootprintFile"/>
+    <param name="gtfFile"/>
+    <param name="isSRA"/>
+    <param name="relativeWebServicesDir"/>
+    <param name="hisatIndex"/>
+
+    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
+    <constant name="analysisConfig">$$parentDataDir$$/$$experimentDatasetName$$/final/analysisConfig.xml</constant>
+
+    <subgraph name="loadDataset" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    </subgraph>
+
+   <step name="mirrorToClusterData" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+       <paramValue name="fileOrDirToMirror">$$parentDataDir$$/$$experimentDatasetName$$</paramValue>
+       <depends name="loadDataset"/>
+   </step>
+
+    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <depends name="loadDataset"/>
+    </step>
+    
+   <step name="makeBulkRnaSeqNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBulkRnaSeqNextflowConfig">
+      <paramValue name="inputDir">$$dataDir$$</paramValue>
+      <paramValue name="analysisDir">$$parentDataDir$$</paramValue>
+      <paramValue name="dataSource">$$parentDataDir$$/$$experimentDatasetName$$/final</paramValue>
+      <paramValue name="clusterResultDir">$$parentDataDir$$/$$experimentName$$/results</paramValue>
+      <paramValue name="annotation">$$parentDataDir$$/$$gtfFile$$</paramValue>
+      <paramValue name="hisat2Index">$$parentDataDir$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="isSRA">$$isSRA$$</paramValue>
+      <paramValue name="isPaired">$$isPairedEnd$$</paramValue>
+      <paramValue name="isStrandSpecific">$$strandSpecific$$</paramValue>
+      <paramValue name="isCDS">$$isCDS$$</paramValue>
+      <paramValue name="configFileName">$$parentDataDir$$/$$experimentName$$/nextflow.config</paramValue>
+      <depends name="makeSamplesOutputDir"/>
+    </step>
+
+
+    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      <depends name="makeBulkRnaSeqNextflowConfig"/>
+    </step>
+
+    <step name="runBulkRnaSeqExperiment" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+      <paramValue name="workingDir">$$dataDir$$</paramValue>
+      <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
+      <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/bulkRnaSeq</paramValue>
+      <paramValue name="isGitRepo">true</paramValue>
+      <depends name="mirrorToCluster"/>
+      <depends name="mirrorToClusterData"/>
+    </step>
+
+    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+      <paramValue name="outputFiles">TODO</paramValue>
+      <paramValue name="deleteAfterCopy">false</paramValue>
+      <depends name="runBulkRnaSeqExperiment"/>
+    </step>
+
+
+    <step name="tpmFromHtseqCounts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TpmFromHtseqCounts">
+      <paramValue name="samplesDir">$$dataDir$$/results</paramValue>
+      <paramValue name="geneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+      <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
+      <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
+      <depends name="mirrorFromCluster"/>
+    </step>
+
+    <step name="doTranscriptExpression" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpressionEbi">
+      <paramValue name="analysisConfigFile">$$analysisConfig$$</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+      <paramValue name="technologyType">RNASeqEbi</paramValue>
+      <depends name="tpmFromHtseqCounts"/>
+    </step>
+
+
+   <step name="normalizeCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraphEbi">
+      <paramValue name="inputDir">$$dataDir$$/results</paramValue>
+      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
+      <depends name="mirrorFromCluster"/>
+    </step>
+    
+   <step name="makeMergedBigwigs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RNAseqMerge">
+      <paramValue name="inputsDir">$$dataDir$$/results</paramValue>
+      <paramValue name="experimentName">$$experimentName$$</paramValue>
+      <paramValue name="chromSizesFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
+      <depends name="normalizeCoverage"/>
+    </step> 
+    
+
+    <step name="loadStudyResultsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
+      <paramValue name="configFile">$$dataDir$$/results/insert_study_results_config.txt</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/results</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
+      <depends name="doTranscriptExpression"/>
+      <!--<dependsGlobal name="oboOntologies"/>-->
+    </step>
+
+    <step name="loadRNASeqMetrics" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRNASeqMetrics" stepLoadTypes="plugin">
+      <paramValue name="experimentDir">$$dataDir$$/results</paramValue>
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <depends name="loadStudyResultsFromConfig"/>
+      <!--<dependsGlobal name="oboOntologies"/> -->
+      <!--<dependsGlobal name="eupathCuratedOntologies"/> -->
+    </step>
+
+    <step name="copyNormalizedBedGraphToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyNormalizedBedGraphToWebServiceDir">
+      <paramValue name="copyFromDir">$$dataDir$$/results</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
+      <depends name="doTranscriptExpression"/>
+      <depends name="normalizeCoverage"/>
+    </step>
+    
+
+    <step name="copyMergedBigwigsToWebSvc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyRnaSeqMergedBigwigsToWebSvc">
+      <paramValue name="copyFromDir">$$dataDir$$/results/mergedBigwigs</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
+      <depends name="makeMergedBigwigs"/>
+      <depends name="copyNormalizedBedGraphToWebServiceDir"/>
+    </step>
+</workflowGraph>
+
+

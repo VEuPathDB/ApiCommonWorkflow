@@ -7,6 +7,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunPopbioEdaNextflow;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunClinEpiEdaNextflow;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunMBioEdaNextflow;
+use ApiCommonWorkflow::Main::WorkflowSteps::RunMegaStudyEdaNextflow;
 
 sub new {
   my $class = shift;

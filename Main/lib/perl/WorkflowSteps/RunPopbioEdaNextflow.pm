@@ -38,6 +38,10 @@ sub getLoadProtocolTypeAsVariable {
     return "true";
 }
 
+sub getProtocolSourceId {
+    return "OBI_0000272";
+}
+
 sub getLoadWebDisplayOntologyFile {
     return "false";
 }
@@ -54,7 +58,7 @@ sub getInvestigationBaseName {
 }
 
 sub getDownloadFileBaseName {
-    return "TODO";
+    return "report";
 }
 
 sub getSpeciesReconciliationOntologySpec {

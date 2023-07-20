@@ -33,6 +33,12 @@
     <depends name="loadDataset"/>
   </step>
 
+  <step name="makeDownloadDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$/annPropsAndArtifacts/results</paramValue>
+    <depends name="makeAnnPropsAndArtifactsDir"/>
+  </step>
+
+
 
   <step name="nextflowEntityGraph" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::EdaFactory" stepLoadTypes="edaStudyLoader">
     <paramValue name="datasetName">$$datasetName$$</paramValue>
@@ -68,7 +74,7 @@
     <paramValue name="speciesReconciliationFallbackSpecies"></paramValue>
     <paramValue name="studyStableId">$$optionalStudyStableId$$</paramValue>
     <depends name="nextflowEntityGraph"/>
-    <depends name="makeAnnPropsAndArtifactsDir"/>
+    <depends name="makeDownloadDir"/>
   </step>
 
   <step name="studyCharacteristics" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyCharacteristics" includeIf="$$loadStudyCharacteristics$$">

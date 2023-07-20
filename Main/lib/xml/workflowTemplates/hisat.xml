@@ -101,6 +101,7 @@
         <prop name="isStrandSpecific"/>
         <prop name="alignWithCdsCoordinates"/>
 
+
    <!-- NOTE: we have duplication here for CDS.  be sure to make changes to both -->
  
    <!-- transcript coords -->
@@ -163,6 +164,72 @@
 
   </datasetTemplate>
 
+    <!-- New step for nextflowRnaSeqExperiment -->
+
+    <datasetTemplate class="rnaSeqExperimentNextflow">
+        <prop name="projectName"/>
+        <prop name="organismAbbrev"/>
+        <prop name="name"/>
+        <prop name="version"/>
+        <prop name="hasPairedEnds"/>
+        <prop name="isStrandSpecific"/>
+        <prop name="isCds"/>
+        <prop name="isSRA"/>
+
+        <subgraph name="${name}_analyze_rnaSeq_experiment_nextflow" xmlFile="analyzeRnaSeqExperimentNextflow.xml">
+            <paramValue name="projectName">$$projectName$$</paramValue>
+            <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+	    <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+            <paramValue name="experimentName">${name}</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeqNextflow_RSRC</paramValue>
+            <paramValue name="experimentDatasetVersion">${version}</paramValue>
+            <paramValue name="isPairedEnd">${hasPairedEnds}</paramValue>
+            <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
+            <paramValue name="isCDS">${isCds}</paramValue>
+            <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+            <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+            <paramValue name="gtfFile">$$organismAbbrev$$_mask.gtf</paramValue>
+            <paramValue name="isSRA">${isSRA}</paramValue>
+            <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+            <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+            <paramValue name="hisatIndex">$$organismAbbrev$$</paramValue>
+	    <depends name="mirrorToCluster"/>
+        </subgraph>
+
+    
+    </datasetTemplate>
+
+  <!-- New step for long read nextflowRnaSeqExperiment -->
+
+    <datasetTemplate class="LongReadRnaSeqExperimentNextflow">
+        <prop name="projectName"/>
+        <prop name="organismAbbrev"/>
+        <prop name="sequencePlatform"/>
+        <prop name="name"/>
+        <prop name="version"/>
+        <prop name="isSRA"/>
+
+      <subgraph name="${name}_analyze_longRead_experiment_Nextflow" xmlFile="analyzeLongReadRnaSeqExperimentNextflow.xml">
+        <paramValue name="projectName">${projectName}</paramValue>
+        <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+        <paramValue name="name">${name}</paramValue>
+        <paramValue name="gtfFile">$$organismAbbrev$$_mask.gtf</paramValue>
+        <paramValue name="version">${version}</paramValue>
+        <paramValue name="isSRA">${isSRA}</paramValue>
+	<paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+        <paramValue name="experimentName">${name}</paramValue>
+        <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+        <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeqNextflow_RSRC</paramValue>
+        <paramValue name="experimentDatasetVersion">${version}</paramValue>
+        <paramValue name="sequencePlatform">${sequencePlatform}</paramValue>
+        <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+        <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+        <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+	<depends name="mirrorToCluster"/>
+      </subgraph>
+
+    </datasetTemplate>
 
 </workflowGraph>
 

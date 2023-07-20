@@ -53,7 +53,7 @@ sub getInvestigationSubset {
 }
 
 sub getIsaFormat {
-    return "simple";
+    return "isatab";
 }
 sub getInvestigationBaseName { return sprintf("../final/%s.xml", $_[0]->getParamValue("studyStableId")) }
 

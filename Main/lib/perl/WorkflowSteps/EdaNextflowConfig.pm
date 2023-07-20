@@ -10,6 +10,21 @@ sub workflowDataPath {
   return join("/",$self->getStudyDirectory() , $file);
 }
 
+
+# eda nextflow makes an extra directory in the working directory for downloads
+sub run {
+    my ($self, $test, $undo) = @_;
+
+    $self::SUPER->run($self, $test, $undo);
+
+    if($undo) {
+        my $workingDirectory = $self->getWorkingDirectory();
+        my $resultsDir = $self->getParamValue("resultsDir")
+        $self->runCmd(0, "rm -rf $workingDirectory/$resultsDir");
+    }
+}
+
+
 sub getStudyDirectory {}
 sub getProject {}
 sub getExtDbRlsSpec {}
@@ -25,6 +40,19 @@ sub getInvestigationBaseName {}
 sub getMegaStudyStableId {}
 sub getOptionalMegaStudyYaml {}
 
+# this one is for any files written by nextflow (downloads ...)
+sub getResultsDirectory {
+  my ($self) = @_;
+
+  my $workingDirectory = $self->getWorkingDirectory();
+
+  return $workingDirectory . "/" . $self->getParamValue("resultsDir");
+}
+
+
+sub getIsRelativeAbundance {
+  return "false";
+}
 sub getAssayResultsDirectory {}
 sub getAssayResultsFileExtensionsJson {}
 sub getSampleDetailsFile {}
@@ -41,6 +69,7 @@ sub getSpeciesReconciliationOntologySpec {}
 sub getSpeciesReconciliationFallbackSpecies {}
 
 sub getLoadProtocolTypeAsVariable {}
+sub getProtocolVariableSourceId {}
 
 sub getUseOntologyTermTableForTaxonTerms {
     return "false"
@@ -67,6 +96,10 @@ sub nextflowConfigAsString {
     my $investigationBaseName = $self->getInvestigationBaseName() || "NA";
     my $megaStudyStableId = $self->getMegaStudyStableId() || "NA";
     my $optionalMegaStudyYaml = $self->getOptionalMegaStudyYaml() || "NA";
+
+    my $resultsDir = $self->getResultsDirectory() || "NA";
+
+    my $isRelativeAbundance = $self->getIsRelativeAbundance();
     my $assayResultsDirectory = $self->getAssayResultsDirectory() || "NA";
     my $assayResultsFileExtensionsJson = $self->getAssayResultsFileExtensionsJson() || "NA";
     my $sampleDetailsFile = $self->getSampleDetailsFile() || "NA";
@@ -78,6 +111,7 @@ sub nextflowConfigAsString {
     my $speciesReconciliationOntologySpec = $self->getSpeciesReconciliationOntologySpec() || "NA";
     my $speciesReconciliationFallbackSpecies = $self->getSpeciesReconciliationFallbackSpecies() || "NA";
     my $loadProtocolTypeAsVariable = $self->getLoadProtocolTypeAsVariable() || "false";
+    my $protocolVariableSourceId = $self->getProtocolVariableSourceId() || "NA";
     my $optionalAnnotationPropertiesFile = $self->getOptionalAnnotationPropertiesFile() || "NA";
 
     my $useOntologyTermTableForTaxonTerms = $self->getUseOntologyTermTableForTaxonTerms();
@@ -100,6 +134,8 @@ params.investigationBaseName = "$investigationBaseName"
 params.megaStudyStableId = "$megaStudyStableId"
 params.optionalMegaStudyYaml = "$optionalMegaStudyYaml"
 
+params.resultsDirectory = "$resultsDir"
+
 params.assayResultsDirectory = "$assayResultsDirectory"
 params.assayResultsFileExtensionsJson = "$assayResultsFileExtensionsJson"
 params.sampleDetailsFile = "$sampleDetailsFile"
@@ -119,7 +155,10 @@ params.speciesReconciliationFallbackSpecies = "$speciesReconciliationFallbackSpe
 params.useOntologyTermTableForTaxonTerms = $useOntologyTermTableForTaxonTerms
 
 params.loadProtocolTypeAsVariable = $loadProtocolTypeAsVariable
+params.protocolVariableSourceId = "$protocolVariableSourceId"
 
+// needed for Mbio otu data
+params.isRelativeAbundance = $isRelativeAbundance;
 
 trace.enabled = true
 trace.fields = 'task_id,hash,process,tag,status,exit,submit,realtime,%cpu,rss'
