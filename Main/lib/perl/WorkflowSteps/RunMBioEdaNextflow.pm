@@ -61,6 +61,10 @@ sub getDownloadFileBaseName {
     return "TODO";
 }
 
+sub getOptionalCollectionsYaml {
+    return sprintf("%s/ontology/General/collections/collections.yaml", $ENV{GUS_HOME});
+}
+
 sub getSampleDetailsFile { return sprintf("../final/%s.txt", $_[0]->getParamValue("studyStableId")) }
 sub getAssayResultsDirectory { return "../final" }
 sub getAssayResultsFileExtensionsJson { sprintf("%s/ApiCommonData/Load/ontology/Microbiome/assayExtensions", $ENV{PROJECT_HOME} ) }

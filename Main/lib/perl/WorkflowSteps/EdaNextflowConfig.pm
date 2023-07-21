@@ -15,11 +15,11 @@ sub workflowDataPath {
 sub run {
     my ($self, $test, $undo) = @_;
 
-    $self::SUPER->run($self, $test, $undo);
+    $self->SUPER::run($test, $undo);
 
     if($undo) {
         my $workingDirectory = $self->getWorkingDirectory();
-        my $resultsDir = $self->getParamValue("resultsDir")
+        my $resultsDir = $self->getParamValue("resultsDir");
         $self->runCmd(0, "rm -rf $workingDirectory/$resultsDir");
     }
 }
@@ -41,13 +41,14 @@ sub getMegaStudyStableId {}
 sub getOptionalMegaStudyYaml {}
 
 # this one is for any files written by nextflow (downloads ...)
-sub getResultsDirectory {
-  my ($self) = @_;
-
-  my $workingDirectory = $self->getWorkingDirectory();
-
-  return $workingDirectory . "/" . $self->getParamValue("resultsDir");
-}
+# sub getResultsDirectory {
+#   my ($self) = @_;
+#   return $self->getParamValue("resultsDir");
+# 
+#   #my $workingDirectory = $self->getWorkingDirectory();
+# 
+#   #return $workingDirectory . "/" . $self->getParamValue("resultsDir");
+# }
 
 
 sub getIsRelativeAbundance {
@@ -70,6 +71,8 @@ sub getSpeciesReconciliationFallbackSpecies {}
 
 sub getLoadProtocolTypeAsVariable {}
 sub getProtocolVariableSourceId {}
+
+sub getOptionalCollectionsYaml {}
 
 sub getUseOntologyTermTableForTaxonTerms {
     return "false"
@@ -116,6 +119,8 @@ sub nextflowConfigAsString {
 
     my $useOntologyTermTableForTaxonTerms = $self->getUseOntologyTermTableForTaxonTerms();
 
+    my $optionalCollectionsYaml = $self->getOptionalCollectionsYaml() || "NA";
+
     my $config = <<CONFIG;
 params.studyDirectory = "$studyDirectory"
 params.project = "$project"
@@ -158,7 +163,9 @@ params.loadProtocolTypeAsVariable = $loadProtocolTypeAsVariable
 params.protocolVariableSourceId = "$protocolVariableSourceId"
 
 // needed for Mbio otu data
-params.isRelativeAbundance = $isRelativeAbundance;
+params.isRelativeAbundance = $isRelativeAbundance
+
+params.optionalCollectionsYaml = "$optionalCollectionsYaml"
 
 trace.enabled = true
 trace.fields = 'task_id,hash,process,tag,status,exit,submit,realtime,%cpu,rss'
