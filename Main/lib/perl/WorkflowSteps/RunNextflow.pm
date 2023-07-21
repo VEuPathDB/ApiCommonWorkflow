@@ -67,7 +67,7 @@ sub run {
         $self->runCmd(0, "rm -rf $nextflowWork");
         $self->runCmd(0, "rm -f $nextflowConfig");
         $self->runCmd(0, "rm -f ${nextflowLog}*");
-        $self->runCmd(0, "rm -f $workingDirectory/trace.txt*");
+        $self->runCmd(0, "rm -f $workingDirectory/trace*");
         $self->runCmd(0, "rm $workingDirectory/.nextflow* -rf");
     }
     else {
