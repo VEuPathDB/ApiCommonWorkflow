@@ -1,10 +1,3 @@
-<!-- 
-
-$$relativeDownloadSiteDir$$ = downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$
-$$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$
-
--->
-
 <workflowGraph name="">
   <param name="projectName"/>
   <param name="projectVersionForWebsiteFiles"/>
@@ -15,33 +8,30 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
   <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
   <constant name="relativeAuxiliaryDir">auxiliary/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
 
-  <globalSubgraph name="global" xmlFile="globalGraph.xml">
-    <paramValue name="commonDatasetLoaderXmlFile">$$projectName$$/$$projectName$$Common.xml</paramValue>
-    <paramValue name="globalDatasetLoaderXmlFile">global.xml</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-  </globalSubgraph>
+<!--  <globalSubgraph name="global" xmlFile="globalGraph.xml">-->
+<!--    <paramValue name="commonDatasetLoaderXmlFile">$$projectName$$/$$projectName$$Common.xml</paramValue>-->
+<!--    <paramValue name="globalDatasetLoaderXmlFile">global.xml</paramValue>-->
+<!--    <paramValue name="projectName">$$projectName$$</paramValue>-->
+<!--  </globalSubgraph>-->
 
- <step name="makeProjectReleaseDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+  <step name="makeProjectReleaseDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
+    <!--<dependsGlobal name="initUserGroupProject"/>-->
   </step>
 
   <step name="makeProjectReleaseWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
+    <!--<dependsGlobal name="initUserGroupProject"/>-->
   </step>
 
   <step name="makeProjectReleaseAuxiliaryDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeAuxiliaryDir$$</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
+    <!--<dependsGlobal name="initUserGroupProject"/>-->
   </step>
-
 
   <step name="makeComparativeGenomicsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$comparativeGenomicsInputDir$$</paramValue>
   </step>
-
-
 
   <datasetTemplate class="organism">
     <prop name="organismAbbrev"/>
@@ -51,7 +41,6 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <prop name="organismFullName"/>
     <prop name="organismNameForFiles"/>
     <prop name="ncbiTaxonId"/>
-    <prop name="speciesNcbiTaxonId"/>
     <prop name="isReferenceStrain"/>
     <prop name="isFamilyRepresentative"/>
     <prop name="familyRepOrganismAbbrev"/>
@@ -76,8 +65,23 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="dataDir">${organismAbbrev}</paramValue>
     </step>
 
-    <!-- each organism creates this step, but all are ignored except the one
-         made by the ref strain. -->
+    <step name="${organismAbbrev}_makeDatabase" stepClass="ReFlow::StepClasses::MakeDatabase" groupName="${organismAbbrev}">
+      <paramValue name="dbName">${organismAbbrev}</paramValue>
+      <depends name="${organismAbbrev}_makeDataDir"/>
+    </step>
+
+    <step name="${organismAbbrev}_makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig" groupName="${organismAbbrev}">
+      <paramValue name="dbName">${organismAbbrev}</paramValue>
+      <depends name="${organismAbbrev}_makeDatabase"/>
+    </step>
+
+    <step name="initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <depends name="${organismAbbrev}_makeGusConfig"/>
+    </step>
+
+    <!-- each organism creates this step, but all are ignored except the one made by the ref strain. -->
     <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}" groupName="${organismAbbrev}">
       <paramValue name="dataDir">${organismAbbrev}_strainsComparisonInput</paramValue>
     </step>
@@ -88,21 +92,21 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsGlobal name="initClusterHomeDir"/>
     </step>
 
-    <step name="${organismAbbrev}_loadTemporaryNcbiTaxonId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadTemporaryNcbiTaxonId" includeIf="${hasTemporaryNcbiTaxonId}" groupName="${organismAbbrev}">
+    <step name="${organismAbbrev}_loadNcbiTaxonId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadNcbiTaxonId" groupName="${organismAbbrev}">
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="organismFullName">${organismFullName}</paramValue>
-      <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
-      <dependsGlobal name="taxonomy_RSRC"/> 
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <depends name="${organismAbbrev}_makeGusConfig"/>
     </step>
 
     <subgraph name="${organismAbbrev}_LoadGenome" xmlFile="loadGenome.xml" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismFullName">${organismFullName}</paramValue>
       <paramValue name="organismNameForFiles">${organismNameForFiles}</paramValue>
       <paramValue name="publicOrganismAbbrev">${publicOrganismAbbrev}</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
       <paramValue name="isReferenceStrain">${isReferenceStrain}</paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${referenceStrainOrganismAbbrev}</paramValue>
       <paramValue name="isFamilyRepresentative">${isFamilyRepresentative}</paramValue>
@@ -128,13 +132,12 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="makeProjectReleaseDownloadDir"/>
       <depends name="makeProjectReleaseWebServicesDir"/>
       <depends name="${organismAbbrev}_mirrorToCluster"/>
-      <depends name="${organismAbbrev}_loadTemporaryNcbiTaxonId"/>
-      <dependsGlobal name="taxonomy_RSRC"/> 
-      <dependsGlobal name="SO_RSRC"/>
+      <depends name="${organismAbbrev}_loadNcbiTaxonId"/>
     </subgraph>
 
     <!-- a step to load chromosomeMap.txt file, nothing should be depended on this step -->
     <step name="${organismAbbrev}_LoadGenome_LoadChromosomeMap" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChromosomeMap" excludeIf="${isNotEbiGenome}" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="genomeVersion">${genomeVersion}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
@@ -144,6 +147,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
     <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="dataDir">${organismAbbrev}/makeAndMaskTopLevelGenome</paramValue>
       <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -156,21 +160,22 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
     </subgraph>
 
-
-  <subgraph name="${organismAbbrev}_nrdbProteinsAlignAgainstGenome" xmlFile="proteinAlignToGenome.xml"  excludeIf="${isHugeGenome}">
-    <paramValue name="dataDir">${organismAbbrev}/nrdbProteinsAlignAgainstGenome</paramValue>
-    <paramValue name="targetFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue> 
-    <paramValue name="nrProteinsFile">global/NRDB_RSRC/nr</paramValue>        
-    <paramValue name="taxaFilter">${taxonFilterForNRProteinsAlignedToGenome}</paramValue>
-    <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
-    <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-    <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
-    <dependsGlobal name="mirrorToCluster"/>
-  </subgraph>
+    <subgraph name="${organismAbbrev}_nrdbProteinsAlignAgainstGenome" xmlFile="proteinAlignToGenome.xml"  excludeIf="${isHugeGenome}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="dataDir">${organismAbbrev}/nrdbProteinsAlignAgainstGenome</paramValue>
+      <paramValue name="targetFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
+      <paramValue name="nrProteinsFile">global/NRDB_RSRC/nr</paramValue>
+      <paramValue name="taxaFilter">${taxonFilterForNRProteinsAlignedToGenome}</paramValue>
+      <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+      <dependsGlobal name="mirrorToCluster"/>
+    </subgraph>
 
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
     <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeCompGenomicsFiles" xmlFile="makeCompGenomicsFiles.xml" groupName="${organismAbbrev}" excludeIf="${isHugeGenome}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="makeAndMaskTopLevelGenomeDataDir">${organismAbbrev}/makeAndMaskTopLevelGenome</paramValue>
       <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
@@ -184,6 +189,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <subgraph name="${organismAbbrev}_PostLoadGenome" xmlFile="postLoadGenome.xml" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
@@ -207,6 +213,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <subgraph name="${organismAbbrev}_gsnap_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/gsnap.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -221,6 +228,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <subgraph name="${organismAbbrev}_dnaseq_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/dnaseq.xml" excludeIfXmlFileDoesNotExist="true">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -233,6 +241,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <subgraph name="${organismAbbrev}_hisat_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/hisat.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -246,6 +255,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <subgraph name="${organismAbbrev}_ebi_rnaseq_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/ebiRNASeq.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -257,12 +267,14 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
 
-   <step name="${organismAbbrev}_PARJunctions" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARJunctions"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
-      <paramValue name="mappingFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
+    <step name="${organismAbbrev}_PARJunctions" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARJunctions"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
+     <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+     <paramValue name="mappingFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
       <depends name="${organismAbbrev}_ebi_rnaseq_topLevel"/>
     </step>
 
     <subgraph name="${organismAbbrev}_ebi_VCF" xmlFile="generated/${projectName}/${organismAbbrev}/ebiVCFfile.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -275,6 +287,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
 
     <subgraph name="${organismAbbrev}_ebi_GFF3" xmlFile="generated/${projectName}/${organismAbbrev}/ebiGFF3file.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -288,6 +301,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
 
     <subgraph name="${organismAbbrev}_bowtieMapping" xmlFile="mapWithBowtie.xml"  excludeIfXmlFileDoesNotExist="true"  groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
@@ -300,6 +314,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <subgraph name="${organismAbbrev}_specific_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/organismSpecificOnTopLevelGenome.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -308,6 +323,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <subgraph name="${organismAbbrev}_LoadAliases" xmlFile="generated/${projectName}/${organismAbbrev}/aliases.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
@@ -320,6 +336,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
 
     <subgraph name="${organismAbbrev}_specific_noAlias" xmlFile="OrganismSpecificNoAlias.xml"  groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -338,6 +355,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <subgraph name="${organismAbbrev}_specific" xmlFile="OrganismSpecific.xml"  groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -355,6 +373,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <subgraph name="${organismAbbrev}_dbXRefs" xmlFile="generated/${projectName}/${organismAbbrev}/dbXRefs.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
@@ -367,6 +386,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <subgraph name="${organismAbbrev}_EarlyVirtualLocations" xmlFile="virtualLocations.xml" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="mode">early</paramValue>
       <depends name="${organismAbbrev}_PostLoadGenome"/>
@@ -374,6 +394,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <subgraph name="${organismAbbrev}_LateVirtualLocations" xmlFile="virtualLocations.xml" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="mode">late</paramValue>
       <dependsPattern name="${organismAbbrev}_specific*"/>
@@ -381,12 +402,14 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
    <step name="${organismAbbrev}_PARFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARFeatures"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
-      <paramValue name="mappingFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
+     <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+     <paramValue name="mappingFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
       <depends name="${organismAbbrev}_LateVirtualLocations"/>
       <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
     </step>
 
     <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -408,12 +431,14 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
 
   </datasetTemplate>
 
-    <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables">
-      <paramValue name="dataDir">Snp_Table_Constraint</paramValue>
-      <dependsPattern name="*_bowtieMapping"/>
-    </step>
+  <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables">
+    <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+    <paramValue name="dataDir">Snp_Table_Constraint</paramValue>
+    <dependsPattern name="*_bowtieMapping"/>
+  </step>
 
   <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml">
+    <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="areBigGenomes">$$areBigGenomes$$</paramValue>
     <paramValue name="comparativeGenomicsInputDir">$$comparativeGenomicsInputDir$$</paramValue>
@@ -422,24 +447,23 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </subgraph>
 
-<!-- depends on MakeAndMaskTopLevelGenome, MakeCompGenomicsFiles AND VIRTUAL FEATURE LOCATIONS-->
+  <!-- depends on MakeAndMaskTopLevelGenome, MakeCompGenomicsFiles AND VIRTUAL FEATURE LOCATIONS-->
 
-    <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid" excludeIf="$$areBigGenomes$$" >
-      <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
-      <paramValue name="mercatorOutputsDir">mercatorOutput</paramValue>
-      <paramValue name="mercatorCacheDir">mercatorCache</paramValue>
-      <paramValue name="mercatorTmpDir">mercatorTmp</paramValue>
-      <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
-      <dependsPattern name="*_MakeCompGenomicsFiles"/>
-    </step>
+  <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid" excludeIf="$$areBigGenomes$$" >
+    <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
+    <paramValue name="mercatorOutputsDir">mercatorOutput</paramValue>
+    <paramValue name="mercatorCacheDir">mercatorCache</paramValue>
+    <paramValue name="mercatorTmpDir">mercatorTmp</paramValue>
+    <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
+    <dependsPattern name="*_MakeCompGenomicsFiles"/>
+  </step>
 
-    <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin" excludeIf="$$areBigGenomes$$" >
-      <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
-      <paramValue name="mercatorOutputsDir">mercatorOutput</paramValue>
-      <depends name="runPairwiseMercatorMavid"/>
-      <dependsPattern name="*_EarlyVirtualLocations"/>
-    </step>
-
+  <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin" excludeIf="$$areBigGenomes$$" >
+    <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
+    <paramValue name="mercatorOutputsDir">mercatorOutput</paramValue>
+    <depends name="runPairwiseMercatorMavid"/>
+    <dependsPattern name="*_EarlyVirtualLocations"/>
+  </step>
 
   <subgraph name="OrthoMCLDerivedEC" xmlFile="orthoMCLDerivedEC.xml">
     <paramValue name="ecFile">@@manualDeliveryDir@@/$$projectName$$/common/function/OrthoMCLDerived_ECAssociations/Current_Version/final/ec.txt</paramValue>
@@ -455,7 +479,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
   <datasetTemplate class="referenceStrain">
     <prop name="organismAbbrev"/>      <!-- same as referenceStrainOrganismAbbrev -->
     <prop name="isAnnotatedGenome"/>  <!-- if ref strain is annotated -->
-<!--remove strainsComparison steps from workflow
+    <!--remove strainsComparison steps from workflow
     <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml" includeIf="${isAnnotatedGenome} &amp;&amp; !$$areBigGenomes$$" groupName="${organismAbbrev}" >
       <paramValue name="parentDataDir"></paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${organismAbbrev}</paramValue>
@@ -463,16 +487,17 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsPattern name="${organismAbbrev}_*_MakeAndMaskTopLevelGenome"/>
       <dependsPattern name="${organismAbbrev}_*_MakeCompGenomicsFiles"/>
     </subgraph>
--->
+    -->
   </datasetTemplate>
 
   <datasetTemplate class="Pathways">
-   <prop name="projectName"/>     
-   <prop name="version"/>
-   <prop name="format"/>
-   <prop name="source"/>
+    <prop name="projectName"/>
+    <prop name="version"/>
+    <prop name="format"/>
+    <prop name="source"/>
 
-   <subgraph name="Pathways_${source}_RSRC" xmlFile="loadDataset.xml">
+    <subgraph name="Pathways_${source}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="datasetName">Pathways_${source}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
@@ -480,65 +505,66 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <dependsGlobal name="oboOntologies"/>
       <dependsGlobal name="GO_RSRC"/>
       <dependsGlobal name="chEBI_Compounds"/>
-	  <dependsGlobal name="EuPath_Ontology_RSRC"/>
-   </subgraph>
+      <dependsGlobal name="EuPath_Ontology_RSRC"/>
+    </subgraph>
   </datasetTemplate>
 
   <datasetTemplate class="PopBio_Study">
-   <prop name="projectName"/>
-   <prop name="vbId"/>
-   <prop name="version"/>
+    <prop name="projectName"/>
+    <prop name="vbId"/>
+    <prop name="version"/>
 
-   <subgraph name="PopBio_Study_${vbId}_RSRC" xmlFile="loadDataset.xml">
+    <subgraph name="PopBio_Study_${vbId}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="datasetName">PopBio_Study_${vbId}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-   </subgraph>
+    </subgraph>
   </datasetTemplate>
 
   <datasetTemplate class="ISATabPopBio_WDK">
-   <prop name="projectName"/>
-   <prop name="vbId"/>
-   <prop name="version"/>
+    <prop name="projectName"/>
+    <prop name="vbId"/>
+    <prop name="version"/>
 
-   <subgraph name="ISATab_${vbId}_RSRC" xmlFile="loadDataset.xml">
+    <subgraph name="ISATab_${vbId}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="datasetName">ISATab_${vbId}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-   </subgraph>
+    </subgraph>
   </datasetTemplate>
 
-
   <datasetTemplate class="EDAMegaStudy_WDK">
-   <prop name="projectName"/>
-   <prop name="vbId"/>
-   <prop name="version"/>
+    <prop name="projectName"/>
+    <prop name="vbId"/>
+    <prop name="version"/>
 
-   <subgraph name="EDAMegaStudy_${vbId}_RSRC" xmlFile="loadDataset.xml">
+    <subgraph name="EDAMegaStudy_${vbId}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="datasetName">EDAMegaStudy_${vbId}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-   </subgraph>
+    </subgraph>
   </datasetTemplate>
-
-
 
   <datasetTemplate class="ReactionsXRefs">
     <prop name="projectName"/>
     <prop name="version"/>
     <prop name="source"/>
-    
+
     <subgraph name="ReactionsXRefs_${source}_RSRC" xmlFile="loadDataset.xml">
-        <paramValue name="datasetName">ReactionsXRefs_${source}_RSRC</paramValue>
-        <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-        <paramValue name="parentDataDir"></paramValue>
-        <depends name="Pathways_KEGG_RSRC"/>
-        <depends name="Pathways_MetaCyc_RSRC"/>
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="datasetName">ReactionsXRefs_${source}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+      <depends name="Pathways_KEGG_RSRC"/>
+      <depends name="Pathways_MetaCyc_RSRC"/>
     </subgraph>
   </datasetTemplate>
 
   <!-- for pathways graph -->
-<!--
+  <!--
   <step name="makePathwaySolrJsonDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeWebServicesDir$$/pathway/solrJson</paramValue>
       <dependsPattern name="Pathways_*_RSRC"/>
@@ -554,13 +580,14 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="paramValue"></paramValue>
       <depends name="makePathwaySolrJsonDir"/>
   </step>
--->
-<!-- old template deprecated-->
- <datasetTemplate class="metaboliteProfiles">
-   <prop name="experimentName"/> 
-    <prop name="experimentVersion"/> 
+  -->
+  <!-- old template deprecated-->
+  <datasetTemplate class="metaboliteProfiles">
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
 
     <subgraph name="metaboliteProfiles_${experimentName}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="datasetName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
@@ -568,34 +595,34 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
 
     <subgraph name="MetaboliteProfiles" xmlFile="metaboliteProfiles.xml">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="parentDataDir"></paramValue>
       <paramValue name="experimentName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
       <paramValue name="experimentVersion">${experimentVersion}</paramValue>
       <depends name="metaboliteProfiles_${experimentName}_RSRC"/>
     </subgraph>
-
- </datasetTemplate>
+  </datasetTemplate>
 
   <!-- new template for untargeted metabolomics -->                                                                               
   <step name="makeMetabolomicsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">metabolomics</paramValue>
-  </step>    
+  </step>
 
   <datasetTemplate class="compoundMassSpec">
     <prop name="experimentName"/>
 
     <subgraph name="compoundMassSpec_${experimentName}_RSRC" xmlFile="loadDataset.xml">
-        <paramValue name="datasetName">compoundMassSpec_${experimentName}_RSRC</paramValue>
-        <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-        <paramValue name="parentDataDir">metabolomics</paramValue>
-        <depends name="makeMetabolomicsDataDir"/>
-        <dependsGlobal name="chEBI_Compounds"/>
+      <paramValue name="datasetName">compoundMassSpec_${experimentName}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
+      <paramValue name="parentDataDir">metabolomics</paramValue>
+      <depends name="makeMetabolomicsDataDir"/>
+      <dependsGlobal name="chEBI_Compounds"/>
     </subgraph>
 
   </datasetTemplate>
 
-<!-- for compounds graph -->
-<!--
+  <!-- for compounds graph -->
+  <!--
   <step name="makeCompoundSolrJsonDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeWebServicesDir$$/compound/solrJson</paramValue>
     <dependsGlobal name="chEBI_Compounds"/>
@@ -613,9 +640,11 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="paramValue"></paramValue>
       <depends name="makeCompoundSolrJsonDir"/>
   </step> 
--->
-<!-- EuPath Ontology and Study MetaData -->
-<subgraph name="metadata" xmlFile="metadata.xml" >
+  -->
+
+  <!-- EuPath Ontology and Study MetaData -->
+  <subgraph name="metadata" xmlFile="metadata.xml" >
+    <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
@@ -625,34 +654,33 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <dependsGlobal name="oboOntologies"/>
     <dependsGlobal name="eupathCuratedOntologies"/>
     <dependsGlobal name="EuPath_Ontology_RSRC"/>
-</subgraph>
+  </subgraph>
 
-<!-- AlphaFold is now filtered, must be dependent on loading uniprot ids into sres.dbref in organism specific graph-->
-<subgraph name="alphaFold_RSRC" xmlFile="loadDataset.xml">
+  <!-- AlphaFold is now filtered, must be dependent on loading uniprot ids into sres.dbref in organism specific graph-->
+  <subgraph name="alphaFold_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
     <paramValue name="datasetName">alphaFold_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
     <paramValue name="parentDataDir"></paramValue>
     <dependsPattern name="*_specific"/>
     <dependsPattern name="*specific*"/>
     <dependsPattern name="*_dbXRefs"/>
-</subgraph>
+  </subgraph>
 
-
-
-<!--A generic dataset template to copy and format files from EuPathDB manualDelivery to download sites and web services-->
- <datasetTemplate class="copyAndFormatDownloadFilesFromManualDelivery">
-   <prop name="projectName"/>
-   <prop name="relativeManualDeliveryDir"/>
-   <prop name="relativeDownloadSiteDir"/>
-   <prop name="relativeWebServiceDir"/>
-   <prop name="datasetName"/>
-   <prop name="formatDownloadFile"/>
-   <prop name="argsOfFormatingDownloadFile"/> 
-   <prop name="formattedOutputName"/>
-   <prop name="inputFileNameRegex"/>
-
+  <!--A generic dataset template to copy and format files from EuPathDB manualDelivery to download sites and web services-->
+  <datasetTemplate class="copyAndFormatDownloadFilesFromManualDelivery">
+    <prop name="projectName"/>
+    <prop name="relativeManualDeliveryDir"/>
+    <prop name="relativeDownloadSiteDir"/>
+    <prop name="relativeWebServiceDir"/>
+    <prop name="datasetName"/>
+    <prop name="formatDownloadFile"/>
+    <prop name="argsOfFormatingDownloadFile"/>
+    <prop name="formattedOutputName"/>
+    <prop name="inputFileNameRegex"/>
 
     <subgraph name="CopyAndFormatDownloadFilesFromManualDelivery" xmlFile="copyAndFormatDownloadFilesFromManualDelivery.xml">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="relativeManualDeliveryDir">${relativeManualDeliveryDir}</paramValue>
       <paramValue name="relativeDownloadSiteDir">${relativeDownloadSiteDir}</paramValue>
       <paramValue name="relativeWebServiceDir">${relativeWebServiceDir}</paramValue>
@@ -664,59 +692,62 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="inputFileNameRegex">${inputFileNameRegex}</paramValue>
       <dependsGlobal name="initUserGroupProject"/>
     </subgraph>
-
- </datasetTemplate>
+  </datasetTemplate>
 
   <datasetTemplate class="EcNumberGenus">
-   <prop name="projectName"/>   
- 
-   <step name="manuallyImproveEcNumberGenus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
-     <dependsPattern name="*_LoadGenome"/>
-   </step>
- 
-   <subgraph name="EcNumberGenus_RSRC" xmlFile="loadDataset.xml">
+    <prop name="projectName"/>
+
+    <step name="manuallyImproveEcNumberGenus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
+      <dependsPattern name="*_LoadGenome"/>
+    </step>
+
+    <subgraph name="EcNumberGenus_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="datasetName">EcNumberGenus_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-    <depends name="manuallyImproveEcNumberGenus"/>
-   </subgraph>
+      <depends name="manuallyImproveEcNumberGenus"/>
+    </subgraph>
   </datasetTemplate>
 
   <datasetTemplate class="StudyResultsLiteral">
-   <prop name="projectName"/>     
-   <prop name="version"/>
-   <prop name="name"/>
+    <prop name="projectName"/>
+    <prop name="version"/>
+    <prop name="name"/>
 
-   <subgraph name="StudyResult_${name}_RSRC" xmlFile="loadDataset.xml">
+    <subgraph name="StudyResult_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="datasetName">StudyResult_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
       <dependsGlobal name="oboOntologies"/>
-   </subgraph>
+    </subgraph>
   </datasetTemplate>
 
   <datasetTemplate class="ExternalResourceUrl">
-   <prop name="projectName"/>
-   <prop name="version"/>
-   <prop name="name"/>
+    <prop name="projectName"/>
+    <prop name="version"/>
+    <prop name="name"/>
 
-   <subgraph name="ExternalResourceUrl_${name}_RSRC" xmlFile="loadDataset.xml">
+    <subgraph name="ExternalResourceUrl_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="datasetName">ExternalResourceUrl_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
       <dependsGlobal name="initUserGroupProject"/>
-   </subgraph>
+    </subgraph>
   </datasetTemplate>
 
   <datasetTemplate class="productionDatasets">
-   <prop name="projectName"/>
+    <prop name="projectName"/>
 
-  <subgraph name="Production_Datasets_RSRC" xmlFile="loadDataset.xml">
-    <paramValue name="datasetName">Production_Datasets_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
-    <dependsGlobal name="initUserGroupProject"/>
-  </subgraph>
+    <subgraph name="Production_Datasets_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="datasetName">Production_Datasets_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+      <dependsGlobal name="initUserGroupProject"/>
+    </subgraph>
   </datasetTemplate>
 
 </workflowGraph>

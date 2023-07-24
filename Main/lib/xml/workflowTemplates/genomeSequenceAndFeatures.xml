@@ -1,15 +1,16 @@
 <workflowGraph name="">
   <param name="organismDatasetLoaderXmlFile"/>
   <param name="dataDir"/>
+  <param name="gusConfigFile"/>
 
-<!--  
-<constant name="dataDir">$$dataDir$$/loadGenome</constant>
--->
-<!--duplicate step
+  <!--
+  <constant name="dataDir">$$dataDir$$/loadGenome</constant>
+  -->
+  <!--duplicate step
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
--->
+  -->
 
   <!-- double check that values passed into the organism's datasets match the db -->
   <datasetTemplate class="validateOrganismInfo">
@@ -17,14 +18,13 @@
     <prop name="strainAbbrev"/>
     <prop name="projectName"/>
     <prop name="ncbiTaxonId"/>
-    <prop name="speciesNcbiTaxonId"/>
 
     <step name="validateOrganismInfo" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ValidateOrganismInfo">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="strainAbbrev">${strainAbbrev}</paramValue>
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
     </step>
 
   </datasetTemplate>
@@ -34,12 +34,12 @@
   <datasetTemplate class="genbank_primary_genome">
     <prop name="organismAbbrev"/>
     <subgraph name="primary_genome_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     </subgraph>
   </datasetTemplate>
-
 
   <datasetTemplate class="ebi_primary_genome">
     <prop name="organismAbbrev"/>
@@ -52,12 +52,14 @@
     <prop name="releaseDate"/>
 
     <subgraph name="primary_genome_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     </subgraph>
 
     <step name="runEbiDumper" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunEbiDumper" stepLoadTypes="runEbiDumper">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="ebiVersion">${ebiVersion}</paramValue>
@@ -72,19 +74,18 @@
     </step>
 
     <step name="loadEbiDumper" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadEbiDumper" stepLoadTypes="InsertUniDB">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="databaseDir">$$dataDir$$/${organismAbbrev}_primary_genome_RSRC/ebi2gus_output</paramValue>
       <paramValue name="loaderDir">$$dataDir$$/${organismAbbrev}_primary_genome_RSRC/logDir</paramValue>
       <depends name="runEbiDumper"/>
     </step>
-
   </datasetTemplate>
-
-
 
   <datasetTemplate class="embl_primary_genome">
     <prop name="organismAbbrev"/>
     <subgraph name="primary_genome_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -94,6 +95,7 @@
   <datasetTemplate class="fasta_primary_genome_sequence">
     <prop name="organismAbbrev"/>
     <subgraph name="primary_genome_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -103,6 +105,7 @@
   <datasetTemplate class="GeneDB_GFF_primary_genome_features">
     <prop name="organismAbbrev"/>
     <subgraph name="primary_genome_features_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_features_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -113,6 +116,7 @@
   <datasetTemplate class="GTF_primary_genome_features">
     <prop name="organismAbbrev"/>
     <subgraph name="primary_genome_features_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_features_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -123,6 +127,7 @@
   <datasetTemplate class="GFF_primary_genome_features">
     <prop name="organismAbbrev"/>
     <subgraph name="primary_genome_features_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_features_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -133,6 +138,7 @@
   <datasetTemplate class="Broad_GFF_primary_genome_features">
     <prop name="organismAbbrev"/>
     <subgraph name="primary_genome_features_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_features_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -143,6 +149,7 @@
   <datasetTemplate class="NoPreprocess_GTF_primary_genome_features">
     <prop name="organismAbbrev"/>
     <subgraph name="primary_genome_features_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_features_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -155,6 +162,7 @@
     <prop name="soTerm"/>
     <prop name="organismAbbrev"/>
     <subgraph name="${soTerm}_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -167,6 +175,7 @@
     <prop name="soTerm"/>
     <prop name="organismAbbrev"/>
     <subgraph name="${soTerm}_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -180,6 +189,7 @@
     <prop name="soTerm"/>
     <prop name="organismAbbrev"/>
     <subgraph name="${soTerm}_${name}_secondary_genome_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -190,6 +200,7 @@
   <datasetTemplate class="GeneDB_GFF_secondary_genome_features">
     <prop name="organismAbbrev"/>
     <subgraph name="${soTerm}_GeneDB_genome_features_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_GeneDB_genome_features_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -202,6 +213,7 @@
     <prop name="soTerm"/>
     <prop name="organismAbbrev"/>
     <subgraph name="${soTerm}_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -214,6 +226,7 @@
     <prop name="soTerm"/>
     <prop name="organismAbbrev"/>
     <subgraph name="${soTerm}_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -227,6 +240,7 @@
     <prop name="soTerm"/>
     <prop name="organismAbbrev"/>
     <subgraph name="${soTerm}_${name}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -238,6 +252,7 @@
     <prop name="organismAbbrev"/>
     <prop name="soTerm"/>
     <subgraph name="${soTerm}_GeneDB_features_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_GeneDB_features_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -248,6 +263,7 @@
   <datasetTemplate class="NoPreprocess_primary_genome_features">
     <prop name="organismAbbrev"/>
     <subgraph name="primary_genome_features_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_features_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -260,6 +276,7 @@
     <prop name="soTerm"/>
     <prop name="name"/>
     <subgraph name="${soTerm}_genome_features_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_genome_features_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -272,6 +289,7 @@
     <prop name="soTerm"/>
     <prop name="name"/>
     <subgraph name="${soTerm}_${name}_features_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_${name}_features_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -282,6 +300,7 @@
   <datasetTemplate class="GeneDB_GFF_needMapFile_primary_genome_features">
     <prop name="organismAbbrev"/>
     <subgraph name="primary_genome_features_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_primary_genome_features_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -293,6 +312,7 @@
     <prop name="organismAbbrev"/>
     <prop name="soTerm"/>
     <subgraph name="${soTerm}_GeneDB_genome_features_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">${organismAbbrev}_${soTerm}_GeneDB_genome_features_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>

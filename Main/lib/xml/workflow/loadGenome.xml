@@ -1,11 +1,11 @@
 <workflowGraph name="loadGenome">
   <param name="parentDataDir"/>
+  <param name="gusConfigFile" />
   <param name="organismAbbrev"/>
   <param name="organismFullName"/>
   <param name="organismNameForFiles"/>
   <param name="publicOrganismAbbrev"/>
   <param name="ncbiTaxonId"/>
-  <param name="speciesNcbiTaxonId"/>
   <param name="isReferenceStrain"/>
   <param name="isFamilyRepresentative"/>
   <param name="familyRepOrganismAbbrev"/>
@@ -31,12 +31,11 @@
 
   <constant name="dataDir">$$parentDataDir$$/loadGenome</constant>
 
-  <step name="insertOrganism"
-        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrganism">
+  <step name="insertOrganism" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrganism">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="fullName">$$organismFullName$$</paramValue>
     <paramValue name="project">$$projectName$$</paramValue>
     <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
-    <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
     <paramValue name="abbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="publicAbbrev">$$publicOrganismAbbrev$$</paramValue>
     <paramValue name="nameForFilenames">$$organismNameForFiles$$</paramValue>
@@ -60,6 +59,7 @@
   </step>
 
   <subgraph name="makeOrganismWebsiteDirs" xmlFile="makeOrganismWebsiteDirs.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
@@ -71,15 +71,15 @@
     <depends name="insertOrganism"/>
   </subgraph>
 
-
   <subgraph name="genomeSequenceAndFeatures" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/genomeSequenceAndFeatures.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 
-  <step name="extractGenomicSeqs"
-        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+  <step name="extractGenomicSeqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="extDbName">$$organismAbbrev$$_primary_genome_RSRC</paramValue>
     <paramValue name="table">ExternalNASequence</paramValue>
     <paramValue name="alternateDefline"></paramValue>
@@ -89,16 +89,16 @@
     <depends name="genomeSequenceAndFeatures"/> 
   </step>
 
-  <step name="extractProteins"
-        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAnnotatedProteinsBySpecies" includeIf="$$isAnnotatedGenome$$">
+  <step name="extractProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractAnnotatedProteinsBySpecies" includeIf="$$isAnnotatedGenome$$">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
     <paramValue name="outputFile">$$proteinsFile$$</paramValue>
     <depends name="genomeSequenceAndFeatures"/>
   </step>
 
-  <step name="extractGenomicSeqsIntoSeparateFastaFiles"
-        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+  <step name="extractGenomicSeqsIntoSeparateFastaFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="extDbName">$$organismAbbrev$$_primary_genome_RSRC</paramValue>
     <paramValue name="table">ExternalNASequence</paramValue>
     <paramValue name="outputFile"></paramValue>
@@ -107,7 +107,6 @@
     <paramValue name="outputDirForSeparateFiles">$$genomicSeqsDir$$_ori</paramValue>
     <depends name="genomeSequenceAndFeatures"/>
   </step>
-
 
   <step name="fixFileNamesforGenomicSeqsSeparateFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixGenomicSeqsSeparateFastaFileNames">
     <paramValue name="inputDir">$$genomicSeqsDir$$_ori</paramValue>
@@ -122,10 +121,10 @@
     <depends name="fixFileNamesforGenomicSeqsSeparateFasta"/>
   </step>
 
-    <step name="runFaToTwoBitOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunFaToTwoBitOnCluster">
-      <paramValue name="inputFastaFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="output2BitFile">$$genomicSeqs2BitFile$$</paramValue>
-      <depends name="mirrorToCluster"/>
-    </step>
+  <step name="runFaToTwoBitOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunFaToTwoBitOnCluster">
+    <paramValue name="inputFastaFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="output2BitFile">$$genomicSeqs2BitFile$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </step>
 
 </workflowGraph>
