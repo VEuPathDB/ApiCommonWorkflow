@@ -1,21 +1,29 @@
 <workflowGraph name="global">
-  <param name="commonDatasetLoaderXmlFile"/>
-  <param name="globalDatasetLoaderXmlFile"/>
   <param name="projectName"/>
 
-  <globalConstant name="global_PDBOutputFile">global/PDBProteinSequences_RSRC/pdb.fsa</globalConstant>
+<!--  <globalConstant name="global_PDBOutputFile">global/PDBProteinSequences_RSRC/pdb.fsa</globalConstant>-->
 
   <constant name="dataDir">global</constant>
+  <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeDatabase" stepClass="ReFlow::StepClasses::MakeDatabase">
+    <paramValue name="dbName">global</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+  <step name="makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig">
+    <paramValue name="dbName">global</paramValue>
+    <depends name="makeDatabase"/>
   </step>
 
   <!-- we want all steps in the flow to depend on this one because it validates the project name and version -->
   <step name="initUserGroupProject" 
 	stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
     <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="makeGusConfig"/>
   </step>
 <!-- 
   <subgraph name="GO_RSRC" xmlFile="loadDataset.xml">
@@ -54,14 +62,15 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="SO_RSRC"/>
   </subgraph>
-
+-->
   <subgraph name="taxonomy_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">taxonomy_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$dataDir$$/global_gus.config</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
-
+<!--
   <subgraph name="updatePDBTaxon_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">updatePDBTaxon_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
@@ -135,14 +144,11 @@
     <depends name="initUserGroupProject"/>
   </subgraph>
 
--->
-
   <step name="initClusterHomeDir"
 	stepClass="ReFlow::StepClasses::InitClusterHomeDir">
     <depends name="initUserGroupProject"/>
   </step>
 
-<!--
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
     <depends name="initClusterHomeDir"/>
