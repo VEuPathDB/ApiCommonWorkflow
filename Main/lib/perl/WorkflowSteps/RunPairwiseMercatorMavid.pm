@@ -168,7 +168,10 @@ sub ifSkipOnSoTermName {
 
 	my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 	my $sql = "select distinct sa.sequence_type, organism from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o where o.taxon_id = sa.taxon_id and o.is_annotated_genome = 1";
-	my $cmd = "getValueFromTable --idSQL \"$sql\"";
+
+	my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
+
+	my $cmd = "getValueFromTable --idSQL \"$sql\" $gusConfigFile";
 
 	my $result = $self->runCmd($test, $cmd);
 	my @soTermNames = split(/\,/, $result);
@@ -196,7 +199,11 @@ sub getIsDraftHash {
 			and sa.so_id = ot.source_id
 			and sa.taxon_id = o.taxon_id
 			and o.abbrev = '$organismAbbrev'";
-		my $cmd = "getValueFromTable --idSQL \"$sql\"";
+
+		my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
+
+		my $cmd = "getValueFromTable --idSQL \"$sql\" $gusConfigFile";
+
 		my $isNotDraftGenome = $self->runCmd($test, $cmd);
 		$hash->{$organismAbbrev} = !$isNotDraftGenome;
 	}

@@ -112,15 +112,19 @@ sub getIsDraftHash {
 
   my $hash = {};
   foreach my $organismAbbrev (@$organismAbbrevs) {
-      my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
-      my $sql = "select count(*)
-                       from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o, sres.ontologyterm so
-                       where so.name IN ('chromosome', 'supercontig')
-                       and sa.so_id = so.source_id
-                       and sa.taxon_id = o.taxon_id
-                       and o.abbrev = '$organismAbbrev'";
-      my $cmd = "getValueFromTable --idSQL \"$sql\"";
-      my $isNotDraftGenome = $self->runCmd($test, $cmd);
+    my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+    my $sql = "select count(*)
+               from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o, sres.ontologyterm so
+               where so.name IN ('chromosome', 'supercontig')
+                 and sa.so_id = so.source_id
+                 and sa.taxon_id = o.taxon_id
+                 and o.abbrev = '$organismAbbrev'";
+
+    my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
+
+    my $cmd = "getValueFromTable --idSQL \"$sql\" $gusConfigFile";
+
+    my $isNotDraftGenome = $self->runCmd($test, $cmd);
 
     $hash->{$organismAbbrev} = !$isNotDraftGenome;
   }

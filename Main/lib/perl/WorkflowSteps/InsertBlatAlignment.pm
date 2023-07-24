@@ -94,24 +94,28 @@ sub run {
 
 
   if (-s "$workflowDataDir/$queryFile" || $test) {
-      $self->runPlugin($test, $undo, $plugin, $args);
+    $self->runPlugin($test, $undo, $plugin, $args);
   } else {
-      $self->log("queryFile '$workflowDataDir/$queryFile' is empty.  Doing nothing.");      
+    $self->log("queryFile '$workflowDataDir/$queryFile' is empty.  Doing nothing.");
   }
   #check the number of rows loaded. We will put a threshold for it, say if less than 1000 rows, the step will fail. Can't do this, can't predict the number of ESTs
   if ($action eq 'load' && !$test && !$undo){
-       my $algInvIds = $self->getAlgInvIds();
-       my $sql = "select count(*) from $loadedTable where row_alg_invocation_id in ($algInvIds)";
-       my $cmd = "getValueFromTable --idSQL \"$sql\"";
-       my $loaded = $self->runCmd($test, $cmd);
-       die "No rows loaded." if ($loaded == 0);     
+    my $algInvIds = $self->getAlgInvIds();
+    my $sql = "select count(*) from $loadedTable where row_alg_invocation_id in ($algInvIds)";
+
+    my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
+
+    my $cmd = "getValueFromTable --idSQL \"$sql\" $gusConfigFile";
+
+    my $loaded = $self->runCmd($test, $cmd);
+    die "No rows loaded." if ($loaded == 0);
   }
   if ($undo) {
-      if ($hasTempFiles == 1) {
-	  my $cmd = "rm -f $workflowDataDir/$queryTempFile $workflowDataDir/$blatTempFile";
-	  $self->runCmd(0,$cmd);
+    if ($hasTempFiles == 1) {
+      my $cmd = "rm -f $workflowDataDir/$queryTempFile $workflowDataDir/$blatTempFile";
+      $self->runCmd(0,$cmd);
       $self->runPlugin($test, $undo, $plugin, $args);
-      }
+    }
   }
 }
 
