@@ -13,7 +13,6 @@ sub run {
   my $strainAbbrev = $self->getParamValue('strainAbbrev');
   my $projectName = $self->getParamValue('projectName');
   my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
-  my $speciesNcbiTaxonId = $self->getParamValue('speciesNcbiTaxonId');
 
   my $orgInfo = $self->getOrganismInfo($test, $organismAbbrev);
 
@@ -23,9 +22,6 @@ sub run {
 
       $db = $orgInfo->getNcbiTaxonId();
       $self->error("ncbiTaxonId '$ncbiTaxonId' does not match the value in the database: '$db'") unless $ncbiTaxonId eq $db;
-
-      $db = $orgInfo->getSpeciesNcbiTaxonId();
-      $self->error("speciesNcbiTaxonId '$speciesNcbiTaxonId' does not match the value in the database: '$db'") unless $speciesNcbiTaxonId eq $db;
   }
 }
 

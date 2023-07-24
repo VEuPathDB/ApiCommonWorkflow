@@ -12,7 +12,6 @@ sub run {
   my $fullName = $self->getParamValue('fullName');
   my $project = $self->getParamValue('project');
   my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
-  my $speciesNcbiTaxonId = $self->getParamValue('speciesNcbiTaxonId');
   my $abbrev = $self->getParamValue('abbrev');
   my $abbrevPublic = $self->getParamValue('publicAbbrev');
   my $nameForFilenames = $self->getParamValue('nameForFilenames');
@@ -59,7 +58,7 @@ sub run {
       $self->error("Parameter isFamilyRepresentative is 'false'.  Parameter familyRepOrganismAbbrev must not be the same as property organismAbbrev") if $familyRepOrganismAbbrev eq $abbrev;
   }
 
-  my $args = "--fullName '$fullName' --projectName $project --ncbiTaxonId $ncbiTaxonId --speciesNcbiTaxonId $speciesNcbiTaxonId --abbrev $abbrev --publicAbbrev $abbrevPublic --nameForFilenames $nameForFilenames --genomeSource $genomeSource --orthomclAbbrev $abbrevOrthomcl --strainAbbrev  $abbrevStrain --refStrainAbbrev  $abbrevRefStrain --familyRepOrganismAbbrev $familyRepOrganismAbbrev $ag $rs $tnt $fnti $fnff";
+  my $args = "--fullName '$fullName' --projectName $project --ncbiTaxonId $ncbiTaxonId --abbrev $abbrev --publicAbbrev $abbrevPublic --nameForFilenames $nameForFilenames --genomeSource $genomeSource --orthomclAbbrev $abbrevOrthomcl --strainAbbrev  $abbrevStrain --refStrainAbbrev  $abbrevRefStrain --familyRepOrganismAbbrev $familyRepOrganismAbbrev $ag $rs $tnt $fnti $fnff";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertOrganism", $args);
 
