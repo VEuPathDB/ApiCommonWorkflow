@@ -98,9 +98,9 @@ sub processMemoryRequirement {
   } else {
     die "Could not extract num MB/GB from memory parameter: $memoryParameter";
   }
-  my $s1 = clusterOptionsForMemMbs(0.5 * $mbs);
-  my $s2 = clusterOptionsForMemMbs($mbs);
-  my $s3 = clusterOptionsForMemMbs(2 * $mbs);
+  my $s1 = clusterOptionsForMemMbs(1 * $mbs);
+  my $s2 = clusterOptionsForMemMbs(2 * $mbs);
+  my $s3 = clusterOptionsForMemMbs(3 * $mbs);
   return <<"EOF";
     errorStrategy = { task.exitStatus in 130..140 ? 'retry' : 'terminate' }
     maxRetries = 3
