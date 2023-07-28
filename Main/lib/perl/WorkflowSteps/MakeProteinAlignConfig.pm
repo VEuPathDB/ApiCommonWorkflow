@@ -55,6 +55,7 @@ sub run {
 }
 
 process {
+  container = \"veupathdb/proteintogenomealignment\"
   executor = '$executor'
   queue = '$queue'
   withName: 'exonerate' {
@@ -62,8 +63,11 @@ process {
     $exonerateProcessMemoryRequirement
   }
 }
-docker=false
-cleanup = true
+
+singularity {
+  enabled = true
+  autoMounts = true
+}
 
 ";
 
