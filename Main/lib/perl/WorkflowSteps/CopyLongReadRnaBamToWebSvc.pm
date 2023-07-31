@@ -17,10 +17,12 @@ sub run {
     my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $configFile = $self->getParamValue('analysisConfig');
-
+    
+    my $configPath = join('/', $workflowDataDir, $configFile);
 
    # my $configFile = "/Users/saikouybah/Documents/PerlModules/analysisConfig.xml";
-    open(my $samplesList, $workflowDataDir/$configFile) or die "Could not open file '$workflowDataDir/$configFile' $!";
+   # open(my $samplesList, $workflowDataDir/$configFile) or die "Could not open file '$workflowDataDir/$configFile' $!";
+    open(my $samplesList, $configPath) or die "Could not open file '$configPath' $!";
 
     my %SampleHash;
     while (my $row = <$samplesList>) {
