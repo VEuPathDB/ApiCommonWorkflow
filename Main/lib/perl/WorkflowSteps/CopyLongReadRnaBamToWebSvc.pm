@@ -18,7 +18,6 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $configFile = $self->getParamValue('analysisConfig');
 
-    my $workflowDataDir = $self->getWorkflowDataDir();
 
    # my $configFile = "/Users/saikouybah/Documents/PerlModules/analysisConfig.xml";
     open(my $samplesList, $workflowDataDir/$configFile) or die "Could not open file '$workflowDataDir/$configFile' $!";
