@@ -18,8 +18,10 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $configFile = $self->getParamValue('analysisConfig');
 
+    my $workflowDataDir = $self->getWorkflowDataDir();
+
    # my $configFile = "/Users/saikouybah/Documents/PerlModules/analysisConfig.xml";
-    open(my $samplesList, $configFile) or die "Could not open file '$configFile' $!";
+    open(my $samplesList, $workflowDataDir/$configFile) or die "Could not open file '$workflowDataDir/$configFile' $!";
 
     my %SampleHash;
     while (my $row = <$samplesList>) {
@@ -52,7 +54,9 @@ sub run {
 	foreach my $key (keys %SampleHash){
 	    my $name = $SampleHash{$key};
 	    my $cmd_copy = "cp $workflowDataDir/$copyFromDir/$key.bam $copyToDir/$name.bam";
+	    my $cmd_copy_bam_bai = "cp $workflowDataDir/$copyFromDir/$key.bam.bai $copyToDir/$name.bam.bai";
 	    $self->runCmd($test, $cmd_copy);
+	    $self->runCmd($test, $cmd_copy_bam_bai);
            } 
 	#
         #$self->runCmd($test, $cmd_copy);
