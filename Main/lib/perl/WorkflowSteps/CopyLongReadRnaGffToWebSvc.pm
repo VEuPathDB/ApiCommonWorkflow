@@ -19,7 +19,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
 
 
-    my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/gff/$experimentResourceName/";
+    my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/longReadRNASeq/gff/$experimentResourceName/";
     my $cmd_mkdir = "mkdir -p $copyToDir";
 
     my $cmd_copy = "cp $workflowDataDir/$copyFromDir/*sorted.gff* $copyToDir";

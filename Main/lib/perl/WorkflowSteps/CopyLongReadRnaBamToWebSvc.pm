@@ -20,8 +20,6 @@ sub run {
     
     my $configPath = join('/', $workflowDataDir, $configFile);
 
-   # my $configFile = "/Users/saikouybah/Documents/PerlModules/analysisConfig.xml";
-   # open(my $samplesList, $workflowDataDir/$configFile) or die "Could not open file '$workflowDataDir/$configFile' $!";
     open(my $samplesList, $configPath) or die "Could not open file '$configPath' $!";
 
     my %SampleHash;
@@ -40,10 +38,9 @@ sub run {
     }
 }
 
-    my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/bam/$experimentResourceName/";
+    my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/longReadRNASeq/bam/$experimentResourceName/";
     my $cmd_mkdir = "mkdir -p $copyToDir";
 
-    #my $cmd_copy = "cp $workflowDataDir/$copyFromDir/*bam* $copyToDir";
     
     $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");
 
@@ -58,9 +55,17 @@ sub run {
 	    my $cmd_copy_bam_bai = "cp $workflowDataDir/$copyFromDir/$key.bam.bai $copyToDir/$name.bam.bai";
 	    $self->runCmd($test, $cmd_copy);
 	    $self->runCmd($test, $cmd_copy_bam_bai);
-           } 
-	#
-        #$self->runCmd($test, $cmd_copy);
+
+	   my $filename = 'metadata.txt';
+    	   open(FH, '>>', $filename) or die $!;
+    	   print FH ($copyToDir, $name, '.bam', "\n");
+    	   print FH ($copyToDir, $name, '.bam.bai', "\n");
+    	   close(FH);
+	   
+           }
+	   
+	   my $cmd_copyMeta = "cp $workflowDataDir/$copyFromDir/metadata.txt $copyToDir/metadata.txt";
+	   $self->runCmd($test, $cmd_copyMeta);
     }
 }
 
