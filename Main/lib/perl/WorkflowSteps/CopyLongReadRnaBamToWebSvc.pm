@@ -49,6 +49,7 @@ sub run {
     }else{
         $self->runCmd($test, $cmd_mkdir);
 	
+	my $filename = "$workflowDataDir/$copyFromDir/metadata.txt";
 	foreach my $key (keys %SampleHash){
 	    my $name = $SampleHash{$key};
 	    my $cmd_copy = "cp $workflowDataDir/$copyFromDir/$key.bam $copyToDir/$name.bam";
@@ -56,10 +57,9 @@ sub run {
 	    $self->runCmd($test, $cmd_copy);
 	    $self->runCmd($test, $cmd_copy_bam_bai);
 
-	   my $filename = 'metadata.txt';
     	   open(FH, '>>', $filename) or die $!;
-    	   print FH ($copyToDir, $name, '.bam', "\n");
-    	   print FH ($copyToDir, $name, '.bam.bai', "\n");
+    	   print FH ('longReadRnaSeq', "\t", $copyToDir, $name, '.bam', "\t", $name, "\n");
+    	   print FH ('longReadRnaSeq', "\t", $copyToDir, $name, '.bam.bai', "\t", $name, "\n");
     	   close(FH);
 	   
            }
