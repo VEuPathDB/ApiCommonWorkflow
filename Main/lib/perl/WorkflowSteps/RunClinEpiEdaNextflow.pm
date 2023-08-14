@@ -61,7 +61,7 @@ sub getInvestigationBaseName {
 }
 
 sub getDownloadFileBaseName {
-    return "TODO";
+    return "";
 }
 
 # TODO:
