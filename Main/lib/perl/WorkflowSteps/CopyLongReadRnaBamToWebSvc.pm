@@ -30,7 +30,7 @@ sub run {
     	    $line  =~ s/ .*<value>//g;
     	    $line  =~ s/<\/value>//g;
     	    my @samples_list = split('\|', $line);
-    	    my $sample_name = $samples_list[0] =~ s/ /_/gr;
+    	    my $sample_name = $samples_list[0]; # =~ s/ /_/gr;
     	    my $internal_name = $samples_list[1];
 
  	    $SampleHash{$internal_name} = $sample_name;
@@ -52,14 +52,14 @@ sub run {
 	my $filename = "$workflowDataDir/$copyFromDir/metadata.txt";
 	foreach my $key (keys %SampleHash){
 	    my $name = $SampleHash{$key};
-	    my $cmd_copy = "cp $workflowDataDir/$copyFromDir/$key.bam $copyToDir/$name.bam";
-	    my $cmd_copy_bam_bai = "cp $workflowDataDir/$copyFromDir/$key.bam.bai $copyToDir/$name.bam.bai";
+	    my $cmd_copy = "cp $workflowDataDir/$copyFromDir/$key.bam $copyToDir/$key.bam";
+	    my $cmd_copy_bam_bai = "cp $workflowDataDir/$copyFromDir/$key.bam.bai $copyToDir/$key.bam.bai";
 	    $self->runCmd($test, $cmd_copy);
 	    $self->runCmd($test, $cmd_copy_bam_bai);
 
     	   open(FH, '>>', $filename) or die $!;
-    	   print FH ('longReadRnaSeq', "\t", $copyToDir, $name, '.bam', "\t", $name, "\n");
-    	   print FH ('longReadRnaSeq', "\t", $copyToDir, $name, '.bam.bai', "\t", $name, "\n");
+    	   print FH ('longReadRnaSeq', "\t", $key, '.bam', "\t", $name, "\n");
+    	   #print FH ('longReadRnaSeq', "\t", $copyToDir, $name, '.bam.bai', "\t", $name, "\n");
     	   close(FH);
 	   
            }
