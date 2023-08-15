@@ -58,7 +58,7 @@ sub getIsaFormat {
 sub getInvestigationBaseName { return sprintf("../final/%s.xml", $_[0]->getParamValue("studyStableId")) }
 
 sub getDownloadFileBaseName {
-    return "TODO";
+    return "";
 }
 
 sub getOptionalCollectionsYaml {
