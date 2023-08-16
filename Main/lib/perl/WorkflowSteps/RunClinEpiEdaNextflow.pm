@@ -61,7 +61,7 @@ sub getInvestigationBaseName {
 }
 
 sub getDownloadFileBaseName {
-    return "";
+    return $_[0]->getParamValue('downloadFileBaseName');
 }
 
 # TODO:
