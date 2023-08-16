@@ -30,7 +30,7 @@ sub run {
     	    $line  =~ s/ .*<value>//g;
     	    $line  =~ s/<\/value>//g;
     	    my @samples_list = split('\|', $line);
-    	    my $sample_name = $samples_list[0]; # =~ s/ /_/gr;
+    	    my $sample_name = $samples_list[0]; 
     	    my $internal_name = $samples_list[1];
 
  	    $SampleHash{$internal_name} = $sample_name;
