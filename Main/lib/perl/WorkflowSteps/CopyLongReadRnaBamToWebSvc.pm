@@ -50,7 +50,7 @@ sub run {
         $self->runCmd($test, $cmd_mkdir);
 		
 	my $filename = "$workflowDataDir/$copyFromDir/metadata.txt";
-	my $deleteOldCopy = "rm $filename"
+	my $deleteOldCopy = "rm $filename";
 	if (-e $filename) {
 		$self->runCmd($test, $deleteOldCopy);
 	} 
