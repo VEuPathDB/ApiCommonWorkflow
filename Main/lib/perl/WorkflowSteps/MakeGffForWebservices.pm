@@ -22,7 +22,7 @@ sub run {
 
   my $tuningTablePrefix = $self->getTuningTablePrefix($self->getParamValue('organismAbbrev'), $test);
 
-  my $gffFile = "${copyToDir}/annotated_transcripts";
+  my $gffFile = "${copyToDir}/annotated_transcripts.gff";
 
   my $cmd = "makeGff.pl --extDbRlsId $extDbRlsId --outputFile ${gffFile}.tmp --tuningTablePrefix $tuningTablePrefix";
 
