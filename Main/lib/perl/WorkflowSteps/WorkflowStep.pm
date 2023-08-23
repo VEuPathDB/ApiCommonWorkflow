@@ -216,6 +216,18 @@ sub runPlugin {
     } else {
       $cmd = "ga $plugin --workflowstepid $self->{id} $commit --comment \"$comment\"";
     }
+
+
+    my $msgForError = $self->getMessageForError();
+
+    $self->runCmd($test, $cmd, $msgForError);
+}
+
+
+sub getMessageForError {
+  my ($self) = @_;
+
+
     my $msgForError=
 "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Since this plugin step FAILED, please CLEAN UP THE DATABASE by calling:
@@ -223,7 +235,7 @@ Since this plugin step FAILED, please CLEAN UP THE DATABASE by calling:
   ga $undoPlugin --workflowContext --commit --algInvocationId PLUGIN_ALG_INV_ID_HERE
 
 or (for the ISF plugin):
- 
+
   ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapfile YOUR_ISF_MAP_FILE --workflowContext --commit --algInvocationId PLUGIN_ALG_INV_ID_HERE
 
 
@@ -234,8 +246,13 @@ tables.  ga most likely wrote to WorkflowStepAlgInvocation, and those rows
 must be cleaned out.)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ";
-    $self->runCmd($test, $cmd, $msgForError);
+
+
+
+  return $msgForError;
+
 }
+
 
 # individual steps can override this method if needed
 # must return name of undo plugin and all args besides algInvocationId

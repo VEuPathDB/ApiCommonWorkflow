@@ -9,9 +9,9 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $organismAbbrev = $self->getParamValue('organismAbbrev'); 
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $databaseDir = $self->getParamValue('databaseDir');
-  my $loaderDir =  $self->getParamValue("loaderDir"); 
+  my $loaderDir =  $self->getParamValue("loaderDir");
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -29,5 +29,28 @@ sub run {
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertUniDB", $args);
 }
 
+
+sub getMessageForError {
+  my ($self) = @_;
+
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $loaderDir =  $self->getParamValue("loaderDir");
+  my $workflowDataDir = $self->getWorkflowDataDir();
+
+
+  my $msgForError=
+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Since this plugin step FAILED, please CLEAN UP THE DATABASE by calling:
+
+  ga ApiCommonData::Load::Plugin::InsertUniDB --database $organismAbbrev --table_reader 'ApiCommonData::Load::EBIReaderForUndo' --logDir $workflowDataDir/$loaderDir --mode undo --commit
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+";
+
+
+
+  return $msgForError;
+
+}
 
 1;
