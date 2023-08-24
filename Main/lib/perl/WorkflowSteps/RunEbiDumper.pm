@@ -38,7 +38,6 @@ sub run {
   my $socketDir = "$fullGenomeDir/mysqld";
   $outputDir = "$workflowDataDir/${outputDir}";
 
-  my $gusSchemaDefFullPath = "${unpackDir}/gusSchemaDefinitions.xml";
 
   my $containerName = $organismAbbrev;
   $containerName =~ s/MPRONA19//;   # shorten the organism abbrev for lsp.NamibiaMPRONA1975252LV425
@@ -58,11 +57,10 @@ sub run {
     $self->runCmd($test, "mkdir -p $unpackDir");
     $self->runCmd($test, "mkdir -p $initSqlDir");
     $self->runCmd($test, "mkdir -p $socketDir");
-    $self->runCmd($test,"wget --ftp-user ${ebiFtpUser} --ftp-password ${ebiFtpPassword} -O ${unpackDir}/init.sql.gz ftp://ftp-private.ebi.ac.uk:/EBIout/${ebiVersion}/coredb/${project_name}/${ebiOrganismName}.sql.gz");
-    $self->runCmd($test,"gunzip -c ${unpackDir}/init.sql.gz >${initSqlDir}/init.sql");
-    $self->runCmd($test,"generateDatabaseSchemaXml >$gusSchemaDefFullPath");
+    $self->runCmd($test, "wget --ftp-user ${ebiFtpUser} --ftp-password ${ebiFtpPassword} -O ${unpackDir}/init.sql.gz ftp://ftp-private.ebi.ac.uk:/EBIout/${ebiVersion}/coredb/${project_name}/${ebiOrganismName}.sql.gz");
+    $self->runCmd($test, "gunzip -c ${unpackDir}/init.sql.gz >${initSqlDir}/init.sql");
 
-    #$self->testInputFile('initSqlFile', "$initSqlDir/*.sql");
+    # $self->testInputFile('initSqlFile', "$initSqlDir/*.sql");
 
     $self->runCmd($test,$cmd);
   }
