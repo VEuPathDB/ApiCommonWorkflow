@@ -31,7 +31,7 @@ sub run {
 
 
 sub getMessageForError {
-  my ($self) = @_;
+  my ($self, $undoPlugin) = @_;
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $loaderDir =  $self->getParamValue("loaderDir");

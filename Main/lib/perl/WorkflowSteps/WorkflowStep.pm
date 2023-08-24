@@ -218,14 +218,14 @@ sub runPlugin {
     }
 
 
-    my $msgForError = $self->getMessageForError();
+    my $msgForError = $self->getMessageForError($undoPlugin);
 
     $self->runCmd($test, $cmd, $msgForError);
 }
 
 
 sub getMessageForError {
-  my ($self) = @_;
+  my ($self, $undoPlugin) = @_;
 
 
     my $msgForError=
