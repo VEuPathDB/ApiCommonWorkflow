@@ -61,6 +61,22 @@ sub getDownloadFileBaseName {
     return "report";
 }
 
+
+sub getGadmDataDir {
+    my ($self) = @_;
+
+    my $workflowDataDir = $self->getWorkflowDataDir();
+    return "${workflowDataDir}/global/gadm_RSRC/postgresData";
+}
+
+sub getGadmSocketDir {
+    my ($self) = @_;
+
+    my $workflowDataDir = $self->getWorkflowDataDir();
+    return "${workflowDataDir}/global/gadm_RSRC/postgresSocket";
+}
+
+
 sub getSpeciesReconciliationOntologySpec {
     my ($self) = @_;
 

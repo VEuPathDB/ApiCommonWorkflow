@@ -68,6 +68,12 @@ sub getOptionalAnnotationPropertiesFile {}
 
 sub getSpeciesReconciliationOntologySpec {}
 sub getSpeciesReconciliationFallbackSpecies {}
+sub getGadmDataDir {}
+sub getGadmSocket {}
+sub getGadmPort {
+    my $isOptional = 1;
+    return $self->getConfig('gadmPort', $isOptional);
+}
 
 sub getLoadProtocolTypeAsVariable {}
 sub getProtocolVariableSourceId {}
@@ -113,6 +119,9 @@ sub nextflowConfigAsString {
     my $downloadFileBaseName = $self->getDownloadFileBaseName() || "NA";
     my $speciesReconciliationOntologySpec = $self->getSpeciesReconciliationOntologySpec() || "NA";
     my $speciesReconciliationFallbackSpecies = $self->getSpeciesReconciliationFallbackSpecies() || "NA";
+    my $gadmDataDirectory = $self->getGadmDataDir() || "NA";
+    my $gadmSocketDirectory = $self->getGadmSocketDir() || "NA";
+    my $gadmPort = $self->getGadmPort() || "NA";
     my $loadProtocolTypeAsVariable = $self->getLoadProtocolTypeAsVariable() || "false";
     my $protocolVariableSourceId = $self->getProtocolVariableSourceId() || "NA";
     my $optionalAnnotationPropertiesFile = $self->getOptionalAnnotationPropertiesFile() || "NA";
@@ -158,6 +167,10 @@ params.downloadFileBaseName = "$downloadFileBaseName"
 params.speciesReconciliationOntologySpec = "$speciesReconciliationOntologySpec"
 params.speciesReconciliationFallbackSpecies = "$speciesReconciliationFallbackSpecies"
 params.useOntologyTermTableForTaxonTerms = $useOntologyTermTableForTaxonTerms
+
+params.optionalGadmDataDirectory = "$gadmDataDirectory";
+params.optionalGadmSocketDirectory = "$gadmSocketDirectory";
+params.optionalGadmPort = "$gadmPort";
 
 params.loadProtocolTypeAsVariable = $loadProtocolTypeAsVariable
 params.protocolVariableSourceId = "$protocolVariableSourceId"
