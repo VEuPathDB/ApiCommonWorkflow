@@ -71,6 +71,7 @@ sub getSpeciesReconciliationFallbackSpecies {}
 sub getGadmDataDir {}
 sub getGadmSocket {}
 sub getGadmPort {
+    my ($self) = @_;
     my $isOptional = 1;
     return $self->getConfig('gadmPort', $isOptional);
 }
