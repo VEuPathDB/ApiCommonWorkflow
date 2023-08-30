@@ -6,7 +6,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig;;
 
 # could override in worfklow step if needed
 my $INVESTIGATION_BASENAME = "i_investigation.txt";
-
+my $ANNOTATION_PROPERTIES_FILE = "/../final/annotationProperties.txt";
 
 sub getStudyDirectory {
     my ($self) = @_;
@@ -34,11 +34,16 @@ sub getWebDisplayOntologySpec {
     return "$webDisplayOntologyName|%"
 }
 
-sub getLoadProtocolTypeAsVariable {
-    return "true";
+
+sub getOptionalCollectionsYaml {
+    return sprintf("%s/ontology/General/collections/popbio.yaml", $ENV{GUS_HOME});
 }
 
-sub getProtocolSourceId {
+sub getLoadProtocolTypeAsVariable {
+    return "false";
+}
+
+sub getProtocolVariableSourceId {
     return "OBI_0000272";
 }
 
@@ -58,9 +63,13 @@ sub getInvestigationBaseName {
 }
 
 sub getDownloadFileBaseName {
-    return "report";
+    return $_[0]->getParamValue('downloadFileBaseName');
 }
 
+sub getGadmPort {
+    my ($self) = @_;
+    return $self->getSharedConfig('gadmPort');
+}
 
 sub getGadmDataDir {
     my ($self) = @_;
@@ -94,6 +103,10 @@ sub getUseOntologyTermTableForTaxonTerms {
     return "true"
 }
 
-sub getOptionalAnnotationPropertiesFile { $_[0]->workflowDataPath("../annotationProperties.txt") }
+sub getOptionalAnnotationPropertiesFile {
+     my ($self) = @_;
+     return $self->getWorkingDirectory() . $ANNOTATION_PROPERTIES_FILE;
+ }
+
 
 1;

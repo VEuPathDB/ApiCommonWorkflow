@@ -70,11 +70,7 @@ sub getSpeciesReconciliationOntologySpec {}
 sub getSpeciesReconciliationFallbackSpecies {}
 sub getGadmDataDir {}
 sub getGadmSocket {}
-sub getGadmPort {
-    my ($self) = @_;
-    my $isOptional = 1;
-    return $self->getConfig('gadmPort', $isOptional);
-}
+sub getGadmPort { }
 
 sub getLoadProtocolTypeAsVariable {}
 sub getProtocolVariableSourceId {}

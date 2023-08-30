@@ -6,7 +6,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig;;
 
 # couls override these defaults in worflow if necessary;
 my $MEGASTUDY_YAML = "/../final/megaStudy.yaml";
-my $OWLATTRIBUTES_FILE = "/../final/owlAttributes.txt";
+my $ANNOTATION_PROPERTIES_FILE = "/../final/annotationProperties.txt";
 
 
 sub getStudyDirectory {
@@ -39,6 +39,10 @@ sub getLoadWebDisplayOntologyFile {
     return "false";
 }
 
+sub getOptionalCollectionsYaml {
+    return sprintf("%s/ontology/General/collections/popbio.yaml", $ENV{GUS_HOME});
+}
+
 
 sub getMegaStudyStableId {
     my ($self) = @_;
@@ -53,11 +57,12 @@ sub getOptionalMegaStudyYaml {
 
  sub getOptionalAnnotationPropertiesFile {
      my ($self) = @_;
-     return $self->getWorkingDirectory() . $OWLATTRIBUTES_FILE;
+     return $self->getWorkingDirectory() . $ANNOTATION_PROPERTIES_FILE;
  }
 
+
 sub getDownloadFileBaseName {
-    return "TODO";
+    return $_[0]->getParamValue('downloadFileBaseName');
 }
 
 1;
