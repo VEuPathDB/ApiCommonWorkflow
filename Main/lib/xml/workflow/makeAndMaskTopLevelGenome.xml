@@ -1,96 +1,99 @@
 <workflowGraph name="makeAndMaskTopLevelGenome">
-      <param name="gusConfigFile"/>
-      <param name="dataDir"/>
-      <param name="topLevelFastaFile"/>
-      <param name="organismAbbrev"/>
-      <param name="projectName"/>
-      <param name="organismDatasetLoaderXmlFile"/>
-      <param name="isAnnotatedGenome"/>
-      <param name="isHugeGenome"/>
-      <param name="isNotEbiGenome"/>
+  <param name="gusConfigFile"/>
+  <param name="dataDir"/>
+  <param name="topLevelFastaFile"/>
+  <param name="organismAbbrev"/>
+  <param name="projectName"/>
+  <param name="organismDatasetLoaderXmlFile"/>
+  <param name="isAnnotatedGenome"/>
+  <param name="isHugeGenome"/>
+  <param name="isNotEbiGenome"/>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
   <!-- optional dataset.  the subgraph might be empty -->
-<!--This will be replaced by a new plugin for core genomes from EBI
-  <subgraph name="insertPrimaryVirtualGenome" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/primaryVirtualGenome.xml" excludeIfXmlFileDoesNotExist="true">
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/> 
-  </subgraph>
--->
+  <!--This will be replaced by a new plugin for core genomes from EBI
+    <subgraph name="insertPrimaryVirtualGenome" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/primaryVirtualGenome.xml" excludeIfXmlFileDoesNotExist="true">
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  -->
 
   <step name="makeDerivedTables" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedTables" stepLoadTypes="tuningManager">
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="tables">SequencePieceClosure,GenomicSeqAttributes,TaxonSpecies</paramValue> 
-      <depends name="makeDataDir"/> 
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="tables">SequencePieceClosure,GenomicSeqAttributes,TaxonSpecies</paramValue>
+    <depends name="makeDataDir"/>
   </step>
 
   <!-- ApidbTuning.GenomicSeqAttributes -->
   <step name="extractTopLevelFastaSeqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTopLevelFastaSeqs">
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="outputFile">$$topLevelFastaFile$$</paramValue>
-      <depends name="makeDerivedTables"/> 
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="outputFile">$$topLevelFastaFile$$</paramValue>
+    <depends name="makeDerivedTables"/>
   </step>
 
   <step name="makeRepeatMaskerNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig" >
-      <paramValue name="inputFilePath">$$topLevelFastaFile$$</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
-      <paramValue name="analysisDir">$$dataDir$$</paramValue>
-      <paramValue name="configFileName">nextflow.config</paramValue>
-      <paramValue name="fastaSubsetSize">1</paramValue>
-      <paramValue name="trimDangling">false</paramValue>
-      <paramValue name="dangleMax">0</paramValue>
-      <paramValue name="rmParams">-xsmall</paramValue>
-      <paramValue name="outputFileName">blocked.seq</paramValue>
-      <paramValue name="errorFileName">blocked.err</paramValue>
-      <paramValue name="initialMemory">4000</paramValue>
-      <paramValue name="increasedMemory">12000</paramValue>
-      <paramValue name="maxForks">40</paramValue>
-      <paramValue name="maxRetries">2</paramValue>
-      <depends name="extractTopLevelFastaSeqs"/>
+    <paramValue name="inputFilePath">$$topLevelFastaFile$$</paramValue>
+    <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+    <paramValue name="analysisDir">$$dataDir$$</paramValue>
+    <paramValue name="configFileName">nextflow.config</paramValue>
+    <paramValue name="fastaSubsetSize">1</paramValue>
+    <paramValue name="trimDangling">false</paramValue>
+    <paramValue name="dangleMax">0</paramValue>
+    <paramValue name="rmParams">-xsmall</paramValue>
+    <paramValue name="outputFileName">blocked.seq</paramValue>
+    <paramValue name="errorFileName">blocked.err</paramValue>
+    <paramValue name="initialMemory">4000</paramValue>
+    <paramValue name="increasedMemory">12000</paramValue>
+    <paramValue name="maxForks">40</paramValue>
+    <paramValue name="maxRetries">2</paramValue>
+    <depends name="extractTopLevelFastaSeqs"/>
   </step>
 
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeRepeatMaskerNextflowConfig"/>
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeRepeatMaskerNextflowConfig"/>
   </step>
 
   <step name="runRepeatMaskerClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
-      <paramValue name="workingDir">$$dataDir$$</paramValue>
-      <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
-      <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
-      <paramValue name="nextflowWorkflow">VEuPathDB/repeatMasker</paramValue>
-      <paramValue name="isGitRepo">true</paramValue>
-      <depends name="mirrorToCluster"/>
+    <paramValue name="workingDir">$$dataDir$$</paramValue>
+    <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/repeatMasker</paramValue>
+    <paramValue name="isGitRepo">true</paramValue>
+    <depends name="mirrorToCluster"/>
   </step>
 
   <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
-      <paramValue name="outputFiles">blocked.seq</paramValue>
-      <paramValue name="deleteAfterCopy">true</paramValue>
-      <depends name="runRepeatMaskerClusterTask"/>
+    <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
+    <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+    <paramValue name="outputFiles">blocked.seq</paramValue>
+    <paramValue name="deleteAfterCopy">true</paramValue>
+    <depends name="runRepeatMaskerClusterTask"/>
   </step>
-<!--
-  <step name="makeMasterDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$/master</paramValue>
-      <depends name="makeDataDir"/> 
-  </step>
+  <!--
+    <step name="makeMasterDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$dataDir$$/master</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
 
-  <step name="makeMainResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$/master/mainresult</paramValue>
-      <depends name="makeMasterDir"/> 
-  </step>
--->
+    <step name="makeMainResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$dataDir$$/master/mainresult</paramValue>
+        <depends name="makeMasterDir"/>
+    </step>
+  -->
 
   <step name="document-mask_top_level_genome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">mask_top_level_genome_MTHD</paramValue>
-      <paramValue name="version">1.0</paramValue>
-      <paramValue name="parameters">TODO: patch in later</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="method">mask_top_level_genome_MTHD</paramValue>
+    <paramValue name="version">1.0</paramValue>
+    <paramValue name="parameters">TODO: patch in later</paramValue>
   </step>
 
 </workflowGraph>
