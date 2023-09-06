@@ -69,7 +69,7 @@ sub getOptionalAnnotationPropertiesFile {}
 sub getSpeciesReconciliationOntologySpec {}
 sub getSpeciesReconciliationFallbackSpecies {}
 sub getGadmDataDir {}
-sub getGadmSocket {}
+sub getGadmSocketDir {}
 sub getGadmPort { }
 
 sub getLoadProtocolTypeAsVariable {}
