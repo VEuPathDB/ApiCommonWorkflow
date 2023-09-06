@@ -63,6 +63,9 @@ sub getInvestigationBaseName {
 sub getDownloadFileBaseName {
     return $_[0]->getParamValue('downloadFileBaseName');
 }
+sub getGadmDataDir { return "NA" }
+sub getGadmSocketDir { return "NA" }
+sub getGadmPort { return "NA" }
 
 # TODO:
 # relative paths: '/../final/owlAttributes.txt'
