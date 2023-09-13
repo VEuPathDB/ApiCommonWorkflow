@@ -58,7 +58,7 @@ sub getIsaFormat {
 sub getInvestigationBaseName { return sprintf("../final/%s.xml", $_[0]->getParamValue("studyStableId")) }
 
 sub getDownloadFileBaseName {
-    return "";
+    return $_[0]->getParamValue('downloadFileBaseName');
 }
 sub getGadmDataDir { return "NA" }
 sub getGadmSocketDir { return "NA" }
