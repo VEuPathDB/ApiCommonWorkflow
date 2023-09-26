@@ -5,8 +5,11 @@
   <param name="parentDataDir"/>
   <param name="datasetVersion"/>
   <param name="projectName"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
   <param name="webDisplayOntologyName"/>
   <param name="downloadFileBaseName"/>
+  <param name="nameForFilenames"/>
   <param name="speciesReconciliationOntologySpec"/>
   <param name="speciesReconciliationFallbackSpecies"/>
   <param name="loadStudyCharacteristics"/>
@@ -88,5 +91,18 @@
 
   </step>
 
+    <step name="copyEntityDownloadFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyShinyFilesToDownloadDir">
+      <paramValue name="datasetName">$$datasetName$$</paramValue> 
+      <paramValue name="nameForFilenames">$$nameForFilenames$$</paramValue>
+      <paramValue name="filePath">$$dataDir$$/annPropsAndArtifacts/results</paramValue>
+      <paramValue name="inputFileBaseName">$$datasetName$$</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <depends name="nextflowAnnPropsAndArtifacts"/>
+    </step>
+    <step name="copyEntityWebServicesFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyToStaging">
+      <paramValue name="filePath">$$dataDir$$/annPropsAndArtifacts/results/study_*</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeWebServicesDir$$/$$datasetName$$/</paramValue>
+      <depends name="nextflowAnnPropsAndArtifacts"/>
+    </step>
 
 </workflowGraph>
