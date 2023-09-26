@@ -75,7 +75,7 @@ params {
   gtfFile = \"$gtfFile\"
   varscanFilePath = \"$varscanFilePath\"
   webServicesDir = \"$webServicesDir\"
-  extDbRlsSpec = '\"$extDbRlsSpec\"'
+  extDbRlsSpec = '$extDbRlsSpec'
 
 }
 
