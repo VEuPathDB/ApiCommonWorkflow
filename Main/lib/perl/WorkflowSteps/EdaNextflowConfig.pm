@@ -81,6 +81,8 @@ sub getUseOntologyTermTableForTaxonTerms {
     return "false"
 }
 
+sub getNoCommonDef {}
+
 
 sub getSchema {
     return "EDA"
@@ -126,6 +128,7 @@ sub nextflowConfigAsString {
     my $useOntologyTermTableForTaxonTerms = $self->getUseOntologyTermTableForTaxonTerms();
 
     my $optionalCollectionsYaml = $self->getOptionalCollectionsYaml() || "NA";
+    my $optionalNoCommonDef = $self->getNoCommonDef() || "NA";
 
     my $config = <<CONFIG;
 params.studyDirectory = "$studyDirectory"
@@ -176,6 +179,8 @@ params.protocolVariableSourceId = "$protocolVariableSourceId"
 params.isRelativeAbundance = $isRelativeAbundance
 
 params.optionalCollectionsYaml = "$optionalCollectionsYaml"
+
+params.noCommonDef = "$optionalNoCommonDef"
 
 trace.enabled = true
 trace.fields = 'task_id,hash,process,tag,status,exit,submit,realtime,%cpu,rss'
