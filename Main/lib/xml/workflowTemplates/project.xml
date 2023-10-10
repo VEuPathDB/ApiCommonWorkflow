@@ -27,6 +27,11 @@
     <paramValue name="dataDir">$$comparativeGenomicsInputDir$$</paramValue>
   </step>
 
+  <step name="initClusterHomeDir"
+        stepClass="ReFlow::StepClasses::InitClusterHomeDir">
+<!--    <depends name="initUserGroupProject"/>-->
+  </step>
+
   <datasetTemplate class="organism">
     <prop name="organismAbbrev"/>
     <prop name="projectName"/>
@@ -83,7 +88,7 @@
     <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" groupName="${organismAbbrev}"  stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">${organismAbbrev}</paramValue>
       <depends name="${organismAbbrev}_makeDataDir"/>
-      <dependsGlobal name="initClusterHomeDir"/>
+      <depends name="initClusterHomeDir"/>
     </step>
 
     <step name="${organismAbbrev}_loadNcbiTaxonId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadNcbiTaxonId" groupName="${organismAbbrev}">
@@ -164,7 +169,7 @@
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
-      <dependsGlobal name="mirrorToCluster"/>
+      <dependsGlobal name="${organismAbbrev}_mirrorToCluster"/>
     </subgraph>
 
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
@@ -684,7 +689,7 @@
       <paramValue name="argsOfFormatingDownloadFile">${argsOfFormatingDownloadFile}</paramValue>
       <paramValue name="formattedOutputName">${formattedOutputName}</paramValue>
       <paramValue name="inputFileNameRegex">${inputFileNameRegex}</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
+      <depends name="initUserGroupProject"/>
     </subgraph>
   </datasetTemplate>
 
@@ -728,7 +733,7 @@
       <paramValue name="datasetName">ExternalResourceUrl_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
+      <depends name="initUserGroupProject"/>
     </subgraph>
   </datasetTemplate>
 
@@ -740,7 +745,7 @@
       <paramValue name="datasetName">Production_Datasets_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
+      <depends name="initUserGroupProject"/>
     </subgraph>
   </datasetTemplate>
 
