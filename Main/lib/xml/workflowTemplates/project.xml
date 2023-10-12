@@ -169,7 +169,7 @@
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
-      <dependsGlobal name="${organismAbbrev}_mirrorToCluster"/>
+      <depends name="${organismAbbrev}_mirrorToCluster"/>
     </subgraph>
 
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
@@ -186,7 +186,7 @@
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
-
+<!--
     <subgraph name="${organismAbbrev}_PostLoadGenome" xmlFile="postLoadGenome.xml" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
@@ -210,7 +210,7 @@
       <paramValue name="isNotEbiGenome">${isNotEbiGenome}</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
-
+-->
     <subgraph name="${organismAbbrev}_gsnap_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/gsnap.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -383,7 +383,7 @@
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <depends name="${organismAbbrev}_LoadAliases"/>
     </subgraph>
-
+<!--
     <subgraph name="${organismAbbrev}_EarlyVirtualLocations" xmlFile="virtualLocations.xml" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
@@ -399,14 +399,12 @@
       <dependsPattern name="${organismAbbrev}_specific*"/>
       <depends name="${organismAbbrev}_PostLoadGenome"/>
     </subgraph>
-
    <step name="${organismAbbrev}_PARFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARFeatures"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
      <paramValue name="mappingFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
       <depends name="${organismAbbrev}_LateVirtualLocations"/>
       <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
     </step>
-
     <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
@@ -427,7 +425,7 @@
       <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
       <depends name="${organismAbbrev}_PARFeatures"/>
     </subgraph>
-
+-->
   </datasetTemplate>
 
   <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables">
@@ -435,7 +433,7 @@
     <paramValue name="dataDir">Snp_Table_Constraint</paramValue>
     <dependsPattern name="*_bowtieMapping"/>
   </step>
-
+<!--
   <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml">
     <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
     <paramValue name="parentDataDir"></paramValue>
@@ -445,7 +443,7 @@
     <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </subgraph>
-
+-->
   <!-- depends on MakeAndMaskTopLevelGenome, MakeCompGenomicsFiles AND VIRTUAL FEATURE LOCATIONS-->
 
   <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid" excludeIf="$$areBigGenomes$$" >
@@ -463,7 +461,7 @@
     <depends name="runPairwiseMercatorMavid"/>
     <dependsPattern name="*_EarlyVirtualLocations"/>
   </step>
-
+<!--
   <subgraph name="OrthoMCLDerivedEC" xmlFile="orthoMCLDerivedEC.xml">
     <paramValue name="ecFile">@@manualDeliveryDir@@/$$projectName$$/common/function/OrthoMCLDerived_ECAssociations/Current_Version/final/ec.txt</paramValue>
     <paramValue name="completedFile">@@manualDeliveryDir@@/$$projectName$$/common/function/OrthoMCLDerived_ECAssociations/Current_Version/final/completed</paramValue>
@@ -472,7 +470,7 @@
     <dependsPattern name="*_specific"/>
     <dependsGlobal name="enzymeDB_RSRC"/>
   </subgraph> 
-
+-->
   <!-- only reference strains have an instance of this -->
   <!-- it depends on all make and mask genomes for this organism (they all have the ref strain as a prefix) -->
   <datasetTemplate class="referenceStrain">
@@ -500,11 +498,11 @@
       <paramValue name="datasetName">Pathways_${source}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-      <dependsGlobal name="enzymeDB_RSRC"/>
-      <dependsGlobal name="oboOntologies"/>
-      <dependsGlobal name="GO_RSRC"/>
-      <dependsGlobal name="chEBI_Compounds"/>
-      <dependsGlobal name="EuPath_Ontology_RSRC"/>
+      <!--<dependsGlobal name="enzymeDB_RSRC"/>-->
+      <!--<dependsGlobal name="oboOntologies"/>-->
+      <!--<dependsGlobal name="GO_RSRC"/>-->
+      <!--<dependsGlobal name="chEBI_Compounds"/>-->
+      <!--<dependsGlobal name="EuPath_Ontology_RSRC"/>-->
     </subgraph>
   </datasetTemplate>
 
@@ -590,7 +588,7 @@
       <paramValue name="datasetName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-      <dependsGlobal name="chEBI_Compounds"/>
+      <!--<dependsGlobal name="chEBI_Compounds"/>-->
     </subgraph>
 
     <subgraph name="MetaboliteProfiles" xmlFile="metaboliteProfiles.xml">
@@ -615,7 +613,7 @@
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
       <paramValue name="parentDataDir">metabolomics</paramValue>
       <depends name="makeMetabolomicsDataDir"/>
-      <dependsGlobal name="chEBI_Compounds"/>
+      <!--<dependsGlobal name="chEBI_Compounds"/>-->
     </subgraph>
 
   </datasetTemplate>
@@ -642,6 +640,7 @@
   -->
 
   <!-- EuPath Ontology and Study MetaData -->
+<!--
   <subgraph name="metadata" xmlFile="metadata.xml" >
     <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
@@ -654,8 +653,9 @@
     <dependsGlobal name="eupathCuratedOntologies"/>
     <dependsGlobal name="EuPath_Ontology_RSRC"/>
   </subgraph>
-
+-->
   <!-- AlphaFold is now filtered, must be dependent on loading uniprot ids into sres.dbref in organism specific graph-->
+<!--
   <subgraph name="alphaFold_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
     <paramValue name="datasetName">alphaFold_RSRC</paramValue>
@@ -665,7 +665,7 @@
     <dependsPattern name="*specific*"/>
     <dependsPattern name="*_dbXRefs"/>
   </subgraph>
-
+-->
   <!--A generic dataset template to copy and format files from EuPathDB manualDelivery to download sites and web services-->
   <datasetTemplate class="copyAndFormatDownloadFilesFromManualDelivery">
     <prop name="projectName"/>
@@ -692,7 +692,7 @@
       <depends name="initUserGroupProject"/>
     </subgraph>
   </datasetTemplate>
-
+<!--
   <datasetTemplate class="EcNumberGenus">
     <prop name="projectName"/>
 
@@ -708,7 +708,7 @@
       <depends name="manuallyImproveEcNumberGenus"/>
     </subgraph>
   </datasetTemplate>
-
+-->
   <datasetTemplate class="StudyResultsLiteral">
     <prop name="projectName"/>
     <prop name="version"/>
@@ -719,7 +719,7 @@
       <paramValue name="datasetName">StudyResult_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir"></paramValue>
-      <dependsGlobal name="oboOntologies"/>
+  <!--<dependsGlobal name="oboOntologies"/>-->
     </subgraph>
   </datasetTemplate>
 

@@ -1,5 +1,6 @@
 <workflowGraph name="postLoadGenome">
   <param name="parentDataDir"/>
+  <param name="gusConfigFile" />
   <param name="projectName"/>
   <param name="projectVersionForWebsiteFiles"/>
   <param name="organismAbbrev"/>
@@ -31,6 +32,7 @@
     </step>
 
   <subgraph name="genomeAnalysis" xmlFile="genome.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
@@ -52,6 +54,7 @@
   </subgraph>
 
   <subgraph name="genesAndProtiensAnalysis" xmlFile="genesAndProteins.xml" includeIf="$$isAnnotatedGenome$$">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
