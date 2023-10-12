@@ -1,27 +1,28 @@
 <workflowGraph name="">
-    <param name="datasetName"/> 
-    <param name="parentDataDir"/>
-    <param name="datasetLoaderXmlFileName"/>
+  <param name="gusConfigFile"/>
+  <param name="datasetName"/>
+  <param name="parentDataDir"/>
+  <param name="datasetLoaderXmlFileName"/>
 
-    <constant name="dataDir">$$parentDataDir$$/chEBI</constant>
+  <constant name="dataDir">$$parentDataDir$$/chEBI</constant>
 
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-    </step>
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
 
-   <subgraph name="compounds_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">$$datasetName$$</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+  <subgraph name="compounds_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="datasetName">$$datasetName$$</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
-    </subgraph>
+  </subgraph>
 
-    <step name="loadChEBI" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChEBI" stepLoadTypes="plugin">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-      <paramValue name="datasetName">$$datasetName$$</paramValue>
-      <depends name="compounds_RSRC"/>
-    </step>
-
-    
+  <step name="loadChEBI" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChEBI" stepLoadTypes="plugin">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+    <paramValue name="datasetName">$$datasetName$$</paramValue>
+    <depends name="compounds_RSRC"/>
+  </step>
 
 </workflowGraph>
