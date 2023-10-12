@@ -42,7 +42,7 @@ sub run {
   } else {
       # do not use -p.  previous steps should have created parent dirs
       # also, this validates that the dir doesn't already exist
-      $self->runCmd(0, "mkdir $fullPath");
+      $self->runCmd(0, "mkdir -p $fullPath");
   }
 }
 
