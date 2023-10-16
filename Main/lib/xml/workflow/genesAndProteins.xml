@@ -1,5 +1,6 @@
 <workflowGraph name="proteomeAnalysis">
   <param name="projectName"/>
+  <param name="gusConfigFile"/>
   <param name="organismAbbrev"/>
   <param name="parentDataDir"/>
   <param name="genomeExtDbRlsSpec"/>
@@ -24,6 +25,7 @@
 
     <step name="calcAASequenceAttributes"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateAASeqAttributes" stepLoadTypes="plugin" includeIf="$$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="table">DoTS.TranslatedAASequence</paramValue>
       <paramValue name="idSql">select taas.aa_sequence_id, taas.sequence from DoTS.TranslatedAASequence taas, DoTs.AAFeature af, DOTS.NAFeature nf where taas.aa_sequence_id=af.aa_sequence_id and af.na_feature_id=nf.na_feature_id and nf.name not in ('ORF') and taas.external_database_release_id = ?</paramValue>
@@ -31,6 +33,7 @@
 
     <step name="document-isoelectricPoint"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="$$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="method">isoelectric_point_MTHD</paramValue>
       <paramValue name="version">1.4</paramValue>
       <paramValue name="parameters"></paramValue>
@@ -39,6 +42,7 @@
 
     <step name="document-molecularWeight"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="$$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="method">molecular_weight_MTHD</paramValue>
       <paramValue name="version">1.4</paramValue>
       <paramValue name="parameters"></paramValue>
@@ -46,6 +50,7 @@
     </step>
 
   <subgraph name="loadProductName" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/productNames.xml" excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="makeDataDir"/>
@@ -58,6 +63,7 @@
 -->
     <step name="runTmhmm"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTmhmm" includeIf="$$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/tmhmm.out</paramValue>
       <depends name="makeDataDir"/>
@@ -65,6 +71,7 @@
 
     <step name="document-runTmhmm"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="$$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="method">TMHMM_MTHD</paramValue>
       <paramValue name="version">2.0a</paramValue>
       <paramValue name="parameters"></paramValue>
@@ -73,6 +80,7 @@
 
     <step name="insertTmhmm"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTmhmm" stepLoadTypes="plugin" includeIf="$$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="inputFile">$$dataDir$$/tmhmm.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="runTmhmm"/>
@@ -80,6 +88,7 @@
 
     <step name="runExportPred"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunExportPred" includeIf="$$runExportPred$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/exportPred.out</paramValue>
       <depends name="makeDataDir"/>
@@ -87,6 +96,7 @@
 
     <step name="document-runExportPred"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="method">ExportPred_MTHD</paramValue>
       <paramValue name="version">1.0.1</paramValue>
       <paramValue name="parameters">default</paramValue>
@@ -95,6 +105,7 @@
 
     <step name="insertExportPred"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExportPred" stepLoadTypes="plugin" includeIf="$$runExportPred$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="inputFile">$$dataDir$$/exportPred.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="runExportPred"/>
@@ -102,6 +113,7 @@
 
     <step name="runSignalP"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunSignalP" includeIf="$$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/signalP.out</paramValue>
       <paramValue name="options">$$signalpArgs$$</paramValue>
@@ -110,6 +122,7 @@
 
     <step name="insertSignalP"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSignalP" stepLoadTypes="plugin" includeIf="$$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="inputFile">$$dataDir$$/signalP.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="runSignalP"/>
@@ -117,6 +130,7 @@
 
     <step name="document-SignalP"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="$$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="method">SignalP_MTHD</paramValue>
       <paramValue name="version">3.0</paramValue>
       <paramValue name="parameters">$$signalpArgs$$</paramValue>
@@ -125,11 +139,13 @@
 
     <!-- this step could also be in loadGenome, after protein extract -->
     <step name="makeProteinsBlastDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatNcbiBlastFile">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="sequencesFile">$$proteinsFile$$</paramValue>
       <paramValue name="formatterArgs">T</paramValue>
     </step>
 
     <subgraph name="epitopes" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/epitopes.xml" excludeIfXmlFileDoesNotExist="true">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -140,6 +156,7 @@
     <!-- a step in this subgraph uses a dependsExternal to depend on the
          reference strain loading of epitopes -->
     <subgraph name="mapEpitopesToProteins" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/mapEpitopes.xml" excludeIfXmlFileDoesNotExist="true">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="proteinsFileWithBlastDb">$$proteinsFile$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -149,6 +166,7 @@
 
    <step name="runLowComplexityFilter"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunLowComplexityFilter" includeIf="$$isNotEbiGenome$$"> 
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="seqFile">$$proteinsFile$$</paramValue>
       <paramValue name="outputFile">$$proteinsFile$$.seg</paramValue>
       <paramValue name="filterType">seg</paramValue>
@@ -158,6 +176,7 @@
 
     <step name="document-runLowComplexityFilter"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="$$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="method">seg_translated_proteins_MTHD</paramValue>
       <paramValue name="version">2.0</paramValue>
       <paramValue name="parameters">-x</paramValue>
@@ -166,6 +185,7 @@
 
     <step name="loadLowComplexityFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertLowComplexitySequences" stepLoadTypes="plugin" includeIf="$$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="inputFile">$$proteinsFile$$.seg</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="seqType">protein</paramValue>
@@ -176,14 +196,16 @@
 
 
     <subgraph name="interpro" xmlFile="interpro.xml" includeIf="$$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="mirrorToCluster"/>
-      <dependsGlobal name="interproscanData_RSRC"/>
+      <!--<dependsGlobal name="interproscanData_RSRC"/>-->
     </subgraph>
 
     <step name="document-interpro"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="$$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="method">interProScan_MTHD</paramValue>
       <paramValue name="version">most recent</paramValue>
       <paramValue name="parameters"></paramValue>
@@ -191,6 +213,7 @@
     </step>
 
     <subgraph name="psipred" xmlFile="psipred.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
@@ -198,6 +221,7 @@
 
     <step name="document-psipred"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="method">psipred_MTHD</paramValue>
       <paramValue name="version">dontcare</paramValue>
       <paramValue name="parameters">default</paramValue>
@@ -240,6 +264,7 @@
       <depends name="blastpNrdb"/>
     </step>
 -->
+<!--
     <subgraph name="blastpPdb" xmlFile="diamond.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="nickName">blastpPdb</paramValue>
@@ -257,7 +282,7 @@
       <paramValue name="shortenSubjectSourceIdTo">4</paramValue>
       <paramValue name="filterByTaxon">false</paramValue>
       <paramValue name="taxonHierarchyForFilter"></paramValue>
-      <paramValue name="loadOptions">--noHSPs --subjectPvalue 1e-05 --subjectPctIdent 30</paramValue>
+      <paramValue name="loadOptions">&#45;&#45;noHSPs &#45;&#45;subjectPvalue 1e-05 &#45;&#45;subjectPctIdent 30</paramValue>
       <paramValue name="maxMemoryGigs">1.5</paramValue>
       <paramValue name="loadSimilarities">true</paramValue>
       <paramValue name="makeSimSeqsFile"></paramValue>
@@ -272,7 +297,7 @@
       <paramValue name="parameters">$$blastpPdbArgs$$</paramValue>
       <depends name="blastpPdb"/>
     </step>
-
+-->
 <!-- not loading blast p nrdb
     <step name="findNrdbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindNrdbXrefs">
       <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
