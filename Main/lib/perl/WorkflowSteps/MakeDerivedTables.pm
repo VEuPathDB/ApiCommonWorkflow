@@ -17,7 +17,8 @@ sub run {
 
   my $instance = $self->getGusInstanceName();
 
-  my $apidbTuningPassword = $self->getConfig('apidbTuningPassword');
+  my $username = $self->getGusDatabaseLogin();
+  my $password = $self->getGusDatabasePassword();
 
   my $dblink = $self->getConfig('dblink');
 
@@ -25,7 +26,8 @@ sub run {
   my $xmlConfigFileString=
 "<?xml version='1.0'?>
 <tuningProps>
-  <password>$apidbTuningPassword</password>
+  <username>$username</username>
+  <password>$password</password>
   <schema>ApidbTuning</schema>
   <housekeepingSchema>apidb</housekeepingSchema>
   <dblink>$dblink</dblink>
