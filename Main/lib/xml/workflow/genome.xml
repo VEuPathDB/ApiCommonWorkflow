@@ -1,5 +1,6 @@
 <workflowGraph name="genomeAnalysis">
   <param name="parentDataDir"/>
+  <param name="gusConfigFile"/>
   <param name="projectName"/>
   <param name="projectVersionForWebsiteFiles"/>
   <param name="organismAbbrev"/>
@@ -38,6 +39,7 @@
 
     <step name="document-tRNAScan"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" excludeIf="$$annotationIncludesTRNAs$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="method">tRNAscan_MTHD</paramValue>
       <paramValue name="version">1.4</paramValue>
       <paramValue name="parameters"></paramValue>
@@ -45,6 +47,7 @@
     </step>
 
     <step name="loadTRNAScan" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTRNAScan" stepLoadTypes="plugin" excludeIf="$$annotationIncludesTRNAs$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="inputFile">$$dataDir$$/tRNAScan.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="tRNAExtDbRlsSpec">$$organismAbbrev$$TRNAscan-SE|1.3</paramValue>
@@ -53,6 +56,7 @@
     </step>
 
     <subgraph name="unofficialGeneFeatures" xmlFile="unofficialGeneFeatures.xml">
+     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
      <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
      <paramValue name="parentDataDir">$$dataDir$$</paramValue> 
      <paramValue name="projectName">$$projectName$$</paramValue>
@@ -62,6 +66,7 @@
 
     <step name="makeOrfFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfFile" excludeIf="$$isHugeGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="seqFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="minPepLength">50</paramValue>
       <paramValue name="outputFile">$$dataDir$$/Orf50.gff</paramValue>
@@ -70,6 +75,7 @@
 
     <step name="document-makeOrfFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" excludeIf="$$isHugeGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="method">orfFinder_MTHD</paramValue>
       <paramValue name="version">unknown</paramValue>
       <paramValue name="parameters">--minPepLength 50</paramValue>
@@ -77,6 +83,7 @@
     </step>
 
    <step name="copyOrfGffToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOrfGffToDownloadDir" excludeIf="$$isHugeGenome$$">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="copyFromFile">$$dataDir$$/Orf50.gff</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="relativeDownloadDir">$$relativeDownloadSiteDir$$</paramValue>
@@ -84,6 +91,7 @@
    </step>
 
     <step name="copyOrfGffToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOrfGffToWebServices" excludeIf="$$isHugeGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="copyFromFile">$$dataDir$$/Orf50.gff</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
@@ -103,6 +111,7 @@
 -->
   
   <subgraph name="massSpecDatasetLoaders" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/massSpec.xml" excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="unofficialGeneFeatures"/>
@@ -110,6 +119,7 @@
 
     <step name="findTandemRepeats"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FindTandemRepeats" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="seqsFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="repeatFinderArgs">$$trfArgs$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/tandemRepeats.out</paramValue>
@@ -118,6 +128,7 @@
 
     <step name="document-findTandemRepeats"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="method">TRF_MTHD</paramValue>
       <paramValue name="version">3.21</paramValue>
       <paramValue name="parameters">$$trfArgs$$</paramValue>
@@ -126,6 +137,7 @@
 
     <step name="loadTandemRepeats"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTandemRepeats" stepLoadTypes="plugin" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="inputFile">$$dataDir$$/tandemRepeats.out</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="findTandemRepeats"/>
@@ -133,7 +145,7 @@
 
    <step name="runLowComplexityFilter"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunLowComplexityFilter" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
-
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="seqFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="outputFile">$$genomicSeqsFile$$.dust</paramValue>
       <paramValue name="filterType">dust</paramValue>
@@ -143,6 +155,7 @@
 
     <step name="document-runLowComplexityFilter"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="method">dust_genome_MTHD</paramValue>
       <paramValue name="version">2.0</paramValue>
       <paramValue name="parameters"></paramValue>
@@ -151,6 +164,7 @@
 
     <step name="loadLowComplexityFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertLowComplexitySequences" stepLoadTypes="plugin" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="inputFile">$$genomicSeqsFile$$.dust</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="seqType">dna</paramValue>
@@ -162,12 +176,14 @@
 
     <step name="loadScaffoldGapFeatures"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertScaffoldGapFeatures" stepLoadTypes="plugin" includeIf="!$$isHugeGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
 
   <subgraph name="ESTDatasetLoaders" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/ESTs.xml" excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -184,6 +200,7 @@
        has an externalDepends to the reference strain's dbEST dataset
        inside the reference strain's ESTs graph -->
   <subgraph name="mapTranscripts" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/mapTranscriptsToGenome.xml" excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
     <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
