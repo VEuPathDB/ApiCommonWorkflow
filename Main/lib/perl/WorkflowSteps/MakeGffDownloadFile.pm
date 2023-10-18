@@ -10,9 +10,9 @@ sub getWebsiteFileCmd {
 
     my $extDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
 
-    my $tuningTablePrefix = $self->getTuningTablePrefix($self->getParamValue('organismAbbrev'), $test);
+    #my $tuningTablePrefix = $self->getTuningTablePrefix($self->getParamValue('organismAbbrev'), $test);
 
-    return "makeGff.pl --extDbRlsId $extDbRlsId --outputFile $downloadFileName --tuningTablePrefix $tuningTablePrefix";
+    return "makeGff.pl --extDbRlsId $extDbRlsId --outputFile $downloadFileName";
 }
 
 1;
