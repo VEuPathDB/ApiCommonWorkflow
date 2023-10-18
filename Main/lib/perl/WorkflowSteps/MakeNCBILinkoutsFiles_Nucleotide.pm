@@ -12,8 +12,8 @@ sub getWebsiteFileCmd {
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  #my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
-  my $cmd = "makeNCBILinkoutsFiles_Nucleotide.pl -output $downloadFileName -tuningTablePrefix $tuningTablePrefix";
+  my $cmd = "makeNCBILinkoutsFiles_Nucleotide.pl -output $downloadFileName";
   return $cmd;
 }

@@ -11,12 +11,12 @@ sub getWebsiteFileCmd {
 
     my $extDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
 
-    my $tuningTablePrefix = $self->getTuningTablePrefix($self->getParamValue('organismAbbrev'), $test);
+    #my $tuningTablePrefix = $self->getTuningTablePrefix($self->getParamValue('organismAbbrev'), $test);
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
 
-    return "makeCuratedGafFile4Download.pl --organismAbbrev $organismAbbrev --tuningTablePrefix $tuningTablePrefix --outputFile $downloadFileName";
+    return "makeCuratedGafFile4Download.pl --organismAbbrev $organismAbbrev --outputFile $downloadFileName";
 }
 
 1;
