@@ -13,7 +13,7 @@ sub getWebsiteFileCmd {
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
     my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
-    my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+    #my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
 =comment out - refs #21487
   my $sql = <<"EOF";
@@ -103,7 +103,7 @@ SELECT t.protein_source_id || ' | transcript=' || t.source_id || ' | gene=' || t
   || ' | protein_length=' || t.protein_length 
   || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || decode(is_deprecated, 1, ' | deprecated=true', '') || ' | is_pseudo=' || decode(t.is_pseudo, 1, 'true','false')
   as defline, taas.sequence
-FROM ApidbTuning.${tuningTablePrefix}TranscriptAttributes t, DOTS.NASEQUENCE ns, sres.ontologyTerm soseq,
+FROM ApidbTuning.TranscriptAttributes t, DOTS.NASEQUENCE ns, sres.ontologyTerm soseq,
      dots.translatedaasequence taas
 WHERE ns.SOURCE_ID = t.SEQUENCE_ID
   AND ns.sequence_ontology_id = soseq.ontology_term_id

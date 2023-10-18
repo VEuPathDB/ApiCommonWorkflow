@@ -15,7 +15,7 @@ sub getWebsiteFileCmd {
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  #my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
  
 =comment out in gus4, refs #21487
   my $sql = <<"EOF";
@@ -110,7 +110,7 @@ SELECT t.source_id || ' | gene=' || gene_source_id || decode(is_deprecated, 1, '
   || ' | is_pseudo=' || decode(t.is_pseudo, 1, 'true','false')
   as defline,
   ts.SEQUENCE
-FROM ApidbTuning.${tuningTablePrefix}TranscriptAttributes t, ApidbTuning.${tuningTablePrefix}TranscriptSequence ts,
+FROM ApidbTuning.TranscriptAttributes t, ApidbTuning.TranscriptSequence ts,
   DOTS.NASEQUENCE ns, sres.ontologyTerm soseq
 WHERE t.source_id = ts.SOURCE_ID
   AND ns.SOURCE_ID = t.SEQUENCE_ID

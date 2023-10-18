@@ -13,7 +13,7 @@ sub getWebsiteFileCmd {
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $ncbiTaxonId = $self->getOrganismInfo($test,$organismAbbrev)->getNcbiTaxonId();
 
-    my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+    #my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
     my $sql = <<"EOF";
      select gf.source_id
@@ -31,7 +31,7 @@ sub getWebsiteFileCmd {
                   taaf.translation_start,
                   taaf.translation_stop - taaf.translation_start + 1) as sequence
            from apidb.FeatureLocation fl,
-                ApidbTuning.${tuningTablePrefix}TranscriptAttributes gf,
+                ApidbTuning.TranscriptAttributes gf,
                 dots.transcript t, dots.splicednasequence snas, dots.translatedaafeature taaf,
                 dots.nasequence ns, sres.ontologyTerm soseq, sres.taxon
       WHERE gf.gene_na_feature_id = t.parent_id
