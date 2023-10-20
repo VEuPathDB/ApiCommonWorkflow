@@ -1,5 +1,6 @@
 <workflowGraph name="makeCompGenomicsFiles">
       <param name="parentDataDir"/>
+      <param name="gusConfigFile"/>
       <param name="makeAndMaskTopLevelGenomeDataDir"/>
       <param name="topLevelFastaFile"/>
       <param name="organismAbbrev"/>
@@ -13,18 +14,19 @@
     </step>
 
     <step name="copyMaskedTopLevelFastaFileToComparativeGenomicsDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$">
-      <paramValue name="fromFile">$$makeAndMaskTopLevelGenomeDataDir$$/master/mainresult/blocked.seq</paramValue>
+      <paramValue name="fromFile">$$makeAndMaskTopLevelGenomeDataDir$$/results/blocked.seq</paramValue>
       <paramValue name="toFile">$$comparativeGenomicsDir$$/$$organismAbbrev$$.fasta</paramValue>
     </step>
 
     <step name="copyMaskedTopLevelFastaFileToStrainsComparisonDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$">
-      <paramValue name="fromFile">$$makeAndMaskTopLevelGenomeDataDir$$/master/mainresult/blocked.seq</paramValue>
+      <paramValue name="fromFile">$$makeAndMaskTopLevelGenomeDataDir$$/results/blocked.seq</paramValue>
       <paramValue name="toFile">$$strainsComparisonInputDir$$/$$organismAbbrev$$.fasta</paramValue>
     </step>
 
   <step name="makeMercatorGffFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMercatorGffFile" includeIf="$$isAnnotatedGenome$$">
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="outputFile">$$dataDir$$/$$organismAbbrev$$.gff</paramValue>
        <depends name="makeDataDir"/> 
     </step>
