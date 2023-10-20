@@ -11,7 +11,7 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
-
+  my $gusConfigFile = $self->getGusConfigFile();
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
   my $sql = 
     "select sa.source_id, ns.sequence
@@ -29,7 +29,7 @@ sub run {
 	if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
 	}
-        $self->runCmd($test,"dumpSequencesFromTable.pl --outputFile $workflowDataDir/$outputFile --idSQL \"$sql\" --verbose");
+        $self->runCmd($test,"dumpSequencesFromTable.pl --outputFile $workflowDataDir/$outputFile --idSQL \"$sql\" --gusConfigFile $gusConfigFile --verbose");
 	$self->runCmd($test,"samtools faidx $workflowDataDir/$outputFile"); 
     }
   }
