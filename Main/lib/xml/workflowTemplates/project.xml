@@ -186,7 +186,6 @@
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
-<!--
     <subgraph name="${organismAbbrev}_PostLoadGenome" xmlFile="postLoadGenome.xml" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
@@ -210,7 +209,6 @@
       <paramValue name="isNotEbiGenome">${isNotEbiGenome}</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
--->
     <subgraph name="${organismAbbrev}_gsnap_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/gsnap.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -383,7 +381,7 @@
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <depends name="${organismAbbrev}_LoadAliases"/>
     </subgraph>
-<!--
+
     <subgraph name="${organismAbbrev}_EarlyVirtualLocations" xmlFile="virtualLocations.xml" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
@@ -425,7 +423,7 @@
       <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
       <depends name="${organismAbbrev}_PARFeatures"/>
     </subgraph>
--->
+
   </datasetTemplate>
 
   <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables">
@@ -433,7 +431,7 @@
     <paramValue name="dataDir">Snp_Table_Constraint</paramValue>
     <dependsPattern name="*_bowtieMapping"/>
   </step>
-<!--
+
   <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml">
     <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
     <paramValue name="parentDataDir"></paramValue>
@@ -443,7 +441,7 @@
     <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </subgraph>
--->
+
   <!-- depends on MakeAndMaskTopLevelGenome, MakeCompGenomicsFiles AND VIRTUAL FEATURE LOCATIONS-->
 
   <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid" excludeIf="$$areBigGenomes$$" >
