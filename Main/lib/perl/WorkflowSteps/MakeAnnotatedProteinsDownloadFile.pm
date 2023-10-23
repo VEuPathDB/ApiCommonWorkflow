@@ -99,9 +99,9 @@ EOF
 SELECT t.protein_source_id || ' | transcript=' || t.source_id || ' | gene=' || t.gene_source_id || ' | organism=' || replace(t.organism, ' ', '_') || 
   ' | gene_product=' || gene_product || ' | transcript_product=' || transcript_product
   || ' | location=' || sequence_id || ':' || coding_start || '-' || coding_end
-  || '(' || decode(is_reversed, 1, '-', '+') || ')' 
+  || '(' || CASE is_reversed WHEN 1 THEN '-' ELSE '+' END || ')'
   || ' | protein_length=' || t.protein_length 
-  || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || decode(is_deprecated, 1, ' | deprecated=true', '') || ' | is_pseudo=' || decode(t.is_pseudo, 1, 'true','false')
+  || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || decode(is_deprecated, 1, ' | deprecated=true', '') || ' | is_pseudo=' || CASE t.is_pseudo WHEN 1 THEN 'true' ELSE 'false' END
   as defline, taas.sequence
 FROM ApidbTuning.TranscriptAttributes t, DOTS.NASEQUENCE ns, sres.ontologyTerm soseq,
      dots.translatedaasequence taas
