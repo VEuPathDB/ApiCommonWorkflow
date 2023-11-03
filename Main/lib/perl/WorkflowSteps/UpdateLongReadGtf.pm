@@ -17,5 +17,5 @@ sub run {
   if ($undo) {
 	 $self->runCmd(0,"rm -rf $gffFileOut");  	
  } else{
-	$self->runCmd($test, "UpdateLongReadGtf.pl --GFF3File $gff_file --CountFile $count_file --UpdatedGffName $gtfOut"); 
+	$self->runCmd($test, "UpdateLongReadGtf.pl --GFF3File $gff_file --CountFile $count_file --UpdatedGffName $gffFileOut"); 
 }
