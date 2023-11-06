@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::UpdateLongReadGtf;
+package ApiCommonWorkflow::Main::WorkflowSteps::UpdateLongReadGff;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
