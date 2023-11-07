@@ -77,12 +77,20 @@
     	<depends name="runLongReadRnaSeqExperiment"/>
     </step> 
 
+    <step name="UpdateloadLongReadRnaSeqGff" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateLongReadGff">
+        <paramValue name="gffFile">$$dataDir$$/results/Gtf/$$experimentDatasetName$$_sorted.gff</paramValue>
+        <paramValue name="countFile">$$dataDir$$/results/counts/results_no_filter_talon_abundance.tsv</paramValue>
+        <paramValue name="gffFileOut">$$dataDir$$/results/Gtf/$$experimentDatasetName$$_sorted_updated.gff</paramValue>
+        <depends name="mirrorFromCluster"/>
+    </step>
+
+
     <step name="copyGffFilesToWebSvc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyLongReadRnaGffToWebSvc">
         <paramValue name="copyFromDir">$$dataDir$$/results/Gtf</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
         <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
-        <depends name="mirrorFromCluster"/>
+        <depends name="UpdateloadLongReadRnaSeqGtf"/>
     </step>
     
     <step name="copyBamFilesToWebSvc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyLongReadRnaBamToWebSvc">
