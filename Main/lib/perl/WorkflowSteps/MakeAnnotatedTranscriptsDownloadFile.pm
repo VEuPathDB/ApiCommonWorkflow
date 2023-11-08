@@ -15,7 +15,7 @@ sub getWebsiteFileCmd {
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
-  #my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
  
 =comment out in gus4, refs #21487
   my $sql = <<"EOF";
@@ -101,16 +101,16 @@ EOF
 =cut
 
   my $sql = <<EOF;
-SELECT t.source_id || ' | gene=' || gene_source_id || CASE is_deprecated WHEN 1 THEN ' | deprecated=true' ELSE '' END
+SELECT t.source_id || ' | gene=' || gene_source_id || decode(is_deprecated, 1, ' | deprecated=true', '')
   || ' | organism=' || replace(organism, ' ', '_') || ' | gene_product=' || gene_product || ' | transcript_product=' || transcript_product
   || ' | location=' || sequence_id || ':' || coding_start || '-' || coding_end
-  || '(' || CASE is_reversed WHEN 1 THEN '-' ELSE '+' END || ')'
+  || '(' || decode(is_reversed, 1, '-', '+') || ')' 
   || ' | length=' || t.length 
   || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || decode(is_deprecated, 1, ' | deprecated=true', '')
-  || ' | is_pseudo=' || CASE t.is_pseudo WHEN 1 THEN 'true' ELSE 'false' END
+  || ' | is_pseudo=' || decode(t.is_pseudo, 1, 'true','false')
   as defline,
   ts.SEQUENCE
-FROM ApidbTuning.TranscriptAttributes t, ApidbTuning.TranscriptSequence ts,
+FROM ApidbTuning.${tuningTablePrefix}TranscriptAttributes t, ApidbTuning.${tuningTablePrefix}TranscriptSequence ts,
   DOTS.NASEQUENCE ns, sres.ontologyTerm soseq
 WHERE t.source_id = ts.SOURCE_ID
   AND ns.SOURCE_ID = t.SEQUENCE_ID
