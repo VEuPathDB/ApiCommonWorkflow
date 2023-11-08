@@ -14,7 +14,7 @@ sub getWebsiteFileCmd {
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
 
-    #my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+    my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
 
     my $sql = <<"EOF";
        SELECT sa.source_id
@@ -27,7 +27,7 @@ sub getWebsiteFileCmd {
                as defline,
                ns.sequence
            FROM dots.nasequence ns, sres.ontologyTerm so,
-                ApidbTuning.GenomicSeqAttributes sa
+                ApidbTuning.${tuningTablePrefix}GenomicSeqAttributes sa
           WHERE ns.na_sequence_id = sa.na_sequence_id
             AND sa.ncbi_tax_id = $ncbiTaxonId
             AND sa.is_top_level = 1
