@@ -1,5 +1,6 @@
 <workflowGraph name="">
   <param name="experimentDataDir"/>
+  <param name="gusConfigFile"/>
   <param name="outputDir"/>
   <param name="organismAbbrev"/>
   <param name="projectName"/>
@@ -21,6 +22,7 @@
     <prop name="sampleName"/>
 
     <subgraph name="${sampleName}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_rnaSeqSample_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
@@ -29,6 +31,7 @@
 
     <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeRnaSeqSample.xml">
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="outputDir">$$outputDir$$</paramValue>
       <paramValue name="sampleName">${sampleName}</paramValue>
       <paramValue name="shortSeqsFile">$$experimentDatasetLoadersDataDir$$/final/${sampleName}</paramValue>
@@ -54,6 +57,7 @@
     <prop name="sraQueryString"/>
 
     <subgraph name="${sampleName}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_rnaSeqSample_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
@@ -62,6 +66,7 @@
 
     <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeRnaSeqSample.xml">
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="outputDir">$$outputDir$$</paramValue>
       <paramValue name="sampleName">${sampleName}</paramValue>
       <paramValue name="shortSeqsFile">$$experimentDatasetLoadersDataDir$$/final/${sampleName}</paramValue>

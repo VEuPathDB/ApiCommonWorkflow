@@ -1,5 +1,6 @@
 <workflowGraph name="">
     <param name="projectName"/>
+    <param name="gusConfigFile"/>
     <param name="organismAbbrev"/>
     <param name="experimentName"/>
     <param name="parentDataDir"/>
@@ -64,6 +65,7 @@
       <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="dataDir">$$finalDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="makeFinalDir"/>
     </step>
 
@@ -77,6 +79,7 @@
     <step name="insertExtDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertExtDb" stepLoadTypes="plugin">
       <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="dataDir">$$finalDir$$</paramValue>
       <depends name="makeFinalDir"/>
     </step>
@@ -84,6 +87,7 @@
     <step name="experiment_RSRC" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertExtDbRls" stepLoadTypes="plugin">
       <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="dataDir">$$finalDir$$</paramValue>
       <depends name="insertExtDb"/>
     </step>
@@ -94,6 +98,7 @@
     <step name="addStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
       <paramValue name="experimentName">$$organismAbbrev$$ $$experimentName$$ (NGS SNP)</paramValue>
       <paramValue name="experimentExtDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
        <depends name="experiment_RSRC"/>
     </step>
 
@@ -101,6 +106,7 @@
 
     <subgraph name="map_SNPs" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/htsSnpSamples.xml">
        <paramValue name="projectName">$$projectName$$</paramValue>
+       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
        <paramValue name="experimentDir">$$dataDir$$</paramValue>
        <paramValue name="experimentRSRC">$$experimentDatasetName$$</paramValue>
        <paramValue name="samplesOutputDir">$$dataDir$$/$$experimentName$$/samplesOutput</paramValue>
