@@ -1,5 +1,6 @@
 <workflowGraph name="">
 <param name="projectName"/>  
+<param name="gusConfigFile"/>
 <param name="experimentDataDir"/>
 <param name="outputDir"/>
 <param name="organismAbbrev"/>
@@ -24,6 +25,7 @@
       <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_chipSeqSample_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
 
     <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeChipSeqSamples.xml">
@@ -59,6 +61,7 @@
     <subgraph name="${sampleName}_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_chipSeqSample_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
     </subgraph>
 
@@ -78,7 +81,7 @@
       <paramValue name="experimentType">$$experimentType$$</paramValue>
       <paramValue name="inputName">${inputName}</paramValue>
       <paramValue name="fragmentLength">${fragmentLength}</paramValue>
-
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="${sampleName}_RSRC"/>
     </subgraph>
   </datasetTemplate> 
