@@ -9,10 +9,9 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
-  my $soExtDbRlsSpec = $self->getParamValue('SOExtDbRlsSpec');
   my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
 
-  my $args = "--extDbRlsSpec '${genomeExtDbRlsSpec}' --SOExtDbRlsSpec '$soExtDbRlsSpec'";
+  my $args = "--extDbRlsSpec '${genomeExtDbRlsSpec}'";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertScaffoldGapFeatures", $args);
 
