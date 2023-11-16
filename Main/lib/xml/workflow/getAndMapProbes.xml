@@ -21,6 +21,7 @@
     <param name="probeRows"/>
     <param name="probeCols"/>
     <param name="topLevelFastaFile"/>
+    <param name="gusConfigFile"/>
 
     <constant name="platformDir">$$parentDataDir$$/$$probeSetName$$</constant>
 
@@ -40,6 +41,7 @@
       <paramValue name="fastaFile">$$platformDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
       <paramValue name="extDbRlsSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
       <paramValue name="platformName">$$probeSetName$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="probe_RSRC"/>
     </step>
 
@@ -74,6 +76,7 @@
     <step name="loadReporterLocations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertReporterLocation" stepLoadTypes="plugin">
         <paramValue name="bamFile">$$platformDir$$/master/mainresult/results_sorted.bam</paramValue>
         <paramValue name="platformExtDbSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
         <depends name="runGSNAP"/>
         <depends name="loadReporter"/>
     </step>
@@ -83,6 +86,7 @@
       <paramValue name="method">getAndMapProbes_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters">TODO: patch in later</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="loadReporterLocations"/>
     </step>
 

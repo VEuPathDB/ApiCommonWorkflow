@@ -12,7 +12,7 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $project = $self->getParamValue('project');
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
-
+  my $gusConfigFile = $self->getGusConfigFile();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
 
@@ -25,7 +25,7 @@ sub run {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
         $self->runCmd(0, "echo test > $workflowDataDir/$dir/maxIntronLen");
       }
-      $self->runCmd($test,"makeGeneFootprintFile.pl --outputFile $workflowDataDir/$outputFile --project $project --genomeExtDbRlsSpec \'$genomeExtDbRlsSpec\' --verbose");
+      $self->runCmd($test,"makeGeneFootprintFile.pl --outputFile $workflowDataDir/$outputFile --project $project --genomeExtDbRlsSpec \'$genomeExtDbRlsSpec\' -gusConfigFile $gusConfigFile --verbose");
   }
 }
 
