@@ -20,8 +20,9 @@ sub run {
     my $project = $self->getParamValue("project");
     my $genomeExtDbRlsSpec = $self->getParamValue("genomeExtDbRlsSpec");
     my $cdsOnly = $self->getBooleanParamValue("cdsOnly");
+my $gusConfigFile = $self->getGusConfigFile();
 
-    my $cmd = "makeGtf.pl --outputFile $workflowDataDir/$gtfDir/$outputFile --project $project --genomeExtDbRlsSpec '$genomeExtDbRlsSpec'";
+    my $cmd = "makeGtf.pl --outputFile $workflowDataDir/$gtfDir/$outputFile --project $project --genomeExtDbRlsSpec '$genomeExtDbRlsSpec'  --gusConfigFile $gusConfigFile";
 
     if(my $soTermString = $self->getSequenceOntologyTermString()) {
       $cmd .= " --sequence_ontology_term $soTermString";

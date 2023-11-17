@@ -11,6 +11,7 @@ sub run {
 
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $gusConfigFile = $self->getGusConfigFile();
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
   my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
@@ -30,7 +31,7 @@ sub run {
       if ($test) {
 	    $self->runCmd(0,"echo test > $workflowDataDir/$outputFile");
       }
-      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$outputFile --sql \"$sql\" --verbose");
+      $self->runCmd($test,"makeFileWithSql --outFile $workflowDataDir/$outputFile --sql \"$sql\"  --gusConfigFile $gusConfigFile --verbose");
   }
 }
 
