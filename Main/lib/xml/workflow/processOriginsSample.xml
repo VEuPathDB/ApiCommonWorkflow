@@ -17,12 +17,14 @@
     <param name="samtoolsIndex"/>
     <param name="sampleName"/>
     <param name="chromSizesFile"/>
+  <param name="gusConfigFile"/>
 
  <!-- The dataset loader here does not get anything from manual delivery.  It only makes rows in sres.extdb and extdbrls -->
     <subgraph name="loadOriginsOfReplicationSample" xmlFile="loadDataset.xml">
         <paramValue name="datasetName">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_originsOfReplicationSample_RSRC</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$projectName$$/$$organismAbbrev$$/$$experimentName$$.xml</paramValue>
         <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
 
     <subgraph name="mirrorSampleFiles" xmlFile="mirrorHtsSamples.xml"> <!--Can probably stick with this subgraph -->
@@ -57,6 +59,7 @@
         <paramValue name="topLevelSeqSizeFile">$$chromSizesFile$$</paramValue>
         <paramValue name="writeBedFile">false</paramValue>
         <paramValue name="sraQueryString"></paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
         <depends name="mirrorSampleFiles"/>
         <depends name="mirrorSampleQualFiles"/>
     </subgraph>
