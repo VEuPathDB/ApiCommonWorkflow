@@ -9,8 +9,9 @@ sub getWebsiteFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
   my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
+my $gusConfigFile = $self->getGusConfigFile();
 
-  my $cmd = "getGeneAliases --genomeExtDbSpec '$genomeExtDbRlsSpec' --outfile $downloadFileName";
+  my $cmd = "getGeneAliases --genomeExtDbSpec '$genomeExtDbRlsSpec' --outfile $downloadFileName  --gusConfigFile $gusConfigFile";
 
   return $cmd;   
 }
