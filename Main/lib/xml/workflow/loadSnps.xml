@@ -4,6 +4,7 @@
   <param name="genomeExtDbRlsSpec"/>
   <param name="varscanConsDir"/>
   <param name="relativeWebServicesDir"/>
+  <param name="gusConfigFile"/>
 
   <constant name="loaderDir">$$snpsDataDir$$/loader</constant>
 
@@ -13,6 +14,7 @@
 
   <step name="insertExtDbRls" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateExtDbAndDbRls" stepLoadTypes="plugin">
       <paramValue name="extDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
@@ -27,12 +29,14 @@
     <step name="addStudy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
       <paramValue name="experimentName">$$organismAbbrev$$ (NGS SNP)</paramValue>
       <paramValue name="experimentExtDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
        <depends name="insertExtDbRls"/>
     </step>
     <step name="addProtocolAppNode" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddProtocolAppNodeToStudy" stepLoadTypes="plugin">
       <paramValue name="experimentName">$$organismAbbrev$$ (NGS SNP)</paramValue>
       <paramValue name="extDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
       <paramValue name="name">$$organismAbbrev$$ (Sequence Variation)</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
        <depends name="addStudy"/>
     </step>
 
@@ -46,6 +50,7 @@
       <paramValue name="snpExtDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="isLegacy">false</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="makeControlFiles"/>
       <depends name="insertExtDbRls"/>
       <depends name="addProtocolAppNode"/>
@@ -101,6 +106,7 @@
       <paramValue name="snpDat">$$snpsDataDir$$/snpFeature.dat</paramValue>
       <paramValue name="snpExtDbRlsSpec">$$organismAbbrev$$_NGS_SNPsAndVariations|do_not_care</paramValue>
       <paramValue name="loaderDir">$$loaderDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="processSequenceVariations"/>
     </step>
 
