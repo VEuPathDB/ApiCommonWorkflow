@@ -187,7 +187,7 @@ sub runPlugin {
     "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Since this plugin step FAILED, please CLEAN UP THE DATABASE by calling:
 
-  ga $undoPlugin --workflowContext --commit --algInvocationId PLUGIN_ALG_INV_ID_HERE
+  ga $undoPlugin --workflowContext --commit --gusConfigFile $gusConfigFile --algInvocationId PLUGIN_ALG_INV_ID_HERE
 
 or (for the ISF plugin):
  
@@ -234,7 +234,7 @@ sub getOrganismInfo {
   die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
   if (!$self->{organismInfo}->{$organismAbbrev}) {
-    $self->{organismInfo}->{$organismAbbrev} = ApiCommonWorkflow::Main::Util::OrganismInfo->new($self, $test, $organismAbbrev);
+    $self->{organismInfo}->{$organismAbbrev} = ApiCommonWorkflow::Main::Util::OrganismInfo->new($self, $test, $organismAbbrevi);
   }
   return $self->{organismInfo}->{$organismAbbrev};
 }
