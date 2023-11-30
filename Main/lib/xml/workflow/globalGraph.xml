@@ -151,26 +151,6 @@
   </subgraph>
 
 
-  <step name="initClusterHomeDir"
-        stepClass="ReFlow::StepClasses::InitClusterHomeDir">
-    <depends name="initUserGroupProject"/>
-  </step>
-
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="initClusterHomeDir"/>
-    <depends name="NRDB_RSRC"/>
-    <depends name="PDBProteinSequences_RSRC"/>
-  </step>
-
-  <step name="makePdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster">
-    <paramValue name="inputFile">$$global_PDBOutputFile$$</paramValue>
-    <paramValue name="vendor">wu</paramValue>
-    <paramValue name="seqType">p</paramValue>
-    <depends name="mirrorToCluster"/>
-  </step>
-
-
   <subgraph name="chEBI_Compounds" xmlFile="compounds.xml">
     <paramValue name="datasetName">compounds_chEBI_RSRC</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
