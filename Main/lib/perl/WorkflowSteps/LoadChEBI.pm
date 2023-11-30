@@ -31,8 +31,8 @@ sub run {
   );
 
   if ($undo) {
-     $self->runCmd(0, "echo exit|sqlplus $chebiLogin/$chebiPassword\@$gusInstance \@$dataDir/disable_constraints.sql");
-     $self->runCmd(0, "sqlplus $chebiLogin/$chebiPassword\@$gusInstance \@$ENV{GUS_HOME}/lib/sql/apidbschema/dropChebiTables.sql");
+     #$self->runCmd(0, "echo exit|sqlplus $chebiLogin/$chebiPassword\@$gusInstance \@$dataDir/disable_constraints.sql");
+     #$self->runCmd(0, "sqlplus $chebiLogin/$chebiPassword\@$gusInstance \@$ENV{GUS_HOME}/lib/sql/apidbschema/dropChebiTables.sql");
   } else {
     $self->runCmd($test, $cmd);
     for my $sqlFile (@files) {
