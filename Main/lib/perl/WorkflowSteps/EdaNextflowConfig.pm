@@ -68,6 +68,9 @@ sub getOptionalAnnotationPropertiesFile {}
 
 sub getSpeciesReconciliationOntologySpec {}
 sub getSpeciesReconciliationFallbackSpecies {}
+sub getGadmDataDir {}
+sub getGadmSocketDir {}
+sub getGadmPort { }
 
 sub getLoadProtocolTypeAsVariable {}
 sub getProtocolVariableSourceId {}
@@ -77,6 +80,8 @@ sub getOptionalCollectionsYaml {}
 sub getUseOntologyTermTableForTaxonTerms {
     return "false"
 }
+
+sub getNoCommonDef {}
 
 
 sub getSchema {
@@ -113,6 +118,9 @@ sub nextflowConfigAsString {
     my $downloadFileBaseName = $self->getDownloadFileBaseName() || "NA";
     my $speciesReconciliationOntologySpec = $self->getSpeciesReconciliationOntologySpec() || "NA";
     my $speciesReconciliationFallbackSpecies = $self->getSpeciesReconciliationFallbackSpecies() || "NA";
+    my $gadmDataDirectory = $self->getGadmDataDir() || "NA";
+    my $gadmSocketDirectory = $self->getGadmSocketDir() || "NA";
+    my $gadmPort = $self->getGadmPort() || "NA";
     my $loadProtocolTypeAsVariable = $self->getLoadProtocolTypeAsVariable() || "false";
     my $protocolVariableSourceId = $self->getProtocolVariableSourceId() || "NA";
     my $optionalAnnotationPropertiesFile = $self->getOptionalAnnotationPropertiesFile() || "NA";
@@ -120,6 +128,7 @@ sub nextflowConfigAsString {
     my $useOntologyTermTableForTaxonTerms = $self->getUseOntologyTermTableForTaxonTerms();
 
     my $optionalCollectionsYaml = $self->getOptionalCollectionsYaml() || "NA";
+    my $optionalNoCommonDef = $self->getNoCommonDef() || "NA";
 
     my $config = <<CONFIG;
 params.studyDirectory = "$studyDirectory"
@@ -159,6 +168,10 @@ params.speciesReconciliationOntologySpec = "$speciesReconciliationOntologySpec"
 params.speciesReconciliationFallbackSpecies = "$speciesReconciliationFallbackSpecies"
 params.useOntologyTermTableForTaxonTerms = $useOntologyTermTableForTaxonTerms
 
+params.optionalGadmDataDirectory = "$gadmDataDirectory";
+params.optionalGadmSocketDirectory = "$gadmSocketDirectory";
+params.optionalGadmPort = "$gadmPort";
+
 params.loadProtocolTypeAsVariable = $loadProtocolTypeAsVariable
 params.protocolVariableSourceId = "$protocolVariableSourceId"
 
@@ -166,6 +179,8 @@ params.protocolVariableSourceId = "$protocolVariableSourceId"
 params.isRelativeAbundance = $isRelativeAbundance
 
 params.optionalCollectionsYaml = "$optionalCollectionsYaml"
+
+params.noCommonDef = "$optionalNoCommonDef"
 
 trace.enabled = true
 trace.fields = 'task_id,hash,process,tag,status,exit,submit,realtime,%cpu,rss'

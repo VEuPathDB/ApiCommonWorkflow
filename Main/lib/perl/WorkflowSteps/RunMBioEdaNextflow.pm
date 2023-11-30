@@ -44,7 +44,7 @@ sub getLoadProtocolTypeAsVariable {
 }
 
 sub getLoadWebDisplayOntologyFile {
-    return "true"; # if you want to load the getWebDisplayOntologyFile above IF IT IS OWL
+    return "false"; # if you want to load the getWebDisplayOntologyFile above IF IT IS OWL
 ## SEE eda-nextflow/main.nf
 }
 
@@ -58,8 +58,11 @@ sub getIsaFormat {
 sub getInvestigationBaseName { return sprintf("../final/%s.xml", $_[0]->getParamValue("studyStableId")) }
 
 sub getDownloadFileBaseName {
-    return "";
+    return $_[0]->getParamValue('downloadFileBaseName');
 }
+sub getGadmDataDir { return "NA" }
+sub getGadmSocketDir { return "NA" }
+sub getGadmPort { return "NA" }
 
 sub getOptionalCollectionsYaml {
     return sprintf("%s/ontology/General/collections/collections.yaml", $ENV{GUS_HOME});

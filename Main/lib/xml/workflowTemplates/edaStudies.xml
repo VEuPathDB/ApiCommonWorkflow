@@ -27,13 +27,44 @@
       <paramValue name="speciesReconciliationFallbackSpecies">${speciesReconciliationFallbackSpecies}</paramValue>
       <paramValue name="loadStudyCharacteristics">true</paramValue>
       <paramValue name="context">popbio</paramValue>
-      <paramValue name="optionalMegaStudyStableId"></paramValue>
+      <paramValue name="optionalStudyStableId"></paramValue>
       <paramValue name="studyClassificationsYaml">ontology/General/study_classifications/yaml/popbio.yaml</paramValue>
       <paramValue name="studyClassificationsOwl">ontology/popbio/popbio.owl</paramValue>
+      <paramValue name="downloadFileBaseName"></paramValue>
       <depends name="makeDataDir"/>
+      <dependsGlobal name="gadm_RSRC"/>
     </subgraph>
   </datasetTemplate>
 
+
+
+
+
+
+  <datasetTemplate class="EDAMegaStudy">
+    <prop name="projectName"/>
+    <prop name="studyStableId"/>
+    <prop name="version"/>
+    <prop name="webDisplayOntologyName"/>
+
+    <subgraph name="EDAMegaStudy_${studyStableId}" xmlFile="loadEdaStudy.xml">
+      <paramValue name="datasetName">EDAMegaStudy_${studyStableId}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="datasetVersion">${version}</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="webDisplayOntologyName">${webDisplayOntologyName}</paramValue>
+      <paramValue name="speciesReconciliationOntologySpec"></paramValue>
+      <paramValue name="speciesReconciliationFallbackSpecies"></paramValue>
+      <paramValue name="optionalStudyStableId">${studyStableId}</paramValue>
+      <paramValue name="loadStudyCharacteristics">false</paramValue>
+      <paramValue name="studyClassificationsYaml"></paramValue>
+      <paramValue name="studyClassificationsOwl"></paramValue>
+      <paramValue name="context">mega</paramValue>
+      <paramValue name="downloadFileBaseName"></paramValue>
+      <dependsPattern name="ISATab_*"/>
+    </subgraph>
+  </datasetTemplate>
 
 
   <datasetTemplate class="SingleISATabPopBio">
@@ -55,40 +86,14 @@
       <paramValue name="speciesReconciliationFallbackSpecies">${speciesReconciliationFallbackSpecies}</paramValue>
       <paramValue name="loadStudyCharacteristics">true</paramValue>
       <paramValue name="context">popbio</paramValue>
-      <paramValue name="optionalMegaStudyStableId"></paramValue>
+      <paramValue name="optionalStudyStableId"></paramValue>
       <paramValue name="studyClassificationsYaml">ontology/General/study_classifications/yaml/popbio.yaml</paramValue>
       <paramValue name="studyClassificationsOwl">ontology/popbio/popbio.owl</paramValue>
-      <depends name="makeDataDir"/>
+      <paramValue name="downloadFileBaseName"></paramValue>
+      <dependsPattern name="EDAMegaStudy_*"/>
+
     </subgraph>
   </datasetTemplate>
-
-
-
-  <datasetTemplate class="EDAMegaStudy">
-    <prop name="projectName"/>
-    <prop name="studyStableId"/>
-    <prop name="version"/>
-    <prop name="webDisplayOntologyName"/>
-
-    <subgraph name="EDAMegaStudy_${studyStableId}" xmlFile="loadEdaStudy.xml">
-      <paramValue name="datasetName">EDAMegaStudy_${studyStableId}_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="datasetVersion">${version}</paramValue>
-      <paramValue name="projectName">${projectName}</paramValue>
-      <paramValue name="webDisplayOntologyName">${webDisplayOntologyName}</paramValue>
-      <paramValue name="speciesReconciliationOntologySpec"></paramValue>
-      <paramValue name="speciesReconciliationFallbackSpecies"></paramValue>
-      <paramValue name="optionalMegaStudyStableId">${studyStableId}</paramValue>
-      <paramValue name="loadStudyCharacteristics">false</paramValue>
-      <paramValue name="studyClassificationsYaml"></paramValue>
-      <paramValue name="studyClassificationsOwl"></paramValue>
-      <paramValue name="context">mega</paramValue>
-      <dependsPattern name="ISATab_*"/>
-    </subgraph>
-  </datasetTemplate>
-
-
 
 
 

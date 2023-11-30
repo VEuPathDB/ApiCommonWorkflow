@@ -8,14 +8,16 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
     my ($self, $test, $undo) = @_;
-   
+
+    my $workflowDataDir = $self->getWorkflowDataDir();   
     my $gffFile = $self->getParamValue('gffFile');
     my $countFile = $self->getParamValue('countFile');
     my $gffFileOut = $self->getParamValue('gffFileOut');
 
 
   if ($undo) {
-	 $self->runCmd(0,"rm -rf $gffFileOut");  	
+	 $self->runCmd(0,"rm -rf $workflowDataDir/$gffFileOut");  	
  } else{
-	$self->runCmd($test, "updateLongReadGff.pl --gffFile $gff_file --countFile $count_file --outputGFF $gffFileOut");
+	$self->runCmd($test, "updateLongReadGff.pl --gffFile $workflowDataDir/$gffFile --countFile $workflowDataDir/$countFile --outputGFF $workflowDataDir/$gffFileOut");
+}
 }

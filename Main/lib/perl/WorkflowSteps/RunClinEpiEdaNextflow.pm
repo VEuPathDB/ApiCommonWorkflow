@@ -63,6 +63,9 @@ sub getInvestigationBaseName {
 sub getDownloadFileBaseName {
     return $_[0]->getParamValue('downloadFileBaseName');
 }
+sub getGadmDataDir { return "NA" }
+sub getGadmSocketDir { return "NA" }
+sub getGadmPort { return "NA" }
 
 # TODO:
 # relative paths: '/../final/owlAttributes.txt'
@@ -74,5 +77,6 @@ sub getOptionalOntologyMappingOverrideFile { return $_[0]->workflowDataPath("../
 # sub getOptionalOrdinalsFile { return "ordinals.txt" }
 sub getOptionalAnnotationPropertiesFile { $_[0]->workflowDataPath("../annotationProperties.txt") }
 
+sub getNoCommonDef { return "true" }
 
 1;

@@ -44,6 +44,10 @@ Since this plugin step FAILED, please CLEAN UP THE DATABASE by calling:
 
   ga ApiCommonData::Load::Plugin::InsertUniDB --database $organismAbbrev --table_reader 'ApiCommonData::Load::EBIReaderForUndo' --logDir $workflowDataDir/$loaderDir --mode undo --commit
 
+And
+
+ ga GUS::Community::Plugin::Undo --plugin ApiCommonData::Load::Plugin::InsertUniDB --workflowContext --algInvocationId 'XXXXXX' --commit
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ";
 

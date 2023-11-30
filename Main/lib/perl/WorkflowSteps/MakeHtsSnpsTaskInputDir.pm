@@ -12,7 +12,7 @@ sub run {
   my $taskInputDir = $self->getParamValue("taskInputDir");
   my $readsFile = $self->getParamValue("readsFile");
   my $pairedReadsFile = $self->getParamValue("pairedReadsFile");
-  my $hasPairedReads = $self->getBooleanParamValue("hasPairedReads");
+  my $hasPairedReads = $self->getParamValue("hasPairedReads");
   my $genomicSeqsFile = $self->getParamValue("genomicSeqsFile");
   my $indexDir = $self->getParamValue("indexDir");
   my $strain = $self->getParamValue("strain");
@@ -70,7 +70,7 @@ hasPairedEnds=$hasPairedReads
       }else {
 	  $taskPropFileContent .= "mateA=$clusterWorkflowDataDir/$readsFile\n";
 	  $taskPropFileContent .= "sraSampleIdQueryList=none\n";
-	  if($hasPairedReads){
+	  if($hasPairedReads eq "true"){
 	      $taskPropFileContent .= "mateB=$clusterWorkflowDataDir/$pairedReadsFile\n";
 	  }else {
 	      $taskPropFileContent .= "mateB=none\n";
