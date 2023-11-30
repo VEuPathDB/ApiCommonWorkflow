@@ -34,7 +34,6 @@ sub run {
      #$self->runCmd(0, "echo exit|sqlplus $chebiLogin/$chebiPassword\@$gusInstance \@$dataDir/disable_constraints.sql");
      #$self->runCmd(0, "sqlplus $chebiLogin/$chebiPassword\@$gusInstance \@$ENV{GUS_HOME}/lib/sql/apidbschema/dropChebiTables.sql");
   } else {
-    $self->runCmd($test, $cmd);
     for my $sqlFile (@files) {
       $self->runCmd($test, "psql --echo-all -v ON_ERROR_STOP=1 -c 'SET ROLE GUS_W' -f $dataDir/$sqlFile $connectionString");
     }
