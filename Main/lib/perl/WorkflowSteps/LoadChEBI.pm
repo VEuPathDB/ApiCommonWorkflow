@@ -31,11 +31,12 @@ sub run {
   );
 
   if ($undo) {
-     #$self->runCmd(0, "echo exit|sqlplus $chebiLogin/$chebiPassword\@$gusInstance \@$dataDir/disable_constraints.sql");
-     #$self->runCmd(0, "sqlplus $chebiLogin/$chebiPassword\@$gusInstance \@$ENV{GUS_HOME}/lib/sql/apidbschema/dropChebiTables.sql");
+    $self->runCmd($test, "echo 'SET ROLE GUS_W; SET SEARCH_PATH TO chebi; TRUNCATE TABLE chebi.compounds CASCADE;' | psql --echo-all -v ON_ERROR_STOP=1 $connectionString");
   } else {
     for my $sqlFile (@files) {
-      $self->runCmd($test, "psql --echo-all -v ON_ERROR_STOP=1 -c 'SET ROLE GUS_W' -c 'SET SEARCH_PATH TO chebi' -f $dataDir/$sqlFile $connectionString");
+      # psql 9 doesn't support multiple commands/files. doing workaround.
+      # $self->runCmd($test, "psql --echo-all -v ON_ERROR_STOP=1 -c 'SET ROLE GUS_W' -c 'SET SEARCH_PATH TO chebi' -f $dataDir/$sqlFile $connectionString");
+      $self->runCmd($test, "echo 'SET ROLE GUS_W; SET SEARCH_PATH TO chebi; \\i $dataDir/$sqlFile' | psql --echo-all -v ON_ERROR_STOP=1 $connectionString");
     }
   }
 }
