@@ -35,7 +35,7 @@ sub run {
      #$self->runCmd(0, "sqlplus $chebiLogin/$chebiPassword\@$gusInstance \@$ENV{GUS_HOME}/lib/sql/apidbschema/dropChebiTables.sql");
   } else {
     for my $sqlFile (@files) {
-      $self->runCmd($test, "psql --echo-all -v ON_ERROR_STOP=1 -c 'SET ROLE GUS_W' -f $dataDir/$sqlFile $connectionString");
+      $self->runCmd($test, "psql --echo-all -v ON_ERROR_STOP=1 -c 'SET ROLE GUS_W' -c 'SET SEARCH_PATH TO chebi' -f $dataDir/$sqlFile $connectionString");
     }
   }
 }
