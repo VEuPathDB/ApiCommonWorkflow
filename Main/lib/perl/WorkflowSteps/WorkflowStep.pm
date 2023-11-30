@@ -234,7 +234,7 @@ sub getOrganismInfo {
   die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
   if (!$self->{organismInfo}->{$organismAbbrev}) {
-    $self->{organismInfo}->{$organismAbbrev} = ApiCommonWorkflow::Main::Util::OrganismInfo->new($self, $test, $organismAbbrevi);
+    $self->{organismInfo}->{$organismAbbrev} = ApiCommonWorkflow::Main::Util::OrganismInfo->new($self, $test, $organismAbbrev);
   }
   return $self->{organismInfo}->{$organismAbbrev};
 }
