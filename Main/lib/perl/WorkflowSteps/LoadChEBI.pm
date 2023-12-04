@@ -35,8 +35,10 @@ sub run {
   } else {
     for my $sqlFile (@files) {
       # psql 9 doesn't support multiple commands/files. doing workaround.
-      # $self->runCmd($test, "psql --echo-all -v ON_ERROR_STOP=1 -c 'SET ROLE GUS_W' -c 'SET SEARCH_PATH TO chebi' -f $dataDir/$sqlFile $connectionString");
-      $self->runCmd($test, "echo 'SET ROLE GUS_W; SET SEARCH_PATH TO chebi; \\i $dataDir/$sqlFile' | psql --echo-all -v ON_ERROR_STOP=1 $connectionString");
+      # $self->runCmd($test, "psql --echo-all --single-transaction -v ON_ERROR_STOP=1 -c 'SET ROLE GUS_W' -c 'SET SEARCH_PATH TO chebi' -f $dataDir/$sqlFile $connectionString --single-transaction");
+      $self->logErr( "Running $sqlFile\n");
+      $self->runCmd($test, "echo 'BEGIN; SET ROLE GUS_W; SET SEARCH_PATH TO chebi; \\i $dataDir/$sqlFile \\\\ END;' | psql -v ON_ERROR_STOP=1 $connectionString");
+      $self->logErr( "Finished running $sqlFile\n");
     }
   }
 }
