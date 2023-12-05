@@ -187,7 +187,7 @@ sub runPlugin {
     "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Since this plugin step FAILED, please CLEAN UP THE DATABASE by calling:
 
-  ga $undoPlugin --workflowContext --commit --gusConfigFile $gusConfigFile --algInvocationId PLUGIN_ALG_INV_ID_HERE
+  ga $undoPlugin --workflowContext --commit $gusConfigFile --algInvocationId PLUGIN_ALG_INV_ID_HERE
 
 or (for the ISF plugin):
  
