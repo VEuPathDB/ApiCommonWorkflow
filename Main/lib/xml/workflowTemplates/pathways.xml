@@ -1,0 +1,40 @@
+<workflowGraph name="">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="datasetLoaderXmlFileName"/>
+
+  <constant name="dataDir">$$parentDataDir$$/pathways</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="Pathways">
+    <prop name="version"/>
+    <prop name="format"/>
+    <prop name="source"/>
+
+    <subgraph name="Pathways_${source}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="datasetName">Pathways_${source}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="ReactionsXRefs">
+    <prop name="version"/>
+    <prop name="source"/>
+
+    <subgraph name="ReactionsXRefs_${source}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="datasetName">ReactionsXRefs_${source}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="Pathways_KEGG_RSRC"/>
+      <depends name="Pathways_MetaCyc_RSRC"/>
+    </subgraph>
+  </datasetTemplate>
+
+</workflowGraph>
