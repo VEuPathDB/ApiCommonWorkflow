@@ -10,8 +10,9 @@ sub getWebsiteFileCmd {
 
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  
-  my $cmd = "makeNCBILinkoutsFiles_Protein.pl --output $downloadFileName --organismAbbrev $organismAbbrev ";
+  my $gusConfigFile = $self->getGusConfigFile();
+
+  my $cmd = "makeNCBILinkoutsFiles_Protein.pl --output $downloadFileName --organismAbbrev $organismAbbrev --gusConfigFile $gusConfigFile";
   
   return $cmd;
 }
