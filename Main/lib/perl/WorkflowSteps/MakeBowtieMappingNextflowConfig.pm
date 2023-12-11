@@ -28,7 +28,7 @@ sub run {
   my $preconfiguredDatabase = $self->getParamValue("preconfiguredDatabase");
   my $removePCRDuplicates = $self->getParamValue("removePCRDuplicates");
   my $writeBedFile = $self->getParamValue("writeBedFile");
-  my $hasPairedReads = $self->getConfig("hasPairedReads");  
+  my $hasPairedReads = $self->getParamValue("hasPairedEnds");  
 
   my $executor = $self->getClusterExecutor();
   my $queue = $self->getClusterQueue();
