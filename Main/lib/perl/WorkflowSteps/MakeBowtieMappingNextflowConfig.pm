@@ -15,7 +15,7 @@ sub run {
   my $configFileName = $self->getParamValue("configFileName");
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $configFileName);
 
-  my $input = join("/", $clusterWorkflowDataDir, $self->getParamValue("input"));
+  my $input = join("/", $clusterWorkflowDataDir, $analysisDir, $self->getParamValue("input"));
   my $mateA = join("/", $clusterWorkflowDataDir, $self->getParamValue("readsFile"));
   my $mateB = join("/", $clusterWorkflowDataDir, $self->getParamValue("pairedReadsFile"));
   my $databaseFileDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("indexDir"));
@@ -23,7 +23,7 @@ sub run {
 
   my $sampleName= $self->getParamValue("sampleName");
   my $extraBowtieParams = $self->getParamValue("extraBowtieParams");
-  my $downloadMethod = $self->getConfig("downloadMethod");
+  my $downloadMethod = $self->getParamValue("downloadMethod");
   
   my $preconfiguredDatabase = $self->getParamValue("preconfiguredDatabase");
   my $removePCRDuplicates = $self->getParamValue("removePCRDuplicates");
