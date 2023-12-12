@@ -1,62 +1,67 @@
 <workflowGraph name="">
-    <param name="projectName"/>
-    <param name="experimentDataDir"/>
-    <param name="readsFile"/>
-    <param name="pairedReadsFile"/>
-    <param name="sampleName"/>
-    <param name="indexDir"/>
-    <param name="organismAbbrev"/>
-    <param name="hasPairedEnds"/>
-    <param name="isColorspace"/>
-    <param name="removePCRDuplicates"/>
-    <param name="extraBowtieParams"/>
-    <param name="topLevelSeqSizeFile"/>
-    <param name="writeBedFile"/>
-    <param name="sraQueryString"/>
-    <param name="gusConfigFile"/>
-    <param name="downloadMethod"/>
+  <param name="readsFile"/>
+  <param name="pairedReadsFile"/>
+  <param name="hasPairedEnds"/>
+  <param name="indexDir"/>
+  <param name="sampleName"/>
+  <param name="clusterDataDir"/>
+  <param name="isColorspace"/>
+  <param name="removePCRDuplicates"/>
+  <param name="extraBowtieParams"/>
+  <param name="topLevelSeqSizeFile"/>
+  <param name="writeBedFile"/>
+  <param name="sraQueryString"/>
+  <param name="gusConfigFile"/>
+  <param name="downloadMethod"/>
 
-    <!-- mirror the sample directory over to the cluster
-     This directory will eventually contain the cluster task dir but not the fastq files for the sample
-     Those still live in the experiment directory
-     -->
-    <constant name="dataDir">$$experimentDataDir$$/analyze_$$sampleName$$</constant>
+  <constant name="dataDir">$$clusterDataDir$$</constant>
 
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-    </step>
+  <step name="makeBowtieMappingSraInputFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBowtieMappingSraInputFile">
+    <paramValue name="sraInputFile">$$dataDir$$/sraInputFile.tsv</paramValue>
+    <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
+    <depends name="makeBowtieMappingSraInputFile"/>
+  </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
+  <step name="makeBowtieMappingNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBowtieMappingNextflowConfig">
+    <paramValue name="analysisDir">$$dataDir$$</paramValue>
+    <paramValue name="clusterResultDir">$$dataDir$$/master/</paramValue>
+    <paramValue name="configFileName">nextflow.config</paramValue>
+    <paramValue name="input">sraInputFile.tsv</paramValue>
+    <paramValue name="readsFile">$$readsFile$$</paramValue>
+    <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
+    <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+    <paramValue name="indexDir">$$indexDir$$</paramValue>
+    <paramValue name="sampleName">$$sampleName$$</paramValue>
+    <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
+    <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+    <paramValue name="databaseFasta">none</paramValue>
+    <paramValue name="downloadMethod">$$downloadMethod$$</paramValue>
+    <paramValue name="preconfiguredDatabase">true</paramValue>
+    <paramValue name="writeBedFile">$$writeBedFile$$</paramValue>        
+    <depends name="makeBowtieMappingSraInputFile"/>
+  </step>
 
-    <subgraph name="runBowtieOnCluster"  xmlFile="bowtieJob.xml">
-      <paramValue name="readsFile">$$readsFile$$</paramValue>
-      <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
-      <paramValue name="hasPairedReads">$$hasPairedEnds$$</paramValue>
-      <paramValue name="downloadMethod">$$downloadMethod$$</paramValue>
-      <paramValue name="indexDir">$$indexDir$$</paramValue>
-      <paramValue name="sampleName">$$sampleName$$</paramValue>
-      <paramValue name="clusterDataDir">$$dataDir$$</paramValue>
-      <paramValue name="isColorspace">$$isColorspace$$</paramValue>
-      <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
-      <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
-      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
-      <paramValue name="writeBedFile">$$writeBedFile$$</paramValue>
-      <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue> 
-      <depends name="mirrorToCluster"/>
-    </subgraph>
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeBowtieMappingNextflowConfig"/>
+  </step>
 
+  <step name="runBowtieMappingTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+    <paramValue name="workingDir">$$dataDir$$</paramValue>
+    <paramValue name="resultsDir">$$dataDir$$/master/</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/bowtie-mapping-nextflow</paramValue>
+    <paramValue name="isGitRepo">true</paramValue>
+    <depends name="mirrorToCluster"/>
+  </step>
 
-    <step name="document-BowtieMapping"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">mapWithBowtie_MTHD</paramValue>
-      <paramValue name="version">1.0</paramValue>
-      <paramValue name="parameters">TODO: patch in later</paramValue>
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-   </step> 
+  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$/master/</paramValue>
+    <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+    <paramValue name="outputFiles">${sampleName}.bam</paramValue>
+    <paramValue name="deleteAfterCopy">true</paramValue>
+    <depends name="runBowtieMappingTask"/>
+  </step>
 
 </workflowGraph>
 
