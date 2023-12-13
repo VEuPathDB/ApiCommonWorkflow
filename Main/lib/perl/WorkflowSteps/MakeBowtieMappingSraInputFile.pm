@@ -18,7 +18,7 @@ sub run {
       if ($test) {
 	  $self->runCmd(0,"echo test > $sraInputFile");
       } 
-      my @accessions = split(',', $srqQueryString);
+      my @accessions = split(',', $sraQueryString);
       open(F, ">", $sraInputFile) or die "$! :Can't open config file '$sraInputFile' for writing";
       print F "run_accession\n";
       foreach my $accession (@accessions) {
