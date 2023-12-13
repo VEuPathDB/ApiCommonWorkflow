@@ -20,9 +20,9 @@ sub run {
       } 
       my @accessions = split(',', $srqQueryString);
       open(F, ">", $sraInputFile) or die "$! :Can't open config file '$sraInputFile' for writing";
-      print F "run_accession";
+      print F "run_accession\n";
       foreach my $accession (@accessions) {
-          print F "$accession";
+          print F "$accession\n";
       }
       close(F);
   }
