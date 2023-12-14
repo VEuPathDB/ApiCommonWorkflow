@@ -16,8 +16,8 @@ sub run{
     my $inputName = $self->getParamValue('inputName');
     my $fragmentLength = $self->getParamValue('fragmentLength');
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $inBamFile = "$workflowDataDir/$clusterResultsDir/master/mainresult/$sampleName.bam";  
-    my $outDir = "$workflowDataDir/$clusterResultsDir/master/mainresult/downstream/"; 
+    my $inBamFile = "$workflowDataDir/$clusterResultsDir/master/$sampleName.bam";  
+    my $outDir = "$workflowDataDir/$clusterResultsDir/master/downstream/"; 
 
     my $cmd = "generateChipSeqCvgPlots.pl --experimentType $experimentType --inBamFile $inBamFile --outDir $outDir --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile --fragmentLength $fragmentLength";	
 
