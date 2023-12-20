@@ -12,7 +12,7 @@ sub run {
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec'); 
   my $ncbiTaxId = $self->getParamValue('ncbiTaxId'); 
   my $sequenceFile = $self->getParamValue('sequenceFile');  
-  my $soTermName = $self->getParamValue('soTermName');
+  my $soTermSourceId = $self->getParamValue('soTermSourceId');
   my $regexSourceId = $self->getParamValue('regexSourceId');
   my $tableName = $self->getParamValue('tableName');
 
@@ -21,11 +21,11 @@ sub run {
 
   my $args = "--externalDatabaseName $extDbName --externalDatabaseVersion $extDbRlsVer --sequenceFile $workflowDataDir/$sequenceFile --regexSourceId '$regexSourceId' --tableName \"$tableName\" ";
 
-  if ($soTermName) {
-    my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
+  if ($soTermSourceId) {
+#    my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
 
-    $args .= "--soTermName $soTermName " ;
-    $args .= "--SOExtDbRlsSpec '$soExtDbName|%' ";
+    $args .= "--soTermSourceId $soTermSourceId " ;
+#    $args .= "--SOExtDbRlsSpec '$soExtDbName|%' ";
   }
 
   $args .= "--ncbiTaxId $ncbiTaxId " if ($ncbiTaxId);

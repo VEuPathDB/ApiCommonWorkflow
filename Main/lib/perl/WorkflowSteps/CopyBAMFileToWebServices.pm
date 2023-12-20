@@ -17,7 +17,7 @@ sub run {
   my $experimentName=$self->getParamValue('experimentName');
   my $snpStrain=$self->getParamValue('snpStrain');
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
-
+  my $gusConfigFile = $self->getGusConfigFile();
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
@@ -63,7 +63,7 @@ sub run {
             and sa.na_sequence_id = ns.na_sequence_id
             and sa.NCBI_TAX_ID = $ncbiTaxonId";
 
-        $self->runCmd($test,"makeFileWithSql --outFile $genomeFile --sql \"$sql\"");
+        $self->runCmd($test,"makeFileWithSql --outFile $genomeFile --sql \"$sql\" --gusConfigFile $gusConfigFile");
       }
 
 
