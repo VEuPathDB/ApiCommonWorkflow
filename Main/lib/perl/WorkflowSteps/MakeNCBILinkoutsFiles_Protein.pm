@@ -11,7 +11,9 @@ sub getWebsiteFileCmd {
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   
-  my $cmd = "makeNCBILinkoutsFiles_Protein.pl --output $downloadFileName --organismAbbrev $organismAbbrev ";
+  my $downloadsite = $self->getParamValue('projectName');
+
+  my $cmd = "makeNCBILinkoutsFiles_Protein.pl --output $downloadFileName --organismAbbrev $organismAbbrev --downloadsite $downloadsite";
   
   return $cmd;
 }
