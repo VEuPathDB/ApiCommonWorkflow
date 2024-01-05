@@ -74,15 +74,19 @@ sub getGadmPort {
 sub getGadmDataDir {
     my ($self) = @_;
 
+    my $proj = $self->getParamValue('projectName');
     my $workflowDataDir = $self->getWorkflowDataDir();
-    return "${workflowDataDir}/global/gadm_RSRC/postgresData";
+    return "/eupath/data/EuPathDB/manualDelivery/common/gadm/4.1/postgresData";
+    return "${workflowDataDir}/global/${proj}_gadm_RSRC/postgresData";
 }
 
 sub getGadmSocketDir {
     my ($self) = @_;
 
+    my $proj = $self->getParamValue('projectName');
     my $workflowDataDir = $self->getWorkflowDataDir();
-    return "${workflowDataDir}/global/gadm_RSRC/postgresSocket";
+    return "/eupath/data/EuPathDB/manualDelivery/common/gadm/4.1/postgresSocket";
+    return "${workflowDataDir}/global/${proj}_gadm_RSRC/postgresSocket";
 }
 
 
