@@ -21,15 +21,16 @@ sub run {
   my $copyToDir = "$websiteFilesDir/$downloadDir/";
 
   if($undo) {
-    $self->runCmd(0, "rm -fr $copyToDir/*");
+    #$self->runCmd(0, "rm -fr $copyToDir/*");
   }
   else{
    if($test){
 	    # $self->runCmd(0, "mkdir -p $copyToDir");
-      make_path($copyToDir) unless( -d $copyToDir);
+      # make_path($copyToDir) unless( -d $copyToDir);
       $self->log("This WorkflowStep package does not run any tests");
       return;
     }
+    $self->runCmd(0, "rm -fr $copyToDir/*") if( -d $copyToDir );
     make_path($copyToDir) unless( -d $copyToDir);
   # htaccess, parent dir
     unless(-e "$websiteFilesDir/$downloadDir/.htaccess"){
