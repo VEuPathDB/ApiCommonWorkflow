@@ -24,7 +24,7 @@ sub getWebsiteFileCmd {
                 ||' | organism='||
             replace( tn.name, ' ', '_')
                 ||' | product='||
-            product_name.product
+            substr(product_name.product, 1, 1000)
                 ||' | location='||
             ns.source_id
                 ||':'||
@@ -102,7 +102,7 @@ EOF
 
   my $sql = <<EOF;
 SELECT t.source_id || ' | gene=' || gene_source_id || decode(is_deprecated, 1, ' | deprecated=true', '')
-  || ' | organism=' || replace(organism, ' ', '_') || ' | gene_product=' || gene_product || ' | transcript_product=' || transcript_product
+  || ' | organism=' || replace(organism, ' ', '_') || ' | gene_product=' || substr(gene_product, 1, 1000) || ' | transcript_product=' || substr(transcript_product, 1, 1000)
   || ' | location=' || sequence_id || ':' || coding_start || '-' || coding_end
   || '(' || decode(is_reversed, 1, '-', '+') || ')' 
   || ' | length=' || t.length 
