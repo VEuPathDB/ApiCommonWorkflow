@@ -67,6 +67,9 @@ sub getGadmDataDir { return "NA" }
 sub getGadmSocketDir { return "NA" }
 sub getGadmPort { return "NA" }
 
+sub getOptionalCollectionsYaml {
+    return sprintf("%s/ontology/General/collections/collections.yaml", $ENV{GUS_HOME});
+}
 # TODO:
 # relative paths: '/../final/owlAttributes.txt'
 sub getOptionalDateObfuscationFile {return $_[0]->workflowDataPath("../final/dateObfuscation.txt") }
