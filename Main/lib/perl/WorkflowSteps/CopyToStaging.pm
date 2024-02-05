@@ -7,6 +7,7 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 use File::Path qw/make_path remove_tree/;
+use File::Basename;
 
 sub run {
   my ($self, $test, $undo) = @_;
@@ -30,7 +31,8 @@ sub run {
       $self->log("This WorkflowStep package does not run any tests");
       return;
     }
-    $self->runCmd(0, "rm -fr $copyToDir/*") if( -d $copyToDir );
+    my $oldfiles = join("/", $copyToDir, basename(glob($filePath)));
+    $self->runCmd(0, "rm -fr $oldfiles") if( -d $oldfiles );
     make_path($copyToDir) unless( -d $copyToDir);
   # htaccess, parent dir
     unless(-e "$websiteFilesDir/$downloadDir/.htaccess"){
