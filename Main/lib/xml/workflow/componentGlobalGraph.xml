@@ -1,0 +1,38 @@
+
+<workflowGraph name="componentGlobal">
+  <param name="projectName"/>
+
+  <constant name="globalDatasetLoaderXmlFile">component.xml</constant>
+
+  <step name="makeComponentDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">component_$$projectName$$</paramValue>
+  </step>
+
+
+  <step name="makeDatabase" stepClass="ReFlow::StepClasses::MakeDatabase">
+    <paramValue name="dbName">$$projectName$$</paramValue>
+  </step>
+
+  <step name="makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig">
+    <paramValue name="dbName">$$projectName$$</paramValue>
+    <paramValue name="dataDir"/>
+    <depends name="makeDatabase"/>
+  </step>
+
+  <step name="initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <depends name="makeGusConfig"/>
+  </step>
+
+
+<subgraph name="SO_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">SO_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">component_$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <depends name="initUserGroupProject"/>
+  </subgraph>
+
+
+  </workflowGraph>
