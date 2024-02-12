@@ -3,6 +3,7 @@
   <param name="projectName"/>
 
   <constant name="globalDatasetLoaderXmlFile">component.xml</constant>
+  <constant name="gusConfigFile">$$projectName$$_gus.config</constant>
 
   <step name="makeComponentDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">component_$$projectName$$</paramValue>
@@ -10,28 +11,29 @@
 
 
   <step name="makeDatabase" stepClass="ReFlow::StepClasses::MakeDatabase">
-    <paramValue name="dbName">$$projectName$$</paramValue>
+    <paramValue name="dbName"/>
   </step>
 
   <step name="makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig">
-    <paramValue name="dbName">$$projectName$$</paramValue>
+    <paramValue name="dbName"/>
     <paramValue name="dataDir"/>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="makeDatabase"/>
   </step>
 
   <step name="initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
     <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="makeGusConfig"/>
   </step>
 
 
   <!-- loading sequence ontology and ptmt;  these are small so ok to do here in component land-->
-<subgraph name="SO_RSRC" xmlFile="loadDataset.xml">
+  <subgraph name="SO_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">SO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">component_$$projectName$$</paramValue>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
@@ -40,17 +42,16 @@
     <paramValue name="datasetName">Ontology_Relationship_Types_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">component_$$projectName$$</paramValue>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
   <subgraph name="Ontology_ptmt_RSRC" xmlFile="loadDataset.xml">
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
-      <paramValue name="datasetName">Ontology_ptmt_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">component_$$projectName$$</paramValue>
-      <depends name="Ontology_Relationship_Types_RSRC"/>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="datasetName">Ontology_ptmt_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">component_$$projectName$$</paramValue>
+    <depends name="Ontology_Relationship_Types_RSRC"/>
   </subgraph>
 
-
-  </workflowGraph>
+</workflowGraph>
