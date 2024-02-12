@@ -2,21 +2,23 @@
   <param name="projectName"/>
 
   <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
+  <constant name="gusConfigFile">$$projectName$$_gus.config</constant>
 
   <step name="makeDatabase" stepClass="ReFlow::StepClasses::MakeDatabase">
-    <paramValue name="dbName">$$projectName$$</paramValue>
+    <paramValue name="dbName"/>
   </step>
 
   <step name="makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig">
-    <paramValue name="dbName">$$projectName$$</paramValue>
+    <paramValue name="dbName"/>
     <paramValue name="dataDir"/>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="makeDatabase"/>
   </step>
 
   <!-- we want all steps in the flow to depend on this one because it validates the project name and version -->
   <step name="initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
     <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="makeGusConfig"/>
   </step>
 
@@ -24,7 +26,7 @@
     <paramValue name="datasetName">GO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
@@ -33,7 +35,7 @@
     <paramValue name="datasetName">GOSlim_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="GO_RSRC"/>
   </subgraph>
 
@@ -41,7 +43,7 @@
     <paramValue name="datasetName">enzymeDB_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
@@ -49,7 +51,7 @@
     <paramValue name="datasetName">SO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
@@ -57,7 +59,7 @@
     <paramValue name="datasetName">PDBProteinSequences_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="SO_RSRC"/>
   </subgraph>
 
@@ -82,7 +84,7 @@
     <paramValue name="datasetName">updatePDBTaxon_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="PDBProteinSequences_RSRC"/>
     <depends name="taxonomy_RSRC"/>
   </subgraph>
@@ -91,21 +93,21 @@
     <paramValue name="datasetName">Ontology_Relationship_Types_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
   <subgraph name="oboOntologies" xmlFile="generated/global/oboOntologies.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="Ontology_Relationship_Types_RSRC"/>
   </subgraph>
 
   <subgraph name="eupathCuratedOntologies" xmlFile="generated/global/eupathCuratedOntologies.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="Ontology_Relationship_Types_RSRC"/>
   </subgraph>
 
@@ -113,7 +115,7 @@
     <paramValue name="datasetName">OntologyTerm_EuPath_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="Ontology_Relationship_Types_RSRC"/>
   </subgraph>
 
@@ -121,7 +123,7 @@
     <paramValue name="datasetName">geographicLocationGPS_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="oboOntologies"/>
   </subgraph>
 
@@ -129,7 +131,7 @@
     <paramValue name="datasetName">GO_evidence_codes_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
@@ -137,7 +139,7 @@
     <paramValue name="datasetName">InterproscanData_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
@@ -145,7 +147,7 @@
     <paramValue name="datasetName">blatAlignmentQuality_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
@@ -153,7 +155,7 @@
     <paramValue name="datasetName">compounds_chEBI_RSRC</paramValue>
     <paramValue name="parentDataDir"/>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
@@ -161,7 +163,7 @@
     <paramValue name="datasetName">compounds_HMDB_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
@@ -169,7 +171,7 @@
     <paramValue name="datasetName">OBO_Ontology_efo_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="Ontology_Relationship_Types_RSRC"/>
   </subgraph>
 
@@ -177,14 +179,14 @@
     <paramValue name="datasetName">Legacy_Datasets_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
   <subgraph name="Pathways" xmlFile="generated/global/pathways.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="enzymeDB_RSRC"/>
     <depends name="oboOntologies"/>
     <depends name="GO_RSRC"/>
@@ -193,7 +195,7 @@
   </subgraph>
 
   <subgraph name="EcNumberGenus_RSRC" xmlFile="loadDataset.xml">
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="datasetName">EcNumberGenus_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
@@ -201,7 +203,7 @@
   </subgraph>
 
   <subgraph name="IEDBDatasetLoader" xmlFile="loadDataset.xml">
-    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="datasetName">all_epitopes_IEDB_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
