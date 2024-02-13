@@ -9,10 +9,10 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $login = $self->getGusDatabaseLogin();
-  my $password = $self->getGusDatabasePassword();
-  my $hostname = $self->getGusDatabaseHostname();
-  my $databaseName = $self->getGusDatabaseName();
+  my $login = $self->getGusDatabaseLogin() unless $test;
+  my $password = $self->getGusDatabasePassword() unless $test;
+  my $hostname = $self->getGusDatabaseHostname() unless $test;
+  my $databaseName = $self->getGusDatabaseName() unless $test;
   my $connectionString = "postgresql://$login:$password\@$hostname/$databaseName";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
