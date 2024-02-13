@@ -8,6 +8,12 @@
   <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
   <constant name="relativeAuxiliaryDir">auxiliary/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
 
+  <globalSubgraph name="componentGlobal" xmlFile="componentGlobalGraph.xml">
+    <paramValue name="commonDatasetLoaderXmlFile">$$projectName$$/$$projectName$$Common.xml</paramValue>
+    <paramValue name="globalDatasetLoaderXmlFile">component.xml</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+  </globalSubgraph>
+
   <step name="makeProjectReleaseDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
     <!--<dependsGlobal name="initUserGroupProject"/>-->
@@ -134,6 +140,9 @@
       <depends name="makeProjectReleaseWebServicesDir"/>
       <depends name="${organismAbbrev}_mirrorToCluster"/>
       <depends name="${organismAbbrev}_loadNcbiTaxonId"/>
+      <!--TODO: Sufen/Wei please confirm this is the right place for these global ones -->
+      <dependsGlobal name="SO_RSRC"/>
+      <dependsGlobal name="Ontology_ptmt_RSRC"/>
     </subgraph>
 
     <!-- a step to load chromosomeMap.txt file, nothing should be depended on this step -->
