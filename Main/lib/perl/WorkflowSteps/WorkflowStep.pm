@@ -173,9 +173,9 @@ sub runPlugin {
     my $algInvIds = $self->getAlgInvIds();
     if ($algInvIds) {    # may have been undone manually, so might not be any alg inv ids
       if($args =~ /undoTables/){
-        $cmd = "ga $undoPlugin --workflowContext --algInvocationId '$algInvIds' $gusConfigFile $args --commit";
+        $cmd = "ga $undoPlugin --workflowContext --workflowstepid $self->{id} --algInvocationId '$algInvIds' $gusConfigFile $args --commit";
       }else {
-        $cmd = "ga $undoPlugin --workflowContext --algInvocationId '$algInvIds' $gusConfigFile --commit";
+        $cmd = "ga $undoPlugin --workflowContext --workflowstepid $self->{id} --algInvocationId '$algInvIds' $gusConfigFile --commit";
       }
     } else {
       $self->log("No algorithm invocation IDs found for this plugin step.  The plugin must have been manually undone.  Exiting");
@@ -187,11 +187,11 @@ sub runPlugin {
     "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Since this plugin step FAILED, please CLEAN UP THE DATABASE by calling:
 
-  ga $undoPlugin --workflowContext --commit $gusConfigFile --algInvocationId PLUGIN_ALG_INV_ID_HERE
+  ga $undoPlugin --workflowContext --workflowstepid $self->{id} --commit $gusConfigFile --algInvocationId PLUGIN_ALG_INV_ID_HERE
 
 or (for the ISF plugin):
  
-  ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapfile YOUR_ISF_MAP_FILE --workflowContext --commit --algInvocationId PLUGIN_ALG_INV_ID_HERE
+  ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapfile YOUR_ISF_MAP_FILE --workflowContext --workflowstepid $self->{id} --commit --algInvocationId PLUGIN_ALG_INV_ID_HERE
 
 
 Find the plugin's row_algorithm_invocation_id by looking above in this step log
