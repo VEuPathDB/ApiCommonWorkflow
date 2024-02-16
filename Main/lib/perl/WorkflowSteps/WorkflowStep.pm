@@ -296,15 +296,15 @@ sub getClusterExecutor {
   my $clusterServer = $self->getSharedConfig('clusterServer');
 
   my $nodeClass = $self->getSharedConfig("$clusterServer.nodeClass");
-  if($nodeClass eq 'DJob::DistribJob::LsfNode') {
+  if($nodeClass eq 'ReFlow::Controller::LsfNode') {
     return 'lsf'
   }
 
-  if($nodeClass eq 'DJob::DistribJob::SgeNode') {
+  if($nodeClass eq 'ReFlow::Controller::SgeNode') {
     return 'sge'
   }
 
-  if($nodeClass eq 'DJob::DistribJob::PbsNode') {
+  if($nodeClass eq 'ReFlow::Controller::PbsNode') {
     return 'pbs'
   }
 
