@@ -1,9 +1,11 @@
 package ApiCommonWorkflow::Main::Util::OrganismInfo;
 
 use strict;
+use CBIL::Util::PropertySet;
+use DBI;
 
 sub new {
-    my ($class, $workflowStep, $test, $organismAbbrev) = @_;
+    my ($class, $workflowStep, $test, $organismAbbrev, $gusConfigFile) = @_;
 
     my $self = {
       test => $test,
@@ -12,6 +14,16 @@ sub new {
     };
     bless($self,$class);
 
+    my @properties;
+    my $gusConfig = CBIL::Util::PropertySet -> new ($gusConfigFile, \@properties, 1);
+
+    my $dbh = DBI->connect($gusConfig->{props}->{dbiDsn},
+                           $gusConfig->{props}->{databaseLogin},
+                           $gusConfig->{props}->{databasePassword}
+        ) or $self->error(DBI->errstr);
+
+
+
     return $self if $test;
 
     my $sql = "select organism_id, name_for_filenames, strain_abbrev, public_abbrev,
@@ -19,7 +31,7 @@ sub new {
                from apidb.organism
                where abbrev = '$organismAbbrev'";
 
-    my ($organismId, $nameForFiles, $strainAbbrev, $publicAbbrev, $isFamilyRepresentative, $familyNcbiTaxonIds, $familyNameForFiles) = $workflowStep->runSqlFetchOneRow($test,$sql);
+    my ($organismId, $nameForFiles, $strainAbbrev, $publicAbbrev, $isFamilyRepresentative, $familyNcbiTaxonIds, $familyNameForFiles) = $workflowStep->runSqlFetchOneRowFromOrgDb($test,$sql,$dbh);
 
     $sql = "select tn.name, t.ncbi_tax_id, o.taxon_id
             from sres.taxonname tn, sres.taxon t, apidb.organism o
@@ -28,7 +40,7 @@ sub new {
               and tn.taxon_id = t.taxon_id
               and tn.name_class = 'scientific name'";
 
-    my ($fullName, $ncbiTaxonId, $taxonId) = $workflowStep->runSqlFetchOneRow($test,$sql);
+    my ($fullName, $ncbiTaxonId, $taxonId) = $workflowStep->runSqlFetchOneRowFromOrgDb($test,$sql, $dbh);
 
     die "Could not find taxon_id for organismAbbrev '$organismAbbrev'" unless $taxonId;
 
