@@ -14,6 +14,11 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
+    <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/results/</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <step name="makeBlastSimilarityNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBlastSimilarityNextflowConfig" >
       <paramValue name="outputDir">$$dataDir$$/results</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>
@@ -38,7 +43,7 @@
       <paramValue name="increasedMemory">12000</paramValue>
       <paramValue name="maxForks">40</paramValue>
       <paramValue name="maxRetries">2</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="makeResultDir"/>
     </step>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
@@ -57,14 +62,14 @@
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
       <paramValue name="outputFiles">blastSimilarity.out</paramValue>
       <paramValue name="deleteAfterCopy">true</paramValue>
       <depends name="runBlatClusterTask"/>
     </step>
 
     <step name="blastSimilaritiesToGff" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ConvertBlastSimilaritiesToGff">
-      <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/results/blastSimilarity.out</paramValue>
       <paramValue name="gffOutputFile">$$dataDir$$/blastSimilarity.gff</paramValue>
       <depends name="mirrorFromCluster"/>
     </step>
