@@ -49,14 +49,14 @@
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
       <paramValue name="outputFiles">out.psl</paramValue>
       <paramValue name="deleteAfterCopy">true</paramValue>
       <depends name="runBlatClusterTask"/>
     </step>
 
     <step name="fixGenomeSourceIdsInBlatResultFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixGenomeSourceIdsInBlatResultFile">
-      <paramValue name="inputFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/results/out.psl</paramValue>
       <paramValue name="queryFile">$$queryFile$$</paramValue>
       <depends name="mirrorFromCluster"/>
      </step>
@@ -70,7 +70,7 @@
       <paramValue name="queryIdRegex">>(\\d+)</paramValue>
       <paramValue name="action">load</paramValue>
       <paramValue name="percentTop"></paramValue>
-      <paramValue name="blatFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
+      <paramValue name="blatFile">$$dataDir$$/results/out.psl</paramValue>
       <paramValue name="queryFile">$$queryFile$$</paramValue>
       <depends name="fixGenomeSourceIdsInBlatResultFile"/>
     </step>
@@ -84,7 +84,7 @@
       <paramValue name="queryIdRegex">>(\\d+)</paramValue> <!-- This is ignored -->
       <paramValue name="action">setbest</paramValue>
       <paramValue name="percentTop">100</paramValue>
-      <paramValue name="blatFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
+      <paramValue name="blatFile">$$dataDir$$/results/out.psl</paramValue>
       <paramValue name="queryFile">$$queryFile$$</paramValue>
       <depends name="insertBlatAlignment"/>
     </step>

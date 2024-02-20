@@ -30,8 +30,10 @@ sub run {
     my $queue = $self->getClusterQueue();
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
-    my $speciesName = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesName();
-    $rmParams .= " -species '$speciesName'";
+
+    #TODO:  how do we get the species name here??  maybe use eutils? is this really needed?
+    #my $speciesName = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesName();
+    #$rmParams .= " -species '$speciesName'";
 
     if ($undo) {
 	$self->runCmd(0,"rm -rf $configPath");
