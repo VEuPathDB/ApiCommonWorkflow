@@ -38,6 +38,11 @@
     <depends name="makeDerivedTables"/>
   </step>
 
+  <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+     <paramValue name="dataDir">$$dataDir$$/results/</paramValue>
+     <depends name="extractTopLevelFastaSeqs"/>
+  </step>
+
   <step name="makeRepeatMaskerNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig" >
     <paramValue name="inputFilePath">$$topLevelFastaFile$$</paramValue>
     <paramValue name="outputDir">$$dataDir$$/results</paramValue>
@@ -53,7 +58,7 @@
     <paramValue name="increasedMemory">12000</paramValue>
     <paramValue name="maxForks">40</paramValue>
     <paramValue name="maxRetries">2</paramValue>
-    <depends name="extractTopLevelFastaSeqs"/>
+    <depends name="makeResultDir"/>
   </step>
 
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
@@ -72,22 +77,11 @@
 
   <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
-    <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+    <paramValue name="outputDir">$$dataDir$$/results</paramValue>
     <paramValue name="outputFiles">blocked.seq</paramValue>
     <paramValue name="deleteAfterCopy">true</paramValue>
     <depends name="runRepeatMaskerClusterTask"/>
   </step>
-  <!--
-    <step name="makeMasterDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$dataDir$$/master</paramValue>
-        <depends name="makeDataDir"/>
-    </step>
-
-    <step name="makeMainResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$dataDir$$/master/mainresult</paramValue>
-        <depends name="makeMasterDir"/>
-    </step>
-  -->
 
   <step name="document-mask_top_level_genome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>

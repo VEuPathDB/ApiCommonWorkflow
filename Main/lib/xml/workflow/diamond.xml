@@ -26,8 +26,13 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
+    <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/results/</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <step name="makeDiamondSimilarityNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDiamondSimilarityNextflowConfig">
-      <paramValue name="clusterResultDir">$$dataDir$$/master/mainresult/</paramValue>
+      <paramValue name="clusterResultDir">$$dataDir$$/results/</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>
       <paramValue name="analysisDir">$$dataDir$$</paramValue>
       <paramValue name="seqFile">$$queryFile$$</paramValue>
@@ -49,7 +54,7 @@
       <paramValue name="increasedMemory">12000</paramValue>
       <paramValue name="maxForks">40</paramValue>
       <paramValue name="maxRetries">2</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="makeResultDir"/>
     </step>
 
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
@@ -59,7 +64,7 @@
 
     <step name="runDiamondSimilarityClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
       <paramValue name="workingDir">$$dataDir$$</paramValue>
-      <paramValue name="resultsDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
       <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
       <paramValue name="nextflowWorkflow">VEuPathDB/diamond-similarity-nextflow</paramValue>
       <paramValue name="isGitRepo">true</paramValue>
@@ -67,8 +72,8 @@
     </step>
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/master/mainresult</paramValue>
-      <paramValue name="outputDir">$$dataDir$$</paramValue>
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
       <paramValue name="outputFiles">blastSimilarity.out</paramValue>
       <paramValue name="deleteAfterCopy">true</paramValue>
       <depends name="runDiamondSimilarityClusterTask"/>
@@ -84,16 +89,16 @@
     <step name="filterResultsByTaxon" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterBlastResultsByTaxon" includeIf="$$filterByTaxon$$">
       <paramValue name="taxonHierarchy">$$taxonHierarchyForFilter$$</paramValue>
       <paramValue name="gi2taxidFile">global/taxonomy_RSRC/gi_taxid_prot.dmp</paramValue>
-      <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
-      <paramValue name="unfilteredOutputFile">$$dataDir$$/master/mainresult/blastSimilarity.out.orig</paramValue>
-      <paramValue name="filteredOutputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/results/blastSimilarity.out</paramValue>
+      <paramValue name="unfilteredOutputFile">$$dataDir$$/results/blastSimilarity.out.orig</paramValue>
+      <paramValue name="filteredOutputFile">$$dataDir$$/results/blastSimilarity.out</paramValue>
       <depends name="mirrorFromCluster"/>
      </step>
 
      <!-- CAUTION: this step class has been hacked.  It appends the suffix .filtered onto the declared inputFile, 
 	  to discover if there is a filtered one available.  -->
     <step name="extractIdsFromBlastResult" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractIdsFromBlastResult" includeIf="$$loadSubjectSubset$$">
-      <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/results/blastSimilarity.out</paramValue>
       <paramValue name="idType">subject</paramValue>
       <paramValue name="outputFile">$$dataDir$$/blastSimIds.out</paramValue>
       <depends name="filterResultsByTaxon"/>
@@ -115,7 +120,7 @@
     </step>
 
     <step name="loadSimilarities" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlastSimilarities" stepLoadTypes="plugin" includeIf="$$loadSimilarities$$">
-      <paramValue name="inputFile">$$dataDir$$/master/mainresult/blastSimilarity.out</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/results/blastSimilarity.out</paramValue>
       <paramValue name="queryTable">$$queryTable$$</paramValue>
       <paramValue name="queryTableIdCol">source_id</paramValue>
       <paramValue name="queryExtDbName">$$queryExtDbName$$</paramValue>

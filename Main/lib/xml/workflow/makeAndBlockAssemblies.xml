@@ -9,7 +9,6 @@
     <param name="organismAbbrev"/>
     <param name="isReferenceStrain"/>
 
-
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
@@ -34,7 +33,7 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PutUnalignedTranscriptsIntoOneCluster" includeIf="$$isReferenceStrain$$">
       <paramValue name="alignedClustersFile">$$dataDir$$/alignedClusters.out</paramValue>
       <paramValue name="allClustersOutputFile">$$dataDir$$/allClusters.out</paramValue>
-      <paramValue name="repeatMaskErrFile">$$assemblySeqsDataDir$$/master/mainresult/blocked.err</paramValue>
+      <paramValue name="repeatMaskErrFile">$$assemblySeqsDataDir$$/master/results/blocked.err</paramValue>
       <paramValue name="parentNcbiTaxonId">$$parentNcbiTaxonId$$</paramValue>
       <paramValue name="targetNcbiTaxId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="useTaxonHierarchy">true</paramValue>
@@ -82,7 +81,6 @@
       <depends name="makeAndLoadAssembliesFromBigClusters"/>
     </step>
 
-
     <step name="makeRepeatMaskerNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig" >
       <paramValue name="inputFilePath">$$dataDir$$/assemblies.fsa</paramValue>
       <paramValue name="outputDir">$$dataDir$$/results</paramValue>
@@ -118,7 +116,7 @@
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/master/results</paramValue>
       <paramValue name="outputFiles">blocked.seq</paramValue>
       <paramValue name="deleteAfterCopy">true</paramValue>
       <depends name="runRepeatMaskerClusterTask"/>

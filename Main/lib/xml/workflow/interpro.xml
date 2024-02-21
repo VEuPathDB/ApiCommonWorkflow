@@ -12,8 +12,13 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
+    <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/results/</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
     <step name="makeInterproNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeIprscan5NextflowConfig">
-      <paramValue name="outputDir">$$dataDir$$/mainresult/</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/results/</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>    
       <paramValue name="analysisDir">$$dataDir$$</paramValue>
       <paramValue name="input">$$proteinsFile$$.NoAsterisks</paramValue>
@@ -25,7 +30,7 @@
       <paramValue name="increasedMemory">12000</paramValue>
       <paramValue name="maxForks">40</paramValue>
       <paramValue name="maxRetries">2</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="makeResultDir"/>
     </step>
    
     <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
@@ -35,7 +40,7 @@
   
     <step name="runInterproClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
       <paramValue name="workingDir">$$dataDir$$</paramValue>
-      <paramValue name="resultsDir">$$dataDir$$/mainresult</paramValue>
+      <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
       <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
       <paramValue name="nextflowWorkflow">VEuPathDB/iprscan5-nextflow</paramValue>
       <paramValue name="isGitRepo">true</paramValue>
@@ -43,15 +48,15 @@
     </step>
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/mainresult</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/mainresult</paramValue>
+      <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
       <paramValue name="outputFiles">iprscan_out.tsv</paramValue>
       <paramValue name="deleteAfterCopy">true</paramValue>
       <depends name="runInterproClusterTask"/>
     </step>
 
     <step name="insert" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertInterpro" stepLoadTypes="plugin" includeIf="$$insertVersion$$ == 1">
-      <paramValue name="inputDir">$$dataDir$$/mainresult/</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/results/</paramValue>
       <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
       <paramValue name="configFile">global/InterproscanData_RSRC/iprscan/data/insertInterpro-config.xml</paramValue>
       <depends name="mirrorFromCluster"/>
@@ -60,7 +65,7 @@
     </step>
 
     <step name="insert2" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertInterpro_2" stepLoadTypes="plugin" includeIf="$$insertVersion$$ == 2">
-      <paramValue name="inputDir">$$dataDir$$/mainresult/</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/results/</paramValue>
       <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
       <paramValue name="configFile">global/InterproscanData_RSRC/iprscan/data/insertInterpro-config.xml</paramValue>
       <paramValue name="aaSeqTable">$$aaSeqTable$$</paramValue>
