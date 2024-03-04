@@ -35,18 +35,19 @@ sub run {
     } else {
 	open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
 
+    die "TODO:  what is trans variable for when true?  do we need to change type??" if(lc($trans) ne 'false');
+
     print F
 "
 params {
-  seqFile = \"$seqFile\"
+  queryFasta = \"$seqFile\"
   fastaSubsetSize = $fastaSubsetSize
-  databasePath = \"$databasePath\"
+  genomeFasta = \"$databasePath\"
   maxIntron = $maxIntronSize
   dbType = \"$dbType\"
   queryType = \"$queryType\"
   blatParams = \"$blatParams\"
-  trans = $trans
-  outputDir = \"$$outputDir\"
+  outputDir = \"$outputDir\"
 }
                                                                                                                                                                       
 process{

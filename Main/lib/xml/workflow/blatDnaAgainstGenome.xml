@@ -7,6 +7,7 @@
     <param name="queryFile"/>
     <param name="queryTable"/>
     <param name="queryExtDbName"/>
+    <param name="gusConfigFile"/>
 
     <constant name="blatOutputFile">$$dataDir$$/blat.out</constant>
 
@@ -20,7 +21,7 @@
       <paramValue name="queryFile">$$queryFile$$</paramValue>
       <paramValue name="queryType">dna</paramValue>
       <paramValue name="dbType">dna</paramValue>
-      <paramValue name="databasePath">$$targetSeqsDir$$</paramValue>
+      <paramValue name="databasePath">$$targetSeqsDir$$/genomicSeqs.fa</paramValue>
       <paramValue name="outputDir">$$dataDir$$/results</paramValue>
       <paramValue name="analysisDir">$$dataDir$$</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>
@@ -49,14 +50,14 @@
 
     <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
+      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
       <paramValue name="outputFiles">out.psl</paramValue>
       <paramValue name="deleteAfterCopy">true</paramValue>
       <depends name="runBlatClusterTask"/>
     </step>
 
     <step name="fixGenomeSourceIdsInBlatResultFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixGenomeSourceIdsInBlatResultFile">
-      <paramValue name="inputFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/results/out.psl</paramValue>
       <paramValue name="queryFile">$$queryFile$$</paramValue>
       <depends name="mirrorFromCluster"/>
      </step>
@@ -70,8 +71,9 @@
       <paramValue name="queryIdRegex">>(\\d+)</paramValue>
       <paramValue name="action">load</paramValue>
       <paramValue name="percentTop"></paramValue>
-      <paramValue name="blatFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
+      <paramValue name="blatFile">$$dataDir$$/results/out.psl</paramValue>
       <paramValue name="queryFile">$$queryFile$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="fixGenomeSourceIdsInBlatResultFile"/>
     </step>
 
@@ -84,7 +86,7 @@
       <paramValue name="queryIdRegex">>(\\d+)</paramValue> <!-- This is ignored -->
       <paramValue name="action">setbest</paramValue>
       <paramValue name="percentTop">100</paramValue>
-      <paramValue name="blatFile">$$dataDir$$/master/mainresult/out.psl</paramValue>
+      <paramValue name="blatFile">$$dataDir$$/results/out.psl</paramValue>
       <paramValue name="queryFile">$$queryFile$$</paramValue>
       <depends name="insertBlatAlignment"/>
     </step>

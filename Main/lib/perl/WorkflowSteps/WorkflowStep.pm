@@ -234,7 +234,12 @@ sub getOrganismInfo {
   die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
   if (!$self->{organismInfo}->{$organismAbbrev}) {
-    $self->{organismInfo}->{$organismAbbrev} = ApiCommonWorkflow::Main::Util::OrganismInfo->new($self, $test, $organismAbbrev);
+    my $orgGusConfig = $self->getWorkflowDataDir() . "/${organismAbbrev}/${organismAbbrev}_gus.config";
+    unless(-e $orgGusConfig) {
+      $self->error("$orgGusConfig file does not exist");
+    }
+
+    $self->{organismInfo}->{$organismAbbrev} = ApiCommonWorkflow::Main::Util::OrganismInfo->new($self, $test, $organismAbbrev, $orgGusConfig);
   }
   return $self->{organismInfo}->{$organismAbbrev};
 }
@@ -296,19 +301,39 @@ sub getClusterExecutor {
   my $clusterServer = $self->getSharedConfig('clusterServer');
 
   my $nodeClass = $self->getSharedConfig("$clusterServer.nodeClass");
-  if($nodeClass eq 'DJob::DistribJob::LsfNode') {
+  if($nodeClass eq 'ReFlow::Controller::LsfNode') {
     return 'lsf'
   }
 
-  if($nodeClass eq 'DJob::DistribJob::SgeNode') {
+  if($nodeClass eq 'ReFlow::Controller::SgeNode') {
     return 'sge'
   }
 
-  if($nodeClass eq 'DJob::DistribJob::PbsNode') {
+  if($nodeClass eq 'ReFlow::Controller::PbsNode') {
     return 'pbs'
   }
 
   die "Could not determine executor for nodeClass $nodeClass";
+}
+
+
+sub runSqlFetchOneRowFromOrgDb {
+    my ($self, $test, $sql, $dbh) = @_;
+
+    my $className = ref($self);
+    if ($test != 1 && $test != 0) {
+	    $self->error("Illegal 'test' arg '$test' passed to runSqlFetchOneRow() in step class '$className'");
+    }
+    my @output = ("just", "testing");
+    my $testmode = $test? " (in test mode, so only pretending) " : "";
+    $self->log("Running SQL$testmode:  $sql\n\n");
+
+    unless ($test){
+      my $stmt = $dbh->prepare($sql);
+      $stmt->execute() or $self->error(DBI::errstr);
+      @output = $stmt->fetchrow_array();
+    }
+    return @output;
 }
 
 
