@@ -28,13 +28,10 @@ sub run {
 
   my $cmd_copy = "cp $workflowDataDir/$vcfFile $copyToDir"; 
 
-
-
-  $self->testInputFile('vcfFile', "$workflowDataDir/$vcfFile");
-
   if ($undo) {
     $self->runCmd(0, "rm -fr $copyToDir");
   } else {
+    $self->testInputFile('vcfFile', "$workflowDataDir/$vcfFile");
     $self->runCmd($test, $cmd_mkdir);
     $self->runCmd($test, $cmd_copy);
     $self->runCmd($test, "cp $workflowDataDir/$vcfFile.tbi $copyToDir");
