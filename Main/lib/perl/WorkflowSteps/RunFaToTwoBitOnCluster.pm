@@ -26,7 +26,7 @@ sub run {
   my $cmd = "bsub -q $clusterQueue faToTwoBit $clusterWorkflowDataDir/$inputFastaFile $clusterWorkflowDataDir/$output2bitFile";
 
   if ($undo) {
-    $self->runCmdOnClusterTransferServer(0,"rm $clusterWorkflowDataDir/$output2bitFile");
+    $self->runCmdOnClusterTransferServer(0,"rm -f $clusterWorkflowDataDir/$output2bitFile");
   } else {
     $self->testInputFile('inputFastaFile', "$workflowDataDir/$inputFastaFile");
       if ($test) {
