@@ -20,7 +20,7 @@ sub run {
 
   my $cmd = "orthomclFilterSingularFasta '$workflowDataDir/$proteomeFile' $minLength $maxStopPercent $workflowDataDir/$outputGoodProteinsFile $workflowDataDir/$outputBadProteinsFile";
 
-  $self->testInputFile('proteomesDir', "$workflowDataDir/$proteomesDir");
+  $self->testInputFile('proteomesDir', "$workflowDataDir/$proteomeFile");
 
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$outputGoodProteinsFile");
