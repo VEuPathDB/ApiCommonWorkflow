@@ -25,6 +25,7 @@ sub run {
 
   if($undo) {
     $self->runCmd(0, "rm -f $copyToDir/*.gz*");
+    $self->runCmd(0, "rmdir $copyToDir");
   } else{
       if($test){
 	  $self->runCmd(0, "echo test > $copyToDir/result.gff.gz ");
