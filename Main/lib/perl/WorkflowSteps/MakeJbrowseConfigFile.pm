@@ -34,7 +34,6 @@ sub run {
       }
       $self->runCmd($test, "mkdir -p $copyToDir");
       $self->runCmd($test, $cmd);
-      $self->runCmd($test, $indexCmd);
   }
 }
 
