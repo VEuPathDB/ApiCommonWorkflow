@@ -27,7 +27,7 @@ sub run {
 
 
   if($undo) {
-      $self->runCmd(0, "rm -f ${$jbrowseConf}*");
+      $self->runCmd(0, "rm -fr $copyToDir");
   } else{
       if($test){
           $self->runCmd(0, "echo test > $jbrowseConf");
