@@ -5,6 +5,7 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 use ApiCommonWorkflow::Main::WorkflowSteps::RunPopbioEdaNextflow;
+use ApiCommonWorkflow::Main::WorkflowSteps::RunPopsetEdaNextflow;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunClinEpiEdaNextflow;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunMBioEdaNextflow;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunMegaStudyEdaNextflow;
@@ -28,6 +29,9 @@ sub new {
   }
   elsif($context eq 'microbiome') {
       $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunMBioEdaNextflow->new(@_);
+  }
+  elsif($context eq 'popset') {
+      $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunPopsetEdaNextflow->new(@_);
   }
   # Other Genomics Contexts (popbio, ....)
 

@@ -25,6 +25,7 @@ sub run {
 }
 
 
+sub getGusConfigFile { return sprintf("%s/config/gus.config", $ENV{'GUS_HOME'}) }
 sub getStudyDirectory {}
 sub getProject {}
 sub getExtDbRlsSpec {}
@@ -92,6 +93,7 @@ sub getSchema {
 sub nextflowConfigAsString {
     my ($self) = @_;
 
+    my $gusConfigFile = $self->getGusConfigFile() || "NA";
     my $studyDirectory = $self->getStudyDirectory() || "NA";
     my $project = $self->getProject() || "NA";
     my $extDbRlsSpec = $self->getExtDbRlsSpec() || "NA";
@@ -174,6 +176,7 @@ params.optionalGadmPort = "$gadmPort";
 
 params.loadProtocolTypeAsVariable = $loadProtocolTypeAsVariable
 params.protocolVariableSourceId = "$protocolVariableSourceId"
+params.gusConfigFile = "$gusConfigFile"
 
 // needed for Mbio otu data
 params.isRelativeAbundance = $isRelativeAbundance
