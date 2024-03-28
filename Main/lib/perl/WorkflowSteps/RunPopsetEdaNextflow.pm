@@ -36,9 +36,8 @@ sub getWebDisplayOntologySpec {
 }
 
 sub getWebDisplayOntologyFile {
-    return sprintf("%s/ontology/release/production/%s.owl",
-      $ENV{GUS_HOME}, $_[0]->getParamValue('webDisplayOntologyName'));
-} # for mapping, can be ontologyMapping.xml or dataset-specific owl
+    return sprintf("%s/%s", $ENV{GUS_HOME}, $_[0]->getParamValue('webDisplayOntologyFile'));
+}
 
 sub getLoadProtocolTypeAsVariable {
     return "false";
