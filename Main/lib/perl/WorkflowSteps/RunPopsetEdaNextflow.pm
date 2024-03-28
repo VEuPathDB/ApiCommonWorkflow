@@ -78,7 +78,7 @@ sub getGusConfigFile { return "NA" }
 # TODO:
 # relative paths: '/../final/owlAttributes.txt'
 # sub getOptionalDateObfuscationFile {return $_[0]->workflowDataPath("../final/dateObfuscation.txt") }
-# sub getOptionalValueMappingFile { return $_[0]->workflowDataPath("../final/valueMap.txt") }
+sub getOptionalValueMappingFile { return $_[0]->workflowDataPath("../final/valueMap.txt") }
 sub getOptionalOntologyMappingOverrideFile { return $_[0]->workflowDataPath("../final/ontologyMapping.xml") }
 # sub getOptionalEntityTypeFile { return "entities.txt" }
 # sub getOptionalOwlAttributesFile { return "owlAttributes.txt" }
