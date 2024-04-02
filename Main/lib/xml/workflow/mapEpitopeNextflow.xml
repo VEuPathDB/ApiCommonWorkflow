@@ -1,0 +1,70 @@
+<sworkflowGraph name="">
+   <param name="parentDataDir"/>
+   <param name="name"/>
+   <param name="refFasta"/>
+   <param name="peptideGeneFasta"/>
+   <param name="taxon"/>
+   <param name="peptideMatchResults"/>
+   <param name="peptidesFilteredBySpeciesFasta"/>
+
+   <constant name="dataDir">$$parentDataDir$$/$$$$</constant>
+   <constant name="analysisConfig">$$parentDataDir$$/$$$$/final/analysisConfig.xml</constant>
+
+
+   <subgraph name="loadDataset" xml="loadDataset.xml">
+      <paramValue name="datasetName">$$$$</paramValue> <!-- should be conponent name -->
+      <paramValue name="datasetLoaderXmlFileName">$$$$</paramValue>
+   <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+
+   </subgraph>
+
+
+   <step name="mirrorToClusterData" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+        <paramValue name="fileOrDirToMirror">$$parentDataDir$$/$$$$</paramValue>
+        <depends name="loadDataset"/>
+   </step>
+
+
+   <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$</paramValue>
+      <depends name="loadDataset"/>
+   </step>
+
+   <step name="epitopeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEpitopeMappingNextflowConfig">
+      <paramValue name="analysisDir">$$parentDataDir$$</paramValue>
+      <paramValue name="refFasta">$$parentDataDir$$</paramValue>
+      <paramValue name="peptidesTab">$$parentDataDir$$/peptidesTab</paramValue>
+      <paramValue name="peptideGeneFasta">$$parentDataDir$$</paramValue>
+      <paramValue name="taxon">$$$$</paramValue>
+      <paramValue name="peptideMatchResults">$$$$</paramValue>
+      <paramValue name="peptidesFilteredBySpeciesFasta">$$parentDataDir$$</paramValue>
+      <paramValue name="results">$$DataDir$$/results</paramValue>
+      <paramValue name="chunkSize">500</paramValue>
+      <paramValue name="configFileName">$$parentDataDir$$/$$$$/nextflow.config</paramValue>
+      
+   </step>
+
+
+   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+	<paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+      	<depends name="epitopeNextflowConfig"/>
+   </step>
+
+   <step name="runEpitopeMapping" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+     	<paramValue name="workingDir">$$dataDir$$</paramValue>
+      	<paramValue name="resultsDir">$$dataDir$$/results</paramValue>
+      	<paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+      	<paramValue name="nextflowWorkflow">VEuPathDB/iedb-epitope-mapping-nextflow</paramValue>
+      	<paramValue name="isGitRepo">true</paramValue>
+      	<depends name="mirrorToCluster"/>
+   </step>
+
+   <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
+    	<paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
+   	<paramValue name="outputDir">$$dataDir$$/results</paramValue>
+    	<paramValue name="outputFiles">TODO</paramValue>
+    	<paramValue name="deleteAfterCopy">false</paramValue>
+    	<depends name="runEpitopeMapping"/>
+   </step> 
+
+</workflowGraph>
