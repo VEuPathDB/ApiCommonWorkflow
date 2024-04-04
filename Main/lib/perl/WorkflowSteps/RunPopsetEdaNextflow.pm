@@ -82,7 +82,7 @@ sub getOptionalOntologyMappingOverrideFile { return $_[0]->workflowDataPath("../
 # sub getOptionalEntityTypeFile { return "entities.txt" }
 # sub getOptionalOwlAttributesFile { return "owlAttributes.txt" }
 # sub getOptionalOrdinalsFile { return "ordinals.txt" }
-# sub getOptionalAnnotationPropertiesFile { $_[0]->workflowDataPath("../annotationProperties.txt") }
+sub getOptionalAnnotationPropertiesFile { $_[0]->workflowDataPath("../annotationProperties.txt") }
 
 sub getNoCommonDef { return "true" }
 
