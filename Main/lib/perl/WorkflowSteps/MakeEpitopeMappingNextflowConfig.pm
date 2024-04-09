@@ -16,7 +16,7 @@ sub run {
     my $refFasta = $self->getParamValue("refFasta");
     my $peptidesTab = $self->getParamValue("peptidesTab");
     my $peptideGeneFasta = $self->getParamValue("peptideGeneFasta");
-    my $taxon = $self->getParamValue("taxon");
+    my $ncbiTaxon = $self->getParamValue("ncbiTaxon");
     my $peptideMatchResults = $self->getParamValue("peptideMatchResults");
     my $peptidesFilteredBySpeciesFasta = $self->getParamValue("peptidesFilteredBySpeciesFasta");
     my $peptideMatchBlastCombinedResults = $self->getParamValue("peptideMatchBlastCombinedResults");
@@ -35,7 +35,7 @@ sub run {
    refFasta = \"$refFasta\" 
    peptidesTab = \"$peptidesTab\"
    peptideGeneFasta = \"$peptideGeneFasta\"
-   taxon = $taxon
+   taxon = $ncbiTaxon
    peptideMatchResults = \"$peptideMatchResults\"
    peptidesFilteredBySpeciesFasta = \"$peptidesFilteredBySpeciesFasta\"
    peptideMatchBlastCombinedResults = \"$peptideMatchBlastCombinedResults\"

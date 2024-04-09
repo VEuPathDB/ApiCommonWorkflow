@@ -38,14 +38,6 @@
 <!--    <depends name="initUserGroupProject"/>-->
   </step>
 
-   <!--run once per component - is this in the right place?-->
-  <subgraph name="component_epitope_IEDB_RSRC" xmlFile="loadDataset.xml">
-     <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
-     <paramValue name="datasetName">component_epitope_IEDB_RSRC</paramValue>
-     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-     <paramValue name="parentDataDir"></paramValue>
-     <dependsGlobal name="all_epitopes_IEDB_RSRC"/> <!--TODO: Mustafa's graph - check this-->
-  </subgraph>
 
   <datasetTemplate class="organism">
     <prop name="organismAbbrev"/>
@@ -446,12 +438,14 @@
 
  <!--this needs to run once per reference strain should this be a template?-->
    <!--or move this into the organism template -->
-    <subgraph name="${name}_${organismAbbrev}_epitope_sequences_IEDB"  includeIf="${isReferenceStrain}"  xml="mapEpitopeNextflow.xml">
+    <subgraph name="${name}_${organismAbbrev}_epitope_sequences_IEDB"  includeIf="${isReferenceStrain}  &amp;&amp; ${isAnnotatedGenome}"  xml="mapEpitopeNextflow.xml">
+      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="datasetName">EpitopeMapping_${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="taxon">${ncbiTaxonId}<paramValue/>
-      <depends name="component_epitope_IEDB_RSRC"/> 
+      <paramValue name="ncbiTaxon">${ncbiTaxonId}<paramValue/>
+      <depends name="${organismAbbrev}_LoadGenome"/>
+      <dependsGlobal name="component_epitope_IEDB_RSRC"/>
     </subgraph>
 
   </datasetTemplate>

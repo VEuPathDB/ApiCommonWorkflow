@@ -3,28 +3,29 @@
    <param name="datasetName"/>
    <param name="organismAbbrev"/>
    <param name="projectName"/>
-   <param name="taxon"/><!--TODO define, solved by moving the subhgraph into the organims template-->
+   <param name="ncbiTaxon"/><!--TODO define, solved by moving the subhgraph into the organims template-->
 
-   <constant name="dataDir">$$parentDataDir$$/$$$$</constant>
+   <constant name="dataDir">$$parentDataDir$$/iedbEpitopes</constant>
    <constant name="analysisConfig">$$parentDataDir$$/analysisConfig.xml</constant>
+
+   <constant name="nextflowConfigFile">nextflow.config</constant>
 
    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
-      <depends name="loadDataset"/>
    </step>
 
    <step name="epitopeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEpitopeMappingNextflowConfig">
-      <paramValue name="analysisDir">$$parentDataDir$$</paramValue>
-      <paramValue name="refFasta">$$parentDataDir$$/AnnotatedProteins.fsa</paramValue>
-      <paramValue name="peptidesTab">$$parentDataDir$$/peptidesTab</paramValue>
-      <paramValue name="peptideGeneFasta">$$parentDataDir$$/epitopesGenpept.fasta</paramValue>
-      <paramValue name="taxon">$$taxon$$</paramValue>
+      <paramValue name="analysisDir">$$dataDir$$</paramValue>
+      <paramValue name="refFasta">$$parentDataDir$$/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <!--TODO Check this path -->
+      <paramValue name="peptidesTab">$$parentDataDir$$/../component_$$projectName$$/component_epitope_IEDB_RSRC/peptidesTab</paramValue>
+      <paramValue name="ncbiTaxon">$$ncbiTaxon$$</paramValue>
       <paramValue name="peptideMatchResults">PeptideMatches.txt</paramValue>
       <paramValue name="peptidesFilteredBySpeciesFasta">PeptidesFilteredBySpecies.fasta</paramValue>
       <paramValue name="peptideMatchBlastCombinedResults">peptideMatchBlastCombinedResults.txt</paramValue>
-      <paramValue name="results">$$DataDir$$/results</paramValue>
-      <paramValue name="chunkSize">500</paramValue>
-      <paramValue name="configFileName">nextflow.config</paramValue> 
+      <paramValue name="configFileName">$$nextflowConfigFile$$</paramValue>
+
+      <depends name="makeSamplesOutputDir"/>
    </step>
 
 
@@ -49,5 +50,9 @@
     	<paramValue name="deleteAfterCopy">false</paramValue>
     	<depends name="runEpitopeMapping"/>
    </step> 
+
+
+   <!-- TODO:  add here the call to the plugin -->
+
 
 </workflowGraph>
