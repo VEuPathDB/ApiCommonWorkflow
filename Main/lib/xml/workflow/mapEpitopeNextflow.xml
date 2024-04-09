@@ -1,21 +1,12 @@
-<sworkflowGraph name="">
-   <param name="parentDataDir"/>
+<workflowGraph name="">
+   <param name="parentDataDir"/><!--TODO define-->
    <param name="datasetName"/>
-   <param name="refFasta"/>
-   <param name="peptideGeneFasta"/>
-   <param name="taxon"/>
+   <param name="organismAbbrev"/>
+   <param name="projectName"/>
+   <param name="taxon"/><!--TODO define, solved by moving the subhgraph into the organims template-->
 
    <constant name="dataDir">$$parentDataDir$$/$$$$</constant>
    <constant name="analysisConfig">$$parentDataDir$$/analysisConfig.xml</constant>
-
-
-   <subgraph name="loadDataset" xml="loadDataset.xml">
-      <paramValue name="datasetName">$$datasetName$$</paramValue> 
-      <paramValue name="datasetLoaderXmlFileName">$$$$</paramValue>
-   <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
-
-   </subgraph>
-
 
    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -24,7 +15,7 @@
 
    <step name="epitopeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEpitopeMappingNextflowConfig">
       <paramValue name="analysisDir">$$parentDataDir$$</paramValue>
-      <paramValue name="refFasta">$$parentDataDir$$AnnotatedProteins.fsa</paramValue>
+      <paramValue name="refFasta">$$parentDataDir$$/AnnotatedProteins.fsa</paramValue>
       <paramValue name="peptidesTab">$$parentDataDir$$/peptidesTab</paramValue>
       <paramValue name="peptideGeneFasta">$$parentDataDir$$/epitopesGenpept.fasta</paramValue>
       <paramValue name="taxon">$$$$</paramValue>
