@@ -190,8 +190,8 @@ Since this plugin step FAILED, please CLEAN UP THE DATABASE by calling:
   ga $undoPlugin --workflowContext --workflowstepid $self->{id} --commit $gusConfigFile --algInvocationId PLUGIN_ALG_INV_ID_HERE
 
 or (for the ISF plugin):
- 
-  ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapfile YOUR_ISF_MAP_FILE --workflowContext --workflowstepid $self->{id} --commit --algInvocationId PLUGIN_ALG_INV_ID_HERE
+
+  ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo  --workflowContext --workflowstepid $self->{id} --commit --mapfile YOUR_ISF_MAP_FILE --algInvocationId PLUGIN_ALG_INV_ID_HERE
 
 
 Find the plugin's row_algorithm_invocation_id by looking above in this step log
@@ -312,6 +312,11 @@ sub getClusterExecutor {
   if($nodeClass eq 'ReFlow::Controller::PbsNode') {
     return 'pbs'
   }
+
+  if($nodeClass eq 'ReFlow::Controller::LocalNode') {
+    return 'local'
+  }
+
 
   die "Could not determine executor for nodeClass $nodeClass";
 }
