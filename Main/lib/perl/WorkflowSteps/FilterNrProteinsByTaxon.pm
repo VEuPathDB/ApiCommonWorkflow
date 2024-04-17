@@ -15,10 +15,14 @@ sub run {
 
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$queryFile");
-  } else {  
-    $self->testInputFile('nrFile', "$workflowDataDir/$nrFile");
-
-    $self->runCmd($test, "filterNrByTaxa.pl --nrdbFile $workflowDataDir/$nrdbFile --taxaFilter $taxaFilter --outputFile $workflowDataDir/$queryFile");
+  } else {
+    if($test) {
+      $self->runCmd(0, "echo test > $workflowDataDir/$queryFile");
+    }
+    else {
+      $self->testInputFile('nrFile', "$workflowDataDir/$nrdbFile");
+      $self->runCmd($test, "filterNrByTaxa.pl --nrdbFile $workflowDataDir/$nrdbFile --taxaFilter $taxaFilter --outputFile $workflowDataDir/$queryFile");
+    }
   }
 }
 
