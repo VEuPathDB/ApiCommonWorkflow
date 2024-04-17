@@ -313,6 +313,11 @@ sub getClusterExecutor {
     return 'pbs'
   }
 
+  if($nodeClass eq 'ReFlow::Controller::LocalNode') {
+    return 'local'
+  }
+
+
   die "Could not determine executor for nodeClass $nodeClass";
 }
 
