@@ -9,6 +9,8 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  return if $test;
+
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
   my $tables = $self->getParamValue('tables');
