@@ -23,7 +23,11 @@ sub run {
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $clusterQueue = $self->getSharedConfig("$clusterServer.clusterQueue");
 
-  my $cmd = "bsub -q $clusterQueue faToTwoBit $clusterWorkflowDataDir/$inputFastaFile $clusterWorkflowDataDir/$output2bitFile";
+
+  # TODO:  Why are we making the twobit file on cluster like this???
+  my $cmd = "faToTwoBit $clusterWorkflowDataDir/$inputFastaFile $clusterWorkflowDataDir/$output2bitFile";
+
+  my $submitCmd = $self->getNodeClass()->getQueueSubmitCommand($clusterQueue, $cmd, undef, undef, undef);
 
   if ($undo) {
     $self->runCmdOnClusterTransferServer(0,"rm -f $clusterWorkflowDataDir/$output2bitFile");
@@ -32,7 +36,7 @@ sub run {
       if ($test) {
 	  $self->runCmdOnClusterTransferServer(0, "echo test > $clusterWorkflowDataDir/$output2bitFile");
       }
-    $self->runCmdOnCluster($test,$cmd);
+    $self->runCmdOnCluster($test, $submitCmd);
   }
 }
 
