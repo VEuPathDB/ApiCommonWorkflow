@@ -13,16 +13,6 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <!-- optional dataset.  the subgraph might be empty -->
-  <!--This will be replaced by a new plugin for core genomes from EBI
-    <subgraph name="insertPrimaryVirtualGenome" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/primaryVirtualGenome.xml" excludeIfXmlFileDoesNotExist="true">
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </subgraph>
-  -->
-
   <step name="makeDerivedTables" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedTables" stepLoadTypes="tuningManager">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -43,7 +33,13 @@
      <depends name="extractTopLevelFastaSeqs"/>
   </step>
 
-  <step name="makeRepeatMaskerNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig" >
+    <step name="copyRepeatMaskedFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isNotEbiGenome$$">
+      <paramValue name="fromFile">$$dataDir$$/../loadGenome/$$organismAbbrev$$_primary_genome_RSRC/ebi2gus_output/blocked.seq</paramValue>
+      <paramValue name="toFile">$$dataDir$$/results/blocked.seq</paramValue>
+    <depends name="makeResultDir"/>
+    </step>
+
+  <step name="makeRepeatMaskerNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$">
     <paramValue name="inputFilePath">$$topLevelFastaFile$$</paramValue>
     <paramValue name="outputDir">$$dataDir$$/results</paramValue>
     <paramValue name="analysisDir">$$dataDir$$</paramValue>
@@ -61,12 +57,13 @@
     <depends name="makeResultDir"/>
   </step>
 
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
     <depends name="makeRepeatMaskerNextflowConfig"/>
+    <depends name="copyRepeatMaskedFasta"/>
   </step>
 
-  <step name="runRepeatMaskerClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+  <step name="runRepeatMaskerClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow" stepLoadTypes="MaskTopLevelCluster" stepFailTypes="blatProteinCluster" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
     <paramValue name="workingDir">$$dataDir$$</paramValue>
     <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
     <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
@@ -75,7 +72,7 @@
     <depends name="mirrorToCluster"/>
   </step>
 
-  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
+  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$" stepLoadTypes="fromCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
     <paramValue name="outputDir">$$dataDir$$/results</paramValue>
     <paramValue name="outputFiles">blocked.seq</paramValue>
