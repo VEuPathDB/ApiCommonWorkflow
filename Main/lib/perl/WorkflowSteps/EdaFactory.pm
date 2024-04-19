@@ -33,6 +33,9 @@ sub new {
   elsif($context eq 'popset') {
       $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunPopsetEdaNextflow->new(@_);
   }
+  elsif($context eq 'isatab') {
+      $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunIsatabEdaNextflow->new(@_);
+  }
   # Other Genomics Contexts (popbio, ....)
 
   else {
