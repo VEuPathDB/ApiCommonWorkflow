@@ -6,6 +6,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 use ApiCommonWorkflow::Main::WorkflowSteps::RunPopbioEdaNextflow;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunPopsetEdaNextflow;
+use ApiCommonWorkflow::Main::WorkflowSteps::RunIsatabEdaNextflow;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunClinEpiEdaNextflow;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunMBioEdaNextflow;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunMegaStudyEdaNextflow;
