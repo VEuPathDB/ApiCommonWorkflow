@@ -1,7 +1,7 @@
 <workflowGraph name="proteinAlignToGenome">
   <param name="dataDir"/>             <!-- any dir -->
   <param name="targetFile"/>
-  <param name="nrProteinsFile"/>
+  <param name="nrdbFile"/>
   <param name="taxaFilter"/>
   <param name="maxIntronSize"/>
   <param name="organismAbbrev"/>
@@ -24,8 +24,8 @@
   </step>
 
   <step name="makeQueryFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterNrProteinsByTaxon">
-    <paramValue name="nrFile">$$nrProteinsFile$$</paramValue>
     <paramValue name="taxaFilter">$$taxaFilter$$</paramValue>
+    <paramValue name="nrdbFile">$$nrdbFile$$</paramValue>
     <paramValue name="queryFile">$$dataDir$$/query.fa</paramValue>
     <depends name="makeDataDir"/>
   </step>
@@ -54,27 +54,13 @@
     <depends name="makeNextflowConfig"/>
   </step>
 
-<!--Steps mirrorConfigToCluster and mirrorResultsDirToCluster are redundant since the step mirrorToCluster is already designed to copy the entire nrdbProteinsAlignAgainstGenome folder to the cluster. Remove the two redundant steps.
- 
-  <step name="mirrorConfigToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$/nextflow.config</paramValue>
-    <depends name="mirrorToCluster"/>
-    <depends name="makeNextflowConfig"/>
-  </step>
-
-  <step name="mirrorResultsDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
-    <depends name="mirrorToCluster"/>
-    <depends name="makeNextflowConfig"/>
-  </step>
--->
   <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow" stepLoadTypes="blatProteinCluster" stepFailTypes="blatProteinCluster">
     <paramValue name="workingDir">$$dataDir$$</paramValue>
     <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
     <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/protein-to-genome-alignment-nextflow</paramValue>
     <paramValue name="isGitRepo">true</paramValue>    
-    <depends name="mirrorResultsDirToCluster"/>
+    <depends name="mirrorToCluster"/>
   </step>
 
 
