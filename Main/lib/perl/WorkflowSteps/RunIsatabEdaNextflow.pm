@@ -6,7 +6,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig;;
 
 # could override in worfklow step if needed
 my $INVESTIGATION_BASENAME = "i_investigation.txt";
-my $ANNOTATION_PROPERTIES_FILE = "/../final/annotationProperties.txt";
+my $ANNOTATION_PROPERTIES_FILE = "/../annotationProperties.txt";
 
 sub getStudyDirectory {
     my ($self) = @_;
