@@ -55,6 +55,7 @@ sub run {
 }
 
 process {
+  container = \"veupathdb/proteintogenomealignment\"
   executor = '$executor'
   queue = '$queue'
   withName: 'exonerate' {
@@ -62,8 +63,11 @@ process {
     $exonerateProcessMemoryRequirement
   }
 }
-docker=false
-cleanup = true
+
+singularity {
+  enabled = true
+  autoMounts = true
+}
 
 ";
 
@@ -94,9 +98,9 @@ sub processMemoryRequirement {
   } else {
     die "Could not extract num MB/GB from memory parameter: $memoryParameter";
   }
-  my $s1 = clusterOptionsForMemMbs(0.5 * $mbs);
-  my $s2 = clusterOptionsForMemMbs($mbs);
-  my $s3 = clusterOptionsForMemMbs(2 * $mbs);
+  my $s1 = clusterOptionsForMemMbs(1 * $mbs);
+  my $s2 = clusterOptionsForMemMbs(2 * $mbs);
+  my $s3 = clusterOptionsForMemMbs(5 * $mbs);
   return <<"EOF";
     errorStrategy = { task.exitStatus in 130..140 ? 'retry' : 'terminate' }
     maxRetries = 3

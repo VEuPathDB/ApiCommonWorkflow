@@ -20,7 +20,7 @@ sub run {
 
   my $fullResultsDir = "$workflowDataDir/$resultsDir";
 
-  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/nrProteinsToGenomeAlign/";
+  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/gff/";
 
 
   if($undo) {
