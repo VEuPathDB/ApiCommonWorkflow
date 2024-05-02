@@ -62,9 +62,27 @@ sub getInvestigationBaseName {
 sub getDownloadFileBaseName {
     return $_[0]->getParamValue('downloadFileBaseName');
 }
-sub getGadmDataDir { return "NA" }
-sub getGadmSocketDir { return "NA" }
-sub getGadmPort { return "NA" }
+sub getGadmPort {
+    my ($self) = @_;
+    return $self->getSharedConfig('gadmPort');
+}
+
+sub getGadmDataDir {
+    my ($self) = @_;
+    return "/eupath/data/EuPathDB/manualDelivery/common/gadm/4.1/postgresData";
+    my $proj = $self->getParamValue('projectName');
+    my $workflowDataDir = $self->getWorkflowDataDir();
+    return "${workflowDataDir}/global/${proj}_gadm_RSRC/postgresData";
+}
+
+sub getGadmSocketDir {
+    my ($self) = @_;
+    return "/eupath/data/EuPathDB/manualDelivery/common/gadm/4.1/postgresSocket";
+    my $proj = $self->getParamValue('projectName');
+    my $workflowDataDir = $self->getWorkflowDataDir();
+    return "${workflowDataDir}/global/${proj}_gadm_RSRC/postgresSocket";
+}
+
 
 sub getOptionalCollectionsYaml {
     return sprintf("%s/ontology/General/collections/collections.yaml", $ENV{GUS_HOME});
