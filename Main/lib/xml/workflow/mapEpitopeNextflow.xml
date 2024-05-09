@@ -8,7 +8,7 @@
    <constant name="dataDir">$$parentDataDir$$/iedbEpitopes</constant>
    <constant name="analysisConfig">$$parentDataDir$$/analysisConfig.xml</constant>
 
-   <constant name="nextflowConfigFile">nextflow.config</constant>
+   <constant name="nextflowConfigFile">$$dataDir$$/nextflow.config</constant>
 
    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -17,10 +17,10 @@
    <step name="epitopeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEpitopeMappingNextflowConfig">
       <paramValue name="analysisDir">$$dataDir$$</paramValue>
       <paramValue name="refFasta">$$parentDataDir$$/loadGenome/AnnotatedProteins.fsa</paramValue>
-      <!--TODO Check this path -->
-      <paramValue name="peptidesTab">$$parentDataDir$$/../component_$$projectName$$/component_epitope_IEDB_RSRC/peptidesTab</paramValue>
+      <paramValue name="peptidesTab">$$parentDataDir$$/../componentGlobal/component_epitope_IEDB_RSRC/iedb.tab</paramValue>
       <paramValue name="ncbiTaxon">$$ncbiTaxon$$</paramValue>
       <paramValue name="peptideMatchResults">PeptideMatches.txt</paramValue>
+      <paramValue name="clusterResultDir">$$parentDataDir$$/results</paramValue>
       <paramValue name="peptidesFilteredBySpeciesFasta">PeptidesFilteredBySpecies.fasta</paramValue>
       <paramValue name="peptideMatchBlastCombinedResults">peptideMatchBlastCombinedResults.txt</paramValue>
       <paramValue name="configFileName">$$nextflowConfigFile$$</paramValue>
@@ -56,7 +56,7 @@
 
 
     <step name="loadIedbEpitopeMatches" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAaSequenceEpitope" stepLoadTypes="plugin">
-        <paramValue name="inputFile">$$dataDir$$/results/peptideMatchBlastCombinedResults.txt</paramValue>
+        <paramValue name="peptideResultFile">$$dataDir$$/results/peptideMatchBlastCombinedResults.txt</paramValue>
         <depends name="mirrorFromCluster"/>
     </step>
 

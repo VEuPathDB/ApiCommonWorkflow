@@ -10,16 +10,14 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $peptideResultFile = $self->getParamValue('peptideResultFile');
-    my $extDbSpec = $self->getParamValue('extDbSpec');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
     my $args = <<"EOF";
 --peptideResultFile=$workflowDataDir/$peptideResultFile \\
---extDbSpec=$workflowDataDir/$extDbSpec \\
 EOF
 
-    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertLongReadCounts" , $args);
+    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertAaSequenceEpitope" , $args);
 
 }
 

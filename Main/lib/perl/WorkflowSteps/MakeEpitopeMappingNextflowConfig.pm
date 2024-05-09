@@ -13,14 +13,14 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $results = join("/", $workflowDataDir, $self->getParamValue("clusterResultDir"));
-    my $refFasta = $self->getParamValue("refFasta");
-    my $peptidesTab = $self->getParamValue("peptidesTab");
-    my $peptideGeneFasta = $self->getParamValue("peptideGeneFasta");
+    my $refFasta = join("/",$workflowDataDir, $self->getParamValue("refFasta"));
+    my $peptidesTab = join("/",$workflowDataDir, $self->getParamValue("peptidesTab"));
+    #my $peptideGeneFasta = $self->getParamValue("peptideGeneFasta");
     my $ncbiTaxon = $self->getParamValue("ncbiTaxon");
     my $peptideMatchResults = $self->getParamValue("peptideMatchResults");
     my $peptidesFilteredBySpeciesFasta = $self->getParamValue("peptidesFilteredBySpeciesFasta");
     my $peptideMatchBlastCombinedResults = $self->getParamValue("peptideMatchBlastCombinedResults");
-    my $chunkSize = $self->getParamValue("chunkSize");
+    #my $chunkSize = $self->getParamValue("chunkSize");
     my $configPath = join("/", $self->getWorkflowDataDir(), $self->getParamValue("configFileName"));
 
 
@@ -34,12 +34,11 @@ sub run {
  params {
    refFasta = \"$refFasta\" 
    peptidesTab = \"$peptidesTab\"
-   peptideGeneFasta = \"$peptideGeneFasta\"
    taxon = $ncbiTaxon
    peptideMatchResults = \"$peptideMatchResults\"
    peptidesFilteredBySpeciesFasta = \"$peptidesFilteredBySpeciesFasta\"
    peptideMatchBlastCombinedResults = \"$peptideMatchBlastCombinedResults\"
-   chuckSize = $chunkSize
+   chunkSize = 500
    results = \"$results\"
 
    }
