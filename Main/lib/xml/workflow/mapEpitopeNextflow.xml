@@ -20,7 +20,7 @@
       <paramValue name="peptidesTab">$$parentDataDir$$/../componentGlobal/component_epitope_IEDB_RSRC/iedb.tab</paramValue>
       <paramValue name="ncbiTaxon">$$ncbiTaxon$$</paramValue>
       <paramValue name="peptideMatchResults">PeptideMatches.txt</paramValue>
-      <paramValue name="clusterResultDir">$$parentDataDir$$/results</paramValue>
+      <paramValue name="clusterResultDir">$$parentDataDir$$/iedbEpitopes/results</paramValue>
       <paramValue name="peptidesFilteredBySpeciesFasta">PeptidesFilteredBySpecies.fasta</paramValue>
       <paramValue name="peptideMatchBlastCombinedResults">peptideMatchBlastCombinedResults.txt</paramValue>
       <paramValue name="configFileName">$$nextflowConfigFile$$</paramValue>
@@ -35,8 +35,8 @@
    </step>
 
    <step name="runEpitopeMapping" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
-     	<paramValue name="workingDir">$$dataDir$$</paramValue>
-      	<paramValue name="resultsDir">$$dataDir$$/results</paramValue>
+      	<paramValue name="resultsDir">$$dataDir$$/iedbEpitopes/results</paramValue>
+      	<paramValue name="workingDir">$$dataDir$$</paramValue> 
       	<paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
       	<paramValue name="nextflowWorkflow">VEuPathDB/iedb-epitope-mapping-nextflow</paramValue>
       	<paramValue name="isGitRepo">true</paramValue>
@@ -56,7 +56,7 @@
 
 
     <step name="loadIedbEpitopeMatches" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAaSequenceEpitope" stepLoadTypes="plugin">
-        <paramValue name="peptideResultFile">$$dataDir$$/results/peptideMatchBlastCombinedResults.txt</paramValue>
+        <paramValue name="peptideResultFile">$$dataDir$$/iedbEpitopes/results/peptideMatchBlastCombinedResults.txt</paramValue>
         <depends name="mirrorFromCluster"/>
     </step>
 

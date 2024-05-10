@@ -12,15 +12,13 @@ sub run {
    
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
-    my $results = join("/", $workflowDataDir, $self->getParamValue("clusterResultDir"));
+    my $results = join("/", $clusterWorkflowDataDir, $self->getParamValue("clusterResultDir"));
     my $refFasta = join("/",$workflowDataDir, $self->getParamValue("refFasta"));
     my $peptidesTab = join("/",$workflowDataDir, $self->getParamValue("peptidesTab"));
-    #my $peptideGeneFasta = $self->getParamValue("peptideGeneFasta");
     my $ncbiTaxon = $self->getParamValue("ncbiTaxon");
     my $peptideMatchResults = $self->getParamValue("peptideMatchResults");
     my $peptidesFilteredBySpeciesFasta = $self->getParamValue("peptidesFilteredBySpeciesFasta");
     my $peptideMatchBlastCombinedResults = $self->getParamValue("peptideMatchBlastCombinedResults");
-    #my $chunkSize = $self->getParamValue("chunkSize");
     my $configPath = join("/", $self->getWorkflowDataDir(), $self->getParamValue("configFileName"));
 
 
