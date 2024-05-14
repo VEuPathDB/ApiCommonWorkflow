@@ -82,10 +82,17 @@
       <depends name="${organismAbbrev}_makeDatabase"/>
     </step>
 
+
     <step name="${organismAbbrev}_initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject" groupName="${organismAbbrev}">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <depends name="${organismAbbrev}_makeGusConfig"/>
+    </step>
+
+
+    <step name="${organismAbbrev}_registerPlugins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RegisterPlugins" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <depends name="${organismAbbrev}_initUserGroupProject"/>
     </step>
 
     <!-- each organism creates this step, but all are ignored except the one made by the ref strain. -->
@@ -103,7 +110,7 @@
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="organismFullName">${organismFullName}</paramValue>
       <paramValue name="gusConfigFile">${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
-      <depends name="${organismAbbrev}_makeGusConfig"/>
+      <depends name="${organismAbbrev}_registerPlugins"/>
     </step>
 
     <subgraph name="${organismAbbrev}_LoadGenome" xmlFile="loadGenome.xml" groupName="${organismAbbrev}">
