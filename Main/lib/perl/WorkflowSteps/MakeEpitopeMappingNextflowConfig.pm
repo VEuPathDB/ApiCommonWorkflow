@@ -13,8 +13,8 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $results = join("/", $clusterWorkflowDataDir, $self->getParamValue("clusterResultDir"));
-    my $refFasta = join("/",$workflowDataDir, $self->getParamValue("refFasta"));
-    my $peptidesTab = join("/",$workflowDataDir, $self->getParamValue("peptidesTab"));
+    my $refFasta = join("/",$clusterWorkflowDataDir, $self->getParamValue("refFasta"));
+    my $peptidesTab = join("/",$clusterWorkflowDataDir, $self->getParamValue("peptidesTab"));
     my $ncbiTaxon = $self->getParamValue("ncbiTaxon");
     my $peptideMatchResults = $self->getParamValue("peptideMatchResults");
     my $peptidesFilteredBySpeciesFasta = $self->getParamValue("peptidesFilteredBySpeciesFasta");
