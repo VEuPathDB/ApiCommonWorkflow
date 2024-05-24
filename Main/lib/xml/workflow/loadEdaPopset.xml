@@ -15,6 +15,7 @@
   <param name="speciesReconciliationFallbackSpecies"/>
   <param name="loadStudyCharacteristics"/>
   <param name="context"/>
+  <param name="nextflowEntry"/>
   <param name="optionalStudyStableId"/>
   <param name="studyClassificationsYaml"/>
   <param name="studyClassificationsOwl"/>
@@ -32,6 +33,7 @@
     <paramValue name="dataDir">$$dataDir$$/entityGraph</paramValue>
     <depends name="loadDataset"/>
   </step>
+
   <step name="makeAnnPropsAndArtifactsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$/annPropsAndArtifacts</paramValue>
     <depends name="loadDataset"/>
@@ -57,12 +59,13 @@
     <paramValue name="isGitRepo">true</paramValue>
     <paramValue name="gitBranch">main</paramValue>
     <paramValue name="context">$$context$$</paramValue>
-    <paramValue name="nextflowEntry">popsetEntry</paramValue>
+    <paramValue name="nextflowEntry">$$nextflowEntry$$</paramValue>
     <paramValue name="speciesReconciliationOntologySpec">$$speciesReconciliationOntologySpec$$</paramValue>
     <paramValue name="speciesReconciliationFallbackSpecies">$$speciesReconciliationFallbackSpecies$$</paramValue>
     <paramValue name="studyStableId">$$optionalStudyStableId$$</paramValue>
     <depends name="makeEntityGraphDir"/>
   </step>
+
   <step name="nextflowAnnPropsAndArtifacts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::EdaFactory" stepLoadTypes="edaStudyLoader">
     <paramValue name="datasetName">$$datasetName$$</paramValue>
     <paramValue name="datasetVersion">$$datasetVersion$$</paramValue>
@@ -89,6 +92,7 @@
     <paramValue name="file">$$studyClassificationsYaml$$</paramValue>
     <paramValue name="owlFile">$$studyClassificationsOwl$$</paramValue>
     <depends name="nextflowAnnPropsAndArtifacts"/>
+
   </step>
 
     <step name="copyEntityDownloadFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyShinyFilesToDownloadDir">
