@@ -30,39 +30,25 @@
       <depends name="makeDataDir"/>
     </step>
 
-    <step name="runTRNAScan"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTRNAScan" excludeIf="$$annotationIncludesTRNAs$$">
-      <paramValue name="seqFile">$$genomicSeqsFile$$</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/tRNAScan.out</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
+    <subgraph name="trnascan" xmlFile="transcan.xml" excludeIf="$$annotationIncludesTRNAs$$">
+     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+     <paramValue name="projectName">$$projectName$$</paramValue>
+     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+     <paramValue name="genomicSequenceFile">$$genomicSeqsFile$$</paramValue>
+     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+     <depends name="makeDataDir"/>
+    </subgraph>
 
-    <step name="document-tRNAScan"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" excludeIf="$$annotationIncludesTRNAs$$">
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="method">tRNAscan_MTHD</paramValue>
-      <paramValue name="version">1.4</paramValue>
-      <paramValue name="parameters"></paramValue>
-      <depends name="runTRNAScan"/>
-    </step>
-
-    <step name="loadTRNAScan" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTRNAScan" stepLoadTypes="plugin" excludeIf="$$annotationIncludesTRNAs$$">
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="inputFile">$$dataDir$$/tRNAScan.out</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="tRNAExtDbRlsSpec">$$organismAbbrev$$TRNAscan-SE|1.3</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <depends name="runTRNAScan"/>
-    </step>
 
     <subgraph name="unofficialGeneFeatures" xmlFile="unofficialGeneFeatures.xml">
      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
      <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
-     <paramValue name="parentDataDir">$$dataDir$$</paramValue> 
+     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
      <paramValue name="projectName">$$projectName$$</paramValue>
      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-     <depends name="makeDataDir"/> 
-    </subgraph> 
+     <depends name="makeDataDir"/>
+    </subgraph>
 
     <step name="makeOrfFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfFile" excludeIf="$$isHugeGenome$$">
