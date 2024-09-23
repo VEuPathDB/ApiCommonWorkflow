@@ -1,0 +1,62 @@
+<workflowGraph name="dust">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="genomicSequenceFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/dust</constant>
+  <constant name="resultsDirectory">$$dataDir$$/nextflowBaseDir/results</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDustConfig">
+    <paramValue name="genomicSequenceFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+    <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+    <paramValue name="outputFileName">lowComplexity.bed</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomicSequenceFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue> <!-- NAME|version -->
+    <paramValue name="annotationSpec"></paramValue><!-- NAME|version -->
+    <paramValue name="proteinsFile"></paramValue><!-- NAME|version -->
+    <paramValue name="nextflowWorkflow">VEuPathDB/low-complexity-nextflow</paramValue>
+    <depends name="makeNextflowConfig"/>
+  </subgraph>
+
+
+  <!-- TODO:  Replace this step with one which loads a bed file (bulk load)
+    <step name="loadLowComplexityFile"
+          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertLowComplexitySequences" stepLoadTypes="plugin" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="inputFile">$$genomicSeqsFile$$.dust</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="seqType">dna</paramValue>
+      <paramValue name="mask">N</paramValue>
+      <paramValue name="options">LowComplexityName 'dust'</paramValue>
+      <depends name="runLowComplexityFilter"/>
+    </step>
+-->
+   <step name="copyToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+     <paramValue name="copyFromFile">$$resultsDirectory$$/lowComplexity.bed.gz</paramValue>
+     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+     <paramValue name="indexSuffix">tbi</paramValue>
+     <paramValue name="fileType">bed</paramValue>
+     <depends name="runNextflowOnCluster"/>
+   </step>
+
+
+</workflowGraph>

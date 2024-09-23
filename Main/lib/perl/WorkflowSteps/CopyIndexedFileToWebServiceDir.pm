@@ -42,6 +42,7 @@ sub run {
     $self->runCmd(0, "rm -f $copyToDir/$gzFile");
     $self->runCmd(0, "rm -f $copyToDir/$tbiFile");
   } else{
+    $self->runCmd($test, "mkdir -p $copyToDir");
     $self->runCmd($test, "cp $workflowDataDir/${copyFromDirName}/${gzFile} $copyToDir");
     $self->runCmd($test, "cp $workflowDataDir/${copyFromDirName}/${tbiFile} $copyToDir");
   }
