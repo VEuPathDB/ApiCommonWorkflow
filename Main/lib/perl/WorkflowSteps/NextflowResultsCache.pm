@@ -24,7 +24,7 @@ sub run {
   my $nextflowBranch = $self->getSharedConfig("${nextflowWorkflow}.branch");
   $nextflowWorkflow =~ s/\//_/g;
 
-  my $nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}"
+  my $nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}";
 
   my $cacheDirBase = "$preprocessedDataCache/$projectName/${genomeName}_${genomeVersion}";
 
