@@ -11,67 +11,102 @@ sub run {
 
   my $mode = $self->getParamValue('mode');
 
-  my $parentDataPath  = $self->getParamValue("parentDataPath");
-  my $analysisDirectory = basename($parentDataPath);
-
   my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
-  my $workflowName = $self->getWorkflowConfig('name');
-  my $workflowVersion = $self->getWorkflowConfig('version');
 
   my $foundNextflowResults = $self->getParamValue("foundNextflowResults");
   my $resultsDir = $self->getParamValue("resultsDir");
 
   my ($genomeName, $genomeVersion) = split(/\|/, $self->getParamValue("genomeSpec"));
 
-  my $cacheDirBase = "$preprocessedDataCache/$workflowName/$workflowVersion/$genomeName/$genomeVersion";
+  my $projectName = $self->getParamValue("projectName");
+  my $nextflowWorkflow = $self->getParamValue("nextflowWorkflow");
 
-  my $cacheDir = "$cacheDirBase/$analysisDirectory";
+  my $nextflowBranch = $self->getSharedConfig("${nextflowWorkflow}.branch");
+  $nextflowWorkflow =~ s/\//_/g;
 
-  if($self->getParamValue("annotationSpec")) {
-      my $annotationDirectory = $self->getParamValue("annotationSpec");
-      $annotationDirectory =~ s/\|/_/g;
-      $cacheDir = "$cacheDirBase/$annotationDirectory/$analysisDirectory";
+  my $nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}";
+
+  my $cacheDirBase = "$preprocessedDataCache/$projectName/${genomeName}_${genomeVersion}";
+
+  my $datasetSpec = $self->getParamValue("datasetSpec");
+
+  my $datasetDirectory = "genome";
+  if($datasetSpec) {
+    $datasetSpec =~ s/\|/_/g;
+    $datasetDirectory = $datasetSpec;
+  }
+
+  #TODO:  Add repeat masker database version to path when workflow is repeatmasker
+  my $cacheDir = "$cacheDirBase/$datasetDirectory/$nextflowDirectory";
+
+  my $annotationSpec = $self->getParamValue("annotationSpec");
+  if($annotationSpec) {
+      $annotationSpec =~ s/\|/_/g;
+
+      $datasetDirectory = $datasetSpec ? $datasetSpec : "genesAndProteins";
+
+      #TODO:  Add interpro database version to path when workflow is iprscan5
+      $cacheDir = "$cacheDirBase/$annotationSpec/$datasetDirectory/$nextflowDirectory";
   }
 
   my $resultsPath = $self->getWorkflowDataDir() . "/" . $resultsDir;
   my $foundNextflowResultsFile = $self->getWorkflowDataDir() . "/" . $foundNextflowResults;
 
   if($mode eq "copyTo") {
-
-    if($undo) {} #nothing to see here
-    else {
-      $self->runCmd($test, "mkdir -p $cacheDir");
-      $self->runCmd($test, "cp -r $resultsPath/* $cacheDir/");
-    }
-
+    $self->copyTo($test, $undo, $cacheDir, $resultsPath);
   }
   else {
-    my $hasCacheFile = 0;
-    if(-d $cacheDir) {
-      opendir(my $dh, $cacheDir) or die "Can't open $cacheDir for reading: $!";
-      while (readdir($dh)) {
-        next if ($_ eq '.' or $_ eq '..');
-        closedir($dh);
-        $hasCacheFile = 1;
-      }
+    $self->checkAndCopyFrom($test, $undo, $cacheDir, $resultsPath, $foundNextflowResultsFile);
+  }
+}
+
+
+sub checkAndCopyFrom {
+  my ($self, $test, $undo, $cacheDir, $resultsPath, $foundNextflowResultsFile) = @_;
+
+  my $hasCacheFile = $self->hasCacheFile();
+  if($undo) {
+    $self->runCmd($test, "rm -f $foundNextflowResultsFile");
+    $self->runCmd($test, "rm -rf $resultsPath/*");
+  }
+  else {
+    if($hasCacheFile) {
+
+      $self->runCmd($test, "touch $foundNextflowResultsFile");
+      $self->runCmd($test, "cp -r $cacheDir/* $resultsPath");
+    }
+    else {} # nothing to see here
+  }
+}
+
+
+sub hasCacheFile {
+  my ($self, $cacheDir) = @_;
+
+  if(-d $cacheDir) {
+    opendir(my $dh, $cacheDir) or die "Can't open $cacheDir for reading: $!";
+    while (readdir($dh)) {
+      next if ($_ eq '.' or $_ eq '..');
+
       closedir($dh);
+      return 1;
     }
-
-    if($undo) {
-      $self->runCmd($test, "rm -f $foundNextflowResultsFile");
-      $self->runCmd($test, "rm -rf $resultsPath/*");
-    }
-    else {
-      if($hasCacheFile) {
-
-        $self->runCmd($test, "touch $foundNextflowResultsFile");
-        $self->runCmd($test, "cp -r $cacheDir/* $resultsPath");
-      }
-    }
-
+    closedir($dh);
   }
 
+  return 0;
+}
 
+
+
+sub copyTo {
+  my ($self, $test, $undo, $cacheDir, $resultsPath) = @_;
+
+  if($undo) {} #nothing to see here
+  else {
+    $self->runCmd($test, "mkdir -p $cacheDir");
+    $self->runCmd($test, "cp -r $resultsPath/* $cacheDir/");
+  }
 
 }
 
