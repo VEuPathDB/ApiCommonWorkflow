@@ -22,10 +22,11 @@ sub run {
   my $nextflowWorkflow = $self->getParamValue("nextflowWorkflow");
 
   my $nextflowBranch = $self->getSharedConfig("${nextflowWorkflow}.branch");
-
   $nextflowWorkflow =~ s/\//_/g;
 
-  my $cacheDirBase = "$preprocessedDataCache/$projectName/$genomeName/$genomeVersion";
+  my $nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}"
+
+  my $cacheDirBase = "$preprocessedDataCache/$projectName/${genomeName}_${genomeVersion}";
 
   my $datasetSpec = $self->getParamValue("datasetSpec");
 
@@ -36,7 +37,7 @@ sub run {
   }
 
   #TODO:  Add repeat masker database version to path when workflow is repeatmasker
-    my $cacheDir = "$cacheDirBase/$datasetDirectory/$nextflowWorkflow/$nextflowBranch";
+  my $cacheDir = "$cacheDirBase/$datasetDirectory/$nextflowDirectory";
 
   my $annotationSpec = $self->getParamValue("annotationSpec");
   if($annotationSpec) {
@@ -45,7 +46,7 @@ sub run {
       $datasetDirectory = $datasetSpec ? $datasetSpec : "genesAndProteins";
 
       #TODO:  Add interpro database version to path when workflow is iprscan5
-      $cacheDir = "$cacheDirBase/$annotationSpec/$datasetDirectory/$nextflowWorkflow/$nextflowBranch";
+      $cacheDir = "$cacheDirBase/$annotationSpec/$datasetDirectory/$nextflowDirectory";
   }
 
   my $resultsPath = $self->getWorkflowDataDir() . "/" . $resultsDir;
