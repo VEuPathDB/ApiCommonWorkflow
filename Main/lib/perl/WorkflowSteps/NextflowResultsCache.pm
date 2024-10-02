@@ -21,10 +21,21 @@ sub run {
   my $projectName = $self->getParamValue("projectName");
   my $nextflowWorkflow = $self->getParamValue("nextflowWorkflow");
 
+  my $databaseVersion;
+  if ($nextflowWorkflow eq "VEuPathDB/iprscan5-nextflow") {
+    $databaseVersion = $self->getSharedConfig('interproscanDatabaseDirectory');
+  }
+
   my $nextflowBranch = $self->getSharedConfig("${nextflowWorkflow}.branch");
   $nextflowWorkflow =~ s/\//_/g;
-
-  my $nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}";
+ 
+  my $nextflowDirectory;
+  if ($databaseVersion) {
+    $nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}/${databaseVersion}";
+  } 
+  else {
+    $nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}";
+  }
 
   my $cacheDirBase = "$preprocessedDataCache/$projectName/${genomeName}_${genomeVersion}";
 
@@ -64,14 +75,13 @@ sub run {
 sub checkAndCopyFrom {
   my ($self, $test, $undo, $cacheDir, $resultsPath, $foundNextflowResultsFile) = @_;
 
-  my $hasCacheFile = $self->hasCacheFile();
+  my $hasCacheFile = $self->hasCacheFile($cacheDir);
   if($undo) {
     $self->runCmd($test, "rm -f $foundNextflowResultsFile");
     $self->runCmd($test, "rm -rf $resultsPath/*");
   }
   else {
     if($hasCacheFile) {
-
       $self->runCmd($test, "touch $foundNextflowResultsFile");
       $self->runCmd($test, "cp -r $cacheDir/* $resultsPath");
     }
