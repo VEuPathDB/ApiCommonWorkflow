@@ -9,16 +9,12 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $resultsFile = $self->getParamValue('resultsFile');
-    my $transcriptSourceId = $self->getParamValue('transcriptSourceId');
-    my $geneSourceId = $self->getParamValue('geneSourceId');
     my $ncbiTaxId = $self->getParamValue('ncbiTaxId');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
   
     my $args = <<"EOF";
 --resultsFile=$workflowDataDir/$resultsFile \\
---transcriptSourceId=$transcriptSourceId \\
---geneSourceId=$geneSourceId \\
 --ncbiTaxId=$ncbiTaxId \\
 EOF
 
