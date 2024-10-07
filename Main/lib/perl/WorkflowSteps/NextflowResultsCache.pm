@@ -104,6 +104,10 @@ sub copyTo {
 
   if($undo) {} #nothing to see here
   else {
+	if ($test) {
+	      $self->runCmd(0, "mkdir -p $cacheDir");
+          $self->runCmd(, "cp -r $resultsPath/* $cacheDir/");
+    }
     $self->runCmd($test, "mkdir -p $cacheDir");
     $self->runCmd($test, "cp -r $resultsPath/* $cacheDir/");
   }
