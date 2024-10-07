@@ -15,6 +15,8 @@
     <depends name="makeDatabase"/>
   </step>
 
+
+
   <!-- we want all steps in the flow to depend on this one because it validates the project name and version -->
   <step name="initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
     <paramValue name="projectName">$$projectName$$</paramValue>
@@ -22,12 +24,18 @@
     <depends name="makeGusConfig"/>
   </step>
 
+  <step name="registerPlugins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RegisterPlugins">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="initUserGroupProject"/>
+  </step>
+
+
   <subgraph name="Taxonomy" xmlFile="generated/$$projectName$$/TaxonPatches/taxonomyGlobal.xml">
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
   <subgraph name="GO_RSRC" xmlFile="loadDataset.xml">
@@ -35,7 +43,7 @@
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
   <!-- to do make a GOSlim_RSRC as above-->
@@ -52,7 +60,7 @@
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
   <subgraph name="SO_RSRC" xmlFile="loadDataset.xml">
@@ -60,7 +68,7 @@
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
   <subgraph name="PDBProteinSequences_RSRC" xmlFile="loadDataset.xml">
@@ -85,7 +93,7 @@
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
 <!--  <subgraph name="oboOntologies" xmlFile="generated/GenomicsGlobal/oboOntologies.xml" excludeIfXmlFileDoesNotExist="true">-->
@@ -123,7 +131,7 @@
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
   <subgraph name="interproscanData_RSRC" xmlFile="loadDataset.xml">
@@ -131,7 +139,7 @@
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
   <subgraph name="chEBI_Compounds" xmlFile="compounds.xml">
@@ -139,8 +147,9 @@
     <paramValue name="parentDataDir"/>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
+
 
 <!--  Disabling this because we don't currently use it for anything.  -->
 <!--  <subgraph name="HMDB_Compounds" xmlFile="loadDataset.xml">-->
@@ -164,7 +173,7 @@
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
   <subgraph name="Pathways" xmlFile="generated/GenomicsGlobal/pathways.xml" excludeIfXmlFileDoesNotExist="true">
@@ -182,7 +191,7 @@
     <paramValue name="datasetName">EcNumberGenus_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
   <subgraph name="IEDBDatasetLoader" xmlFile="loadDataset.xml">

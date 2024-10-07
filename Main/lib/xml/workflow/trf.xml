@@ -1,0 +1,64 @@
+<workflowGraph name="trf">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="genomicSequenceFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/trf</constant>
+  <constant name="resultsDirectory">$$dataDir$$/nextflowBaseDir/results</constant>
+
+  <constant name="trfArgs">2 7 7 80 10 50 500</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTrfConfig">
+    <paramValue name="genomicSequenceFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+    <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+    <paramValue name="args">$$trfArgs$$</paramValue>
+    <paramValue name="outputFileName">tandemRepeats.bed</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomicSequenceFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue> <!-- NAME|version -->
+    <paramValue name="annotationSpec"></paramValue><!-- NAME|version -->
+    <paramValue name="datasetSpec"></paramValue>
+    <paramValue name="proteinsFile"></paramValue><!-- NAME|version -->
+    <paramValue name="nextflowWorkflow">VEuPathDB/trf-nextflow</paramValue>
+    <depends name="makeNextflowConfig"/>
+  </subgraph>
+
+
+  <!-- TODO:  Replace this step with one which loads a bed file (bulk load)
+  <step name="loadTandemRepeats"
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTandemRepeats" stepLoadTypes="plugin" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="inputFile">$$dataDir$$/tandemRepeats.bed</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <depends name="findTandemRepeats"/>
+  </step>
+-->
+   <step name="copyToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+     <paramValue name="copyFromFile">$$resultsDirectory$$/tandemRepeats.bed.gz</paramValue>
+     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+     <paramValue name="indexSuffix">tbi</paramValue>
+     <paramValue name="fileType">bed</paramValue>
+     <depends name="runNextflowOnCluster"/>
+   </step>
+
+
+</workflowGraph>

@@ -1,0 +1,51 @@
+<workflowGraph name="transcan">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="genomicSequenceFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+
+  <constant name="dataDir">$$parentDataDir$$/trnascan</constant>
+  <constant name="resultsDirectory">$$dataDir$$/nextflowBaseDir/results</constant>
+
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTRNAScanConfig">
+    <paramValue name="genomicSequenceFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+    <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+    <paramValue name="outputFileName">tRNAScan.out</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomicSequenceFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue> <!-- NAME|version -->
+    <paramValue name="annotationSpec"></paramValue><!-- NAME|version -->
+    <paramValue name="datasetSpec"></paramValue>
+    <paramValue name="proteinsFile"></paramValue><!-- NAME|version -->
+    <paramValue name="nextflowWorkflow">VEuPathDB/trna-scan-nextflow</paramValue>
+    <depends name="makeNextflowConfig"/>
+  </subgraph>
+
+  <step name="loadTRNAScan" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTRNAScan" stepLoadTypes="plugin">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="inputFile">$$resultsDirectory$$/tRNAScan.out</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="tRNAExtDbRlsSpec">$$organismAbbrev$$TRNAscan-SE|1.3</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <depends name="runNextflowOnCluster"/>
+  </step>
+
+
+
+
+</workflowGraph>
