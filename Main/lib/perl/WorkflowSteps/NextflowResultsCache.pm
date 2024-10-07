@@ -106,7 +106,7 @@ sub copyTo {
   else {
 	if ($test) {
 	      $self->runCmd(0, "mkdir -p $cacheDir");
-          $self->runCmd(, "cp -r $resultsPath/* $cacheDir/");
+          $self->runCmd(0, "cp -r $resultsPath/* $cacheDir/");
     }
     $self->runCmd($test, "mkdir -p $cacheDir");
     $self->runCmd($test, "cp -r $resultsPath/* $cacheDir/");
