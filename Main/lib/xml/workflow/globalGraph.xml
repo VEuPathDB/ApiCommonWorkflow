@@ -4,6 +4,12 @@
   <constant name="globalDatasetLoaderXmlFile">GenomicsGlobal.xml</constant>
   <constant name="gusConfigFile">$$projectName$$_gus.config</constant>
 
+  <constant name="dataDir">global</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
   <step name="makeDatabase" stepClass="ReFlow::StepClasses::MakeDatabase">
     <paramValue name="dbName"/>
   </step>
@@ -13,6 +19,7 @@
     <paramValue name="dataDir"/>
     <paramValue name="gusConfigFilename">$$gusConfigFile$$</paramValue>
     <depends name="makeDatabase"/>
+    <depends name="makeDataDir"/>
   </step>
 
 
@@ -94,6 +101,14 @@
     <paramValue name="parentDataDir"/>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="registerPlugins"/>
+  </subgraph>
+
+  <subgraph name="Ontology_ptmt_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="datasetName">Ontology_ptmt_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <depends name="Ontology_Relationship_Types_RSRC"/>
   </subgraph>
 
 <!--  <subgraph name="oboOntologies" xmlFile="generated/GenomicsGlobal/oboOntologies.xml" excludeIfXmlFileDoesNotExist="true">-->
@@ -200,6 +215,22 @@
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
     <depends name="Taxonomy"/>
+  </subgraph>
+
+  <subgraph name="blatAlignmentQuality_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">blatAlignmentQuality_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
+  </subgraph>
+
+  <subgraph name="NRDB_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">NRDB_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
   </subgraph>
 
 </workflowGraph>
