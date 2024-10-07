@@ -10,14 +10,12 @@ sub run {
 
     my $resultsFile = $self->getParamValue('resultsFile');
     my $ncbiTaxId = $self->getParamValue('ncbiTaxId');
+    my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
-  
-    my $args = <<"EOF";
---resultsFile=$workflowDataDir/$resultsFile \\
---ncbiTaxId=$ncbiTaxId \\
-EOF
 
+    my $args = "--resultsFile=$workflowDataDir/$resultsFile --ncbiTaxId=$ncbiTaxId --genomeExtDbRlsSpec='$genomeExtDbRlsSpec'";
+  
     if($undo) {
         $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertInterproResults", $args);
     } else {
