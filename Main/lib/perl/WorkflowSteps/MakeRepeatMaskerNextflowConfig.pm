@@ -5,6 +5,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig;
 use strict;
 use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+use Data::Dumper;
 
 sub run {
     my ($self, $test, $undo) = @_;
@@ -25,15 +26,14 @@ sub run {
     my $initialMemory = $self->getParamValue("initialMemory");
     my $maxForks = $self->getParamValue("maxForks");
     my $maxRetries = $self->getParamValue("maxRetries");
+    my $clusterServer = $self->getSharedConfig("clusterServer");
+    my $repeatMaskerDatabase = join("/", $self->getSharedConfig("$clusterServer.softwareDatabasesDirectory"),$self->getSharedConfig("repeatMaskerDatabaseDirectory"),"Libraries/famdb");
 
     my $executor = $self->getClusterExecutor();
     my $queue = $self->getClusterQueue();
 
-    #my $organismAbbrev = $self->getParamValue('organismAbbrev');
-
-    #TODO:  how do we get the species name here??  maybe use eutils? is this really needed?
-    #my $speciesName = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesName();
-    #$rmParams .= " -species '$speciesName'";
+    my $organismAbbrev = $self->getParamValue('organismAbbrev');
+    my $speciesName = $self->getOrganismInfo($test, $organismAbbrev)->getFullName();
 
     if ($undo) {
 	$self->runCmd(0,"rm -rf $configPath");
@@ -47,7 +47,7 @@ params {
   fastaSubsetSize = $fastaSubsetSize
   trimDangling = $trimDangling
   dangleMax = $dangleMax
-  rmParams = \"$rmParams\"
+  rmParams = \"$rmParams -species $speciesName\"
   outputFileName = \"$outputFileName\"
   errorFileName = \"$errorFileName\"
   outputDir = \"$outputDir\"
@@ -71,6 +71,7 @@ process{
 singularity {
   enabled = true
   autoMounts = true
+  runOptions = \"--bind $repeatMaskerDatabase:/opt/RepeatMasker/Libraries/famdb\"
 }
 ";
 	close(F);
