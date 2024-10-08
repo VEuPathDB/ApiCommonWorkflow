@@ -17,7 +17,8 @@ sub run {
     my $fastaSubsetSize = $self->getParamValue("fastaSubsetSize");
     my $appls = $self->getParamValue("appls");
     my $outputFile = $self->getParamValue("outputFile");
-    my $interproscanDatabase = join("/", $self->getSharedConfig("consign.pmacs.upenn.edu.softwareDatabasesDirectory"),$self->getSharedConfig("interproscanDatabaseDirectory"));
+    my $clusterServer = $self->getSharedConfig("clusterServer");
+    my $interproscanDatabase = join("/", $self->getSharedConfig("$clusterServer.softwareDatabasesDirectory"),$self->getSharedConfig("interproscanDatabaseDirectory"));
     my $increasedMemory = $self->getParamValue("increasedMemory");
     my $initialMemory = $self->getParamValue("initialMemory");
     my $maxForks = $self->getParamValue("maxForks");
