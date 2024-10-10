@@ -15,8 +15,11 @@ sub run {
   my $relativeDownloadDir = $self->getParamValue('relativeDownloadSiteDir');
   my $experimentName = $self->getParamValue('experimentName');
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
   my $organismNameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
   my $copyToDir = "$websiteFilesDir/$relativeDownloadDir/$organismNameForFiles/txt/";
   my $workflowDataDir = $self->getWorkflowDataDir();
 

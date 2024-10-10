@@ -15,7 +15,10 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $isfMappingFile = $self->getParamValue('isfMappingFile');
 
-  my $ncbiTaxId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
+  my $ncbiTaxId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNcbiTaxonId();
 
   my $gusHome = $self->getSharedConfig('gusHome');
 

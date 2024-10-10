@@ -11,7 +11,10 @@ sub getWebsiteFileCmd {
 
     my $extDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
 
-    my $tuningTablePrefix = $self->getTuningTablePrefix($self->getParamValue('organismAbbrev'), $test);
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
+    my $tuningTablePrefix = $self->getTuningTablePrefix($test, $self->getParamValue('organismAbbrev'), $gusConfigFile);
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
 

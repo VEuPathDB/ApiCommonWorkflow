@@ -9,8 +9,10 @@ sub getWebsiteFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
     my $extDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-    my $tuningTablePrefix = $self->getTuningTablePrefix($self->getParamValue('organismAbbrev'), $test);
+    my $tuningTablePrefix = $self->getTuningTablePrefix($test, $self->getParamValue('organismAbbrev'), $gusConfigFile);
 
     return "makeGff.pl --extDbRlsId $extDbRlsId --outputFile $downloadFileName --tuningTablePrefix $tuningTablePrefix";
 }

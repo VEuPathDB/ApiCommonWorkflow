@@ -11,9 +11,11 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
   my $outputFile = $self->getParamValue('outputFile');
   my $suffix = $self->getParamValue('suffix');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $organismStrain = $self->getOrganismInfo($test, $organismAbbrev)->getStrainAbbrev();
+  my $organismStrain = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getStrainAbbrev();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

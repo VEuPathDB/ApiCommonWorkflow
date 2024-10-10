@@ -10,8 +10,10 @@ sub run {
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $outputFile = $self->getParamValue('outputFile');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNcbiTaxonId();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

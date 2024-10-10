@@ -1,25 +1,22 @@
 <workflowGraph name="multipleProjects">
   <param name="projectName"/> <!-- GenomicsDB -->
 
+  <constant name="globalDatasetLoaderXmlFile">GenomicsGlobal.xml</constant>
+
+<!-- call globalGraph (Mustafa's but we added back things like NRDB ...-->
+  <globalSubgraph name="global" xmlFile="globalGraph.xml">
+    <paramValue name="commonDatasetLoaderXmlFile">$$projectName$$/$$projectName$$Common.xml</paramValue>
+    <paramValue name="globalDatasetLoaderXmlFile">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+  </globalSubgraph>
 
   <step name="initClusterHomeDir"
         stepClass="ReFlow::StepClasses::InitClusterHomeDir">
 <!--    <depends name="initUserGroupProject"/>-->
   </step>
 
-
-<!-- call globalGraph (Mustafa's but we added back things like NRDB ...-->
-  <globalSubgraph name="global" xmlFile="globalGraph.xml">
-    <paramValue name="commonDatasetLoaderXmlFile">$$projectName$$/$$projectName$$Common.xml</paramValue>
-    <paramValue name="globalDatasetLoaderXmlFile">global.xml</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="initClusterHomeDir"/>
-  </globalSubgraph>
-
-
-
 <!-- call project.xml (generated) for each component -->
-    <subgraph name="PlasmoDB_project" xmlFile="generated/PlasmoDB/project.xml">
+    <subgraph name="PlasmoDB" xmlFile="generated/PlasmoDB/project.xml">
       <paramValue name="projectName">PlasmoDB</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
       <paramValue name="areBigGenomes">false</paramValue>

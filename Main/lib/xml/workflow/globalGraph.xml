@@ -1,7 +1,7 @@
 <workflowGraph name="global">
   <param name="projectName"/>
+  <param name="globalDatasetLoaderXmlFile"/>
 
-  <constant name="globalDatasetLoaderXmlFile">GenomicsGlobal.xml</constant>
   <constant name="gusConfigFile">$$projectName$$_gus.config</constant>
 
   <constant name="dataDir">global</constant>
@@ -36,7 +36,7 @@
     <depends name="initUserGroupProject"/>
   </step>
 
-
+<!--move taxonomy_RSRC back to globalGraph.xml. But need to determine how to handle taxonomyPatch.
   <subgraph name="Taxonomy" xmlFile="generated/$$projectName$$/TaxonPatches/taxonomyGlobal.xml">
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
@@ -44,7 +44,7 @@
     <paramValue name="parentDataDir"/>
     <depends name="registerPlugins"/>
   </subgraph>
-
+-->
   <subgraph name="GO_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">GO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
@@ -86,13 +86,21 @@
     <depends name="SO_RSRC"/>
   </subgraph>
 
+  <subgraph name="taxonomy_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">taxonomy_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="initUserGroupProject"/>
+  </subgraph>
+
   <subgraph name="updatePDBTaxon_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">updatePDBTaxon_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="PDBProteinSequences_RSRC"/>
-    <depends name="Taxonomy"/>
+    <depends name="taxonomy_RSRC"/>
   </subgraph>
 
   <subgraph name="Ontology_Relationship_Types_RSRC" xmlFile="loadDataset.xml">
@@ -214,7 +222,7 @@
     <paramValue name="datasetName">all_epitopes_IEDB_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir"/>
-    <depends name="Taxonomy"/>
+    <depends name="taxonomy_RSRC"/>
   </subgraph>
 
   <subgraph name="blatAlignmentQuality_RSRC" xmlFile="loadDataset.xml">

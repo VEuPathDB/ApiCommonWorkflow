@@ -8,7 +8,10 @@ sub getWebsiteFileCmd {
     my ($self, $downloadFileName, $test) = @_;
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
-    my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
+    my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNcbiTaxonId();
 
     my $sql = "
       SELECT  a.source_id

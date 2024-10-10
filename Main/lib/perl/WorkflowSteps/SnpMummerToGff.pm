@@ -12,8 +12,10 @@ sub run {
   my $gffFile = $self->getParamValue('gffFile');
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $strainAbbrev = $self->getOrganismInfo($test, $organismAbbrev)->getStrainAbbrev();
+  my $strainAbbrev = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getStrainAbbrev();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cmd = "snpFastaMUMmerGff --gff_file $workflowDataDir/$gffFile --mummer_file $workflowDataDir/$inputFile --output_file $workflowDataDir/$outputFile --reference_strain $strainAbbrev --gff_format gff2 --skip_multiple_matches --error_log step.err";

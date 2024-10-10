@@ -15,6 +15,8 @@ sub run {
   my $substepClass = $self->getParamValue('substepClass');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $isfMappingFile = $self->getParamValue('isfMappingFile');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $gusHome = $self->getSharedConfig('gusHome');
 
@@ -22,7 +24,7 @@ sub run {
 
   my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$extDbRlsSpec);
 
-  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNcbiTaxonId();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   

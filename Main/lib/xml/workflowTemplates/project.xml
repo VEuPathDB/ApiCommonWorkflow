@@ -26,27 +26,26 @@
   <constant name="projectGusConfigBasename">$$projectName$$_gus.config</constant>
   <constant name="projectGusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</constant>
 
-  <step name="${projectName}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-
   <!-- this will be a project specific gusConfigFile.  it should be used for everything in this graph -->
   <!-- TODO:  fill i params -->
-  <step name="${projectName}_makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig">
+  <step name="makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig">
     <paramValue name="dbName"/>
     <!--
     <paramValue name="dbName">$$projectName$$</paramValue>
      -->
     <paramValue name="dataDir">$$dataDir$$</paramValue>
     <paramValue name="gusConfigFilename">$$projectGusConfigBasename$$</paramValue>
-    <depends name="${projectName}_makeDataDir"/>
+    <depends name="makeDataDir"/>
   </step>
 
-  <step name="${projectName}_initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
+  <step name="initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
-    <depends name="${projectName}_makeGusConfig"/>
+    <depends name="makeGusConfig"/>
   </step>
 
   <!--
@@ -58,29 +57,28 @@
   -->
   <step name="makeProjectReleaseDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
-    <depends name="${projectName}_initUserGroupProject"/>
+    <depends name="initUserGroupProject"/>
   </step>
 
   <step name="makeProjectReleaseWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
-    <depends name="${projectName}_initUserGroupProject"/>
+    <depends name="initUserGroupProject"/>
   </step>
 
   <step name="makeProjectReleaseAuxiliaryDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeAuxiliaryDir$$</paramValue>
-    <depends name="${projectName}_initUserGroupProject"/>
+    <depends name="initUserGroupProject"/>
   </step>
 
   <step name="makeComparativeGenomicsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$comparativeGenomicsInputDir$$</paramValue>
-    <depends name="${projectName}_makeDataDir"/>
+    <depends name="makeDataDir"/>
   </step>
 
 
-  <step name="${projectName}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="${projectName}_makeDataDir"/>
-    <dependsGlobal name="initClusterHomeDir"/>
+    <depends name="makeDataDir"/>
   </step>
 
   <datasetTemplate class="organism">
@@ -154,7 +152,7 @@
     <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" groupName="${organismAbbrev}"  stepLoadTypes="toCluster">
       <paramValue name="fileOrDirToMirror">$$dataDir$$/${organismAbbrev}</paramValue>
       <depends name="${organismAbbrev}_makeDataDir"/>
-      <depends name="${projectName}_mirrorToCluster"/>
+      <depends name="mirrorToCluster"/>
     </step>
 
 
@@ -205,7 +203,7 @@
       <depends name="makeProjectReleaseDownloadDir"/>
       <depends name="makeProjectReleaseWebServicesDir"/>
       <depends name="${organismAbbrev}_mirrorToCluster"/>
-      <depends name="${organismAbbrev}_loadNcbiTaxonId"/>
+      <!--<depends name="${organismAbbrev}_loadNcbiTaxonId"/>-->
 
       <dependsGlobal name="taxonomy_RSRC"/>
       <dependsGlobal name="SO_RSRC"/>
@@ -627,6 +625,7 @@
   <!-- new template for untargeted metabolomics -->                                                                               
   <step name="makeMetabolomicsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$/metabolomics</paramValue>
+    <depends name="makeDataDir"/>
   </step>
 
   <datasetTemplate class="compoundMassSpec">

@@ -10,9 +10,10 @@ sub run {
 
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
-  my $gusConfigFile = $self->getGusConfigFile();
-  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+  my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNcbiTaxonId();
   my $sql = 
     "select sa.source_id, ns.sequence
      from ApidbTuning.${tuningTablePrefix}GenomicSeqAttributes sa, dots.nasequence ns
