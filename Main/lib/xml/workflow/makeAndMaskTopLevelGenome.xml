@@ -10,6 +10,7 @@
   <param name="isNotEbiGenome"/>
   <param name="genomeExtDbRlsSpec"/>
   <param name="genomicSeqsFile"/>
+  <param name="relativeWebServicesDir"/>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -58,11 +59,11 @@
      <depends name="copyRepeatMaskedBed"/>
   </step>
 
-<!--  <step name="makeRepeatMaskerNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$"> -->
-  <step name="makeRepeatMaskerNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig">
+  <step name="makeRepeatMaskerNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
     <paramValue name="inputFilePath">$$topLevelFastaFile$$</paramValue>
     <paramValue name="outputDir">$$dataDir$$/analysisDir/results</paramValue>
-    <paramValue name="analysisDir">$$dataDir$$</paramValue>
+    <paramValue name="analysisDir">$$dataDir$$/analysisDir</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="configFileName">nextflow.config</paramValue>
     <paramValue name="fastaSubsetSize">1</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -78,11 +79,11 @@
     <depends name="makeResultDir"/>
   </step>
 
-<!--  <subgraph name="runRepeatMaskerNextflowOnCluster" xmlFile="runNextflowOnCluster.xml" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$"> -->
-  <subgraph name="runRepeatMaskerNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+  <subgraph name="runRepeatMaskerNextflowOnCluster" xmlFile="runNextflowOnCluster.xml" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
     <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$/analysisDir</paramValue>
-    <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="analysisDir">$$dataDir$$/analysisDir</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/analysisDir/nextflow.config</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="genomicSequenceFile">$$genomicSeqsFile$$</paramValue>
     <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue> <!-- NAME|version -->
@@ -98,6 +99,30 @@
     <paramValue name="method">mask_top_level_genome_MTHD</paramValue>
     <paramValue name="version">1.0</paramValue>
     <paramValue name="parameters">TODO: patch in later</paramValue>
+  </step>
+
+  <step name="copyMaskedBedIndexToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyMaskedBedToWebserviceDir">
+     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+     <paramValue name="copyFromFile">$$dataDir$$/analysisDir/results/blocked.seq.bed.gz.tbi</paramValue>
+     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="runRepeatMaskerNextflowOnCluster"/>
+      <depends name="copyRepeatMaskedBed"/>
+  </step>
+
+  <step name="copyMaskedBedToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyMaskedBedToWebserviceDir">
+     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+     <paramValue name="copyFromFile">$$dataDir$$/analysisDir/results/blocked.seq.bed.gz.tbi</paramValue>
+     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="runRepeatMaskerNextflowOnCluster"/>
+      <depends name="copyRepeatMaskedBed"/>
+  </step>
+
+  <step name="insertRepeatMaskedBedGraph" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBedGraph" stepLoadTypes="plugin">
+      <paramValue name="bedFile">$$dataDir$$/analysisDir/results/blocked.seq.bed</paramValue>
+      <paramValue name="algorithm">repeatMasked</paramValue>
+      <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="runRepeatMaskerNextflowOnCluster"/>
+      <depends name="copyRepeatMaskedBed"/>
   </step>
 
 </workflowGraph>

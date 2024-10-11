@@ -1,5 +1,6 @@
 <workflowGraph name="runNextflowOnCluster">
   <param name="parentDataDir"/>
+  <param name="analysisDir"/>
   <param name="nextflowConfigFile"/>
   <param name="organismAbbrev"/>
   <param name="genomicSequenceFile"/>
@@ -17,8 +18,8 @@
     <paramValue name="genomeSpec">$$genomeSpec$$</paramValue>
     <paramValue name="annotationSpec">$$annotationSpec$$</paramValue>
     <paramValue name="datasetSpec">$$datasetSpec$$</paramValue>
-    <paramValue name="parentDataPath">$$parentDataDir$$</paramValue>
-    <paramValue name="resultsDir">$$parentDataDir$$/results</paramValue>
+    <paramValue name="parentDataPath">$$analysisDir$$</paramValue>
+    <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
     <paramValue name="foundNextflowResults">$$foundNextflowResults$$</paramValue>
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="mode">checkAndCopyFrom</paramValue>
@@ -38,8 +39,8 @@
   </step>
 
   <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow" skipIfFile="$$foundNextflowResults$$">
-    <paramValue name="workingDir">$$parentDataDir$$</paramValue>
-    <paramValue name="resultsDir">$$parentDataDir$$/results</paramValue>
+    <paramValue name="workingDir">$$analysisDir$$</paramValue>
+    <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
     <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="isGitRepo">true</paramValue>
@@ -47,8 +48,8 @@
   </step>
 
   <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
-    <paramValue name="fileOrDirToMirror">$$parentDataDir$$/results</paramValue>
-    <paramValue name="outputDir">$$parentDataDir$$/results</paramValue>
+    <paramValue name="fileOrDirToMirror">$$analysisDir$$/results</paramValue>
+    <paramValue name="outputDir">$$analysisDir$$/results</paramValue>
     <paramValue name="outputFiles">*</paramValue>
     <paramValue name="deleteAfterCopy">true</paramValue>
     <depends name="runClusterTask"/>
@@ -58,8 +59,8 @@
     <paramValue name="genomeSpec">$$genomeSpec$$</paramValue>
     <paramValue name="annotationSpec">$$annotationSpec$$</paramValue>
     <paramValue name="datasetSpec">$$datasetSpec$$</paramValue>
-    <paramValue name="parentDataPath">$$parentDataDir$$</paramValue>
-    <paramValue name="resultsDir">$$parentDataDir$$/results</paramValue>
+    <paramValue name="parentDataPath">$$analysisDir$$</paramValue>
+    <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
     <paramValue name="foundNextflowResults">$$foundNextflowResults$$</paramValue>
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
