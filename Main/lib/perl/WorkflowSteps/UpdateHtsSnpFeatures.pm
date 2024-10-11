@@ -9,8 +9,10 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
+  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile);
   my $referenceOrganism = $organismInfo->getFullName();
   unless($referenceOrganism) {
     $self->error("Organism Abbreviation for the reference [$organismAbbrev] was not defined");   

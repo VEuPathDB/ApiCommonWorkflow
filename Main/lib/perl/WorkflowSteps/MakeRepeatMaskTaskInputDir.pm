@@ -14,6 +14,8 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $dangleMax = $self->getParamValue('dangleMax');
   my $trimDangling = $self->getParamValue('trimDangling');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   # get step properties
   my $clusterServer = $self->getSharedConfig('clusterServer');
@@ -22,7 +24,7 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $speciesName = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesName();
+  my $speciesName = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesName();
 
   # look for an optional property that provides info so we can override the species name
   # in the case that our native species name is not in repeat masker library.

@@ -13,8 +13,10 @@ sub run {
   my $strainAbbrev = $self->getParamValue('strainAbbrev');
   my $projectName = $self->getParamValue('projectName');
   my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $orgInfo = $self->getOrganismInfo($test, $organismAbbrev);
+  my $orgInfo = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile);
 
   if (!$test) {
       my $db = $orgInfo->getStrainAbbrev();

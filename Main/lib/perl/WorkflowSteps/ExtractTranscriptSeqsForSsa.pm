@@ -11,14 +11,16 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $useTopLevel = $self->getBooleanParamValue('useTopLevel');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNcbiTaxonId();
 
   my $dbName = "${organismAbbrev}_primary_genome_RSRC";
 
   my $dbVersion = $self->getExtDbVersion($test,$dbName);
 
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
 
   my $sql = "select gf.source_id || ':'
                     || substr(ns.source_id, 1, 50) ||':'

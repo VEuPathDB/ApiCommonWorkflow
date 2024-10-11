@@ -21,13 +21,15 @@ sub run {
   my $snpExtDbRlsSpec = $self->getParamValue('snpExtDbRlsSpec');
   my $isNextGenSeq = $self->getBooleanParamValue('isNextGenSeq');
   my $isCoverage = $self->getBooleanParamValue('isCoverage');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my ($genomExtDbName,$genomeExtDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
   my ($snpExtDbName,$snpExtDbRlsVer) = $self->getExtDbInfo($test,$snpExtDbRlsSpec);
   my ($transcriptExtDbName,$transcriptExtDbRlsVer) = $self->getExtDbInfo($test,$transcriptExtDbRlsSpec);
 
-  my $organismFullName = $self->getOrganismInfo($test, $organismAbbrev)->getFullName();
-  my $strainAbbrev = $self->getOrganismInfo($test, $organismAbbrev)->getStrainAbbrev();
+  my $organismFullName = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getFullName();
+  my $strainAbbrev = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getStrainAbbrev();
   
   unless($strainAbbrev) {
     $self->error("Strain Abbreviation for the reference [$organismAbbrev] was not defined");   

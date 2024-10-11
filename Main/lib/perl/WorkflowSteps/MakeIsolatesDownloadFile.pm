@@ -22,7 +22,10 @@ sub getWebsiteFileCmd {
   # we load isolates using the family representative's taxon id, so use that to extract
   # only the family rep calls this step class, so we can just use our org abbrev.
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
+  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile);
   my $taxonId = $organismInfo->getTaxonId();
 
   my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");

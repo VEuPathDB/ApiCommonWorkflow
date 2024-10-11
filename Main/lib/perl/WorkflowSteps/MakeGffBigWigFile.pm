@@ -16,9 +16,11 @@ sub run {
   my $experimentDatasetName = $self->getParamValue('experimentDatasetName');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $organismNameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
   my $outputsDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/bigwig/$experimentDatasetName";
 

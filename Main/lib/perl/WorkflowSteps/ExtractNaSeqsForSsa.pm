@@ -11,9 +11,11 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $useTopLevel = $self->getBooleanParamValue('useTopLevel');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNcbiTaxonId();
+  my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
 
   my $sql = "select ns.source_id||':1-'||ns.length||'_strand=+', ns.sequence
              from dots.ExternalNaSequence ns, sres.Taxon t, sres.SequenceOntology so

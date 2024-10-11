@@ -20,6 +20,8 @@ sub run {
 
   # get parameters
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   # this is relative to the website files dir.
   # it will look something like downloadSite/ToxoDB/release-6.3
@@ -30,15 +32,15 @@ sub run {
   $self->error("Parameters useFamilyName and useSpeciesName cannot both be 'true'") if $useFamilyName && $useSpeciesName;
 
   my $nameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
   if ($useSpeciesName) {
     $nameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesNameForFiles();
   }
   if ($useFamilyName) {
     $nameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getFamilyNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getFamilyNameForFiles();
   }
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
