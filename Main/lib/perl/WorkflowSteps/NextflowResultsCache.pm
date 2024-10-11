@@ -64,7 +64,7 @@ sub run {
 sub checkAndCopyFrom {
   my ($self, $test, $undo, $cacheDir, $resultsPath, $foundNextflowResultsFile) = @_;
 
-  my $hasCacheFile = $self->hasCacheFile();
+  my $hasCacheFile = $self->hasCacheFile($cacheDir);
   if($undo) {
     $self->runCmd($test, "rm -f $foundNextflowResultsFile");
     $self->runCmd($test, "rm -rf $resultsPath/*");
