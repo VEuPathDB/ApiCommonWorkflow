@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::CopyMaskedBedToWebserviceDir;
+package ApiCommonWorkflow::Main::WorkflowSteps::CopyBedToWebserviceDir;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
@@ -15,10 +15,11 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $relativeWebServicesDir = $self->getParamValue('relativeWebServicesDir');
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+  my $copyToDirectory = $self->getParamValue('copyToDirectory');
 
   my $organismNameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
-  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/genomeAndProteome/bed/";
+  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/$copyToDirectory/";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
