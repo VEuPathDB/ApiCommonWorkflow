@@ -19,7 +19,7 @@ sub run {
   my $sql = "SELECT tas.source_id
                     , 'length='||length(tas.sequence) as length
                     , 'transcript='||tx.source_id as transcript
-                    , 'gene='||gf.source_id as gene
+                    , 'gene='||g.source_id as gene
                     ,tas.sequence
              FROM dots.NASequence x,
                   dots.transcript tx,
