@@ -12,6 +12,10 @@ sub run {
 
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $workflowDataDir = $self->getWorkflowDataDir();
+
+    # We use the shared config 'repeatMaskerDatabaseDirectory' to specify the repeatMasker database version, and also as a variable in the path for webservices. The famdbRelativePath is the path inside of the repeatMaskerDatabaseDirectory that actually holds the database files to be mapped into the repeatmasker container
+    my $famdbRelativePath = "Libraries/famdb";
+
     my $inputFilePath = join("/", $clusterWorkflowDataDir, $self->getParamValue("inputFilePath")); 
     my $outputDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("outputDir")); 
     my $configFileName = $self->getParamValue("configFileName");
@@ -27,7 +31,7 @@ sub run {
     my $maxForks = $self->getParamValue("maxForks");
     my $maxRetries = $self->getParamValue("maxRetries");
     my $clusterServer = $self->getSharedConfig("clusterServer");
-    my $repeatMaskerDatabase = join("/", $self->getSharedConfig("$clusterServer.softwareDatabasesDirectory"),$self->getSharedConfig("repeatMaskerDatabaseDirectory"),"Libraries/famdb");
+    my $repeatMaskerDatabase = join("/", $self->getSharedConfig("$clusterServer.softwareDatabasesDirectory"),$self->getSharedConfig("repeatMaskerDatabaseDirectory"),$famdbRelativePath);
 
     my $executor = $self->getClusterExecutor();
     my $queue = $self->getClusterQueue();
