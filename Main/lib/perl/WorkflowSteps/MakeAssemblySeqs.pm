@@ -13,8 +13,10 @@ sub run {
 
   my $vectorFile = $self->getConfig('vectorFile');
   my $phrapDir = $self->getConfig('phrapDir');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
+  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile);
   my $taxonId = $organismInfo->getSpeciesTaxonId();
   my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
 

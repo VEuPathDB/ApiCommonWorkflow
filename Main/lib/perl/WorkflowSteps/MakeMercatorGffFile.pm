@@ -10,7 +10,10 @@ sub run {
 
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
-    my $organism = $self->getOrganismInfo($test, $organismAbbrev)->getFullName();
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
+    my $organism = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getFullName();
     my $gusConfigFile = $self->getGusConfigFile();
     my $outputFile;
 

@@ -11,8 +11,10 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $useTaxonHierarchy = $self->getParamValue('useTaxonHierarchy');
   my $outputFile = $self->getParamValue('outputFile');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
+  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile);
   my $taxonId = $organismInfo->getSpeciesTaxonId();
   my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
 

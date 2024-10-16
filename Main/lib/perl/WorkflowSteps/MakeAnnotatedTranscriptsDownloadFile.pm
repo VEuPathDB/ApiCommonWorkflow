@@ -12,10 +12,12 @@ sub getWebsiteFileCmd {
   # get parameters
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $organismSource = $self->getParamValue('organismSource');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNcbiTaxonId();
 
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
  
 =comment out in gus4, refs #21487
   my $sql = <<"EOF";

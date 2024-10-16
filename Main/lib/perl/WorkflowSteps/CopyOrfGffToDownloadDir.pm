@@ -15,9 +15,11 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $relativeDownloadDir = $self->getParamValue('relativeDownloadDir');
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $organismNameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
   my $copyToDir = "$websiteFilesDir/$relativeDownloadDir/$organismNameForFiles/gff/data";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -26,7 +28,7 @@ sub run {
 
   my $basename = basename $copyFromFile;
   
-  $self->testInputFile('copyFromFile', "$workflowDataDir/$copyFromFile");
+  #$self->testInputFile('copyFromFile', "$workflowDataDir/$copyFromFile");
   if ($undo) {
     $self->runCmd(0, "rm -f $copyToDir/$basename");
   } else {

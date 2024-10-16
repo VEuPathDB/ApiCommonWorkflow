@@ -74,19 +74,19 @@ sub run {
 
 
 sub checkAndCopyFrom {
-    my ($self, $test, $undo, $cacheDir, $resultsPath, $foundNextflowResultsFile) = @_;
 
-    my $hasCacheFile = $self->hasCacheFile($cacheDir);
-    if($undo) {
-	$self->runCmd($test, "rm -f $foundNextflowResultsFile");
-	$self->runCmd($test, "rm -rf $resultsPath/*");
-    }
-    else {
-	if($hasCacheFile) {
-	    $self->runCmd($test, "touch $foundNextflowResultsFile");
-	    $self->runCmd($test, "cp -r $cacheDir/* $resultsPath");
-	}
-	else {} # nothing to see here
+  my ($self, $test, $undo, $cacheDir, $resultsPath, $foundNextflowResultsFile) = @_;
+
+  my $hasCacheFile = $self->hasCacheFile($cacheDir);
+  if($undo) {
+    $self->runCmd($test, "rm -f $foundNextflowResultsFile");
+    $self->runCmd($test, "rm -rf $resultsPath/*");
+  }
+  else {
+    if($hasCacheFile) {
+
+      $self->runCmd($test, "touch $foundNextflowResultsFile");
+      $self->runCmd($test, "cp -r $cacheDir/* $resultsPath");
     }
 }
 
@@ -111,13 +111,19 @@ sub hasCacheFile {
 
 
 sub copyTo {
-    my ($self, $test, $undo, $cacheDir, $resultsPath) = @_;
+  my ($self, $test, $undo, $cacheDir, $resultsPath) = @_;
 
-    if($undo) {} #nothing to see here
-    else {
-	$self->runCmd($test, "mkdir -p $cacheDir");
-	$self->runCmd($test, "cp -r $resultsPath/* $cacheDir/");
+
+  if($undo) {} #nothing to see here
+  else {
+	if ($test) {
+	      $self->runCmd(0, "mkdir -p $cacheDir");
+        $self->runCmd(0, "cp -r $resultsPath/* $cacheDir/");
     }
+    $self->runCmd($test, "mkdir -p $cacheDir");
+    $self->runCmd($test, "cp -r $resultsPath/* $cacheDir/");
+  }
+
 
 }
 

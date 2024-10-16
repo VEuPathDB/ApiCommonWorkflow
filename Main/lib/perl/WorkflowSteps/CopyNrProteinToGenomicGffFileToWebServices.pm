@@ -13,8 +13,10 @@ sub run {
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

@@ -14,9 +14,11 @@ sub getWebsiteFileCmd {
     my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
     my $relativeDir = $self->getParamValue('relativeDir');
     my $inputDataName = $self->getParamValue("inputDataName");
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
     my $websiteFilesDir = $self->getWebsiteFilesDir($test);
-    my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+    my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
     my $inputDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/fasta/data";
 
     my $inputDownloadFile = "$inputDir/$projectName-${projectVersion}_${organismNameForFiles}_$inputDataName.fasta";

@@ -17,8 +17,10 @@ sub run {
     my $chromSizesFile = $self->getParamValue("chromSizesFile");
     my $organismAbbrev = $self->getParamValue("organismAbbrev");
     my $workflowDataDir = $self->getWorkflowDataDir();
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-    my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
+    my $taxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
     
     # This statement will only return chromosomes.
     my $SQL = "select ns.source_id

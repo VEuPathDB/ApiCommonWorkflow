@@ -18,6 +18,8 @@ sub run {
   my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');
   my $useSpeciesName = $self->getBooleanParamValue('useSpeciesName');
   my $useFamilyName = $self->getBooleanParamValue('useFamilyName');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   $self->error("Parameters useFamilyName and useSpeciesName cannot both be 'true'") if $useFamilyName && $useSpeciesName;
 
@@ -29,9 +31,9 @@ sub run {
   my $args = $self->getParamValue('args');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
-  my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
-  my $familyNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getFamilyNameForFiles();
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
+  my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesNameForFiles();
+  my $familyNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getFamilyNameForFiles();
 
   my $nameForFileSuffix = $self->getNameForFilesSuffix();
 
