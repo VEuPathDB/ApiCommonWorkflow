@@ -9,11 +9,20 @@
   <param name="relativeWebServicesDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/orfFinder</constant>
-  <constant name="resultsDirectory">$$dataDir$$/nextflowBaseDir/results</constant>
-
+  <constant name="resultsDirectory">$$dataDir$$/analysisDir/results</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$/analysisDir/</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="makeResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$resultsDirectory$$</paramValue>
+    <depends name="makeAnalysisDir"/>
   </step>
 
   <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfFinderConfig">
@@ -22,12 +31,13 @@
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
     <paramValue name="minPepLength">50</paramValue>
     <paramValue name="outputFileName">Orf50.gff</paramValue>
-    <depends name="makeDataDir"/>
+    <depends name="makeResultsDir"/>
   </step>
 
   <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="analysisDir">$$dataDir$$/analysisDir</paramValue>
     <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="genomicSequenceFile">$$genomicSequenceFile$$</paramValue>

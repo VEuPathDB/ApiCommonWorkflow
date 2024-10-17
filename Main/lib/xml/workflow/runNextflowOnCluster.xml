@@ -1,5 +1,6 @@
 <workflowGraph name="runNextflowOnCluster">
   <param name="parentDataDir"/>
+  <param name="analysisDir"/>
   <param name="nextflowConfigFile"/>
   <param name="organismAbbrev"/>
   <param name="genomicSequenceFile"/>
@@ -10,30 +11,19 @@
   <param name="nextflowWorkflow"/>
   <param name="projectName"/>
 
-  <constant name="dataDir">$$parentDataDir$$/nextflowBaseDir</constant>
-  <constant name="preprocessedProteinsFile">$$dataDir$$/preprocessedProteinsFile</constant>
-  <constant name="foundNextflowResults">$$dataDir$$/foundNextflowResults</constant>
-
-  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$</paramValue>
-  </step>
-  <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$/results</paramValue>
-    <depends name="makeDataDir"/>
-  </step>
-
+  <constant name="preprocessedProteinsFile">$$parentDataDir$$/preprocessedProteinsFile</constant>
+  <constant name="foundNextflowResults">$$parentDataDir$$/foundNextflowResults</constant>
 
   <step name="checkForNextflowResultsAndCopyFromCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache">
     <paramValue name="genomeSpec">$$genomeSpec$$</paramValue>
     <paramValue name="annotationSpec">$$annotationSpec$$</paramValue>
     <paramValue name="datasetSpec">$$datasetSpec$$</paramValue>
-    <paramValue name="parentDataPath">$$parentDataDir$$</paramValue>
-    <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
+    <paramValue name="parentDataPath">$$analysisDir$$</paramValue>
+    <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
     <paramValue name="foundNextflowResults">$$foundNextflowResults$$</paramValue>
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="mode">checkAndCopyFrom</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="makeResultDir"/>
   </step>
 
   <step name="preprocessInput" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PreprocessProteinsFile" skipIfFile="$$foundNextflowResults$$">
@@ -49,37 +39,33 @@
   </step>
 
   <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow" skipIfFile="$$foundNextflowResults$$">
-    <paramValue name="workingDir">$$dataDir$$</paramValue>
-    <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
-    <paramValue name="nextflowConfigFile">$$parentDataDir$$/nextflow.config</paramValue>
+    <paramValue name="workingDir">$$analysisDir$$</paramValue>
+    <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
+    <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="isGitRepo">true</paramValue>
     <depends name="mirrorToCluster"/>
   </step>
 
   <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
-    <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+    <paramValue name="fileOrDirToMirror">$$analysisDir$$/results</paramValue>
+    <paramValue name="outputDir">$$analysisDir$$/results</paramValue>
     <paramValue name="outputFiles">*</paramValue>
     <paramValue name="deleteAfterCopy">true</paramValue>
     <depends name="runClusterTask"/>
   </step>
 
-
   <step name="copyNextflowResultsToCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache" skipIfFile="$$foundNextflowResults$$">
     <paramValue name="genomeSpec">$$genomeSpec$$</paramValue>
     <paramValue name="annotationSpec">$$annotationSpec$$</paramValue>
     <paramValue name="datasetSpec">$$datasetSpec$$</paramValue>
-    <paramValue name="parentDataPath">$$parentDataDir$$</paramValue>
-    <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
+    <paramValue name="parentDataPath">$$analysisDir$$</paramValue>
+    <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
     <paramValue name="foundNextflowResults">$$foundNextflowResults$$</paramValue>
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="mode">copyTo</paramValue>
     <depends name="mirrorFromCluster"/>
   </step>
-
-
-
 
   </workflowGraph>
