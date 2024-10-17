@@ -52,6 +52,7 @@ sub run {
   esd2esiMemoryLimit = $esd2esiMemoryLimit
   fsmmemory = $exonerateFsmmemory
   maxintron = $maxIntronSize
+  outputFileName = 'nrProteinToGenome.gff'
 }
 
 process {
