@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::InsertGenomeBedGraph;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertBedGraph;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -16,9 +16,9 @@ sub run {
     my $args = "--bedFile=$workflowDataDir/$bedFile --algorithm='$algorithm' --extDbRlsSpec='$extDbRlsSpec'";
   
     if($undo) {
-        $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertGenomeBedGraph", $args);
+        $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertBedGraph", $args);
     } else {
-        $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertGenomeBedGraph", $args);
+        $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertBedGraph", $args);
     }
 
 }
