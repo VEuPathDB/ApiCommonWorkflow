@@ -87,7 +87,8 @@ sub checkAndCopyFrom {
 
       $self->runCmd($test, "touch $foundNextflowResultsFile");
       $self->runCmd($test, "cp -r $cacheDir/* $resultsPath");
-    }
+    }     
+  }
 }
 
 
