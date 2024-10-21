@@ -23,7 +23,8 @@ sub run {
   my $datasetName = $self->getParamValue('datasetName');
   my $chromosomeMapFile = $self->getParamValue('chromosomeMapFile');
 
-  my $project_name = $self->getWorkflowConfig('name');
+#  my $project_name = $self->getWorkflowConfig('name');
+  my $project_name = $self->getParamValue('projectName');
   my $project_release = $self->getWorkflowConfig('version');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
