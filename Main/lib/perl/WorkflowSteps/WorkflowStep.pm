@@ -236,7 +236,7 @@ sub getOrganismInfo {
   if (!$self->{organismInfo}->{$organismAbbrev}) {
     #my $orgGusConfig = $gusConfigFile ? $gusConfigFile : $self->getWorkflowDataDir() . "/${organismAbbrev}/${organismAbbrev}_gus.config";
     unless(-e $gusConfigFile) {
-      $self->error("$gusConfigFile file does not exist");
+      $self->error("The gus config file: $gusConfigFile file does not exist");
     }
 
     $self->{organismInfo}->{$organismAbbrev} = ApiCommonWorkflow::Main::Util::OrganismInfo->new($self, $test, $organismAbbrev, $gusConfigFile);
