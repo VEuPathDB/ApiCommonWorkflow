@@ -12,7 +12,8 @@ sub run {
 
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $workflowDataDir = $self->getWorkflowDataDir();
-
+    my $gusConfigFile = $self->getParamValue("gusConfigFile");
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
     # We use the shared config 'repeatMaskerDatabaseDirectory' to specify the repeatMasker database version, and also as a variable in the path for webservices. The famdbRelativePath is the path inside of the repeatMaskerDatabaseDirectory that actually holds the database files to be mapped into the repeatmasker container
     my $famdbRelativePath = "Libraries/famdb";
 
@@ -37,7 +38,7 @@ sub run {
     my $queue = $self->getClusterQueue();
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
-    my $speciesName = $self->getOrganismInfo($test, $organismAbbrev)->getFullName();
+    my $speciesName = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getFullName();
 
     if ($undo) {
 	$self->runCmd(0,"rm -rf $configPath");
