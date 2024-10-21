@@ -148,6 +148,7 @@
     <!-- each organism creates this step, but all are ignored except the one made by the ref strain. -->
     <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}" groupName="${organismAbbrev}">
       <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}_strainsComparisonInput</paramValue>
+      <depends name="makeDataDir"/>
     </step>
 
     <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" groupName="${organismAbbrev}"  stepLoadTypes="toCluster">
@@ -205,6 +206,7 @@
       <depends name="makeProjectReleaseDownloadDir"/>
       <depends name="makeProjectReleaseWebServicesDir"/>
       <depends name="${organismAbbrev}_mirrorToCluster"/>
+      <depends name="${organismAbbrev}_makeGusConfig"/>
       <!--<depends name="${organismAbbrev}_loadNcbiTaxonId"/>-->
 
       <dependsGlobal name="taxonomy_RSRC"/>
@@ -249,6 +251,8 @@
       <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
       <depends name="${organismAbbrev}_mirrorToCluster"/>
       <dependsGlobal name="NRDB_RSRC"/>
@@ -577,7 +581,7 @@
       <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
       <paramValue name="datasetName">PopBio_Study_${vbId}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -589,7 +593,7 @@
     <subgraph name="ISATab_${vbId}_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">ISATab_${vbId}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -601,7 +605,7 @@
     <subgraph name="EDAMegaStudy_${vbId}_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">EDAMegaStudy_${vbId}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -614,13 +618,13 @@
       <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
       <paramValue name="datasetName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <!--<dependsGlobal name="chEBI_Compounds"/>-->
     </subgraph>
 
     <subgraph name="MetaboliteProfiles" xmlFile="metaboliteProfiles.xml">
       <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="experimentName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
       <paramValue name="experimentVersion">${experimentVersion}</paramValue>
       <depends name="metaboliteProfiles_${experimentName}_RSRC"/>
@@ -671,7 +675,7 @@ ec
   <subgraph name="metadata" xmlFile="metadata.xml" >
     <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <dependsPattern name="*_specific"/>
     <dependsPattern name="*specific*"/>
@@ -685,7 +689,7 @@ ec
     <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
     <paramValue name="datasetName">alphaFold_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <dependsPattern name="*_specific"/>
     <dependsPattern name="*specific*"/>
     <dependsPattern name="*_dbXRefs"/>
