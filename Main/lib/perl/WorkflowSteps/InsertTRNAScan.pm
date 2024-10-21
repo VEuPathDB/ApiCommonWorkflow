@@ -28,7 +28,7 @@ sub run {
 
   my $args = "--data_file $workflowDataDir/$inputFile --scanDbName '$tRNAExtDbName' --scanDbVer '$tRNAExtDbVersion' --genomeDbName '$genomeExtDbName' --genomeDbVer '$genomeExtDbVersion' --soExternalDatabaseSpec '$soExtDbName|$soVersion' --prefix '$organismAbbrev'";
 
-  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+  #$self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
 
    $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadTRNAScan", $args);
