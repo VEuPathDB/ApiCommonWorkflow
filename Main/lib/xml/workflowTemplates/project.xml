@@ -148,6 +148,7 @@
     <!-- each organism creates this step, but all are ignored except the one made by the ref strain. -->
     <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}" groupName="${organismAbbrev}">
       <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}_strainsComparisonInput</paramValue>
+      <depends name="${organismAbbrev}_makeDataDir"/>
     </step>
 
     <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" groupName="${organismAbbrev}"  stepLoadTypes="toCluster">
@@ -205,7 +206,7 @@
       <depends name="makeProjectReleaseDownloadDir"/>
       <depends name="makeProjectReleaseWebServicesDir"/>
       <depends name="${organismAbbrev}_mirrorToCluster"/>
-      <!--<depends name="${organismAbbrev}_loadNcbiTaxonId"/>-->
+      <depends name="${organismAbbrev}_loadNcbiTaxonId"/>
 
       <dependsGlobal name="taxonomy_RSRC"/>
       <dependsGlobal name="SO_RSRC"/>
