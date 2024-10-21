@@ -21,10 +21,7 @@ sub run {
   my $projectName = $self->getParamValue("projectName");
   my $nextflowWorkflow = $self->getParamValue("nextflowWorkflow");
 
-  my $databaseVersion;
-  if ($nextflowWorkflow eq "VEuPathDB/iprscan5-nextflow") {
-    $databaseVersion = $self->getSharedConfig('interproscanDatabaseDirectory');
-  }
+  my $databaseVersion = &getDatabaseVersion($nextflowWorkflow);
 
   my $nextflowBranch = $self->getSharedConfig("${nextflowWorkflow}.branch");
   $nextflowWorkflow =~ s/\//_/g;
@@ -119,5 +116,15 @@ sub copyTo {
   }
 
 }
+
+sub getDatabaseVersion {
+  my ($self, $nextflowWorkflow) = @_;
+  my $databaseVersion;
+  if ($nextflowWorkflow eq "VEuPathDB/iprscan5-nextflow") {
+    $databaseVersion = $self->getSharedConfig('interproscanDatabaseDirectory');
+  }
+  return $databaseVersion;
+}
+
 
 1;
