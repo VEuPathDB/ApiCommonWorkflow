@@ -9,9 +9,11 @@ sub getWebsiteFileCmd {
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $length = $self->getParamValue('minOrfLength');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
+  my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
 
 
   my $sql = <<"EOF";

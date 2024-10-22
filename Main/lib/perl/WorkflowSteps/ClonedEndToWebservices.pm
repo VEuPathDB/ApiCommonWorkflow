@@ -13,13 +13,15 @@ sub run {
   my $spanLengthCutoff = $self->getParamValue('spanLengthCutoff');
   my $includeMultipleSpans = $self->getParamValue('includeMultipleSpans');
   my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $dataDir = $self->getParamValue('dataDir');
   my $exteralDatabaseName = $self->getParamValue('externalDatabaseName');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $workingDirectory = "${workflowDataDir}/$dataDir";

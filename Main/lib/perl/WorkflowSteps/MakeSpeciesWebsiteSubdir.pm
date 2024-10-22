@@ -24,8 +24,11 @@ sub run {
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
   my $speciesNameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesNameForFiles();
 
   my $dir = "$websiteFilesDir/$relativeDir/$speciesNameForFiles/$subDir";
 

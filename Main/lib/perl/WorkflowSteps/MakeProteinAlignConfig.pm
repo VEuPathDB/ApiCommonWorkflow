@@ -33,8 +33,8 @@ sub run {
     $self->runCmd(0,"rm -rf $workflowDataDir/$outputDir");
     $self->runCmd(0,"rm -rf $configFile");
   }else {
-    $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
-    $self->testInputFile('targetDir', "$workflowDataDir/$targetFile");
+    #$self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
+    #$self->testInputFile('targetDir', "$workflowDataDir/$targetFile");
 
     $self->runCmd(0,"mkdir -p $workflowDataDir/$outputDir");
 
@@ -52,6 +52,7 @@ sub run {
   esd2esiMemoryLimit = $esd2esiMemoryLimit
   fsmmemory = $exonerateFsmmemory
   maxintron = $maxIntronSize
+  outputFileName = 'nrProteinToGenome.gff'
 }
 
 process {

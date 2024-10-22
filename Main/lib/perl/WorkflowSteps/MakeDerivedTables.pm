@@ -61,10 +61,12 @@ sub run {
 
 sub prefixAndFilterValueCommandString {
   my ($self, $organismAbbrev, $test) = @_;
-  
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+ 
+  my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
     
-  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
 
    return "-filterValue $taxonId -prefix '$tuningTablePrefix'  " ;
 }

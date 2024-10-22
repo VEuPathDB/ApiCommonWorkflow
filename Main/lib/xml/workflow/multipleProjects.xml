@@ -1,0 +1,56 @@
+<workflowGraph name="multipleProjects">
+  <param name="projectName"/> <!-- GenomicsDB -->
+
+  <constant name="globalDatasetLoaderXmlFile">GenomicsGlobal.xml</constant>
+
+<!-- call globalGraph (Mustafa's but we added back things like NRDB ...-->
+  <globalSubgraph name="global" xmlFile="globalGraph.xml">
+    <paramValue name="commonDatasetLoaderXmlFile">$$projectName$$/$$projectName$$Common.xml</paramValue>
+    <paramValue name="globalDatasetLoaderXmlFile">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+  </globalSubgraph>
+
+  <step name="initClusterHomeDir"
+        stepClass="ReFlow::StepClasses::InitClusterHomeDir">
+<!--    <depends name="initUserGroupProject"/>-->
+  </step>
+
+<!-- call project.xml (generated) for each component -->
+    <subgraph name="PlasmoDB" xmlFile="generated/PlasmoDB/project.xml">
+      <paramValue name="projectName">PlasmoDB</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">false</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+
+    <subgraph name="TriTrypDB" xmlFile="generated/TriTrypDB/project.xml">
+      <paramValue name="projectName">TriTrypDB</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">false</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+
+<!-- call project.xml for non veupathdb proteomes used for orthomcl.
+     is this just called "OrthoMCL.xml" (uniprot proteomes, uniprot EC) ??
+     QUESTION:  What should this be called??
+-->
+
+<!-- QUESTION:  SHOULD ALPHA FOLD Step go here?? -->
+<!-- QUESTION:  SHOULD ISASIMPLE steps go here? -->
+
+<!-- TODO:  add a checkpoint here -->
+
+<!-- check if we've acquired all of the proteome fasta files.  We need to do this because
+     we cannot have a reflow dependency on loadGenome here
+     ApiCommonWorkflow::Main::WorkflowSteps::CheckForCompletedFile is an example
+     will need to query the worklflow step tables (or dataset xml) to get expected number
+-->
+
+<!-- call OrthoFinder -->
+
+
+
+
+
+
+</workflowGraph>

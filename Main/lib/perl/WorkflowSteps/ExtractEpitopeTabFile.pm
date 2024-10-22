@@ -13,10 +13,12 @@ sub run {
   my $skipIfFile = $self->getParamValue('skipIfFile');
 
   my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $speciesTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
+  my $speciesTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesTaxonId();
 
-  my $taxonIdList = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonIdList($speciesTaxonId);
+  my $taxonIdList = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonIdList($speciesTaxonId);
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

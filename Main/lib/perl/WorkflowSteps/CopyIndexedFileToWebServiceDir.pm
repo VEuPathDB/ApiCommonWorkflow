@@ -18,6 +18,7 @@ sub run {
 
   my $indexSuffix = $self->getParamValue('indexSuffix');
   my $fileType = $self->getParamValue('fileType');
+  my $dataType = $self->getParamValue('dataType');
 
   my $copyFromBasename = basename $copyFromFile; # like someFile.gff.gz
   my $copyFromDirName = dirname $copyFromFile;  # relative path
@@ -26,17 +27,20 @@ sub run {
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/${fileType}/";
+  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/${dataType}/${fileType}/";
 
   my $gzFile =  "${copyFromBasename}";
   my $tbiFile =  "${gzFile}.${indexSuffix}";
 
-  $self->testInputFile('copyFromFile', "$workflowDataDir/${copyFromDirName}/$gzFile");
-  $self->testInputFile('copyFromFile', "$workflowDataDir/${copyFromDirName}/$tbiFile");
+  #$self->testInputFile('copyFromFile', "$workflowDataDir/${copyFromDirName}/$gzFile");
+  #$self->testInputFile('copyFromFile', "$workflowDataDir/${copyFromDirName}/$tbiFile");
 
   if($undo) {
     $self->runCmd(0, "rm -f $copyToDir/$gzFile");

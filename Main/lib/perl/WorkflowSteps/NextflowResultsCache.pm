@@ -7,69 +7,68 @@ use File::Basename;
 
 
 sub run {
-  my ($self, $test, $undo) = @_;
+    my ($self, $test, $undo) = @_;
 
-  my $mode = $self->getParamValue('mode');
+    my $mode = $self->getParamValue('mode');
 
-  my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
+    my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
 
-  my $foundNextflowResults = $self->getParamValue("foundNextflowResults");
-  my $resultsDir = $self->getParamValue("resultsDir");
+    my $foundNextflowResults = $self->getParamValue("foundNextflowResults");
+    my $resultsDir = $self->getParamValue("resultsDir");
 
-  my ($genomeName, $genomeVersion) = split(/\|/, $self->getParamValue("genomeSpec"));
+    my ($genomeName, $genomeVersion) = split(/\|/, $self->getParamValue("genomeSpec"));
 
-  my $projectName = $self->getParamValue("projectName");
-  my $nextflowWorkflow = $self->getParamValue("nextflowWorkflow");
+    my $projectName = $self->getParamValue("projectName");
+    my $nextflowWorkflow = $self->getParamValue("nextflowWorkflow");
 
-  my $databaseVersion = &getDatabaseVersion($nextflowWorkflow);
+    my $databaseVersion = &getDatabaseVersion($nextflowWorkflow);
 
-  my $nextflowBranch = $self->getSharedConfig("${nextflowWorkflow}.branch");
-  $nextflowWorkflow =~ s/\//_/g;
+    my $nextflowBranch = $self->getSharedConfig("${nextflowWorkflow}.branch");
+    $nextflowWorkflow =~ s/\//_/g;
  
-  my $nextflowDirectory;
-  if ($databaseVersion) {
-    $nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}/${databaseVersion}";
-  } 
-  else {
-    $nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}";
-  }
+    my $nextflowDirectory;
+    if ($databaseVersion) {
+        $nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}/${databaseVersion}";
+    }  
+    else {
+        $nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}";
+    }
 
-  my $cacheDirBase = "$preprocessedDataCache/$projectName/${genomeName}_${genomeVersion}";
+    my $cacheDirBase = "$preprocessedDataCache/$projectName/${genomeName}_${genomeVersion}";
 
-  my $datasetSpec = $self->getParamValue("datasetSpec");
+    my $datasetSpec = $self->getParamValue("datasetSpec");
 
-  my $datasetDirectory = "genome";
-  if($datasetSpec) {
-    $datasetSpec =~ s/\|/_/g;
-    $datasetDirectory = $datasetSpec;
-  }
+    my $datasetDirectory = "genome";
+    if($datasetSpec) {
+	$datasetSpec =~ s/\|/_/g;
+	$datasetDirectory = $datasetSpec;
+    }
 
-  #TODO:  Add repeat masker database version to path when workflow is repeatmasker
-  my $cacheDir = "$cacheDirBase/$datasetDirectory/$nextflowDirectory";
+    my $cacheDir = "$cacheDirBase/$datasetDirectory/$nextflowDirectory";
 
-  my $annotationSpec = $self->getParamValue("annotationSpec");
-  if($annotationSpec) {
-      $annotationSpec =~ s/\|/_/g;
+    my $annotationSpec = $self->getParamValue("annotationSpec");
+    if($annotationSpec) {
+	$annotationSpec =~ s/\|/_/g;
 
-      $datasetDirectory = $datasetSpec ? $datasetSpec : "genesAndProteins";
+	$datasetDirectory = $datasetSpec ? $datasetSpec : "genesAndProteins";
 
-      #TODO:  Add interpro database version to path when workflow is iprscan5
-      $cacheDir = "$cacheDirBase/$annotationSpec/$datasetDirectory/$nextflowDirectory";
-  }
+	$cacheDir = "$cacheDirBase/$annotationSpec/$datasetDirectory/$nextflowDirectory";
+    }
 
-  my $resultsPath = $self->getWorkflowDataDir() . "/" . $resultsDir;
-  my $foundNextflowResultsFile = $self->getWorkflowDataDir() . "/" . $foundNextflowResults;
+    my $resultsPath = $self->getWorkflowDataDir() . "/" . $resultsDir;
+    my $foundNextflowResultsFile = $self->getWorkflowDataDir() . "/" . $foundNextflowResults;
 
-  if($mode eq "copyTo") {
-    $self->copyTo($test, $undo, $cacheDir, $resultsPath);
-  }
-  else {
-    $self->checkAndCopyFrom($test, $undo, $cacheDir, $resultsPath, $foundNextflowResultsFile);
-  }
+    if($mode eq "copyTo") {
+	$self->copyTo($test, $undo, $cacheDir, $resultsPath);
+    }
+    else {
+	$self->checkAndCopyFrom($test, $undo, $cacheDir, $resultsPath, $foundNextflowResultsFile);
+    }
 }
 
 
 sub checkAndCopyFrom {
+
   my ($self, $test, $undo, $cacheDir, $resultsPath, $foundNextflowResultsFile) = @_;
 
   my $hasCacheFile = $self->hasCacheFile($cacheDir);
@@ -81,27 +80,26 @@ sub checkAndCopyFrom {
     if($hasCacheFile) {
       $self->runCmd($test, "touch $foundNextflowResultsFile");
       $self->runCmd($test, "cp -r $cacheDir/* $resultsPath");
-    }
-    else {} # nothing to see here
+    }     
   }
 }
 
 
 sub hasCacheFile {
-  my ($self, $cacheDir) = @_;
+    my ($self, $cacheDir) = @_;
 
-  if(-d $cacheDir) {
-    opendir(my $dh, $cacheDir) or die "Can't open $cacheDir for reading: $!";
-    while (readdir($dh)) {
-      next if ($_ eq '.' or $_ eq '..');
+    if(-d $cacheDir) {
+	opendir(my $dh, $cacheDir) or die "Can't open $cacheDir for reading: $!";
+	while (readdir($dh)) {
+	    next if ($_ eq '.' or $_ eq '..');
 
-      closedir($dh);
-      return 1;
+	    closedir($dh);
+	    return 1;
+	}
+	closedir($dh);
     }
-    closedir($dh);
-  }
 
-  return 0;
+    return 0;
 }
 
 
@@ -109,11 +107,17 @@ sub hasCacheFile {
 sub copyTo {
   my ($self, $test, $undo, $cacheDir, $resultsPath) = @_;
 
+
   if($undo) {} #nothing to see here
   else {
+	if ($test) {
+	      $self->runCmd(0, "mkdir -p $cacheDir");
+        $self->runCmd(0, "cp -r $resultsPath/* $cacheDir/");
+    }
     $self->runCmd($test, "mkdir -p $cacheDir");
     $self->runCmd($test, "cp -r $resultsPath/* $cacheDir/");
   }
+
 
 }
 

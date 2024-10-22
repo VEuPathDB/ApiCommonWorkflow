@@ -18,7 +18,10 @@ sub getWebsiteFileCmd {
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
-  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
+  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile);
   my $taxonId = $organismInfo->getSpeciesTaxonId();
   my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
 
