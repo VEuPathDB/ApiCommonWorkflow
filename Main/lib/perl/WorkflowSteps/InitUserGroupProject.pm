@@ -9,7 +9,7 @@ sub run {
 
   # typically passed in from rootParams.prop
   my $projectName = $self->getParamValue('projectName');
-  #my $wfName = $self->getWorkflowConfig('name');
+  my $wfName = $self->getWorkflowConfig('name');
 
   # workflow and database must agree on version
   my $wfVersion = $self->getWorkflowConfig('version');
