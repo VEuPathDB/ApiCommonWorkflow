@@ -4,15 +4,22 @@
     <param name="gusConfigFile"/>
 
     <constant name="dataDir">$$parentDataDir$$/psipred</constant>
+    <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
+    <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
     <constant name="psipredProteinsFile">$$dataDir$$/proteinsFixedIds.fsa</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
+  <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+     <paramValue name="dataDir">$$analysisDirectory$$</paramValue>
+     <depends name="makeDataDir"/>
+  </step>
+
     <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$/results/</paramValue>
-      <depends name="makeDataDir"/>
+      <paramValue name="dataDir">$$resultsDirectory$$</paramValue>
+      <depends name="makeAnalysisDir"/>
     </step>
 
     <step name="fixProteinIds" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixProteinIdsForPsipred">
@@ -23,9 +30,9 @@
 
     <step name="makePsiPredNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePsiPredNextflowConfig">
       <paramValue name="inputFilePath">$$psipredProteinsFile$$</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+      <paramValue name="outputDir">$$resultsDirectory$$</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>
-      <paramValue name="analysisDir">$$dataDir$$</paramValue>  
+      <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>  
       <paramValue name="initialMemory">4000</paramValue>
       <paramValue name="increasedMemory">12000</paramValue>
       <paramValue name="maxForks">40</paramValue>
@@ -41,7 +48,7 @@
     <step name="runPsiPredClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
       <paramValue name="workingDir">$$dataDir$$</paramValue>
       <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
-      <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
+      <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
       <paramValue name="nextflowWorkflow">VEuPathDB/psipred-nextflow</paramValue>
       <paramValue name="isGitRepo">true</paramValue>
       <depends name="mirrorToCluster"/>
