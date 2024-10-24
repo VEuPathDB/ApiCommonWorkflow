@@ -38,7 +38,16 @@ sub run {
     my $queue = $self->getClusterQueue();
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
-    my $speciesName = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getFullName();
+
+    my $speciesNcbiTaxId = $self->getParamValue('speciesNcbiTaxonId');
+    my $speciesName = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameFromNcbiTaxId($speciesNcbiTaxId);
+
+    my $speciesOverride = $self->getConfig('speciesOverride',1);
+    if ($speciesOverride) {
+        my ($speciesToOverride, $speciesThatOverrides) = split(/,\s*/, $speciesOverride);
+        #|| die "Config property speciesOverride has an invalid value: '$speciesOverride'.  It must be of the form 'speciesToOverride, speciesThatOverrides'\n";
+        $speciesName = $speciesThatOverrides if $speciesName eq $speciesToOverride;
+    }
 
     if ($undo) {
 	$self->runCmd(0,"rm -rf $configPath");
