@@ -101,8 +101,8 @@ sub getOrganismId {
 sub getSpeciesNameFromNcbiTaxId {
     my ($self, $ncbiTaxId) = @_;
 
-    my $edirectCommand = "singularity run docker://ncbi/edirect:latest esummary -db taxonomy -id $ncbiTaxId 2>/dev/null \
-                        | singularity run docker://ncbi/edirect:latest xtract -pattern DocumentSummary -element ScientificName 2>/dev/null";
+    my $edirectCommand = "singularity run docker://ncbi/edirect:20.6 esummary -db taxonomy -id $ncbiTaxId 2>/dev/null \
+                        | singularity run docker://ncbi/edirect:20.6 xtract -pattern DocumentSummary -element ScientificName 2>/dev/null";
 
 
     my $speciesName = `$edirectCommand`;
