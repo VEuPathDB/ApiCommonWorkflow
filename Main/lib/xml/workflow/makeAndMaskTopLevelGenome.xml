@@ -41,25 +41,25 @@
      <depends name="makeAnalysisDir"/>
   </step>
 
-  <step name="copyRepeatMaskedFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isNotEbiGenome$$">
+  <step name="copyRepeatMaskedFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="!$$isNotEbiGenome$$">
      <paramValue name="fromFile">$$dataDir$$/../loadGenome/$$organismAbbrev$$_primary_genome_RSRC/ebi2gus_output/blocked.seq</paramValue>
      <paramValue name="toFile">$$dataDir$$/analysisDir/results/blocked.seq</paramValue>
      <depends name="makeResultDir"/>
   </step>
 
-  <step name="copyRepeatMaskedBed" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isNotEbiGenome$$">
+  <step name="copyRepeatMaskedBed" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="!$$isNotEbiGenome$$">
      <paramValue name="fromFile">$$dataDir$$/../loadGenome/$$organismAbbrev$$_primary_genome_RSRC/ebi2gus_output/repeatmask.bed.gz</paramValue>
      <paramValue name="toFile">$$dataDir$$/analysisDir/results/blocked.seq.bed.gz</paramValue>
      <depends name="copyRepeatMaskedFasta"/>
   </step>
 
-  <step name="copyRepeatMaskedBedIndex" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isNotEbiGenome$$">
+  <step name="copyRepeatMaskedBedIndex" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="!$$isNotEbiGenome$$">
      <paramValue name="fromFile">$$dataDir$$/../loadGenome/$$organismAbbrev$$_primary_genome_RSRC/ebi2gus_output/repeatmask.bed.gz.tbi</paramValue>
      <paramValue name="toFile">$$dataDir$$/analysisDir/results/blocked.seq.bed.gz.tbi</paramValue>
      <depends name="copyRepeatMaskedBed"/>
   </step>
 
-  <step name="makeRepeatMaskerNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
+  <step name="makeRepeatMaskerNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
     <paramValue name="inputFilePath">$$topLevelFastaFile$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="outputDir">$$dataDir$$/analysisDir/results</paramValue>
@@ -81,7 +81,7 @@
     <depends name="makeResultDir"/>
   </step>
 
-  <subgraph name="runRepeatMaskerNextflowOnCluster" xmlFile="runNextflowOnCluster.xml" includeIf="$$isAnnotatedGenome$$ &amp;&amp; !$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
+  <subgraph name="runRepeatMaskerNextflowOnCluster" xmlFile="runNextflowOnCluster.xml" includeIf="!$$isHugeGenome$$ &amp;&amp; $$isNotEbiGenome$$">
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="analysisDir">$$dataDir$$/analysisDir</paramValue>
