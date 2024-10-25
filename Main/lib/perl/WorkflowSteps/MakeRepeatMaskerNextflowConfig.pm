@@ -39,8 +39,8 @@ sub run {
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
-    my $speciesNcbiTaxId = $self->getParamValue('speciesNcbiTaxonId');
-    my $speciesName = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameFromNcbiTaxId($speciesNcbiTaxId);
+    my $speciesNcbiTaxonId= $self->getParamValue('speciesNcbiTaxonId');
+    my $speciesName = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesNameFromNcbiTaxId($speciesNcbiTaxonId);
 
     my $speciesOverride = $self->getConfig('speciesOverride',1);
     if ($speciesOverride) {
