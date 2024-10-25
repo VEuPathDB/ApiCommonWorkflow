@@ -61,7 +61,7 @@ params {
   fastaSubsetSize = $fastaSubsetSize
   trimDangling = $trimDangling
   dangleMax = $dangleMax
-  rmParams = \"$rmParams -species $speciesName\"
+  rmParams = \"$rmParams -species \'$speciesName\'\"
   outputFileName = \"$outputFileName\"
   errorFileName = \"$errorFileName\"
   outputDir = \"$outputDir\"
