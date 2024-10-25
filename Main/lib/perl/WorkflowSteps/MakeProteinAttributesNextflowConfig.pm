@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeDustNextflowConfig;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeProteinAttributesNextflowConfig;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -8,10 +8,9 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  #NOTE: the subset size here would run "X" number of genomic sequences at a time on the cluster (chromosomes or contigs)
-  my $fastaSubsetSize = 5;
+  my $fastaSubsetSize = 500;
 
-  my $genomicSequenceFile = $self->getParamValue("genomicSequenceFile");
+  my $proteinSequenceFile = $self->getParamValue("proteinSequenceFile");
   my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
   my $resultsDirectory = $self->getParamValue("resultsDirectory");
   my $outputFileName = $self->getParamValue("outputFileName");
@@ -32,11 +31,10 @@ sub run {
 
       my $configString = <<NEXTFLOW;
 params {
-  inputFilePath = "$clusterWorkflowDataDir/$genomicSequenceFile"
+  inputFilePath = "$clusterWorkflowDataDir/$proteinSequenceFile"
   outputDir = "$clusterWorkflowDataDir/$resultsDirectory"
   outputFileName = "$outputFileName"
   fastaSubsetSize = $fastaSubsetSize
-  seqType = "na"
 }
 
 includeConfig "$clusterConfigFile"

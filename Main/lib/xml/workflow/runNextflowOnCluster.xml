@@ -4,18 +4,16 @@
   <param name="nextflowConfigFile"/>
   <param name="organismAbbrev"/>
   <param name="genomeSpec"/>
-  <param name="proteinsFile"/>
-  <param name="annotationSpec"/>
+  <param name="isProteomeAnalysis"/>
   <param name="datasetSpec"/>
   <param name="nextflowWorkflow"/>
   <param name="projectName"/>
 
-  <constant name="preprocessedProteinsFile">$$parentDataDir$$/preprocessedProteinsFile</constant>
   <constant name="foundNextflowResults">$$parentDataDir$$/foundNextflowResults</constant>
 
   <step name="checkForNextflowResultsAndCopyFromCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache">
     <paramValue name="genomeSpec">$$genomeSpec$$</paramValue>
-    <paramValue name="annotationSpec">$$annotationSpec$$</paramValue>
+    <paramValue name="isProteomeAnalysis">$$isProteomeAnalysis$$</paramValue>
     <paramValue name="datasetSpec">$$datasetSpec$$</paramValue>
     <paramValue name="parentDataPath">$$analysisDir$$</paramValue>
     <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
@@ -25,16 +23,10 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
   </step>
 
-  <step name="preprocessInput" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PreprocessProteinsFile" skipIfFile="$$foundNextflowResults$$">
-    <paramValue name="inputProteinsFile">$$proteinsFile$$</paramValue>
-    <paramValue name="outputProteinsFile">$$preprocessedProteinsFile$$</paramValue>
-    <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
-    <depends name="checkForNextflowResultsAndCopyFromCache"/>
-  </step>
 
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster" skipIfFile="$$foundNextflowResults$$">
     <paramValue name="fileOrDirToMirror">$$parentDataDir$$</paramValue>
-    <depends name="preprocessInput"/>
+    <depends name="checkForNextflowResultsAndCopyFromCache"/>
   </step>
 
 
@@ -45,6 +37,7 @@
     <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="isGitRepo">true</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <depends name="mirrorToCluster"/>
   </step>
 
@@ -58,7 +51,7 @@
 
   <step name="copyNextflowResultsToCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache" skipIfFile="$$foundNextflowResults$$">
     <paramValue name="genomeSpec">$$genomeSpec$$</paramValue>
-    <paramValue name="annotationSpec">$$annotationSpec$$</paramValue>
+    <paramValue name="isProteomeAnalysis">$$isProteomeAnalysis$$</paramValue>
     <paramValue name="datasetSpec">$$datasetSpec$$</paramValue>
     <paramValue name="parentDataPath">$$analysisDir$$</paramValue>
     <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
