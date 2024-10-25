@@ -97,6 +97,24 @@ sub getOrganismId {
     return $self->{organismId};
 }
 
+
+sub getSpeciesNameFromNcbiTaxId {
+    my ($self, $ncbiTaxId) = @_;
+
+    my $edirectCommand = "singularity run docker://ncbi/edirect:20.6 esummary -db taxonomy -id $ncbiTaxId 2>/dev/null \| singularity run docker://ncbi/edirect:20.6 xtract -pattern DocumentSummary -element ScientificName 2>/dev/null";
+
+
+    my $speciesName = `$edirectCommand`;
+    $speciesName =~ s/\n$//;
+
+    if($speciesName) {
+        return $speciesName;
+    }
+    die "Could not retrieve a species name for ncbi tax id [$ncbiTaxId]";
+
+}
+
+
 sub getStrainAbbrev {
     my ($self) = @_;
     return "$self->{organismAbbrev}_STRAIN_ABBREV" if $self->{test};
