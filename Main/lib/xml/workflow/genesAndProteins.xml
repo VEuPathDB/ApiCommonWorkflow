@@ -10,9 +10,8 @@
   <param name="isNotEbiGenome"/>
 
   <constant name="dataDir">$$parentDataDir$$/proteome</constant>
-  <constant name="blastpNrdbArgs">-topcomboN=1 V=100 B=20 -hspmax=1000000 -gi E=1e-3 -wordmask=seg -hspsepQmax=4000 -span1 W=3 T=1000</constant>
+
   <constant name="blastpPdbArgs">-topcomboN=1 V=100 B=20 -hspmax=1000000 -gi E=1e-3 -wordmask=seg -hspsepQmax=4000 -span1</constant>
-  <constant name="signalpArgs">-t euk -f short -m nn+hmm -q -trunc 70</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
@@ -32,11 +31,8 @@
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-    <paramValue name="isNotEbiGenome">$$isNotEbiGenome$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
-
-
 
   <subgraph name="loadProductName" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/productNames.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
@@ -50,81 +46,51 @@
       <paramValue name="genomeExtDbRlsSpecList">$$genomeExtDbRlsSpec$$</paramValue>
     </step>
 -->
-    <step name="runTmhmm"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunTmhmm" includeIf="$$isNotEbiGenome$$">
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/tmhmm.out</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
 
-    <step name="document-runTmhmm"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="$$isNotEbiGenome$$">
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="method">TMHMM_MTHD</paramValue>
-      <paramValue name="version">2.0a</paramValue>
-      <paramValue name="parameters"></paramValue>
-      <depends name="runTmhmm"/>
-    </step>
 
-    <step name="insertTmhmm"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTmhmm" stepLoadTypes="plugin" includeIf="$$isNotEbiGenome$$">
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="inputFile">$$dataDir$$/tmhmm.out</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="runTmhmm"/>
-    </step>
+  <subgraph name="tmhmm" xmlFile="tmhmm.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="proteinSequenceFile">$$proteinsFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
 
-    <step name="runExportPred"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunExportPred" includeIf="$$runExportPred$$">
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/exportPred.out</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
 
-    <step name="document-runExportPred"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="method">ExportPred_MTHD</paramValue>
-      <paramValue name="version">1.0.1</paramValue>
-      <paramValue name="parameters">default</paramValue>
-      <depends name="runExportPred"/>
-    </step>
+  <subgraph name="exportpred" xmlFile="exportpred.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="proteinSequenceFile">$$proteinsFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
 
-    <step name="insertExportPred"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertExportPred" stepLoadTypes="plugin" includeIf="$$runExportPred$$">
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="inputFile">$$dataDir$$/exportPred.out</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="runExportPred"/>
-    </step>
 
-    <step name="runSignalP"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunSignalP" includeIf="$$isNotEbiGenome$$">
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
-      <paramValue name="outputFile">$$dataDir$$/signalP.out</paramValue>
-      <paramValue name="options">$$signalpArgs$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
 
-    <step name="insertSignalP"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSignalP" stepLoadTypes="plugin" includeIf="$$isNotEbiGenome$$">
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="inputFile">$$dataDir$$/signalP.out</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="runSignalP"/>
-    </step>
 
-    <step name="document-SignalP"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" includeIf="$$isNotEbiGenome$$">
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="method">SignalP_MTHD</paramValue>
-      <paramValue name="version">3.0</paramValue>
-      <paramValue name="parameters">$$signalpArgs$$</paramValue>
-      <depends name="insertSignalP"/>
-    </step>
+  <subgraph name="signalp" xmlFile="signalp.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="proteinSequenceFile">$$proteinsFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+
+
+
 
     <!-- this step could also be in loadGenome, after protein extract -->
     <step name="makeProteinsBlastDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatNcbiBlastFile">

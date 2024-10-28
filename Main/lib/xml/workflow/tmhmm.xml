@@ -1,4 +1,4 @@
-<workflowGraph name="proteinAttributes">
+<workflowGraph name="tmhmm">
   <param name="gusConfigFile"/>
   <param name="parentDataDir"/>
   <param name="projectName"/>
@@ -8,7 +8,7 @@
   <param name="relativeDownloadSiteDir"/>
   <param name="relativeWebServicesDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/proteinAttributes</constant>
+  <constant name="dataDir">$$parentDataDir$$/tmhmm</constant>
 
   <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
   <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
@@ -27,11 +27,11 @@
      <depends name="makeAnalysisDir"/>
   </step>
 
-  <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProteinAttributesNextflowConfig">
+  <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTmhmmNextflowConfig">
     <paramValue name="proteinSequenceFile">$$proteinSequenceFile$$</paramValue>
     <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
-    <paramValue name="outputFileName">proteinAttributes.tab</paramValue>
+    <paramValue name="outputFileName">tmhmm.out</paramValue>
     <depends name="makeResultDir"/>
 
   </step>
@@ -45,18 +45,26 @@
     <paramValue name="isProteomeAnalysis">true</paramValue>
     <paramValue name="datasetSpec"></paramValue>
     <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
-    <paramValue name="nextflowWorkflow">VEuPathDB/protein-statistics-nextflow</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/tmhmm-nextflow</paramValue>
     <depends name="makeNextflowConfig"/>
   </subgraph>
 
 
-  <!-- TODO:  Update Plugin for AA Sequence Attirbutes to load into ApiDB.AASeqAttribute table
- <step name="loadProteinAttributes"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadProteinAttributes" stepLoadTypes="plugin">
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="table">DoTS.TranslatedAASequence</paramValue>
-      <paramValue name="idSql">select taas.aa_sequence_id, taas.sequence from DoTS.TranslatedAASequence taas, DoTs.AAFeature af, DOTS.NAFeature nf where taas.aa_sequence_id=af.aa_sequence_id and af.na_feature_id=nf.na_feature_id and nf.name not in ('ORF') and taas.external_database_release_id = ?</paramValue>
-    </step>
- -->
+
+  <!-- TODO
+Add a step here to get indexed gff  file and move to webservices
+
+
+use indexted gff to load into feature table
+  <step name="insertTmhmm"
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTmhmm" stepLoadTypes="plugin">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="inputFile">$$resultsDir$$/tmhmm.out</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <depends name="runNextflowOnCluster"/>
+  </step>
+
+  -->
+
+
 </workflowGraph>
