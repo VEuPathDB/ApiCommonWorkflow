@@ -132,7 +132,7 @@ sub copyTo {
 
 
 sub getMd5DigestForAnnotationSpecs {
-    my ($self, $organismAbbrev) = @_;
+    my ($self, $test, $organismAbbrev) = @_;
 
 
     # NOTE:  this is the postgres version
