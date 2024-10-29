@@ -20,10 +20,10 @@ sub run {
   my $clusterServer = $self->getSharedConfig('clusterServer');
 
   # Expecting something like "/project/eupathdb/apptainerImages"
-  my $apptainerImageDirectory = $self->getSharedConfig("${$clusterServer}.apptainerImageDirectory");
+  my $apptainerImageDirectory = $self->getSharedConfig("$clusterServer.apptainerImageDirectory");
 
   # Expecting something like "/project/eupathdb/apptainerImages" + "/" + tmhmm/latest/tmhmm.sif
-  my $sifImageFile = ${apptainerImageDirectory} . "/" . $self->getConfig("imageRelativePath");
+  my $sifImageFile = ${apptainerImageDirectory} . "/" . $self->getSharedConfig("tmhmmImageRelativePath");
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $executor = $self->getClusterExecutor();
