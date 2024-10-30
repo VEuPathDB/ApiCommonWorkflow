@@ -57,7 +57,7 @@ sub run {
 
 
     if($isProteomeAnalysis) {
-        my $annotationDigest = $self->getMd5DigestForAnnotationSpecs($organismAbbrev);
+        my $annotationDigest = $self->getMd5DigestForAnnotationSpecs($test, $organismAbbrev);
 
         # NOTE: put the human readable directories first
         $cacheDir = "$cacheDir/$annotationDigest";
@@ -138,8 +138,8 @@ sub getMd5DigestForAnnotationSpecs {
     # NOTE:  this is the postgres version
     my $sql = "SELECT md5(string_agg(name || '|' ||  version, ',' ORDER BY name,version))
 FROM apidb.datasource d
-WHERE name LIKE '${organismAbbrev}\_%genome_features_RSRC' ESCAPE '\'
-OR name LIKE '${organismAbbrev}\_%primary_genome_RSRC' ESCAPE '\'";
+WHERE name LIKE '${organismAbbrev}\_%genome_features_RSRC' ESCAPE '\\'
+OR name LIKE '${organismAbbrev}\_%primary_genome_RSRC' ESCAPE '\\'";
 
 
     my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
