@@ -13,12 +13,14 @@ sub run {
     my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
     my $interproExtDbName = $self->getParamValue('interproExtDbName');
     my $interproExtDbVer = $self->getExtDbVersion($test,$interproExtDbName);
+    my $interproDir = $self->getParamValue('interproDir');
     my $configFile = $self->getParamValue('configFile');
+    my $interproVersion = $self->getConfig('interproVersion');
     my $aaSeqTable = 'TranslatedAASequence';
     my $goVersion = $self->getExtDbVersion($test, 'GO_RSRC');
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $args = "--interproResultsFile=$workflowDataDir/$interproResultsFile --interpro2GOFile=$workflowDataDir/$interpro2GOFile --confFile=$workflowDataDir/$configFile --aaSeqTable=$aaSeqTable --extDbName=\'$interproExtDbName\' --extDbRlsVer=\'$interproExtDbVer\' --goVersion=\'$goVersion\'";
+    my $args = "--interproResultsFile=$workflowDataDir/$interproResultsFile --interpro2GOFile=$workflowDataDir/$interpro2GOFile --confFile=$workflowDataDir/$interproDir/$interproVersion/$configFile --aaSeqTable=$aaSeqTable --extDbName=\'$interproExtDbName\' --extDbRlsVer=\'$interproExtDbVer\' --goVersion=\'$goVersion\'";
 
     $self->testInputFile('inputDir', "$workflowDataDir/$interproResultsFile");
   
