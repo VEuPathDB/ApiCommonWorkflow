@@ -9,52 +9,46 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
+    my $fastaSubsetSize = 100;
+    my $maxForks = 10;
+
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
-    my $inputFilePath = join("/", $clusterWorkflowDataDir, $self->getParamValue("inputFilePath")); 
-    my $outputDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("outputDir")); 
-    my $configFileName = $self->getParamValue("configFileName");
-    my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
-    my $increasedMemory = $self->getParamValue("increasedMemory");
-    my $initialMemory = $self->getParamValue("initialMemory");
-    my $maxForks = $self->getParamValue("maxForks");
-    my $maxRetries = $self->getParamValue("maxRetries");
+
+    my $proteinSequenceFile = $self->getParamValue("proteinSequenceFile");
+    my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
+    my $resultsDirectory = $self->getParamValue("resultsDirectory");
+    my $outputFilePrefix = $self->getParamValue("outputFilePrefix");
 
     my $executor = $self->getClusterExecutor();
-    my $queue = $self->getClusterQueue();
-  
+    my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
+
     if ($undo) {
-	$self->runCmd(0,"rm -rf $configPath");
+        $self->runCmd(0, "rm $workflowDataDir/$nextflowConfigFile");
+
     } else {
-	open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
+      my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
+      open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
 
     print F
 "
 params {
-  inputFilePath = \"$inputFilePath\"
-  outputDir = \"$outputDir\"
+  inputFilePath = "$clusterWorkflowDataDir/$proteinSequenceFile"
+  outputDir = "$clusterWorkflowDataDir/$resultsDirectory"
+  outputFilePrefix = "$outputFilePrefix"
+  fastaSubsetSize = $fastaSubsetSize
 }
 
-process{
-  container = 'veupathdb/psipred:latest'
-  executor = \'$executor\'
-  queue = \'$queue\'
-  maxForks = $maxForks
-  maxRetries = $maxRetries
-  withName: 'runPsipred' {
-    errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' }
-    clusterOptions = {
-      (task.attempt > 1 && task.exitStatus in 130..140)
-        ? \'-M $increasedMemory -R \"rusage [mem=$increasedMemory] span[hosts=1]\"\'
-        : \'-M $initialMemory -R \"rusage [mem=$initialMemory] span[hosts=1]\"\'
+process {
+    maxForks = $maxForks
+
+    withName: filterAndMakeIndividualFiles {
+        ext.max_sequence_length = 10000
     }
-  }                                                                                                                                                                             \
 }
 
-singularity {
-  enabled = true
-  autoMounts = true
-}
+
+includeConfig "$clusterConfigFile"
 ";
 	close(F);
     }

@@ -12,8 +12,9 @@
   <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
   <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
 
+  <!--
   <constant name="psipredProteinsFile">$$dataDir$$/proteinsFixedIds.fsa</constant>
-
+  -->
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
@@ -28,24 +29,13 @@
     <depends name="makeAnalysisDir"/>
   </step>
 
-  <step name="fixProteinIds" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixProteinIdsForPsipred">
-    <paramValue name="inputProteinsFile">$$proteinSequenceFile$$</paramValue>
-    <paramValue name="outputProteinsFile">$$psipredProteinsFile$$</paramValue>
+  <step name="makePsiPredNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePsiPredNextflowConfig">
+    <paramValue name="proteinSequenceFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
+    <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+    <paramValue name="outputFilePrefix">psipred</paramValue>
     <depends name="makeResultDir"/>
   </step>
-
-  <step name="makePsiPredNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePsiPredNextflowConfig">
-    <paramValue name="inputFilePath">$$psipredProteinsFile$$</paramValue>
-    <paramValue name="outputDir">$$resultsDirectory$$</paramValue>
-    <paramValue name="configFileName">nextflow.config</paramValue>
-    <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
-    <paramValue name="initialMemory">4000</paramValue>
-    <paramValue name="increasedMemory">12000</paramValue>
-    <paramValue name="maxForks">40</paramValue>
-    <paramValue name="maxRetries">2</paramValue>
-    <depends name="fixProteinIds"/>
-  </step>
-
 
  <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
     <paramValue name="projectName">$$projectName$$</paramValue>
@@ -60,18 +50,39 @@
     <depends name="makePsiPredNextflowConfig"/>
   </subgraph>
 
+  <step name="copyCoilToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="copyFromFile">$$resultsDirectory$$/psipred_coil.bw</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="indexSuffix"></paramValue>
+    <paramValue name="fileType">bigwig</paramValue>
+    <paramValue name="dataType">genomeAndProteome</paramValue>
+    <depends name="runNextflowOnCluster"/>
+  </step>
 
 
+  <step name="copyHelixToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="copyFromFile">$$resultsDirectory$$/psipred_helix.bw</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="indexSuffix"></paramValue>
+    <paramValue name="fileType">bigwig</paramValue>
+    <paramValue name="dataType">genomeAndProteome</paramValue>
+    <depends name="runNextflowOnCluster"/>
+  </step>
 
-  <!-- TODO:  check how we want to load psipred predictions and what are we going to do with them?  if pbrowse could be bed?
-       <step name="insertPsipred" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadSecondaryStructures" stepLoadTypes="plugin">
-       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-       <paramValue name="algName">Psipred</paramValue>
-       <paramValue name="inputDir">$$resultsDirectory$$</paramValue>
-       <paramValue name="algInvResult">dontcare</paramValue>
-       <paramValue name="algImpVer">dontcare</paramValue>
-       <paramValue name="setPercent">true</paramValue>
-       <depends name="makeAlgInv"/>
-       </step>
-  -->
+
+  <step name="copyBetaToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="copyFromFile">$$resultsDirectory$$/psipred_extended.bw</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="indexSuffix"></paramValue>
+    <paramValue name="fileType">bigwig</paramValue>
+    <paramValue name="dataType">genomeAndProteome</paramValue>
+    <depends name="runNextflowOnCluster"/>
+  </step>
+
 </workflowGraph>
