@@ -53,7 +53,7 @@ sub run {
     $self->runCmd($test, "mkdir -p $copyToDir");
     $self->runCmd($test, "cp $workflowDataDir/${copyFromDirName}/${gzFile} $copyToDir");
     if($indexSuffix) {
-      $self->runCmd($test, "cp $workflowDataDir/${copyFromDirName}/${tbiFile} $Copytodir");
+      $self->runCmd($test, "cp $workflowDataDir/${copyFromDirName}/${tbiFile} $copyToDir");
     }
   }
 }
