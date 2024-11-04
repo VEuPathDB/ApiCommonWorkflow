@@ -30,8 +30,7 @@ sub run {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
 
-    print F
-"
+      my $configString = <<NEXTFLOW;
 params {
   inputFilePath = "$clusterWorkflowDataDir/$proteinSequenceFile"
   outputDir = "$clusterWorkflowDataDir/$resultsDirectory"
@@ -49,7 +48,9 @@ process {
 
 
 includeConfig "$clusterConfigFile"
-";
+
+NEXTFLOW
+      print F $configString;
 	close(F);
     }
 }
