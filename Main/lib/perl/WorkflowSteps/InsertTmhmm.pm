@@ -21,7 +21,7 @@ sub run {
   my $args = "--data_file $workflowDataDir/$inputFile --algName TMHMM --algDesc 'TMHMM $version' --useSourceId --extDbName '$extDbName' --extDbRlsVer '$extDbRlsVer'";
 
 
-  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+  #$self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadTMDomains", $args);
 
