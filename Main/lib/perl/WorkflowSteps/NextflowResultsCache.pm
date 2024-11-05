@@ -120,7 +120,9 @@ sub copyTo {
   if($undo) {} #nothing to see here
   else {
 	if ($test) {
-	      $self->runCmd(0, "mkdir -p $cacheDir");
+        $cacheDir =~ s/\s+//g;      # Remove all whitespace
+        $cacheDir =~ s/\R\z//;      # Remove any newline or carriage return at the end
+	    $self->runCmd(0, "mkdir -p $cacheDir");
         $self->runCmd(0, "cp -r $resultsPath/* $cacheDir/");
     }
     $self->runCmd($test, "mkdir -p $cacheDir");
