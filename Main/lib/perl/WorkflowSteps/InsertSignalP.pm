@@ -14,11 +14,9 @@ sub run {
 
   my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
 
-  my $version = $self->getConfig('version');
-
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--data_file $workflowDataDir/$inputFile --algName 'SignalP' --algVer '$version' --algDesc 'SignalP' --extDbName '$extDbName' --extDbRlsVer '$extDbRlsVer' --useSourceId";
+  my $args = "--data_file $workflowDataDir/$inputFile --extDbName '$extDbName' --extDbRlsVer '$extDbRlsVer' --useSourceId";
 
 
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
