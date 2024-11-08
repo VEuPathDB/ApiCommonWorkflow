@@ -1,0 +1,68 @@
+<workflowGraph name="blastpPdb">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="proteinSequenceFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="pdbFastaFile"/>
+
+  <constant name="dataDir">$$parentDataDir$$/blastpPdb</constant>
+
+  <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
+  <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+     <paramValue name="dataDir">$$analysisDirectory$$</paramValue>
+     <depends name="makeDataDir"/>
+  </step>
+
+  <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+     <paramValue name="dataDir">$$resultsDirectory$$</paramValue>
+     <depends name="makeAnalysisDir"/>
+  </step>
+
+  <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBlastPPdbNextflowConfig">
+    <paramValue name="proteinSequenceFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="pdbFastaFile">$$pdbFastaFile$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
+    <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+    <paramValue name="outputFileName">pdbSimilarity.tab</paramValue>
+    <depends name="makeResultDir"/>
+
+  </step>
+
+  <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue> <!-- NAME|version -->
+    <paramValue name="isProteomeAnalysis">true</paramValue>
+    <paramValue name="datasetSpec"></paramValue>
+    <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/diamond-similarity-nextflow</paramValue>
+    <depends name="makeNextflowConfig"/>
+  </subgraph>
+
+  <!-- TODO  load into new ApiDB.PDBSimilarity table
+
+  <step name="loadSimilarities" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBlastSimilarities" stepLoadTypes="plugin" includeIf="$$loadSimilarities$$">
+    <paramValue name="inputFile">$$dataDir$$/results/blastSimilarity.out</paramValue>
+    <paramValue name="queryTable">$$queryTable$$</paramValue>
+    <paramValue name="queryTableIdCol">source_id</paramValue>
+    <paramValue name="queryExtDbName">$$queryExtDbName$$</paramValue>
+    <paramValue name="subjectTable">$$subjectTable$$</paramValue>
+    <paramValue name="subjectTableIdCol">source_id</paramValue>
+    <paramValue name="subjectExtDbName">$$subjectExtDbName$$</paramValue>
+    <paramValue name="options">$$loadOptions$$</paramValue>
+    <depends name="loadSubjectSubset"/>
+  </step>
+
+-->
+
+</workflowGraph>
