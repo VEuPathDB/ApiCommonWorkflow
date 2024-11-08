@@ -10,6 +10,8 @@ use Data::Dumper;
 sub run {
     my ($self, $test, $undo) = @_;
 
+    my $maxForks = $self->getParamValue("maxForks");
+
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $gusConfigFile = $self->getParamValue("gusConfigFile");
@@ -27,15 +29,13 @@ sub run {
     my $rmParams = $self->getParamValue("rmParams");
     my $outputFileName = $self->getParamValue("outputFileName");
     my $errorFileName = $self->getParamValue("errorFileName");
-    my $increasedMemory = $self->getParamValue("increasedMemory");
-    my $initialMemory = $self->getParamValue("initialMemory");
-    my $maxForks = $self->getParamValue("maxForks");
-    my $maxRetries = $self->getParamValue("maxRetries");
+
+
     my $clusterServer = $self->getSharedConfig("clusterServer");
     my $repeatMaskerDatabase = join("/", $self->getSharedConfig("$clusterServer.softwareDatabasesDirectory"),$self->getSharedConfig("repeatMaskerDatabaseDirectory"),$famdbRelativePath);
 
     my $executor = $self->getClusterExecutor();
-    my $queue = $self->getClusterQueue();
+    my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
@@ -54,41 +54,28 @@ sub run {
     } else {
 	open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
 
-    print F
-"
+    my $configString = <<NEXTFLOW;
 params {
-  inputFilePath = \"$inputFilePath\"
+  inputFilePath = "$inputFilePath"
   fastaSubsetSize = $fastaSubsetSize
   trimDangling = $trimDangling
   dangleMax = $dangleMax
-  rmParams = \"$rmParams -species \'$speciesName\'\"
-  outputFileName = \"$outputFileName\"
-  errorFileName = \"$errorFileName\"
-  outputDir = \"$outputDir\"
+  rmParams = "$rmParams -species '$speciesName'"
+  outputFileName = "$outputFileName"
+  errorFileName = "$errorFileName"
+  outputDir = "$outputDir"
 }
 
 process{
-  container = 'veupathdb/repeatmasker'
-  executor = \'$executor\'
-  queue = \'$queue\'
   maxForks = $maxForks
-  maxRetries = $maxRetries
-  withName: 'runRepeatMasker' {
-    errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' }
-    clusterOptions = {
-      (task.attempt > 1 && task.exitStatus in 130..140)
-        ? \'-M $increasedMemory -R \"rusage [mem=$increasedMemory] span[hosts=1]\"\'
-        : \'-M $initialMemory -R \"rusage [mem=$initialMemory] span[hosts=1]\"\'
-    }
-  }                                                                                                                                                                             \
 }
-singularity {
-  enabled = true
-  autoMounts = true
-  runOptions = \"--bind $repeatMaskerDatabase:/opt/RepeatMasker/Libraries/famdb\"
-}
-";
-	close(F);
+
+includeConfig "$clusterConfigFile"
+
+NEXTFLOW
+    print F $configString;
+    close(F);
+
     }
 }
 

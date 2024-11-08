@@ -1,8 +1,7 @@
-<workflowGraph name="">
+<workflowGraph name="clonedinsertends">
   <param name="dataDir"/>
   <param name="datasetName"/>
   <param name="maxIntronSize"/>
-  <param name="referenceStrainOrganismAbbrev"/>
   <param name="organismAbbrev"/>
   <param name="genomicSeqsFile"/>
   <param name="genomicSeqsDir"/>
@@ -12,6 +11,8 @@
   <param name="sourceIdJoiningRegex"/>
   <param name="spanLengthCutoff"/>
   <param name="includeMultipleSpans"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="projectName"/>
 
   <constant name="clonedInsertEndsSeqFile">$$dataDir$$/clonedInsertEndsSeqs.fsa</constant>
 
@@ -20,94 +21,74 @@
   </step>
 
   <step name="extractClonedInsertEndsSeqs"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
-      <paramValue name="extDbName">$$datasetName$$</paramValue>
-      <paramValue name="table">ExternalNASequence</paramValue>
-      <paramValue name="alternateDefline">source_id, description, 'length='||length</paramValue>
-      <paramValue name="outputFile">$$clonedInsertEndsSeqFile$$</paramValue>
-      <paramValue name="separateFastaFiles">false</paramValue>
-      <paramValue name="outputDirForSeparateFiles"></paramValue>
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="makeDataDir"/> 
-    </step>
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+    <paramValue name="extDbName">$$datasetName$$</paramValue>
+    <paramValue name="table">ExternalNASequence</paramValue>
+    <paramValue name="alternateDefline">source_id, description, 'length='||length</paramValue>
+    <paramValue name="outputFile">$$clonedInsertEndsSeqFile$$</paramValue>
+    <paramValue name="separateFastaFiles">false</paramValue>
+    <paramValue name="outputDirForSeparateFiles"></paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
 
-<step name="makeRepeatMaskerNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig" >
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="inputFilePath">$$clonedInsertEndsSeqFile$$</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
-      <paramValue name="analysisDir">$$dataDir$$</paramValue>
-      <paramValue name="configFileName">nextflow.config</paramValue>
-      <paramValue name="fastaSubsetSize">300</paramValue>
-      <paramValue name="trimDangling">true</paramValue>
-      <paramValue name="dangleMax">30</paramValue>
-      <paramValue name="rmParams"></paramValue>
-      <paramValue name="outputFileName">blocked.seq</paramValue>
-      <paramValue name="errorFileName">blocked.err</paramValue>
-      <paramValue name="initialMemory">4000</paramValue>
-      <paramValue name="increasedMemory">12000</paramValue>
-      <paramValue name="maxForks">40</paramValue>
-      <paramValue name="maxRetries">2</paramValue>
-      <depends name="extractClonedInsertEndsSeqs"/>
-</step>
+  <step name="makeRepeatMaskerNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRepeatMaskerNextflowConfig" >
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="inputFilePath">$$clonedInsertEndsSeqFile$$</paramValue>
+    <paramValue name="outputDir">$$dataDir$$/results</paramValue>
+    <paramValue name="analysisDir">$$dataDir$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="configFileName">nextflow.config</paramValue>
+    <paramValue name="fastaSubsetSize">300</paramValue>
+    <paramValue name="trimDangling">true</paramValue>
+    <paramValue name="dangleMax">30</paramValue>
+    <paramValue name="rmParams"></paramValue>
+    <paramValue name="outputFileName">blocked.seq</paramValue>
+    <paramValue name="errorFileName">blocked.err</paramValue>
+    <paramValue name="maxForks">40</paramValue>
+    <depends name="extractClonedInsertEndsSeqs"/>
+  </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeRepeatMaskerNextflowConfig"/>
-    </step>
+  <subgraph name="runRepeatMaskerNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="analysisDir">$$dataDir$$/analysisDir</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/analysisDir/nextflow.config</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue> <!-- NAME|version -->
+    <paramValue name="isProteomeAnalysis">false</paramValue>
+    <paramValue name="datasetSpec">$$datasetName$$</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/repeat-masker-nextflow</paramValue>
+    <depends name="makeRepeatMaskerNextflowConfig"/>
+  </subgraph>
 
-    <step name="runRepeatMaskerClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
-      <paramValue name="workingDir">$$dataDir$$</paramValue>
-      <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
-      <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
-      <paramValue name="nextflowWorkflow">VEuPathDB/repeat-masker-nextflow</paramValue>
-      <paramValue name="isGitRepo">true</paramValue>
-      <depends name="mirrorToCluster"/>
-    </step>
-
-    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/results</paramValue>
-      <paramValue name="outputFiles">blocked.seq</paramValue>
-      <paramValue name="deleteAfterCopy">false</paramValue>
-      <depends name="runRepeatMaskerClusterTask"/>
-    </step>
-
-    <subgraph name="mapToGenome" xmlFile="blatDnaAgainstGenome.xml">
-      <paramValue name="dataDir">$$dataDir$$/clonedInsertEndsSeqsBlat</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="targetSeqsDir">$$genomicSeqsDir$$</paramValue>
-      <paramValue name="targetExtDbName">$$organismAbbrev$$_primary_genome_RSRC</paramValue>
-      <paramValue name="queryFile">$$dataDir$$/results/blocked.seq</paramValue>
-      <paramValue name="queryTable">ExternalNASequence</paramValue>
-      <paramValue name="queryExtDbName">$$datasetName$$</paramValue>
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="mirrorFromCluster"/>
-    </subgraph>
+  <subgraph name="blat" xmlFile="blatDnaAgainstGenome.xml">
+    <paramValue name="dataDir">$$dataDir$$/blat</paramValue>
+    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="targetSeqsDir">$$genomicSeqsDir$$</paramValue>
+    <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="queryFile">$$dataDir$$/results/blocked.seq</paramValue>
+    <paramValue name="queryTable">ExternalNASequence</paramValue>
+    <paramValue name="queryExtDbName">$$datasetName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="runRepeatMaskerNextflowOnCluster"/>
+  </subgraph>
 
 
-    <step name="clonedEndToGFF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ClonedEndToWebservices">
-      <paramValue name="dataDir">$$dataDir$$/clonedInsertEndsSeqsBlat</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="externalDatabaseName">$$datasetName$$</paramValue>
-      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$</paramValue>
-      <paramValue name="sourceIdField">$$sourceIdField$$</paramValue>
-      <paramValue name="sourceIdJoiningRegex">$$sourceIdJoiningRegex$$</paramValue>
-      <paramValue name="spanLengthCutoff">$$spanLengthCutoff$$</paramValue>
-      <paramValue name="includeMultipleSpans">$$includeMultipleSpans$$</paramValue>
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="mapToGenome"/>
-    </step>
-
-
-
-    <step name="document-map_cloned_insert_ends"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">map_cloned_insert_ends_MTHD</paramValue>
-      <paramValue name="version">1.0</paramValue>
-      <paramValue name="parameters">TODO: patch in later</paramValue>
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    </step>
-
+  <step name="clonedEndToGFF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ClonedEndToWebservices">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="externalDatabaseName">$$datasetName$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$</paramValue>
+    <paramValue name="sourceIdField">$$sourceIdField$$</paramValue>
+    <paramValue name="sourceIdJoiningRegex">$$sourceIdJoiningRegex$$</paramValue>
+    <paramValue name="spanLengthCutoff">$$spanLengthCutoff$$</paramValue>
+    <paramValue name="includeMultipleSpans">$$includeMultipleSpans$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="mapToGenome"/>
+  </step>
 
 </workflowGraph>
