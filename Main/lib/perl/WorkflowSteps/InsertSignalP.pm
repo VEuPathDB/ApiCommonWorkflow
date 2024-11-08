@@ -16,7 +16,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--data_file $workflowDataDir/$inputFile --extDbName '$extDbName' --extDbRlsVer '$extDbRlsVer' --useSourceId";
+  my $args = "--gff_file $workflowDataDir/$inputFile --extDbName '$extDbName' --extDbRlsVer '$extDbRlsVer'";
 
 
     $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
