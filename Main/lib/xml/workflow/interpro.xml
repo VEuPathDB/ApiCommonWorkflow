@@ -1,40 +1,37 @@
-<workflowGraph name="interproWorkflow">
+<workflowGraph name="interpro">
     <param name="projectName"/>
     <param name="organismAbbrev"/>
     <param name="genomeExtDbRlsSpec"/>
     <param name="proteinsFile"/>
     <param name="parentDataDir"/>
-    <param name="insertVersion" default="1"/>                    <!-- optional -->
-    <param name="aaSeqTable"    default="ExternalAASequence"/>   <!-- optional, used if version > 1 -->
-    <param name="sourceIdRegex" default="(\S+)"/>                <!-- optional, used if version > 1 -->
     <param name="ncbiTaxonId"/>
     <param name="gusConfigFile"/>
     <param name="relativeWebServicesDir"/>
 
     <constant name="dataDir">$$parentDataDir$$/interpro</constant>
-    <constant name="resultsDirectory">$$dataDir$$/analysisDir/results</constant>
+    <constant name="analysisDir">$$dataDir$$/analysisDir</constant>
+    <constant name="resultsDir">$$analysisDir$$/results</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
     <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$/analysisDir/</paramValue>
+      <paramValue name="dataDir">$$analysisDir$$/</paramValue>
       <depends name="makeDataDir"/>
     </step>
 
     <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-     <paramValue name="dataDir">$$resultsDirectory$$/</paramValue>
+     <paramValue name="dataDir">$$resultsDir$$/</paramValue>
      <depends name="makeAnalysisDir"/>
     </step>
 
     <step name="makeInterproNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeIprscan5NextflowConfig">
-      <paramValue name="outputDir">$$resultsDirectory$$/</paramValue>
+      <paramValue name="outputDir">$$resultsDir$$/</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>    
-      <paramValue name="analysisDir">$$dataDir$$/analysisDir/</paramValue>
-      <paramValue name="input">$$proteinsFile$$.NoAsterisks</paramValue>
+      <paramValue name="analysisDir">$$analysisDir$$/</paramValue>
+      <paramValue name="input">$$proteinsFile$$</paramValue>
       <paramValue name="fastaSubsetSize">100</paramValue>
-      <paramValue name="appls">pfama</paramValue>
       <paramValue name="outputFile">iprscan_out.tsv</paramValue>
       <paramValue name="initialMemory">4000</paramValue>
       <paramValue name="increasedMemory">12000</paramValue>
@@ -46,20 +43,20 @@
     <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="analysisDir">$$dataDir$$/analysisDir</paramValue>
-      <paramValue name="nextflowConfigFile">$$dataDir$$/analysisDir/nextflow.config</paramValue>
+      <paramValue name="analysisDir">$$analysisDir$$</paramValue>
+      <paramValue name="nextflowConfigFile">$$analysisDir$$/nextflow.config</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="genomicSequenceFile"></paramValue>
       <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue> <!-- NAME|version -->
       <paramValue name="annotationSpec"></paramValue><!-- NAME|version -->
       <paramValue name="datasetSpec"></paramValue>
-      <paramValue name="proteinsFile">$$proteinsFile$$.NoAsterisks</paramValue><!-- NAME|version -->
+      <paramValue name="proteinsFile">$$proteinsFile$$</paramValue><!-- NAME|version -->
       <paramValue name="nextflowWorkflow">VEuPathDB/iprscan5-nextflow</paramValue>
       <depends name="makeInterproNextflowConfig"/>
     </subgraph>
 
     <step name="insertInterproResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertInterproResults" stepLoadTypes="plugin">
-      <paramValue name="resultsFile">$$resultsDirectory$$/iprscan_out.tsv</paramValue>
+      <paramValue name="resultsFile">$$resultsDir$$/iprscan_out.tsv</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="ncbiTaxId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
@@ -67,23 +64,19 @@
     </step>
 
     <step name="insertGoAssociations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGOAssociationsFromInterpro" stepLoadTypes="plugin">
-      <paramValue name="interproResultsFile">$$resultsDirectory$$/iprscan_out.tsv</paramValue>
+      <paramValue name="interproResultsFile">$$resultsDir$$/iprscan_out.tsv</paramValue>
       <paramValue name="interpro2GOFile">interpro2GO_RSRC/interpro2go</paramValue>
       <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
-      <paramValue name="interproDir">InterproscanData_RSRC</paramValue>
       <paramValue name="configFile">insertInterpro-config.xml</paramValue>
       <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="runNextflowOnCluster"/>
       <dependsGlobal name="interpro2GO_RSRC"/>
-      <dependsGlobal name="interproscanData_RSRC"/>
-      <dependsGlobal name="GO_RSRC"/>
-      <dependsGlobal name="GO_evidence_codes_RSRC"/>
     </step>
 
     <step name="copyToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-     <paramValue name="copyFromFile">$$resultsDirectory$$/iprscan_out.gff.gz</paramValue>
+     <paramValue name="copyFromFile">$$resultsDir$$/iprscan_out.gff.gz</paramValue>
      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
      <paramValue name="indexSuffix">tbi</paramValue>
      <paramValue name="fileType">gff</paramValue>
