@@ -9,7 +9,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputFile = $self->getParamValue('inputFile');
-  my $similarityExtDbRlsSpec = $self->getParamValue('similarityExtDbRlsSpec');
+  my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -17,7 +17,7 @@ sub run {
 
   $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
-  my $args = "--inputFile $workflowDataDir/$inputFile --extDbRlsSpec $similarityExtDbRlsSpec";
+  my $args = "--inputFile $workflowDataDir/$inputFile --extDbRlsSpec $genomeExtDbRlsSpec";
 
   $self->runPlugin($test,$undo, "ApiCommonData::Load::Plugin::InsertPDBSimilarity", $args);
 }
