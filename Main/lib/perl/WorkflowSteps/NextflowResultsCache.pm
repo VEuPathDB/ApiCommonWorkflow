@@ -22,23 +22,17 @@ sub run {
     my $projectName = $self->getParamValue("projectName");
     my $nextflowWorkflow = $self->getParamValue("nextflowWorkflow");
 
-    my $databaseVersion;
-    if ($nextflowWorkflow eq "VEuPathDB/iprscan5-nextflow") {
-	$databaseVersion = $self->getSharedConfig('interproscanDatabaseDirectory');
-    }
-    if ($nextflowWorkflow eq "VEuPathDB/repeat-masker-nextflow") {
-	$databaseVersion = $self->getSharedConfig('repeatMaskerDatabaseDirectory');
-    }
+    my $databaseVersion = &getDatabaseVersion($nextflowWorkflow);
 
     my $nextflowBranch = $self->getSharedConfig("${nextflowWorkflow}.branch");
     $nextflowWorkflow =~ s/\//_/g;
  
     my $nextflowDirectory;
     if ($databaseVersion) {
-	$nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}/${databaseVersion}";
-    } 
+        $nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}/${databaseVersion}";
+    }  
     else {
-	$nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}";
+        $nextflowDirectory = "${nextflowWorkflow}_${nextflowBranch}";
     }
 
     my $cacheDirBase = "$preprocessedDataCache/$projectName/${genomeName}_${genomeVersion}";
@@ -86,7 +80,6 @@ sub checkAndCopyFrom {
   }
   else {
     if($hasCacheFile) {
-
       $self->runCmd($test, "touch $foundNextflowResultsFile");
       $self->runCmd($test, "cp -r $cacheDir/* $resultsPath");
     }     
@@ -154,6 +147,15 @@ OR name LIKE '${organismAbbrev}\_%primary_genome_RSRC' ESCAPE '\\'";
         $self->error("could not determine annotation digest for organism $organismAbbrev");
     }
     return $digest
+}
+
+sub getDatabaseVersion {
+  my ($self, $nextflowWorkflow) = @_;
+  my $databaseVersion;
+  if ($nextflowWorkflow eq "VEuPathDB/iprscan5-nextflow") {
+    $databaseVersion = $self->getSharedConfig('interproscanDatabaseDirectory');
+  }
+  return $databaseVersion;
 }
 
 
