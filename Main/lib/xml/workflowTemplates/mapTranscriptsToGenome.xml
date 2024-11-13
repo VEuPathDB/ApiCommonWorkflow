@@ -9,6 +9,7 @@
   <param name="gusConfigFile"/>
   <param name="genomeExtDbRlsSpec"/>
   <param name="projectName"/>
+  <param name="relativeWebServicesDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/mapTranscriptsToGenome</constant>
   <constant name="assemblySeqsDataDir">$$dataDir$$/makeAssemblySeqs</constant>
@@ -24,7 +25,7 @@
     <prop name="referenceStrainOrganismAbbrev"/>
 
   
-    <subgraph name="mapAssemblySeqsToGenome" xmlFile="blatDnaAgainstGenome.xml" skipIfFile="${referenceStrainOrganismAbbrev}/foundZeroESTs">
+    <subgraph name="$$organismAbbrev$$_mapESTsToGenome" xmlFile="blatDnaAgainstGenome.xml" skipIfFile="${referenceStrainOrganismAbbrev}/foundZeroESTs">
       <paramValue name="dataDir">$$parentDataDir$$/mapTranscriptsToGenome</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -40,9 +41,15 @@
     </subgraph>
 
 
-
-
-    <param name="projectName"/>
+  <step name="toGFF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TranscriptSequencesToWebservices" skipIfFile="${referenceStrainOrganismAbbrev}/foundZeroESTs">
+    <paramValue name="dataDir">$$parentDataDir$$/mapTranscriptsToGenome</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="queryExtDbRlsSpec"></paramValue>
+    <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="$$organismAbbrev$$_mapESTsToGenome"/>
+  </step>
 
 
 </workflowGraph>

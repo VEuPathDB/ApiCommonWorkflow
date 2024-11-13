@@ -8,13 +8,14 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $sourceIdField = "source_id";
-
   my $gusConfigFile = $self->getParamValue('gusConfigFile');
   $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $dataDir = $self->getParamValue('dataDir');
-  my $exteralDatabaseName = $self->getParamValue('externalDatabaseName');
+  my $queryExtDbSpec = $self->getParamValue('queryExtDbRlsSpec');
+  my $targetExtDbSpec = $self->getParamValue('targetExtDbRlsSpec');
+
+
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
 
@@ -26,24 +27,39 @@ sub run {
 
   my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/genomeAndProteome/gff/";
 
-  my $cmd = "alignedTranscriptSeqsToGff.pl --external_database_name '$externalDatabaseName' --output_directory $workingDirectory --source_id_field $sourceIdField --gus_config $gusConfigFile";
+  my ($queryExtDbName, $queryExtDbVer) = split(/\|/, $queryExtDbSpec);
+
+  my $outputFileBase;
+
+  my $cmd = "alignedTranscriptSeqsToGff.pl --output_directory $workingDirectory --gus_config $gusConfigFile --target_ext_db_rls_spec '${targetExtDbSpec}'";
+  if($queryExtDbSpec) {
+    $outputFileBase = $queryExtDbName;
+
+    $cmd = $cmd . " --output_file_base $outputFileBase  --query_ext_db_rls_spec '${queryExtDbSpec}'";
+  }
+  # Else ESTs
+  else {
+    $outputFileBase = "${organismAbbrev}_ESTs";
+    $cmd = $cmd . "--output_file_base $outputFileBase --is_est";
+  }
+
 
   if($undo) {
-    $self->runCmd(0, "rm -f $copyToDir/${externalDatabaseName}*");
-    $self->runCmd(0, "rm -f $workingDirectory/${externalDatabaseName}*");
+    $self->runCmd(0, "rm -f $copyToDir/${outputFileBase}*");
+    $self->runCmd(0, "rm -f $workingDirectory/${outputFileBase}*");
 
   } else{
       if($test){
-          $self->runCmd(0, "echo test > $copyToDir/${externalDatabaseName}.gff.gz ");
-          $self->runCmd(0, "echo test > $copyToDir/${externalDatabaseName}.gff.gz.tbi");
+          $self->runCmd(0, "echo test > $copyToDir/${outputFileBase}.gff.gz ");
+          $self->runCmd(0, "echo test > $copyToDir/${outputFileBase}.gff.gz.tbi");
 
-          $self->runCmd(0, "echo test > $workingDirectory/${externalDatabaseName}.gff.gz ");
-          $self->runCmd(0, "echo test > $workingDirectory/${externalDatabaseName}.gff.gz.tbi");
+          $self->runCmd(0, "echo test > $workingDirectory/${outputFileBase}.gff.gz ");
+          $self->runCmd(0, "echo test > $workingDirectory/${outputFileBase}.gff.gz.tbi");
       }
 
       $self->runCmd($test, $cmd);
-      $self->runCmd($test, "cp $workingDirectory/${externalDatabaseName}.gz $copyToDir");
-      $self->runCmd($test, "cp $workflowDataDir/${externalDatabaseName}.gz.tbi $copyToDir");
+      $self->runCmd($test, "cp $workingDirectory/${outputFileBase}.gz $copyToDir");
+      $self->runCmd($test, "cp $workflowDataDir/${outputFileBase}.gz.tbi $copyToDir");
   }
 }
 
