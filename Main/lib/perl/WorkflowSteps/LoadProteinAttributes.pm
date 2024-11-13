@@ -12,7 +12,8 @@ sub run {
 
   my $extDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
   my $table = $self->getParamValue('proteinTable');
-  my $inputFile = $self->getParamValue('inputFile');
+  my $workflowDataDir = $self->getWorkflowDataDir();
+  my $inputFile = "$workflowDataDir/" . $self->getParamValue('inputFile');
 
   my ($extDbName, $extDbRlsVer) = $self->getExtDbInfo($test,$extDbRlsSpec);
 
