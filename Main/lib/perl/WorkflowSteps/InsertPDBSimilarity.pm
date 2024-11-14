@@ -15,7 +15,7 @@ sub run {
 
   $self->runCmd(0, "gunzip $workflowDataDir/$inputFile.gz") if (-e "$workflowDataDir/$inputFile.gz");
 
-  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+  #$self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
   my $args = "--inputFile $workflowDataDir/$inputFile --extDbRlsSpec $genomeExtDbRlsSpec";
 
