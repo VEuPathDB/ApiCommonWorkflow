@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeDiamondSimilarityNextflowConfig;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeBlastPPdbNextflowConfig;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
