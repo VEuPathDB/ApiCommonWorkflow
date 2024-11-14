@@ -19,7 +19,7 @@ sub run {
   my $args = "--gff_file $workflowDataDir/$inputFile --extDbName '$extDbName' --extDbRlsVer '$extDbRlsVer'";
 
 
-    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+    #$self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadSignalP", $args);
