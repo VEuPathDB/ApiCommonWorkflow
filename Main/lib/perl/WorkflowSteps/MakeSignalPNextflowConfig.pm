@@ -57,7 +57,7 @@ process {
         ext.filter_min_protein_percent_cutoff = $signalPMinProteinPercentCutoff
     }
 
-     withName: signalp {
+     withLabel: signalp {
         container = "${sifImageFile}"
         ext.org = "euk"
     }
