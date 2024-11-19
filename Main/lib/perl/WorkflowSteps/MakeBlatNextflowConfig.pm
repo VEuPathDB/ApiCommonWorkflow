@@ -9,6 +9,8 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
+    my $dots = 10;
+
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $outputDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("outputDir")); 
@@ -20,8 +22,8 @@ sub run {
     my $maxIntronSize = $self->getParamValue("maxIntronSize");
     my $dbType = $self->getParamValue("dbType");
     my $queryType = $self->getParamValue("queryType");
-    my $blatParams = $self->getParamValue("blatParams");
-    my $trans = $self->getParamValue("trans");
+    my $outputFileName = $self->getParamValue("outputFileName");
+
     my $increasedMemory = $self->getParamValue("increasedMemory");
     my $initialMemory = $self->getParamValue("initialMemory");
     my $maxForks = $self->getParamValue("maxForks");
@@ -29,50 +31,41 @@ sub run {
 
     my $executor = $self->getClusterExecutor();
     my $queue = $self->getClusterQueue();
-  
+
+    my $executor = $self->getClusterExecutor();
+    my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
+
+
     if ($undo) {
 	$self->runCmd(0,"rm -rf $configPath");
     } else {
 	open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
 
-    die "TODO:  what is trans variable for when true?  do we need to change type??" if(lc($trans) ne 'false');
 
-    print F
-"
+      my $configString = <<NEXTFLOW;
 params {
-  queryFasta = \"$seqFile\"
+  queryFasta = "$seqFile"
   fastaSubsetSize = $fastaSubsetSize
-  genomeFasta = \"$databasePath\"
-  maxIntron = $maxIntronSize
-  dbType = \"$dbType\"
-  queryType = \"$queryType\"
-  blatParams = \"$blatParams\"
-  outputDir = \"$outputDir\"
-}
-                                                                                                                                                                      
-process{
-  container = 'veupathdb/blat:latest'
-  executor = \'$executor\'
-  queue = \'$queue\'
-  maxForks = $maxForks
-  maxRetries = $maxRetries
-  withName: 'runBlat' {
-    errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' }
-    clusterOptions = {
-      (task.attempt > 1 && task.exitStatus in 130..140)
-        ? \'-M $increasedMemory -R \"rusage [mem=$increasedMemory] span[hosts=1]\"\'
-        : \'-M $initialMemory -R \"rusage [mem=$initialMemory] span[hosts=1]\"\'
-    }
-  }                                                                                                                                                                             \
+  genomeFasta = "$databasePath"
+  dbType = "$dbType"
+  queryType = "$queryType"
+  outputDir = "$outputDir"
+  outputFileName = "$outputFileName"
 }
 
-singularity {
-  enabled = true
-  autoMounts = true
-}
-";
-	close(F);
-    }
+process {
+    maxForks = $maxForks
+
+    withName: runBlat {
+        ext.args = "-dots=$dots -maxIntron=$maxIntronSize"
+  }
 }
 
+includeConfig "$clusterConfigFile"
+NEXTFLOW
+
+    print F $configString;
+    close(F);
+    }
+}
 1;

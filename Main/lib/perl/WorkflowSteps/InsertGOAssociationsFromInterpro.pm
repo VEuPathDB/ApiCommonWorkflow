@@ -14,14 +14,14 @@ sub run {
     my $interproExtDbName = $self->getParamValue('interproExtDbName');
     my $interproExtDbVer = $self->getExtDbVersion($test,$interproExtDbName);
     my $configFile = $self->getParamValue('configFile');
-    my $interproVersion = $self->getConfig('interproVersion');
     my $aaSeqTable = 'TranslatedAASequence';
     my $goVersion = $self->getExtDbVersion($test, 'GO_RSRC');
     my $workflowDataDir = $self->getWorkflowDataDir();
+    my $globalDataDir = $workflowDataDir."/global";
 
-    my $args = "--interproResultsFile=$workflowDataDir/$interproResultsFile --interpro2GOFile=$workflowDataDir/$interpro2GOFile --confFile=$workflowDataDir/$interproExtDbName/$interproVersion/$configFile --aaSeqTable=$aaSeqTable --extDbName=\'$interproExtDbName\' --extDbRlsVer=\'$interproExtDbVer\' --goVersion=\'$goVersion\'";
+    my $args = "--interproResultsFile=$workflowDataDir/$interproResultsFile --interpro2GOFile=$workflowDataDir/$interpro2GOFile --confFile=$globalDataDir/$interproExtDbName/$configFile --aaSeqTable=$aaSeqTable --extDbName=\'$interproExtDbName\' --extDbRlsVer=\'$interproExtDbVer\' --goVersion=\'$goVersion\'";
 
-    $self->testInputFile('inputDir', "$workflowDataDir/$interproResultsFile");
+    #$self->testInputFile('inputDir', "$workflowDataDir/$interproResultsFile");
   
     if($undo) {
         $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertGOAssociationsFromInterpro --limit 400000", $args);

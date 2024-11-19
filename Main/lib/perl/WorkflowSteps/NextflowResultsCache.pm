@@ -10,6 +10,7 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $mode = $self->getParamValue('mode');
+    my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
     my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
 
@@ -38,7 +39,9 @@ sub run {
 
     my $datasetSpec = $self->getParamValue("datasetSpec");
 
-    my $datasetDirectory = "genome";
+    my $isProteomeAnalysis = $self->getBooleanParamValue("isProteomeAnalysis");
+
+    my $datasetDirectory = $isProteomeAnalysis ? "genesAndProteins" : "genome";
     if($datasetSpec) {
 	$datasetSpec =~ s/\|/_/g;
 	$datasetDirectory = $datasetSpec;
@@ -46,13 +49,12 @@ sub run {
 
     my $cacheDir = "$cacheDirBase/$datasetDirectory/$nextflowDirectory";
 
-    my $annotationSpec = $self->getParamValue("annotationSpec");
-    if($annotationSpec) {
-	$annotationSpec =~ s/\|/_/g;
 
-	$datasetDirectory = $datasetSpec ? $datasetSpec : "genesAndProteins";
+    if($isProteomeAnalysis) {
+        my $annotationDigest = $self->getMd5DigestForAnnotationSpecs($test, $organismAbbrev);
 
-	$cacheDir = "$cacheDirBase/$annotationSpec/$datasetDirectory/$nextflowDirectory";
+        # NOTE: put the human readable directories first
+        $cacheDir = "$cacheDir/$annotationDigest";
     }
 
     my $resultsPath = $self->getWorkflowDataDir() . "/" . $resultsDir;
@@ -111,7 +113,9 @@ sub copyTo {
   if($undo) {} #nothing to see here
   else {
 	if ($test) {
-	      $self->runCmd(0, "mkdir -p $cacheDir");
+        $cacheDir =~ s/\s+//g;      # Remove all whitespace
+        $cacheDir =~ s/\R\z//;      # Remove any newline or carriage return at the end
+	    $self->runCmd(0, "mkdir -p $cacheDir");
         $self->runCmd(0, "cp -r $resultsPath/* $cacheDir/");
     }
     $self->runCmd($test, "mkdir -p $cacheDir");
@@ -119,6 +123,30 @@ sub copyTo {
   }
 
 
+}
+
+
+sub getMd5DigestForAnnotationSpecs {
+    my ($self, $test, $organismAbbrev) = @_;
+
+
+    # NOTE:  this is the postgres version
+    my $sql = "SELECT md5(string_agg(name || '|' ||  version, ',' ORDER BY name,version))
+FROM apidb.datasource d
+WHERE name LIKE '${organismAbbrev}\_%genome_features_RSRC' ESCAPE '\\'
+OR name LIKE '${organismAbbrev}\_%primary_genome_RSRC' ESCAPE '\\'";
+
+
+    my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
+
+    my $cmd = "getValueFromTable --idSQL \"$sql\" $gusConfigFile ";
+
+    my $digest = $self->runCmd($test, $cmd);
+
+    unless($digest) {
+        $self->error("could not determine annotation digest for organism $organismAbbrev");
+    }
+    return $digest
 }
 
 sub getDatabaseVersion {

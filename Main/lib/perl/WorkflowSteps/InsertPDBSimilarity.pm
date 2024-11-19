@@ -1,10 +1,9 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::InsertExportPred;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertPDBSimilarity;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
-
 
 sub run {
   my ($self, $test, $undo) = @_;
@@ -14,15 +13,11 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--inputFile $workflowDataDir/$inputFile --seqTable DoTS::AASequence --seqExtDbRlsSpec '$genomeExtDbRlsSpec' --extDbRlsSpec '$genomeExtDbRlsSpec'";
-
-
   #$self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+  my $args = "--inputFile $workflowDataDir/$inputFile.gz --extDbRlsSpec '$genomeExtDbRlsSpec'";
 
-
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertExportPredFeature", $args);
-
+  $self->runPlugin($test,$undo, "ApiCommonData::Load::Plugin::InsertPDBSimilarity", $args);
 }
 
-1;
 
+1;

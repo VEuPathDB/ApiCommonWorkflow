@@ -65,13 +65,6 @@
 
 
 
-  <subgraph name="massSpecDatasetLoaders" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/massSpec.xml" excludeIfXmlFileDoesNotExist="true">
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="unofficialGeneFeatures"/>
-  </subgraph>
-
 
   <subgraph name="trf" xmlFile="trf.xml" includeIf="!$$isHugeGenome$$">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
@@ -118,6 +111,7 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="skipIfFile">$$organismAbbrev$$/foundZeroESTs</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
@@ -126,7 +120,7 @@
   <!-- this subraph does not need a depends because the first step inside it
        has an externalDepends to the reference strain's dbEST dataset
        inside the reference strain's ESTs graph -->
-  <subgraph name="mapTranscripts" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/mapTranscriptsToGenome.xml" excludeIfXmlFileDoesNotExist="true">
+  <subgraph name="mapESTs" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/mapTranscriptsToGenome.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
@@ -134,6 +128,9 @@
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="isReferenceStrain">$$isReferenceStrain$$</paramValue>
     <paramValue name="genomicSeqsDir">$$genomicSeqsDir$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
     <depends name="mirrorToCluster"/>
   </subgraph>
 

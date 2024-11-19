@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::InsertTmhmm;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertMassSpecPeptides;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -10,7 +10,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputFile = $self->getParamValue('inputFile');
-  my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
+  my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
 
   my $version = $self->getConfig('version');
 
@@ -18,13 +18,10 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--data_file $workflowDataDir/$inputFile --extDbName '$extDbName' --extDbRlsVer '$extDbRlsVer'";
+  my $args = "--gff_file $workflowDataDir/$inputFile --extDbRlsSpec '$extDbRlsSpec'";
 
 
-  #$self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::LoadTMDomains", $args);
-
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertMassSpecPeptides", $args);
 }
 
 1;

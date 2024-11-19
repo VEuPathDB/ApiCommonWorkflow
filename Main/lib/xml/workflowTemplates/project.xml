@@ -158,6 +158,7 @@
     </step>
 
     <step name="${organismAbbrev}_loadTemporaryNcbiTaxonId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadTemporaryNcbiTaxonId" includeIf="${hasTemporaryNcbiTaxonId}" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="organismFullName">${organismFullName}</paramValue>
       <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
@@ -450,6 +451,7 @@
       <paramValue name="genomicSeqsFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <paramValue name="genomicSeqsDir">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
+      <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <depends name="${organismAbbrev}_LoadAliases"/>
     </subgraph>
 
@@ -511,7 +513,7 @@
   </datasetTemplate>
 
   <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables">
-    <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$/Snp_Table_Constraint</paramValue>
     <dependsPattern name="*_bowtieMapping"/>
   </step>

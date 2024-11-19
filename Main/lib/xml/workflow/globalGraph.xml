@@ -86,14 +86,6 @@
     <depends name="registerPlugins"/>
   </subgraph>
 
-  <subgraph name="PDBProteinSequences_RSRC" xmlFile="loadDataset.xml">
-    <paramValue name="datasetName">PDBProteinSequences_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="SO_RSRC"/>
-  </subgraph>
-
   <subgraph name="taxonomy_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">taxonomy_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
@@ -102,6 +94,16 @@
     <depends name="initUserGroupProject"/>
   </subgraph>
 
+  <subgraph name="PDBProteinSequences_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">PDBProteinSequences_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="SO_RSRC"/>
+    <depends name="taxonomy_RSRC"/>
+  </subgraph>
+
+<!--
   <subgraph name="updatePDBTaxon_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">updatePDBTaxon_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
@@ -110,6 +112,7 @@
     <depends name="PDBProteinSequences_RSRC"/>
     <depends name="taxonomy_RSRC"/>
   </subgraph>
+-->
 
   <subgraph name="Ontology_Relationship_Types_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">Ontology_Relationship_Types_RSRC</paramValue>
@@ -248,5 +251,16 @@
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="registerPlugins"/>
   </subgraph>
+
+  <step name="initClusterHomeDir"
+    stepClass="ReFlow::StepClasses::InitClusterHomeDir">
+    <depends name="initUserGroupProject"/>
+  </step>
+
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="initClusterHomeDir"/>
+    <depends name="PDBProteinSequences_RSRC"/>
+  </step>
 
 </workflowGraph>
