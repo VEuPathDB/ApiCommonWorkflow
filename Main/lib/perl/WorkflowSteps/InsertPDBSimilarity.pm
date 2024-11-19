@@ -13,11 +13,8 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  $self->runCmd(0, "gunzip $workflowDataDir/$inputFile.gz") if (-e "$workflowDataDir/$inputFile.gz");
-
   #$self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
-
-  my $args = "--inputFile $workflowDataDir/$inputFile --extDbRlsSpec $genomeExtDbRlsSpec";
+  my $args = "--inputFile $workflowDataDir/$inputFile.gz --extDbRlsSpec '$genomeExtDbRlsSpec'";
 
   $self->runPlugin($test,$undo, "ApiCommonData::Load::Plugin::InsertPDBSimilarity", $args);
 }
