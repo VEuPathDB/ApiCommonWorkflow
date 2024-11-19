@@ -252,4 +252,15 @@
     <depends name="registerPlugins"/>
   </subgraph>
 
+  <step name="initClusterHomeDir"
+    stepClass="ReFlow::StepClasses::InitClusterHomeDir">
+    <depends name="initUserGroupProject"/>
+  </step>
+
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="initClusterHomeDir"/>
+    <depends name="PDBProteinSequences_RSRC"/>
+  </step>
+
 </workflowGraph>
