@@ -15,7 +15,7 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $cmd = "makeGff.pl --extDbRlsId $extDbRlsId --outputFile ${$workflowDataDir}/${outputFile} --skipExtraAnnotation";
+  my $cmd = "makeGff.pl --gusConfigFile $gusConfigFile --extDbRlsId $extDbRlsId --outputFile ${workflowDataDir}/${outputFile} --skipExtraAnnotation";
 
   if ($undo) {
     $self->runCmd(0, "rm -f $workflowDataDir/$outputFile");

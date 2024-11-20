@@ -19,7 +19,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $globalDataDir = $workflowDataDir."/global";
 
-    my $args = "--interproResultsFile=$workflowDataDir/$interproResultsFile --interpro2GOFile=$workflowDataDir/$interpro2GOFile --confFile=$globalDataDir/$interproExtDbName/$configFile --aaSeqTable=$aaSeqTable --extDbName=\'$interproExtDbName\' --extDbRlsVer=\'$interproExtDbVer\' --goVersion=\'$goVersion\'";
+    my $args = "--interproResultsFile=$workflowDataDir/$interproResultsFile --interpro2GOFile=$globalDataDir/$interpro2GOFile --confFile=$globalDataDir/$interproExtDbName/$configFile --aaSeqTable=$aaSeqTable --extDbName=\'$interproExtDbName\' --extDbRlsVer=\'$interproExtDbVer\' --goVersion=\'$goVersion\'";
 
     #$self->testInputFile('inputDir', "$workflowDataDir/$interproResultsFile");
   
