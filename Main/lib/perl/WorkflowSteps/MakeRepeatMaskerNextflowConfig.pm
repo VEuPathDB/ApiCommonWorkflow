@@ -72,6 +72,11 @@ process{
 
 includeConfig "$clusterConfigFile"
 
+singularity {
+  runOptions = "--bind ${repeatMaskerDatabase}:/opt/RepeatMasker/Libraries/famdb"
+}
+
+
 NEXTFLOW
     print F $configString;
     close(F);
