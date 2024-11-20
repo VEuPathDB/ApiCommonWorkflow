@@ -39,7 +39,7 @@ sub run {
       my $configString = <<NEXTFLOW;
 params {
   inputDirectory = "$clusterWorkflowDataDir/$inputDir"
-  proteinFastaFile = $clusterWorkflowDataDir/$proteinSequenceFile"
+  proteinFastaFile = "$clusterWorkflowDataDir/$proteinSequenceFile"
   annotationGff =  "$clusterWorkflowDataDir/$inputAnnotationGff"
   proteinGffFileName = "$outputProteinGff"
   genomeGffFileName = "$outputGenomeGff"
