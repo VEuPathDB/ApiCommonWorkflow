@@ -44,13 +44,22 @@
     <depends name="mirrorToCluster"/>
   </step>
 
-  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+  <step name="mirrorResultsFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
     <paramValue name="fileOrDirToMirror">$$analysisDir$$/results</paramValue>
     <paramValue name="outputDir">$$analysisDir$$/results</paramValue>
     <paramValue name="outputFiles">*</paramValue>
     <paramValue name="deleteAfterCopy">true</paramValue>
     <depends name="runClusterTask"/>
   </step>
+
+  <step name="mirrorLogFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="fileOrDirToMirror">$$analysisDir$$/nextflow.txt</paramValue>
+    <paramValue name="outputDir">$$analysisDir$$</paramValue>
+    <paramValue name="outputFiles">nextflow.txt</paramValue>
+    <paramValue name="deleteAfterCopy">false</paramValue>
+    <depends name="runClusterTask"/>
+  </step>
+
 
   <step name="copyNextflowResultsToCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache" skipIfFile="$$foundNextflowResults$$">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
@@ -64,7 +73,8 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="mode">copyTo</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <depends name="mirrorFromCluster"/>
+    <depends name="mirrorResultsFromCluster"/>
+    <depends name="mirrorLogFromCluster"/>
   </step>
 
 </workflowGraph>
