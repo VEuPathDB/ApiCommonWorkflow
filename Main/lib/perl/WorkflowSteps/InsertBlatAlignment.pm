@@ -14,24 +14,25 @@ sub run {
   # for taxon IDs at all, which will involve changing the plugin. see redmine #5520
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $targetExtDbName = $self->getParamValue('targetExtDbName');
+  my $targetExtDbRlsSpec = $self->getParamValue('targetExtDbRlsSpec');
   my $targetTable = $self->getParamValue('targetTable');
   my $queryExtDbName = $self->getParamValue('queryExtDbName');
   my $queryTable = $self->getParamValue('queryTable');
   my $queryFile = $self->getParamValue('queryFile');
-  
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+ 
   my $queryRegex = '>(\S+)'; # this is the default and is used for all DNA Blat
 
   my $action = $self->getParamValue('action');
   my $percentTop = $self->getParamValue('percentTop');
   my $blatFile = $self->getParamValue('blatFile');
 
-  my $targetTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
-  my $queryTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesTaxonId();
+  my $targetTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
+  my $queryTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesTaxonId();
 
   my $targetTableId = $self->getTableId($test, $targetTable);
-  my $targetExtDbVer = $self->getExtDbVersion($test,$targetExtDbName);
-  my $targetExtDbRlsId = $self->getExtDbRlsId($test, "$targetExtDbName|$targetExtDbVer");
+  my $targetExtDbRlsId = $self->getExtDbRlsId($test, $targetExtDbRlsSpec);
   my $queryTableId = $self->getTableId($test, $queryTable);
   my $queryExtDbRlsId;
   if ($queryExtDbName) {

@@ -111,8 +111,11 @@ sub getIsDraftHash {
   my ($self, $organismAbbrevs, $test) = @_;
 
   my $hash = {};
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
   foreach my $organismAbbrev (@$organismAbbrevs) {
-    my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+    my $tmPrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
     my $sql = "select count(*)
                from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o, sres.ontologyterm so
                where so.name IN ('chromosome', 'supercontig')

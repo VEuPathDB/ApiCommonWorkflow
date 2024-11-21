@@ -7,6 +7,9 @@
   <param name="isReferenceStrain"/>
   <param name="genomicSeqsDir"/>
   <param name="gusConfigFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="projectName"/>
+  <param name="relativeWebServicesDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/mapTranscriptsToGenome</constant>
   <constant name="assemblySeqsDataDir">$$dataDir$$/makeAssemblySeqs</constant>
@@ -22,26 +25,31 @@
     <prop name="referenceStrainOrganismAbbrev"/>
 
   
-    <subgraph name="mapAssemblySeqsToGenome" xmlFile="blatDnaAgainstGenome.xml" skipIfFile="${referenceStrainOrganismAbbrev}/foundZeroESTs">
+    <subgraph name="$$organismAbbrev$$_mapESTsToGenome" xmlFile="blatDnaAgainstGenome.xml" skipIfFile="${referenceStrainOrganismAbbrev}/foundZeroESTs">
       <paramValue name="dataDir">$$parentDataDir$$/mapTranscriptsToGenome</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="targetSeqsDir">$$genomicSeqsDir$$</paramValue>
-      <paramValue name="targetExtDbName">$$organismAbbrev$$_primary_genome_RSRC</paramValue>
-      <paramValue name="queryFile">${referenceStrainOrganismAbbrev}/postLoadGenome/genome/ESTs/assemblySeqs/master/mainresult/blocked.seq</paramValue>
+      <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="queryFile">${referenceStrainOrganismAbbrev}/postLoadGenome/genome/ESTs/assemblySeqs/analysisDir/results/blocked.seq</paramValue>
       <paramValue name="queryTable">AssemblySequence</paramValue>
       <paramValue name="queryExtDbName"></paramValue>
+      <paramValue name="datasetSpec">$$organismAbbrev$$_ESTs</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
       <dependsExternal name="${referenceStrainOrganismAbbrev}_makeAndBlockAssemblySeqs"/>
     </subgraph>
 
-    <step name="document-mapAssemblySeqsToGenome"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation" skipIfFile="${referenceStrainOrganismAbbrev}/foundZeroESTs">
-      <paramValue name="method">blat_assembly_seqs_MTHD</paramValue>
-      <paramValue name="version">31</paramValue>
-      <paramValue name="parameters"></paramValue>
-      <depends name="mapAssemblySeqsToGenome"/>
-    </step>
-  </datasetTemplate>
+
+  <step name="toGFF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TranscriptSequencesToWebservices" skipIfFile="${referenceStrainOrganismAbbrev}/foundZeroESTs">
+    <paramValue name="dataDir">$$parentDataDir$$/mapTranscriptsToGenome</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="queryExtDbRlsSpec"></paramValue>
+    <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="$$organismAbbrev$$_mapESTsToGenome"/>
+  </step>
+
 
 </workflowGraph>

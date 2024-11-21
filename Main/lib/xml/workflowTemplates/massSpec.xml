@@ -2,6 +2,11 @@
   <param name="organismDatasetLoaderXmlFile"/>
   <param name="parentDataDir"/>
   <param name="gusConfigFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="proteinsFile"/>
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="relativeWebServicesDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/massSpec</constant>
 
@@ -9,30 +14,116 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <datasetTemplate class="massSpecPreprocessed">
-    <prop name="organismAbbrev"/> 
-    <prop name="name"/> 
-    <subgraph name="massSpec_${name}_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${organismAbbrev}_massSpec_${name}_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="makeDataDir"/>
-<!--<dependsGlobal name="oboOntologies"/>-->
-    </subgraph>
-  </datasetTemplate>
+  <step name="makeGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrgSpecificGffFile">
+    <paramValue name="outputFile">$$dataDir$$/$$organismAbbrev$$.gff</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="makeGffFile"/>
+  </step>
 
   <datasetTemplate class="massSpecPreprocessedNoOrfs">
     <prop name="organismAbbrev"/> 
-    <prop name="name"/> 
+    <prop name="name"/>
+    <prop name="version"/>
+
     <subgraph name="massSpec_${name}_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${organismAbbrev}_massSpec_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="makeDataDir"/>
-<!--<dependsGlobal name="oboOntologies"/>-->
+      <depends name="makeGffFile"/>
     </subgraph>
+
+    <step name="massSpec_${name}_analysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir</paramValue>
+      <depends name="massSpec_${name}_RSRC"/>
+    </step>
+
+    <step name="massSpec_${name}_results" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/results</paramValue>
+      <depends name="massSpec_${name}_analysisDir"/>
+    </step>
+
+    <step name="massSpec_${name}_annotation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+      <paramValue name="fromFile">$$dataDir$$/$$organismAbbrev$$.gff</paramValue>
+      <paramValue name="toFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/$$organismAbbrev$$.gff</paramValue>
+      <depends name="makeGffFile"/>
+      <depends name="massSpec_${name}_RSRC"/>
+    </step>
+
+    <step name="massSpec_${name}_nextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMassSpecNextflowConfig">
+      <paramValue name="inputProteinSequenceFile">$$proteinsFile$$</paramValue>
+      <paramValue name="inputDir">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/final</paramValue>
+      <paramValue name="inputAnnotationGffFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/$$organismAbbrev$$.gff</paramValue>
+      <paramValue name="outputPeptidesProteinAlignGff">ms_peptides_protein_align_${name}.gff</paramValue>
+      <paramValue name="outputPeptidesGenomeAlignGff">ms_peptides_genome_align_${name}.gff</paramValue>
+      <paramValue name="nextflowConfigFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/nextflow.config</paramValue>
+      <paramValue name="resultsDirectory">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/results</paramValue>
+      <depends name="massSpec_${name}_results"/>
+      <depends name="massSpec_${name}_annotation"/>
+
+    </step>
+
+    <subgraph name="massSpec_${name}_runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC</paramValue>
+      <paramValue name="nextflowConfigFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/nextflow.config</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="isProteomeAnalysis">true</paramValue>
+      <paramValue name="datasetSpec">${organismAbbrev}_massSpec_${name}_RSRC|${version}</paramValue>
+      <paramValue name="analysisDir">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/ms-peptides-nextflow</paramValue>
+      <depends name="massSpec_${name}_nextflowConfig"/>
+      <depends name="mirrorToCluster"/>
+    </subgraph>
+
+
+    <step name="massSpec_${name}_copyProteinGffToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="copyFromFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/results/ms_peptides_protein_align_${name}.gff.gz</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="indexSuffix">tbi</paramValue>
+      <paramValue name="fileType">gff</paramValue>
+      <paramValue name="dataType">genomeAndProteome</paramValue>
+      <depends name="massSpec_${name}_runNextflowOnCluster"/>
+    </step>
+
+    <step name="massSpec_${name}_copyGenomeGffToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="copyFromFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/results/ms_peptides_genome_align_${name}.gff.gz</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="indexSuffix">tbi</paramValue>
+      <paramValue name="fileType">gff</paramValue>
+      <paramValue name="dataType">genomeAndProteome</paramValue>
+      <depends name="massSpec_${name}_runNextflowOnCluster"/>
+    </step>
+
+
+  <step name="massSpec_${name}_insert"
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertMassSpecPeptides" stepLoadTypes="plugin">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="inputFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/results/ms_peptides_protein_align_${name}.gff.gz</paramValue>
+    <paramValue name="extDbRlsSpec">${organismAbbrev}_massSpec_${name}_RSRC|${version}</paramValue>
+    <depends name="massSpec_${name}_runNextflowOnCluster"/>
+  </step>
+
+
   </datasetTemplate>
+
+
+
+
+<!-- TODO:  Unified PostTranslationalModifications Track and Unified Genome peptides -->
+
 
 </workflowGraph>

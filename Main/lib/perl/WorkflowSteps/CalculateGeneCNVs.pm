@@ -17,9 +17,11 @@ sub run {
   my $ploidy = $self->getParamValue('ploidy');
   my $sampleName = $self->getParamValue('sampleName');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   $outputDir = "$workflowDataDir/$outputDir";
-  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
 
 
   my $sql = "with sequence as (

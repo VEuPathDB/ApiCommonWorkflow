@@ -12,7 +12,7 @@ sub run {
   my $organismFullName = $self->getParamValue('organismFullName');
   my $ncbiTaxonId = $self->getParamValue('ncbiTaxonId');
 
-  my $args = "--ncbiTaxId $ncbiTaxonId --rank 'no rank' --name '$organismFullName' --mode insert";
+  my $args = "--ncbiTaxId '$ncbiTaxonId' --rank 'no rank' --name '$organismFullName' --mode insert";
 
   $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertTaxonAndTaxonName", $args);
 

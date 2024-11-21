@@ -13,20 +13,20 @@ sub run {
   my $spanLengthCutoff = $self->getParamValue('spanLengthCutoff');
   my $includeMultipleSpans = $self->getParamValue('includeMultipleSpans');
   my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $dataDir = $self->getParamValue('dataDir');
   my $exteralDatabaseName = $self->getParamValue('externalDatabaseName');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $workingDirectory = "${workflowDataDir}/$dataDir";
 
-  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/clonedInsertEnds/";
-
-  my $fileBaseName = "${externalDatabaseName}";
+  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/genomeAndProteome/gff/";
 
   my $cmd = "clonedInsertEndsToGff.pl --external_database_name '$externalDatabaseName' --output_directory $workingDirectory --source_id_field $sourceIdField  --source_id_joining_regex '$sourceIdJoiningRegex' --span_length_cutoff $spanLengthCutoff --include_multiple_spans $includeMultipleSpans --gus_config $gusConfigFile";
 

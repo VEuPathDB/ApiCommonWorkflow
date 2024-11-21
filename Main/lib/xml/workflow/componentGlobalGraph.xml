@@ -1,8 +1,11 @@
 
 <workflowGraph name="componentGlobal">
   <param name="projectName"/>
+  <param name="commonDatasetLoaderXmlFile"/>
+  <param name="globalDatasetLoaderXmlFile"/>
 
-  <constant name="globalDatasetLoaderXmlFile">component.xml</constant>
+
+
   <constant name="gusConfigFile">$$projectName$$_gus.config</constant>
   <constant name="dataDir">componentGlobal</constant>
 
@@ -25,6 +28,7 @@
     <paramValue name="dbName"/>
     <paramValue name="dataDir"/>
     <paramValue name="gusConfigFilename">$$gusConfigFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
     <depends name="makeDatabase"/>
   </step>
 
@@ -34,6 +38,10 @@
     <depends name="makeGusConfig"/>
   </step>
 
+  <step name="registerPlugins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RegisterPlugins">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="initUserGroupProject"/>
+  </step>
 
   <!-- loading sequence ontology and ptmt;  these are small so ok to do here in component land-->
   <subgraph name="SO_RSRC" xmlFile="loadDataset.xml">
@@ -41,7 +49,7 @@
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
 
@@ -50,7 +58,7 @@
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
   <subgraph name="Ontology_ptmt_RSRC" xmlFile="loadDataset.xml">
@@ -67,7 +75,7 @@
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
   <subgraph name="GO_evidence_codes_RSRC" xmlFile="loadDataset.xml">
@@ -75,7 +83,7 @@
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
 
@@ -101,7 +109,7 @@
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <depends name="registerPlugins"/>
   </subgraph>
 
 </workflowGraph>

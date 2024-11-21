@@ -5,6 +5,8 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 use ApiCommonWorkflow::Main::Util::OrganismInfo;
 
+use File::Basename;
+
 sub run {
   my ($self, $test, $undo) = @_;
 
@@ -13,17 +15,22 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $relativeDownloadDir = $self->getParamValue('relativeDownloadDir');
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
   my $organismNameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
   my $copyToDir = "$websiteFilesDir/$relativeDownloadDir/$organismNameForFiles/gff/data";
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cmd_copy = "cp $workflowDataDir/$copyFromFile $copyToDir";
 
-
-  $self->testInputFile('copyFromFile', "$workflowDataDir/$copyFromFile");
+  my $basename = basename $copyFromFile;
+  
+  #$self->testInputFile('copyFromFile', "$workflowDataDir/$copyFromFile");
   if ($undo) {
-    $self->runCmd(0, "rm -f $copyToDir/Orf50.gff");
+    $self->runCmd(0, "rm -f $copyToDir/$basename");
   } else {
     $self->runCmd($test, $cmd_copy);
   }

@@ -1,12 +1,16 @@
-<workflowGraph name="">
+<workflowGraph name="mapTranscriptSequences">
   <param name="dataDir"/>
   <param name="datasetName"/>
+  <param name="datasetSpec"/>
   <param name="maxIntronSize"/>
   <param name="organismAbbrev"/>
   <param name="genomicSeqsFile"/>
   <param name="genomicSeqsDir"/>
   <param name="gusConfigFile"/>
-
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="projectName"/>
+  <param name="relativeWebServicesDir"/>
+  
   <constant name="transcriptSeqFile">$$dataDir$$/transcriptSeqFile.fsa</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -14,40 +18,45 @@
   </step>
 
   <step name="extractTranscriptSeqs"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
-      <paramValue name="extDbName">$$datasetName$$</paramValue>
-      <paramValue name="table">ExternalNASequence</paramValue>
-      <paramValue name="alternateDefline">source_id, description, 'length='||length</paramValue>
-      <paramValue name="outputFile">$$transcriptSeqFile$$</paramValue>
-      <paramValue name="separateFastaFiles">false</paramValue>
-      <paramValue name="outputDirForSeparateFiles"></paramValue>
-      <depends name="makeDataDir"/> 
-    </step>
+        stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+    <paramValue name="extDbName">$$datasetName$$</paramValue>
+    <paramValue name="table">ExternalNASequence</paramValue>
+    <paramValue name="alternateDefline">source_id, description, 'length='||length</paramValue>
+    <paramValue name="outputFile">$$transcriptSeqFile$$</paramValue>
+    <paramValue name="separateFastaFiles">false</paramValue>
+    <paramValue name="outputDirForSeparateFiles"></paramValue>
+    <depends name="makeDataDir"/>
+  </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="extractTranscriptSeqs"/>
-    </step>
+  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+    <depends name="extractTranscriptSeqs"/>
+  </step>
 
-    <subgraph name="mapToGenome" xmlFile="blatDnaAgainstGenome.xml">
-      <paramValue name="dataDir">$$dataDir$$/transcriptSeqsBlat</paramValue>
-      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="targetSeqsDir">$$genomicSeqsDir$$</paramValue>
-      <paramValue name="targetExtDbName">$$organismAbbrev$$_primary_genome_RSRC</paramValue>
-      <paramValue name="queryFile">$$transcriptSeqFile$$</paramValue>
-      <paramValue name="queryTable">ExternalNASequence</paramValue>
-      <paramValue name="queryExtDbName">$$datasetName$$</paramValue>
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="mirrorToCluster"/>
-    </subgraph>
+  <subgraph name="blat" xmlFile="blatDnaAgainstGenome.xml">
+    <paramValue name="dataDir">$$dataDir$$/blat</paramValue>
+    <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="targetSeqsDir">$$genomicSeqsDir$$</paramValue>
+    <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="queryFile">$$transcriptSeqFile$$</paramValue>
+    <paramValue name="queryTable">ExternalNASequence</paramValue>
+    <paramValue name="queryExtDbName">$$datasetName$$</paramValue>
+    <paramValue name="datasetSpec">$$datasetName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="mirrorToCluster"/>
+  </subgraph>
 
-    <step name="document-map_transcript_Sequences"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">map_transcript_Sequences_MTHD</paramValue>
-      <paramValue name="version">1.0</paramValue>
-      <paramValue name="parameters">TODO: patch in later</paramValue>
-    </step>
 
+  <step name="toGFF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TranscriptSequencesToWebservices">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="queryExtDbRlsSpec">$$datasetSpec$$</paramValue>
+    <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="blat"/>
+  </step>
 
 </workflowGraph>

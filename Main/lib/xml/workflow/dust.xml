@@ -1,0 +1,95 @@
+<workflowGraph name="dust">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="genomicSequenceFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="isNotEbiGenome"/>
+
+  <constant name="dataDir">$$parentDataDir$$/dust</constant>
+
+  <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
+  <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
+
+  <constant name="ebi2gusOutputDirectory">$$parentDataDir$$/../../loadGenome/$$organismAbbrev$$_primary_genome_RSRC/ebi2gus_output</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+     <paramValue name="dataDir">$$analysisDirectory$$</paramValue>
+     <depends name="makeDataDir"/>
+  </step>
+
+  <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+     <paramValue name="dataDir">$$resultsDirectory$$</paramValue>
+     <depends name="makeAnalysisDir"/>
+  </step>
+
+
+  <!-- These steps grab bed file from ebi if we are an ebi genome -->
+  <step name="copyBed" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="!$$isNotEbiGenome$$">
+     <paramValue name="fromFile">$$ebi2gusOutputDirectory$$/dust.bed.gz</paramValue>
+     <paramValue name="toFile">$$resultsDirectory$$/lowComplexity.bed.gz</paramValue>
+     <depends name="makeResultDir"/>
+  </step>
+
+  <step name="copyBedIndex" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="!$$isNotEbiGenome$$">
+     <paramValue name="fromFile">$$ebi2gusOutputDirectory$$/dust.bed.gz.tbi</paramValue>
+     <paramValue name="toFile">$$resultsDirectory$$/lowComplexity.bed.gz.tbi</paramValue>
+     <depends name="makeResultDir"/>
+  </step>
+
+
+  <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDustNextflowConfig" includeIf="$$isNotEbiGenome$$">
+    <paramValue name="genomicSequenceFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
+    <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+    <paramValue name="outputFileName">lowComplexity.bed</paramValue>
+    <depends name="makeResultDir"/>
+
+  </step>
+
+  <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml" includeIf="$$isNotEbiGenome$$">
+     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue> <!-- NAME|version -->
+    <paramValue name="isProteomeAnalysis">false</paramValue>
+    <paramValue name="datasetSpec"></paramValue>
+    <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/low-complexity-nextflow</paramValue>
+    <depends name="makeNextflowConfig"/>
+  </subgraph>
+
+
+  <step name="insertLowComplexity" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBedGraph" stepLoadTypes="plugin">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="bedFile">$$resultsDirectory$$/lowComplexity.bed.gz</paramValue>
+    <paramValue name="algorithm">dustmasker</paramValue>
+    <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <depends name="runNextflowOnCluster"/>
+    <depends name="copyBed"/>
+  </step>
+
+  <step name="copyToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+     <paramValue name="copyFromFile">$$resultsDirectory$$/lowComplexity.bed.gz</paramValue>
+     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+     <paramValue name="indexSuffix">tbi</paramValue>
+     <paramValue name="fileType">bed</paramValue>
+     <paramValue name="dataType">genomeAndProteome</paramValue>
+     <depends name="copyBed"/>
+     <depends name="copyBedIndex"/>
+     <depends name="runNextflowOnCluster"/>
+   </step>
+
+
+</workflowGraph>

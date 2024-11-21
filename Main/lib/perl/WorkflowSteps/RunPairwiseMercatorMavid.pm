@@ -165,8 +165,10 @@ sub findOrganismAbbrevs {
 
 sub ifSkipOnSoTermName {
 	my ($self, $organismAbbrev, $test) = @_;
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-	my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+	my $tmPrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
 	my $sql = "select distinct sa.sequence_type, organism from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o where o.taxon_id = sa.taxon_id and o.is_annotated_genome = 1";
 
 	my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
@@ -190,8 +192,11 @@ sub getIsDraftHash {
 	my ($self, $organismAbbrevs, $test) = @_;
 
 	my $hash = {};
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
 	foreach my $organismAbbrev (@$organismAbbrevs) {
-		my $tmPrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+		my $tmPrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
 
 		my $sql = "select count(*)
 			from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o, sres.ontologyterm ot 

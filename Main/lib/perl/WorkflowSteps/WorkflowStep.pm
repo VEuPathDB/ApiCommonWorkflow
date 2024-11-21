@@ -229,17 +229,17 @@ sub getAlgInvIds {
 }
 
 sub getOrganismInfo {
-  my ($self, $test, $organismAbbrev) = @_;
+  my ($self, $test, $organismAbbrev, $gusConfigFile) = @_;
 
   die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
   if (!$self->{organismInfo}->{$organismAbbrev}) {
-    my $orgGusConfig = $self->getWorkflowDataDir() . "/${organismAbbrev}/${organismAbbrev}_gus.config";
-    unless(-e $orgGusConfig) {
-      $self->error("$orgGusConfig file does not exist");
+    #my $orgGusConfig = $gusConfigFile ? $gusConfigFile : $self->getWorkflowDataDir() . "/${organismAbbrev}/${organismAbbrev}_gus.config";
+    unless(-e $gusConfigFile) {
+      $self->error("The gus config file: $gusConfigFile file does not exist");
     }
 
-    $self->{organismInfo}->{$organismAbbrev} = ApiCommonWorkflow::Main::Util::OrganismInfo->new($self, $test, $organismAbbrev, $orgGusConfig);
+    $self->{organismInfo}->{$organismAbbrev} = ApiCommonWorkflow::Main::Util::OrganismInfo->new($self, $test, $organismAbbrev, $gusConfigFile);
   }
   return $self->{organismInfo}->{$organismAbbrev};
 }
@@ -265,8 +265,8 @@ sub getWebsiteFilesDir {
 # that should be no more than three characters. 4_char_prefix + 4_char_suffix --> table name <= 22 
 # a table name must start w/ a letter, for example "p21_".
 sub getTuningTablePrefix {
-    my ($self, $organismAbbrev, $test) = @_;
-    my $organismId = $self->getOrganismInfo($test, $organismAbbrev)->getOrganismId();
+    my ($self, $test, $organismAbbrev, $gusConfigFile) = @_;
+    my $organismId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getOrganismId();
     return "P${organismId}_";
 }
 

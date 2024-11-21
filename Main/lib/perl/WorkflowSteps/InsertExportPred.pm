@@ -17,7 +17,7 @@ sub run {
   my $args = "--inputFile $workflowDataDir/$inputFile --seqTable DoTS::AASequence --seqExtDbRlsSpec '$genomeExtDbRlsSpec' --extDbRlsSpec '$genomeExtDbRlsSpec'";
 
 
-    $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+  #$self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertExportPredFeature", $args);
