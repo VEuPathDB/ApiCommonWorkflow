@@ -9,45 +9,58 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
     my ($self, $test, $undo) = @_;
-   
+
+    my $chunkSize = 500;
+    my $maxForks = 10;
+
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
-    my $results = join("/", $clusterWorkflowDataDir, $self->getParamValue("clusterResultDir"));
-    my $refFasta = join("/",$clusterWorkflowDataDir, $self->getParamValue("refFasta"));
-    my $peptidesTab = join("/",$clusterWorkflowDataDir, $self->getParamValue("peptidesTab"));
+    my $clusterServer = $self->getSharedConfig('clusterServer');
+
+    my $resultsDirectory = $self->getParamValue("resultsDirectory");
+
+    my $proteinSequenceFile = $self->getParamValue("proteinSequenceFile");
+
+    my $iedbPeptidesTabFile = $self->getParamValue("peptidesTab");
+
     my $ncbiTaxon = $self->getParamValue("ncbiTaxon");
     my $peptideMatchResults = $self->getParamValue("peptideMatchResults");
     my $peptidesFilteredBySpeciesFasta = $self->getParamValue("peptidesFilteredBySpeciesFasta");
     my $peptideMatchBlastCombinedResults = $self->getParamValue("peptideMatchBlastCombinedResults");
-    my $configPath = join("/", $self->getWorkflowDataDir(), $self->getParamValue("configFileName"));
 
+    my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
 
-   if ($undo) {
-    $self->runCmd(0,"rm -rf $configPath");
-  } else {  
+    my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
+    my $executor = $self->getClusterExecutor();
+    my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
-    open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
- print F
-  " 
- params {
-   refFasta = \"$refFasta\" 
-   peptidesTab = \"$peptidesTab\"
+    if ($undo) {
+        $self->runCmd(0, "rm $workflowDataDir/$nextflowConfigFile");
+    } else {
+        my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
+        open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
+
+        my $configString = <<NEXTFLOW;
+params {
+   refFasta = "$clusterWorkflowDataDir/$proteinSequenceFile"
+   peptidesTab = "$clusterWorkflowDataDir/$iedbPeptidesTabFile"
    taxon = $ncbiTaxon
-   peptideMatchResults = \"$peptideMatchResults\"
-   peptidesFilteredBySpeciesFasta = \"$peptidesFilteredBySpeciesFasta\"
-   peptideMatchBlastCombinedResults = \"$peptideMatchBlastCombinedResults\"
-   chunkSize = 500
-   results = \"$results\"
+   peptideMatchResults = "$peptideMatchResults"
+   peptidesFilteredBySpeciesFasta = "$peptidesFilteredBySpeciesFasta"
+   peptideMatchBlastCombinedResults = "$peptideMatchBlastCombinedResults"
+   chunkSize = $chunkSize
+   results = "$clusterWorkflowDataDir/$resultsDirectory"
+}
 
-   }
+process {
+    maxForks = $maxForks
+}
 
-    singularity {
-    enabled = true
-    autoMounts = true
-   }
-  "
+includeConfig "$clusterConfigFile"
 
-  }
+NEXTFLOW
 
+        print F $configString;
+        close(F);
+    }
 }
 1;

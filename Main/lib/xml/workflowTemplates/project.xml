@@ -321,7 +321,7 @@
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${referenceStrainOrganismAbbrev}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/genome.fasta</paramValue>
+      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
 
@@ -513,17 +513,6 @@
       <depends name="${organismAbbrev}_PARFeatures"/>
     </subgraph>
 
- <!--this needs to run once per reference strain should this be a template?-->
-   <!--or move this into the organism template -->
-    <subgraph name="${organismAbbrev}_epitope_sequences_IEDB"  includeIf="${isReferenceStrain}  &amp;&amp; ${isAnnotatedGenome}"  xmlFile="mapEpitopeNextflow.xml">
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
-      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-      <paramValue name="datasetName">EpitopeMapping_${organismAbbrev}</paramValue>
-      <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="ncbiTaxon">${speciesNcbiTaxonId}</paramValue>
-      <depends name="${organismAbbrev}_LoadGenome"/>
-      <dependsGlobal name="component_epitope_IEDB_RSRC"/>
-    </subgraph>
 
   </datasetTemplate>
 
