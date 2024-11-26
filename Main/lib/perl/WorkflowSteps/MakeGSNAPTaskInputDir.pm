@@ -19,7 +19,7 @@ sub run {
   my $spliceSitesDatabase = $self->getParamValue("spliceSitesDatabase");
   my $maskFile = $self->getParamValue("maskFile");
   my $geneFootprintFile = $self->getParamValue("geneFootprintFile");
-  my $topLevelFastaFile = $self->getParamValue("topLevelFastaFile");
+  my $genomeFastaFile = $self->getParamValue("genomeFastaFile");
   my $gmapDatabase = $self->getParamValue("gmapDatabase");
   my $gsnapDirectory = $self->getParamValue("gsnapDirectory");
   my $quantify = $self->getParamValue("quantify");
@@ -78,7 +78,7 @@ writeCovFiles=$writeCovFiles
 isStrandSpecific=$strandSpecific
 quantifyJunctions=$createJunctionsFile
 geneFootprintFile=$clusterWorkflowDataDir/$geneFootprintFile
-topLevelFastaFaiFile=$clusterWorkflowDataDir/$topLevelFastaFile.fai
+topLevelFastaFaiFile=$clusterWorkflowDataDir/$genomeFastaFile.fai
 hasKnownSpliceSites=$useSpliceSiteDB
 hasPairedEnds=$hasPairedEnds
 ";

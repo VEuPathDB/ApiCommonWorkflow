@@ -313,7 +313,7 @@
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_dnaseq_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/dnaseq.xml" excludeIfXmlFileDoesNotExist="true">
+    <subgraph name="${organismAbbrev}_dnaseq" xmlFile="generated/${projectName}/${organismAbbrev}/dnaseq.xml" excludeIfXmlFileDoesNotExist="true">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -322,11 +322,11 @@
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${referenceStrainOrganismAbbrev}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
+      <paramValue name="genomeFastaFile">${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_hisat_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/hisat.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+    <subgraph name="${organismAbbrev}_hisat" xmlFile="generated/${projectName}/${organismAbbrev}/hisat.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -335,12 +335,12 @@
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$dataDir$$/${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
+      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_ebi_rnaseq_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/ebiRNASeq.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+    <subgraph name="${organismAbbrev}_ebi_rnaseq" xmlFile="generated/${projectName}/${organismAbbrev}/ebiRNASeq.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -349,14 +349,14 @@
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$dataDir$$/${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
+      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
     <step name="${organismAbbrev}_PARJunctions" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARJunctions"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
      <paramValue name="mappingFile">$$dataDir$$/${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
-      <depends name="${organismAbbrev}_ebi_rnaseq_topLevel"/>
+      <depends name="${organismAbbrev}_ebi_rnaseq"/>
     </step>
 
     <subgraph name="${organismAbbrev}_ebi_VCF" xmlFile="generated/${projectName}/${organismAbbrev}/ebiVCFfile.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
@@ -399,7 +399,7 @@
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_specific_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/organismSpecificOnTopLevelGenome.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+    <subgraph name="${organismAbbrev}_specific" xmlFile="generated/${projectName}/${organismAbbrev}/organismSpecificOnMaskedGenome.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
