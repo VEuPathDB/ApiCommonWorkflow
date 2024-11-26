@@ -226,11 +226,11 @@
     </step>
 
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
-    <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskTopLevelGenome" xmlFile="maskGenome.xml" groupName="${organismAbbrev}">
-      <paramValue name="genomicSeqsFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
+    <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome" xmlFile="maskGenome.xml" groupName="${organismAbbrev}">
+      <paramValue name="loadGenomeFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
+      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}/maskGenome</paramValue>
-      <paramValue name="topLevelFastaFile">$$dataDir$$/${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -256,7 +256,7 @@
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="projectName">${projectName}</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
       <dependsGlobal name="NRDB_RSRC"/>
     </subgraph>
 
@@ -272,7 +272,7 @@
       <paramValue name="strainsComparisonInputDir">$$dataDir$$/${referenceStrainOrganismAbbrev}_strainsComparisonInput</paramValue>
       <depends name="makeComparativeGenomicsDir"/>
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
     <subgraph name="${organismAbbrev}_PostLoadGenome" xmlFile="postLoadGenome.xml" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
@@ -298,7 +298,7 @@
       <depends name="${organismAbbrev}_LoadGenome"/>
       <dependsGlobal name="Ontology_ptmt_RSRC"/> <!-- this is needed for loading mass spec data -->
     </subgraph>
-    <subgraph name="${organismAbbrev}_gsnap_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/gsnap.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+    <subgraph name="${organismAbbrev}_gsnap" xmlFile="generated/${projectName}/${organismAbbrev}/gsnap.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -308,9 +308,9 @@
       <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
+      <paramValue name="genomeFastaFile">${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_dnaseq_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/dnaseq.xml" excludeIfXmlFileDoesNotExist="true">
@@ -323,7 +323,7 @@
       <paramValue name="referenceStrainOrganismAbbrev">${referenceStrainOrganismAbbrev}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="topLevelFastaFile">${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_hisat_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/hisat.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
@@ -337,7 +337,7 @@
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="topLevelFastaFile">$$dataDir$$/${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_ebi_rnaseq_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/ebiRNASeq.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
@@ -350,7 +350,7 @@
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="topLevelFastaFile">$$dataDir$$/${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
     <step name="${organismAbbrev}_PARJunctions" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARJunctions"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
@@ -368,7 +368,7 @@
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
 
@@ -381,7 +381,7 @@
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
 
@@ -396,7 +396,7 @@
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_specific_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/organismSpecificOnTopLevelGenome.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
@@ -405,7 +405,7 @@
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_LoadAliases" xmlFile="generated/${projectName}/${organismAbbrev}/aliases.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
@@ -477,7 +477,7 @@
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="mode">early</paramValue>
       <depends name="${organismAbbrev}_PostLoadGenome"/>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_LateVirtualLocations" xmlFile="virtualLocations.xml" groupName="${organismAbbrev}">
@@ -508,7 +508,7 @@
       <paramValue name="isNotEbiGenome">${isNotEbiGenome}</paramValue>
       <depends name="${organismAbbrev}_PostLoadGenome"/>
       <depends name="${organismAbbrev}_specific"/>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
       <depends name="${organismAbbrev}_LateVirtualLocations"/>
       <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
       <depends name="${organismAbbrev}_PARFeatures"/>
@@ -529,18 +529,18 @@
     <paramValue name="areBigGenomes">$$areBigGenomes$$</paramValue>
     <paramValue name="comparativeGenomicsInputDir">$$comparativeGenomicsInputDir$$</paramValue>
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-    <dependsPattern name="*_MaskTopLevelGenome"/>
+    <dependsPattern name="*_MaskGenome"/>
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </subgraph>
 -->
-  <!-- depends on MaskTopLevelGenome, MakeCompGenomicsFiles AND VIRTUAL FEATURE LOCATIONS-->
+  <!-- depends on MaskGenome, MakeCompGenomicsFiles AND VIRTUAL FEATURE LOCATIONS-->
 <!--webdb test
   <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid" excludeIf="$$areBigGenomes$$" >
     <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
     <paramValue name="mercatorOutputsDir">$$dataDir$$/mercatorOutput</paramValue>
     <paramValue name="mercatorCacheDir">$$dataDir$$/mercatorCache</paramValue>
     <paramValue name="mercatorTmpDir">$$dataDir$$/mercatorTmp</paramValue>
-    <dependsPattern name="*_MaskTopLevelGenome"/>
+    <dependsPattern name="*_MaskGenome"/>
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </step>
 
@@ -570,7 +570,7 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="strainsComparisonDir">$$dataDir$$/${organismAbbrev}_strainsComparisonInput</paramValue>
-      <dependsPattern name="${organismAbbrev}_*_MaskTopLevelGenome"/>
+      <dependsPattern name="${organismAbbrev}_*_MaskGenome"/>
       <dependsPattern name="${organismAbbrev}_*_MakeCompGenomicsFiles"/>
     </subgraph>
     -->
