@@ -11,6 +11,7 @@
   <param name="relativeDownloadSiteDir"/>
   <param name="ncbiTaxonId"/>
   <param name="relativeWebServicesDir"/>
+  <param name="isReferenceStrain"/>
 
   <constant name="dataDir">$$parentDataDir$$/proteome</constant>
 
@@ -105,15 +106,20 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <!-- a step in this subgraph uses a dependsExternal to depend on the
-         reference strain loading of epitopes -->
-    <subgraph name="mapEpitopesToProteins" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/mapEpitopes.xml" excludeIfXmlFileDoesNotExist="true">
+    <!-- iedb peptide mapping for reference strains -->
+    <subgraph name="iedb"  includeIf="${isReferenceStrain}" xmlFile="mapIedbEpitope.xml">
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="proteinsFileWithBlastDb">$$proteinsFile$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="proteinSequenceFile">$$proteinsFile$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="makeProteinsBlastDb"/>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="iedbTabFile">global/epitope_sequences_IEDB/iedb.tab</paramValue>
+      <depends name="makeDataDir"/>
+      <dependsGlobal name="IEDBDatasetLoader"/>
     </subgraph>
 
 
@@ -165,7 +171,7 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="pdbFastaFile">global/PDBProteinSequences_RSRC/pdb.fsa.gz</paramValue>
+      <paramValue name="pdbFastaFile">global/PDBProteinSequences_RSRC/pdb.fsa</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <depends name="makeDataDir"/>
