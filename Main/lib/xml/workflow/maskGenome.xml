@@ -1,4 +1,5 @@
-<workflowGraph name="makeAndMaskTopLevelGenome">
+<workflowGraph name="maskGenome">
+  <param name="genomicSeqsFile"/>
   <param name="gusConfigFile"/>
   <param name="dataDir"/>
   <param name="topLevelFastaFile"/>
@@ -12,33 +13,25 @@
   <param name="genomicSeqsFile"/>
   <param name="relativeWebServicesDir"/>
   <param name="speciesNcbiTaxonId"/>
+
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <step name="makeDerivedTables" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDerivedTables" stepLoadTypes="tuningManager">
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="tables">SequencePieceClosure,GenomicSeqAttributes,TaxonSpecies</paramValue>
-    <depends name="makeDataDir"/>
-  </step>
-
-  <!-- ApidbTuning.GenomicSeqAttributes -->
-  <step name="extractTopLevelFastaSeqs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractTopLevelFastaSeqs">
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="outputFile">$$topLevelFastaFile$$</paramValue>
-    <depends name="makeDerivedTables"/>
-  </step>
-
   <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
      <paramValue name="dataDir">$$dataDir$$/analysisDir/</paramValue>
-     <depends name="extractTopLevelFastaSeqs"/>
+    <depends name="makeDataDir"/>
   </step>
 
   <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
      <paramValue name="dataDir">$$dataDir$$/analysisDir/results/</paramValue>
      <depends name="makeAnalysisDir"/>
+  </step>
+
+  <step name="symLinkGenomicSeqsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="toFile">$$topLevelFastaFile$$</paramValue>
+    <depends name="makeDataDir"/>
   </step>
 
   <step name="copyRepeatMaskedFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="!$$isNotEbiGenome$$">
@@ -91,12 +84,6 @@
     <depends name="makeRepeatMaskerNextflowConfig"/>
   </subgraph>
 
-  <step name="document-mask_top_level_genome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <paramValue name="method">mask_top_level_genome_MTHD</paramValue>
-    <paramValue name="version">1.0</paramValue>
-    <paramValue name="parameters">TODO: patch in later</paramValue>
-  </step>
 
   <step name="copyToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
