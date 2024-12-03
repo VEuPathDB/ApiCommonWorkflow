@@ -47,7 +47,7 @@ sub run {
             $datasetSpec =~ s/\|/_/g;
         }
         else {
-            $datasetSpec = $self->getDatasetSpecFromName($datasetSpec);
+            $datasetSpec = $self->getDatasetSpecFromName($test, $datasetSpec);
         }
 
 
@@ -134,7 +134,7 @@ sub copyTo {
 }
 
 sub getDatasetSpecFromName {
-    my ($self, $datasetName) = @_;
+    my ($self,$test,$datasetName) = @_;
 
 
     my $sql = "SELECT name || '_' ||  version as spec

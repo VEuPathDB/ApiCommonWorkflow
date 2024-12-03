@@ -40,14 +40,16 @@ sub run {
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
     my $speciesNcbiTaxonId= $self->getParamValue('speciesNcbiTaxonId');
-    my $speciesName = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesNameFromNcbiTaxId($speciesNcbiTaxonId);
 
-    my $speciesOverride = $self->getConfig('speciesOverride',1);
-    if ($speciesOverride) {
-        my ($speciesToOverride, $speciesThatOverrides) = split(/,\s*/, $speciesOverride);
-        #|| die "Config property speciesOverride has an invalid value: '$speciesOverride'.  It must be of the form 'speciesToOverride, speciesThatOverrides'\n";
-        $speciesName = $speciesThatOverrides if $speciesName eq $speciesToOverride;
-    }
+    #my $speciesName = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesNameFromNcbiTaxId($speciesNcbiTaxonId);
+
+     my $speciesNcbiTaxonIdOverride = $self->getConfig('speciesNcbiTaxonIdOverride',1);
+     if ($speciesOverride) {
+    #     my ($speciesToOverride, $speciesThatOverrides) = split(/,\s*/, $speciesOverride);
+    #     #|| die "Config property speciesOverride has an invalid value: '$speciesOverride'.  It must be of the form 'speciesToOverride, speciesThatOverrides'\n";
+    #     $speciesName = $speciesThatOverrides if $speciesName eq $speciesToOverride;
+       $speciesNcbiTaxonId = $speciesNcbiTaxonIdOverride;
+     }
 
     if ($undo) {
 	$self->runCmd(0,"rm -rf $configPath");
@@ -60,7 +62,8 @@ params {
   fastaSubsetSize = $fastaSubsetSize
   trimDangling = $trimDangling
   dangleMax = $dangleMax
-  rmParams = "$rmParams -species '$speciesName'"
+  rmParams = "$rmParams"
+  taxonId = $speciesNcbiTaxonId
   outputFileName = "$outputFileName"
   errorFileName = "$errorFileName"
   outputDir = "$outputDir"
