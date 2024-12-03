@@ -14,6 +14,11 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+  <!-- mirror this dir to cluster before anything is added to it -->
+  <step name="mirrorDataDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+        <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
+        <depends name="makeComponentDir"/>
+   </step>
 
   <step name="makeDatabase" stepClass="ReFlow::StepClasses::MakeDatabase">
     <paramValue name="dbName"/>
@@ -81,6 +86,23 @@
     <depends name="registerPlugins"/>
   </subgraph>
 
+
+
+  <!-- TODO:  Replace this with call to new subgraph which will call loadDataset.xml AND mirror tab+protinFasta to cluster -->
+  <subgraph name="component_epitope_IEDB_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">component_epitope_IEDB_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="initUserGroupProject"/>
+  </subgraph>
+
+  <!-- mirror epitope files here -->
+   <step name="mirrorEpitopoeToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
+        <paramValue name="fileOrDirToMirror">$$dataDir$$/component_epitope_IEDB_RSRC</paramValue>
+        <depends name="component_epitope_IEDB_RSRC"/>
+        <depends name="mirrorDataDirToCluster"/>
+   </step>
 
   <subgraph name="NRDB_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">NRDB_RSRC</paramValue>

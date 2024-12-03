@@ -43,8 +43,16 @@ sub run {
 
     my $datasetDirectory = $isProteomeAnalysis ? "genesAndProteins" : "genome";
     if($datasetSpec) {
-	$datasetSpec =~ s/\|/_/g;
-	$datasetDirectory = $datasetSpec;
+        if(/\|/) {
+            $datasetSpec =~ s/\|/_/g;
+        }
+        else {
+            $datasetSpec = $self->getDatasetSpecFromName($test, $datasetSpec);
+        }
+
+
+
+        $datasetDirectory = $datasetSpec;
     }
 
     my $cacheDir = "$cacheDirBase/$datasetDirectory/$nextflowDirectory";
@@ -125,7 +133,26 @@ sub copyTo {
 
 }
 
+sub getDatasetSpecFromName {
+    my ($self,$test,$datasetName) = @_;
 
+
+    my $sql = "SELECT name || '_' ||  version as spec
+FROM apidb.datasource d
+WHERE name = '${datasetName}'";
+
+    my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
+
+    my $cmd = "getValueFromTable --idSQL \"$sql\" $gusConfigFile ";
+
+    my $datasetSpec = $self->runCmd($test, $cmd);
+
+    unless($datasetSpec) {
+        $self->error("could not determine datasetSpec for dataset name=$datasetName");
+    }
+    return $datasetSpec
+
+}
 sub getMd5DigestForAnnotationSpecs {
     my ($self, $test, $organismAbbrev) = @_;
 

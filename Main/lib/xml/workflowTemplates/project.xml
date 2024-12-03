@@ -82,14 +82,15 @@
     <depends name="makeDataDir"/>
   </step>
 
+
   <datasetTemplate class="organism">
     <prop name="organismAbbrev"/>
     <prop name="projectName"/>
-    <prop name="ncbiTaxonId"/>
     <prop name="publicOrganismAbbrev"/>
     <prop name="organismFullName"/>
     <prop name="organismNameForFiles"/>
     <prop name="ncbiTaxonId"/>
+    <prop name="speciesNcbiTaxonId"/>
     <prop name="isReferenceStrain"/>
     <prop name="isFamilyRepresentative"/>
     <prop name="familyRepOrganismAbbrev"/>
@@ -320,7 +321,7 @@
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${referenceStrainOrganismAbbrev}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/genome.fasta</paramValue>
+      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
     </subgraph>
 
@@ -512,6 +513,7 @@
       <depends name="${organismAbbrev}_PARFeatures"/>
     </subgraph>
 
+
   </datasetTemplate>
 
   <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables">
@@ -640,8 +642,8 @@
 
   <datasetTemplate class="compoundMassSpec">
     <prop name="experimentName"/>
-ec
     <subgraph name="compoundMassSpec_${experimentName}_RSRC" xmlFile="loadDataset.xml">
+
       <paramValue name="datasetName">compoundMassSpec_${experimentName}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$/metabolomics</paramValue>
@@ -762,4 +764,7 @@ ec
     </subgraph>
   </datasetTemplate>
 -->
+
+
+
 </workflowGraph>

@@ -12,9 +12,9 @@ sub run {
   my $inputFile = $self->getParamValue('inputFile');
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
 
-  my $version = $self->getConfig('version');
+ # my $version = $self->getConfig('version');
 
-  my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$genomeExtDbRlsSpec);
+  my ($extDbName,$extDbRlsVer) = $self->getExtDbInfo($test,$extDbRlsSpec);
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

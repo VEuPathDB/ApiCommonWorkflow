@@ -21,11 +21,11 @@
     <depends name="makeDataDir"/>
   </step>
 
+
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
     <depends name="makeGffFile"/>
   </step>
-
 
   <datasetTemplate class="massSpecPreprocessedNoOrfs">
     <prop name="organismAbbrev"/> 
@@ -57,10 +57,16 @@
       <depends name="massSpec_${name}_RSRC"/>
     </step>
 
+    <step name="massSpec_${name}_proteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+      <paramValue name="fromFile">$$proteinsFile$$</paramValue>
+      <paramValue name="toFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/AnnotatedProteins.fsa</paramValue>
+      <depends name="massSpec_${name}_RSRC"/>
+    </step>
+
     <step name="massSpec_${name}_nextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeMassSpecNextflowConfig">
-      <paramValue name="inputProteinSequenceFile">$$proteinsFile$$</paramValue>
+      <paramValue name="inputProteinSequenceFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/AnnotatedProteins.fsa</paramValue>
       <paramValue name="inputDir">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/final</paramValue>
-      <paramValue name="inputAnnotationGffFile">$$dataDir$$/$$organismAbbrev$$.gff</paramValue>
+      <paramValue name="inputAnnotationGffFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/$$organismAbbrev$$.gff</paramValue>
       <paramValue name="outputPeptidesProteinAlignGff">ms_peptides_protein_align_${name}.gff</paramValue>
       <paramValue name="outputPeptidesGenomeAlignGff">ms_peptides_genome_align_${name}.gff</paramValue>
       <paramValue name="nextflowConfigFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/nextflow.config</paramValue>
