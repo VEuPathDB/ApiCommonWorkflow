@@ -248,7 +248,7 @@
     <subgraph name="${organismAbbrev}_nrdbProteinsAlignAgainstGenome" xmlFile="proteinAlignToGenome.xml"  excludeIf="${isHugeGenome}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}/nrdbProteinsAlignAgainstGenome</paramValue>
-      <paramValue name="targetFile">$$dataDir$$/${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
+      <paramValue name="targetFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <paramValue name="taxaFilter">${taxonFilterForNRProteinsAlignedToGenome}</paramValue>
       <paramValue name="nrdbFile">global/NRDB_RSRC/nr.gz</paramValue>
       <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
@@ -265,7 +265,7 @@
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="maskedGenomeSequenceFile">$$dataDir$$/${organismAbbrev}/maskGenome/analysisDir/results/blocked.seq</paramValue>
-      <paramValue name="genomeSequenceFile">$$dataDir$$/${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
+      <paramValue name="genomeSequenceFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="comparativeGenomicsDir">$$comparativeGenomicsInputDir$$</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
@@ -308,7 +308,7 @@
       <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="genomeFastaFile">${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
+      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
@@ -322,7 +322,7 @@
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${referenceStrainOrganismAbbrev}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="genomeFastaFile">${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
+      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
@@ -335,7 +335,7 @@
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
+      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
@@ -349,7 +349,7 @@
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
+      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
@@ -392,21 +392,30 @@
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">$$projectName$$/${organismAbbrev}.xml</paramValue>
-      <paramValue name="genomicSeqsDir">$$dataDir$$/${organismAbbrev}/maskGenome</paramValue>
+      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_specific" xmlFile="generated/${projectName}/${organismAbbrev}/organismSpecificOnMaskedGenome.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
-      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
-      <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-      <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+    <subgraph name="${organismAbbrev}_blatMapping" xmlFile="generated/${projectName}/${organismAbbrev}/mapWithBlat.xml" excludeIfXmlFileDoesNotExist="true">
       <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="isReferenceStrain">${isReferenceStrain}</paramValue>
+      <paramValue name="genomicSeqsFile">$$dataDir$$/${organismAbbrev}/maskGenome/analysisDir/results/blocked.seq</paramValue>
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">$$projectName$$/${organismAbbrev}.xml</paramValue>
+      <depends name="${organismAbbrev}_PostLoadGenome"/>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
+
+
 
     <subgraph name="${organismAbbrev}_LoadAliases" xmlFile="generated/${projectName}/${organismAbbrev}/aliases.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
@@ -558,7 +567,7 @@
     <depends name="comparativeGenomics"/>
     <dependsPattern name="*_specific"/>
     <dependsGlobal name="enzymeDB_RSRC"/>
-  </subgraph> 
+  </subgraph>
 -->
   <!-- only reference strains have an instance of this -->
   <!-- it depends on all make and mask genomes for this organism (they all have the ref strain as a prefix) -->
@@ -635,7 +644,7 @@
     </subgraph>
   </datasetTemplate>
 
-  <!-- new template for untargeted metabolomics -->                                                                               
+  <!-- new template for untargeted metabolomics -->
   <step name="makeMetabolomicsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$/metabolomics</paramValue>
     <depends name="makeDataDir"/>
@@ -663,7 +672,7 @@
     <dependsPattern name="compoundMassSpec_*_RSRC"/>
   </step>
 
-  <step name="runCompoundSolrJsonReports"        
+  <step name="runCompoundSolrJsonReports"
       stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunWdkSolrJsonReports" stepLoadTypes="runSolrJsonReports">
       <paramValue name="batchType">compound</paramValue>
       <paramValue name="batchName">all</paramValue>
@@ -672,7 +681,7 @@
       <paramValue name="paramName"></paramValue>
       <paramValue name="paramValue"></paramValue>
       <depends name="makeCompoundSolrJsonDir"/>
-  </step> 
+  </step>
   -->
 
   <!-- EuPath Ontology and Study MetaData -->
