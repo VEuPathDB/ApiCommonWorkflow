@@ -44,7 +44,7 @@ sub run {
     #my $speciesName = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesNameFromNcbiTaxId($speciesNcbiTaxonId);
 
      my $speciesNcbiTaxonIdOverride = $self->getConfig('speciesNcbiTaxonIdOverride',1);
-     if ($speciesOverride) {
+     if ($speciesNcbiTaxonIdOverride) {
     #     my ($speciesToOverride, $speciesThatOverrides) = split(/,\s*/, $speciesOverride);
     #     #|| die "Config property speciesOverride has an invalid value: '$speciesOverride'.  It must be of the form 'speciesToOverride, speciesThatOverrides'\n";
     #     $speciesName = $speciesThatOverrides if $speciesName eq $speciesToOverride;
