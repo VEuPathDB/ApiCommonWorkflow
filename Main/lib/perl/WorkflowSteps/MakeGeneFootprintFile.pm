@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelGeneFootprintFile;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneFootprintFile;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 

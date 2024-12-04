@@ -10,7 +10,7 @@ sub run{
     my ($self, $test, $undo) = @_;
     
     my $clusterResultsDir = $self->getParamValue('clusterResultsDir');
-    my $topLevelSeqSizeFile = $self->getParamValue('topLevelSeqSizeFile');
+    my $seqSizeFile = $self->getParamValue('seqSizeFile');
     my $experimentType = $self->getParamValue('experimentType');
     my $sampleName = $self->getParamValue('sampleName');
     my $inputName = $self->getParamValue('inputName');
@@ -19,7 +19,7 @@ sub run{
     my $inBamFile = "$workflowDataDir/$clusterResultsDir/$sampleName.bam";  
     my $outDir = "$workflowDataDir/$clusterResultsDir/downstream/"; 
 
-    my $cmd = "generateChipSeqCvgPlots.pl --experimentType $experimentType --inBamFile $inBamFile --outDir $outDir --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile --fragmentLength $fragmentLength";	
+    my $cmd = "generateChipSeqCvgPlots.pl --experimentType $experimentType --inBamFile $inBamFile --outDir $outDir --seqSizeFile $workflowDataDir/$seqSizeFile --fragmentLength $fragmentLength";
 
     if ($undo){
         $self->runCmd(0, "rm -rf $outDir");

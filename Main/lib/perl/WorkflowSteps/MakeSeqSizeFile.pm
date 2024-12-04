@@ -1,5 +1,5 @@
 
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelSeqSizeFile;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeSeqSizeFile;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
