@@ -15,9 +15,7 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $args = <<"EOF";
---peptideResultFile=$workflowDataDir/$peptideResultFile --genomeExtDbRlsSpec "$genomeSpec"
-EOF
+    my $args = "--peptideResultFile '$workflowDataDir/$peptideResultFile' --genomeExtDbRlsSpec '$genomeSpec'";
 
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertAaSequenceEpitope" , $args);
 
