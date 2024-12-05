@@ -1,8 +1,8 @@
 <workflowGraph name="makeCompGenomicsFiles">
       <param name="parentDataDir"/>
       <param name="gusConfigFile"/>
-      <param name="makeAndMaskTopLevelGenomeDataDir"/>
-      <param name="topLevelFastaFile"/>
+      <param name="maskedGenomeSequenceFile"/>
+      <param name="genomeSequenceFile"/>
       <param name="organismAbbrev"/>
       <param name="comparativeGenomicsDir"/>
       <param name="isAnnotatedGenome"/>
@@ -13,13 +13,13 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="copyMaskedTopLevelFastaFileToComparativeGenomicsDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$">
-      <paramValue name="fromFile">$$makeAndMaskTopLevelGenomeDataDir$$/analysisDir/results/blocked.seq</paramValue>
+    <step name="copyMaskedFastaFileToComparativeGenomicsDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$">
+      <paramValue name="fromFile">$$maskedGenomeSequenceFile$$</paramValue>
       <paramValue name="toFile">$$comparativeGenomicsDir$$/$$organismAbbrev$$.fasta</paramValue>
     </step>
 
-    <step name="copyMaskedTopLevelFastaFileToStrainsComparisonDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$">
-      <paramValue name="fromFile">$$makeAndMaskTopLevelGenomeDataDir$$/analysisDir/results/blocked.seq</paramValue>
+    <step name="copyMaskedFastaFileToStrainsComparisonDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$">
+      <paramValue name="fromFile">$$maskedGenomeSequenceFile$$</paramValue>
       <paramValue name="toFile">$$strainsComparisonInputDir$$/$$organismAbbrev$$.fasta</paramValue>
     </step>
 
@@ -33,7 +33,7 @@
 
   <step name="correctReadingFrameInMercatorGffFile"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CorrectReadingFrameInMercatorGffFile" includeIf="$$isAnnotatedGenome$$">
-      <paramValue name="inputFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="inputFastaFile">$$genomeSequenceFile$$</paramValue>
       <paramValue name="inputGffFile">$$dataDir$$/$$organismAbbrev$$.gff</paramValue>
       <paramValue name="outputGffFile">$$dataDir$$/$$organismAbbrev$$_corrected.gff</paramValue>
       <depends name="makeMercatorGffFile"/> 

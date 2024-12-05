@@ -17,8 +17,8 @@ sub run {
   my $keepNode = $self->getParamValue("keepNode");
   my $createJunctionsFile = $self->getParamValue("createJunctionsFile");
   my $maskFile = $self->getParamValue("maskFile");
-  my $topLevelGeneFootprintFile = $self->getParamValue("topLevelGeneFootprintFile");
-  my $topLevelFastaFile = $self->getParamValue("topLevelFastaFile");
+  my $geneFootprintFile = $self->getParamValue("geneFootprintFile");
+  my $genomeFastaFile = $self->getParamValue("genomeFastaFile");
   my $hisatIndex = $self->getParamValue("hisatIndex");
   my $hisatDirectory = $self->getParamValue("hisatDirectory");
   my $quantify = $self->getParamValue("quantify");
@@ -44,7 +44,7 @@ sub run {
 				       "DJob::DistribJobTasks::Hisat2Task", $keepNode); 
       # make task.prop file
 
-      my $dir = dirname($topLevelGeneFootprintFile);
+      my $dir = dirname($geneFootprintFile);
       open(INTRON, "$workflowDataDir/$dir/maxIntronLen") or die "Cannot read max intron len from $workflowDataDir/$dir/maxIntronLen\n$!\n";
       my @lines;
       while (my $line = <INTRON>) {
@@ -66,7 +66,7 @@ quantify=$quantify
 writeCovFiles=$writeCovFiles
 isStrandSpecific=$strandSpecific
 quantifyJunctions=$createJunctionsFile
-topLevelGeneFootprintFile=$clusterWorkflowDataDir/$topLevelGeneFootprintFile
+geneFootprintFile=$clusterWorkflowDataDir/$geneFootprintFile
 hasPairedEnds=$hasPairedEnds
 ppn=8
 maxIntronLen=$maxIntronLen

@@ -6,7 +6,7 @@
     <param name="experimentName"/>
     <param name="parentDataDir"/>
     <param name="genomeExtDbRlsSpec"/>
-    <param name="topLevelSeqSizeFile"/>
+    <param name="seqSizeFile"/>
     <param name="experimentDatasetName"/>
     <param name="experimentDatasetVersion"/>
     <param name="hasPairedEnds"/>
@@ -15,8 +15,8 @@
     <param name="gtfFile"/>
     <param name="maskFile"/>
     <param name="hisatIndex"/>
-    <param name="topLevelFastaFile"/>
-    <param name="topLevelGeneFootprintFile"/>
+    <param name="genomeFastaFile"/>
+    <param name="geneFootprintFile"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
@@ -59,15 +59,15 @@
       <paramValue name="maskFile">$$maskFile$$</paramValue>
       <paramValue name="hisatIndex">$$hisatIndex$$</paramValue>
       <paramValue name="hisatDirectory">$$parentDataDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
-      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
+      <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
       <depends name="mirrorToCluster"/>
     </subgraph>
 
 
     <step name="normalizeBedGraph" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraph">
       <paramValue name="inputDir">$$dataDir$$</paramValue>
-      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
       <depends name="analyzeSamples"/>
@@ -76,7 +76,7 @@
     <step name="makeMergedBigwig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RNAseqMerge">
         <paramValue name="inputsDir">$$dataDir$$</paramValue>
         <paramValue name="experimentName">$$experimentName$$</paramValue>
-        <paramValue name="chromSizesFile">$$topLevelSeqSizeFile$$</paramValue>
+        <paramValue name="chromSizesFile">$$seqSizeFile$$</paramValue>
         <paramValue name="analysisConfig">$$dataDir$$/$$experimentDatasetName$$/final/analysisConfig.xml</paramValue>
         <depends name="normalizeBedGraph"/>
     </step>
