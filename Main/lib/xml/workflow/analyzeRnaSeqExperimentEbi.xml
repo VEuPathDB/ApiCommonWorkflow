@@ -8,8 +8,8 @@
     <param name="experimentDatasetName"/>
     <param name="experimentDatasetVersion"/>
     <param name="strandSpecific"/>
-    <param name="topLevelSeqSizeFile"/>
-    <param name="topLevelGeneFootprintFile"/>
+    <param name="seqSizeFile"/>
+    <param name="geneFootprintFile"/>
     <param name="relativeWebServicesDir"/>
     <param name="ebiOrganismName"/>
     <param name="ebiVersion"/>
@@ -49,7 +49,7 @@
 
     <step name="tpmFromHtseqCounts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TpmFromHtseqCounts">
       <paramValue name="samplesDir">$$dataDir$$</paramValue>
-      <paramValue name="geneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+      <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
       <depends name="fixSeqIdEbiRNASeq"/>
@@ -84,7 +84,7 @@
 
     <step name="normalizeCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraphEbi">
       <paramValue name="inputDir">$$dataDir$$</paramValue>
-      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
       <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
       <depends name="fixSeqIdEbiRNASeq"/>
     </step>
@@ -103,7 +103,7 @@
     <step name="makeMergedBigwigs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RNAseqMerge">
         <paramValue name="inputsDir">$$dataDir$$</paramValue>
         <paramValue name="experimentName">$$experimentName$$</paramValue>
-        <paramValue name="chromSizesFile">$$topLevelSeqSizeFile$$</paramValue>
+        <paramValue name="chromSizesFile">$$seqSizeFile$$</paramValue>
         <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
         <depends name="normalizeCoverage"/>
     </step>

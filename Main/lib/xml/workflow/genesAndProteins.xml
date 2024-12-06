@@ -12,7 +12,9 @@
   <param name="ncbiTaxonId"/>
   <param name="relativeWebServicesDir"/>
   <param name="isReferenceStrain"/>
-
+  <param name="speciesNcbiTaxonId"/>
+  <param name="isHugeGenome"/>
+  
   <constant name="dataDir">$$parentDataDir$$/proteome</constant>
 
   <constant name="blastpPdbArgs">-topcomboN=1 V=100 B=20 -hspmax=1000000 -gi E=1e-3 -wordmask=seg -hspsepQmax=4000 -span1</constant>
@@ -98,7 +100,7 @@
     </step>
 
     <!-- iedb peptide mapping for reference strains -->
-    <subgraph name="iedb"  includeIf="$$isReferenceStrain$$" xmlFile="mapIedbEpitope.xml">
+    <subgraph name="iedb"  includeIf="$$isReferenceStrain$$" xmlFile="mapIedbEpitope.xml" includeIf="!$$isHugeGenome$$">
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -107,7 +109,7 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+      <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
       <paramValue name="iedbTabFile">global/epitopes_IEDB_RSRC/iedb.tab</paramValue>
       <depends name="makeDataDir"/>
       <dependsGlobal name="IEDBDatasetLoader"/>

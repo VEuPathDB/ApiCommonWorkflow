@@ -22,7 +22,7 @@ sub run {
 
     my $iedbPeptidesTabFile = $self->getParamValue("peptidesTab");
 
-    my $ncbiTaxon = $self->getParamValue("ncbiTaxon");
+    my $speciesNcbiTaxonId = $self->getParamValue("speciesNcbiTaxonId");
     my $peptideMatchResults = $self->getParamValue("peptideMatchResults");
     my $peptidesFilteredBySpeciesFasta = $self->getParamValue("peptidesFilteredBySpeciesFasta");
     my $peptideMatchBlastCombinedResults = $self->getParamValue("peptideMatchBlastCombinedResults");
@@ -43,7 +43,7 @@ sub run {
 params {
    refFasta = "$clusterWorkflowDataDir/$proteinSequenceFile"
    peptidesTab = "$clusterWorkflowDataDir/$iedbPeptidesTabFile"
-   taxon = $ncbiTaxon
+   taxon = $speciesNcbiTaxonId
    peptideMatchResults = "$peptideMatchResults"
    peptidesFilteredBySpeciesFasta = "$peptidesFilteredBySpeciesFasta"
    peptideMatchBlastCombinedResults = "$peptideMatchBlastCombinedResults"

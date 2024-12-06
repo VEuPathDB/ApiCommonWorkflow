@@ -43,7 +43,7 @@ sub run {
 
     my $datasetDirectory = $isProteomeAnalysis ? "genesAndProteins" : "genome";
     if($datasetSpec) {
-        if(/\|/) {
+        if($datasetSpec =~ /\|/) {
             $datasetSpec =~ s/\|/_/g;
         }
         else {

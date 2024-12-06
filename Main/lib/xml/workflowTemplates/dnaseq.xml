@@ -5,11 +5,11 @@
   <param name="parentDataDir"/>
   <param name="genomeExtDbRlsSpec"/>
   <param name="relativeWebServicesDir"/>
-  <param name="topLevelFastaFile"/>
+  <param name="genomeFastaFile"/>
   <param name="referenceStrainOrganismAbbrev"/>
 
   <constant name="dataDir">$$parentDataDir$$/dnaseq</constant>
-  <constant name="topLevelGeneFootprintFile">$$dataDir$$/topLevelGeneFootprintFile.txt</constant>
+  <constant name="geneFootprintFile">$$dataDir$$/geneFootprintFile.txt</constant>
   <constant name="gtfFile">$$dataDir$$/$$organismAbbrev$$.gtf</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -26,8 +26,8 @@
     <depends name="makeDataDir"/>
   </step>
 
-  <step name="makeTopLevelGeneFootprintFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTopLevelGeneFootprintFile">
-    <paramValue name="outputFile">$$topLevelGeneFootprintFile$$</paramValue>
+  <step name="makeGeneFootprintFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneFootprintFile">
+    <paramValue name="outputFile">$$geneFootprintFile$$</paramValue>
     <paramValue name="project">$$projectName$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
@@ -36,7 +36,7 @@
 
   <step name="${name}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeTopLevelGeneFootprintFile"/>
+    <depends name="makeGeneFootprintFile"/>
     <depends name="makeGtfFile"/>
   </step>
 
@@ -58,9 +58,9 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue> 
       <paramValue name="resultDir">$$dataDir$$/results</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
       <paramValue name="gtfFile">$$gtfFile$$</paramValue>
-      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+      <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
       <paramValue name="isPaired">${isPaired}</paramValue>
       <paramValue name="ploidy">${ploidy}</paramValue>
       <paramValue name="fromBAM">${fromBAM}</paramValue> 
@@ -91,9 +91,9 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue> 
       <paramValue name="resultDir">$$dataDir$$/results</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
       <paramValue name="gtfFile">$$gtfFile$$</paramValue>
-      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
+      <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
       <paramValue name="isPaired">${isPaired}</paramValue>
       <paramValue name="ploidy">${ploidy}</paramValue>
       <paramValue name="fromBAM">${fromBAM}</paramValue> 
@@ -115,7 +115,7 @@
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="inputDir">$$dataDir$$/**/results</paramValue>
-    <paramValue name="genomeFastaFile">$$topLevelFastaFile$$</paramValue>
+    <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
     <paramValue name="gtfFile">$$gtfFile$$</paramValue>
     <paramValue name="referenceStrain">$$referenceStrainOrganismAbbrev$$</paramValue>
     <paramValue name="outputDir">$$dataDir$$/mergeExperiments/results</paramValue>

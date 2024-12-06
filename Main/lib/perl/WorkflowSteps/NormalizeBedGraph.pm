@@ -10,7 +10,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputDir = $self->getParamValue('inputDir');
-  my $topLevelSeqSizeFile = $self->getParamValue('topLevelSeqSizeFile');
+  my $seqSizeFile = $self->getParamValue('seqSizeFile');
   my $strandSpecific = $self->getBooleanParamValue('strandSpecific');
   my $hasPairedEnds = $self->getBooleanParamValue('hasPairedEnds');
 
@@ -19,13 +19,13 @@ sub run {
   my $ss = $strandSpecific ? "--strandSpecific" : "";
   my $hpe = $hasPairedEnds ? "--isPairedEnd" : "";
 
-  my $cmd= "normalizeCoverage.pl --inputDir $workflowDataDir/$inputDir --topLevelSeqSizeFile $workflowDataDir/$topLevelSeqSizeFile $ss $hpe";
+  my $cmd= "normalizeCoverage.pl --inputDir $workflowDataDir/$inputDir --seqSizeFile $workflowDataDir/$seqSizeFile $ss $hpe";
 
   if($undo){
       # can't undo this step.  must undo cluster task
   }else{
     $self->testInputFile('inputDir', "$workflowDataDir/$inputDir");
-    $self->testInputFile('topLevelSeqSizeFile', "$workflowDataDir/$topLevelSeqSizeFile");
+    $self->testInputFile('seqSizeFile', "$workflowDataDir/$seqSizeFile");
     $self->runCmd($test, $cmd);
   }
 }

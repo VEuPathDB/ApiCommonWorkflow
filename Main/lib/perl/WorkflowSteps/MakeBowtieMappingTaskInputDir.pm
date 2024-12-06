@@ -23,7 +23,7 @@ sub run {
   my $extraBowtieParams = $self->getParamValue("extraBowtieParams");
   $extraBowtieParams = 'none' unless($extraBowtieParams);
 
-  my $topLevelSeqSizeFile = $self->getParamValue("topLevelSeqSizeFile");
+  my $seqSizeFile = $self->getParamValue("seqSizeFile");
 
   # expects string true/false 
   my $isColorspace = $self->getParamValue("isColorspace");
@@ -55,7 +55,7 @@ sampleName=$sampleName
 isColorspace=$isColorspace
 removePCRDuplicates=$removePCRDuplicates
 writeBedFile=$writeBedFile
-topLevelSeqSizeFile=$clusterWorkflowDataDir/$topLevelSeqSizeFile
+seqSizeFile=$clusterWorkflowDataDir/$seqSizeFile
 extraBowtieParams=$extraBowtieParams
 hasPairedEnds=$hasPairedReads
 ";
