@@ -12,6 +12,8 @@
   <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
   <constant name="resultsDirectory">$$dataDir$$/analysisDir/results</constant>
 
+  <constant name="genomeSymLink">$$dataDir$$/genome.fasta</constant>
+
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
@@ -26,8 +28,15 @@
     <depends name="makeAnalysisDir"/>
   </step>
 
+  <step name="symLinkGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$genomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
   <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrfFinderConfig">
-    <paramValue name="genomicSequenceFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="genomicSequenceFile">$$genomeSymLink$$</paramValue>
     <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
     <paramValue name="minPepLength">50</paramValue>
@@ -47,6 +56,7 @@
     <paramValue name="datasetSpec"></paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/orfFinder-nextflow</paramValue>
     <depends name="makeNextflowConfig"/>
+    <depends name="symLinkGenome"/>
   </subgraph>
 
    <step name="copyOrfGffToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOrfGffToDownloadDir">

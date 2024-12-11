@@ -15,6 +15,9 @@
     <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
     <constant name="blatOutputFileName">blat.psl</constant>
 
+    <constant name="targetSeqSymLink">$$dataDir$$/target.fasta</constant>
+    <constant name="querySeqSymLink">$$dataDir$$/query.fasta</constant>
+
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
@@ -29,13 +32,26 @@
       <depends name="makeAnalysisDir"/>
     </step>
 
+    <step name="symLinkTarget" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+      <paramValue name="fromFile">$$targetSeqsFastaFile$$</paramValue>
+      <paramValue name="toFile">$$targetSeqSymLink$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="symLinkQuery" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+      <paramValue name="fromFile">$$queryFile$$</paramValue>
+      <paramValue name="toFile">$$querySeqSymLink$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+
     <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBlatNextflowConfig" >
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="fastaSubsetSize">1</paramValue>
-      <paramValue name="queryFile">$$queryFile$$</paramValue>
+      <paramValue name="queryFile">$$querySeqSymLink$$$$</paramValue>
       <paramValue name="queryType">dna</paramValue>
       <paramValue name="dbType">dna</paramValue>
-      <paramValue name="databasePath">$$targetSeqsFastaFile$$</paramValue>
+      <paramValue name="databasePath">$$targetSeqSymLink$$$$</paramValue>
       <paramValue name="outputDir">$$resultsDirectory$$</paramValue>
       <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>
@@ -55,6 +71,9 @@
       <paramValue name="nextflowWorkflow">VEuPathDB/blat-nextflow</paramValue>
       <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
       <depends name="makeNextflowConfig"/>
+      <depends name="symLinkTarget"/>
+      <depends name="symLinkQuery"/>
+
     </subgraph>
 
     <step name="fixGenomeSourceIdsInBlatResultFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixGenomeSourceIdsInBlatResultFile">
