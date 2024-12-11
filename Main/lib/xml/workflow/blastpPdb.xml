@@ -14,6 +14,9 @@
   <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
   <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
 
+  <constant name="proteomeSymLink">$$dataDir$$/proteome.fasta</constant>
+  <constant name="pdbSymLink">$$dataDir$$/pdb.fsa</constant>
+
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
@@ -31,13 +34,20 @@
 
   <step name="symLinkPdbFsa" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
     <paramValue name="fromFile">$$pdbFastaFile$$</paramValue>
-    <paramValue name="toFile">$$dataDir$$/pdb.fsa</paramValue>
+    <paramValue name="toFile">$$pdbSymLink$$</paramValue>
     <depends name="makeDataDir"/>
   </step>
 
+  <step name="symLinkProteome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$proteomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
   <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBlastPPdbNextflowConfig">
-    <paramValue name="proteinSequenceFile">$$proteinSequenceFile$$</paramValue>
-    <paramValue name="pdbFastaFile">$$dataDir$$/pdb.fsa</paramValue>
+    <paramValue name="proteinSequenceFile">$$proteomeSymLink$$</paramValue>
+    <paramValue name="pdbFastaFile">$$pdbSymLink$$</paramValue>
     <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
     <paramValue name="outputFileName">pdbSimilarity.tab</paramValue>
@@ -56,6 +66,7 @@
     <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/diamond-similarity-nextflow</paramValue>
     <depends name="makeNextflowConfig"/>
+    <depends name="symLinkProteome"/>
     <depends name="symLinkPdbFsa"/>
   </subgraph>
 

@@ -15,6 +15,9 @@
   <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
   <constant name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</constant>
 
+  <constant name="proteomeSymLink">$$dataDir$$/proteome.fasta</constant>
+  <constant name="iedbSymLink">$$dataDir$$/iedb.tab</constant>
+
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
@@ -32,14 +35,21 @@
   <!-- put the peptides gz file in a directory nextflow can read -->
   <step name="symLinkIedbEpitopes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
     <paramValue name="fromFile">$$iedbTabFile$$</paramValue>
-    <paramValue name="toFile">$$dataDir$$/iedb.tab</paramValue>
+    <paramValue name="toFile">$$iedbSymLink$$</paramValue>
     <depends name="makeDataDir"/>
   </step>
 
+  <step name="symLinkProteome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$proteomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
   <step name="epitopeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEpitopeMappingNextflowConfig">
     <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
-    <paramValue name="proteinSequenceFile">$$proteinSequenceFile$$</paramValue>
-    <paramValue name="peptidesTab">$$dataDir$$/iedb.tab</paramValue>
+    <paramValue name="proteinSequenceFile">$$proteomeSymLink$$</paramValue>
+    <paramValue name="peptidesTab">$$iedbSymLink$$</paramValue>
     <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
     <paramValue name="peptideMatchResults">PeptideMatches.txt</paramValue>
@@ -60,6 +70,8 @@
     <paramValue name="datasetSpec">epitopes_IEDB_RSRC</paramValue> <!--NOTE: the version will be looked up by the step which gets from cache -->
     <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/iedb-epitope-mapping-nextflow</paramValue>
+    <depends name="symLinkIedbEpitopes"/>
+    <depends name="symLinkProteome"/>
     <depends name="epitopeNextflowConfig"/>
   </subgraph>
 

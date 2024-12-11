@@ -13,6 +13,8 @@
   <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
   <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
 
+  <constant name="proteomeSymLink">$$dataDir$$/proteome.fasta</constant>
+
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
@@ -27,13 +29,18 @@
      <depends name="makeAnalysisDir"/>
   </step>
 
+  <step name="symLinkProteome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$proteomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
   <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProteinAttributesNextflowConfig">
-    <paramValue name="proteinSequenceFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="proteinSequenceFile">$$proteomeSymLink$$</paramValue>
     <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
     <paramValue name="outputFileName">proteinAttributes.tab</paramValue>
     <depends name="makeResultDir"/>
-
   </step>
 
   <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
@@ -48,6 +55,7 @@
     <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/protein-statistics-nextflow</paramValue>
     <depends name="makeNextflowConfig"/>
+    <depends name="symLinkProteome"/>
   </subgraph>
 
 
