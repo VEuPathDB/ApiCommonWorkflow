@@ -52,9 +52,7 @@
     <paramValue name="peptidesTab">$$iedbSymLink$$</paramValue>
     <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
-    <paramValue name="peptideMatchResults">PeptideMatches.txt</paramValue>
-    <paramValue name="peptidesFilteredBySpeciesFasta">PeptidesFilteredBySpecies.fasta</paramValue>
-    <paramValue name="peptideMatchBlastCombinedResults">peptideMatchBlastCombinedResults.txt</paramValue>
+    <paramValue name="peptideMatchResults">iedb.gff</paramValue>
     <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
     <depends name="makeResultDir"/>
   </step>
@@ -75,8 +73,19 @@
     <depends name="epitopeNextflowConfig"/>
   </subgraph>
 
+  <step name="copyToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+     <paramValue name="copyFromFile">$$resultsDirectory$$/iedb.gff.gz</paramValue>
+     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+     <paramValue name="indexSuffix">tbi</paramValue>
+     <paramValue name="fileType">gff</paramValue>
+     <paramValue name="dataType">genomeAndProteome</paramValue>
+     <depends name="runNextflowOnCluster"/>
+   </step>
+
   <step name="loadIedbEpitopeMatches" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAaSequenceEpitope" stepLoadTypes="plugin">
-    <paramValue name="peptideResultFile">$$resultsDirectory$$/peptideMatchBlastCombinedResults.txt</paramValue>
+    <paramValue name="peptideResultFile">$$resultsDirectory$$/iedb.gff.gz</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <depends name="runNextflowOnCluster"/>
