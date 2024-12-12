@@ -12,7 +12,6 @@ use Carp;
 use ReFlow::Controller::WorkflowStepHandle;
 use GUS::Supported::GusConfig;
 use ApiCommonWorkflow::Main::Util::OrganismInfo;
-use Digest::MD5 qw(md5_hex);
 
 # avoid using this subroutine!
 # it is provided for backward compatibility.  plugins and commands that
@@ -340,13 +339,6 @@ sub runSqlFetchOneRowFromOrgDb {
       @output = $stmt->fetchrow_array();
     }
     return @output;
-}
-
-sub uniqueNameForNextflowWorkingDirectory {
-  my ($self, $relativeDataDirPath)  @_;
-  my $workflowName = $self->getWorkflowName();
-  my $workflowVersion = $self->getWorkflowVersion();
-  return md5_hex("$workflowName $workflowVersion$ relativeDataDirPath")
 }
 
 sub getClusterNextflowWorkingDir {
