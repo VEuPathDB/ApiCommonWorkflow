@@ -23,6 +23,7 @@ sub run {
     my $dbType = $self->getParamValue("dbType");
     my $queryType = $self->getParamValue("queryType");
     my $outputFileName = $self->getParamValue("outputFileName");
+    my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
 
     my $increasedMemory = $self->getParamValue("increasedMemory");
     my $initialMemory = $self->getParamValue("initialMemory");
@@ -41,15 +42,18 @@ sub run {
     } else {
 	open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
 
+      my $queryFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $seqFile);
+      my $databaseInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $databasePath);
+      my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
       my $configString = <<NEXTFLOW;
 params {
-  queryFasta = "$seqFile"
+  queryFasta = "$queryFileInNextflowWorkingDirOnCluster"
   fastaSubsetSize = $fastaSubsetSize
-  genomeFasta = "$databasePath"
+  genomeFasta = "$databaseInNextflowWorkingDirOnCluster"
   dbType = "$dbType"
   queryType = "$queryType"
-  outputDir = "$outputDir"
+  outputDir = "$resultsDirectoryInNextflowWorkingDirOnCluster"
   outputFileName = "$outputFileName"
 }
 

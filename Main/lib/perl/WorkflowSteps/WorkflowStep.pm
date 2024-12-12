@@ -12,6 +12,7 @@ use Carp;
 use ReFlow::Controller::WorkflowStepHandle;
 use GUS::Supported::GusConfig;
 use ApiCommonWorkflow::Main::Util::OrganismInfo;
+use Digest::MD5 qw(md5_hex);
 
 # avoid using this subroutine!
 # it is provided for backward compatibility.  plugins and commands that
@@ -341,6 +342,28 @@ sub runSqlFetchOneRowFromOrgDb {
     return @output;
 }
 
+sub uniqueNameForNextflowWorkingDirectory {
+  my ($self, $relativeDataDirPath)  @_;
+  my $workflowName = $self->getWorkflowName();
+  my $workflowVersion = $self->getWorkflowVersion();
+  return md5_hex("$workflowName $workflowVersion$ relativeDataDirPath")
+}
+
+sub getClusterNextflowWorkingDir {
+  my ($self, $relativeDataDirPath) = @_;
+  my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
+  return $clusterWorkflowDataDir . "/" . $self->uniqueNameForNextflowWorkingDirectory($relativeDataDirPath);
+}
+
+sub relativePathToNextflowClusterPath {
+  my ($self, $relativeDataDirPath, $fileOrDirRelativePath) = @;
+  my $clusterNextflowWorkingDir = $self->getClusterNextflowWorkingDir($relativeDataDirPath);
+
+  # remove the relativeDataDirPath "prefix" from the fileOrDirRelativePath
+  my $noPrefix = substr($fileOrDirRelativePath, length($relativeDataDirPath) - length($fileOrDirRelativePath));
+
+  return $clusterNextflowWorkingDir . "/" . $noPrefix;
+}
 
 1;
 
