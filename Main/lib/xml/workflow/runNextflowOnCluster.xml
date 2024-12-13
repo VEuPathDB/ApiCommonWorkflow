@@ -27,8 +27,8 @@
   </step>
 
 
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster" skipIfFile="$$foundNextflowResults$$">
-    <paramValue name="fileOrDirToMirror">$$parentDataDir$$</paramValue>
+  <step name="copyToCluster" stepClass="ReFlow::StepClasses::CopyNextflowWorkingDirToCluster" stepLoadTypes="toCluster" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="fileOrDirToCopy">$$parentDataDir$$</paramValue>
     <depends name="checkForNextflowResultsAndCopyFromCache"/>
   </step>
 
@@ -41,10 +41,11 @@
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="isGitRepo">true</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <depends name="mirrorToCluster"/>
+    <depends name="copyToCluster"/>
   </step>
 
-  <step name="mirrorResultsFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+  <step name="copyResultsFromCluster" stepClass="ReFlow::StepClasses::CopyNextflowResultsFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
     <paramValue name="fileOrDirToMirror">$$analysisDir$$/results</paramValue>
     <paramValue name="outputDir">$$analysisDir$$/results</paramValue>
     <paramValue name="outputFiles">*</paramValue>
@@ -52,7 +53,8 @@
     <depends name="runClusterTask"/>
   </step>
 
-  <step name="mirrorLogFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+  <step name="mirrorLogFromCluster" stepClass="ReFlow::StepClasses::CopyNextflowResultsFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
     <paramValue name="fileOrDirToMirror">$$analysisDir$$/nextflow.txt</paramValue>
     <paramValue name="outputDir">$$analysisDir$$</paramValue>
     <paramValue name="outputFiles">nextflow.txt</paramValue>
@@ -75,6 +77,11 @@
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <depends name="mirrorResultsFromCluster"/>
     <depends name="mirrorLogFromCluster"/>
+  </step>
+
+  <step name="deletFromCluster" stepClass="ReFlow::StepClasses::DeleteNextflowWorkingDirFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
+    <depends name="copyNextflowResultsToCache"/>
   </step>
 
 </workflowGraph>
