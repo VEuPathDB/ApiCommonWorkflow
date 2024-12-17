@@ -44,18 +44,18 @@
     <depends name="copyToCluster"/>
   </step>
 
-  <step name="copyResultsFromCluster" stepClass="ReFlow::StepClasses::CopyNextflowResultsFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+  <step name="copyResultsFromCluster" stepClass="ReFlow::StepClasses::CopyNextflowResultFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
     <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
-    <paramValue name="fileOrDirToMirror">$$analysisDir$$/results</paramValue>
+    <paramValue name="fileOrDirToCopy">$$analysisDir$$/results</paramValue>
     <paramValue name="outputDir">$$analysisDir$$/results</paramValue>
     <paramValue name="outputFiles">*</paramValue>
     <paramValue name="deleteAfterCopy">true</paramValue>
     <depends name="runClusterTask"/>
   </step>
 
-  <step name="mirrorLogFromCluster" stepClass="ReFlow::StepClasses::CopyNextflowResultsFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+  <step name="copyLogFromCluster" stepClass="ReFlow::StepClasses::CopyNextflowResultFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
     <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
-    <paramValue name="fileOrDirToMirror">$$analysisDir$$/nextflow.txt</paramValue>
+    <paramValue name="fileOrDirToCopy">$$analysisDir$$/nextflow.txt</paramValue>
     <paramValue name="outputDir">$$analysisDir$$</paramValue>
     <paramValue name="outputFiles">nextflow.txt</paramValue>
     <paramValue name="deleteAfterCopy">false</paramValue>
@@ -75,8 +75,8 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="mode">copyTo</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <depends name="mirrorResultsFromCluster"/>
-    <depends name="mirrorLogFromCluster"/>
+    <depends name="copyResultsFromCluster"/>
+    <depends name="copyLogFromCluster"/>
   </step>
 
   <step name="deletFromCluster" stepClass="ReFlow::StepClasses::DeleteNextflowWorkingDirFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
