@@ -50,16 +50,6 @@
         <depends name="cnvWorkflowCheckpoint"/>
     </subgraph>
 
-    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$</paramValue>
-        <depends name="loadCnvSample"/>
-    </step>
-
-    <step name="mirrorBamFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$snpsDir$$/$$studyName$$/analyze_$$sampleName$$/master</paramValue>
-        <depends name="cnvWorkflowCheckpoint"/>
-    </step>
-
     <step name="makeCNVTaskInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeCNVTaskInputDir" skipIfFile="$$checkPointDir$$/doNotDoAnalysis">
         <paramValue name="taskInputDir">$$sampleAnalysisDir$$/input</paramValue>
         <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
@@ -73,27 +63,11 @@
         <depends name="loadCnvSample"/>
     </step>
 
-    <step name="mirrorTaskInputDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$/input</paramValue>
-        <depends name="makeCNVTaskInputDir"/>
-        <depends name="mirrorSampleAnalysisDirToCluster"/>
-    </step>
-
     <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="cnvCluster" stepFailTypes="cnvCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis">
         <paramValue name="taskInputDir">$$sampleAnalysisDir$$/input</paramValue>
         <paramValue name="numNodes">1</paramValue>
         <paramValue name="maxMemoryGigs">8</paramValue>
         <paramValue name="processorsPerNode">1</paramValue>
-        <depends name="mirrorTaskInputDirToCluster"/>
-        <depends name="mirrorBamFileToCluster"/>
-    </step>
-
-    <step name="mirrorCufflinksOutputFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" skipIfFile="$$checkPointDir$$/doNotDoAnalysis" stepLoadTypes="fromCluster">
-        <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$/master</paramValue>
-        <paramValue name="outputDir">$$sampleAnalysisDir$$/master/mainresult</paramValue>
-        <paramValue name="outputFiles">counts_$$sampleName$$.txt,fpkm_$$sampleName$$.txt,$$sampleName$$.bed</paramValue>
-        <paramValue name="deleteAfterCopy">true</paramValue>
-        <depends name="runClusterTask"/>
     </step>
 
     <step name="calculatePloidy" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculatePloidy" skipIfFile="$$checkPointDir$$/doNotDoAnalysis">
@@ -103,7 +77,6 @@
         <paramValue name="ploidy">$$ploidy$$</paramValue>
         <paramValue name="sampleName">$$sampleName$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-        <depends name="mirrorCufflinksOutputFromCluster"/>
     </step>
 
 <!--There is a missing dependency here - we deliberately didn't add this because we don't want to undo and reload every CNV dataset every release along with the orthologs-->
@@ -114,7 +87,6 @@
         <paramValue name="ploidy">$$ploidy$$</paramValue>
         <paramValue name="sampleName">$$sampleName$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-        <depends name="mirrorCufflinksOutputFromCluster"/>
     </step>    
 
     <step name="writePloidyConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteStudyConfig" skipIfFile="$$checkPointDir$$/doNotDoAnalysis">
@@ -166,7 +138,6 @@
         <paramValue name="outputDir">$$sampleAnalysisDir$$</paramValue>
         <paramValue name="chromSizesFile">$$chromSizesFile$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-        <depends name="mirrorCufflinksOutputFromCluster"/>
     </step>
 
     <step name="copyBigWigFilesToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBigWigFilesToWebServices" skipIfFile="$$checkPointDir$$/doNotDoAnalysis">

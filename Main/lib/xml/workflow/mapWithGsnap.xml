@@ -18,13 +18,6 @@
     <paramValue name="bowtieVersion">1</paramValue>
   </step>
 
-  <!-- Mirror bowtie indices to cluster -->
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$bowtieDir$$</paramValue>
-    <depends name="createBowtieIndices"/>
-    <depends name="createBowtie2Indices"/>
-  </step>
-
 <!-- Subgraphs that use these indices initiated from here -->
 
 
@@ -38,7 +31,6 @@
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="samtoolsIndex">$$indicesDir$$/genomicSeqs.fasta.fai</paramValue>
       <paramValue name="chromSizesFile">$$indicesDir$$/chrom.sizes</paramValue>
-      <depends name="mirrorToCluster"/>
       <depends name="makeChromSizesFile"/>
     </subgraph>
 
