@@ -77,12 +77,6 @@
   </step>
 
 
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </step>
-
-
   <datasetTemplate class="organism">
     <prop name="organismAbbrev"/>
     <prop name="projectName"/>
@@ -120,13 +114,8 @@
       <depends name="${organismAbbrev}_makeDataDir"/>
     </step>
 -->
-    <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" groupName="${organismAbbrev}"  stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/${organismAbbrev}</paramValue>
-      <depends name="${organismAbbrev}_makeDataDir"/>
-      <depends name="mirrorToCluster"/>
-    </step>
 
- <!-- TODO:  make the gus config file to use the single database -->
+  <!-- TODO:  make the gus config file to use the single database -->
   <step name="${organismAbbrev}_makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig" groupName="${organismAbbrev}">
     <paramValue name="dbName"/>
     <!--  TODO:  put this back when we are creating organism specific dbs
@@ -135,7 +124,6 @@
       <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="gusConfigFilename">${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <depends name="${organismAbbrev}_mirrorToCluster"/>
     </step>
 
 <!--
@@ -155,7 +143,6 @@
     <!-- each organism creates this step, but all are ignored except the one made by the ref strain. -->
     <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}" groupName="${organismAbbrev}">
       <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}_strainsComparisonInput</paramValue>
-      <depends name="${organismAbbrev}_mirrorToCluster"/>
     </step>
 
     <step name="${organismAbbrev}_loadTemporaryNcbiTaxonId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadTemporaryNcbiTaxonId" includeIf="${hasTemporaryNcbiTaxonId}" groupName="${organismAbbrev}">
