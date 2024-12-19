@@ -18,29 +18,7 @@
         <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeGtfForCufflinks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGtfForGuidedCufflinks">
-        <paramValue name="outputFile">$$organismAbbrev$$.gtf</paramValue>
-        <paramValue name="gtfDir">$$dataDir$$</paramValue>
-        <paramValue name="project">$$projectName$$</paramValue>
-        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-        <paramValue name="cdsOnly">false</paramValue>
-       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-        <depends name="makeDataDir"/>
-    </step>
-
-    <step name="makeGtfForCufflinksCdsOnly" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGtfForGuidedCufflinks">
-        <paramValue name="outputFile">$$organismAbbrev$$_cds.gtf</paramValue>
-        <paramValue name="gtfDir">$$dataDir$$</paramValue>
-        <paramValue name="project">$$projectName$$</paramValue>
-        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-        <paramValue name="cdsOnly">true</paramValue>
-       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-        <depends name="makeDataDir"/>
-    </step>
-
-    <step name="makeMaskGtfForCufflinks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGsnapMaskFile">
+    <step name="makeMaskGtf" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGsnapMaskFile">
         <paramValue name="outputFile">$$organismAbbrev$$_mask.gtf</paramValue>
         <paramValue name="gtfDir">$$dataDir$$</paramValue>
         <paramValue name="project">$$projectName$$</paramValue>
@@ -51,7 +29,7 @@
         <depends name="makeDataDir"/>
     </step>
 
-    <step name="makeMaskGtfForCufflinksCdsOnly" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGsnapMaskFile">
+    <step name="makeMaskGtfCdsOnly" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGsnapMaskFile">
         <paramValue name="outputFile">$$organismAbbrev$$_cds_mask.gtf</paramValue>
         <paramValue name="gtfDir">$$dataDir$$</paramValue>
         <paramValue name="project">$$projectName$$</paramValue>
@@ -97,8 +75,8 @@
 
       <subgraph name="${name}_ebi_rnaSeq_experiment" xmlFile="analyzeRnaSeqExperiment.xml">
           <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_${name}_ebi_rnaSeq_RSRC</paramValue>
-          <paramValue name="studyDir">$$dataDir$$/${organismAbbrev}_${name}_ebi_rnaSeq_RSRC/final</paramValue>
-          <paramValue name="analysisConfig">$$dataDir$$/${organismAbbrev}_${name}_ebi_rnaSeq_RSRC/final/analysisConfig.xml</paramValue>
+          <paramValue name="studyDir">$$dataDir$$/${organismAbbrev}_${name}_ebi_rnaSeq_RSRC/results</paramValue>
+          <paramValue name="analysisConfig">$$dataDir$$/${organismAbbrev}_${name}_ebi_rnaSeq_RSRC/results/analysisConfig.xml</paramValue>
           <paramValue name="projectName">$$projectName$$</paramValue>
           <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
           <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -153,10 +131,7 @@
             <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
             <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
             <paramValue name="gtfFile">$$organismAbbrev$$_mask.gtf</paramValue>
-            <depends name="makeSeqSizeFile"/>
-            <depends name="makeGeneFootprintFile"/>
-            <depends name="makeGtfForCufflinks"/>
-            <depends name="makeMaskGtfForCufflinks"/>
+            <depends name="makeMaskGtf"/>
             <depends name="${name}_rnaSeq_loadDataset"/>
         </subgraph>
 
@@ -175,10 +150,7 @@
             <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
             <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
             <paramValue name="gtfFile">$$organismAbbrev$$_cds_mask.gtf</paramValue>
-            <depends name="makeSeqSizeFile"/>
-            <depends name="makeGeneFootprintFile"/>
-            <depends name="makeGtfForCufflinksCdsOnly"/>
-            <depends name="makeMaskGtfForCufflinksCdsOnly"/>
+            <depends name="makeMaskGtfCdsOnly"/>
             <depends name="${name}_rnaSeq_loadDataset"/>
         </subgraph>
 
@@ -196,6 +168,8 @@
             <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
             <paramValue name="studyDir">$$dataDir$$/${organismAbbrev}_${name}_ebi_rnaSeq_RSRC/bulkrnaseq/analysisDir/results</paramValue>
             <paramValue name="analysisConfig">$$dataDir$$/${organismAbbrev}_${name}_ebi_rnaSeq_RSRC/final/analysisConfig.xml</paramValue>
+            <depends name="makeSeqSizeFile"/>
+            <depends name="makeGeneFootprintFile"/>
             <depends name="${name}_rnaSeq_experiment"/>
             <depends name="${name}_rnaSeq_experiment_CDS"/>
         </subgraph>

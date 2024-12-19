@@ -25,7 +25,7 @@ sub run {
   }
 
   if ($undo) {
-      $self->runCmd(0, "rm -f $workflowDataDir/$outputDir");
+      $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir");
   }else {
     if ($test) {
         $self->testInputFile('geneFootprintFile', "$workflowDataDir/$geneFootprintFile");
