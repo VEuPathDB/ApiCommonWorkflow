@@ -37,12 +37,6 @@
       <depends name="makeDataDir"/> 
     </step>
 
-   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="extractAnnotatedTranscriptSeqs"/>
-      <depends name="extractOligoSeqs"/>
-    </step>
-
     <subgraph name="blastnOligoSeqsGenomicSeqs" xmlFile="blast.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="stepNickName">blastnGenomicSeqs</paramValue>
@@ -64,7 +58,6 @@
       <paramValue name="maxMemoryGigs">1.5</paramValue>
       <paramValue name="loadSimilarities">true</paramValue>
       <paramValue name="makeSimSeqsFile"></paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <subgraph name="blastnOligoSeqsTranscriptSeqs" xmlFile="blast.xml">
@@ -85,7 +78,6 @@
       <paramValue name="taxonHierarchyForFilter"></paramValue>
       <paramValue name="loadOptions">$$loadOptions$$</paramValue>
       <paramValue name="maxMemoryGigs">1.5</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
 </workflowGraph>

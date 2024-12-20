@@ -44,13 +44,6 @@
     <paramValue name="bowtieVersion">1</paramValue>
   </step>
 
-  <!-- Mirror bowtie indices to cluster -->
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$bowtieDir$$</paramValue>
-    <depends name="createBowtieIndices"/>
-    <depends name="createBowtie2Indices"/>
-  </step>
-
   <!-- Create other common indices -->
   <step name="createSamtoolsIndex" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateSamtoolsIndex">
     <paramValue name="genomicSeqsFile">$$genomeFastaFile$$</paramValue>
@@ -64,14 +57,6 @@
     <depends name="createSamtoolsIndex"/>
   </step>
 
-  <!-- Mirror other indices to cluster -->
-  <step name="mirrorOtherToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$indicesDir$$</paramValue>
-    <depends name="makeChromSizesFile"/>
-  </step>
-
-
-
 <!-- Subgraphs that use these indices initiated from here -->
 
 
@@ -84,8 +69,6 @@
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="samtoolsIndex">$$indicesDir$$/$$genomeFastaFileBaseName$$.fai</paramValue>
       <paramValue name="chromSizesFile">$$indicesDir$$/chrom.sizes</paramValue>
-      <depends name="mirrorToCluster"/>
-      <depends name="mirrorOtherToCluster"/>
     </subgraph>
 
 
@@ -101,8 +84,6 @@
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="samtoolsIndex">$$indicesDir$$/$$genomeFastaFileBaseName$$.fai</paramValue>
       <paramValue name="chromSizesFile">$$indicesDir$$/chrom.sizes</paramValue>
-      <depends name="mirrorToCluster"/>
-      <depends name="mirrorOtherToCluster"/>
     </subgraph>
 
     <subgraph name="smallNcRnaExperiment" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/smallNcRnaExperiment.xml" excludeIfXmlFileDoesNotExist="true">
@@ -114,8 +95,6 @@
         <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
         <paramValue name="chromSizesFile">$$indicesDir$$/chrom.sizes</paramValue>
         <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-        <depends name="mirrorToCluster"/>
-      <depends name="mirrorOtherToCluster"/>
     </subgraph>
 
 
@@ -127,8 +106,6 @@
         <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
         <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="chromSizesFile">$$indicesDir$$/chrom.sizes</paramValue>
-        <depends name="mirrorToCluster"/>
-      <depends name="mirrorOtherToCluster"/>
     </subgraph>
 
 <!-- moved from organismSpecificMiscNoAlias -->
@@ -141,7 +118,6 @@
         <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
         <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
         <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-        <depends name="mirrorToCluster"/>
     </subgraph>
 
     <subgraph name="genomicArrayStudies" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/genomicArrayStudies.xml" excludeIfXmlFileDoesNotExist="true">
@@ -153,6 +129,5 @@
         <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
         <paramValue name="chromSizesFile">$$indicesDir$$/chrom.sizes</paramValue>
         <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-        <depends name="mirrorOtherToCluster"/>
     </subgraph>
   </workflowGraph>

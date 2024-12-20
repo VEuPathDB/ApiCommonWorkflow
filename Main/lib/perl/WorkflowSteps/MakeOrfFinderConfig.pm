@@ -15,6 +15,7 @@ sub run {
   my $resultsDirectory = $self->getParamValue("resultsDirectory");
   my $outputFileName = $self->getParamValue("outputFileName");
   my $minPepLength = $self->getParamValue("minPepLength");
+  my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -29,11 +30,13 @@ sub run {
   } else {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
+      my $genomicSequenceFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $genomicSequenceFile);
+      my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
       my $configString = <<NEXTFLOW;
 params {
-  inputFilePath = "$clusterWorkflowDataDir/$genomicSequenceFile"
-  outputDir = "$clusterWorkflowDataDir/$resultsDirectory"
+  inputFilePath = "$genomicSequenceFileInNextflowWorkingDirOnCluster"
+  outputDir = "$resultsDirectoryInNextflowWorkingDirOnCluster"
   outputFileName = "$outputFileName"
   minPepLength = $minPepLength
   fastaSubsetSize = $fastaSubsetSize

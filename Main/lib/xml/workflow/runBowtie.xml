@@ -16,7 +16,7 @@
     <param name="gusConfigFile"/>
     <param name="downloadMethod"/>
 
-    <!-- mirror the sample directory over to the cluster
+    <!-- copy the sample directory over to the cluster
      This directory will eventually contain the cluster task dir but not the fastq files for the sample
      Those still live in the experiment directory
      -->
@@ -26,11 +26,6 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-    
     <subgraph name="runBowtieOnCluster"  xmlFile="bowtieJob.xml">
       <paramValue name="readsFile">$$readsFile$$</paramValue>
       <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
@@ -46,7 +41,6 @@
       <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue> 
       <paramValue name="downloadMethod">$$downloadMethod$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="document-BowtieMapping"

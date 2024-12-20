@@ -21,11 +21,6 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
- 
     <subgraph name="runHisat2OnCluster" xmlFile="runHisat2OnCluster.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="readFilePath">$$shortSeqsFile$$</paramValue>
@@ -40,7 +35,6 @@
       <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
       <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
       <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="document-RnaSeqHisat"
