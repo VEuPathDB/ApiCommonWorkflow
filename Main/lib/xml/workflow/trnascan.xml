@@ -11,6 +11,9 @@
   <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
   <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
 
+  <constant name="genomeSymLink">$$dataDir$$/genome.fasta</constant>
+
+
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
@@ -25,8 +28,16 @@
      <depends name="makeAnalysisDir"/>
   </step>
 
+  <step name="symLinkGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$genomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
   <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTRNAScanConfig">
-    <paramValue name="genomicSequenceFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+    <paramValue name="genomicSequenceFile">$$genomeSymLink$$</paramValue>
     <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
     <paramValue name="outputFileName">tRNAScan.out</paramValue>
@@ -45,6 +56,8 @@
     <paramValue name="nextflowWorkflow">VEuPathDB/trna-scan-nextflow</paramValue>
     <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
     <depends name="makeNextflowConfig"/>
+    <depends name="symLinkGenome"/>
+
   </subgraph>
 
   <step name="loadTRNAScan" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTRNAScan" stepLoadTypes="plugin">

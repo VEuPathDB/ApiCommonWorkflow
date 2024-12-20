@@ -23,10 +23,6 @@
     <constant name="sampleAnalysisDir">$$experimentDataDir$$/$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_chipSeqSample_RSRC</constant> 
     <constant name="clusterResultsDir">$$experimentDataDir$$/analyze_$$sampleName$$</constant>
 
-    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$</paramValue>
-    </step>
-
     <subgraph name="runBowtie" xmlFile="runBowtie.xml">
         <paramValue name="projectName">$$projectName$$</paramValue>
         <paramValue name="experimentDataDir">$$experimentDataDir$$</paramValue>
@@ -44,7 +40,6 @@
         <paramValue name="writeBedFile">false</paramValue>
         <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue> 
-        <depends name="mirrorSampleAnalysisDirToCluster"/>
     </subgraph>
 
     <step name="generateChipSeqCvgPlots" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateChipSeqCvgPlots">

@@ -31,6 +31,7 @@ sub run {
     my $peptideMatchResults = $self->getParamValue("peptideMatchResults");
 
     my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
+    my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
 
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $executor = $self->getClusterExecutor();
@@ -42,13 +43,17 @@ sub run {
         my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
         open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
 
+	my $proteinSequenceFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $proteinSequenceFile);
+	my $iedbPeptidesTabFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $iedbPeptidesTabFile);
+	my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
+
         my $configString = <<NEXTFLOW;
 params {
-  refFasta = "$clusterWorkflowDataDir/$proteinSequenceFile"
-  peptidesTab = "$clusterWorkflowDataDir/$iedbPeptidesTabFile"
+  refFasta = "$proteinSequenceFileInNextflowWorkingDirOnCluster"
+  peptidesTab = "$iedbPeptidesTabFileInNextflowWorkingDirOnCluster"
   taxon = $speciesNcbiTaxonId
   peptideMatchResults = "$peptideMatchResults"
-  results = "$clusterWorkflowDataDir/$resultsDirectory"
+  results = "$resultsDirectoryInNextflowWorkingDirOnCluster"
   nonTaxaShortPeptideCutoff = $nonTaxaShortPeptideCutoff
 }
 process {

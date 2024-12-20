@@ -19,6 +19,7 @@ sub run {
     my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
     my $resultsDirectory = $self->getParamValue("resultsDirectory");
     my $outputFilePrefix = $self->getParamValue("outputFilePrefix");
+    my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
 
     my $executor = $self->getClusterExecutor();
     my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
@@ -30,10 +31,12 @@ sub run {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
 
+      my $proteinSequenceFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $proteinSequenceFile);
+      my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
       my $configString = <<NEXTFLOW;
 params {
-  inputFilePath = "$clusterWorkflowDataDir/$proteinSequenceFile"
-  outputDir = "$clusterWorkflowDataDir/$resultsDirectory"
+  inputFilePath = "$proteinSequenceFileInNextflowWorkingDirOnCluster"
+  outputDir = "$resultsDirectoryInNextflowWorkingDirOnCluster"
   outputFilePrefix = "$outputFilePrefix"
   fastaSubsetSize = $fastaSubsetSize
 }

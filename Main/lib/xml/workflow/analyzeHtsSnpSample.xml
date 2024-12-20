@@ -18,7 +18,7 @@
     <param name="varscanConsDir"/>
     <param name="outputDir"/>
 
-    <!-- mirror the sample directory over to the cluster
+    <!-- copy the sample directory over to the cluster
      This directory will eventually contain the cluster task dir but not the fastq files for the sample
      Those still live in the experiment directory
      -->
@@ -27,12 +27,6 @@
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
-
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-    
 
     <subgraph name="mapSnpsOnCluster"  xmlFile="mapHtsSNPs.xml">
       <paramValue name="readsFile">$$readsFile$$</paramValue>
@@ -46,7 +40,6 @@
       <paramValue name="isColorspace">$$isColorspace$$</paramValue>
       <paramValue name="snpPercentCutoff">$$snpPercentCutoff$$</paramValue>
       <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="document-HTS_snps_bwa"

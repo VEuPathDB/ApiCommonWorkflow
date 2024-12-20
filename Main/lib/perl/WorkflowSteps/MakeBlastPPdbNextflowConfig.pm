@@ -22,6 +22,7 @@ sub run {
   my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
   my $resultsDirectory = $self->getParamValue("resultsDirectory");
   my $outputFileName = $self->getParamValue("outputFileName");
+  my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -38,14 +39,18 @@ sub run {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
 
+      my $proteinSequenceFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $proteinSequenceFile);
+      my $pdbFastaFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $pdbFastaFile);
+      my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
+
       my $configString = <<NEXTFLOW;
 params {
-  queryFastaFile = "$clusterWorkflowDataDir/$proteinSequenceFile"
-  outputDir = "$clusterWorkflowDataDir/$resultsDirectory"
+  queryFastaFile = "$proteinSequenceFileInNextflowWorkingDirOnCluster"
+  outputDir = "$resultsDirectoryInNextflowWorkingDirOnCluster"
   outputFile = "$outputFileName"
   fastaSubsetSize = $fastaSubsetSize
   blastProgram = "blastp"
-  targetFastaFile = "$clusterWorkflowDataDir/$pdbFastaFile"
+  targetFastaFile = "$pdbFastaFileInNextflowWorkingDirOnCluster"
   preConfiguredDatabase = false
   targetDatabaseIndex = "NA"
 }

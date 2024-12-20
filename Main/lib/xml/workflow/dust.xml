@@ -14,6 +14,8 @@
   <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
   <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
 
+  <constant name="genomeSymLink">$$dataDir$$/genome.fasta</constant>
+
   <constant name="ebi2gusOutputDirectory">$$parentDataDir$$/../../loadGenome/$$organismAbbrev$$_primary_genome_RSRC/ebi2gus_output</constant>
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -28,6 +30,12 @@
   <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
      <paramValue name="dataDir">$$resultsDirectory$$</paramValue>
      <depends name="makeAnalysisDir"/>
+  </step>
+
+  <step name="symLinkGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$genomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
   </step>
 
 
@@ -46,7 +54,7 @@
 
 
   <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDustNextflowConfig" includeIf="$$isNotEbiGenome$$">
-    <paramValue name="genomicSequenceFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="genomicSequenceFile">$$genomeSymLink$$</paramValue>
     <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
     <paramValue name="outputFileName">lowComplexity.bed</paramValue>
@@ -66,6 +74,7 @@
     <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/low-complexity-nextflow</paramValue>
     <depends name="makeNextflowConfig"/>
+    <depends name="symLinkGenome"/>
   </subgraph>
 
 
