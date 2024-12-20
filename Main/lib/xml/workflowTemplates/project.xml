@@ -298,6 +298,7 @@
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
+
     <subgraph name="${organismAbbrev}_dnaseq" xmlFile="generated/${projectName}/${organismAbbrev}/dnaseq.xml" excludeIfXmlFileDoesNotExist="true">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -311,6 +312,8 @@
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
+
+    <!--
     <subgraph name="${organismAbbrev}_hisat" xmlFile="generated/${projectName}/${organismAbbrev}/hisat.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -324,8 +327,8 @@
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
-
-    <subgraph name="${organismAbbrev}_ebi_rnaseq" xmlFile="generated/${projectName}/${organismAbbrev}/ebiRNASeq.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+-->
+    <subgraph name="${organismAbbrev}_rnaseq" xmlFile="generated/${projectName}/${organismAbbrev}/rnaseq.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -341,7 +344,7 @@
     <step name="${organismAbbrev}_PARJunctions" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARJunctions"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
      <paramValue name="mappingFile">$$dataDir$$/${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
-      <depends name="${organismAbbrev}_ebi_rnaseq"/>
+      <depends name="${organismAbbrev}_rnaseq"/>
     </step>
 
     <subgraph name="${organismAbbrev}_ebi_VCF" xmlFile="generated/${projectName}/${organismAbbrev}/ebiVCFfile.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
