@@ -13,16 +13,17 @@ sub run {
     my $copyFromDir = $self->getParamValue('copyFromDir');
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $relativeDir = $self->getParamValue('relativeDir');
-    my $experimentResourceName = $self->getParamValue('experimentDatasetName');
+    my $experimentDatasetName = $self->getParamValue('experimentDatasetName');
     my $websiteFilesDir = $self->getWebsiteFilesDir($test);
     my $gusConfigFile = $self->getParamValue('gusConfigFile');
     $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
+    my $dataType = $self->getParamValue('dataType');
     my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
     my $workflowDataDir = $self->getWorkflowDataDir();
 
+    my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/${dataType}/bigwig/$experimentDatasetName/mergedBigwigs";
 
-    my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/bigwig/$experimentResourceName/mergedBigwigs";
     my $cmd_mkdir = "mkdir -p $copyToDir";
 
     my $cmd_copy = "cp $workflowDataDir/$copyFromDir/*.bw $copyToDir";

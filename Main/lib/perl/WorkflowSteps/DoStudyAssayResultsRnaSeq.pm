@@ -20,7 +20,8 @@ sub run {
   my $cmd = "doStudyAssayResults.pl --xml_file $workflowDataDir/$analysisConfigFile --main_directory $workflowDataDir/$outputDir --technology_type $technologyType";
   $cmd = $cmd . " --input_file $workflowDataDir/$ancillaryFile" if (-e "$workflowDataDir/$ancillaryFile");
   if ($undo) {
-    $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir/analysis_output");
+    $self->runCmd(0, "rm -rf $workflowDataDir/$outputDir/analysis_output/");
+    $self->runCmd(0, "mkdir $workflowDataDir/$outputDir/analysis_output/");
   } else {
 
       $self->testInputFile('analysisConfigFile', "$workflowDataDir/$analysisConfigFile");
