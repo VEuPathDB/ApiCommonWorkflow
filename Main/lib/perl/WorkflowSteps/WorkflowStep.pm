@@ -348,7 +348,7 @@ sub getClusterNextflowWorkingDir {
 }
 
 sub relativePathToNextflowClusterPath {
-  my ($self, $relativeDataDirPath, $fileOrDirRelativePath) = @;
+  my ($self, $relativeDataDirPath, $fileOrDirRelativePath) = @_;
   my $clusterNextflowWorkingDir = $self->getClusterNextflowWorkingDir($relativeDataDirPath);
 
   # remove the relativeDataDirPath "prefix" from the fileOrDirRelativePath
