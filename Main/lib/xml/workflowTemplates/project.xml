@@ -124,6 +124,7 @@
       <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="gusConfigFilename">${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
+      <depends name="${organismAbbrev}_makeDataDir"/>
     </step>
 
 <!--
@@ -143,6 +144,7 @@
     <!-- each organism creates this step, but all are ignored except the one made by the ref strain. -->
     <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}" groupName="${organismAbbrev}">
       <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}_strainsComparisonInput</paramValue>
+      <depends name="makeDataDir"/>
     </step>
 
     <step name="${organismAbbrev}_loadTemporaryNcbiTaxonId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadTemporaryNcbiTaxonId" includeIf="${hasTemporaryNcbiTaxonId}" groupName="${organismAbbrev}">
