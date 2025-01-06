@@ -341,21 +341,5 @@ sub runSqlFetchOneRowFromOrgDb {
     return @output;
 }
 
-sub getClusterNextflowWorkingDir {
-  my ($self, $relativeDataDirPath) = @_;
-  my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
-  return $clusterWorkflowDataDir . "/" . $self->uniqueNameForNextflowWorkingDirectory($relativeDataDirPath);
-}
-
-sub relativePathToNextflowClusterPath {
-  my ($self, $relativeDataDirPath, $fileOrDirRelativePath) = @_;
-  my $clusterNextflowWorkingDir = $self->getClusterNextflowWorkingDir($relativeDataDirPath);
-
-  # remove the relativeDataDirPath "prefix" from the fileOrDirRelativePath
-  my $noPrefix = substr($fileOrDirRelativePath, length($relativeDataDirPath) - length($fileOrDirRelativePath));
-
-  return $clusterNextflowWorkingDir . "/" . $noPrefix;
-}
-
 1;
 
