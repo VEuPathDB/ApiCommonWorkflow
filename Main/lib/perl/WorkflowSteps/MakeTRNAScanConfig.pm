@@ -34,8 +34,8 @@ sub run {
 
       my $configString = <<NEXTFLOW;
 params {
-  inputFilePath = $genomicSequenceFileInNextflowWorkingDirOnCluster
-  outputDir = $resultsDirectoryInNextflowWorkingDirOnCluster
+  inputFilePath = "$genomicSequenceFileInNextflowWorkingDirOnCluster"
+  outputDir = "$resultsDirectoryInNextflowWorkingDirOnCluster"
   outputFile = "$trnascanOutputFileName"
   fastaSubsetSize = $fastaSubsetSize
 }
