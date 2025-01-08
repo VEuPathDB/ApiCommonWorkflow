@@ -10,13 +10,18 @@ sub run {
     my ($self, $test, $undo) = @_;
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
-    my $input = join("/", $clusterWorkflowDataDir, $self->getParamValue("input")); 
-    my $outputDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("outputDir")); 
     my $configFileName = $self->getParamValue("configFileName");
     my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
     my $outputFile = $self->getParamValue("outputFile");
     my $clusterServer = $self->getSharedConfig("clusterServer");
     my $interproscanDatabase = join("/", $self->getSharedConfig("$clusterServer.softwareDatabasesDirectory"),$self->getSharedConfig("interproscanDatabaseDirectory"));
+
+    my $input = $self->getParamValue("input");
+    my $outputDir = $self->getParamValue("outputDir");
+    my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
+
+    my $digestedInput = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $input);
+    my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $outputDir);
 
     my $executor = $self->getClusterExecutor();
     my $queue = $self->getClusterQueue();
@@ -29,8 +34,8 @@ sub run {
     print F
 "
 params {
-  input = \"$input\"
-  outputDir = \"$outputDir\"
+  input = \"$digestedInput\"
+  outputDir = \"$digestedOutputDir\"
   fastaSubsetSize = 100
   appls = \"prositeprofiles,pfama,gene3d,superfamily,pirsf,smart\" 
   outputFile = \"$outputFile\"
