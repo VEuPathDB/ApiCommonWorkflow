@@ -30,6 +30,9 @@ sub run {
     my $outputFileName = $self->getParamValue("outputFileName");
     my $errorFileName = $self->getParamValue("errorFileName");
 
+    my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
+    my $digestedInputFilePath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $self->getParamValue("inputFilePath"));
+    my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $self->getParamValue("outputDir"));
 
     my $clusterServer = $self->getSharedConfig("clusterServer");
     my $repeatMaskerDatabase = join("/", $self->getSharedConfig("$clusterServer.softwareDatabasesDirectory"),$self->getSharedConfig("repeatMaskerDatabaseDirectory"),$famdbRelativePath);
@@ -58,7 +61,7 @@ sub run {
 
     my $configString = <<NEXTFLOW;
 params {
-  inputFilePath = "$inputFilePath"
+  inputFilePath = "$digestedInputFilePath"
   fastaSubsetSize = $fastaSubsetSize
   trimDangling = $trimDangling
   dangleMax = $dangleMax
@@ -66,7 +69,7 @@ params {
   taxonId = $speciesNcbiTaxonId
   outputFileName = "$outputFileName"
   errorFileName = "$errorFileName"
-  outputDir = "$outputDir"
+  outputDir = "$digestedOutputDir"
 }
 
 process{
