@@ -19,6 +19,10 @@ sub run {
   my $resultsDirectory = $self->getParamValue("resultsDirectory");
   my $outputFileName = $self->getParamValue("outputFileName");
 
+  my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
+  my $digestedInputFilePath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $proteinSequenceFile);
+  my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $clusterServer = $self->getSharedConfig('clusterServer');
@@ -42,8 +46,8 @@ sub run {
 
       my $configString = <<NEXTFLOW;
 params {
-  inputFilePath = "$clusterWorkflowDataDir/$proteinSequenceFile"
-  outputDir = "$clusterWorkflowDataDir/$resultsDirectory"
+  inputFilePath = "$digestedInputFilePath"
+  outputDir = "$digestedOutputDir"
   outputFileName = "$outputFileName"
   fastaSubsetSize = $fastaSubsetSize
 }
