@@ -19,7 +19,7 @@ sub getWebsiteFileCmd {
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
 
-    return "makeCuratedGafFile4Download.pl --organismAbbrev $organismAbbrev --tuningTablePrefix $tuningTablePrefix --outputFile $downloadFileName";
+    return "makeCuratedGafFile4Download.pl --gusConfigFile $gusConfigFile --organismAbbrev $organismAbbrev --tuningTablePrefix $tuningTablePrefix --outputFile $downloadFileName";
 }
 
 1;
