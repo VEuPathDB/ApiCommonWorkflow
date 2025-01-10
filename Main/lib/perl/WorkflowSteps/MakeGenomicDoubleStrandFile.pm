@@ -38,7 +38,7 @@ sub getWebsiteFileCmd {
             AND so.source_id = sa.so_id
 EOF
 
-  my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"  --posStrand '\\+' --negStrand '-' ";
+  my $cmd = "gusExtractSequences --gusConfigFile $gusConfigFile --outputFile $downloadFileName  --idSQL \"$sql\"  --posStrand '\\+' --negStrand '-' ";
   return $cmd;
 }
 

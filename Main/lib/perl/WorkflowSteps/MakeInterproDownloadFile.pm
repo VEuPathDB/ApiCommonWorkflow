@@ -59,7 +59,7 @@ sub getWebsiteFileCmd {
      AND xdr1.external_database_release_id =  $interproDbRlsId
 EOF
 
-    my $cmd = " makeFileWithSql --outFile $downloadFileName --sql \"$sql\" ";
+    my $cmd = " makeFileWithSql --gusConfigFile $gusConfigFile --outFile $downloadFileName --sql \"$sql\" ";
     return $cmd;
 }
 

@@ -18,7 +18,7 @@ sub getWebsiteFileCmd {
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
 
-    return "makeGafFile4Download.pl --organismAbbrev $organismAbbrev --tuningTablePrefix $tuningTablePrefix --outputFile $downloadFileName";
+    return "makeGafFile4Download.pl --gusConfigFile $gusConfigFile --organismAbbrev $organismAbbrev --tuningTablePrefix $tuningTablePrefix --outputFile $downloadFileName";
 }
 
 1;

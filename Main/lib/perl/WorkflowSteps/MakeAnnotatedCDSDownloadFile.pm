@@ -52,7 +52,7 @@ sub getWebsiteFileCmd {
      ORDER BY gf.chromosome_order_num, gf.source_id, gf.coding_start
 EOF
 
-    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\"  --verbose ";
+    my $cmd = "gusExtractSequences --gusConfigFile $gusConfigFile --outputFile $downloadFileName  --idSQL \"$sql\"  --verbose ";
     return $cmd;
 }
 1;
