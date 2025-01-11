@@ -20,19 +20,19 @@ sub getWebsiteFileCmd {
 
     my $sql = <<"EOF";
      select gf.source_id
-            || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
+            || CASE WHEN gf.is_deprecated = 1 THEN ' | deprecated=true' ELSE '' END
             || ' | organism=' || replace( gf.organism, ' ', '_')
             || ' | product=' || gf.transcript_product || ' | location='
             || fl.sequence_source_id || ':'
             || least(gf.coding_start,gf.coding_end) ||'-'
             || greatest(gf.coding_start,gf.coding_end)
-            || '('|| decode(fl.is_reversed, 1, '-', '+') || ') | length='
+            || '('|| CASE WHEN fl.is_reversed = 1 THEN '-' ELSE '+' END || ') | length='
             || (abs(gf.coding_start - gf.coding_end) + 1) || ' | sequence_SO=' || soseq.name
-            || ' | SO=' || gf.so_term_name || decode(gf.is_deprecated, 1, ' | deprecated=true', '')
+            || ' | SO=' || gf.so_term_name || CASE WHEN gf.is_deprecated = 1 THEN ' | deprecated=true' ELSE '' END
             as defline,
            substr(snas.sequence,
-                  taaf.translation_start,
-                  taaf.translation_stop - taaf.translation_start + 1) as sequence
+                  taaf.translation_start::integer,
+                  (taaf.translation_stop - taaf.translation_start + 1)::integer) as sequence
            from apidb.FeatureLocation fl,
                 ApidbTuning.${tuningTablePrefix}TranscriptAttributes gf,
                 dots.transcript t, dots.splicednasequence snas, dots.translatedaafeature taaf,
