@@ -13,7 +13,8 @@ sub run {
 
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $outputDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("outputDir")); 
+    #my $outputDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("outputDir")); 
+    my $resultsDirectory = $self->getParamValue("resultsDirectory");
     my $configFileName = $self->getParamValue("configFileName");
     my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
     my $seqFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("queryFile"));
@@ -33,7 +34,6 @@ sub run {
     my $executor = $self->getClusterExecutor();
     my $queue = $self->getClusterQueue();
 
-    my $executor = $self->getClusterExecutor();
     my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
 
@@ -45,7 +45,6 @@ sub run {
       my $queryFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $seqFile);
       my $databaseInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $databasePath);
       my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
-
       my $configString = <<NEXTFLOW;
 params {
   queryFasta = "$queryFileInNextflowWorkingDirOnCluster"
