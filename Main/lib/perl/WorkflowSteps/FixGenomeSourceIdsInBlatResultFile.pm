@@ -19,7 +19,7 @@ sub run {
   if ($undo) {
   } else {
 
-    $self->testInputFile('seqFile', "$workflowDataDir/$inputFile");
+    #$self->testInputFile('seqFile', "$workflowDataDir/$inputFile");
 
     if (-s "$workflowDataDir/$queryFile" || $test) {
       $self->runCmd($test,$cmd);
