@@ -17,9 +17,9 @@ sub run {
   $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $dataDir = $self->getParamValue('dataDir');
-  my $exteralDatabaseName = $self->getParamValue('externalDatabaseName');
+  my $externalDatabaseName = $self->getParamValue('externalDatabaseName');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
+  my $relativeWebServicesDir = $self->getParamValue('relativeWebServicesDir');
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
   my $workflowDataDir = $self->getWorkflowDataDir();
