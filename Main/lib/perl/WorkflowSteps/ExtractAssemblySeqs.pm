@@ -15,9 +15,11 @@ sub run {
   $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile);
-  my $taxonId = $organismInfo->getSpeciesTaxonId();
-  my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
+  #my $taxonId = $organismInfo->getSpeciesTaxonId();
+  #my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
 
+  my $speciesNcbiTaxonId = $self->getParamValue('speciesNcbiTaxonId');
+  my $taxonIdList = $organismInfo->getTaxonIdList($speciesNcbiTaxonId);
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $args = "--taxon_id_list '$taxonIdList' --outputfile $workflowDataDir/$outputFile --extractonly";
