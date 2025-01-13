@@ -17,7 +17,7 @@ sub run {
 
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
+  my $relativeWebServicesDir = $self->getParamValue('relativeWebServicesDir');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
