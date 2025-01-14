@@ -19,7 +19,8 @@ sub run {
   #my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
 
   my $speciesNcbiTaxonId = $self->getParamValue('speciesNcbiTaxonId');
-  my $taxonIdList = $organismInfo->getTaxonIdList($speciesNcbiTaxonId);
+  my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$speciesNcbiTaxonId);
+  my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $args = "--taxon_id_list '$taxonIdList' --outputfile $workflowDataDir/$outputFile --extractonly";
