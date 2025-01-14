@@ -20,7 +20,8 @@ sub run {
   #my $taxonId = $organismInfo->getSpeciesTaxonId();
   #my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
   my $speciesNcbiTaxonId = $self->getParamValue('speciesNcbiTaxonId');
-  my $taxonIdList = $organismInfo->getTaxonIdList($speciesNcbiTaxonId);
+  my $taxonId = $self->getTaxonIdFromNcbiTaxId($test,$speciesNcbiTaxonId);
+  my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
 
   my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
 
