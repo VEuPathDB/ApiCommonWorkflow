@@ -9,10 +9,9 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $sourceIdField = $self->getParamValue('sourceIdField');
-  my $sourceIdJoiningRegex = $self->getParamValue('sourceIdJoinRegex');
+  my $sourceIdJoiningRegex = $self->getParamValue('sourceIdJoiningRegex');
   my $spanLengthCutoff = $self->getParamValue('spanLengthCutoff');
   my $includeMultipleSpans = $self->getParamValue('includeMultipleSpans');
-  my $gusConfigFile = $self->getParamValue('gusConfigFile');
   my $gusConfigFile = $self->getParamValue('gusConfigFile');
   $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
@@ -26,7 +25,7 @@ sub run {
 
   my $workingDirectory = "${workflowDataDir}/$dataDir";
 
-  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/genomeAndProteome/gff/";
+  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/gff/";
 
   my $cmd = "clonedInsertEndsToGff.pl --external_database_name '$externalDatabaseName' --output_directory $workingDirectory --source_id_field $sourceIdField  --source_id_joining_regex '$sourceIdJoiningRegex' --span_length_cutoff $spanLengthCutoff --include_multiple_spans $includeMultipleSpans --gus_config $gusConfigFile";
 
