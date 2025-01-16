@@ -11,15 +11,13 @@ sub run {
 
     my $dots = 10;
 
-    my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $workflowDataDir = $self->getWorkflowDataDir();
-    #my $outputDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("outputDir")); 
     my $resultsDirectory = $self->getParamValue("resultsDirectory");
     my $configFileName = $self->getParamValue("configFileName");
     my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
-    my $seqFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("queryFile"));
+    my $seqFile = $self->getParamValue("queryFile");
     my $fastaSubsetSize = $self->getParamValue("fastaSubsetSize");
-    my $databasePath = join("/", $clusterWorkflowDataDir, $self->getParamValue("databasePath"));
+    my $databasePath = $self->getParamValue("databasePath");
     my $maxIntronSize = $self->getParamValue("maxIntronSize");
     my $dbType = $self->getParamValue("dbType");
     my $queryType = $self->getParamValue("queryType");
