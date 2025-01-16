@@ -402,6 +402,7 @@
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">$$projectName$$/${organismAbbrev}.xml</paramValue>
+      <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
       <depends name="${organismAbbrev}_PostLoadGenome"/>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
@@ -516,12 +517,13 @@
 
 
   </datasetTemplate>
-
+<!--
   <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables">
     <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$/Snp_Table_Constraint</paramValue>
     <dependsPattern name="*_bowtieMapping"/>
   </step>
+-->
 <!--webdb test
   <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml">
     <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
@@ -691,7 +693,8 @@
     <!--<dependsGlobal name="EuPath_Ontology_RSRC"/>-->
 <!--  </subgraph>-->
   <!-- AlphaFold is now filtered, must be dependent on loading uniprot ids into sres.dbref in organism specific graph-->
-  <subgraph name="alphaFold_RSRC" xmlFile="loadDataset.xml">
+<!--  
+ <subgraph name="alphaFold_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
     <paramValue name="datasetName">alphaFold_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
@@ -700,6 +703,7 @@
     <dependsPattern name="*specific*"/>
     <dependsPattern name="*_dbXRefs"/>
   </subgraph>
+-->
   <!--A generic dataset template to copy and format files from EuPathDB manualDelivery to download sites and web services-->
   <datasetTemplate class="copyAndFormatDownloadFilesFromManualDelivery">
     <prop name="projectName"/>
