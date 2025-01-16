@@ -19,15 +19,16 @@ sub run {
   my $externalDatabaseName = $self->getParamValue('externalDatabaseName');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $relativeWebServicesDir = $self->getParamValue('relativeWebServicesDir');
+  my $dataType = $self->getParamValue('dataType');
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $workingDirectory = "${workflowDataDir}/$dataDir";
 
-  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/gff/";
+  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/$dataType/gff/";
 
-  my $cmd = "clonedInsertEndsToGff.pl --external_database_name '$externalDatabaseName' --output_directory $workingDirectory --source_id_field $sourceIdField  --source_id_joining_regex '$sourceIdJoiningRegex' --span_length_cutoff $spanLengthCutoff --include_multiple_spans $includeMultipleSpans --gus_config $gusConfigFile";
+  my $cmd = "clonedInsertEndsToGff.pl --external_database_name '$externalDatabaseName' --output_directory $workingDirectory --source_id_field $sourceIdField  --source_id_joining_regex '$sourceIdJoiningRegex' --span_length_cutoff $spanLengthCutoff --include_multiple_spans $includeMultipleSpans --gus_config $gusConfigFile --output_file_base $externalDatabaseName";
 
   if($undo) {
     $self->runCmd(0, "rm -f $copyToDir/${externalDatabaseName}*");
@@ -43,8 +44,8 @@ sub run {
       }
 
       $self->runCmd($test, $cmd);
-      $self->runCmd($test, "cp $workingDirectory/${externalDatabaseName}.gz $copyToDir");
-      $self->runCmd($test, "cp $workflowDataDir/${externalDatabaseName}.gz.tbi $copyToDir");
+      $self->runCmd($test, "cp $workingDirectory/${externalDatabaseName}.gff.gz $copyToDir");
+      $self->runCmd($test, "cp $workingDirectory/${externalDatabaseName}.gff.gz.tbi $copyToDir");
   }
 }
 
