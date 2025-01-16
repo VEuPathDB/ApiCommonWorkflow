@@ -140,6 +140,19 @@ sub getTaxonIdList {
     }
 }
 
+sub getTaxonIdListFromNcbiTaxon {
+  my ($self, $ncbiTaxonId) = @_;
+
+    my $idList = $self->{workflowStep}->runCmd($self->{test}, "getSubNCBITaxaList --NCBITaxId $ncbiTaxonId");
+
+    if ($self->{test}) {
+      return "$self->{organismAbbrev}_TAXON_ID_LIST";
+    } else {
+      chomp($idList);
+      return  $idList;
+    }
+}
+
 sub getIsFamilyRepresentative{
     my ($self) = @_;
     return "$self->{organismAbbrev}_IS_FAMILY_REP" if $self->{test};
