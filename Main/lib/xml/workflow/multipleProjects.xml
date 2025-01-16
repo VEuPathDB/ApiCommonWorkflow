@@ -2,6 +2,8 @@
   <param name="projectName"/> <!-- GenomicsDB -->
 
   <constant name="globalDatasetLoaderXmlFile">GenomicsGlobal.xml</constant>
+  <constant name="multiProjectsDatasetLoaderXmlFile">MultiProjects.xml</constant>
+  <constant name="multiProjectsDataDir">multiProjects</constant>
 
 <!-- call globalGraph (Mustafa's but we added back things like NRDB ...-->
   <globalSubgraph name="global" xmlFile="globalGraph.xml">
@@ -9,6 +11,10 @@
     <paramValue name="globalDatasetLoaderXmlFile">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
   </globalSubgraph>
+
+  <step name="makeMultiProjectsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$multiProjectsDataDir$$</paramValue>
+  </step>
 
   <step name="initClusterHomeDir"
         stepClass="ReFlow::StepClasses::InitClusterHomeDir">
@@ -29,12 +35,32 @@
       <paramValue name="areBigGenomes">false</paramValue>
       <depends name="initClusterHomeDir"/>
     </subgraph>
-
+<!--
     <subgraph name="VectorBase" xmlFile="generated/VectorBase/project.xml">
       <paramValue name="projectName">VectorBase</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
       <paramValue name="areBigGenomes">false</paramValue>
       <depends name="initClusterHomeDir"/>
+    </subgraph>
+-->
+    <subgraph name="alphaFold" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">alphaFold_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$multiProjectsDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$multiProjectsDataDir$$</paramValue>
+     <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+     <depends name="makeMultiProjectsDataDir"/>
+     <depends name="PlasmoDB"/>
+     <depends name="TriTrypDB"/>
+    </subgraph>
+
+    <subgraph name="ExternalResourceUrl" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">ExternalResourceUrl_Ensembl_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$multiProjectsDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$multiProjectsDataDir$$</paramValue>
+     <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+     <depends name="makeMultiProjectsDataDir"/>
+     <depends name="PlasmoDB"/>
+     <depends name="TriTrypDB"/>
     </subgraph>
 
 <!-- call project.xml for non veupathdb proteomes used for orthomcl.
@@ -42,7 +68,6 @@
      QUESTION:  What should this be called??
 -->
 
-<!-- QUESTION:  SHOULD ALPHA FOLD Step go here?? -->
 <!-- QUESTION:  SHOULD ISASIMPLE steps go here? -->
 
 
@@ -57,10 +82,4 @@
 -->
 
 <!-- call OrthoFinder -->
-
-
-
-
-
-
 </workflowGraph>
