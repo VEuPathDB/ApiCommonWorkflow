@@ -140,10 +140,10 @@ sub getTaxonIdList {
     }
 }
 
-sub getTaxonIdListFromNcbiTaxon {
+sub getSubTaxaListFromNcbiTaxonId {
   my ($self, $ncbiTaxonId) = @_;
 
-    my $idList = $self->{workflowStep}->runCmd($self->{test}, "getSubNCBITaxaList --NCBITaxId $ncbiTaxonId");
+    my $idList = $self->{workflowStep}->runCmd($self->{test}, "getSubTaxaListFromNcbiTaxonId --NCBITaxId $ncbiTaxonId");
 
     if ($self->{test}) {
       return "$self->{organismAbbrev}_TAXON_ID_LIST";
