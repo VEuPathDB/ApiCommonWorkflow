@@ -18,7 +18,7 @@ sub run {
 
   my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile);
   my $speciesNcbiTaxonId = $self->getParamValue('speciesNcbiTaxonId');
-  my $taxonIdList = $organismInfo->getTaxonIdListFromNcbiTaxon($speciesNcbiTaxonId);  
+  my $taxonIdList = $organismInfo->getSubTaxaListFromNcbiTaxonId($speciesNcbiTaxonId);  
 
   my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
 
