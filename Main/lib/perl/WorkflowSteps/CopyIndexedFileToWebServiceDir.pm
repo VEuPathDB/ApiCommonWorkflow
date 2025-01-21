@@ -19,7 +19,7 @@ sub run {
   my $indexSuffix = $self->getParamValue('indexSuffix');
   my $fileType = $self->getParamValue('fileType');
   my $dataType = $self->getParamValue('dataType');
-
+  my $extDBName = $self->getParamValue('extDBName');
   my $copyFromBasename = basename $copyFromFile; # like someFile.gff.gz
   my $copyFromDirName = dirname $copyFromFile;  # relative path
 
@@ -34,7 +34,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/${dataType}/${fileType}/";
+  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/${dataType}/${fileType}/${extDBName}";
 
   my $gzFile =  "${copyFromBasename}";
   my $tbiFile =  "${gzFile}.${indexSuffix}";
