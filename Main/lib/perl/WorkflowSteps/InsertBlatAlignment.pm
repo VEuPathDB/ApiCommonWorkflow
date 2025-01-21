@@ -57,7 +57,7 @@ sub run {
       print "matching regex >assemblySeqIds\n";
 #      my ($queryTempFh,$queryTempfile) = tempfile(DIR =>$workflowDataDir);
 #      my ($blatTempFh, $blatTempfile) = tempfile(DIR =>$workflowDataDir);
-     my $cmd = "mapAssemblySeqIdsSourceIds --queryFile $workflowDataDir/$queryFile -blatFile $workflowDataDir/$blatFile -queryOut $workflowDataDir/$queryTempFile -blatOut $workflowDataDir/$blatTempFile";
+     my $cmd = "mapAssemblySeqIdsSourceIds --queryFile $workflowDataDir/$queryFile -blatFile $workflowDataDir/$blatFile -queryOut $workflowDataDir/$queryTempFile -blatOut $workflowDataDir/$blatTempFile --gusConfigFile $gusConfigFile";
       $self->runCmd(0, $cmd) if ($action eq 'load' && !$undo);
       print "query Temp file is $workflowDataDir/$queryTempFile\n";
 #      $self->setParamValue('queryFile', $queryTempfile);
