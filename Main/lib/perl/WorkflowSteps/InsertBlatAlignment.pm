@@ -4,7 +4,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::InsertBlatAlignment;
 
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
-use File::Temp qw/ tempfile /;
+#use File::Temp qw/ tempfile /;
 
 sub run {
   my ($self, $test, $undo) = @_;
@@ -46,7 +46,7 @@ sub run {
   my $queryTempFile = $queryFile;
   my $blatTempFile = $blatFile;
   $queryTempFile =~ s/blocked.seq/tempMappingBlocked.seq/;
-  $blatTempFile =~ s/out.psl/tempMappingOut.psl/;
+  $blatTempFile =~ s/blat.psl/tempMappingBlat.psl/;
   my $hasTempFiles = 0;
   my $checkEsts = `head -n 1 $workflowDataDir/$queryFile`;
 #  print "EST header is $checkEsts\n";
