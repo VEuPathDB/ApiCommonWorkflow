@@ -63,8 +63,8 @@
       <paramValue name="inputProteinSequenceFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/AnnotatedProteins.fsa</paramValue>
       <paramValue name="inputDir">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/final</paramValue>
       <paramValue name="inputAnnotationGffFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/$$organismAbbrev$$.gff</paramValue>
-      <paramValue name="outputPeptidesProteinAlignGff">ms_peptides_protein_align_${name}.gff</paramValue>
-      <paramValue name="outputPeptidesGenomeAlignGff">ms_peptides_genome_align_${name}.gff</paramValue>
+      <paramValue name="outputPeptidesProteinAlignGff">ms_peptides_protein_align.gff</paramValue>
+      <paramValue name="outputPeptidesGenomeAlignGff">ms_peptides_genome_align.gff</paramValue>
       <paramValue name="nextflowConfigFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/nextflow.config</paramValue>
       <paramValue name="resultsDirectory">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/results</paramValue>
       <depends name="massSpec_${name}_results"/>
@@ -90,7 +90,7 @@
     <step name="massSpec_${name}_copyProteinGffToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="copyFromFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/results/ms_peptides_protein_align_${name}.gff.gz</paramValue>
+      <paramValue name="copyFromFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/results/ms_peptides_protein_align.gff.gz</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="indexSuffix">tbi</paramValue>
       <paramValue name="fileType">gff</paramValue>
@@ -102,7 +102,7 @@
     <step name="massSpec_${name}_copyGenomeGffToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="copyFromFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/results/ms_peptides_genome_align_${name}.gff.gz</paramValue>
+      <paramValue name="copyFromFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/results/ms_peptides_genome_align.gff.gz</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="indexSuffix">tbi</paramValue>
       <paramValue name="fileType">gff</paramValue>
@@ -115,7 +115,7 @@
   <step name="massSpec_${name}_insert"
         stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertMassSpecPeptides" stepLoadTypes="plugin">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <paramValue name="inputFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/results/ms_peptides_protein_align_${name}.gff.gz</paramValue>
+    <paramValue name="inputFile">$$dataDir$$/${organismAbbrev}_massSpec_${name}_RSRC/analysisDir/results/ms_peptides_protein_align.gff.gz</paramValue>
     <paramValue name="extDbRlsSpec">${organismAbbrev}_massSpec_${name}_RSRC|${version}</paramValue>
     <depends name="massSpec_${name}_runNextflowOnCluster"/>
   </step>
