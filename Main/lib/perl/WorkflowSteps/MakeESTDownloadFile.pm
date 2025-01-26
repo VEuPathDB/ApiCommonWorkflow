@@ -23,7 +23,7 @@ sub getWebsiteFileCmd {
 
   my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile);
   my $speciesNcbiTaxonId = $self->getParamValue('speciesNcbiTaxonId');
-  my $taxonIdList = $organismInfo->getSubTaxaListFromNcbiTaxonId($speciesNcbiTaxonId);
+  my $taxonIdList = $organismInfo->getSubTaxaListFromNcbiTaxonId($speciesNcbiTaxonId, $gusConfigFile);
 
   my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
 
@@ -51,7 +51,7 @@ sub getWebsiteFileCmd {
         AND d.name = '$soExtDbName'
 EOF
 
-    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\" --verbose ";
+    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\" --verbose --gusConfigFile $gusConfigFile";
     return $cmd;
 }
 
