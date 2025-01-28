@@ -14,6 +14,7 @@ sub run {
   my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
   my $resultsDirectory = $self->getParamValue("resultsDirectory");
   my $outputFileName = $self->getParamValue("outputFileName");
+  my $hydropathyOutputFileName = $self->getParamValue("hydropathyOutputFileName");
   my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
 
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -38,6 +39,7 @@ params {
   inputFilePath = "$proteinSequenceFileInNextflowWorkingDirOnCluster"
   outputDir = "$resultsDirectoryInNextflowWorkingDirOnCluster"
   outputFileName = "$outputFileName"
+  hydropathyOutputFileName = "$hydropathyOutputFileName"
   fastaSubsetSize = $fastaSubsetSize
 }
 
