@@ -156,11 +156,12 @@ WHERE name = '${datasetName}'";
 sub getMd5DigestForAnnotationSpecs {
     my ($self, $test, $organismAbbrev) = @_;
 
-
     # NOTE:  this is the postgres version
     my $sql = "SELECT md5(string_agg(name || '|' ||  version, ',' ORDER BY name,version))
 FROM apidb.datasource d
 WHERE name LIKE '${organismAbbrev}\_%genome_features_RSRC' ESCAPE '\\'
+OR name LIKE '${organismAbbrev}\_orthomclProteome_RSRC' ESCAPE '\\'
+OR name LIKE 'atum_orthomclPeripheralProteome_RSRC' ESCAPE '\'
 OR name LIKE '${organismAbbrev}\_%primary_genome_RSRC' ESCAPE '\\'";
 
 

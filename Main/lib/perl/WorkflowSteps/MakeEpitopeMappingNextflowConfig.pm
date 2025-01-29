@@ -49,6 +49,7 @@ params {
    peptideMatchBlastCombinedResults = "$peptideMatchBlastCombinedResults"
    chunkSize = $chunkSize
    results = "$clusterWorkflowDataDir/$resultsDirectory"
+   nonTaxaShortPeptideCutoff = 5
 }
 
 process {

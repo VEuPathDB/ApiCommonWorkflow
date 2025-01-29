@@ -37,6 +37,26 @@
       <depends name="initClusterHomeDir"/>
     </subgraph>
 
+<!-- Separate this by core and peripheral so we don't have to rerun core if any peripheral has changed. Do this by making the core_peripheral field of genomic organisms a boolean, and use it to do include ifs. Below the core will be dependent on things like PlasmoDB_checkOrthoCoreProteomeDirs and peripheral workflow like PlasmoDB_checkOrthoPeripheralProteomeDirs -->
+
+    <subgraph name="OrthoMCLCore" xmlFile="OrthoMCLCore.xml">
+      <paramValue name="projectName">OrthoMCL</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <dependsExternal name="PlasmoDB_checkOrthoCoreProteomeDirs"/>
+      <dependsExternal name="TriTrypDB_checkOrthoCoreProteomeDirs"/>
+      <dependsExternal name="VectorBase_checkOrthoCoreProteomeDirs"/>
+    </subgraph>
+
+    <subgraph name="OrthoMCLPeripheral" xmlFile="OrthoMCLPeripheral.xml">
+      <paramValue name="projectName">OrthoMCL</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="residualGroupIdPrefix">OGR7r1_</paramValue>
+      <depends name="OrthoMCLCore"/>
+      <dependsExternal name="PlasmoDB_checkOrthoPeripheralProteomeDirs"/>
+      <dependsExternal name="TriTrypDB_checkOrthoPeripheralProteomeDirs"/>
+      <dependsExternal name="VectorBase_checkOrthoPeripheralProteomeDirs"/>
+    </subgraph>
+
 <!-- call project.xml for non veupathdb proteomes used for orthomcl.
      is this just called "OrthoMCL.xml" (uniprot proteomes, uniprot EC) ??
      QUESTION:  What should this be called??
