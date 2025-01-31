@@ -25,7 +25,7 @@ sub run {
 
   $args .= "--ncbiTaxId $ncbi " if ($ncbi);
 
-  $self->testInputFile('inputFile', "$workflowDataDir/$file");
+  $self->testInputFile('inputFile', "$workflowDataDir/$file") unless ($undo);
 
   $self->runPlugin($test, $undo, "GUS::Supported::Plugin::LoadFastaSequences", $args);
 }

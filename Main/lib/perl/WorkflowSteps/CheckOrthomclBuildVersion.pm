@@ -14,8 +14,10 @@ sub run {
   my $cachedBuildVersionFile = join("/", $orthoCacheDir,"buildVersion.txt");
   my $cachedCheckSumFile = join("/", $orthoCacheDir,"checkSum.tsv");
   my $checkSumFile = join("/", $workflowDataDir, $self->getParamValue("checkSum"));
+  my $skipMirrorFile = $self->getParamValue('skipMirrorFile');
   my $skipIfFile = $self->getParamValue('skipIfFile');
   $skipIfFile = join("/", $workflowDataDir, $skipIfFile);
+  $skipMirrorFile = join("/", $workflowDataDir, $skipMirrorFile);
 
   my $cachedBuildVersion = `cat $cachedBuildVersionFile`;
 
@@ -23,25 +25,27 @@ sub run {
 
   if($undo){
       $self->runCmd(0, "rm -f $skipIfFile") if -e $skipIfFile;
+      $self->runCmd(0, "rm -f $skipMirrorFile") if -e $skipMirrorFile;
       $self->runCmd(0, "rm -rf $workflowDataDir/coreGroups") if -e "$workflowDataDir/coreGroups";
   }
   else {
     if ($test) {
       if ($diff_result eq '') {
-        $self->runCmd(0, "echo test > $skipIfFile ");
         if ($cachedBuildVersion ne $buildVersion) {
           die "Cached build version $cachedBuildVersion and new build version $buildVersion are different even though the proteomes are the same\n";  
         }
+        $self->runCmd(0, "echo test > $skipIfFile ");
       }
       else {
         if ($cachedBuildVersion eq $buildVersion) {
           die "Cached build version $cachedBuildVersion and new build version $buildVersion are identical even though the proteomes are different\n";  
         }
+        $self->runCmd(0, "echo test > $skipMirrorFile ");
       }
     }
     else {
       if ($diff_result eq '') {
-        if ($cachedBuildVersion ne $buildVersion) {
+        if ($cachedBuildVersion != $buildVersion) {
           die "Cached build version $cachedBuildVersion and new build version $buildVersion are different even though the proteomes are the same\n";  
         }
         $self->runCmd(0, "echo real > $skipIfFile ");
@@ -52,6 +56,7 @@ sub run {
         if ($cachedBuildVersion eq $buildVersion) {
           die "Cached build version $cachedBuildVersion and new build version $buildVersion are identical even though the proteomes are different\n";  
         }
+        $self->runCmd(0, "echo real > $skipMirrorFile");
       }
     }
   }

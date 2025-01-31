@@ -10,7 +10,7 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $orthoVersion = $self->getConfig('buildVersion');
+    my $orthoVersion = $self->getSharedConfig('buildVersion');
 
     my $groupsFile = $self->getParamValue('groupsFile');
 

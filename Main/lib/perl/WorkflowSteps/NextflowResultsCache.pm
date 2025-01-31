@@ -161,7 +161,7 @@ sub getMd5DigestForAnnotationSpecs {
 FROM apidb.datasource d
 WHERE name LIKE '${organismAbbrev}\_%genome_features_RSRC' ESCAPE '\\'
 OR name LIKE '${organismAbbrev}\_orthomclProteome_RSRC' ESCAPE '\\'
-OR name LIKE 'atum_orthomclPeripheralProteome_RSRC' ESCAPE '\'
+OR name LIKE '${organismAbbrev}\_orthomclPeripheralProteome_RSRC' ESCAPE '\\'
 OR name LIKE '${organismAbbrev}\_%primary_genome_RSRC' ESCAPE '\\'";
 
 

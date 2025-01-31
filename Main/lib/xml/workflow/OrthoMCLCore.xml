@@ -113,7 +113,13 @@
   <step name="checkBuildVersion" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthomclBuildVersion">
     <paramValue name="checkSum">$$coreProteinsDir$$/coreProteomes/checkSum.tsv</paramValue>
     <paramValue name="skipIfFile">doNotRunCore</paramValue>
+    <paramValue name="skipMirrorFile">doNotMirrorResults</paramValue>
     <depends name="getCoreProteomes"/>
+  </step>
+
+  <step name="mirrorCachedResultsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster" skipIfFile="doNotMirrorResults">
+      <paramValue name="fileOrDirToMirror">$$coreGroupsDir$$</paramValue>
+      <depends name="checkBuildVersion"/>
   </step>
 
   <subgraph name="makeCoreGroups" xmlFile="orthoFinderCore.xml" skipIfFile="doNotRunCore">
@@ -121,6 +127,7 @@
     <paramValue name="inputProteinFile">$$coreProteinsDir$$/fastas.tar.gz</paramValue>
     <paramValue name="entry">coreEntry</paramValue>
     <depends name="checkBuildVersion"/>
+    <depends name="mirrorCachedResultsToCluster"/>
   </subgraph>
 
 </workflowGraph>
