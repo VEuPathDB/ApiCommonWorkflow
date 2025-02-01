@@ -54,12 +54,12 @@ sub run {
 #  my $toloadBlatFile = $workflowDataDir."/".$blatFile;
   if ($checkEsts =~/^>assemblySeqIds/){
       $hasTempFiles = 1;
-      print "matching regex >assemblySeqIds\n";
+      $self->log("matching regex >assemblySeqIds");
 #      my ($queryTempFh,$queryTempfile) = tempfile(DIR =>$workflowDataDir);
 #      my ($blatTempFh, $blatTempfile) = tempfile(DIR =>$workflowDataDir);
      my $cmd = "mapAssemblySeqIdsSourceIds --queryFile $workflowDataDir/$queryFile -blatFile $workflowDataDir/$blatFile -queryOut $workflowDataDir/$queryTempFile -blatOut $workflowDataDir/$blatTempFile --gusConfigFile $gusConfigFile";
       $self->runCmd(0, $cmd) if ($action eq 'load' && !$undo);
-      print "query Temp file is $workflowDataDir/$queryTempFile\n";
+      $self->log("query Temp file is $workflowDataDir/$queryTempFile");
 #      $self->setParamValue('queryFile', $queryTempfile);
 #      $self->setParamValue('blatFile', $blatTempfile);
       $queryFile = $queryTempFile;
@@ -72,7 +72,7 @@ sub run {
  # $queryFile = $self->getParamValue('queryFile');
  # $blatFile = $self->getParamValue('blatFile');
 
-  print "queryFile is $queryFile\n";
+  $self->log("queryFile is $queryFile");
   my $plugin = "GUS::Community::Plugin::LoadBLATAlignments";
   my $loadedTable = "DoTS.BlatAlignment";
   my $dnaArgs = "--max_query_gap 5 --min_pct_id 95 --max_end_mismatch 10 --end_gap_factor 10 --min_gap_pct 90  --ok_internal_gap 15 --ok_end_gap 50 --min_query_pct 10";
