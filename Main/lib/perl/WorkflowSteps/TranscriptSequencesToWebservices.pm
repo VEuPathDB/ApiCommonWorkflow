@@ -31,7 +31,7 @@ sub run {
 
   my $outputFileBase;
 
-  my $cmd = "alignedTranscriptSeqsToGff.pl --output_directory $workingDirectory --gus_config $gusConfigFile --target_ext_db_rls_spec '${targetExtDbSpec}'";
+  my $cmd = "alignedTranscriptSeqsToGff.pl --output_directory $workingDirectory --gus_config $gusConfigFile --target_ext_db_rls_spec '${targetExtDbSpec}' ";
   if($queryExtDbSpec) {
     $outputFileBase = $queryExtDbName;
 
@@ -58,8 +58,8 @@ sub run {
       }
 
       $self->runCmd($test, $cmd);
-      $self->runCmd($test, "cp $workingDirectory/${outputFileBase}.gz $copyToDir");
-      $self->runCmd($test, "cp $workflowDataDir/${outputFileBase}.gz.tbi $copyToDir");
+      $self->runCmd($test, "cp $workingDirectory/${outputFileBase}.gff.gz $copyToDir");
+      $self->runCmd($test, "cp $workingDirectory/${outputFileBase}.gff.gz.tbi $copyToDir");
   }
 }
 
