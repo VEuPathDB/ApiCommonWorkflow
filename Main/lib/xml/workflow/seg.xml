@@ -16,6 +16,8 @@
 
   <constant name="ebi2gusOutputDirectory">$$parentDataDir$$/../../loadGenome/$$organismAbbrev$$_primary_genome_RSRC/ebi2gus_output</constant>
 
+  <constant name="proteomeSymLink">$$dataDir$$/proteome.fasta</constant>
+
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
@@ -45,8 +47,15 @@
   </step>
 
 
+  <step name="symLinkProteome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$proteomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
   <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSegNextflowConfig" includeIf="$$isNotEbiGenome$$">
-    <paramValue name="proteinSequenceFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+    <paramValue name="proteinSequenceFile">$$proteomeSymLink$$</paramValue>
     <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
     <paramValue name="outputFileName">proteinLowComplexity.bed</paramValue>
@@ -66,6 +75,7 @@
     <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/low-complexity-nextflow</paramValue>
     <depends name="makeNextflowConfig"/>
+    <depends name="symLinkProteome"/>
   </subgraph>
 
 
@@ -86,6 +96,7 @@
      <paramValue name="indexSuffix">tbi</paramValue>
      <paramValue name="fileType">bed</paramValue>
      <paramValue name="dataType">genomeAndProteome</paramValue>
+     <paramValue name="extDBName"></paramValue>
      <depends name="copyBed"/>
      <depends name="copyBedIndex"/>
      <depends name="runNextflowOnCluster"/>

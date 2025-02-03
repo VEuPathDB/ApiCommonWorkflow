@@ -10,6 +10,7 @@ sub new {
     my $self = {
       test => $test,
 		  organismAbbrev => $organismAbbrev,
+		  gusConfigFile => $gusConfigFile,
 		  workflowStep => $workflowStep
     };
     bless($self,$class);
@@ -131,6 +132,19 @@ sub getTaxonIdList {
   my ($self, $taxonId) = @_;
 
     my $idList = $self->{workflowStep}->runCmd($self->{test}, "getSubTaxaList --taxon_id $taxonId");
+
+    if ($self->{test}) {
+      return "$self->{organismAbbrev}_TAXON_ID_LIST";
+    } else {
+      chomp($idList);
+      return  $idList;
+    }
+}
+
+sub getSubTaxaListFromNcbiTaxonId {
+  my ($self, $ncbiTaxonId, $gusConfigFile) = @_;
+
+    my $idList = $self->{workflowStep}->runCmd($self->{test}, "getSubTaxaListFromNcbiTaxonId --NCBITaxId $ncbiTaxonId --gusConfigFile $gusConfigFile");
 
     if ($self->{test}) {
       return "$self->{organismAbbrev}_TAXON_ID_LIST";

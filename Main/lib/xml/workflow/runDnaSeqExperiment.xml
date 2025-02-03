@@ -57,28 +57,17 @@
     <depends name="makeLoadSingleExperimentDataDir"/>
   </step>
 -->
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeDnaSeqSingleExperimentNextflowConfig"/>
-  </step>
 
   <step name="runDnaSeqSingleExperimentClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflowWithEntry">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
     <paramValue name="workingDir">$$dataDir$$</paramValue>
     <paramValue name="resultsDir">$$dataDir$$/results</paramValue>
     <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/dnaseq-nextflow</paramValue>
     <paramValue name="isGitRepo">true</paramValue>    
     <paramValue name="entry">processSingleExperiment</paramValue>
-    <depends name="mirrorToCluster"/>
   </step>
 
-  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
-    <paramValue name="outputDir">$$dataDir$$/results</paramValue>
-    <paramValue name="outputFiles">*</paramValue>
-    <paramValue name="deleteAfterCopy">false</paramValue>
-    <depends name="runDnaSeqSingleExperimentClusterTask"/>
-  </step>
 <!--
   <step name="runDnaSeqLoadSingleExperimentClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunLocalNextflowWithEntry">
     <paramValue name="analysisDir">$$dataDir$$/loadSingleExperiment/</paramValue>
@@ -88,7 +77,6 @@
     <paramValue name="isGitRepo">true</paramValue>    
     <paramValue name="entry">loadSingleExperiment</paramValue>
     <paramValue name="gitBranch">main</paramValue>
-    <depends name="mirrorFromCluster"/>
   </step>
 -->
 </workflowGraph>

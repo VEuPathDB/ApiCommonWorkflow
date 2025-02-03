@@ -10,6 +10,7 @@
   <param name="projectName"/>
   <param name="relativeWebServicesDir"/>
   <param name="organismDatasetLoaderXmlFile"/>
+  <param name="speciesNcbiTaxonId"/>
 
   <constant name="dataDir">$$parentDataDir$$/blat</constant>
 
@@ -28,30 +29,31 @@
     <prop name="referenceStrainOrganismAbbrev"/>
 
 
-    <subgraph name="$$organismAbbrev$$_mapESTsToGenome" xmlFile="blatDnaAgainstGenome.xml" skipIfFile="${referenceStrainOrganismAbbrev}/foundZeroESTs">
+    <subgraph name="mapESTsToGenome" xmlFile="blatDnaAgainstGenome.xml" skipIfFile="$$projectName$$/${referenceStrainOrganismAbbrev}/foundZeroESTs">
       <paramValue name="dataDir">$$dataDir$$/ESTs</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="targetSeqsFastaFile">$$genomicSeqsFile$$</paramValue>
       <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="queryFile">${referenceStrainOrganismAbbrev}/postLoadGenome/genome/ESTs/assemblySeqs/analysisDir/results/blocked.seq</paramValue>
+      <paramValue name="queryFile">$$projectName$$/${referenceStrainOrganismAbbrev}/postLoadGenome/genome/ESTs/assemblySeqs/analysisDir/results/blocked.seq</paramValue>
       <paramValue name="queryTable">AssemblySequence</paramValue>
       <paramValue name="queryExtDbName"></paramValue>
-      <paramValue name="datasetSpec">$$organismAbbrev$$_ESTs</paramValue>
+      <paramValue name="datasetSpec">$$organismAbbrev$$_dbEST_RSRC</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
 
-    <step name="toGFF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TranscriptSequencesToWebservices" skipIfFile="${referenceStrainOrganismAbbrev}/foundZeroESTs">
+    <step name="toGFF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TranscriptSequencesToWebservices" skipIfFile="$$projectName$$/${referenceStrainOrganismAbbrev}/foundZeroESTs">
       <paramValue name="dataDir">$$dataDir$$/ESTs</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="queryExtDbRlsSpec"></paramValue>
       <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="$$organismAbbrev$$_mapESTsToGenome"/>
+      <depends name="mapESTsToGenome"/>
     </step>
   </datasetTemplate>
 
@@ -84,6 +86,7 @@
       <paramValue name="includeMultipleSpans">${includeMultipleSpans}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
       <depends name="${organismAbbrev}_${name}_clonedInsertEnds"/>
     </subgraph>
   </datasetTemplate>
@@ -114,6 +117,7 @@
       <paramValue name="datasetSpec">${organismAbbrev}_${name}_transcript_sequences_RSRC|${version}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
       <depends name="${organismAbbrev}_${name}_transcript_sequences"/>
     </subgraph>
   </datasetTemplate>

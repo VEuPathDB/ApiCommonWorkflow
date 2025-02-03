@@ -13,6 +13,8 @@
   <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
   <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
 
+  <constant name="proteomeSymLink">$$dataDir$$/proteome.fasta</constant>
+
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
@@ -27,8 +29,15 @@
      <depends name="makeAnalysisDir"/>
   </step>
 
+  <step name="symLinkProteome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$proteomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
   <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeExportpredNextflowConfig">
-    <paramValue name="proteinSequenceFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+    <paramValue name="proteinSequenceFile">$$proteomeSymLink$$</paramValue>
     <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
     <paramValue name="outputFileName">exportpred.gff</paramValue>
@@ -48,6 +57,7 @@
     <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/exportpred-nextflow</paramValue>
     <depends name="makeNextflowConfig"/>
+    <depends name="symLinkProteome"/>
   </subgraph>
 
   <step name="copyToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
@@ -58,6 +68,7 @@
     <paramValue name="indexSuffix">tbi</paramValue>
     <paramValue name="fileType">gff</paramValue>
     <paramValue name="dataType">genomeAndProteome</paramValue>
+    <paramValue name="extDBName"></paramValue>
     <depends name="runNextflowOnCluster"/>
   </step>
 

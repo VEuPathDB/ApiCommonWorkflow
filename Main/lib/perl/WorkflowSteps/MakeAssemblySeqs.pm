@@ -17,8 +17,8 @@ sub run {
   $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile);
-  my $taxonId = $organismInfo->getSpeciesTaxonId();
-  my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
+  my $speciesNcbiTaxonId = $self->getParamValue('speciesNcbiTaxonId');
+  my $taxonIdList = $organismInfo->getSubTaxaListFromNcbiTaxonId($speciesNcbiTaxonId, $gusConfigFile);
 
   my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
 

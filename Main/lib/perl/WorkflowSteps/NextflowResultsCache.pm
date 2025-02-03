@@ -117,7 +117,6 @@ sub hasCacheFile {
 sub copyTo {
   my ($self, $test, $undo, $cacheDir, $resultsPath) = @_;
 
-
   if($undo) {} #nothing to see here
   else {
 	if ($test) {

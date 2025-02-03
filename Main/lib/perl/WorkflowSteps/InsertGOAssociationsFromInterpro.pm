@@ -15,11 +15,13 @@ sub run {
     my $interproExtDbVer = $self->getExtDbVersion($test,$interproExtDbName);
 #    my $configFile = $self->getParamValue('configFile');
     my $aaSeqTable = $self->getParamValue('aaSeqTable');
+
     my $goVersion = $self->getExtDbVersion($test, 'GO_RSRC');
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $globalDataDir = $workflowDataDir."/global";
 
     my $args = "--interproResultsFile=$workflowDataDir/$interproResultsFile --interpro2GOFile=$globalDataDir/$interpro2GOFile --aaSeqTable=$aaSeqTable --extDbName=\'$interproExtDbName\' --extDbRlsVer=\'$interproExtDbVer\' --goVersion=\'$goVersion\'";
+
 
     #$self->testInputFile('inputDir', "$workflowDataDir/$interproResultsFile");
   

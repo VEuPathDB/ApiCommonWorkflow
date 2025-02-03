@@ -26,22 +26,10 @@
         <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
 
-    <step name="mirrorExperimentDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$dataDir$$/$$experimentDatasetName$$</paramValue>
-        <depends name="loadCnvExperiment"/>
-    </step>
-
     <step name="makeGtfDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$gtfDir$$</paramValue>
         <depends name="loadCnvExperiment"/>
     </step>
-
-    <step name="mirrorGtfDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$gtfDir$$</paramValue>
-        <depends name="mirrorExperimentDirToCluster"/>
-        <depends name="makeGtfDir"/>
-    </step>
-
 
     <!-- Adding Study container for all CNV nodes -->
     <step name="addCNVInvestigation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudy" stepLoadTypes="plugin">
@@ -85,18 +73,6 @@
         <depends name="makeGtfDir"/>
     </step>
 
-    <step name="mirrorGtfFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$gtfDir$$/$$organismAbbrev$$.gtf</paramValue>
-        <depends name="makeGtfForCufflinks"/>
-        <depends name="mirrorGtfDirToCluster"/>
-    </step>
-
-    <step name="mirrorFootprintFileToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$gtfDir$$/$$organismAbbrev$$_footprint.txt</paramValue>
-        <depends name="makeTopLevelGeneFootprintFile"/>
-        <depends name="mirrorGtfDirToCluster"/>
-    </step>
-    
     <subgraph name="doCnvMapping" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$studyName$$/cnvSamples.xml">
         <paramValue name="projectName">$$projectName$$</paramValue>
         <paramValue name="experimentDir">$$dataDir$$</paramValue>
@@ -117,8 +93,6 @@
         <depends name="addCNVInvestigation"/>
         <depends name="addPloidyStudy"/>
         <depends name="addGeneCNVStudy"/>
-        <depends name="mirrorGtfFileToCluster"/>
-        <depends name="mirrorFootprintFileToCluster"/>
     </subgraph>
 
     <step name="document-copyNumberVariation_experiment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">

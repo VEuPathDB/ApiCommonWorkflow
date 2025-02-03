@@ -23,6 +23,12 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
+  my $digestedInputDirectory = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $inputDir);
+  my $digestedProteinFastaFile = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $proteinSequenceFile);
+  my $digestedAnnotationGff = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $inputAnnotationGff);
+  my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
+
   my $clusterServer = $self->getSharedConfig('clusterServer');
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
@@ -38,12 +44,12 @@ sub run {
 
       my $configString = <<NEXTFLOW;
 params {
-  inputDirectory = "$clusterWorkflowDataDir/$inputDir"
-  proteinFastaFile = "$clusterWorkflowDataDir/$proteinSequenceFile"
-  annotationGff =  "$clusterWorkflowDataDir/$inputAnnotationGff"
+  inputDirectory = "$digestedInputDirectory"
+  proteinFastaFile = "$digestedProteinFastaFile"
+  annotationGff =  "$digestedAnnotationGff"
   proteinGffFileName = "$outputProteinGff"
   genomeGffFileName = "$outputGenomeGff"
-  outputDir = "$clusterWorkflowDataDir/$resultsDirectory"
+  outputDir = "$digestedOutputDir"
 }
 
 

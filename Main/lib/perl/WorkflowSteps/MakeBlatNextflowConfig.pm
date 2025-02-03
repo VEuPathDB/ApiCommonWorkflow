@@ -11,18 +11,18 @@ sub run {
 
     my $dots = 10;
 
-    my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $outputDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("outputDir")); 
+    my $resultsDirectory = $self->getParamValue("resultsDirectory");
     my $configFileName = $self->getParamValue("configFileName");
     my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
-    my $seqFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("queryFile"));
+    my $seqFile = $self->getParamValue("queryFile");
     my $fastaSubsetSize = $self->getParamValue("fastaSubsetSize");
-    my $databasePath = join("/", $clusterWorkflowDataDir, $self->getParamValue("databasePath"));
+    my $databasePath = $self->getParamValue("databasePath");
     my $maxIntronSize = $self->getParamValue("maxIntronSize");
     my $dbType = $self->getParamValue("dbType");
     my $queryType = $self->getParamValue("queryType");
     my $outputFileName = $self->getParamValue("outputFileName");
+    my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
 
     my $increasedMemory = $self->getParamValue("increasedMemory");
     my $initialMemory = $self->getParamValue("initialMemory");
@@ -32,7 +32,6 @@ sub run {
     my $executor = $self->getClusterExecutor();
     my $queue = $self->getClusterQueue();
 
-    my $executor = $self->getClusterExecutor();
     my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
 
@@ -41,15 +40,17 @@ sub run {
     } else {
 	open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
 
-
+      my $queryFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $seqFile);
+      my $databaseInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $databasePath);
+      my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
       my $configString = <<NEXTFLOW;
 params {
-  queryFasta = "$seqFile"
+  queryFasta = "$queryFileInNextflowWorkingDirOnCluster"
   fastaSubsetSize = $fastaSubsetSize
-  genomeFasta = "$databasePath"
+  genomeFasta = "$databaseInNextflowWorkingDirOnCluster"
   dbType = "$dbType"
   queryType = "$queryType"
-  outputDir = "$outputDir"
+  outputDir = "$resultsDirectoryInNextflowWorkingDirOnCluster"
   outputFileName = "$outputFileName"
 }
 

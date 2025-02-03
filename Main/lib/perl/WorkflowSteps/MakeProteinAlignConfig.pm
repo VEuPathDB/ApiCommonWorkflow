@@ -23,6 +23,11 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
+  my $digestedQueryFilePath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $queryFile);
+  my $digestedTargetFilePath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $targetFile);
+  my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $outputDir);
+
   my $executor = $self->getClusterExecutor();
   my $exonerateProcessMemoryRequirement = processMemoryRequirement($executor, $self->getParamValue("exonerateMemory"));
   my $queue = $self->getClusterQueue();
@@ -45,9 +50,9 @@ sub run {
 
     print F
 "params {
-  queryFilePath = '$clusterWorkflowDataDir/$queryFile'
-  targetFilePath = '$clusterWorkflowDataDir/$targetFile'
-  outputDir = '$clusterWorkflowDataDir/$outputDir'
+  queryFilePath = '$digestedQueryFilePath'
+  targetFilePath = '$digestedTargetFilePath'
+  outputDir = '$digestedOutputDir'
   queryChunkSize = $queryChunkSize
   esd2esiMemoryLimit = $esd2esiMemoryLimit
   fsmmemory = $exonerateFsmmemory

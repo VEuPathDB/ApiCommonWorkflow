@@ -105,20 +105,6 @@
   </step>
 
 
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeGmapDatabase"/>
-    <depends name="makeGtfForCufflinks"/>
-    <depends name="makeGtfForCufflinksCdsOnly"/>
-    <depends name="makeSpliceSitesDatabase"/>
-    <depends name="makeGeneFootprintFile"/>
-    <depends name="makeSeqSizeFile"/>
-    <depends name="makeArrayStudiesDir"/>
-    <depends name="makeMaskGtfForCufflinks"/>
-    <depends name="makeMaskGtfForCufflinksCdsOnly"/>
-  </step>
-
-
   <datasetTemplate class="microarrayPlatform">
     <prop name="organismAbbrev"/>
     <prop name="name"/>
@@ -154,7 +140,6 @@
       <paramValue name="probeRows">${probeRows}</paramValue>
       <paramValue name="probeCols">${probeCols}</paramValue>
       
-      <depends name="mirrorToCluster"/>
     </subgraph>
   </datasetTemplate>
 
@@ -170,7 +155,6 @@
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$arrayStudiesDir$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="${name}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">

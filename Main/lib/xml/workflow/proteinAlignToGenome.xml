@@ -27,7 +27,7 @@
      <depends name="makeAnalysisDir"/>
   </step>
 
-  <step name="copyTargetFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+  <step name="symLinkTarget" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
     <paramValue name="fromFile">$$targetFile$$</paramValue>
     <paramValue name="toFile">$$dataDir$$/target.fa</paramValue>
     <depends name="makeDataDir"/>
@@ -42,6 +42,7 @@
 
   <!-- TODO:  Add param for "specific container(s) once singularity is available on pmacs and uga clusters -->
   <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeProteinAlignConfig">
+    <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
     <paramValue name="targetFile">$$dataDir$$/target.fa</paramValue>
     <paramValue name="queryFile">$$dataDir$$/query.fa</paramValue>
     <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
@@ -54,7 +55,7 @@
     <paramValue name="exonerateMemory">2 GB</paramValue>
     <depends name="makeResultDir"/>
     <depends name="makeQueryFile"/>
-    <depends name="copyTargetFile"/>
+    <depends name="symLinkTarget"/>
   </step>
 
 
@@ -89,6 +90,7 @@
      <paramValue name="indexSuffix">tbi</paramValue>
      <paramValue name="fileType">gff</paramValue>
      <paramValue name="dataType">genomeAndProteome</paramValue>
+     <paramValue name="extDBName"></paramValue>
      <depends name="runNextflowOnCluster"/>
   </step>
 

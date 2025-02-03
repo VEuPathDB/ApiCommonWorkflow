@@ -85,19 +85,6 @@
         <depends name="makeDataDir"/>
     </step>
 
-
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-        <depends name="makeHisat2Index"/>
-        <depends name="makeGtfForCufflinks"/>
-        <depends name="makeGtfForCufflinksCdsOnly"/>
-        <depends name="makeGeneFootprintFile"/>
-        <depends name="makeSeqSizeFile"/>
-        <depends name="makeMaskGtfForCufflinks"/>
-        <depends name="makeMaskGtfForCufflinksCdsOnly"/>
-    </step>
-
-
     <datasetTemplate class="rnaSeqExperiment">
         <prop name="projectName"/>
         <prop name="organismAbbrev"/>
@@ -130,7 +117,6 @@
             <paramValue name="gtfFile">$$organismAbbrev$$.gtf</paramValue>
             <paramValue name="hisatIndex">$$organismAbbrev$$</paramValue>
             <paramValue name="maskFile">$$organismAbbrev$$_mask.gtf</paramValue>
-            <depends name="mirrorToCluster"/>
         </subgraph>
 
 
@@ -154,7 +140,6 @@
             <paramValue name="gtfFile">$$organismAbbrev$$_cds.gtf</paramValue>
             <paramValue name="hisatIndex">$$organismAbbrev$$</paramValue>
             <paramValue name="maskFile">$$organismAbbrev$$_cds_mask.gtf</paramValue>
-            <depends name="mirrorToCluster"/>
         </subgraph>
 
         <subgraph name="${name}_analyze_rnaSeq_experiment" xmlFile="analyzeRnaSeqExperiment.xml">

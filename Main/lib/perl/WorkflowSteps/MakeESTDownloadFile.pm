@@ -8,10 +8,10 @@ sub getIsSpeciesLevel {
     return 1;
 }
 
-sub getSkipIfFile {
-  my ($self) = @_;
-  return $self->getParamValue('skipIfFile');
-}
+#sub getSkipIfFile {
+#  my ($self) = @_;
+#  return $self->getParamValue('skipIfFile');
+#}
 
 sub getWebsiteFileCmd { 
   my ($self, $downloadFileName, $test) = @_;
@@ -22,9 +22,8 @@ sub getWebsiteFileCmd {
   $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile);
-  my $taxonId = $organismInfo->getSpeciesTaxonId();
-  my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
-
+  my $speciesNcbiTaxonId = $self->getParamValue('speciesNcbiTaxonId');
+  my $taxonIdList = $organismInfo->getSubTaxaListFromNcbiTaxonId($speciesNcbiTaxonId, $gusConfigFile);
 
   my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
 
@@ -52,7 +51,7 @@ sub getWebsiteFileCmd {
         AND d.name = '$soExtDbName'
 EOF
 
-    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\" --verbose ";
+    my $cmd = "gusExtractSequences --outputFile $downloadFileName  --allowEmptyOutput --idSQL \"$sql\" --verbose --gusConfigFile $gusConfigFile";
     return $cmd;
 }
 

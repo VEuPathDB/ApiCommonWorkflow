@@ -33,30 +33,18 @@
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
     
-    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$</paramValue>
-        <depends name="loadSmallNcRnaSample"/>
-    </step>
-    
     <step name="makeLengthFilterDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$lengthFilterDir$$</paramValue>
-        <depends name="mirrorSampleAnalysisDirToCluster"/>
     </step>
 
     <step name="maketRNArRNAMappingDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$tRNArRNAMappingDir$$</paramValue>
-        <depends name="mirrorSampleAnalysisDirToCluster"/>
     </step>
 
     <step name="makeFilteredReadsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$filteredReadsDir$$</paramValue>
-        <depends name="mirrorSampleAnalysisDirToCluster"/>
     </step>
 
-    <step name="mirrorFilteredReadsDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$filteredReadsDir$$</paramValue>
-        <depends name="makeFilteredReadsDir"/>
-    </step>
 
     <step name="filterFastqByLength" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterFastqByLength">
         <paramValue name="readsFile">$$readsFile$$</paramValue> 

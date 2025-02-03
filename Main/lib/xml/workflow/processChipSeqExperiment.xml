@@ -33,12 +33,6 @@
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeSamplesOutputDir"/>
-      <depends name="experiment_RSRC"/>
-    </step>
-
     <subgraph name="analyzeChipSeqSamples" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/chipSeqSamples.xml">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
@@ -52,7 +46,6 @@
       <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
       <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
       <paramValue name="experimentType">$$experimentType$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="copyChipSeqBedGraphToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyChipSeqBedGraphToWebServiceDir">

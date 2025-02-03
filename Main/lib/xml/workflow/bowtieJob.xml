@@ -45,26 +45,13 @@
     <depends name="makeBowtieMappingSraInputFile"/>
   </step>
 
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeBowtieMappingNextflowConfig"/>
-  </step>
-
   <step name="runBowtieMappingTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
     <paramValue name="workingDir">$$dataDir$$</paramValue>
     <paramValue name="resultsDir">$$dataDir$$/results/</paramValue>
     <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/bowtie-mapping-nextflow</paramValue>
     <paramValue name="isGitRepo">true</paramValue>
-    <depends name="mirrorToCluster"/>
-  </step>
-
-  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$/results</paramValue>
-    <paramValue name="outputDir">$$dataDir$$/results</paramValue>
-    <paramValue name="outputFiles">$$sampleName$$.bam</paramValue>
-    <paramValue name="deleteAfterCopy">true</paramValue>
-    <depends name="runBowtieMappingTask"/>
   </step>
 
 </workflowGraph>

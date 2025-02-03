@@ -88,11 +88,6 @@
     <depends name="makeOrthoCoreDir"/>
   </step>
 
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </step>
-
   <datasetTemplate class="organism">
     <prop name="organismAbbrev"/>
     <prop name="projectName"/>
@@ -131,13 +126,8 @@
       <depends name="${organismAbbrev}_makeDataDir"/>
     </step>
 -->
-    <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" groupName="${organismAbbrev}"  stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/${organismAbbrev}</paramValue>
-      <depends name="${organismAbbrev}_makeDataDir"/>
-      <depends name="mirrorToCluster"/>
-    </step>
 
- <!-- TODO:  make the gus config file to use the single database -->
+  <!-- TODO:  make the gus config file to use the single database -->
   <step name="${organismAbbrev}_makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig" groupName="${organismAbbrev}">
     <paramValue name="dbName"/>
     <!--  TODO:  put this back when we are creating organism specific dbs
@@ -146,7 +136,7 @@
       <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="gusConfigFilename">${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <depends name="${organismAbbrev}_mirrorToCluster"/>
+      <depends name="${organismAbbrev}_makeDataDir"/>
     </step>
 
 <!--
@@ -166,7 +156,7 @@
     <!-- each organism creates this step, but all are ignored except the one made by the ref strain. -->
     <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}" groupName="${organismAbbrev}">
       <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}_strainsComparisonInput</paramValue>
-      <depends name="${organismAbbrev}_mirrorToCluster"/>
+      <depends name="makeDataDir"/>
     </step>
 
     <step name="${organismAbbrev}_loadTemporaryNcbiTaxonId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadTemporaryNcbiTaxonId" includeIf="${hasTemporaryNcbiTaxonId}" groupName="${organismAbbrev}">
@@ -174,6 +164,7 @@
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="organismFullName">${organismFullName}</paramValue>
       <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
+      <depends name="${organismAbbrev}_makeGusConfig"/>
       <dependsGlobal name="taxonomy_RSRC"/>
     </step>
     <!-- NOTE: loadNcbiTaxonId will be added back when webdb is organism specific
@@ -210,7 +201,6 @@
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="genomicSeqsFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
-      <paramValue name="genomicSeqs2BitFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.2bit</paramValue>
       <paramValue name="genomicSeqsDir">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
       <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <paramValue name="genomeSource">${genomeSource}</paramValue>
@@ -338,6 +328,7 @@
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
+
     <subgraph name="${organismAbbrev}_dnaseq" xmlFile="generated/${projectName}/${organismAbbrev}/dnaseq.xml" excludeIfXmlFileDoesNotExist="true">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -351,6 +342,8 @@
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
+
+    <!--
     <subgraph name="${organismAbbrev}_hisat" xmlFile="generated/${projectName}/${organismAbbrev}/hisat.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -364,8 +357,8 @@
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
-
-    <subgraph name="${organismAbbrev}_ebi_rnaseq" xmlFile="generated/${projectName}/${organismAbbrev}/ebiRNASeq.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+-->
+    <subgraph name="${organismAbbrev}_rnaseq" xmlFile="generated/${projectName}/${organismAbbrev}/rnaseq.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -381,7 +374,7 @@
     <step name="${organismAbbrev}_PARJunctions" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARJunctions"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
      <paramValue name="mappingFile">$$dataDir$$/${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
-      <depends name="${organismAbbrev}_ebi_rnaseq"/>
+      <depends name="${organismAbbrev}_rnaseq"/>
     </step>
 
     <subgraph name="${organismAbbrev}_ebi_VCF" xmlFile="generated/${projectName}/${organismAbbrev}/ebiVCFfile.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
@@ -434,6 +427,7 @@
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">$$projectName$$/${organismAbbrev}.xml</paramValue>
+      <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
       <depends name="${organismAbbrev}_PostLoadGenome"/>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
@@ -545,13 +539,13 @@
 
 
   </datasetTemplate>
-
+<!--
   <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables">
     <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$/Snp_Table_Constraint</paramValue>
     <dependsPattern name="*_bowtieMapping"/>
   </step>
-
+-->
   <step name="checkOrthoCoreProteomeDirs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthoCoreProteomeDirs" externalName="$$projectName$$_checkOrthoCoreProteomeDirs">
     <paramValue name="orthoCoreDir">$$orthoCoreDir$$</paramValue>
     <dependsPattern name="*_CopyCoreProteomeToOrtho"/>
@@ -561,6 +555,7 @@
     <paramValue name="orthoPeripheralDir">$$orthoPeripheralDir$$</paramValue>
     <dependsPattern name="*_CopyPeripheralProteomeToOrtho"/>
   </step>
+
 
 <!--webdb test
   <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml">
@@ -731,7 +726,8 @@
     <!--<dependsGlobal name="EuPath_Ontology_RSRC"/>-->
 <!--  </subgraph>-->
   <!-- AlphaFold is now filtered, must be dependent on loading uniprot ids into sres.dbref in organism specific graph-->
-  <subgraph name="alphaFold_RSRC" xmlFile="loadDataset.xml">
+<!--  
+ <subgraph name="alphaFold_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
     <paramValue name="datasetName">alphaFold_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
@@ -740,6 +736,7 @@
     <dependsPattern name="*specific*"/>
     <dependsPattern name="*_dbXRefs"/>
   </subgraph>
+-->
   <!--A generic dataset template to copy and format files from EuPathDB manualDelivery to download sites and web services-->
   <datasetTemplate class="copyAndFormatDownloadFilesFromManualDelivery">
     <prop name="projectName"/>

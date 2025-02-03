@@ -12,6 +12,8 @@
   <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
   <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
 
+  <constant name="proteomeSymLink">$$dataDir$$/proteome.fasta</constant>
+
   <!--
   <constant name="psipredProteinsFile">$$dataDir$$/proteinsFixedIds.fsa</constant>
   -->
@@ -29,8 +31,16 @@
     <depends name="makeAnalysisDir"/>
   </step>
 
+  <step name="symLinkProteome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$proteomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
   <step name="makePsiPredNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePsiPredNextflowConfig">
-    <paramValue name="proteinSequenceFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+    <paramValue name="proteinSequenceFile">$$proteomeSymLink$$</paramValue>
     <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
     <paramValue name="outputFilePrefix">psipred</paramValue>
@@ -49,7 +59,8 @@
     <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/psipred-nextflow</paramValue>
     <depends name="makePsiPredNextflowConfig"/>
-  </subgraph>
+    <depends name="symLinkProteome"/>
+ </subgraph>
 
   <step name="copyCoilToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
@@ -59,6 +70,7 @@
     <paramValue name="indexSuffix"></paramValue>
     <paramValue name="fileType">bigwig</paramValue>
     <paramValue name="dataType">genomeAndProteome</paramValue>
+     <paramValue name="extDBName"></paramValue>
     <depends name="runNextflowOnCluster"/>
   </step>
 
@@ -71,6 +83,7 @@
     <paramValue name="indexSuffix"></paramValue>
     <paramValue name="fileType">bigwig</paramValue>
     <paramValue name="dataType">genomeAndProteome</paramValue>
+     <paramValue name="extDBName"></paramValue>
     <depends name="runNextflowOnCluster"/>
   </step>
 
@@ -83,6 +96,7 @@
     <paramValue name="indexSuffix"></paramValue>
     <paramValue name="fileType">bigwig</paramValue>
     <paramValue name="dataType">genomeAndProteome</paramValue>
+     <paramValue name="extDBName"></paramValue>
     <depends name="runNextflowOnCluster"/>
   </step>
 

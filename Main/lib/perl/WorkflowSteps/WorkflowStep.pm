@@ -341,6 +341,5 @@ sub runSqlFetchOneRowFromOrgDb {
     return @output;
 }
 
-
 1;
 

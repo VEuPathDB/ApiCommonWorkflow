@@ -27,30 +27,42 @@
   </step>
 
 
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster" skipIfFile="$$foundNextflowResults$$">
-    <paramValue name="fileOrDirToMirror">$$parentDataDir$$</paramValue>
+  <step name="copyToCluster" stepClass="ReFlow::StepClasses::CopyNextflowWorkingDirToCluster" stepLoadTypes="toCluster" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="fileOrDirToCopy">$$parentDataDir$$</paramValue>
     <depends name="checkForNextflowResultsAndCopyFromCache"/>
   </step>
 
 
   <!-- TODO:  add stepLoadTypes and stepFailTypes from params??  -->
   <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
     <paramValue name="workingDir">$$analysisDir$$</paramValue>
     <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
     <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="isGitRepo">true</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <depends name="mirrorToCluster"/>
+    <depends name="copyToCluster"/>
   </step>
 
-  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
-    <paramValue name="fileOrDirToMirror">$$analysisDir$$/results</paramValue>
+  <step name="copyResultsFromCluster" stepClass="ReFlow::StepClasses::CopyNextflowResultFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
+    <paramValue name="fileOrDirToCopy">$$analysisDir$$/results</paramValue>
     <paramValue name="outputDir">$$analysisDir$$/results</paramValue>
     <paramValue name="outputFiles">*</paramValue>
     <paramValue name="deleteAfterCopy">true</paramValue>
     <depends name="runClusterTask"/>
   </step>
+
+  <step name="copyLogFromCluster" stepClass="ReFlow::StepClasses::CopyNextflowResultFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
+    <paramValue name="fileOrDirToCopy">$$analysisDir$$/nextflow.txt</paramValue>
+    <paramValue name="outputDir">$$analysisDir$$</paramValue>
+    <paramValue name="outputFiles">nextflow.txt</paramValue>
+    <paramValue name="deleteAfterCopy">false</paramValue>
+    <depends name="runClusterTask"/>
+  </step>
+
 
   <step name="copyNextflowResultsToCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache" skipIfFile="$$foundNextflowResults$$">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
@@ -64,7 +76,13 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="mode">copyTo</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <depends name="mirrorFromCluster"/>
+    <depends name="copyResultsFromCluster"/>
+    <depends name="copyLogFromCluster"/>
+  </step>
+
+  <step name="deletFromCluster" stepClass="ReFlow::StepClasses::DeleteNextflowWorkingDirFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
+    <depends name="copyNextflowResultsToCache"/>
   </step>
 
 </workflowGraph>

@@ -15,6 +15,9 @@
   <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
   <constant name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</constant>
 
+  <constant name="proteomeSymLink">$$dataDir$$/proteome.fasta</constant>
+  <constant name="iedbSymLink">$$dataDir$$/iedb.tab</constant>
+
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
@@ -32,19 +35,25 @@
   <!-- put the peptides gz file in a directory nextflow can read -->
   <step name="symLinkIedbEpitopes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
     <paramValue name="fromFile">$$iedbTabFile$$</paramValue>
-    <paramValue name="toFile">$$dataDir$$/iedb.tab</paramValue>
+    <paramValue name="toFile">$$iedbSymLink$$</paramValue>
     <depends name="makeDataDir"/>
   </step>
 
+  <step name="symLinkProteome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$proteomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
   <step name="epitopeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEpitopeMappingNextflowConfig">
+    <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
     <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
-    <paramValue name="proteinSequenceFile">$$proteinSequenceFile$$</paramValue>
-    <paramValue name="peptidesTab">$$dataDir$$/iedb.tab</paramValue>
+    <paramValue name="proteinSequenceFile">$$proteomeSymLink$$</paramValue>
+    <paramValue name="peptidesTab">$$iedbSymLink$$</paramValue>
     <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
-    <paramValue name="peptideMatchResults">PeptideMatches.txt</paramValue>
-    <paramValue name="peptidesFilteredBySpeciesFasta">PeptidesFilteredBySpecies.fasta</paramValue>
-    <paramValue name="peptideMatchBlastCombinedResults">peptideMatchBlastCombinedResults.txt</paramValue>
+    <paramValue name="peptideMatchResults">iedb.gff</paramValue>
     <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
     <depends name="makeResultDir"/>
   </step>
@@ -60,11 +69,25 @@
     <paramValue name="datasetSpec">epitopes_IEDB_RSRC</paramValue> <!--NOTE: the version will be looked up by the step which gets from cache -->
     <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/iedb-epitope-mapping-nextflow</paramValue>
+    <depends name="symLinkIedbEpitopes"/>
+    <depends name="symLinkProteome"/>
     <depends name="epitopeNextflowConfig"/>
   </subgraph>
 
+  <step name="copyToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+     <paramValue name="copyFromFile">$$resultsDirectory$$/iedb.gff.gz</paramValue>
+     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+     <paramValue name="indexSuffix">tbi</paramValue>
+     <paramValue name="fileType">gff</paramValue>
+     <paramValue name="dataType">genomeAndProteome</paramValue>
+     <paramValue name="extDBName"></paramValue>
+     <depends name="runNextflowOnCluster"/>
+   </step>
+
   <step name="loadIedbEpitopeMatches" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAaSequenceEpitope" stepLoadTypes="plugin">
-    <paramValue name="peptideResultFile">$$resultsDirectory$$/peptideMatchBlastCombinedResults.txt</paramValue>
+    <paramValue name="peptideResultFile">$$resultsDirectory$$/iedb.gff.gz</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <depends name="runNextflowOnCluster"/>

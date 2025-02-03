@@ -16,6 +16,7 @@
   <param name="relativeWebServicesDir"/>
   <param name="isHugeGenome"/>
   <param name="isNotEbiGenome"/>
+  <param name="speciesNcbiTaxonId"/>
 
   <constant name="dataDir">$$parentDataDir$$/genome</constant>
   <constant name="blastxArgs">-topcomboN=1 W=4 T=18 V=100 B=1000000 -hspmax=1000000 -gi E=1e-3 -wordmask=seg+xnu -hspsepQmax=4000 -span1</constant>
@@ -23,11 +24,6 @@
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
-  </step>
-
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
   </step>
 
   <subgraph name="trnascan" xmlFile="trnascan.xml" excludeIf="$$annotationIncludesTRNAs$$">
@@ -112,7 +108,7 @@
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="skipIfFile">$$organismAbbrev$$/foundZeroESTs</paramValue>
+    <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
     <depends name="makeDataDir"/>
   </subgraph>
 

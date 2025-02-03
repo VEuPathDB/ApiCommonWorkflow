@@ -24,7 +24,6 @@
   <param name="projectName"/>
   <param name="projectVersionForWebsiteFiles"/>
   <param name="genomicSeqsFile"/>
-  <param name="genomicSeqs2BitFile"/>
   <param name="genomicSeqsDir"/>
   <param name="proteinsFile"/>
   <param name="genomeSource"/>
@@ -114,19 +113,6 @@
     <paramValue name="inputDir">$$genomicSeqsDir$$_ori</paramValue>
     <paramValue name="outputDir">$$genomicSeqsDir$$</paramValue>
     <depends name="extractGenomicSeqsIntoSeparateFastaFiles"/>
-  </step>
-
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="extractGenomicSeqs"/>
-    <depends name="extractProteins"/>
-    <depends name="fixFileNamesforGenomicSeqsSeparateFasta"/>
-  </step>
-
-  <step name="runFaToTwoBitOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunFaToTwoBitOnCluster">
-    <paramValue name="inputFastaFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="output2BitFile">$$genomicSeqs2BitFile$$</paramValue>
-    <depends name="mirrorToCluster"/>
   </step>
 
 </workflowGraph>

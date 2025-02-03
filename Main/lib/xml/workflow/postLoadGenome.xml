@@ -27,11 +27,6 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-
   <subgraph name="genomeAnalysis" xmlFile="genome.xml">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
@@ -50,8 +45,7 @@
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="isHugeGenome">$$isHugeGenome$$</paramValue>
     <paramValue name="isNotEbiGenome">$$isNotEbiGenome$$</paramValue>
-
-    <depends name="mirrorToCluster"/>
+    <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
   </subgraph>
 
   <subgraph name="genesAndProtiensAnalysis" xmlFile="genesAndProteins.xml" includeIf="$$isAnnotatedGenome$$">
@@ -70,7 +64,6 @@
     <paramValue name="isReferenceStrain">$$isReferenceStrain$$</paramValue>
     <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
     <paramValue name="isHugeGenome">$$isHugeGenome$$</paramValue>
-    <depends name="mirrorToCluster"/>
   </subgraph>
 
 </workflowGraph>

@@ -6,9 +6,9 @@
   <param name="projectName"/>
   <param name="relativeDownloadSiteDir"/>
   <param name="relativeWebServicesDir"/>
-  <param name="skipIfFile"/>
   <param name="gusConfigFile"/>
   <param name="genomeExtDbRlsSpec"/>
+  <param name="speciesNcbiTaxonId"/>
 
   <constant name="dataDir">$$parentDataDir$$/ESTs</constant>
   <constant name="ESTDescripString">EST sequences (NT)</constant>
@@ -69,13 +69,13 @@
     <paramValue name="dataName">ESTs</paramValue>
     <paramValue name="descripString">$$ESTDescripString$$</paramValue>
     <paramValue name="isWebServiceFile">false</paramValue>
-    <paramValue name="skipIfFile">$$skipIfFile$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
     <depends name="dbEST_RSRC"/>
     <dependsPattern name="EST_*_sequences_RSRC"/>
   </step>
 
-  <step name="formatESTDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" skipIfFile="$$skipIfFile$$">
+  <step name="formatESTDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles">
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
@@ -85,13 +85,9 @@
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
     <paramValue name="dataName">ESTs</paramValue>
     <paramValue name="args">-dbtype nucl</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="makeESTDownloadFile"/>
   </step>
-
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeESTDownloadFile"/>
-    </step>
 
     <subgraph name="makeAndBlockAssemblySeqs" xmlFile="makeAndBlockAssemblySeqs.xml" externalName="$$organismAbbrev$$_makeAndBlockAssemblySeqs">
       <paramValue name="dataDir">$$dataDir$$/assemblySeqs</paramValue>
@@ -99,7 +95,9 @@
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <depends name="mirrorToCluster"/>
+      <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
+      <paramValue name="datasetSpec">$$organismAbbrev$$_dbEST_RSRC</paramValue>
+      <depends name="makeESTDownloadFile"/>
     </subgraph>
 
 

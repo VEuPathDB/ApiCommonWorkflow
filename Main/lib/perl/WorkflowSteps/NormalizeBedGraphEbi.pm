@@ -18,7 +18,7 @@ sub run {
   my $cmd= "normalizeCoverageEbi.pl --inputDir $workflowDataDir/$inputDir --seqSizeFile $workflowDataDir/$seqSizeFile --analysisConfig $workflowDataDir/$analysisConfig";
 
   if($undo){
-      $self->runCmd(0, "rm -rf $workflowDataDir/$inputDir/analyze_*");
+      $self->runCmd(0, "rm -rf $workflowDataDir/$inputDir/normalize_coverage");
       # can't undo this step.  must undo cluster task
   }else{
     if ($test) {
