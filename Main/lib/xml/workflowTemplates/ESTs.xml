@@ -11,7 +11,14 @@
   <param name="speciesNcbiTaxonId"/>
 
   <constant name="dataDir">$$parentDataDir$$/ESTs</constant>
+
+  <constant name="zeroFoundDir">$$dataDir$$/zeroFound</constant>
+  <constant name="skipIfFile">$$zeroFoundDir$$/foundZeroESTs</constant>
+
   <constant name="ESTDescripString">EST sequences (NT)</constant>
+
+  <constant name="defaultDatasetSpec">$$organismAbbrev$$_dbEST_RSRC</constant>
+
 
   <!-- BEWARE: we make a bunch of assumptions around ESTs to accomodate
        secondary strains:
@@ -24,6 +31,13 @@
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
+
+  <step name="makeZeroFoundDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$zeroFoundDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
 
   <datasetTemplate class="referenceStrain-dbEST">
     <prop name="organismAbbrev"/>
@@ -60,6 +74,10 @@
     </subgraph>
   </datasetTemplate>
 
+
+
+
+  <!-- write a skip if file if zero ESTs are found -->
   <step name="makeESTDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeESTDownloadFile">
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
@@ -71,11 +89,47 @@
     <paramValue name="isWebServiceFile">false</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
+    <paramValue name="skipIfFile">$$skipIfFile$$</paramValue>
     <depends name="dbEST_RSRC"/>
+    <depends name="makeZeroFoundDir"/>
     <dependsPattern name="EST_*_sequences_RSRC"/>
   </step>
 
-  <step name="formatESTDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles">
+
+    <!-- TODO WRITE TO BOTH EST DIRECTORIES in the CACHE DIR
+         preprocessedDataCache/PlasmoDB/pfal3D7_primary_genome_RSRC_2020-09-01/VEuPathDB_blat-nextflow_main
+         preprocessedDataCache/PlasmoDB/pfal3D7_primary_genome_RSRC_2020-09-01/VEuPathDB_repeat-masker-nextflow_main
+    -->
+  <step name="copyZeroFoundFileToMaskCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="isProteomeAnalysis">false</paramValue>
+    <paramValue name="datasetSpec">$$defaultDatasetSpec$$</paramValue>
+    <paramValue name="resultsDir">$$zeroFoundDir$$</paramValue>
+    <paramValue name="foundNextflowResults">NA</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/repeat-masker-nextflow</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="mode">copyTo</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <depends name="makeESTDownloadFile"/>
+  </step>
+  <step name="copyZeroFoundFileToBlatCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="isProteomeAnalysis">false</paramValue>
+    <paramValue name="datasetSpec">$$defaultDatasetSpec$$</paramValue>
+    <paramValue name="resultsDir">$$zeroFoundDir$$</paramValue>
+    <paramValue name="foundNextflowResults">NA</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/blat-nextflow</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="mode">copyTo</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <depends name="makeESTDownloadFile"/>
+  </step>
+
+
+
+  <step name="formatESTDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeWebServicesBlastFiles" skipIfFile="$$skipIfFile$$">
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
@@ -89,6 +143,8 @@
     <depends name="makeESTDownloadFile"/>
   </step>
 
+
+  <!-- CANT use "skipIfFile" here. this as children steps have alternate skip if defined -->>
     <subgraph name="makeAndBlockAssemblySeqs" xmlFile="makeAndBlockAssemblySeqs.xml" externalName="$$organismAbbrev$$_makeAndBlockAssemblySeqs">
       <paramValue name="dataDir">$$dataDir$$/assemblySeqs</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -96,9 +152,9 @@
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
-      <paramValue name="datasetSpec">$$organismAbbrev$$_dbEST_RSRC</paramValue>
-      <depends name="makeESTDownloadFile"/>
+      <paramValue name="datasetSpec">$$defaultDatasetSpec$$</paramValue>
+      <depends name="copyZeroFoundFileToMaskCache"/>
+      <depends name="copyZeroFoundFileToBlatCache"/>
     </subgraph>
-
 
 </workflowGraph>
