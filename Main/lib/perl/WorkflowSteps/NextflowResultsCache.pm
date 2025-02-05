@@ -52,10 +52,10 @@ sub run {
 
 
 
-        $datasetDirectory = $datasetSpec;
+        $datasetDirectory = "${datasetDirectory}/${datasetSpec}";
     }
 
-    my $cacheDir = "$cacheDirBase/$datasetDirectory/$nextflowDirectory";
+    my $cacheDir = "${cacheDirBase}/${datasetDirectory}/${nextflowDirectory}";
 
 
     if($isProteomeAnalysis) {
@@ -69,10 +69,10 @@ sub run {
     my $foundNextflowResultsFile = $self->getWorkflowDataDir() . "/" . $foundNextflowResults;
 
     if($mode eq "copyTo") {
-	$self->copyTo($test, $undo, $cacheDir, $resultsPath);
+        $self->copyTo($test, $undo, $cacheDir, $resultsPath);
     }
     else {
-	$self->checkAndCopyFrom($test, $undo, $cacheDir, $resultsPath, $foundNextflowResultsFile);
+        $self->checkAndCopyFrom($test, $undo, $cacheDir, $resultsPath, $foundNextflowResultsFile);
     }
 }
 
@@ -126,10 +126,13 @@ sub copyTo {
         $self->runCmd(0, "cp -r $resultsPath/* $cacheDir/");
     }
     $self->runCmd($test, "mkdir -p $cacheDir");
-    $self->runCmd($test, "cp -r $resultsPath/* $cacheDir/");
+
+    my @filesAndDirs = glob("$resultsPath/*");
+
+    if(scalar(@filesAndDirs) > 0 ) {
+        $self->runCmd($test, "cp -r $resultsPath/* $cacheDir/");
+    }
   }
-
-
 }
 
 sub getDatasetSpecFromName {

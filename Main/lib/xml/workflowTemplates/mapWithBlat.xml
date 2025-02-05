@@ -28,8 +28,7 @@
   <datasetTemplate class="transcriptsFromReferenceStrain">
     <prop name="referenceStrainOrganismAbbrev"/>
 
-
-    <subgraph name="mapESTsToGenome" xmlFile="blatDnaAgainstGenome.xml" skipIfFile="$$projectName$$/${referenceStrainOrganismAbbrev}/foundZeroESTs">
+    <subgraph name="mapESTsToGenome" xmlFile="blatDnaAgainstGenome.xml">
       <paramValue name="dataDir">$$dataDir$$/ESTs</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -42,11 +41,13 @@
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
+      <paramValue name="skipIfFile">$$projectName$$/${referenceStrainOrganismAbbrev}/postLoadGenome/genome/ESTs/zeroFound/foundZeroESTs</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
 
-    <step name="toGFF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TranscriptSequencesToWebservices" skipIfFile="$$projectName$$/${referenceStrainOrganismAbbrev}/foundZeroESTs">
+    <!-- leave foundZeroESTs skip if here -->
+    <step name="toGFF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TranscriptSequencesToWebservices" skipIfFile="$$projectName$$/${referenceStrainOrganismAbbrev}/postLoadGenome/genome/ESTs/zeroFound/foundZeroESTs">
       <paramValue name="dataDir">$$dataDir$$/ESTs</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="queryExtDbRlsSpec"></paramValue>
