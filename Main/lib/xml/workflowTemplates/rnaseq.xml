@@ -8,6 +8,7 @@
     <param name="relativeDownloadSiteDir"/>
     <param name="relativeWebServicesDir"/>
     <param name="genomeFastaFile"/>
+    <param name="maxIntronSize"/>
 
     <constant name="dataDir">$$parentDataDir$$/rnaseq</constant>
 
@@ -105,7 +106,7 @@
         <prop name="hasPairedEnds"/>
         <prop name="isStrandSpecific"/>
         <prop name="alignWithCdsCoordinates"/>
-
+        <prop name="fromSRA"/>
 
         <subgraph name="${name}_rnaSeq_loadDataset" xmlFile="loadDataset.xml">
             <paramValue name="datasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
@@ -131,6 +132,9 @@
             <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
             <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
             <paramValue name="gtfFile">$$organismAbbrev$$_mask.gtf</paramValue>
+            <paramValue name="fromSRA">${fromSRA}</paramValue>
+            <paramValue name="cdsOrExon">exon</paramValue>
+            <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
             <depends name="makeMaskGtf"/>
             <depends name="${name}_rnaSeq_loadDataset"/>
         </subgraph>
@@ -150,6 +154,9 @@
             <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
             <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
             <paramValue name="gtfFile">$$organismAbbrev$$_cds_mask.gtf</paramValue>
+            <paramValue name="fromSRA">${fromSRA}</paramValue>
+            <paramValue name="cdsOrExon">CDS</paramValue>
+            <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
             <depends name="makeMaskGtfCdsOnly"/>
             <depends name="${name}_rnaSeq_loadDataset"/>
         </subgraph>

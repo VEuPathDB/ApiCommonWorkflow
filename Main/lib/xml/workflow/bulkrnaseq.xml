@@ -11,11 +11,16 @@
   <param name="relativeWebServicesDir"/>
   <param name="gtfFile"/>
   <param name="genomeFastaFile"/>
+  <param name="fromSRA"/>
+  <param name="cdsOrExon"/>
+  <param name="maxIntronSize"/>
+
 
   <constant name="dataDir">$$parentDataDir$$/bulkrnaseq</constant>
   <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
   <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
   <constant name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</constant>
+  <constant name="ngsSamplesNextflowConfigFile">$$analysisDirectory$$/ngs-samples-nextflow.config</constant>
 
   <constant name="finalDir">$$parentDataDir$$/final</constant>
 
@@ -39,7 +44,7 @@
 
   <step name="symLinkGtf" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
     <paramValue name="fromFile">$$gtfFile$$</paramValue>
-    <paramValue name="toFile">$$gtfSymLind$$</paramValue>
+    <paramValue name="toFile">$$gtfSymLink$$</paramValue>
     <depends name="makeDataDir"/>
   </step>
 
@@ -56,12 +61,28 @@
     <depends name="makeDataDir"/>
   </step>
 
+  <step name="ngsSamplesNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeNgsSamplesNextflowConfig">
+    <paramValue name="analysisDirectory">$$analysisDirectory$$</paramValue>
+    <paramValue name="finalDirectory">$$finalSymLink$$</paramValue>
+    <paramValue name="resultsDirectory">$$analysisDirectory$$/ngs-samples-results</paramValue>
+    <paramValue name="nextflowConfigFile">$$ngsSamplesNextflowConfigFile$$</paramValue>
+    <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+    <paramValue name="samplesheetName">samplesheet.csv</paramValue>
+    <paramValue name="fromSRA">$$fromSRA$$</paramValue>
+    <depends name="makeResultDir"/>
+  </step>
 
-  <!-- TODO  -->
   <step name="nextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBulkRnaSeqNextflowConfig">
-    <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
     <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
     <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+    <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+    <paramValue name="sampleSheetFile">$$analysisDirectory$$/ngs-samples-results/samplesheet.csv</paramValue>
+    <paramValue name="gtfFile">$$gtfSymLink$$</paramValue>
+    <paramValue name="genomeFile">$$genomeSymLink$$</paramValue>
+    <paramValue name="isStranded">$$strandSpecific$$</paramValue>
+    <paramValue name="cdsOrExon">$$cdsOrExon$$</paramValue>
+    <paramValue name="maxIntronLength">$$maxIntronSize$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <depends name="makeResultDir"/>
   </step>
 
@@ -69,7 +90,8 @@
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
+    <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+    <paramValue name="ngsSamplesNextflowConfigFile">$$ngsSamplesNextflowConfigFile$$</paramValue>    
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="isProteomeAnalysis">false</paramValue>
@@ -77,6 +99,7 @@
     <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/bulk-rnaseq-nextflow</paramValue>
     <depends name="nextflowConfig"/>
+    <depends name="ngsSamplesNextflowConfig"/>
     <depends name="symLinkGtf"/>
     <depends name="symLinkGenome"/>
     <depends name="symLinkFinal"/>

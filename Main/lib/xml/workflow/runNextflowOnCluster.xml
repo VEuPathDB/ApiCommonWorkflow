@@ -9,6 +9,7 @@
   <param name="nextflowWorkflow"/>
   <param name="projectName"/>
   <param name="gusConfigFile"/>
+  <param name="ngsSamplesNextflowConfigFile"/>
 
   <constant name="foundNextflowResults">$$parentDataDir$$/foundNextflowResults</constant>
 
@@ -31,6 +32,17 @@
     <depends name="checkForNextflowResultsAndCopyFromCache"/>
   </step>
 
+  <!-- the nextflow config file for this step is optional.  if provided, we use it to get files from sra or set paths in samplesheet.csv-->
+  <step name="runNgsSamplesClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorNextflowNGSSamples" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
+    <paramValue name="workingDir">$$analysisDir$$</paramValue>
+    <paramValue name="resultsDir">$$analysisDir$$/ngs-samples-results</paramValue>
+    <paramValue name="nextflowConfigFile">$$ngsSamplesNextflowConfigFile$$</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/ngs-samples-nextflow</paramValue> <!-- this is our one stop shop for getting sample data (example: sra) -->
+    <paramValue name="isGitRepo">true</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <depends name="copyToCluster"/>
+  </step>
 
   <!-- TODO:  add stepLoadTypes and stepFailTypes from params??  -->
   <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow" skipIfFile="$$foundNextflowResults$$">
@@ -41,7 +53,7 @@
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="isGitRepo">true</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <depends name="copyToCluster"/>
+    <depends name="runNgsSamplesClusterTask"/>
   </step>
 
   <step name="copyResultsFromCluster" stepClass="ReFlow::StepClasses::CopyNextflowResultFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
