@@ -32,7 +32,7 @@
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>    
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="coreProteome">$$coreProteinsDir$$/fastas.tar.gz</paramValue>
-    <paramValue name="coreResultsDir">$$coreGroupsDir$$/results</paramValue>
+    <paramValue name="coreResultsDir">$$coreGroupsDir$$/analysisDir/results</paramValue>
     <depends name="mirrorPeripheralInterproDirToCluster"/>
   </subgraph>
 
@@ -69,9 +69,9 @@
   <step name="makeGenomicSitesFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="peripheralDir">getPeripheralProteins/proteomeDatasets</paramValue>
-    <paramValue name="coreMapFile">coreGroups/results/reformattedGroups.txt</paramValue>
-    <paramValue name="peripheralMapFileName">peripheral/results/GroupsFile.txt</paramValue>
-    <paramValue name="residualMapFile">peripheral/results/reformattedGroups.txt</paramValue>
+    <paramValue name="coreMapFile">coreGroups/analysisDir/results/reformattedGroups.txt</paramValue>
+    <paramValue name="peripheralMapFileName">peripheral/analysisDir/results/GroupsFile.txt</paramValue>
+    <paramValue name="residualMapFile">peripheral/analysisDir/results/reformattedGroups.txt</paramValue>
     <paramValue name="cladeFile">orthomclClades_RSRC/OrthoMCL6/orthomclClades.txt</paramValue>
     <paramValue name="ecFile">OrganismNameResources/ec_organism.txt</paramValue>
     <depends name="updateEcNumbers"/>
@@ -81,10 +81,10 @@
   <step name="makeGalaxyFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGalaxyFiles">
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="galaxyDir">galaxyFiles</paramValue>
-    <paramValue name="coreGroupsFile">peripheral/results/GroupsFile.txt</paramValue>
-    <paramValue name="residualGroupsFile">peripheral/results/reformattedGroups.txt</paramValue>
-    <paramValue name="coreSequencesFile">peripheral/results/bestReps.fasta</paramValue>
-    <paramValue name="residualSequencesFiles">peripheral/results/bestReps.fasta</paramValue>
+    <paramValue name="coreGroupsFile">peripheral/analysisDir/results/GroupsFile.txt</paramValue>
+    <paramValue name="residualGroupsFile">peripheral/analysisDir/results/reformattedGroups.txt</paramValue>
+    <paramValue name="coreSequencesFile">peripheral/analysisDir/results/bestReps.fasta</paramValue>
+    <paramValue name="residualSequencesFiles">peripheral/analysisDir/results/bestReps.fasta</paramValue>
     <depends name="makeGenomicSitesFiles"/>
   </step>
 -->
@@ -123,8 +123,8 @@
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="project">$$projectName$$</paramValue>
-    <paramValue name="coreGroupsFile">peripheral/results/GroupsFile.txt</paramValue>
-    <paramValue name="residualGroupsFile">peripheral/results/reformattedGroups.txt</paramValue>
+    <paramValue name="coreGroupsFile">peripheral/analysisDir/results/GroupsFile.txt</paramValue>
+    <paramValue name="residualGroupsFile">peripheral/analysisDir/results/reformattedGroups.txt</paramValue>
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <depends name="makeDownloadSiteDir"/>
   </step>
@@ -138,14 +138,14 @@
   </step>
 
   <step name="CopyDiamondDatabaseToWebservices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDiamondDatabaseToWebServices">
-    <paramValue name="peripheralResultsDir">peripheral/results/</paramValue>
+    <paramValue name="peripheralResultsDir">peripheral/analysisDir/results/</paramValue>
     <paramValue name="webServicesDir">$$relativeWebServicesDir$$</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <depends name="makeInterproDownloadFile"/>
   </step>
 
   <step name="CopyGeneTreesToWebservices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyGeneTreesToWebServices">
-    <paramValue name="geneTreesDir">peripheral/results/geneTrees</paramValue>
+    <paramValue name="geneTreesDir">peripheral/analysisDir/results/geneTrees</paramValue>
     <paramValue name="webServicesDir">$$relativeWebServicesDir$$</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <depends name="CopyDiamondDatabaseToWebservices"/>

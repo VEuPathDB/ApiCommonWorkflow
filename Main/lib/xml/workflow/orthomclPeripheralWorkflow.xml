@@ -29,9 +29,14 @@
       <depends name="getPeripheralProteomes"/>
   </step>
 
+  <step name="makePeripheralAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+     <paramValue name="dataDir">$$peripheralDir$$/analysisDir</paramValue>
+     <depends name="makePeripheralDir"/>
+  </step>
+
   <step name="makePeripheralResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$peripheralDir$$/results/</paramValue>
-    <depends name="makePeripheralDir"/>
+    <paramValue name="dataDir">$$peripheralDir$$/analysisDir/results/</paramValue>
+    <depends name="makePeripheralAnalysisDir"/>
    </step>
 
   <step name="CopyAndUncompressPeripheralCacheDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndUncompressPeripheralCacheDir">
@@ -44,83 +49,93 @@
     <depends name="CopyAndUncompressPeripheralCacheDir"/>
   </step>
 
+  <step name="copyCoreGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+     <paramValue name="fromFile">$$coreResultsDir$$/reformattedGroups.txt</paramValue>
+     <paramValue name="toFile">$$peripheralDir$$/reformattedGroups.txt</paramValue>
+     <depends name="CopyOutdatedOrganisms"/>
+  </step>
+
+  <step name="copyCoreDiamondResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDir">
+     <paramValue name="fromDir">$$coreResultsDir$$/groupDiamondResults</paramValue>
+     <paramValue name="toDir">$$peripheralDir$$/groupDiamondResults</paramValue>
+     <depends name="copyCoreGroups"/>
+  </step>
+
+  <step name="copyCoreSequenceIds" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+     <paramValue name="fromFile">$$coreResultsDir$$/diamondCache/SequenceIDs.txt</paramValue>
+     <paramValue name="toFile">$$peripheralDir$$/SequenceIDs.txt</paramValue>
+     <depends name="copyCoreDiamondResults"/>
+  </step>
+
   <step name="makeOrthoFinderPeripheralNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPeripheralNextflowConfig">
-    <paramValue name="clusterResultDir">$$peripheralDir$$/results/</paramValue>
+    <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/results/</paramValue>
     <paramValue name="configFileName">nextflow.config</paramValue>
-    <paramValue name="analysisDir">$$peripheralDir$$</paramValue>
+    <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
     <paramValue name="peripheralProteomes">$$getPeripheralProteinsDir$$/fastas.tar.gz</paramValue>
     <paramValue name="coreProteome">$$coreProteome$$</paramValue>
-    <paramValue name="coreGroupsFile">$$coreResultsDir$$/reformattedGroups.txt</paramValue>
-    <paramValue name="coreGroupSimilarities">$$coreResultsDir$$/groupDiamondResults</paramValue>
-    <paramValue name="coreTranslateSequenceFile">$$coreResultsDir$$/diamondCache/SequenceIDs.txt</paramValue>
+    <paramValue name="coreGroupsFile">$$peripheralDir$$/reformattedGroups.txt</paramValue>
+    <paramValue name="coreGroupSimilarities">$$peripheralDir$$/groupDiamondResults</paramValue>
+    <paramValue name="coreTranslateSequenceFile">$$peripheralDir$$/SequenceIDs.txt</paramValue>
     <paramValue name="peripheralCacheDir">$$peripheralDir$$/peripheralCacheDir</paramValue>
     <paramValue name="outdated">$$peripheralDir$$/outdated.txt</paramValue>
-    <depends name="CopyOutdatedOrganisms"/>
+    <depends name="copyCoreSequenceIds"/>
   </step>
 
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$peripheralDir$$</paramValue>
-    <depends name="makeOrthoFinderPeripheralNextflowConfig"/>
-  </step>
-
-  <step name="runOrthoFinderPeripheralClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflowWithEntry">
-    <paramValue name="workingDir">$$peripheralDir$$</paramValue>
-    <paramValue name="resultsDir">$$peripheralDir$$/results</paramValue>
-    <paramValue name="nextflowConfigFile">$$peripheralDir$$/nextflow.config</paramValue>
+   <subgraph name="runPeripheralNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+    <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$peripheralDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$peripheralDir$$/analysisDir/nextflow.config</paramValue>
+    <paramValue name="organismAbbrev"></paramValue>
+    <paramValue name="genomeSpec">$$projectName$$|peripheralGroups</paramValue>
+    <paramValue name="isProteomeAnalysis">true</paramValue>
+    <paramValue name="datasetSpec"></paramValue>
+    <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/orthofinder-nextflow</paramValue>
-    <paramValue name="isGitRepo">true</paramValue>
     <paramValue name="entry">peripheralEntry</paramValue>
-    <depends name="mirrorToCluster"/>
-  </step>
-
-  <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$peripheralDir$$/results</paramValue>
-    <paramValue name="outputDir">$$peripheralDir$$/results</paramValue>
-    <paramValue name="outputFiles"></paramValue>
-    <paramValue name="deleteAfterCopy">false</paramValue>
-    <depends name="runOrthoFinderPeripheralClusterTask"/>
-  </step>     
+    <depends name="makeOrthoFinderPeripheralNextflowConfig"/>
+  </subgraph>
 
   <step name="loadCoreGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertCoreGroups">
-    <paramValue name="groupsFile">$$peripheralDir$$/results/GroupsFile.txt</paramValue>
-    <depends name="mirrorFromCluster"/>
+    <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/results/GroupsFile.txt</paramValue>
+    <depends name="runPeripheralNextflowOnCluster"/>
   </step>
 
   <step name="loadResidualGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertResidualGroups">
-    <paramValue name="groupsFile">$$peripheralDir$$/results/reformattedGroups.txt</paramValue>
+    <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/results/reformattedGroups.txt</paramValue>
     <depends name="loadCoreGroups"/>
   </step>
 
   <step name="loadCoreGroupAASequence" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupAASequence">
-      <paramValue name="groupsFile">$$peripheralDir$$/results/GroupsFile.txt</paramValue>
+      <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/results/GroupsFile.txt</paramValue>
       <depends name="loadResidualGroups"/>
   </step>
 
   <step name="loadResidualGroupAASequence" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupAASequence">
-      <paramValue name="groupsFile">$$peripheralDir$$/results/reformattedGroups.txt</paramValue>
+      <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/results/reformattedGroups.txt</paramValue>
       <depends name="loadCoreGroupAASequence"/>
   </step>
 
   <step name="insertOrthogroupCoreStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupStats" stepLoadTypes="plugin">
-      <paramValue name="groupStatsFile">$$peripheralDir$$/results/groupStats/core_stats.txt</paramValue>
+      <paramValue name="groupStatsFile">$$peripheralDir$$/analysisDir/results/groupStats/core_stats.txt</paramValue>
       <paramValue name="proteinSubset">C</paramValue>
       <depends name="loadResidualGroupAASequence"/>
   </step>
 
   <step name="insertOrthogroupCorePeripheralStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupStats" stepLoadTypes="plugin">
-      <paramValue name="groupStatsFile">$$peripheralDir$$/results/groupStats/peripheral_stats.txt</paramValue>
+      <paramValue name="groupStatsFile">$$peripheralDir$$/analysisDir/results/groupStats/peripheral_stats.txt</paramValue>
       <paramValue name="proteinSubset">C+P</paramValue>
       <depends name="insertOrthogroupCoreStats"/>
   </step>
 
   <step name="insertOrthogroupResidualStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupStats" stepLoadTypes="plugin">
-      <paramValue name="groupStatsFile">$$peripheralDir$$/results/groupStats/residual_stats.txt</paramValue>
+      <paramValue name="groupStatsFile">$$peripheralDir$$/analysisDir/results/groupStats/residual_stats.txt</paramValue>
       <paramValue name="proteinSubset">R</paramValue>
       <depends name="insertOrthogroupCorePeripheralStats"/>
   </step>
 
   <step name="insertSimilarOrthologgroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimilarOrthologGroups" stepLoadTypes="plugin">
-      <paramValue name="similarGroups">$$peripheralDir$$/results/similar_groups.tsv</paramValue>
+      <paramValue name="similarGroups">$$peripheralDir$$/analysisDir/results/similar_groups.tsv</paramValue>
       <depends name="insertOrthogroupResidualStats"/>
   </step>
 

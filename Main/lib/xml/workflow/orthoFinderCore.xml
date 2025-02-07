@@ -1,7 +1,8 @@
 <workflowGraph name="OrthoFinderCore">
+    <param name="projectName"/>
+    <param name="gusConfigFile"/>
     <param name="coreGroupsDir"/>
     <param name="inputProteinFile"/>
-    <param name="entry"/>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$coreGroupsDir$$</paramValue>
@@ -12,9 +13,14 @@
       <depends name="makeDataDir"/>
     </step>
 
+    <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+     <paramValue name="dataDir">$$coreGroupsDir$$/analysisDir</paramValue>
+     <depends name="makeResultDir"/>
+    </step>
+
     <step name="CopyAndUncompressCoreCacheDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndUncompressCoreCacheDir">
       <paramValue name="outputDir">$$coreGroupsDir$$</paramValue>
-      <depends name="makeResultDir"/>
+      <depends name="makeAnalysisDir"/>
     </step>
 
     <step name="copyOutdatedFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOutdatedFile">
@@ -23,9 +29,9 @@
     </step>
 
     <step name="makeOrthoFinderCoreNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderCoreNextflowConfig">
-      <paramValue name="clusterResultDir">$$coreGroupsDir$$/results/</paramValue>
+      <paramValue name="clusterResultDir">$$coreGroupsDir$$/analysisDir/results/</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>
-      <paramValue name="analysisDir">$$coreGroupsDir$$</paramValue>
+      <paramValue name="analysisDir">$$coreGroupsDir$$/analysisDir</paramValue>
       <paramValue name="proteomes">$$inputProteinFile$$</paramValue>
       <paramValue name="blastArgs"></paramValue>
       <paramValue name="orthoFinderDiamondOutput">qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore</paramValue>
@@ -35,27 +41,21 @@
       <depends name="copyOutdatedFile"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$coreGroupsDir$$</paramValue>
+    <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+     <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="parentDataDir">$$coreGroupsDir$$</paramValue>
+      <paramValue name="analysisDir">$$coreGroupsDir$$/analysisDir</paramValue>
+      <paramValue name="nextflowConfigFile">$$coreGroupsDir$$/analysisDir/nextflow.config</paramValue>
+      <paramValue name="organismAbbrev"></paramValue>
+      <paramValue name="genomicSequenceFile"></paramValue>
+      <paramValue name="genomeSpec">$$projectName$$|coreGroups</paramValue>
+      <paramValue name="annotationSpec"></paramValue>
+      <paramValue name="datasetSpec"></paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/orthofinder-nextflow</paramValue>
+      <paramValue name="isProteomeAnalysis">true</paramValue>
+      <paramValue name="entry">coreEntry</paramValue>
       <depends name="makeOrthoFinderCoreNextflowConfig"/>
-    </step>
-
-    <step name="runOrthoFinderCoreClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflowWithEntry">
-      <paramValue name="workingDir">$$coreGroupsDir$$</paramValue>
-      <paramValue name="resultsDir">$$coreGroupsDir$$/results</paramValue>
-      <paramValue name="nextflowConfigFile">$$coreGroupsDir$$/nextflow.config</paramValue>
-      <paramValue name="nextflowWorkflow">VEuPathDB/orthoFinder-nextflow</paramValue>
-      <paramValue name="isGitRepo">true</paramValue>
-      <paramValue name="entry">$$entry$$</paramValue>
-      <depends name="mirrorToCluster"/>
-    </step>
-
-    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster">
-      <paramValue name="fileOrDirToMirror">$$coreGroupsDir$$/results</paramValue>
-      <paramValue name="outputDir">$$coreGroupsDir$$/results</paramValue>
-      <paramValue name="outputFiles"></paramValue>
-      <paramValue name="deleteAfterCopy">false</paramValue>
-      <depends name="runOrthoFinderCoreClusterTask"/>
-    </step>
+    </subgraph>
 
 </workflowGraph>
