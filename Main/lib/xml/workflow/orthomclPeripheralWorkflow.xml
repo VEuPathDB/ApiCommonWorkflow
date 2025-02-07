@@ -86,19 +86,23 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="parentDataDir">$$peripheralDir$$</paramValue>
     <paramValue name="nextflowConfigFile">$$peripheralDir$$/analysisDir/nextflow.config</paramValue>
-    <paramValue name="organismAbbrev"></paramValue>
-    <paramValue name="genomeSpec">$$projectName$$|peripheralGroups</paramValue>
+    <paramValue name="organismAbbrev"></paramValue> <!-- Not neccessary for ortho -->
+    <paramValue name="genomeSpec">$$projectName$$|peripheralGroups</paramValue> <!-- Using for correct naming of preprocessed data cache -->
     <paramValue name="isProteomeAnalysis">true</paramValue>
-    <paramValue name="datasetSpec"></paramValue>
+    <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho -->
     <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/orthofinder-nextflow</paramValue>
     <paramValue name="entry">peripheralEntry</paramValue>
     <depends name="makeOrthoFinderPeripheralNextflowConfig"/>
   </subgraph>
 
+  <step name="updateOrthoPeripheralPersistentCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateOrthoPeripheralPersistentCache">
+    <depends name="runPeripheralNextflowOnCluster"/>
+  </step>
+
   <step name="loadCoreGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertCoreGroups">
     <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/results/GroupsFile.txt</paramValue>
-    <depends name="runPeripheralNextflowOnCluster"/>
+    <depends name="updateOrthoPeripheralPersistentCache"/>
   </step>
 
   <step name="loadResidualGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertResidualGroups">

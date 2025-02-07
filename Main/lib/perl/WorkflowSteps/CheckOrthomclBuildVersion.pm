@@ -8,11 +8,10 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $orthoCacheDir = $self->getSharedConfig("orthoCacheDir");
+  my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
   my $buildVersion = $self->getSharedConfig("buildVersion");
-  my $cachedCoreResults = join("/",$orthoCacheDir,$self->getSharedConfig("cachedCoreResults"));
-  my $cachedBuildVersionFile = join("/", $orthoCacheDir,"buildVersion.txt");
-  my $cachedCheckSumFile = join("/", $orthoCacheDir,"checkSum.tsv");
+  my $cachedBuildVersionFile = join("/", $preprocessedDataCache,"OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/buildVersion.txt");
+  my $cachedCheckSumFile = join("/", $preprocessedDataCache,"OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/checkSum.tsv");
   my $checkSumFile = join("/", $workflowDataDir, $self->getParamValue("checkSum"));
   my $cachedBuildVersion = `cat $cachedBuildVersionFile`;
 
