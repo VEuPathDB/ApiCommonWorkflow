@@ -1,0 +1,87 @@
+<workflowGraph name="arrayProbeMapping">
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="parentDataDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="gtfFile"/>
+  <param name="genomeFastaFile"/>
+  <!-- TODO:  more array specific params here  (genomic and expression)-->
+
+
+  <constant name="dataDir">$$parentDataDir$$/arrayProbeMapping</constant>
+  <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
+  <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
+  <constant name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</constant>
+  <constant name="ngsSamplesNextflowConfigFile">$$analysisDirectory$$/ngs-samples-nextflow.config</constant>
+
+  <constant name="finalDir">$$parentDataDir$$/final</constant>
+
+  <constant name="gtfSymLink">$$dataDir$$/$$organismAbbrev$$.gtf</constant>
+  <constant name="genomeSymLink">$$dataDir$$/$$organismAbbrev$$.fasta</constant>
+  <constant name="finalSymLink">$$dataDir$$/final</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$analysisDirectory$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$resultsDirectory$$</paramValue>
+    <depends name="makeAnalysisDir"/>
+  </step>
+
+  <step name="symLinkGtf" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$gtfFile$$</paramValue>
+    <paramValue name="toFile">$$gtfSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="symLinkGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$genomeFastaFile$$</paramValue>
+    <paramValue name="toFile">$$genomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
+  <step name="symLinkFinal" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$finalDir$$</paramValue>
+    <paramValue name="toFile">$$finalSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
+  <step name="nextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeArrayProbeMappingNextflowConfig">
+    <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+    <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+    <paramValue name="gtfFile">$$gtfSymLink$$</paramValue>
+    <paramValue name="genomeFile">$$genomeSymLink$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <!--TODO:  OTHER params here -->
+    <depends name="makeResultDir"/>
+  </step>
+
+  <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+    <paramValue name="ngsSamplesNextflowConfigFile"></paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="isProteomeAnalysis">false</paramValue>
+    <paramValue name="datasetSpec">$$platformDatasetName$$|$$platformVersion$$</paramValue> <!--NOTE: the version will be looked up by the step which gets from cache -->
+    <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/array-probes-nextflow</paramValue>
+    <depends name="nextflowConfig"/>
+    <depends name="symLinkGtf"/>
+    <depends name="symLinkGenome"/>
+    <depends name="symLinkFinal"/>
+  </subgraph>
+
+</workflowGraph>
