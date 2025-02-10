@@ -1,0 +1,65 @@
+<workflowGraph name="OrthoFinderCore">
+    <param name="projectName"/>
+    <param name="gusConfigFile"/>
+    <param name="coreGroupsDir"/>
+    <param name="inputProteinFile"/>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$coreGroupsDir$$</paramValue>
+    </step>
+
+    <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$coreGroupsDir$$/results/</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+     <paramValue name="dataDir">$$coreGroupsDir$$/analysisDir</paramValue>
+     <depends name="makeResultDir"/>
+    </step>
+
+    <step name="CopyAndUncompressCoreCacheDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndUncompressCoreCacheDir">
+      <paramValue name="outputDir">$$coreGroupsDir$$</paramValue>
+      <depends name="makeAnalysisDir"/>
+    </step>
+
+    <step name="copyOutdatedFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOutdatedFile">
+      <paramValue name="outputDir">$$coreGroupsDir$$/</paramValue>
+      <depends name="CopyAndUncompressCoreCacheDir"/>
+    </step>
+
+    <step name="makeOrthoFinderCoreNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderCoreNextflowConfig">
+      <paramValue name="clusterResultDir">$$coreGroupsDir$$/analysisDir/results/</paramValue>
+      <paramValue name="configFileName">nextflow.config</paramValue>
+      <paramValue name="analysisDir">$$coreGroupsDir$$/analysisDir</paramValue>
+      <paramValue name="proteomes">$$inputProteinFile$$</paramValue>
+      <paramValue name="blastArgs"></paramValue>
+      <paramValue name="orthoFinderDiamondOutput">qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore</paramValue>
+      <paramValue name="bestRepDiamondOutput">qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore</paramValue>
+      <paramValue name="coreCacheDir">$$coreGroupsDir$$/CoreCacheDir</paramValue>
+      <paramValue name="outdated">$$coreGroupsDir$$/outdated.txt</paramValue>
+      <depends name="copyOutdatedFile"/>
+    </step>
+
+    <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+      <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="parentDataDir">$$coreGroupsDir$$</paramValue>
+      <paramValue name="analysisDir">$$coreGroupsDir$$/analysisDir</paramValue>
+      <paramValue name="nextflowConfigFile">$$coreGroupsDir$$/analysisDir/nextflow.config</paramValue>
+      <paramValue name="organismAbbrev"></paramValue> <!--Not neccessary for ortho-->
+      <paramValue name="genomicSequenceFile"></paramValue> <!---->
+      <paramValue name="genomeSpec">$$projectName$$|coreGroups</paramValue> <!--Doing this to get folder naming in preprocessed data cache-->
+      <paramValue name="annotationSpec"></paramValue> <!-- Not neccessary for ortho-->
+      <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho-->
+      <paramValue name="nextflowWorkflow">VEuPathDB/orthofinder-nextflow</paramValue>
+      <paramValue name="isProteomeAnalysis">true</paramValue>
+      <paramValue name="entry">coreEntry</paramValue>
+      <depends name="makeOrthoFinderCoreNextflowConfig"/>
+    </subgraph>
+
+    <step name="updateOrthoCorePersistentCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateOrthoCorePersistentCache">
+      <depends name="runNextflowOnCluster"/>
+    </step>
+
+</workflowGraph>

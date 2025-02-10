@@ -26,6 +26,15 @@ sub run {
   my $familyRepOrganismAbbrev = $self->getParamValue('familyRepOrganismAbbrev');
   my $familyNcbiTaxonIds = $self->getParamValue('familyNcbiTaxonIds');
   my $familyNameForFiles = $self->getParamValue('familyNameForFiles');
+  my $isCore = $self->getBooleanParamValue('isCore');
+
+  my $corePeripheral;
+  if ($isCore) {
+      $corePeripheral = 'core';
+  }
+  else {
+      $corePeripheral = 'peripheral';
+  }
 
   my $ag = $isAnnotatedGenome? '--isAnnotatedGenome' : '';
   my $rs = $isReferenceStrain? '--isReferenceStrain' : '';
@@ -58,7 +67,7 @@ sub run {
       $self->error("Parameter isFamilyRepresentative is 'false'.  Parameter familyRepOrganismAbbrev must not be the same as property organismAbbrev") if $familyRepOrganismAbbrev eq $abbrev;
   }
 
-  my $args = "--fullName '$fullName' --projectName $project --ncbiTaxonId $ncbiTaxonId --abbrev $abbrev --publicAbbrev $abbrevPublic --nameForFilenames $nameForFilenames --genomeSource $genomeSource --orthomclAbbrev $abbrevOrthomcl --strainAbbrev  $abbrevStrain --refStrainAbbrev  $abbrevRefStrain --familyRepOrganismAbbrev $familyRepOrganismAbbrev $ag $rs $tnt $fnti $fnff";
+  my $args = "--fullName '$fullName' --projectName $project --ncbiTaxonId $ncbiTaxonId --abbrev $abbrev --publicAbbrev $abbrevPublic --nameForFilenames $nameForFilenames --genomeSource $genomeSource --orthomclAbbrev $abbrevOrthomcl --strainAbbrev  $abbrevStrain --refStrainAbbrev  $abbrevRefStrain --familyRepOrganismAbbrev $familyRepOrganismAbbrev --corePeripheral $corePeripheral $ag $rs $tnt $fnti $fnff";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertOrganism", $args);
 
