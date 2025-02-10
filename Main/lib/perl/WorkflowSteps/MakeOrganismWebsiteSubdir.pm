@@ -51,8 +51,8 @@ sub run {
       $self->runCmd(0, "rmdir $dir");  
 
   } else {
-      $self->runCmd(0, "mkdir $dir");
-      $self->runCmd(0, "mkdir $dir/data") if $needsDataSubDir;
+      $self->runCmd(0, "mkdir -p $dir");
+      $self->runCmd(0, "mkdir -p $dir/data") if $needsDataSubDir;
       # go to root of local path to avoid skipping intermediate dirs
       #my @path = split(/\//,$apiSiteFilesDir);
       #$self->runCmd(0, "chmod -R g+w $baseDir/$path[0]");
