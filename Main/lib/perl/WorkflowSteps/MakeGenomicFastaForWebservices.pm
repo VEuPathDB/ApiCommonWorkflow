@@ -44,9 +44,7 @@ EOF
   my $fastaFile = "${copyToDir}/genome.fasta";
   my $cmd = "gusExtractSequences --outputFile $fastaFile  --idSQL \"$sql\" ";
 
-  # TODO:  Replace this command with singularity + docker image
-  my $indexCmd = "samtools faidx $fastaFile";
-
+  my $indexCmd = "singularity exec docker://staphb/samtools:latest samtools faidx $fastaFile";
 
   if($undo) {
       $self->runCmd(0, "rm -f ${fastaFile}*");

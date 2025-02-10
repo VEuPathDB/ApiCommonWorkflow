@@ -28,9 +28,7 @@ sub run {
 
   my $outputFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceFileName($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, undef, 0, undef, 0, 'fasta', $dataName, $service);
 
-  # TODO:  change this to singularity command + docker image
-  my $indexCmd = "samtools faidx $outputFile";
-
+  my $indexCmd = "singularity exec docker://staphb/samtools:latest samtools faidx $fastaFile";
 
   if($undo) {
     $self->runCmd(0, "rm -f $outputFile*");
