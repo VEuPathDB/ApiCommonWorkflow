@@ -19,11 +19,11 @@ sub run {
 
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
-  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/fasta/";
+  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/genomeAndProteome/fasta";
 
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNcbiTaxonId();
 
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
 
 
     my $sql = <<"EOF";
@@ -46,9 +46,9 @@ sub run {
 EOF
 
   my $fastaFile = "${copyToDir}/genome.fasta";
-  my $cmd = "gusExtractSequences --outputFile $fastaFile  --idSQL \"$sql\" ";
+  my $cmd = "gusExtractSequences --outputFile $fastaFile  --idSQL \"$sql\" --gusConfigFile $gusConfigFile";
 
-  my $indexCmd = "singularity exec docker://staphb/samtools:latest samtools faidx $fastaFile";
+  my $indexCmd = "singularity exec -B $copyToDir docker://staphb/samtools:latest samtools faidx $fastaFile";
 
   if($undo) {
       $self->runCmd(0, "rm -f ${fastaFile}*");
@@ -58,7 +58,7 @@ EOF
           $self->runCmd(0, "echo test > $fastaFile");
           $self->runCmd(0, "echo test > ${fastaFile}.fai");
       }
-      $self->runCmd($test, "mkdir -p $copyToDir");
+#      $self->runCmd($test, "mkdir -p $copyToDir");
       $self->runCmd($test, $cmd);
       $self->runCmd($test, $indexCmd);
   }
