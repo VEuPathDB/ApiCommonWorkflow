@@ -19,15 +19,15 @@ sub run {
 
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
-  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/gff/";
+  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/genomeAndProteome/gff";
 
   my $extDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
 
-  my $tuningTablePrefix = $self->getTuningTablePrefix($self->getParamValue('organismAbbrev'), $test);
+  my $tuningTablePrefix = $self->getTuningTablePrefix($test, $self->getParamValue('organismAbbrev'), $gusConfigFile);
 
   my $gffFile = "${copyToDir}/annotated_transcripts.gff";
 
-  my $cmd = "makeGff.pl --extDbRlsId $extDbRlsId --outputFile ${gffFile}.tmp --tuningTablePrefix $tuningTablePrefix";
+  my $cmd = "makeGff.pl --extDbRlsId $extDbRlsId --outputFile ${gffFile}.tmp --tuningTablePrefix $tuningTablePrefix --gusConfigFile $gusConfigFile";
 
   # sort and remove header lines
   my $sortGffCmd = "grep -v '^#' ${gffFile}.tmp | sort -k1,1 -k4,4n > $gffFile ";
@@ -43,7 +43,7 @@ sub run {
           $self->runCmd(0, "echo test > ${gffFile}.gff.gz");
           $self->runCmd(0, "echo test > ${gffFile}.gff.gz.tbi");
       }
-      $self->runCmd($test, "mkdir -p $copyToDir");
+#      $self->runCmd($test, "mkdir -p $copyToDir");
       $self->runCmd($test, $cmd);
       $self->runCmd($test, $sortGffCmd);
       $self->runCmd($test, $bgzipCmd);
