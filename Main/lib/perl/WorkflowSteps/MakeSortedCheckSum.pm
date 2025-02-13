@@ -25,7 +25,7 @@ sub run {
         my $fileName = basename($inputFile);
         my $abbrev = $fileName;
         $abbrev =~ s/\.fasta//g;
-        $self->runCmd(0, "singularity run docker://staphb/seqkit seqkit sort -i $inputFile > $workflowDataDir/$proteomesDir/$abbrev");
+        $self->runCmd(0, "singularity run -B $workflowDataDir docker://staphb/seqkit seqkit sort -i $inputFile > $workflowDataDir/$proteomesDir/$abbrev");
         $self->runCmd(0, "md5sum $workflowDataDir/$proteomesDir/$abbrev >> $workflowDataDir/$proteomesDir/unsortedCheckSum.tsv");
         my $backslashPath = "$workflowDataDir/$proteomesDir/";
 	$backslashPath =~ s/\//\\\//g;
