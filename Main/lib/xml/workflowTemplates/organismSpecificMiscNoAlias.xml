@@ -91,6 +91,30 @@
     </subgraph>
   </datasetTemplate>
 
+  <datasetTemplate class="manualDeliveryToWebService">
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="fileType"/>
+    <prop name="copyOnly"/>
+
+    <subgraph name="${name}" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_${name}_manualDeliveryToWebService_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+
+    <subgraph name="copyManualDeliveryToWebService" xmlFile="copyManualDeliveryToWebService.xml">
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_${name}_manualDeliveryToWebService_RSRC/final</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="fileType">${fileType}</paramValue>
+      <paramValue name="copyOnly">${copyOnly}</paramValue>
+      <depends name="${name}"/>
+    </subgraph>
+  </datasetTemplate>
+
+<!--
    <datasetTemplate class="GFF">
     <prop name="name"/>
     <prop name="organismAbbrev"/>
@@ -101,6 +125,7 @@
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate>
+-->
 
   <datasetTemplate class="pfalLocationsWithSqlLdr">
     <prop name="name"/>
