@@ -11,17 +11,28 @@ sub run {
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $analysisDir = $self->getParamValue("analysisDir");
-  my $peripheralProteomes = join("/", $clusterWorkflowDataDir, $self->getParamValue("peripheralProteomes"));
-  my $coreProteomes = join("/", $clusterWorkflowDataDir, $self->getParamValue("coreProteome"));
-  my $coreGroupsFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("coreGroupsFile"));
-  my $coreGroupSimilarities = join("/", $clusterWorkflowDataDir, $self->getParamValue("coreGroupSimilarities"));
-  my $coreTranslateSequenceFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("coreTranslateSequenceFile"));
+  my $peripheralProteomes = $self->getParamValue("peripheralProteomes");
+  my $coreProteomes = $self->getParamValue("coreProteome");
+  my $coreGroupsFile = $self->getParamValue("coreGroupsFile");
+  my $coreGroupSimilarities = $self->getParamValue("coreGroupSimilarities");
+  my $coreTranslateSequenceFile = $self->getParamValue("coreTranslateSequenceFile");
   my $buildVersion = $self->getSharedConfig("buildVersion");
-  my $peripheralCacheDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("peripheralCacheDir"));
-  my $outdatedOrganisms = join("/", $clusterWorkflowDataDir, $self->getParamValue("outdated"));
+  my $peripheralCacheDir = $self->getParamValue("peripheralCacheDir");
+  my $outdatedOrganisms = $self->getParamValue("outdated");
 
-  my $clusterResultDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("clusterResultDir"));
+  my $resultsDirectory = $self->getParamValue("clusterResultDir");
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
+
+  my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
+
+  my $peripheralProteomesInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $peripheralProteomes);
+  my $coreProteomesInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreProteomes);
+  my $coreGroupsFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreGroupsFile);
+  my $coreGroupSimilaritiesInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreGroupSimilarities);
+  my $coreTranslateSequenceFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreTranslateSequenceFile);
+  my $peripheralCacheDirInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $peripheralCacheDir);
+  my $outdatedFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $outdatedOrganisms);
+  my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
   my $executor = $self->getClusterExecutor();
   my $queue = $self->getClusterQueue();
@@ -35,13 +46,13 @@ sub run {
 "
 params {
     outputDir = \"$clusterResultDir\"
-    coreProteomes = \"$coreProteomes\"
-    peripheralProteomes = \"$peripheralProteomes\"
-    coreGroupsFile = \"$coreGroupsFile\"
-    coreGroupSimilarities = \"$coreGroupSimilarities\"
-    coreTranslateSequenceFile = \"$coreTranslateSequenceFile\"
-    outdatedOrganisms = \"$outdatedOrganisms\"
-    peripheralDiamondCache = \"$peripheralCacheDir\"
+    coreProteomes = \"$coreProteomesInNextflowWorkingDirOnCluster\"
+    peripheralProteomes = \"$peripheralProteomesInNextflowWorkingDirOnCluster\"
+    coreGroupsFile = \"$coreGroupsFileInNextflowWorkingDirOnCluster\"
+    coreGroupSimilarities = \"$coreGroupSimilaritiesInNextflowWorkingDirOnCluster\"
+    coreTranslateSequenceFile = \"$coreTranslateSequenceFileInNextflowWorkingDirOnCluster\"
+    outdatedOrganisms = \"$outdatedFileInNextflowWorkingDirOnCluster\"
+    peripheralDiamondCache = \"$peripheralCacheDirInNextflowWorkingDirOnCluster\"
     blastArgs = \"\"
     buildVersion = $buildVersion
     bestRepDiamondOutputFields = \"qseqid sseqid evalue\"

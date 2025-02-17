@@ -10,16 +10,23 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
-  my $proteomes = join("/", $clusterWorkflowDataDir, $self->getParamValue("proteomes"));
+  my $proteomes = $self->getParamValue("proteomes");
   my $analysisDir = $self->getParamValue("analysisDir");
   my $blastArgs  = $self->getParamValue("blastArgs");
   my $buildVersion = $self->getSharedConfig("buildVersion");
   my $orthoFinderDiamondOutput  = $self->getParamValue("orthoFinderDiamondOutput");
   my $bestRepDiamondOutput  = $self->getParamValue("bestRepDiamondOutput");
-  my $coreCacheDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("coreCacheDir"));
-  my $outdated = join("/", $clusterWorkflowDataDir, $self->getParamValue("outdated"));
+  my $coreCacheDir = $self->getParamValue("coreCacheDir");
+  my $outdated = $self->getParamValue("outdated");
+  my $resultsDirectory = $self->getParamValue("clusterResultDir");
 
-  my $clusterResultDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("clusterResultDir"));
+  my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
+
+  my $proteomesInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $proteomes);
+  my $coreCacheDirInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreCacheDir);
+  my $outdatedFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $outdated);
+  my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
+
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
 
   my $executor = $self->getClusterExecutor();
@@ -33,10 +40,10 @@ sub run {
     print F
 "
 params {
-  proteomes = \"$proteomes\"
-  outputDir = \"$clusterResultDir\"
-  outdatedOrganisms = \"$outdated\"
-  diamondSimilarityCache  = \"$coreCacheDir\"
+  proteomes = \"$proteomesInNextflowWorkingDirOnCluster\"
+  outputDir = \"$resultsDirectoryInNextflowWorkingDirOnCluster\"
+  outdatedOrganisms = \"$outdatedFileInNextflowWorkingDirOnCluster\"
+  diamondSimilarityCache  = \"$coreCacheDirInNextflowWorkingDirOnCluster\"
   blastArgs  = \"$blastArgs\"
   buildVersion  = $buildVersion
   orthoFinderDiamondOutputFields  = \"$orthoFinderDiamondOutput\"
