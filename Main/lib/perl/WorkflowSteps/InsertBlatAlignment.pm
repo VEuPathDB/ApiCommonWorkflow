@@ -31,7 +31,7 @@ sub run {
   my $targetTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
   #my $queryTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesTaxonId();
   my $speciesNcbiTaxonId = $self->getParamValue('speciesNcbiTaxonId'); 
-  my $speciesTaxonId = $self->getTaxonIdFromNcbiTaxId($test, speciesNcbiTaxonId);
+  my $speciesTaxonId = $self->getTaxonIdFromNcbiTaxId($test, $speciesNcbiTaxonId);
 
   my $targetTableId = $self->getTableId($test, $targetTable);
   my $targetExtDbRlsId = $self->getExtDbRlsId($test, $targetExtDbRlsSpec);
