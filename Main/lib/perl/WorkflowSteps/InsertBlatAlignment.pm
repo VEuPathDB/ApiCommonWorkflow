@@ -31,6 +31,7 @@ sub run {
   my $targetTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
   #my $queryTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesTaxonId();
   my $speciesNcbiTaxonId = $self->getParamValue('speciesNcbiTaxonId'); 
+  my $speciesTaxonId = $self->getTaxonIdFromNcbiTaxId($test, speciesNcbiTaxonId);
 
   my $targetTableId = $self->getTableId($test, $targetTable);
   my $targetExtDbRlsId = $self->getExtDbRlsId($test, $targetExtDbRlsSpec);
@@ -84,7 +85,7 @@ sub run {
       $queryRegex = $self->getParamValue('queryIdRegex');
   }
       
-  my $args = "--blat_files $workflowDataDir/$blatFile --query_file $workflowDataDir/$queryFile --action '$action' --queryRegex '$queryRegex' --query_table_id $queryTableId --query_taxon_id $speciesNcbiTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId $dnaArgs";
+  my $args = "--blat_files $workflowDataDir/$blatFile --query_file $workflowDataDir/$queryFile --action '$action' --queryRegex '$queryRegex' --query_table_id $queryTableId --query_taxon_id $speciesTaxonId --target_table_id  $targetTableId --target_db_rel_id $targetExtDbRlsId --target_taxon_id $targetTaxonId $dnaArgs";
 
   $args .= " --query_db_rel_id $queryExtDbRlsId" if $queryExtDbRlsId;
 
