@@ -7,8 +7,8 @@
   <constant name="oldReleasesGroupFilesDir">oldReleasesGroupFiles</constant>
   <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
   <constant name="globalDataDir">global</constant>
-  <constant name="coreProteinsDir">coreProteins</constant>
-  <constant name="coreGroupsDir">coreGroups</constant>
+  <constant name="coreProteinsDir">$$dataDir$$/coreProteins</constant>
+  <constant name="coreGroupsDir">$$dataDir$$/coreGroups</constant>
 
   <constant name="dataDir">$$projectName$$</constant>
   <constant name="projectGusConfigBasename">$$projectName$$_gus.config</constant>
@@ -89,21 +89,21 @@
     <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
     <paramValue name="datasetName">orthomclClades_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <!--<depends name="taxonomy"/>-->
     <!-- <depends name="initClusterHomeDir"/>-->
     <depends name="initUserGroupProject"/>
   </subgraph>
 
   <step name="makeCoreInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">coreInterpro</paramValue>
+    <paramValue name="dataDir">$$dataDir$$/coreInterpro</paramValue>
     <!--<depends name="makeGlobalDataDir"/>-->
 <!--    <depends name="enzymeDB"/> -->
     <depends name="orthomclClades"/>
   </step>
 
   <step name="mirrorCoreInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">coreInterpro</paramValue>
+    <paramValue name="fileOrDirToMirror">$$dataDir$$/coreInterpro</paramValue>
     <depends name="makeCoreInterproDir"/>
   </step>
 
