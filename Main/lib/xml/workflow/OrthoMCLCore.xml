@@ -2,6 +2,8 @@
   <param name="projectName"/>
   <param name="projectVersionForWebsiteFiles"/>
 
+  <constant name="dataDir">$$projectName$$</constant>
+
   <constant name="relativeWebServicesDir">webServices/$$projectName$$/build-$$projectVersionForWebsiteFiles$$</constant>
   <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
   <constant name="oldReleasesGroupFilesDir">oldReleasesGroupFiles</constant>
@@ -10,7 +12,6 @@
   <constant name="coreProteinsDir">$$dataDir$$/coreProteins</constant>
   <constant name="coreGroupsDir">$$dataDir$$/coreGroups</constant>
 
-  <constant name="dataDir">$$projectName$$</constant>
   <constant name="projectGusConfigBasename">$$projectName$$_gus.config</constant>
   <constant name="projectGusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</constant>
 
@@ -102,18 +103,13 @@
     <depends name="orthomclClades"/>
   </step>
 
-  <step name="mirrorCoreInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$/coreInterpro</paramValue>
-    <depends name="makeCoreInterproDir"/>
-  </step>
-
   <subgraph name="getCoreProteomes" xmlFile="generated/OrthoMCL/orthomclGetCoreProteins.xml">
-    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="coreProteinsDir">$$coreProteinsDir$$</paramValue>
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <paramValue name="projectName">OrthoMCL</paramValue>
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>    
-    <depends name="mirrorCoreInterproDirToCluster"/>
+    <depends name="makeCoreInterproDir"/>
   </subgraph>
 
   <step name="checkBuildVersion" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthomclBuildVersion">
