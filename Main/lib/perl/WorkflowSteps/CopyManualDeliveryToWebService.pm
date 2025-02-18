@@ -1,43 +1,41 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::DirectlyCopyBigWigToWebServices;
+ package ApiCommonWorkflow::Main::WorkflowSteps::CopyManualDeliveryToWebService;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
+use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 use ApiCommonWorkflow::Main::Util::OrganismInfo;
 
 sub run {
-  my ($self, $test, $undo) = @_;
+    my ($self, $test, $undo) = @_;
 
-  # get parameters
-  my $inputsDir = $self->getParamValue('inputsDir');
-  my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $relativeDir = $self->getParamValue('relativeDir');
-  my $experimentDatasetName = $self->getParamValue('experimentDatasetName');
+    #get parameters
+    my $copyFromDir = $self->getParamValue('inputsDir');
+    my $organismAbbrev = $self->getParamValue('organismAbbrev');
+    my $relativeDir = $self->getParamValue('relativeDir');
+    my $experimentResourceName = $self->getParamValue('experimentDatasetName');
+    my $fileType = $self->getParamValue('fileType');
+    my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+    my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
+    my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $organismNameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
 
-  my $outputsDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/bigwig/$experimentDatasetName";
+    my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/$fileType/$experimentResourceName";
+    my $cmd_mkdir = "mkdir -p $copyToDir";
 
-  my $workflowDataDir = $self->getWorkflowDataDir();
+    my $cmd_copy = "cp $workflowDataDir/$copyFromDir/* $copyToDir";
+    
+    $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");
 
-  my $cmd_mkdir = "mkdir -p $outputsDir";
-
-  my $cmd_cp = "cp $workflowDataDir/$inputsDir/*  $outputsDir/";
-
-  $self->testInputFile('copyFromDir', "$workflowDataDir/$inputsDir");
-
-  if ($undo) {
-    $self->runCmd(0, "rm -fr $outputsDir");
-  } else {
-    $self->runCmd($test, $cmd_mkdir);
-    $self->runCmd($test, $cmd_cp);
-  }
-
+    if ($undo) {
+        $self->runCmd(0,"rm -rf $copyToDir");
+    }else{
+        $self->runCmd($test, $cmd_mkdir);
+        $self->runCmd($test, $cmd_copy);
+    }
 }
 
 1;
-
-
