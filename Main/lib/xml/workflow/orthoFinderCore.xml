@@ -8,19 +8,19 @@
       <paramValue name="dataDir">$$coreGroupsDir$$</paramValue>
     </step>
 
-    <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$coreGroupsDir$$/results/</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-
     <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
      <paramValue name="dataDir">$$coreGroupsDir$$/analysisDir</paramValue>
-     <depends name="makeResultDir"/>
+     <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$coreGroupsDir$$/analysisDir/results/</paramValue>
+      <depends name="makeAnalysisDir"/>
     </step>
 
     <step name="CopyAndUncompressCoreCacheDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndUncompressCoreCacheDir">
       <paramValue name="outputDir">$$coreGroupsDir$$</paramValue>
-      <depends name="makeAnalysisDir"/>
+      <depends name="makeResultsDir"/>
     </step>
 
     <step name="copyOutdatedFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOutdatedFile">
