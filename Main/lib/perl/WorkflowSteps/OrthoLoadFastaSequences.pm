@@ -20,8 +20,10 @@ sub run {
   my $isCore = $self->getParamValue('isCore');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $workflowDataDir . "/" . $gusConfigFile;
 
-  my $args = "--externalDatabaseName $edn --externalDatabaseVersion $edv --sequenceFile $workflowDataDir/$file --regexSourceId '$source' --regexSecondaryId '$second' --regexName '$name' --isCore $isCore --regexDesc '$desc' --tableName \"$table\" --ncbiTaxId $ncbi ";
+  my $args = "--externalDatabaseName $edn --externalDatabaseVersion $edv --sequenceFile $workflowDataDir/$file --regexSourceId '$source' --regexSecondaryId '$second' --regexName '$name' --isCore $isCore --regexDesc '$desc' --tableName \"$table\" --ncbiTaxId $ncbi --gusConfigFile $gusConfigFile ";
 
   $args .= "--ncbiTaxId $ncbi " if ($ncbi);
 
