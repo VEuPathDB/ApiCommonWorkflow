@@ -5,7 +5,7 @@
   <param name="projectName"/>
   <param name="relativeWebServicesDir"/>
 
-  <constant name="dataDir">$$parentDataDir$$/$$coreProteinsDir$$</constant>
+  <constant name="dataDir">$$coreProteinsDir$$</constant>
   <constant name="proteomesDir">$$dataDir$$/coreProteomes</constant>
   <constant name="proteomeDatasetsDir">$$dataDir$$/proteomeDatasets</constant>
   <constant name="ecMappingsDir">$$dataDir$$/ecMappings</constant>
@@ -15,34 +15,19 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <step name="mirrorDataDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeCoreProteinsDir"/>
-  </step>
-
   <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$proteomesDir$$</paramValue>
-    <depends name="mirrorDataDirToCluster"/>
-  </step>
-
-  <step name="mirrorProteomesDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$proteomesDir$$</paramValue>
-    <depends name="makeProteomesDir"/>
+    <depends name="makeCoreProteinsDir"/>
   </step>
 
   <step name="makeProteomeDatasetsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$proteomeDatasetsDir$$</paramValue>
-    <depends name="mirrorProteomesDirToCluster"/>
-  </step>
-
-  <step name="mirrorProteomeDatasetsDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$</paramValue>
-    <depends name="makeProteomeDatasetsDir"/>
+    <depends name="makeProteomesDir"/>
   </step>
 
   <step name="makeEcMappingsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$ecMappingsDir$$</paramValue>
-    <depends name="mirrorProteomeDatasetsDirToCluster"/>
+    <depends name="makeProteomeDatasetsDir"/>
   </step>
 
   <datasetTemplate class="orthomclCoreFromUniprot">
@@ -141,18 +126,14 @@
       <depends name="${abbrev}_makeGoodProteinsFile"/>
     </step>
 
-    <step name="${abbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$coreInterproDir$$/${abbrev}_orthomclProteome_RSRC</paramValue>
-        <depends name="${abbrev}_insertCoreSequences"/>
-    </step>
-
-    <step name="${abbrev}_mirrorProteomeDatasetToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC</paramValue>
-        <depends name="${abbrev}_mirrorToCluster"/>
+    <step name="${abbrev}_copyProteinsFileForInterpro" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
+      <paramValue name="toFile">$$coreInterproDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
+      <depends name="${abbrev}_insertCoreSequences"/>
     </step>
 
     <subgraph name="${abbrev}_InterproScan" xmlFile="interpro.xml">
-        <paramValue name="proteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
+        <paramValue name="proteinsFile">$$coreInterproDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
         <paramValue name="parentDataDir">$$coreInterproDir$$/${abbrev}_orthomclProteome_RSRC</paramValue>
         <paramValue name="insertVersion">2</paramValue>
         <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
@@ -163,8 +144,7 @@
         <paramValue name="organismAbbrev">${abbrev}</paramValue>
         <paramValue name="genomeExtDbRlsSpec">${abbrev}_orthomclProteome_RSRC|${version}</paramValue>
         <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-        <depends name="${abbrev}_mirrorProteomeDatasetToCluster"/>
-        <depends name="${abbrev}_insertOrganism"/>
+        <depends name="${abbrev}_copyProteinsFileForInterpro"/>
     </subgraph>
 
     <step name="${abbrev}_insertAliases" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAliases">
@@ -201,11 +181,6 @@
   <step name="MakeSortedCheckSum" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSortedCheckSum">                    
     <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
     <depends name="MakeOrthofinderCoreInputDir"/>
-  </step>
-
-  <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$/fastas.tar.gz</paramValue>
-    <depends name="MakeSortedCheckSum"/>
   </step>
 
 </workflowGraph>

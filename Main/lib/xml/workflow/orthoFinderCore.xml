@@ -28,18 +28,24 @@
       <depends name="CopyAndUncompressCoreCacheDir"/>
     </step>
 
+    <step name="copyProteomeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$inputProteinFile$$</paramValue>
+      <paramValue name="toFile">$$coreGroupsDir$$/fastas.tar.gz</paramValue>
+      <depends name="copyOutdatedFile"/>
+    </step>
+
     <step name="makeOrthoFinderCoreNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderCoreNextflowConfig">
       <paramValue name="workingDirRelativePath">$$coreGroupsDir$$</paramValue>
       <paramValue name="clusterResultDir">$$coreGroupsDir$$/analysisDir/results/</paramValue>
       <paramValue name="configFileName">nextflow.config</paramValue>
       <paramValue name="analysisDir">$$coreGroupsDir$$/analysisDir</paramValue>
-      <paramValue name="proteomes">$$inputProteinFile$$</paramValue>
+      <paramValue name="proteomes">$$coreGroupsDir$$/fastas.tar.gz</paramValue>
       <paramValue name="blastArgs"></paramValue>
       <paramValue name="orthoFinderDiamondOutput">qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore</paramValue>
       <paramValue name="bestRepDiamondOutput">qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore</paramValue>
       <paramValue name="coreCacheDir">$$coreGroupsDir$$/CoreCacheDir</paramValue>
       <paramValue name="outdated">$$coreGroupsDir$$/outdated.txt</paramValue>
-      <depends name="copyOutdatedFile"/>
+      <depends name="copyProteomeFile"/>
     </step>
 
     <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">

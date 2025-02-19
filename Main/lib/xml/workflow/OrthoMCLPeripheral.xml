@@ -20,11 +20,6 @@
     <paramValue name="dataDir">$$dataDir$$/peripheralInterpro</paramValue>
   </step>
 
-  <step name="mirrorPeripheralInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$/peripheralInterpro</paramValue>
-    <depends name="makePeripheralInterproDir"/>
-  </step>
-
   <subgraph name="peripheralWorkflow" xmlFile="orthomclPeripheralWorkflow.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="residualGroupIdPrefix">$$residualGroupIdPrefix$$</paramValue>
@@ -34,7 +29,7 @@
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="coreProteome">$$coreProteinsDir$$/fastas.tar.gz</paramValue>
     <paramValue name="coreResultsDir">$$coreGroupsDir$$/analysisDir/results</paramValue>
-    <depends name="mirrorPeripheralInterproDirToCluster"/>
+    <depends name="makePeripheralInterproDir"/>
   </subgraph>
 
   <step name="addNumMembersToGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddNumberMembers">

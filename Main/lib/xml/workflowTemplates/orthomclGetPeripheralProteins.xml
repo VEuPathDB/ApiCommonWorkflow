@@ -15,44 +15,24 @@
     <paramValue name="dataDir">$$getPeripheralProteinsDir$$</paramValue>
   </step>
 
-  <step name="mirrorGetPeripheralProteinsDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$getPeripheralProteinsDir$$</paramValue>
-    <depends name="makeGetPeripheralProteinsDir"/>
-  </step>
-
   <step name="makeProteomeDatasetsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$proteomeDatasetsDir$$</paramValue>
-    <depends name="mirrorGetPeripheralProteinsDirToCluster"/>
-  </step>
-
-  <step name="mirrorProteomeDatasetsDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$</paramValue>
-    <depends name="makeProteomeDatasetsDir"/>
+    <depends name="makeGetPeripheralProteinsDir"/>
   </step>
 
   <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$proteomesDir$$</paramValue>
-    <depends name="mirrorProteomeDatasetsDirToCluster"/>
-  </step>
-
-  <step name="mirrorProteomesDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$proteomesDir$$</paramValue>
-    <depends name="makeProteomesDir"/>
+    <depends name="makeProteomeDatasetsDir"/>
   </step>
 
   <step name="makeResidualFastaFilesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$residualFastaFilesDir$$</paramValue>
-    <depends name="mirrorProteomesDirToCluster"/>
-  </step>
-
-  <step name="mirrorResidualFastaFilesDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$residualFastaFilesDir$$</paramValue>
-    <depends name="makeResidualFastaFilesDir"/>
+    <depends name="makeProteomesDir"/>
   </step>
 
   <step name="makeEcMappingsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$ecMappingsDir$$</paramValue>
-    <depends name="mirrorResidualFastaFilesDirToCluster"/>
+    <depends name="makeResidualFastaFilesDir"/>
   </step>
 
   <datasetTemplate class="orthomclPeripheralFromVEuPathEBI">
@@ -263,14 +243,10 @@
       <depends name="${abbrev}_makeGoodProteinsFile"/>
     </step>
 
-    <step name="${abbrev}_mirrorInterproDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$peripheralInterproDir$$/${abbrev}_orthomclPeripheralProteome_RSRC</paramValue>
-      <depends name="${abbrev}_insertPeripheralSequences"/>
-    </step>
-
-    <step name="${abbrev}_mirrorProteomeDatasetToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$proteomeDatasetsDir$$/${abbrev}_orthomclPeripheralProteome_RSRC</paramValue>
-      <depends name="${abbrev}_mirrorInterproDirToCluster"/>
+    <step name="${abbrev}_copyProteinsFileForInterpro" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclPeripheralProteome_RSRC/${abbrev}.fasta</paramValue>
+      <paramValue name="toFile">$$peripheralInterproDir$$/${abbrev}_orthomclPeripheralProteome_RSRC/${abbrev}.fasta</paramValue>
+      <depends name="${abbrev}_makeGoodProteinsFile"/>
     </step>
 
     <subgraph name="${abbrev}_InterproScan" xmlFile="interpro.xml">
@@ -285,7 +261,7 @@
         <paramValue name="genomeExtDbRlsSpec">${abbrev}_orthomclPeripheralProteome_RSRC|${version}</paramValue>
         <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
         <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-        <depends name="${abbrev}_mirrorProteomeDatasetToCluster"/>
+        <depends name="${abbrev}_copyProteinsFileForInterpro"/>
         <depends name="${abbrev}_insertOrganism"/>
    </subgraph>
 
@@ -487,11 +463,6 @@
     <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
     <paramValue name="outputDir">$$getPeripheralProteinsDir$$</paramValue>
     <depends name="makeProteomeFastasDir"/>
-  </step>
-
-  <step name="mirrorProteinsToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster">
-    <paramValue name="fileOrDirToMirror">$$getPeripheralProteinsDir$$/fastas.tar.gz</paramValue>
-    <depends name="MakeOrthofinderPeripheralInputDir"/>
   </step>
 
 </workflowGraph>
