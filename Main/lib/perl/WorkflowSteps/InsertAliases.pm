@@ -15,7 +15,9 @@ sub run {
     my $aliasesFile = $self->getParamValue('inputMappingFile');
     my $fileFullPath = "$workflowDataDir/$aliasesFile";
 
-    my $args = "--DbRefMappingFile $fileFullPath --extDbName $externalDatabase --extDbReleaseNumber $extDbVer --viewName 'ExternalAASequence' --columnSpec 'primary_identifier,remark' --tableName AASequenceDbRef";
+    my $gusConfigFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue('gusConfigFile');
+
+    my $args = "--DbRefMappingFile $fileFullPath --extDbName $externalDatabase --extDbReleaseNumber $extDbVer --viewName 'ExternalAASequence' --columnSpec 'primary_identifier,remark' --tableName AASequenceDbRef --gusConfigFile $gusConfigFile";
 
     $self->testInputFile('aliasesFile', "$fileFullPath");
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertDBxRefs", $args);
