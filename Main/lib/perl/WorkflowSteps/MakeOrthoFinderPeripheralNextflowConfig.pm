@@ -45,7 +45,7 @@ sub run {
     print F
 "
 params {
-    outputDir = \"$clusterResultDir\"
+    outputDir = \"$resultsDirectoryInNextflowWorkingDirOnCluster\"
     coreProteomes = \"$coreProteomesInNextflowWorkingDirOnCluster\"
     peripheralProteomes = \"$peripheralProteomesInNextflowWorkingDirOnCluster\"
     coreGroupsFile = \"$coreGroupsFileInNextflowWorkingDirOnCluster\"
