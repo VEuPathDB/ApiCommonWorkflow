@@ -13,7 +13,7 @@ sub run {
     my $copyFromDir = $self->getParamValue('inputsDir');
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $relativeDir = $self->getParamValue('relativeDir');
-    my $experimentResourceName = $self->getParamValue('experimentDatasetName');
+    my $experimentName = $self->getParamValue('experimentName');
     my $fileType = $self->getParamValue('fileType');
     my $websiteFilesDir = $self->getWebsiteFilesDir($test);
     my $gusConfigFile = $self->getParamValue('gusConfigFile');
@@ -23,17 +23,15 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
 
 
-    my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/$fileType/$experimentResourceName";
+    my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/$fileType";
     my $cmd_mkdir = "mkdir -p $copyToDir";
-
     my $cmd_copy = "cp $workflowDataDir/$copyFromDir/* $copyToDir";
-    
-    $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");
 
     if ($undo) {
         $self->runCmd(0,"rm -rf $copyToDir");
     }else{
         $self->runCmd($test, $cmd_mkdir);
+        $self->runCmd($test, "indexGFF.pl --gff $workflowDataDir/$copyFromDir/${experimentName}.gff") if ($fileType eq 'gff');
         $self->runCmd($test, $cmd_copy);
     }
 }
