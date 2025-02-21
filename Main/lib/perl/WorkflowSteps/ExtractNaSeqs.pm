@@ -17,6 +17,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = "$workflowDataDir/$gusConfigFile";  
   my @extDbNameList = split(/,/, $extDbName);
 
   my $dbRlsIds;
