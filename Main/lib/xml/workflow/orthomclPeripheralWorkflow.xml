@@ -68,19 +68,31 @@
      <depends name="copyCoreDiamondResults"/>
   </step>
 
+  <step name="copyCoreProteomes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+     <paramValue name="fromFile">$$coreProteome$$</paramValue>
+     <paramValue name="toFile">$$peripheralDir$$/coreFastas.tar.gz</paramValue>
+     <depends name="copyCoreSequenceIds"/>
+  </step>
+
+  <step name="copyPeripheralProteomes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+     <paramValue name="fromFile">$$getPeripheralProteinsDir$$/fastas.tar.gz</paramValue>
+     <paramValue name="toFile">$$peripheralDir$$/fastas.tar.gz</paramValue>
+     <depends name="copyCoreProteomes"/>
+  </step>
+
   <step name="makeOrthoFinderPeripheralNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPeripheralNextflowConfig">
     <paramValue name="workingDirRelativePath">$$peripheralDir$$</paramValue>
     <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/results/</paramValue>
     <paramValue name="configFileName">nextflow.config</paramValue>
     <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
-    <paramValue name="peripheralProteomes">$$getPeripheralProteinsDir$$/fastas.tar.gz</paramValue>
-    <paramValue name="coreProteome">$$coreProteome$$</paramValue>
+    <paramValue name="peripheralProteomes">$$peripheralDir$$/fastas.tar.gz</paramValue>
+    <paramValue name="coreProteome">$$peripheralDir$$/coreFastas.tar.gz</paramValue>
     <paramValue name="coreGroupsFile">$$peripheralDir$$/reformattedGroups.txt</paramValue>
     <paramValue name="coreGroupSimilarities">$$peripheralDir$$/groupDiamondResults</paramValue>
     <paramValue name="coreTranslateSequenceFile">$$peripheralDir$$/SequenceIDs.txt</paramValue>
     <paramValue name="peripheralCacheDir">$$peripheralDir$$/peripheralCacheDir</paramValue>
     <paramValue name="outdated">$$peripheralDir$$/outdated.txt</paramValue>
-    <depends name="copyCoreSequenceIds"/>
+    <depends name="copyPeripheralProteomes"/>
   </step>
 
    <subgraph name="runPeripheralNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
