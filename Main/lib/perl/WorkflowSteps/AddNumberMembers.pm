@@ -8,7 +8,10 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $args;
+  my $workflowDataDir = $self->getWorkflowDataDir();
+  my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
+
+  my $args = " --gusConfigFile $gusConfigFile";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::AddNumberOfMembers", $args);
 
