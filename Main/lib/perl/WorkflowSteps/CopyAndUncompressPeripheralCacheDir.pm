@@ -8,7 +8,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $peripheralCacheDir = join("/",$self->getSharedConfig('preprocessedDataCache'),"OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/VEuPathDB_orthofinder-nextflow_main/edf10030cc3d4c02164464ce41675f3b/newPeripheralDiamondCache");
+  my $peripheralCacheDir = join("/",$self->getSharedConfig('preprocessedDataCache'),"OrthoMCL_peripheralGroups/officialDiamondCache/peripheralCacheDir.tar.gz");
   my $outputDir = join("/", $workflowDataDir, $self->getParamValue("outputDir"));
 
   if ($undo) {
@@ -18,8 +18,10 @@ sub run {
       $self->runCmd(0, "mkdir $outputDir/peripheralCacheDir");
   }
   else {
-      $self->runCmd(0, "cp -r ${peripheralCacheDir} $outputDir/peripheralCacheDir");
-      die "$outputDir/peripheralCacheDir.tar.gz does not exist" unless(-e "$outputDir/peripheralCacheDir.tar.gz");
+      $self->runCmd(0, "cp ${peripheralCacheDir} $outputDir/peripheralCacheDir.tar.gz");
+      $self->runCmd(0, "tar -xzf $outputDir/peripheralCacheDir.tar.gz");
+      $self->runCmd(0, "rm $outputDir/peripheralCacheDir.tar.gz");
+      die "$outputDir/peripheralCacheDir does not exist" unless(-e "$outputDir/peripheralCacheDir");
   }
 }
 

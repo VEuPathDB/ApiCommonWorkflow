@@ -112,8 +112,9 @@
     <depends name="makeCoreInterproDir"/>
   </subgraph>
 
-  <step name="checkBuildVersion" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthomclBuildVersion">
+  <step name="checkBuildVersionCreateOutdatedClearPeripheral" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthomclBuildVersion">
     <paramValue name="checkSum">$$coreProteinsDir$$/coreProteomes/checkSum.tsv</paramValue>
+    <paramValue name="outdatedOrganisms">$$coreProteinsDir$$/outdated.txt</paramValue>
     <depends name="getCoreProteomes"/>
   </step>
 
@@ -122,7 +123,8 @@
     <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
     <paramValue name="coreGroupsDir">$$coreGroupsDir$$</paramValue>
     <paramValue name="inputProteinFile">$$coreProteinsDir$$/fastas.tar.gz</paramValue>
-    <depends name="checkBuildVersion"/>
+    <paramValue name="outdatedOrganisms">$$coreProteinsDir$$/outdatedOrganisms.txt</paramValue>
+    <depends name="checkBuildVersionCreateOutdatedClearPeripheral"/>
   </subgraph>
 
 </workflowGraph>

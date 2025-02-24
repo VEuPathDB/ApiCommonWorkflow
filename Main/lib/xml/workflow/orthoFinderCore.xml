@@ -3,6 +3,7 @@
     <param name="gusConfigFile"/>
     <param name="coreGroupsDir"/>
     <param name="inputProteinFile"/>
+    <param name="outdatedOrganisms"/>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$coreGroupsDir$$</paramValue>
@@ -23,8 +24,9 @@
       <depends name="makeResultsDir"/>
     </step>
 
-    <step name="copyOutdatedFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOutdatedFile">
-      <paramValue name="outputDir">$$coreGroupsDir$$/</paramValue>
+    <step name="copyOutdatedFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$outdatedOrganisms$$</paramValue>
+      <paramValue name="toFile">$$coreGroupsDir$$/outdated.txt</paramValue>
       <depends name="CopyAndUncompressCoreCacheDir"/>
     </step>
 
