@@ -271,6 +271,7 @@
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
 
     <step name="${abbrev}_insertAliases" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAliases">
+      <paramValue name="gusConfigFile">$$proteomeDatasetsDir$$/${abbrev}/${abbrev}_gus.config</paramValue>
       <paramValue name="externalDatabase">${abbrev}_orthomclPeripheralProteome_RSRC</paramValue>
       <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclPeripheralProteome_RSRC/aliases.tab</paramValue>
       <depends name="${abbrev}_proteome"/>
@@ -357,6 +358,7 @@
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
 
     <step name="${abbrev}_insertAliases" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAliases">
+      <paramValue name="gusConfigFile">$$proteomeDatasetsDir$$/${abbrev}/${abbrev}_gus.config</paramValue>
       <paramValue name="externalDatabase">${abbrev}_orthomclPeripheralProteome_RSRC</paramValue>
       <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclPeripheralProteome_RSRC/aliases.tab</paramValue>
       <depends name="${abbrev}_proteome"/>
@@ -441,6 +443,7 @@
     <!-- a bit of a hack.  reach into the proteome dataset's dir to find the aliases file provided by the Eupath proteome dataset class -->
 
     <step name="${abbrev}_insertAliases" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::InsertAliases">
+      <paramValue name="gusConfigFile">$$proteomeDatasetsDir$$/${abbrev}/${abbrev}_gus.config</paramValue>
       <paramValue name="externalDatabase">${abbrev}_orthomclManualDeliveryPeripheralProteome_RSRC</paramValue>
       <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclManualDeliveryPeripheralProteome_RSRC/aliases.tab</paramValue>
       <depends name="${abbrev}_proteome"/>
@@ -461,6 +464,7 @@
 
   <step name="makeProteomeFastasDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$getPeripheralProteinsDir$$/fastas</paramValue>
+    <depends name="makeGetPeripheralProteinsDir"/>
     <dependsPattern name="*_mirrorProteomeDatasetToCluster"/>
   </step>
 
@@ -468,6 +472,7 @@
     <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
     <paramValue name="outputDir">$$getPeripheralProteinsDir$$</paramValue>
     <depends name="makeProteomeFastasDir"/>
+    <dependsPattern name="*_makeGoodProteinsFile"/>
   </step>
 
 </workflowGraph>
