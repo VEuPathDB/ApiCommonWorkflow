@@ -46,14 +46,16 @@
   <datasetTemplate class="microarrayPlatform">
     <prop name="organismAbbrev"/>
     <prop name="name"/>
-    <prop name="version"/>
-    <prop name="limitNU"/>
-    <prop name="variableLengthReads"/>
     <prop name="isAffymetrixGeneArray"/>
     <prop name="isNimbleGenGeneArray"/>
     <prop name="vendorMappingFileName"/>
     <prop name="probeRows"/>
     <prop name="probeCols"/>
+    <prop name="version"/>
+    <prop name="limitNU"/>
+    <prop name="variableLengthReads"/>
+    <prop name="numInsertions"/>
+
 
     <subgraph name="${name}_probe_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${organismAbbrev}_microarrayPlatform_${name}_RSRC</paramValue>
@@ -64,6 +66,7 @@
     </subgraph>
 
     <subgraph name="${name}_arrayProbeMapping" xmlFile="arrayProbeMapping.xml">
+      <paramValue name="project">$$projectName$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="probeSetName">${name}</paramValue>
@@ -74,10 +77,14 @@
       <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
       <paramValue name="makeCdfFile">${isAffymetrixGeneArray}</paramValue>
       <paramValue name="makeNdfFile">${isNimbleGenGeneArray}</paramValue>
+      <paramValue name="geneProbeMappingFileName">geneProbeMapping.tab</paramValue>
       <paramValue name="vendorMappingFileName">${vendorMappingFileName}</paramValue>
-      <paramValue name="outputGeneProbeMappingTabFile">$$arrayStudiesDir$$/${name}/geneProbeMapping.tab</paramValue>
       <paramValue name="probeRows">${probeRows}</paramValue>
       <paramValue name="probeCols">${probeCols}</paramValue>
+      <paramValue name="limitNU">${limitNU}</paramValue>
+      <paramValue name="variableLengthReads">${variableLengthReads}</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="numInsertions">${numInsertions}</paramValue>
     </subgraph>
   </datasetTemplate>
 
