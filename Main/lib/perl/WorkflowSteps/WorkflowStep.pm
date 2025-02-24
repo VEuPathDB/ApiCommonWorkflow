@@ -39,7 +39,7 @@ sub getExtDbRlsId {
 }
 
 sub getExtDbVersion {
-  my ($self, $test, $extDbName) = @_;
+  my ($self, $test, $extDbName, $gusConfigFile) = @_;
 
   die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '1' || $test eq '1');
 
@@ -47,7 +47,8 @@ sub getExtDbVersion {
              where ed.name = '$extDbName'
              and edr.external_database_id = ed.external_database_id";
 
-  my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
+  $gusConfigFile = $self->getGusConfigFile() if (!$gusConfigFile);
+  $gusConfigFile = "--gusConfigFile \"" . $gusConfigFile . "\"";
 
   my $cmd = "getValueFromTable --idSQL \"$sql\" $gusConfigFile";
   my $extDbVer = $self->runCmd($test, $cmd);

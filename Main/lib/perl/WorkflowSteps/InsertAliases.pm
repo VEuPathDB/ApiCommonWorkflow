@@ -10,12 +10,13 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
+    my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
+
     my $externalDatabase = $self->getParamValue('externalDatabase');
-    my $extDbVer = $self->getExtDbVersion($test, $externalDatabase);
+    my $extDbVer = $self->getExtDbVersion($test, $externalDatabase, $gusConfigFile);
     my $aliasesFile = $self->getParamValue('inputMappingFile');
     my $fileFullPath = "$workflowDataDir/$aliasesFile";
 
-    my $gusConfigFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue('gusConfigFile');
 
     my $args = "--DbRefMappingFile $fileFullPath --extDbName $externalDatabase --extDbReleaseNumber $extDbVer --viewName 'ExternalAASequence' --columnSpec 'primary_identifier,remark' --tableName AASequenceDbRef --gusConfigFile $gusConfigFile";
 
