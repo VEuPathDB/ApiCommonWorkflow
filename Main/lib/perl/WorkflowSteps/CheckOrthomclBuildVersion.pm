@@ -14,15 +14,19 @@ sub run {
   my $cachedCheckSumFile = join("/", $preprocessedDataCache,"OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/checkSum.tsv");
   my $checkSumFile = join("/", $workflowDataDir, $self->getParamValue("checkSum"));
   my $outdatedOrganismsFile = join("/", $workflowDataDir, $self->getParamValue("outdatedOrganisms"));
+  my $skipIfFile = join("/", $workflowDataDir, $self->getParamValue("skipIfFile"));
   my $cachedBuildVersion = `cat $cachedBuildVersionFile`;
 
   my $diff_result = `diff $cachedCheckSumFile $checkSumFile`;
 
   if ($undo) {
-      $self->runCmd(0, "rm $outdatedOrganismsFile");
+    $self->runCmd(0, "rm $outdatedOrganismsFile");
+    if ($diff_result eq '') {
+      $self->runCmd(0, "rm $skipIfFile");
+    }
   }
   elsif ($test) {
-      $self->runCmd(0, "touch $outdatedOrganismsFile");
+    $self->runCmd(0, "touch $outdatedOrganismsFile");
   }
   else {
 
@@ -30,6 +34,7 @@ sub run {
       if ($cachedBuildVersion != $buildVersion) {
         die "Cached build version $cachedBuildVersion and new build version $buildVersion are different even though the proteomes are the same\n";  
       }
+      $self->runCmd(0, "touch $skipIfFile");
     }
     else {
       if ($cachedBuildVersion eq $buildVersion) {
