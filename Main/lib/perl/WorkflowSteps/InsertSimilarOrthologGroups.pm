@@ -10,8 +10,9 @@ sub run {
 
     my $similarGroups = $self->getParamValue('similarGroups');
     my $workflowDataDir = $self->getWorkflowDataDir();
-  
-    my $args = " --similarGroups=$workflowDataDir/$similarGroups";
+    my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
+
+    my $args = " --similarGroups=$workflowDataDir/$similarGroups --gusConfigFile $gusConfigFile";
 
     if($undo) {
         $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertSimilarOrthologGroups", $args);
