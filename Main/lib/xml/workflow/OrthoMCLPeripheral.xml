@@ -51,11 +51,13 @@
 <!-- for this step, two lines in the script change abbrev 'rirr' to 'rhiz' for abbrev on orthomcl, remove when undo 'rhiz' -->
 
   <step name="updateSpeciesResourcesEc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateSpeciesResourcesEc">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$/OrganismNameResources</paramValue>
     <depends name="getDataFromVeupathAndUniprot"/>
   </step>
 
   <step name="updateEcNumbers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedEC">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="inputFile">$$dataDir$$/OrganismNameResources/ecFromVeupath.txt</paramValue>
       <paramValue name="evidenceCode">VEuPathDB</paramValue>
       <paramValue name="idSql">SELECT aa_sequence_id FROM dots.externalaasequence WHERE secondary_identifier = ?</paramValue>
@@ -65,6 +67,7 @@
 <!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
 
   <step name="makeGenomicSitesFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
     <paramValue name="peripheralDir">$$dataDir$$/getPeripheralProteins/proteomeDatasets</paramValue>
     <paramValue name="coreMapFile">$$dataDir$$/coreGroups/analysisDir/results/reformattedGroups.txt</paramValue>
