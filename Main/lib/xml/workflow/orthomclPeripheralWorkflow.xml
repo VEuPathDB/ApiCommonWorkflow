@@ -25,9 +25,15 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
   </subgraph>
 
+  <step name="createPeripheralOutdatedOrganisms" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreatePeripheralOutdatedOrganisms">
+    <paramValue name="checkSum">$$getPeripheralProteinsDir$$/checkSum.tsv</paramValue>
+    <paramValue name="outdatedOrganisms">$$peripheralDir$$/outdated.txt</paramValue>
+    <depends name="getPeripheralProteomes"/>
+  </step>
+
   <step name="makePeripheralDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$peripheralDir$$</paramValue>
-      <depends name="getPeripheralProteomes"/>
+      <depends name="createPeripheralOutdatedOrganisms"/>
   </step>
 
   <step name="makePeripheralAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -45,15 +51,10 @@
     <depends name="makePeripheralResultsDir"/>
   </step>
 
-  <step name="CopyOutdatedOrganisms" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOutdatedOrganisms">
-    <paramValue name="outputDir">$$peripheralDir$$</paramValue>
-    <depends name="CopyAndUncompressPeripheralCacheDir"/>
-  </step>
-
   <step name="copyCoreGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
      <paramValue name="fromFile">$$coreResultsDir$$/reformattedGroups.txt</paramValue>
      <paramValue name="toFile">$$peripheralDir$$/reformattedGroups.txt</paramValue>
-     <depends name="CopyOutdatedOrganisms"/>
+     <depends name="CopyAndUncompressPeripheralCacheDir"/>
   </step>
 
   <step name="copyCoreDiamondResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDir">
@@ -111,6 +112,7 @@
   </subgraph>
 
   <step name="updateOrthoPeripheralPersistentCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateOrthoPeripheralPersistentCache">
+    <paramValue name="checkSum">$$getPeripheralProteinsDir$$/checkSum.tsv</paramValue>
     <depends name="runPeripheralNextflowOnCluster"/>
   </step>
 

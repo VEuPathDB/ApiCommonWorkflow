@@ -2,37 +2,6 @@
     <param name="projectName"/>
     <param name="gusConfigFile"/>
     <param name="coreGroupsDir"/>
-    <param name="inputProteinFile"/>
-
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$coreGroupsDir$$</paramValue>
-    </step>
-
-    <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-     <paramValue name="dataDir">$$coreGroupsDir$$/analysisDir</paramValue>
-     <depends name="makeDataDir"/>
-    </step>
-
-    <step name="makeResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$coreGroupsDir$$/analysisDir/results/</paramValue>
-      <depends name="makeAnalysisDir"/>
-    </step>
-
-    <step name="CopyAndUncompressCoreCacheDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndUncompressCoreCacheDir">
-      <paramValue name="outputDir">$$coreGroupsDir$$</paramValue>
-      <depends name="makeResultsDir"/>
-    </step>
-
-    <step name="copyOutdatedFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyOutdatedFile">
-      <paramValue name="outputDir">$$coreGroupsDir$$/</paramValue>
-      <depends name="CopyAndUncompressCoreCacheDir"/>
-    </step>
-
-    <step name="copyProteomeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
-      <paramValue name="fromFile">$$inputProteinFile$$</paramValue>
-      <paramValue name="toFile">$$coreGroupsDir$$/fastas.tar.gz</paramValue>
-      <depends name="copyOutdatedFile"/>
-    </step>
 
     <step name="makeOrthoFinderCoreNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderCoreNextflowConfig">
       <paramValue name="workingDirRelativePath">$$coreGroupsDir$$</paramValue>
@@ -45,7 +14,6 @@
       <paramValue name="bestRepDiamondOutput">qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore</paramValue>
       <paramValue name="coreCacheDir">$$coreGroupsDir$$/CoreCacheDir</paramValue>
       <paramValue name="outdated">$$coreGroupsDir$$/outdated.txt</paramValue>
-      <depends name="copyProteomeFile"/>
     </step>
 
     <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">

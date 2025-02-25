@@ -112,17 +112,64 @@
     <depends name="makeCoreInterproDir"/>
   </subgraph>
 
-  <step name="checkBuildVersion" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthomclBuildVersion">
+<!-- Add functionality to create a skip if file to skip orthofinder core if the checkSums are exactly the same -->
+  <step name="checkBuildVersionCreateOutdatedClearPeripheral" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthomclBuildVersion">
     <paramValue name="checkSum">$$coreProteinsDir$$/coreProteomes/checkSum.tsv</paramValue>
+    <paramValue name="outdatedOrganisms">$$coreProteinsDir$$/outdated.txt</paramValue>
+    <paramValue name="skipIfFile">$$coreProteinsDir$$/doNotDoAnalysis</paramValue>
     <depends name="getCoreProteomes"/>
   </step>
 
-  <subgraph name="makeCoreGroups" xmlFile="orthoFinderCore.xml">
+  <step name="makeCoreGroupsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$coreGroupsDir$$</paramValue>
+    <depends name="checkBuildVersionCreateOutdatedClearPeripheral"/>
+  </step>
+
+  <step name="makeCoreGroupsAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+   <paramValue name="dataDir">$$coreGroupsDir$$/analysisDir</paramValue>
+   <depends name="makeCoreGroupsDataDir"/>
+  </step>
+
+  <step name="makeCoreGroupsResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$coreGroupsDir$$/analysisDir/results/</paramValue>
+    <depends name="makeCoreGroupsAnalysisDir"/>
+  </step>
+
+  <step name="CopyAndUncompressCoreCacheDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndUncompressCoreCacheDir">
+    <paramValue name="outputDir">$$coreGroupsDir$$</paramValue>
+    <depends name="makeCoreGroupsResultsDir"/>
+  </step>
+
+  <step name="copyCoreGroupsOutdatedFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+    <paramValue name="fromFile">$$coreProteinsDir$$/outdated.txt</paramValue>
+    <paramValue name="toFile">$$coreGroupsDir$$/outdated.txt</paramValue>
+    <depends name="CopyAndUncompressCoreGroupsCoreCacheDir"/>
+  </step>
+
+  <step name="copyCoreGroupsProteomeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+    <paramValue name="fromFile">$$coreProteinsDir/fastas.tar.gz$$</paramValue>
+    <paramValue name="toFile">$$coreGroupsDir$$/fastas.tar.gz</paramValue>
+    <depends name="copyCoreGroupsOutdatedFile"/>
+  </step>
+
+  <subgraph name="makeCoreGroups" xmlFile="orthoFinderCore.xml" skipIfFile="$$coreProteinsDir$$/doNotDoAnalysis">
     <paramValue name="projectName">$$projectName$$</paramValue> 
     <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
     <paramValue name="coreGroupsDir">$$coreGroupsDir$$</paramValue>
-    <paramValue name="inputProteinFile">$$coreProteinsDir$$/fastas.tar.gz</paramValue>
-    <depends name="checkBuildVersion"/>
+    <depends name="copyCoreGroupsProteomeFile"/>
   </subgraph>
+
+<!-- Create a step called copyCoreGroups -->
+  <step name="copyCoreGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreGroupsResultsFromCache">
+    <paramValue name="resultsDir">$$coreGroupsDir$$/analysisDir/results/</paramValue>
+    <depends name="makeCoreGroups"/>
+    <depends name="copyCoreGroupsProteomeFile"/>
+  </step>
+
+<!-- Create a step to copy check sum -->
+  <step name="copyCheckSumToCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreCheckSumToCache">
+    <paramValue name="checkSum">$$coreProteinsDir$$/coreProteomes/checkSum.tsv</paramValue>
+    <depends name="copyCoreGroups"/>
+  </step>
 
 </workflowGraph>
