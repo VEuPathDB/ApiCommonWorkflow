@@ -8,6 +8,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
 
   my $interproExtDb = $self->getParamValue('interproExtDbName');
   my $downloadSiteDir = $self->getParamValue('downloadSiteDir');
@@ -57,7 +58,7 @@ EOF
       my $fileName = $downloadFileName."*";
     $self->runCmd($test, "rm $fileName");
   } else {
-    $self->runCmd($test, "makeFileWithSql --outFile $downloadFileName --sql \"$sql\"");
+    $self->runCmd($test, "makeFileWithSql --outFile $downloadFileName --sql \"$sql\" --gusConfigFile $gusConfigFile");
     $self->runCmd($test, "gzip $downloadFileName");
   }
 }

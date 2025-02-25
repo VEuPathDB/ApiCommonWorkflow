@@ -8,6 +8,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
 
   my $relativeDownloadSiteDir = $self->getParamValue('relativeDownloadSiteDir');
   my $release = $self->getParamValue('release');
@@ -45,18 +46,18 @@ sub run {
     # fasta
     my $sql = $self->getSql(1);
     $self->runCmd($test, "mkdir -p $websiteFilesDir/$relativeDownloadSiteDir");
-    $self->runCmd($test, "gusExtractSequences --outputFile $seqsDownloadFileName --idSQL \"$sql\"");
+    $self->runCmd($test, "gusExtractSequences --outputFile $seqsDownloadFileName --idSQL \"$sql\" --gusConfigFile $gusConfigFile");
     $self->runCmd($test, "gzip $seqsDownloadFileName");
 
     # deflines
     $sql = $self->getSql(0);
-    $self->runCmd($test, "gusExtractSequences --outputFile $deflinesDownloadFileName --idSQL \"$sql\" --noSequence");
+    $self->runCmd($test, "gusExtractSequences --outputFile $deflinesDownloadFileName --idSQL \"$sql\" --gusConfigFile $gusConfigFile --noSequence");
     $self->runCmd($test, "gzip $deflinesDownloadFileName");
 
     # domain frequencies
-    my $extDbRlsId = $self->getExtDbRlsId($test, "PFAM|" . $self->getExtDbVersion($test, "PFAM"));
+    my $extDbRlsId = $self->getExtDbRlsId($test, "PFAM|" . $self->getExtDbVersion($test, "PFAM", $gusConfigFile), $gusConfigFile);
     $sql = $self->getDomainsSql($extDbRlsId);
-    $self->runCmd($test, "makeFileWithSql --outFile $domainsDownloadFileName --sql \"$sql\"");
+    $self->runCmd($test, "makeFileWithSql --outFile $domainsDownloadFileName --sql \"$sql\" --gusConfigFile $gusConfigFile");
     $self->runCmd($test, "gzip $domainsDownloadFileName");
 
     # groups
@@ -66,7 +67,7 @@ sub run {
 
     # genome summary
     $sql = $self->getGenomeSummarySql();
-    $self->runCmd($test, "makeFileWithSql --outFile $genomeSummaryFileName --sql \"$sql\" --includeHeader --outDelimiter \"\\t\"");
+    $self->runCmd($test, "makeFileWithSql --outFile $genomeSummaryFileName --sql \"$sql\" --includeHeader --outDelimiter \"\\t\" --gusConfigFile $gusConfigFile");
     $self->runCmd($test, "gzip $genomeSummaryFileName");
 
     # pairs

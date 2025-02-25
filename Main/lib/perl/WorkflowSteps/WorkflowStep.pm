@@ -18,7 +18,7 @@ use ApiCommonWorkflow::Main::Util::OrganismInfo;
 # are called from the workflow should take an extDbRlsSpec as an argument,
 # not an internal id
 sub getExtDbRlsId {
-  my ($self, $test, $extDbRlsSpec) = @_;
+  my ($self, $test, $extDbRlsSpec, $gusConfigFile) = @_;
 
   die "'test' arg '$test' must be a 0 or 1" unless  (!$test || $test eq '0' || $test eq '1');
 
@@ -26,7 +26,8 @@ sub getExtDbRlsId {
 
   my $sql = "select external_database_release_id from sres.externaldatabaserelease d, sres.externaldatabase x where x.name = '${extDbName}' and x.external_database_id = d.external_database_id and d.version = '${extDbRlsVer}'";
 
-  my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
+  $gusConfigFile = $self->getGusConfigFile() if (!$gusConfigFile);
+  $gusConfigFile = "--gusConfigFile \"" . $gusConfigFile . "\"";
 
   my $cmd = "getValueFromTable --idSQL \"$sql\" $gusConfigFile";
   my $extDbRlsId = $self->runCmd($test, $cmd);
