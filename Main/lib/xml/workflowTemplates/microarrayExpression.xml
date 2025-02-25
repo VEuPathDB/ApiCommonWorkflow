@@ -5,11 +5,9 @@
   <param name="organismDatasetLoaderXmlFile"/>
   <param name="parentDataDir"/>
   <param name="genomeExtDbRlsSpec"/>
-  <param name="maxIntronSize"/>
   <param name="relativeDownloadSiteDir"/>
   <param name="relativeWebServicesDir"/>
   <param name="genomeFastaFile"/>
-  <param name="isAnnotatedGenome"/>
 
   <constant name="dataDir">$$parentDataDir$$/microarrayExpression</constant>
 
@@ -61,13 +59,13 @@
       <paramValue name="datasetName">${organismAbbrev}_microarrayPlatform_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="parentDataDir">$$datadir$$</paramValue>
-      <depends name="makeDataDir"/>
+      <paramValue name="parentDataDir">$$arrayPlatformsDir$$</paramValue>
+      <depends name="makeArrayPlatformDir"/>
     </subgraph>
 
     <subgraph name="${name}_arrayProbeMapping" xmlFile="arrayProbeMapping.xml">
       <paramValue name="project">$$projectName$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC</paramValue>
+      <paramValue name="parentDataDir">$$arrayPlatformsDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="probeSetName">${name}</paramValue>
       <paramValue name="probeDatasetName">${organismAbbrev}_microarrayPlatform_${name}_RSRC</paramValue>
@@ -85,7 +83,18 @@
       <paramValue name="variableLengthReads">${variableLengthReads}</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="numInsertions">${numInsertions}</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
     </subgraph>
+
+
+    <step name="symLinkResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+      <paramValue name="fromFile">$$arrayPlatformsDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC/arrayProbeMapping/analysisDir/results</paramValue>
+      <paramValue name="toFile">$$arrayPlatformsDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC/mapped_output</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
+
+
+
   </datasetTemplate>
 
   <datasetTemplate class="microarrayPlatformWithProviderMapping">
@@ -98,20 +107,20 @@
     <subgraph name="${name}_probe_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${organismAbbrev}_microarrayPlatform_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$arrayStudiesDir$$</paramValue>
+      <paramValue name="parentDataDir">$$arrayPlatformsDir$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
 
     <step name="${name}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$arrayStudiesDir$$/${name}</paramValue>
+      <paramValue name="dataDir">$$arrayPlatformsDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC/mapped_output</paramValue>
       <depends name="${name}_probe_RSRC"/>
     </step>
 
     <step name="${name}_getAndMapProbes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyProviderProbeMappingFiles">
-      <paramValue name="outputDir">$$arrayStudiesDir$$/${name}</paramValue>
-      <paramValue name="inputDir">$$arrayStudiesDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC/final</paramValue>
+      <paramValue name="outputDir">$$arrayPlatformsDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC/mapped_output</paramValue>
+      <paramValue name="inputDir">$$arrayPlatformDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC/final</paramValue>
       <paramValue name="providedMappingFileName">${providedMappingFileName}</paramValue>
-      <paramValue name="outputGeneProbeMappingTabFile">$$arrayStudiesDir$$/${name}/geneProbeMapping.tab</paramValue>
+      <paramValue name="outputGeneProbeMappingTabFile">$$arrayPlatformsDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC/mapped_output/geneProbeMapping.tab</paramValue>
       <paramValue name="makeCdfFile">${isAffymetrixGeneArray}</paramValue>
       <paramValue name="makeNdfFile">${isNimbleGenGeneArray}</paramValue>
       <depends name="${name}_makeDataDir"/>
@@ -144,7 +153,7 @@
       <paramValue name="doExpressionAnalysis">${doExpressionAnalysis}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="platform">${microarrayPlatformName}</paramValue>
+      <paramValue name="platformMappingDir">$$arrayPlatformsDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC/mapped_output</paramValue>
       <paramValue name="expectCdfFile">${usesAffymetrixGeneArray}</paramValue>
       <paramValue name="expectNdfFile">${usesNimbleGenGeneArray}</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
