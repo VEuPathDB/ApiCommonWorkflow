@@ -10,8 +10,10 @@ sub run {
 
   my $gff3 = $self->getParamValue('gff3File');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  $gusConfigFile = "$workflowDataDir/$gusConfigFile";
   $gff3 = "$workflowDataDir/$gff3";
 
   if ($undo) {
@@ -35,7 +37,7 @@ sub run {
   } else {
 
 
-    $self->runCmd($test, "ebiGFF3RegionNameMapping.pl --GFF3File $gff3 --organism_abbrev $organismAbbrev");
+    $self->runCmd($test, "ebiGFF3RegionNameMapping.pl --GFF3File $gff3 --organism_abbrev $organismAbbrev --gusConfigFile $gusConfigFile");
 
   }
 

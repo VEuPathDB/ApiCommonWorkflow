@@ -1,0 +1,160 @@
+<workflowGraph name="">
+  <param name="projectName"/>
+  <param name="projectVersionForWebsiteFiles"/>
+  <param name="residualGroupIdPrefix"/>
+
+  <constant name="dataDir">$$projectName$$</constant>
+  <constant name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</constant>
+
+  <constant name="relativeWebServicesDir">webServices/$$projectName$$/build-$$projectVersionForWebsiteFiles$$</constant>
+  <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
+  <constant name="oldReleasesGroupFilesDir">oldReleasesGroupFiles</constant>
+  <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
+  <constant name="globalDataDir">global</constant>
+  <constant name="coreProteinsDir">$$dataDir$$/coreProteins</constant>
+  <constant name="coreGroupsDir">$$dataDir$$/coreGroups</constant>
+
+  <constant name="projectGusConfigBasename">$$projectName$$_gus.config</constant>
+  <constant name="projectGusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</constant>
+
+  <step name="makePeripheralInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$/peripheralInterpro</paramValue>
+  </step>
+
+  <subgraph name="peripheralWorkflow" xmlFile="orthomclPeripheralWorkflow.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="residualGroupIdPrefix">$$residualGroupIdPrefix$$</paramValue>
+    <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>    
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="coreProteome">$$coreProteinsDir$$/fastas.tar.gz</paramValue>
+    <paramValue name="coreResultsDir">$$coreGroupsDir$$/analysisDir/results</paramValue>
+    <depends name="makePeripheralInterproDir"/>
+  </subgraph>
+
+  <step name="addNumMembersToGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddNumberMembers">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="peripheralWorkflow"/>
+  </step>
+
+  <step name="makeResourcesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$/OrganismNameResources</paramValue>
+    <depends name="addNumMembersToGroups"/>
+  </step>
+
+  <step name="getDataFromVeupathAndUniprot" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::getDataFromVeupathAndUniprot">
+    <paramValue name="dataDir">$$dataDir$$/OrganismNameResources</paramValue>
+    <depends name="makeResourcesDir"/>
+  </step>
+
+<!-- for this step, two lines in the script change abbrev 'rirr' to 'rhiz' for abbrev on orthomcl, remove when undo 'rhiz' -->
+
+  <step name="updateSpeciesResourcesEc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateSpeciesResourcesEc">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="dataDir">$$dataDir$$/OrganismNameResources</paramValue>
+    <depends name="getDataFromVeupathAndUniprot"/>
+  </step>
+
+  <step name="updateEcNumbers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedEC">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/OrganismNameResources/ecFromVeupath.txt</paramValue>
+      <paramValue name="evidenceCode">VEuPathDB</paramValue>
+      <paramValue name="idSql">SELECT aa_sequence_id FROM dots.externalaasequence WHERE secondary_identifier = ?</paramValue>
+      <depends name="updateSpeciesResourcesEc"/>
+   </step>
+
+<!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
+
+  <step name="makeGenomicSitesFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
+    <paramValue name="peripheralDir">$$dataDir$$/getPeripheralProteins/proteomeDatasets</paramValue>
+    <paramValue name="coreMapFile">$$dataDir$$/coreGroups/analysisDir/results/reformattedGroups.txt</paramValue>
+    <paramValue name="peripheralMapFileName">$$dataDir$$/peripheral/analysisDir/results/GroupsFile.txt</paramValue>
+    <paramValue name="residualMapFile">$$dataDir$$/peripheral/analysisDir/results/reformattedGroups.txt</paramValue>
+    <paramValue name="cladeFile">$$dataDir$$/orthomclClades_RSRC/OrthoMCL6/orthomclClades.txt</paramValue>
+    <paramValue name="ecFile">$$dataDir$$/OrganismNameResources/ec_organism.txt</paramValue>
+    <depends name="updateEcNumbers"/>
+  </step>
+
+<!--
+  <step name="makeGalaxyFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGalaxyFiles">
+    <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
+    <paramValue name="galaxyDir">galaxyFiles</paramValue>
+    <paramValue name="coreGroupsFile">peripheral/analysisDir/results/GroupsFile.txt</paramValue>
+    <paramValue name="residualGroupsFile">peripheral/analysisDir/results/reformattedGroups.txt</paramValue>
+    <paramValue name="coreSequencesFile">peripheral/analysisDir/results/bestReps.fasta</paramValue>
+    <paramValue name="residualSequencesFiles">peripheral/analysisDir/results/bestReps.fasta</paramValue>
+    <depends name="makeGenomicSitesFiles"/>
+  </step>
+-->
+
+<!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
+<!-- Will need to do this in the future. I am changing output dir until testing is complete. -->
+<!-- <step name="predictEcNumbers" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::PredictEcNumbers"> -->
+<!--      <paramValue name="outputDir">OrthoMCLDerived_ECAssociations/Current_Version/final</paramValue> -->
+<!--      <paramValue name="organismDir">OrganismNameResources</paramValue> -->
+<!--      <depends name="updateEcNumbers"/> -->
+<!--  </step> -->
+
+  <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
+
+
+  <step name="insertDomainKeywords" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="groupTypesCPR">PR</paramValue>
+    <depends name="makeGenomicSitesFiles"/>
+  </step>
+
+  <step name="insertProteinKeywords" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertProteinKeywords">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="groupTypesCPR">PR</paramValue>
+    <depends name="insertDomainKeywords"/>
+  </step>
+	
+  <step name="insertGroupTaxonMatrix" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="insertProteinKeywords"/>
+  </step>
+
+  <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <depends name="makeGenomicSitesFiles"/>
+  </step>
+ 
+  <step name="makeDownloadFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDownloadFiles">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="project">$$projectName$$</paramValue>
+    <paramValue name="coreGroupsFile">$$dataDir$$/peripheral/analysisDir/results/GroupsFile.txt</paramValue>
+    <paramValue name="residualGroupsFile">$$dataDir$$/peripheral/analysisDir/results/reformattedGroups.txt</paramValue>
+    <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
+    <depends name="makeDownloadSiteDir"/>
+  </step>
+
+  <step name="makeInterproDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoInterproDownloadFile">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="downloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="release">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="project">$$projectName$$</paramValue>
+    <paramValue name="interproExtDbName">InterproscanData_RSRC</paramValue>
+    <depends name="makeDownloadFiles"/>
+  </step>
+
+  <step name="CopyDiamondDatabaseToWebservices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDiamondDatabaseToWebServices">
+    <paramValue name="peripheralResultsDir">$$dataDir$$/peripheral/analysisDir/results/</paramValue>
+    <paramValue name="webServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <depends name="makeInterproDownloadFile"/>
+  </step>
+
+  <step name="CopyGeneTreesToWebservices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyGeneTreesToWebServices">
+    <paramValue name="geneTreesDir">$$dataDir$$/peripheral/analysisDir/results/geneTrees</paramValue>
+    <paramValue name="webServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <depends name="CopyDiamondDatabaseToWebservices"/>
+  </step>
+
+</workflowGraph>

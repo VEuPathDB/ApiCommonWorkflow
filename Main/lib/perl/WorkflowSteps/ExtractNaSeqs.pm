@@ -16,8 +16,8 @@ sub run {
   my $outputDirForSeparateFiles = $self->getParamValue('outputDirForSeparateFiles');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $gusConfigFile = $self->getGusConfigFile();
-
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = "$workflowDataDir/$gusConfigFile";  
   my @extDbNameList = split(/,/, $extDbName);
 
   my $dbRlsIds;

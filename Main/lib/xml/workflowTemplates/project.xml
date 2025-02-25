@@ -14,7 +14,6 @@
       ToxoDB
  -->
 
-
   <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
   <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
   <constant name="relativeAuxiliaryDir">auxiliary/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
@@ -22,6 +21,9 @@
   <constant name="dataDir">$$projectName$$</constant>
 
   <constant name="comparativeGenomicsInputDir">$$dataDir$$/comparativeGenomicsInputDir</constant>
+
+  <constant name="orthoCoreDir">$$dataDir$$/orthoCoreProteomes</constant>
+  <constant name="orthoPeripheralDir">$$dataDir$$/orthoPeripheralProteomes</constant>
 
   <constant name="projectGusConfigBasename">$$projectName$$_gus.config</constant>
   <constant name="projectGusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</constant>
@@ -76,6 +78,15 @@
     <depends name="makeDataDir"/>
   </step>
 
+  <step name="makeOrthoCoreDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$orthoCoreDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="makeOrthoPeripheralDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$orthoPeripheralDir$$</paramValue>
+    <depends name="makeOrthoCoreDir"/>
+  </step>
 
   <datasetTemplate class="organism">
     <prop name="organismAbbrev"/>
@@ -103,6 +114,7 @@
     <prop name="isHugeGenome"/>
     <prop name="maxIntronSize"/>
     <prop name="isNotEbiGenome"/>
+    <prop name="isCore"/>
 
     <step name="${organismAbbrev}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir" groupName="${organismAbbrev}">
       <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}</paramValue>
@@ -192,6 +204,7 @@
       <paramValue name="genomicSeqsDir">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
       <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <paramValue name="genomeSource">${genomeSource}</paramValue>
+      <paramValue name="isCore">${isCore}</paramValue>
       <depends name="makeProjectReleaseDownloadDir"/>
       <depends name="makeProjectReleaseWebServicesDir"/>
       <depends name="${organismAbbrev}_loadTemporaryNcbiTaxonId"/>
@@ -199,8 +212,21 @@
       <!--<depends name="${organismAbbrev}_loadNcbiTaxonId"/>-->
       <dependsGlobal name="taxonomy_RSRC"/>
       <dependsGlobal name="SO_RSRC"/>
-
     </subgraph>
+
+    <step name="${organismAbbrev}_CopyCoreProteomeToOrtho" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreProteomeToOrtho" includeIf="${isAnnotatedGenome} &amp;&amp; ${isCore}">
+      <paramValue name="orthomclAbbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <paramValue name="orthoCoreDir">$$orthoCoreDir$$</paramValue>
+      <depends name="${organismAbbrev}_LoadGenome"/>
+    </step>
+
+    <step name="${organismAbbrev}_CopyPeripheralProteomeToOrtho" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralProteomeToOrtho" includeIf="${isAnnotatedGenome} &amp;&amp; !${isCore}" >
+      <paramValue name="orthomclAbbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <paramValue name="orthoPeripheralDir">$$orthoPeripheralDir$$</paramValue>
+      <depends name="${organismAbbrev}_LoadGenome"/>
+    </step>
 
     <!-- a step to load chromosomeMap.txt file, nothing should be depended on this step -->
     <step name="${organismAbbrev}_LoadGenome_LoadChromosomeMap" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChromosomeMap" excludeIf="${isNotEbiGenome}" groupName="${organismAbbrev}">
@@ -261,6 +287,7 @@
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
+
     <subgraph name="${organismAbbrev}_PostLoadGenome" xmlFile="postLoadGenome.xml" groupName="${organismAbbrev}">
       <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
@@ -286,6 +313,8 @@
       <depends name="${organismAbbrev}_LoadGenome"/>
       <dependsGlobal name="Ontology_ptmt_RSRC"/> <!-- this is needed for loading mass spec data -->
     </subgraph>
+
+<!--Deprecate gsnap graph
     <subgraph name="${organismAbbrev}_gsnap" xmlFile="generated/${projectName}/${organismAbbrev}/gsnap.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -300,7 +329,7 @@
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
-
+-->
 
     <subgraph name="${organismAbbrev}_dnaseq" xmlFile="generated/${projectName}/${organismAbbrev}/dnaseq.xml" excludeIfXmlFileDoesNotExist="true">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
@@ -363,7 +392,6 @@
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
-
     <subgraph name="${organismAbbrev}_ebi_GFF3" xmlFile="generated/${projectName}/${organismAbbrev}/ebiGFF3file.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
@@ -375,7 +403,6 @@
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
-
 
     <!-- NOTE:  bowtie uses the unmasked version of the genomic seqs file in the maskGenome directory -->
     <subgraph name="${organismAbbrev}_bowtieMapping" xmlFile="mapWithBowtie.xml"  excludeIfXmlFileDoesNotExist="true"  groupName="${organismAbbrev}">
@@ -408,8 +435,6 @@
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
-
-
     <subgraph name="${organismAbbrev}_LoadAliases" xmlFile="generated/${projectName}/${organismAbbrev}/aliases.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
@@ -421,7 +446,6 @@
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
-
 
     <subgraph name="${organismAbbrev}_specific_noAlias" xmlFile="OrganismSpecificNoAlias.xml"  groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
@@ -525,6 +549,17 @@
     <dependsPattern name="*_bowtieMapping"/>
   </step>
 -->
+  <step name="checkOrthoCoreProteomeDirs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthoCoreProteomeDirs" externalName="$$projectName$$_checkOrthoCoreProteomeDirs">
+    <paramValue name="orthoCoreDir">$$orthoCoreDir$$</paramValue>
+    <dependsPattern name="*_CopyCoreProteomeToOrtho"/>
+  </step>
+
+  <step name="checkOrthoPeripheralProteomeDirs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthoPeripheralProteomeDirs" externalName="$$projectName$$_checkOrthoPeripheralProteomeDirs">
+    <paramValue name="orthoPeripheralDir">$$orthoPeripheralDir$$</paramValue>
+    <dependsPattern name="*_CopyPeripheralProteomeToOrtho"/>
+  </step>
+
+
 <!--webdb test
   <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml">
     <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
