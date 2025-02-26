@@ -49,6 +49,7 @@ sub run {
 
         my $configString = <<NEXTFLOW;
 params {
+
   refFasta = "$proteinSequenceFileInNextflowWorkingDirOnCluster"
   peptidesTab = "$iedbPeptidesTabFileInNextflowWorkingDirOnCluster"
   taxon = $speciesNcbiTaxonId

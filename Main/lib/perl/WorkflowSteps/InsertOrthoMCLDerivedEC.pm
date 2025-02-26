@@ -13,8 +13,9 @@ sub run {
   my $idSql = $self->getParamValue('idSql');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
 
-  my $args = "--ECMappingFile $workflowDataDir/$inputFile --evidenceCode '$evidenceCode' --aaSeqLocusTagMappingSql '$idSql'";
+  my $args = "--ECMappingFile $workflowDataDir/$inputFile --evidenceCode '$evidenceCode' --aaSeqLocusTagMappingSql '$idSql' --gusConfigFile $gusConfigFile";
 
   $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
 

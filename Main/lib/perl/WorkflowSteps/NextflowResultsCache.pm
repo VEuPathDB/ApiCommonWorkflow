@@ -138,6 +138,7 @@ sub copyTo {
 sub getDatasetSpecFromName {
     my ($self,$test,$datasetName) = @_;
 
+    $datasetName = getRefDatasetName ($self, $test, $datasetName) if ($datasetName =~ /_dbEST_RSRC$/);
 
     my $sql = "SELECT name || '_' ||  version as spec
 FROM apidb.datasource d
@@ -155,14 +156,36 @@ WHERE name = '${datasetName}'";
     return $datasetSpec
 
 }
+
+sub getRefDatasetName {
+    my ($self,$test,$datasetName) = @_;
+    my $refDatasetName;
+    if ($datasetName =~ /(.+)_dbEST_RSRC$/) {
+      my $abbrev = $1;
+      my $subSql = "select ref_strain_abbrev from apidb.organism where abbrev like '$abbrev'";
+      my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
+      my $subcmd = "getValueFromTable --idSQL \"$subSql\" $gusConfigFile";
+      my $refAbbrev = $self->runCmd($test, $subcmd);
+      if ($refAbbrev) {
+	$self->log ("found reference genome $refAbbrev for $abbrev");
+	return $refAbbrev . "_dbEST_RSRC";
+      } else {
+	die "can't found reference genome abbrev for $abbrev";
+      }
+    } else {
+      return $datasetName;
+    }
+}
+
 sub getMd5DigestForAnnotationSpecs {
     my ($self, $test, $organismAbbrev) = @_;
-
 
     # NOTE:  this is the postgres version
     my $sql = "SELECT md5(string_agg(name || '|' ||  version, ',' ORDER BY name,version))
 FROM apidb.datasource d
 WHERE name LIKE '${organismAbbrev}\_%genome_features_RSRC' ESCAPE '\\'
+OR name LIKE '${organismAbbrev}\_orthomclProteome_RSRC' ESCAPE '\\'
+OR name LIKE '${organismAbbrev}\_orthomclPeripheralProteome_RSRC' ESCAPE '\\'
 OR name LIKE '${organismAbbrev}\_%primary_genome_RSRC' ESCAPE '\\'";
 
 

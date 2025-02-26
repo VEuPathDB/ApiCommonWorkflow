@@ -8,6 +8,7 @@
     <param name="relativeDownloadSiteDir"/>
     <param name="relativeWebServicesDir"/>
     <param name="genomeFastaFile"/>
+    <param name="maxIntronSize"/>
 
     <constant name="dataDir">$$parentDataDir$$/rnaseq</constant>
 
@@ -105,7 +106,7 @@
         <prop name="hasPairedEnds"/>
         <prop name="isStrandSpecific"/>
         <prop name="alignWithCdsCoordinates"/>
-
+        <prop name="fromSRA"/>
 
         <subgraph name="${name}_rnaSeq_loadDataset" xmlFile="loadDataset.xml">
             <paramValue name="datasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
@@ -122,7 +123,7 @@
             <paramValue name="projectName">$$projectName$$</paramValue>
             <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
             <paramValue name="experimentName">${name}</paramValue>
-            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
             <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
             <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
             <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
@@ -131,6 +132,11 @@
             <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
             <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
             <paramValue name="gtfFile">$$organismAbbrev$$_mask.gtf</paramValue>
+            <paramValue name="fromSRA">${fromSRA}</paramValue>
+            <paramValue name="cdsOrExon">exon</paramValue>
+            <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+            <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+            <paramValue name="entry"></paramValue>
             <depends name="makeMaskGtf"/>
             <depends name="${name}_rnaSeq_loadDataset"/>
         </subgraph>
@@ -141,7 +147,7 @@
             <paramValue name="projectName">$$projectName$$</paramValue>
             <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
             <paramValue name="experimentName">${name}</paramValue>
-            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
             <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
             <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
             <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
@@ -150,24 +156,29 @@
             <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
             <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
             <paramValue name="gtfFile">$$organismAbbrev$$_cds_mask.gtf</paramValue>
+            <paramValue name="fromSRA">${fromSRA}</paramValue>
+            <paramValue name="cdsOrExon">CDS</paramValue>
+            <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+            <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+            <paramValue name="entry"></paramValue>
             <depends name="makeMaskGtfCdsOnly"/>
             <depends name="${name}_rnaSeq_loadDataset"/>
         </subgraph>
 
         <subgraph name="${name}_analyze_rnaSeq_experiment" xmlFile="analyzeRnaSeqExperiment.xml">
-            <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_${name}_ebi_rnaSeq_RSRC</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_${name}_rnaSeq_RSRC/bulkrnaseq/analysisDir</paramValue>
             <paramValue name="projectName">$$projectName$$</paramValue>
             <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
             <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
             <paramValue name="experimentName">${name}</paramValue>
-            <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_ebi_rnaSeq_RSRC</paramValue>
+            <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeq_RSRC</paramValue>
             <paramValue name="experimentDatasetVersion">${version}</paramValue>
             <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
             <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
             <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
             <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-            <paramValue name="studyDir">$$dataDir$$/${organismAbbrev}_${name}_ebi_rnaSeq_RSRC/bulkrnaseq/analysisDir/results</paramValue>
-            <paramValue name="analysisConfig">$$dataDir$$/${organismAbbrev}_${name}_ebi_rnaSeq_RSRC/final/analysisConfig.xml</paramValue>
+            <paramValue name="studyDir">$$dataDir$$/${organismAbbrev}_${name}_rnaSeq_RSRC/bulkrnaseq/analysisDir/results</paramValue>
+            <paramValue name="analysisConfig">$$dataDir$$/${organismAbbrev}_${name}_rnaSeq_RSRC/final/analysisConfig.xml</paramValue>
             <depends name="makeSeqSizeFile"/>
             <depends name="makeGeneFootprintFile"/>
             <depends name="${name}_rnaSeq_experiment"/>

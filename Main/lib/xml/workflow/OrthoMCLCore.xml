@@ -1,0 +1,174 @@
+<workflowGraph name="">
+  <param name="projectName"/>
+  <param name="projectVersionForWebsiteFiles"/>
+
+  <constant name="dataDir">$$projectName$$</constant>
+
+  <constant name="relativeWebServicesDir">webServices/$$projectName$$/build-$$projectVersionForWebsiteFiles$$</constant>
+  <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
+  <constant name="oldReleasesGroupFilesDir">oldReleasesGroupFiles</constant>
+  <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
+  <constant name="globalDataDir">global</constant>
+  <constant name="coreProteinsDir">$$dataDir$$/coreProteins</constant>
+  <constant name="coreGroupsDir">$$dataDir$$/coreGroups</constant>
+
+  <constant name="projectGusConfigBasename">$$projectName$$_gus.config</constant>
+  <constant name="projectGusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig">
+    <paramValue name="dbName"/>
+    <!--                                                                                                                                                                                                   
+    <paramValue name="dbName">$$projectName$$</paramValue>                                                                                                                                                 
+     -->
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFilename">$$projectGusConfigBasename$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
+    <depends name="makeGusConfig"/>
+  </step>
+
+<!--
+  <step name="makeGlobalDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$globalDataDir$$</paramValue>
+    <depends name="initUserGroupProject"/>
+  </step>
+
+  <subgraph name="SequenceOntology" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">SO_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+  <subgraph name="taxonomy" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">taxonomy_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+  <subgraph name="interproscanData" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">InterproscanData_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+  <subgraph name="geneOntology" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">GO_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+  <subgraph name="geneOntologyEvidenceCodes" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">GO_evidence_codes_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+
+  <subgraph name="enzymeDB" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">enzymeDB_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$globalDataDir$$</paramValue>
+    <depends name="makeGlobalDataDir"/>
+  </subgraph>
+-->
+
+  <!-- load the OrthomclTaxon table with our tree of life -->
+  <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
+    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
+    <paramValue name="datasetName">orthomclClades_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <!--<depends name="taxonomy"/>-->
+    <!-- <depends name="initClusterHomeDir"/>-->
+    <depends name="initUserGroupProject"/>
+  </subgraph>
+
+  <step name="makeCoreInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$/coreInterpro</paramValue>
+    <!--<depends name="makeGlobalDataDir"/>-->
+<!--    <depends name="enzymeDB"/> -->
+    <depends name="orthomclClades"/>
+  </step>
+
+  <subgraph name="getCoreProteomes" xmlFile="generated/OrthoMCL/orthomclGetCoreProteins.xml">
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="coreProteinsDir">$$coreProteinsDir$$</paramValue>
+    <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+    <paramValue name="projectName">OrthoMCL</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>    
+    <depends name="makeCoreInterproDir"/>
+  </subgraph>
+
+<!-- Add functionality to create a skip if file to skip orthofinder core if the checkSums are exactly the same -->
+  <step name="checkBuildVersionCreateOutdatedClearPeripheral" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthomclBuildVersion">
+    <paramValue name="checkSum">$$coreProteinsDir$$/coreProteomes/checkSum.tsv</paramValue>
+    <paramValue name="outdatedOrganisms">$$coreProteinsDir$$/outdated.txt</paramValue>
+    <paramValue name="skipIfFile">$$coreProteinsDir$$/doNotDoAnalysis</paramValue>
+    <depends name="getCoreProteomes"/>
+  </step>
+
+  <step name="makeCoreGroupsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$coreGroupsDir$$</paramValue>
+    <depends name="checkBuildVersionCreateOutdatedClearPeripheral"/>
+  </step>
+
+  <step name="makeCoreGroupsAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+   <paramValue name="dataDir">$$coreGroupsDir$$/analysisDir</paramValue>
+   <depends name="makeCoreGroupsDataDir"/>
+  </step>
+
+  <step name="makeCoreGroupsResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$coreGroupsDir$$/analysisDir/results/</paramValue>
+    <depends name="makeCoreGroupsAnalysisDir"/>
+  </step>
+
+  <step name="CopyAndUncompressCoreCacheDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndUncompressCoreCacheDir">
+    <paramValue name="outputDir">$$coreGroupsDir$$</paramValue>
+    <depends name="makeCoreGroupsResultsDir"/>
+  </step>
+
+  <step name="copyCoreGroupsOutdatedFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+    <paramValue name="fromFile">$$coreProteinsDir$$/outdated.txt</paramValue>
+    <paramValue name="toFile">$$coreGroupsDir$$/outdated.txt</paramValue>
+    <depends name="CopyAndUncompressCoreCacheDir"/>
+  </step>
+
+  <step name="copyCoreGroupsProteomeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+    <paramValue name="fromFile">$$coreProteinsDir$$/fastas.tar.gz</paramValue>
+    <paramValue name="toFile">$$coreGroupsDir$$/fastas.tar.gz</paramValue>
+    <depends name="copyCoreGroupsOutdatedFile"/>
+  </step>
+
+  <subgraph name="makeCoreGroups" xmlFile="orthoFinderCore.xml" skipIfFile="$$coreProteinsDir$$/doNotDoAnalysis">
+    <paramValue name="projectName">$$projectName$$</paramValue> 
+    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
+    <paramValue name="coreGroupsDir">$$coreGroupsDir$$</paramValue>
+    <depends name="copyCoreGroupsProteomeFile"/>
+  </subgraph>
+
+  <step name="copyCoreGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreGroupsResultsFromCache">
+    <paramValue name="resultsDir">$$coreGroupsDir$$/analysisDir/results/</paramValue>
+    <depends name="makeCoreGroups"/>
+    <depends name="copyCoreGroupsProteomeFile"/>
+  </step>
+
+  <!-- Create a step to copy check sum -->
+  <step name="copyCheckSumToCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreCheckSumToCache">
+    <paramValue name="checkSum">$$coreProteinsDir$$/coreProteomes/checkSum.tsv</paramValue>
+    <depends name="copyCoreGroups"/>
+  </step>
+
+</workflowGraph>

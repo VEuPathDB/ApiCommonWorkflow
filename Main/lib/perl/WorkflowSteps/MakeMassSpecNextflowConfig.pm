@@ -37,7 +37,7 @@ sub run {
   my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
   if ($undo) {
-      $self->runCmd(0, "rm $workflowDataDir/$nextflowConfigFile");
+      $self->runCmd(0, "rm -f $workflowDataDir/$nextflowConfigFile");
   } else {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
