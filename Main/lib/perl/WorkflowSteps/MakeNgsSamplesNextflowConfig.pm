@@ -43,7 +43,7 @@ params {
   input = "$digestedFinalDirPath"
   samplesheetName = "$sampleSheetName"
   fromSra = $fromSRA
-  outputDir = "$digestedOutputDir"
+  outDir = "$digestedOutputDir"
 }
 
 process {
