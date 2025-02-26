@@ -14,7 +14,7 @@ sub run {
   my $entry = $self->getParamValue('entry');
 
   # if the xml has set this config file.. run the cluster job
-  if(defined $nextflowConfigFile) {
+  if($nextflowConfigFile ne "") {
       $self->SUPER::run($test, $undo);
   }
 
