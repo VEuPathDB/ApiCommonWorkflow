@@ -9,6 +9,7 @@ sub run {
 
     my $checkSumFile = join("/", $workflowDataDir, $self->getParamValue("checkSum"));
     my $newGroupsFile = join("/", $workflowDataDir, $self->getParamValue("newGroupsFile"));
+    my $coreSkipIfFile = join("/", $workflowDataDir, $self->getParamValue("coreSkipIfFile"));
     my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
 
     if ($undo) {
@@ -21,7 +22,10 @@ sub run {
 
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/VEuPathDB_orthofinder-nextflow_main/**/newPeripheralDiamondCache/  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/peripheralCacheDir");
 
-      $self->runCmd(0, "cat $newGroupsFile >> ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/previousGroups.txt");
+      # Only add new groups to previous groups if new core run was done
+      if (! -e $coreSkipIfFile) {
+          $self->runCmd(0, "cat $newGroupsFile >> ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/previousGroups.txt");      
+      }
 
       $self->runCmd(0, "cp -r $checkSumFile ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/checkSum.tsv");
 
