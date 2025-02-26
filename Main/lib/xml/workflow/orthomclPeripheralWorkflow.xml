@@ -51,10 +51,15 @@
     <depends name="makePeripheralResultsDir"/>
   </step>
 
+  <step name="RetrievePreviousGroupsMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RetrievePreviousGroupsMapping">
+    <paramValue name="outputDir">$$peripheralDir$$</paramValue>
+    <depends name="CopyAndUncompressPeripheralCacheDir"/>
+  </step>
+
   <step name="copyCoreGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
      <paramValue name="fromFile">$$coreResultsDir$$/reformattedGroups.txt</paramValue>
      <paramValue name="toFile">$$peripheralDir$$/reformattedGroups.txt</paramValue>
-     <depends name="CopyAndUncompressPeripheralCacheDir"/>
+     <depends name="RetrievePreviousGroupsMapping"/>
   </step>
 
   <step name="copyCoreDiamondResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDir">
@@ -93,6 +98,7 @@
     <paramValue name="coreTranslateSequenceFile">$$peripheralDir$$/SequenceIDs.txt</paramValue>
     <paramValue name="peripheralCacheDir">$$peripheralDir$$/peripheralCacheDir</paramValue>
     <paramValue name="outdated">$$peripheralDir$$/outdated.txt</paramValue>
+    <paramValue name="oldGroupsFile">$$peripheralDir$$/previousGroups.txt</paramValue>
     <depends name="copyPeripheralProteomes"/>
   </step>
 
@@ -114,6 +120,7 @@
 
   <step name="updateOrthoPeripheralPersistentCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateOrthoPeripheralPersistentCache">
     <paramValue name="checkSum">$$getPeripheralProteinsDir$$/checkSum.tsv</paramValue>
+    <paramValue name="newGroupsFile">$$peripheralDir$$/analysisDir/results/fullGroupFile.txt</paramValue>
     <depends name="runPeripheralNextflowOnCluster"/>
   </step>
 
