@@ -19,6 +19,7 @@ sub run {
   my $buildVersion = $self->getSharedConfig("buildVersion");
   my $peripheralCacheDir = $self->getParamValue("peripheralCacheDir");
   my $outdatedOrganisms = $self->getParamValue("outdated");
+  my $oldGroupsFile = $self->getParamValue("oldGroupsFile");
 
   my $resultsDirectory = $self->getParamValue("clusterResultDir");
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
@@ -32,6 +33,7 @@ sub run {
   my $coreTranslateSequenceFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreTranslateSequenceFile);
   my $peripheralCacheDirInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $peripheralCacheDir);
   my $outdatedFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $outdatedOrganisms);
+  my $oldGroupsFileFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $oldGroupsFile);
   my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
   my $executor = $self->getClusterExecutor();
@@ -52,6 +54,7 @@ params {
     coreGroupSimilarities = \"$coreGroupSimilaritiesInNextflowWorkingDirOnCluster\"
     coreTranslateSequenceFile = \"$coreTranslateSequenceFileInNextflowWorkingDirOnCluster\"
     outdatedOrganisms = \"$outdatedFileInNextflowWorkingDirOnCluster\"
+    oldGroupsFile = \"$oldGroupsFileInNextflowWorkingDirOnCluster\"
     peripheralDiamondCache = \"$peripheralCacheDirInNextflowWorkingDirOnCluster\"
     blastArgs = \"\"
     buildVersion = $buildVersion
