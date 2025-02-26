@@ -11,6 +11,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $nextflowConfigFile = $self->getParamValue('nextflowConfigFile');
+  my $entry = $self->getParamValue('entry');
 
   # if the xml has set this config file.. run the cluster job
   if(defined $nextflowConfigFile) {
