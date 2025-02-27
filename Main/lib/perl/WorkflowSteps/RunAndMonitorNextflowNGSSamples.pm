@@ -5,6 +5,10 @@ package ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorNextflowNGSSamples;
 use strict;
 use ReFlow::StepClasses::RunAndMonitorNextflow;
 
+sub clusterJobInfoFileName { return "ngs-samples-clusterJobInfo.txt"}
+sub logFileName { return "ngs-samples-nextflow.log" }
+sub traceFileName { return "ngs-samples-trace.txt" }
+sub nextflowStdoutFileName { return "ngs-samples-nextflow.txt" }
 
 
 sub run {
