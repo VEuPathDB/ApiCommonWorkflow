@@ -8,7 +8,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $peripheralCacheDir = join("/",$self->getSharedConfig('preprocessedDataCache'),"OrthoMCL_peripheralGroups/officialDiamondCache/peripheralCacheDir.tar.gz");
+  my $peripheralCacheDir = join("/",$self->getSharedConfig('preprocessedDataCache'),"OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/peripheralCacheDir.tar.gz");
   my $outputDir = join("/", $workflowDataDir, $self->getParamValue("outputDir"));
 
   if ($undo) {
