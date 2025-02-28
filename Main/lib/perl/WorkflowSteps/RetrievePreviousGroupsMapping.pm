@@ -8,7 +8,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $previousGroups = join("/",$self->getSharedConfig('preprocessedDataCache'),"OrthoMCL_peripheralGroups/officialDiamondCache/previousGroups.txt");
+  my $previousGroups = join("/",$self->getSharedConfig('preprocessedDataCache'),"OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/previousGroups.txt");
   my $outputDir = join("/", $workflowDataDir, $self->getParamValue("outputDir"));
 
   if ($undo) {
