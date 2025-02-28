@@ -1,8 +1,10 @@
 #!/usr/bin/env nextflow
 
+
 nextflow.enable.dsl = 2
 
 workflow {
+
     // samplesheet has 2 fields (name and file)
     samples = Channel.fromPath(params.input + "/" + params.samplesheetFileName)
         .splitCsv( skip:1)
@@ -13,6 +15,8 @@ workflow {
     })
 
     peakFinderAndSmoother(rawToGenomeCoordinates.out)
+
+    
 }
 
 process rawToGenomeCoordinates {
@@ -26,22 +30,26 @@ process rawToGenomeCoordinates {
     """
     TransformRawDataToGenomeCoordinates  --inputFile ${params.input}/${chipChipFile} \\
                                          --outputFile genomeCoords.txt \\
-                                         --extDbSpec '${params.platformExtDbRlsSpec}'
+                                         --probesBamFile '${params.platformBamFile}'
     """
 }
 
 process peakFinderAndSmoother {
+    publishDir params.outDir, mode: 'copy'
+
     input:
-    tuple val(meta), path(genomeCoords)
+    tuple val(meta), path(bed)
 
     output:
-    tuple val(meta), path("smoothed.txt"), path("peaks.txt")
+    tuple val(meta), path("*_smoothed.bw"), path("*peaks.txt")
 
     script:
     """
-    java -Xmx2000m -classpath ${params.gusHome}/lib/java/GGTools-Array.jar org.apidb.ggtools.array.ChIP_Chip_Peak_Finder $genomeCoords  peaks.tmp.txt smoothed.tmp.txt ${params.peakFinderArgs}";
-    reformatSmoothedProfiles.pl --inputFile smoothed.tmp.txt --outputFile smoothed.txt
-    reformatPeaks.pl  --inputFile peaks.tmp.txt --outputFile peaks.txt
+    java -Xmx2000m -classpath \$GUS_HOME/lib/java/GGTools-Array.jar org.apidb.ggtools.array.ChIP_Chip_Peak_Finder $bed  peaks.tmp.txt smoothed.tmp.txt ${params.peakFinderArgs}
+    reformatSmoothedProfiles.pl --inputFile smoothed.tmp.txt --outputFile smoothed.txt 
+    cat smoothed.txt | tail -n +2 | sort -k1,1 -k2,2n >smoothed.bed
+    reformatPeaks.pl  --inputFile peaks.tmp.txt --outputFile ${meta.id}_peaks.txt
+    bedGraphToBigWig smoothed.bed ${params.seqSizeFile} ${meta.id}_smoothed.bw
     """
 }
 
