@@ -21,6 +21,7 @@ sub run {
   }
   else {
       $self->runCmd(0, "createOutdatedOrganismsFile --new $checkSumFile --old $cachedCheckSumFile --output $outdatedOrganismsFile");
+  }
 }
 
 1;
