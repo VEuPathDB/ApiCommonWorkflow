@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::RetrievePreviousGroupMapping;
+package ApiCommonWorkflow::Main::WorkflowSteps::RetrievePreviousGroupsMapping;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
