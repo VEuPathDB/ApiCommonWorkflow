@@ -8,6 +8,8 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
+
+  my $workflowDataDir = $self->getWorkflowDataDir();
   my $resultsDir = join("/", $workflowDataDir, $self->getParamValue("resultsDir"));
 
   if ($undo) {

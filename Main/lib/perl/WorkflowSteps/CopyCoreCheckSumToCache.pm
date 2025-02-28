@@ -8,6 +8,8 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
+
+  my $workflowDataDir = $self->getWorkflowDataDir();
   my $checkSumFile = join("/", $workflowDataDir, $self->getParamValue("checkSum"));
 
   if ($undo) {
