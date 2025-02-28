@@ -9,15 +9,13 @@ workflow {
 
     rawToGenomeCoordinates(samplesFullPath = samples.map { row ->
         chipChipFile = file(params.input + "/" + row[1]);
-        return [ [id: row[0] ], [chipChipFile] ]
+        return [ [id: row[0] ], chipChipFile ]
     })
 
     peakFinderAndSmoother(rawToGenomeCoordinates.out)
-
-    reformatSmoothedProfiles(peakFinderAndSmoother.out)
 }
 
-process rawToGenomeCoordinates [
+process rawToGenomeCoordinates {
     input:
     tuple val(meta), path(chipChipFile)
 
@@ -26,12 +24,11 @@ process rawToGenomeCoordinates [
 
     script:
     """
-    TransformRawDataToGenomeCoordinates  --inputFile ${params.workflowDataDir}/${chipChipFile} \\
+    TransformRawDataToGenomeCoordinates  --inputFile ${params.input}/${chipChipFile} \\
                                          --outputFile genomeCoords.txt \\
-                                         --extDbSpec '${params.platformExtDbRlsSpec}' \\
-                                         --gusConfigFile ${params.gusConfigFile}
+                                         --extDbSpec '${params.platformExtDbRlsSpec}'
     """
-]
+}
 
 process peakFinderAndSmoother {
     input:
