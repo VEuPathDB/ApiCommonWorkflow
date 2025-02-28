@@ -25,15 +25,9 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
   </subgraph>
 
-  <step name="createPeripheralOutdatedOrganisms" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreatePeripheralOutdatedOrganisms">
-    <paramValue name="checkSum">$$getPeripheralProteinsDir$$/peripheralProteomes/checkSum.tsv</paramValue>
-    <paramValue name="outdatedOrganisms">$$peripheralDir$$/outdated.txt</paramValue>
-    <depends name="getPeripheralProteomes"/>
-  </step>
-
   <step name="makePeripheralDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$peripheralDir$$</paramValue>
-      <depends name="createPeripheralOutdatedOrganisms"/>
+     <!-- <depends name="createPeripheralOutdatedOrganisms"/>-->
   </step>
 
   <step name="makePeripheralAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -45,6 +39,13 @@
     <paramValue name="dataDir">$$peripheralDir$$/analysisDir/results/</paramValue>
     <depends name="makePeripheralAnalysisDir"/>
    </step>
+
+  <step name="createPeripheralOutdatedOrganisms" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreatePeripheralOutdatedOrganisms">
+    <paramValue name="checkSum">$$getPeripheralProteinsDir$$/peripheralProteomes/checkSum.tsv</paramValue>
+    <paramValue name="outdatedOrganisms">$$peripheralDir$$/outdated.txt</paramValue>
+    <depends name="getPeripheralProteomes"/>
+    <depends name="makePeripheralDir"/>
+  </step>
 
   <step name="CopyAndUncompressPeripheralCacheDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndUncompressPeripheralCacheDir">
     <paramValue name="outputDir">$$peripheralDir$$</paramValue>
