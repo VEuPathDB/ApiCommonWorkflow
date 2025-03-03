@@ -40,16 +40,17 @@
     <depends name="makePeripheralAnalysisDir"/>
    </step>
 
-  <step name="createPeripheralOutdatedOrganisms" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreatePeripheralOutdatedOrganisms">
+  <step name="checkBuildVersionCreatePeripheralOutdatedOrganisms" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreatePeripheralOutdatedOrganisms">
     <paramValue name="checkSum">$$getPeripheralProteinsDir$$/peripheralProteomes/checkSum.tsv</paramValue>
     <paramValue name="outdatedOrganisms">$$peripheralDir$$/outdated.txt</paramValue>
+    <paramValue name="skipIfFile">$$getPeripheralProteinsDir$$/doNotDoAnalysis</paramValue>
     <depends name="getPeripheralProteomes"/>
     <depends name="makePeripheralDir"/>
   </step>
 
   <step name="CopyAndUncompressPeripheralCacheDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndUncompressPeripheralCacheDir">
     <paramValue name="outputDir">$$peripheralDir$$</paramValue>
-    <depends name="makePeripheralResultsDir"/>
+    <depends name="checkBuildVersionCreatePeripheralOutdatedOrganisms"/>
   </step>
 
   <step name="RetrievePreviousGroupsMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RetrievePreviousGroupsMapping">
@@ -87,48 +88,29 @@
      <depends name="copyCoreProteomes"/>
   </step>
 
-  <step name="makeOrthoFinderPeripheralNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPeripheralNextflowConfig">
-    <paramValue name="workingDirRelativePath">$$peripheralDir$$</paramValue>
-    <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/results/</paramValue>
-    <paramValue name="configFileName">nextflow.config</paramValue>
-    <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
-    <paramValue name="peripheralProteomes">$$peripheralDir$$/fastas.tar.gz</paramValue>
-    <paramValue name="coreProteome">$$peripheralDir$$/coreFastas.tar.gz</paramValue>
-    <paramValue name="coreGroupsFile">$$peripheralDir$$/reformattedGroups.txt</paramValue>
-    <paramValue name="coreGroupSimilarities">$$peripheralDir$$/groupDiamondResults</paramValue>
-    <paramValue name="coreTranslateSequenceFile">$$peripheralDir$$/SequenceIDs.txt</paramValue>
-    <paramValue name="peripheralCacheDir">$$peripheralDir$$/peripheralCacheDir</paramValue>
-    <paramValue name="outdated">$$peripheralDir$$/outdated.txt</paramValue>
-    <paramValue name="oldGroupsFile">$$peripheralDir$$/previousGroups.txt</paramValue>
+  <subgraph name="makePeripheralGroups" xmlFile="orthoFinderPeripheral.xml" skipIfFile="$$peripheralProteinsDir$$/doNotDoAnalysis">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
+    <paramValue name="peripheralDir">$$peripheralDir$$</paramValue>
+    <paramValue name="getPeripheralProteinsDir">$$getPeripheralProteinsDir$$</paramValue>
+    <depends name="copyPeripheralProteomes"/>
+  </subgraph>
+
+  <step name="copyPeripheralResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralGroupsResultsFromCache">
+    <paramValue name="resultsDir">$$peripheralDir$$/analysisDir/results/</paramValue>
+    <depends name="makePeripheralGroups"/>
     <depends name="copyPeripheralProteomes"/>
   </step>
 
-   <subgraph name="runPeripheralNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
-    <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="parentDataDir">$$peripheralDir$$</paramValue>
-    <paramValue name="nextflowConfigFile">$$peripheralDir$$/analysisDir/nextflow.config</paramValue>
-    <paramValue name="ngsSamplesNextflowConfigFile"></paramValue>
-    <paramValue name="organismAbbrev"></paramValue> <!-- Not neccessary for ortho -->
-    <paramValue name="genomeSpec">$$projectName$$|peripheralGroups</paramValue> <!-- Using for correct naming of preprocessed data cache -->
-    <paramValue name="isProteomeAnalysis">true</paramValue>
-    <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho -->
-    <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
-    <paramValue name="nextflowWorkflow">VEuPathDB/orthofinder-nextflow</paramValue>
-    <paramValue name="entry">peripheralEntry</paramValue>
-    <depends name="makeOrthoFinderPeripheralNextflowConfig"/>
-  </subgraph>
-
-  <step name="updateOrthoPeripheralPersistentCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateOrthoPeripheralPersistentCache">
-    <paramValue name="checkSum">$$getPeripheralProteinsDir$$/checkSum.tsv</paramValue>
-    <paramValue name="newGroupsFile">$$peripheralDir$$/analysisDir/results/fullGroupFile.txt</paramValue>
-    <depends name="runPeripheralNextflowOnCluster"/>
+  <step name="copyPeripheralCheckSumToCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCheckSumToCache">
+    <paramValue name="checkSum">$$getPeripheralProteinsDir$$/peripheralProteomes/checkSum.tsv</paramValue>
+    <depends name="copyPeripheralResults"/>
   </step>
 
   <step name="loadCoreGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertCoreGroups">
     <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
     <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/results/GroupsFile.txt</paramValue>
-    <depends name="updateOrthoPeripheralPersistentCache"/>
+    <depends name="copyPeripheralCheckSumCache"/>
   </step>
 
   <step name="loadResidualGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertResidualGroups">

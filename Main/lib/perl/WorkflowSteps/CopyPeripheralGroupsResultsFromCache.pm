@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreGroupResultsFromCache;
+package ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralGroupsResultsFromCache;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
  use strict;
@@ -8,6 +8,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
+  my $workflowDataDir = $self->getWorkflowDataDir();
   my $resultsDir = join("/", $workflowDataDir, $self->getParamValue("resultsDir"));
 
   if ($undo) {
@@ -18,7 +19,7 @@ sub run {
   }
   else {
 
-      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/* $resultsDir/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/* $resultsDir/");
 
   }
 }
