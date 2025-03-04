@@ -17,6 +17,7 @@ sub run {
   my $coreGroupSimilarities = $self->getParamValue("coreGroupSimilarities");
   my $coreTranslateSequenceFile = $self->getParamValue("coreTranslateSequenceFile");
   my $buildVersion = $self->getSharedConfig("buildVersion");
+  my $residualBuildVersion = $self->getSharedConfig("residualBuildVersion");
   my $peripheralCacheDir = $self->getParamValue("peripheralCacheDir");
   my $outdatedOrganisms = $self->getParamValue("outdated");
   my $oldGroupsFile = $self->getParamValue("oldGroupsFile");
@@ -58,6 +59,7 @@ params {
     peripheralDiamondCache = \"$peripheralCacheDirInNextflowWorkingDirOnCluster\"
     blastArgs = \"\"
     buildVersion = $buildVersion
+    residualBuildVersion = $residualBuildVersion
     bestRepDiamondOutputFields = \"qseqid sseqid evalue\"
     orthoFinderDiamondOutputFields = \"qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore\"
 
