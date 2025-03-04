@@ -11,7 +11,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $mappingFile = $workflowDataDir . "/" . $self->getParamValue('mappingFile');
   
-    my $args = " --mappingFile mappingFile";
+    my $args = " --mappingFile $mappingFile";
 
     if($undo) {
         $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertPreviousGroupMapping", $args);
