@@ -7,6 +7,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
+    my $workflowDataDir = $self->getWorkflowDataDir();
     my $checkSumFile = join("/", $workflowDataDir, $self->getParamValue("checkSum"));
     my $newGroupsFile = join("/", $workflowDataDir, $self->getParamValue("newGroupsFile"));
     my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
