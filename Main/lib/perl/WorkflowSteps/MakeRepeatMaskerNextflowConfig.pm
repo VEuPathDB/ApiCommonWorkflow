@@ -23,7 +23,7 @@ sub run {
     my $outputDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("outputDir")); 
     my $configFileName = $self->getParamValue("configFileName");
     my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
-    my $fastaSubsetSize = $self->getParamValue("fastaSubsetSize");
+    my $subsetFractionDenominator = $self->getParamValue("subsetFractionDenominator");
     my $trimDangling = $self->getParamValue("trimDangling");
     my $dangleMax = $self->getParamValue("dangleMax");
     my $rmParams = $self->getParamValue("rmParams");
@@ -62,7 +62,7 @@ sub run {
     my $configString = <<NEXTFLOW;
 params {
   inputFilePath = "$digestedInputFilePath"
-  fastaSubsetSize = $fastaSubsetSize
+  subsetFractionDenominator = $subsetFractionDenominator
   trimDangling = $trimDangling
   dangleMax = $dangleMax
   rmParams = "$rmParams"
