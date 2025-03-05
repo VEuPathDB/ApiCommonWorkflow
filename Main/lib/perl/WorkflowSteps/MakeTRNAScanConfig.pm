@@ -14,6 +14,8 @@ sub run {
   my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
   my $resultsDirectory = $self->getParamValue("resultsDirectory");
   my $trnascanOutputFileName = $self->getParamValue("outputFileName");
+  my $trnascanGFFFileName = $self->getParamValue("outputGFFName");
+
   my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
 
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -36,7 +38,8 @@ sub run {
 params {
   inputFilePath = "$genomicSequenceFileInNextflowWorkingDirOnCluster"
   outputDir = "$resultsDirectoryInNextflowWorkingDirOnCluster"
-  outputFile = "$trnascanOutputFileName"
+  outputFileName = "$trnascanOutputFileName"
+  outputGFFName = "$trnascanGFFFileName"
   fastaSubsetSize = $fastaSubsetSize
 }
 
