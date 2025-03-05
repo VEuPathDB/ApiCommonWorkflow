@@ -2,6 +2,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeBulkRnaSeqNextflowConfig;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
+use warnings;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 

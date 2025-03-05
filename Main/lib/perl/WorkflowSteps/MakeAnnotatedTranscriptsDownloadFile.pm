@@ -26,7 +26,7 @@ sub getWebsiteFileCmd {
                 ||' | organism='||
             replace( tn.name, ' ', '_')
                 ||' | product='||
-            product_name.product
+            substr(product_name.product, 1, 1000)
                 ||' | location='||
             ns.source_id
                 ||':'||

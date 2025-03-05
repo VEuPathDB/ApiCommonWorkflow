@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::RunClinEpiEdaNextflow;
+package ApiCommonWorkflow::Main::WorkflowSteps::RunMBioEdaNextflow;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig);
 
 use strict;
@@ -6,7 +6,6 @@ use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig;;
 
 # could override in worfklow step if needed
-my $INVESTIGATION_BASENAME = "investigation.xml";
 
 
 sub getStudyDirectory {
@@ -45,7 +44,7 @@ sub getLoadProtocolTypeAsVariable {
 }
 
 sub getLoadWebDisplayOntologyFile {
-    return "true"; # if you want to load the getWebDisplayOntologyFile above IF IT IS OWL
+    return "false"; # if you want to load the getWebDisplayOntologyFile above IF IT IS OWL
 ## SEE eda-nextflow/main.nf
 }
 
@@ -54,11 +53,9 @@ sub getInvestigationSubset {
 }
 
 sub getIsaFormat {
-    return "simple";
+    return "isatab";
 }
-sub getInvestigationBaseName {
-    return $INVESTIGATION_BASENAME;
-}
+sub getInvestigationBaseName { return sprintf("../final/%s.xml", $_[0]->getParamValue("studyStableId")) }
 
 sub getDownloadFileBaseName {
     return $_[0]->getParamValue('downloadFileBaseName');
@@ -70,9 +67,14 @@ sub getGadmPort { return "NA" }
 sub getOptionalCollectionsYaml {
     return sprintf("%s/ontology/General/collections/collections.yaml", $ENV{GUS_HOME});
 }
+
+sub getSampleDetailsFile { return sprintf("../final/%s.txt", $_[0]->getParamValue("studyStableId")) }
+sub getAssayResultsDirectory { return "../final" }
+sub getAssayResultsFileExtensionsJson { sprintf("%s/ApiCommonData/Load/ontology/Microbiome/assayExtensions", $ENV{PROJECT_HOME} ) }
+
 # TODO:
 # relative paths: '/../final/owlAttributes.txt'
-sub getOptionalDateObfuscationFile {return $_[0]->workflowDataPath("../final/dateObfuscation.txt") }
+# sub getOptionalDateObfuscationFile {return $_[0]->workflowDataPath("../final/dateObfuscation.txt") }
 sub getOptionalValueMappingFile { return $_[0]->workflowDataPath("../final/valueMap.txt") }
 sub getOptionalOntologyMappingOverrideFile { return $_[0]->workflowDataPath("../final/ontologyMapping.xml") }
 # sub getOptionalEntityTypeFile { return "entities.txt" }
@@ -80,6 +82,9 @@ sub getOptionalOntologyMappingOverrideFile { return $_[0]->workflowDataPath("../
 # sub getOptionalOrdinalsFile { return "ordinals.txt" }
 sub getOptionalAnnotationPropertiesFile { $_[0]->workflowDataPath("../annotationProperties.txt") }
 
-sub getNoCommonDef { return "true" }
+sub workflowDataPath {
+  my ($self, $file) = @_;
+  return join("/",$self->getStudyDirectory() , $file);
+}
 
 1;

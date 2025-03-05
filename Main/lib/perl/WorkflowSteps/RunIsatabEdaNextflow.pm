@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::RunPopbioEdaNextflow;
+package ApiCommonWorkflow::Main::WorkflowSteps::RunIsatabEdaNextflow;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig);
 
 use strict;
@@ -6,7 +6,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig;;
 
 # could override in worfklow step if needed
 my $INVESTIGATION_BASENAME = "i_investigation.txt";
-my $ANNOTATION_PROPERTIES_FILE = "/../final/annotationProperties.txt";
+my $ANNOTATION_PROPERTIES_FILE = "/../annotationProperties.txt";
 
 sub getStudyDirectory {
     my ($self) = @_;
@@ -48,7 +48,7 @@ sub getProtocolVariableSourceId {
 }
 
 sub getLoadWebDisplayOntologyFile {
-    return "false";
+    return "true";
 }
 
 sub getInvestigationSubset {
@@ -112,5 +112,8 @@ sub getOptionalAnnotationPropertiesFile {
      return $self->getWorkingDirectory() . $ANNOTATION_PROPERTIES_FILE;
  }
 
+sub getWebDisplayOntologyFile {
+    return sprintf("%s/%s", $ENV{GUS_HOME}, $_[0]->getParamValue('webDisplayOntologyFile'));
+}
 
 1;

@@ -10,6 +10,22 @@ sub workflowDataPath {
   return join("/",$self->getStudyDirectory() , $file);
 }
 
+
+# eda nextflow makes an extra directory in the working directory for downloads
+sub run {
+    my ($self, $test, $undo) = @_;
+
+    $self->SUPER::run($test, $undo);
+
+    if($undo) {
+        my $workingDirectory = $self->getWorkingDirectory();
+        my $resultsDir = $self->getParamValue("resultsDir");
+        $self->runCmd(0, "rm -rf $workingDirectory/$resultsDir");
+    }
+}
+
+
+sub getGusConfigFile { return sprintf("%s/config/gus.config", $ENV{'GUS_HOME'}) }
 sub getStudyDirectory {}
 sub getProject {}
 sub getExtDbRlsSpec {}
@@ -25,6 +41,20 @@ sub getInvestigationBaseName {}
 sub getMegaStudyStableId {}
 sub getOptionalMegaStudyYaml {}
 
+# this one is for any files written by nextflow (downloads ...)
+# sub getResultsDirectory {
+#   my ($self) = @_;
+#   return $self->getParamValue("resultsDir");
+# 
+#   #my $workingDirectory = $self->getWorkingDirectory();
+# 
+#   #return $workingDirectory . "/" . $self->getParamValue("resultsDir");
+# }
+
+
+sub getIsRelativeAbundance {
+  return "false";
+}
 sub getAssayResultsDirectory {}
 sub getAssayResultsFileExtensionsJson {}
 sub getSampleDetailsFile {}
@@ -39,12 +69,20 @@ sub getOptionalAnnotationPropertiesFile {}
 
 sub getSpeciesReconciliationOntologySpec {}
 sub getSpeciesReconciliationFallbackSpecies {}
+sub getGadmDataDir {}
+sub getGadmSocketDir {}
+sub getGadmPort { }
 
 sub getLoadProtocolTypeAsVariable {}
+sub getProtocolVariableSourceId {}
+
+sub getOptionalCollectionsYaml {}
 
 sub getUseOntologyTermTableForTaxonTerms {
     return "false"
 }
+
+sub getNoCommonDef {}
 
 
 sub getSchema {
@@ -55,6 +93,7 @@ sub getSchema {
 sub nextflowConfigAsString {
     my ($self) = @_;
 
+    my $gusConfigFile = $self->getGusConfigFile() || "NA";
     my $studyDirectory = $self->getStudyDirectory() || "NA";
     my $project = $self->getProject() || "NA";
     my $extDbRlsSpec = $self->getExtDbRlsSpec() || "NA";
@@ -67,6 +106,10 @@ sub nextflowConfigAsString {
     my $investigationBaseName = $self->getInvestigationBaseName() || "NA";
     my $megaStudyStableId = $self->getMegaStudyStableId() || "NA";
     my $optionalMegaStudyYaml = $self->getOptionalMegaStudyYaml() || "NA";
+
+    my $resultsDir = $self->getResultsDirectory() || "NA";
+
+    my $isRelativeAbundance = $self->getIsRelativeAbundance();
     my $assayResultsDirectory = $self->getAssayResultsDirectory() || "NA";
     my $assayResultsFileExtensionsJson = $self->getAssayResultsFileExtensionsJson() || "NA";
     my $sampleDetailsFile = $self->getSampleDetailsFile() || "NA";
@@ -77,10 +120,17 @@ sub nextflowConfigAsString {
     my $downloadFileBaseName = $self->getDownloadFileBaseName() || "NA";
     my $speciesReconciliationOntologySpec = $self->getSpeciesReconciliationOntologySpec() || "NA";
     my $speciesReconciliationFallbackSpecies = $self->getSpeciesReconciliationFallbackSpecies() || "NA";
+    my $gadmDataDirectory = $self->getGadmDataDir() || "NA";
+    my $gadmSocketDirectory = $self->getGadmSocketDir() || "NA";
+    my $gadmPort = $self->getGadmPort() || "NA";
     my $loadProtocolTypeAsVariable = $self->getLoadProtocolTypeAsVariable() || "false";
+    my $protocolVariableSourceId = $self->getProtocolVariableSourceId() || "NA";
     my $optionalAnnotationPropertiesFile = $self->getOptionalAnnotationPropertiesFile() || "NA";
 
     my $useOntologyTermTableForTaxonTerms = $self->getUseOntologyTermTableForTaxonTerms();
+
+    my $optionalCollectionsYaml = $self->getOptionalCollectionsYaml() || "NA";
+    my $optionalNoCommonDef = $self->getNoCommonDef() || "NA";
 
     my $config = <<CONFIG;
 params.studyDirectory = "$studyDirectory"
@@ -100,6 +150,8 @@ params.investigationBaseName = "$investigationBaseName"
 params.megaStudyStableId = "$megaStudyStableId"
 params.optionalMegaStudyYaml = "$optionalMegaStudyYaml"
 
+params.resultsDirectory = "$resultsDir"
+
 params.assayResultsDirectory = "$assayResultsDirectory"
 params.assayResultsFileExtensionsJson = "$assayResultsFileExtensionsJson"
 params.sampleDetailsFile = "$sampleDetailsFile"
@@ -118,8 +170,20 @@ params.speciesReconciliationOntologySpec = "$speciesReconciliationOntologySpec"
 params.speciesReconciliationFallbackSpecies = "$speciesReconciliationFallbackSpecies"
 params.useOntologyTermTableForTaxonTerms = $useOntologyTermTableForTaxonTerms
 
-params.loadProtocolTypeAsVariable = $loadProtocolTypeAsVariable
+params.optionalGadmDataDirectory = "$gadmDataDirectory";
+params.optionalGadmSocketDirectory = "$gadmSocketDirectory";
+params.optionalGadmPort = "$gadmPort";
 
+params.loadProtocolTypeAsVariable = $loadProtocolTypeAsVariable
+params.protocolVariableSourceId = "$protocolVariableSourceId"
+params.gusConfigFile = "$gusConfigFile"
+
+// needed for Mbio otu data
+params.isRelativeAbundance = $isRelativeAbundance
+
+params.optionalCollectionsYaml = "$optionalCollectionsYaml"
+
+params.noCommonDef = "$optionalNoCommonDef"
 
 trace.enabled = true
 trace.fields = 'task_id,hash,process,tag,status,exit,submit,realtime,%cpu,rss'

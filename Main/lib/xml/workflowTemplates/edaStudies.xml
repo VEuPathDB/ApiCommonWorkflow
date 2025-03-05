@@ -1,6 +1,8 @@
 <workflowGraph name="edaStudies">
   <param name="projectName"/>
   <param name="parentDataDir"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
 
   <constant name="dataDir">$$parentDataDir$$/edaStudies</constant>
 
@@ -23,17 +25,54 @@
       <paramValue name="datasetVersion">${version}</paramValue>
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="webDisplayOntologyName">${webDisplayOntologyName}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="nameForFilenames"></paramValue>
       <paramValue name="speciesReconciliationOntologySpec">${speciesReconciliationOntologySpec}</paramValue>
       <paramValue name="speciesReconciliationFallbackSpecies">${speciesReconciliationFallbackSpecies}</paramValue>
       <paramValue name="loadStudyCharacteristics">true</paramValue>
       <paramValue name="context">popbio</paramValue>
-      <paramValue name="optionalMegaStudyStableId"></paramValue>
+      <paramValue name="optionalStudyStableId"></paramValue>
       <paramValue name="studyClassificationsYaml">ontology/General/study_classifications/yaml/popbio.yaml</paramValue>
       <paramValue name="studyClassificationsOwl">ontology/popbio/popbio.owl</paramValue>
+      <paramValue name="downloadFileBaseName"></paramValue>
       <depends name="makeDataDir"/>
+      <dependsGlobal name="gadm_RSRC"/>
     </subgraph>
   </datasetTemplate>
 
+
+
+
+
+
+  <datasetTemplate class="EDAMegaStudy">
+    <prop name="projectName"/>
+    <prop name="studyStableId"/>
+    <prop name="version"/>
+    <prop name="webDisplayOntologyName"/>
+
+    <subgraph name="EDAMegaStudy_${studyStableId}" xmlFile="loadEdaStudy.xml">
+      <paramValue name="datasetName">EDAMegaStudy_${studyStableId}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="datasetVersion">${version}</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="webDisplayOntologyName">${webDisplayOntologyName}</paramValue>
+      <paramValue name="nameForFilenames"></paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="speciesReconciliationOntologySpec"></paramValue>
+      <paramValue name="speciesReconciliationFallbackSpecies"></paramValue>
+      <paramValue name="optionalStudyStableId">${studyStableId}</paramValue>
+      <paramValue name="loadStudyCharacteristics">false</paramValue>
+      <paramValue name="studyClassificationsYaml"></paramValue>
+      <paramValue name="studyClassificationsOwl"></paramValue>
+      <paramValue name="context">mega</paramValue>
+      <paramValue name="downloadFileBaseName"></paramValue>
+      <dependsPattern name="ISATab_*"/>
+    </subgraph>
+  </datasetTemplate>
 
 
   <datasetTemplate class="SingleISATabPopBio">
@@ -51,46 +90,119 @@
       <paramValue name="datasetVersion">${version}</paramValue>
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="webDisplayOntologyName">${webDisplayOntologyName}</paramValue>
+      <paramValue name="nameForFilenames"></paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="speciesReconciliationOntologySpec">${speciesReconciliationOntologySpec}</paramValue>
       <paramValue name="speciesReconciliationFallbackSpecies">${speciesReconciliationFallbackSpecies}</paramValue>
       <paramValue name="loadStudyCharacteristics">true</paramValue>
       <paramValue name="context">popbio</paramValue>
-      <paramValue name="optionalMegaStudyStableId"></paramValue>
+      <paramValue name="optionalStudyStableId"></paramValue>
       <paramValue name="studyClassificationsYaml">ontology/General/study_classifications/yaml/popbio.yaml</paramValue>
       <paramValue name="studyClassificationsOwl">ontology/popbio/popbio.owl</paramValue>
-      <depends name="makeDataDir"/>
+      <paramValue name="downloadFileBaseName"></paramValue>
+      <dependsPattern name="EDAMegaStudy_*"/>
+
     </subgraph>
   </datasetTemplate>
 
-
-
-  <datasetTemplate class="EDAMegaStudy">
+  <datasetTemplate class="ISASimpleTransitional">
     <prop name="projectName"/>
-    <prop name="studyStableId"/>
+    <prop name="subProjectName"/>
+    <prop name="studyName"/>
     <prop name="version"/>
     <prop name="webDisplayOntologyName"/>
+    <prop name="nameForFilenames"/>
 
-    <subgraph name="EDAMegaStudy_${studyStableId}" xmlFile="loadEdaStudy.xml">
-      <paramValue name="datasetName">EDAMegaStudy_${studyStableId}_RSRC</paramValue>
+    <subgraph name="ISASimple_${subProjectName}_${studyName}_RSRC" xmlFile="loadEdaStudy.xml">
+      <paramValue name="datasetName">ISASimple_${subProjectName}_${studyName}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="datasetVersion">${version}</paramValue>
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="webDisplayOntologyName">${webDisplayOntologyName}</paramValue>
+      <paramValue name="webDisplayOntologyFile">${webDisplayOntologyFile}</paramValue>
       <paramValue name="speciesReconciliationOntologySpec"></paramValue>
       <paramValue name="speciesReconciliationFallbackSpecies"></paramValue>
-      <paramValue name="optionalMegaStudyStableId">${studyStableId}</paramValue>
-      <paramValue name="loadStudyCharacteristics">false</paramValue>
-      <paramValue name="studyClassificationsYaml"></paramValue>
-      <paramValue name="studyClassificationsOwl"></paramValue>
-      <paramValue name="context">mega</paramValue>
-      <dependsPattern name="ISATab_*"/>
+      <paramValue name="loadStudyCharacteristics">true</paramValue>
+      <paramValue name="context">clinepi</paramValue>
+      <paramValue name="optionalStudyStableId"></paramValue>
+      <paramValue name="studyClassificationsYaml">lib/yaml/ClinEpiDB.yaml</paramValue>
+      <paramValue name="studyClassificationsOwl">ontology/release/production/classifications.owl</paramValue>
+      <paramValue name="downloadFileBaseName">${studyName}</paramValue> 
+      <paramValue name="nameForFilenames">${nameForFilenames}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="makeDataDir"/>
+      <!-- dependsGlobal name="Ontology_entityTypesAndProtocols_RSRC"/ -->
     </subgraph>
+ 
+  </datasetTemplate>
+  <datasetTemplate class="ISASimplePopset">
+    <prop name="projectName"/>
+    <prop name="subProjectName"/>
+    <prop name="studyName"/>
+    <prop name="version"/>
+    <prop name="gusPath"/>
+    <prop name="nextflowEntry"/>
+    <prop name="webDisplayOntologyName"/>
+
+    <subgraph name="ISASimple_${subProjectName}_${projectName}_${studyName}_RSRC" xmlFile="loadEdaPopset.xml">
+      <paramValue name="datasetName">ISASimple_${subProjectName}_${projectName}_${studyName}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${studyName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="datasetVersion">${version}</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="webDisplayOntologyName">${webDisplayOntologyName}</paramValue>
+      <paramValue name="webDisplayOntologyFile">${webDisplayOntologyFile}</paramValue>
+      <paramValue name="speciesReconciliationOntologySpec"></paramValue>
+      <paramValue name="speciesReconciliationFallbackSpecies"></paramValue>
+      <paramValue name="loadStudyCharacteristics">true</paramValue>
+      <paramValue name="context">popset</paramValue>
+      <paramValue name="nextflowEntry">${nextflowEntry}</paramValue>
+      <paramValue name="optionalStudyStableId"></paramValue>
+      <paramValue name="studyClassificationsYaml">lib/yaml/ClinEpiDB.yaml</paramValue>
+      <paramValue name="studyClassificationsOwl">ontology/release/production/classifications.owl</paramValue>
+      <paramValue name="downloadFileBaseName"></paramValue>
+      <paramValue name="nameForFilenames">${nameForFilenames}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <depends name="makeDataDir"/>
+      <!-- dependsGlobal name="Ontology_entityTypesAndProtocols_RSRC"/ -->
+    </subgraph>
+ 
   </datasetTemplate>
 
+  <datasetTemplate class="ISATabEDA">
+    <prop name="projectName"/>
+    <prop name="subProjectName"/>
+    <prop name="studyName"/>
+    <prop name="version"/>
+    <prop name="webDisplayOntologyName"/>
+    <prop name="speciesReconciliationOntologySpec"/>
+    <prop name="speciesReconciliationFallbackSpecies"/>
 
+    <subgraph name="ISATab_${subProjectName}_${studyName}_RSRC" xmlFile="loadEdaIsatab.xml">
+      <paramValue name="datasetName">ISATab_${subProjectName}_${studyName}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="datasetVersion">${version}</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="webDisplayOntologyName">${webDisplayOntologyName}</paramValue>
+      <paramValue name="webDisplayOntologyFile">${webDisplayOntologyFile}</paramValue>
+      <paramValue name="nameForFilenames"></paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="speciesReconciliationOntologySpec">${speciesReconciliationOntologySpec}</paramValue>
+      <paramValue name="speciesReconciliationFallbackSpecies">${speciesReconciliationFallbackSpecies}</paramValue>
+      <paramValue name="loadStudyCharacteristics">true</paramValue>
+      <paramValue name="context">isatab</paramValue>
+      <paramValue name="optionalStudyStableId"></paramValue>
+      <paramValue name="studyClassificationsYaml">ontology/General/study_classifications/yaml/popbio.yaml</paramValue>
+      <paramValue name="studyClassificationsOwl">ontology/popbio/popbio.owl</paramValue>
+      <paramValue name="downloadFileBaseName"></paramValue>
+      <dependsPattern name="EDAMegaStudy_*"/>
 
-
-
-
+    </subgraph>
+  </datasetTemplate>
 </workflowGraph>

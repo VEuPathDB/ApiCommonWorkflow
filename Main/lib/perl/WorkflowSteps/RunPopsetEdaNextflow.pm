@@ -1,12 +1,13 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::RunPopbioEdaNextflow;
+package ApiCommonWorkflow::Main::WorkflowSteps::RunPopsetEdaNextflow;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig);
 
 use strict;
+use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::EdaNextflowConfig;;
 
 # could override in worfklow step if needed
-my $INVESTIGATION_BASENAME = "i_investigation.txt";
-my $ANNOTATION_PROPERTIES_FILE = "/../final/annotationProperties.txt";
+my $INVESTIGATION_BASENAME = "investigation.xml";
+
 
 sub getStudyDirectory {
     my ($self) = @_;
@@ -31,24 +32,20 @@ sub getExtDbRlsSpec {
 sub getWebDisplayOntologySpec {
     my ($self) = @_;
     my $webDisplayOntologyName = $self->getParamValue('webDisplayOntologyName');
-    return "$webDisplayOntologyName|%"
+    return "$webDisplayOntologyName|dontcare"
 }
 
-
-sub getOptionalCollectionsYaml {
-    return sprintf("%s/ontology/General/collections/popbio.yaml", $ENV{GUS_HOME});
+sub getWebDisplayOntologyFile {
+    return sprintf("%s/%s", $ENV{GUS_HOME}, $_[0]->getParamValue('webDisplayOntologyFile'));
 }
 
 sub getLoadProtocolTypeAsVariable {
     return "false";
 }
 
-sub getProtocolVariableSourceId {
-    return "OBI_0000272";
-}
-
 sub getLoadWebDisplayOntologyFile {
-    return "false";
+    return "true"; # if you want to load the getWebDisplayOntologyFile above IF IT IS OWL
+## SEE eda-nextflow/main.nf
 }
 
 sub getInvestigationSubset {
@@ -56,16 +53,15 @@ sub getInvestigationSubset {
 }
 
 sub getIsaFormat {
-    return "isatab";
+    return "simple";
 }
 sub getInvestigationBaseName {
-    return $INVESTIGATION_BASENAME;;
+    return $INVESTIGATION_BASENAME;
 }
 
 sub getDownloadFileBaseName {
     return $_[0]->getParamValue('downloadFileBaseName');
 }
-
 sub getGadmPort {
     my ($self) = @_;
     return $self->getSharedConfig('gadmPort');
@@ -73,44 +69,39 @@ sub getGadmPort {
 
 sub getGadmDataDir {
     my ($self) = @_;
-
+    return "/eupath/data/EuPathDB/manualDelivery/common/gadm/4.1/postgresData";
     my $proj = $self->getParamValue('projectName');
     my $workflowDataDir = $self->getWorkflowDataDir();
-    return "/eupath/data/EuPathDB/manualDelivery/common/gadm/4.1/postgresData";
     return "${workflowDataDir}/global/${proj}_gadm_RSRC/postgresData";
 }
 
 sub getGadmSocketDir {
     my ($self) = @_;
-
+    return "/eupath/data/EuPathDB/manualDelivery/common/gadm/4.1/postgresSocket";
     my $proj = $self->getParamValue('projectName');
     my $workflowDataDir = $self->getWorkflowDataDir();
-    return "/eupath/data/EuPathDB/manualDelivery/common/gadm/4.1/postgresSocket";
     return "${workflowDataDir}/global/${proj}_gadm_RSRC/postgresSocket";
 }
 
 
-sub getSpeciesReconciliationOntologySpec {
-    my ($self) = @_;
-
-    return $self->getParamValue('speciesReconciliationOntologySpec');
-
+sub getOptionalCollectionsYaml {
+    return sprintf("%s/ontology/General/collections/collections.yaml", $ENV{GUS_HOME});
+}
+sub getOptionalStudyStableId {
+    return $_[0]->getParamValue('studyName');
 }
 
-sub getSpeciesReconciliationFallbackSpecies {
-    my ($self) = @_;
+sub getGusConfigFile { return "NA" }
+# TODO:
+# relative paths: '/../final/owlAttributes.txt'
+# sub getOptionalDateObfuscationFile {return $_[0]->workflowDataPath("../final/dateObfuscation.txt") }
+sub getOptionalValueMappingFile { return $_[0]->workflowDataPath("../final/valueMap.txt") }
+sub getOptionalOntologyMappingOverrideFile { return $_[0]->workflowDataPath("../final/ontologyMapping.xml") }
+# sub getOptionalEntityTypeFile { return "entities.txt" }
+# sub getOptionalOwlAttributesFile { return "owlAttributes.txt" }
+# sub getOptionalOrdinalsFile { return "ordinals.txt" }
+sub getOptionalAnnotationPropertiesFile { $_[0]->workflowDataPath("../annotationProperties.txt") }
 
-    return $self->getParamValue('speciesReconciliationFallbackSpecies');
-}
-
-sub getUseOntologyTermTableForTaxonTerms {
-    return "true"
-}
-
-sub getOptionalAnnotationPropertiesFile {
-     my ($self) = @_;
-     return $self->getWorkingDirectory() . $ANNOTATION_PROPERTIES_FILE;
- }
-
+sub getNoCommonDef { return "true" }
 
 1;

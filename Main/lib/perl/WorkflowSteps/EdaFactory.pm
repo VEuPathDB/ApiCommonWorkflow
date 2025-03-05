@@ -5,7 +5,10 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 use ApiCommonWorkflow::Main::WorkflowSteps::RunPopbioEdaNextflow;
+use ApiCommonWorkflow::Main::WorkflowSteps::RunPopsetEdaNextflow;
+use ApiCommonWorkflow::Main::WorkflowSteps::RunIsatabEdaNextflow;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunClinEpiEdaNextflow;
+use ApiCommonWorkflow::Main::WorkflowSteps::RunMBioEdaNextflow;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunMegaStudyEdaNextflow;
 
 sub new {
@@ -22,13 +25,18 @@ sub new {
   elsif($context eq 'mega') {
       $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunMegaStudyEdaNextflow->new(@_);
   }
-  # TODO:  implement these
   elsif($context eq 'clinepi') {
       $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunClinEpiEdaNextflow->new(@_);
   }
-  # elsif($conext eq 'microbiome') {
-  #     $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunMegaStudyEdaNextflow->new(@_);
-  # }
+  elsif($context eq 'microbiome') {
+      $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunMBioEdaNextflow->new(@_);
+  }
+  elsif($context eq 'popset') {
+      $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunPopsetEdaNextflow->new(@_);
+  }
+  elsif($context eq 'isatab') {
+      $rv = ApiCommonWorkflow::Main::WorkflowSteps::RunIsatabEdaNextflow->new(@_);
+  }
   # Other Genomics Contexts (popbio, ....)
 
   else {

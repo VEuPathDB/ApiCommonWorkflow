@@ -22,7 +22,7 @@ sub getWebsiteFileCmd {
      select taaf.source_id || ' | transcript=' || t.source_id || ' | gene=' || gf.source_id
             || decode(deprecated.is_deprecated, 1, ' | deprecated=true', '')
             || ' | organism=' || replace( tn.name, ' ', '_')
-            || ' | product=' || product_name.product || ' | location='
+            || ' | product=' || substr(product_name.product, 1, 1000) || ' | location='
             || ns.source_id || ':'
 --            || least(gf.coding_start,gf.coding_end) ||'-'
 --            || greatest(gf.coding_start,gf.coding_end)
@@ -99,7 +99,7 @@ EOF
 
   my $sql = <<EOF;
 SELECT t.protein_source_id || ' | transcript=' || t.source_id || ' | gene=' || t.gene_source_id || ' | organism=' || replace(t.organism, ' ', '_') || 
-  ' | gene_product=' || gene_product || ' | transcript_product=' || transcript_product
+  ' | gene_product=' || substr(gene_product, 1, 1000) || ' | transcript_product=' || substr(transcript_product, 1, 1000)
   || ' | location=' || sequence_id || ':' || coding_start || '-' || coding_end
   || '(' || CASE WHEN is_reversed = 1 THEN '-' ELSE '+' END || ')'
   || ' | protein_length=' || t.protein_length 

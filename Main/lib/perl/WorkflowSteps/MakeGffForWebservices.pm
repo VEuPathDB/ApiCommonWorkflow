@@ -43,7 +43,7 @@ sub run {
           $self->runCmd(0, "echo test > ${gffFile}.gff.gz");
           $self->runCmd(0, "echo test > ${gffFile}.gff.gz.tbi");
       }
-#      $self->runCmd($test, "mkdir -p $copyToDir");
+      $self->runCmd($test, "mkdir -p $copyToDir");
       $self->runCmd($test, $cmd);
       $self->runCmd($test, $sortGffCmd);
       $self->runCmd($test, $bgzipCmd);

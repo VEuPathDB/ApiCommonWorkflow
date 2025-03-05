@@ -58,7 +58,7 @@ EOF
           $self->runCmd(0, "echo test > $fastaFile");
           $self->runCmd(0, "echo test > ${fastaFile}.fai");
       }
-#      $self->runCmd($test, "mkdir -p $copyToDir");
+      $self->runCmd($test, "mkdir -p $copyToDir");
       $self->runCmd($test, $cmd);
       $self->runCmd($test, $indexCmd);
   }

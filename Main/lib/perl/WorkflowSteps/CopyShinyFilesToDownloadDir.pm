@@ -15,7 +15,7 @@ sub run {
 
   my $datasetName = $self->getParamValue('datasetName');
   my $nameForFilenames= $self->getParamValue('nameForFilenames');
-  my $inputFileBaseName = $self->getParamValue('inputFileBaseName');
+  my $filePath= $self->getParamValue('filePath');
   my $downloadDir = $self->getParamValue('relativeDownloadSiteDir');
 
   # standard parameters for making download files
@@ -35,17 +35,6 @@ sub run {
       $self->log("This WorkflowStep package does not run any tests");
       return;
     }
-  # $self->runCmd($test, "mkdir -p $copyToDir");
-  # $self->runCmd($test, "printf \"IndexIgnore *\" > $websiteFilesDir/$downloadDir/.htaccess");
-  # $self->runCmd($test, "printf \"IndexIgnoreReset ON\nIndexIgnore ..\" > $copyToDir/.htaccess");
-  # if($nameForFilenames ne ""){
-  #   $self->runCmd($test, "cd $workflowDataDir/$datasetName/; rename $inputFileBaseName $nameForFilenames ./$inputFileBaseName*");
-  #   $self->runCmd($test, "cp $workflowDataDir/$datasetName/$nameForFilenames* $copyToDir/");
-  # }
-  # else{
-  #   $self->runCmd($test, "rename $inputFileBaseName $datasetName $workflowDataDir/$datasetName/$inputFileBaseName*");
-  #   $self->runCmd($test, "cp $workflowDataDir/$datasetName/$datasetName* $copyToDir/");
-  # }
     make_path($copyToDir) unless( -d $copyToDir);
   # htaccess
     open(FH, ">$websiteFilesDir/$downloadDir/.htaccess") or die "Cannot create .htaccess: $!";
@@ -56,7 +45,7 @@ sub run {
     printf FH ("IndexIgnoreReset ON\nIndexIgnore ..\n");
     close(FH);
   # create zips in destination
-    opendir(DH, "$workflowDataDir/$datasetName") or die "Cannot read directory: $!";
+    opendir(DH, "$workflowDataDir/$filePath") or die "Cannot read directory: $!";
     my @files = grep { /$datasetName/ } readdir(DH);
     closedir(DH);
     foreach my $file (@files){
@@ -69,8 +58,8 @@ sub run {
       #my $zipFile = basename($unzippedName, ".txt") . ".zip";
       my $zipFile = $unzippedName . ".zip";
       $unzippedName = basename($unzippedName);
-      zip("$workflowDataDir/$datasetName/$file" => "$copyToDir/$zipFile", "Name" => $unzippedName) or die "Zip failed: $!";
-      printf STDERR ("$workflowDataDir/$datasetName/$file => \n\t$copyToDir/$zipFile\n");
+      zip("$workflowDataDir/$filePath/$file" => "$copyToDir/$zipFile", "Name" => $unzippedName) or die "Zip failed: $!";
+      printf STDERR ("$workflowDataDir/$filePath/$file => \n\t$copyToDir/$zipFile\n");
     }
     # Don't clean up data dir
     # foreach my $file (@files){

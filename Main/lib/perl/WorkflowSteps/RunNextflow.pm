@@ -67,7 +67,8 @@ sub run {
         $self->runCmd(0, "rm -rf $nextflowWork");
         $self->runCmd(0, "rm -f $nextflowConfig");
         $self->runCmd(0, "rm -f ${nextflowLog}*");
-        $self->runCmd(0, "rm -f $workingDirectory/trace.txt*");
+        $self->runCmd(0, "rm -f $workingDirectory/trace*");
+        $self->runCmd(0, "rm -rf $workingDirectory/results") if (-d "$workingDirectory/results");
         $self->runCmd(0, "rm $workingDirectory/.nextflow* -rf");
     }
     else {
@@ -76,7 +77,7 @@ sub run {
 "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Since this nextflow step FAILED, please CLEAN UP by calling:
 
-  pushd $workingDirectory; undoNextflowPlugins.bash; rm -rf .nextflow/; popd
+  pushd $workingDirectory; undoNextflowPlugins.bash && rm -rf .nextflow/; popd
 
 (You need to do this cleanup EVEN IF the step did not write any data to *its*
 tables.  ga most likely wrote to WorkflowStepAlgInvocation, and those rows

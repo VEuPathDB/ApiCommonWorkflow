@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<workflowGraph name="loadEdaStudy">
+<workflowGraph name="loadEdaPopset">
   <param name="datasetName"/>
   <param name="datasetLoaderXmlFileName"/>
   <param name="parentDataDir"/>
@@ -8,12 +8,14 @@
   <param name="relativeDownloadSiteDir"/>
   <param name="relativeWebServicesDir"/>
   <param name="webDisplayOntologyName"/>
+  <param name="webDisplayOntologyFile"/>
   <param name="downloadFileBaseName"/>
   <param name="nameForFilenames"/>
   <param name="speciesReconciliationOntologySpec"/>
   <param name="speciesReconciliationFallbackSpecies"/>
   <param name="loadStudyCharacteristics"/>
   <param name="context"/>
+  <param name="nextflowEntry"/>
   <param name="optionalStudyStableId"/>
   <param name="studyClassificationsYaml"/>
   <param name="studyClassificationsOwl"/>
@@ -49,6 +51,7 @@
     <paramValue name="datasetVersion">$$datasetVersion$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="webDisplayOntologyName">$$webDisplayOntologyName$$</paramValue>
+    <paramValue name="webDisplayOntologyFile">$$webDisplayOntologyFile$$</paramValue>
     <paramValue name="workingDir">$$dataDir$$/entityGraph</paramValue>
     <paramValue name="resultsDir">$$dataDir$$/entityGraph/results</paramValue>
     <paramValue name="downloadFileBaseName">$$downloadFileBaseName$$</paramValue>
@@ -56,7 +59,7 @@
     <paramValue name="isGitRepo">true</paramValue>
     <paramValue name="gitBranch">main</paramValue>
     <paramValue name="context">$$context$$</paramValue>
-    <paramValue name="nextflowEntry">loadEntityGraphEntry</paramValue>
+    <paramValue name="nextflowEntry">$$nextflowEntry$$</paramValue>
     <paramValue name="speciesReconciliationOntologySpec">$$speciesReconciliationOntologySpec$$</paramValue>
     <paramValue name="speciesReconciliationFallbackSpecies">$$speciesReconciliationFallbackSpecies$$</paramValue>
     <paramValue name="studyStableId">$$optionalStudyStableId$$</paramValue>
@@ -68,6 +71,7 @@
     <paramValue name="datasetVersion">$$datasetVersion$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="webDisplayOntologyName">$$webDisplayOntologyName$$</paramValue>
+    <paramValue name="webDisplayOntologyFile">$$webDisplayOntologyFile$$</paramValue>
     <paramValue name="workingDir">$$dataDir$$/annPropsAndArtifacts</paramValue>
     <paramValue name="resultsDir">$$dataDir$$/annPropsAndArtifacts/results</paramValue>
     <paramValue name="downloadFileBaseName">$$downloadFileBaseName$$</paramValue>
@@ -102,6 +106,11 @@
     <step name="copyEntityWebServicesFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyToStaging">
       <paramValue name="filePath">$$dataDir$$/annPropsAndArtifacts/results/study_*</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeWebServicesDir$$/</paramValue>
+      <depends name="nextflowAnnPropsAndArtifacts"/>
+    </step>
+    <step name="copyFastaToStaging" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyToStaging">
+      <paramValue name="filePath">$$dataDir$$/*.fasta</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeWebServicesDir$$</paramValue>
       <depends name="nextflowAnnPropsAndArtifacts"/>
     </step>
 
