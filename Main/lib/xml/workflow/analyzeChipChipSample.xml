@@ -46,14 +46,6 @@
       <depends name="makePeakFinderDataDir"/>
     </step>
 
-    <step name="document-ChIPChipPeakFinder"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-      <paramValue name="method">chip_chip_peak_finder_MTHD</paramValue>
-      <paramValue name="version">1.0</paramValue>
-      <paramValue name="parameters"></paramValue>
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="runChIPChipPeakFinderAndSmoother"/>
-    </step>
 
     <step name="reformatSmoothedProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatChIPChipSmoothedProfiles">
      <paramValue name="inputFile">$$peakFinderDataDir$$/smoothedProfiles.txt</paramValue>
@@ -63,7 +55,7 @@
 
     <step name="writeSmoothedConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteStudyConfig">
       <paramValue name="configOutputFile">$$configFilesDir$$/$$sampleName$$_smoothedConfig.txt</paramValue>
-      <paramValue name="file">smoothedProfiles_reformat.txt</paramValue> 
+      <paramValue name="file">smoothedProfiles_reformat.txt</paramValue>
       <paramValue name="analysisName">$$sampleName$$_smoothed (ChIP-chip)</paramValue>
       <paramValue name="protocolName">chipChipSmoothed</paramValue>
       <paramValue name="sourceIdType">segment</paramValue>
@@ -76,7 +68,7 @@
     <step name="loadSmoothedProfilesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
       <paramValue name="configFile">$$configFilesDir$$/$$sampleName$$_smoothedConfig.txt</paramValue>
       <paramValue name="inputDir">$$peakFinderDataDir$$</paramValue>
-      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|%</paramValue> 
+      <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|%</paramValue>
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="writeSmoothedConfig"/>
