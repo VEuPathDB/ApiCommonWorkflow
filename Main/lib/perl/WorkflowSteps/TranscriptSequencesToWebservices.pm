@@ -25,9 +25,9 @@ sub run {
 
   my $workingDirectory = "${workflowDataDir}/$dataDir";
 
-  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/genomeAndProteome/gff/";
-
   my ($queryExtDbName, $queryExtDbVer) = split(/\|/, $queryExtDbSpec);
+
+  my $copyToDir;
 
   my $outputFileBase;
 
@@ -36,11 +36,14 @@ sub run {
     $outputFileBase = $queryExtDbName;
 
     $cmd = $cmd . " --output_file_base $outputFileBase  --query_ext_db_rls_spec '${queryExtDbSpec}'";
+
+    $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/alignedTranscripts/gff/$queryExtDbName/";
   }
   # Else ESTs
   else {
-    $outputFileBase = "${organismAbbrev}_ESTs";
+    $outputFileBase = "ESTs";
     $cmd = $cmd . "--output_file_base $outputFileBase --is_est";
+    $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/alignedTranscripts/gff/";
   }
 
 
@@ -56,10 +59,12 @@ sub run {
           $self->runCmd(0, "echo test > $workingDirectory/${outputFileBase}.gff.gz ");
           $self->runCmd(0, "echo test > $workingDirectory/${outputFileBase}.gff.gz.tbi");
       }
-
-      $self->runCmd($test, $cmd);
-      $self->runCmd($test, "cp $workingDirectory/${outputFileBase}.gff.gz $copyToDir");
-      $self->runCmd($test, "cp $workingDirectory/${outputFileBase}.gff.gz.tbi $copyToDir");
+      else {
+        $self->runCmd($test, $cmd);
+        $self->runCmd($test, "mkdir -p $copyToDir");
+        $self->runCmd($test, "cp $workingDirectory/${outputFileBase}.gff.gz $copyToDir");
+        $self->runCmd($test, "cp $workingDirectory/${outputFileBase}.gff.gz.tbi $copyToDir");
+      }
   }
 }
 
