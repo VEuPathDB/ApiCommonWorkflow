@@ -25,7 +25,7 @@ sub run {
       
       $self->runCmd(0, "rm ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/coreCacheDir.tar.gz");
 
-      $self->runCmd(0, "tar -czf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/coreCacheDir.tar.gz ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/coreCacheDir");
+      $self->runCmd(0, "tar -czf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/coreCacheDir.tar.gz -C ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache coreCacheDir");
 
       $self->runCmd(0, "rm -rf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/coreCacheDir");
 
