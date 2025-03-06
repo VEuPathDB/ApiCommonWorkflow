@@ -22,21 +22,20 @@ sub run {
   my $organismNameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
-  #my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/gff/$experimentDatasetName";
-  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/gff";
+  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/gff/$experimentDatasetName";
   my $workflowDataDir = $self->getWorkflowDataDir();
-  #my $cmd_mkdir = "mkdir -p $copyToDir";
+  my $cmd_mkdir = "mkdir -p $copyToDir";
   my $cmd_copy = "cp $workflowDataDir/$gff3File $copyToDir"; 
 
   $self->testInputFile('gff3File', "$workflowDataDir/$gff3File");
 
   if ($undo) {
-    $self->runCmd(0, "rm -f $copyToDiri/$gff3File.tbi");
-    $self->runCmd(0, "rm -f $copyToDiri/$gff3File");
+    $self->runCmd(0, "rm -f $copyToDir/$gff3File.tbi");
+    $self->runCmd(0, "rm -f $copyToDir/$gff3File");
   } else {
-    #$self->runCmd($test, $cmd_mkdir);
+    $self->runCmd($test, $cmd_mkdir);
     $self->runCmd($test, $cmd_copy);
-    $self->runCmd($test, "cp $workflowDataDir/$gff3File.tbi $copyToDir");
+    $self->runCmd($test, "process_folder.pl --folder $copyToDir");
   }
 
 }

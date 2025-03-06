@@ -23,7 +23,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
 
     $fileType =~ s/\d$//;
-    my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/$fileType";
+    my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/prealigned/$fileType/${organismAbbrev}_${experimentName}_RSRC";
     my $cmd_mkdir = "mkdir -p $copyToDir";
     my $cmd_copy = "cp $workflowDataDir/$copyFromDir/* $copyToDir";
 
@@ -31,8 +31,8 @@ sub run {
         $self->runCmd(0,"rm -rf $copyToDir");
     }else{
         $self->runCmd($test, $cmd_mkdir);
-        $self->runCmd($test, "indexGFF.pl --gff $workflowDataDir/$copyFromDir/${experimentName}.gff") if ($fileType eq 'gff');
         $self->runCmd($test, $cmd_copy);
+        $self->runCmd($test, "process_folder.pl --folder $copyToDir");
     }
 }
 
