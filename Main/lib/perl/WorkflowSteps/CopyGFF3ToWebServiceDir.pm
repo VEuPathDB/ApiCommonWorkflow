@@ -22,7 +22,7 @@ sub run {
   my $organismNameForFiles =
       $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
-  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/gff/$experimentDatasetName";
+  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/prealigned/gff/$experimentDatasetName";
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $cmd_mkdir = "mkdir -p $copyToDir";
   my $cmd_copy = "cp $workflowDataDir/$gff3File $copyToDir"; 

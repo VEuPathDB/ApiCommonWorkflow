@@ -30,12 +30,6 @@ sub run {
 
   my $cmd_copy = "cp $workflowDataDir/$vcfFile $copyToDir"; 
 
-  my $tabixCmd = "tabix -p vcf $workflowDataDir/$vcfFile";
-
-  unless (-e "$workflowDataDir/$vcfFile.tbi") {
-    $self->runCmd($test, $tabixCmd);
-  }
-
 
   if ($undo) {
     $self->runCmd(0, "rm -fr $copyToDir");
@@ -43,7 +37,7 @@ sub run {
     $self->testInputFile('vcfFile', "$workflowDataDir/$vcfFile");
     $self->runCmd($test, $cmd_mkdir);
     $self->runCmd($test, $cmd_copy);
-    $self->runCmd($test, "cp $workflowDataDir/$vcfFile.tbi $copyToDir");
+    $self->runCmd($test, "process_folder.pl --folder $copyToDir");
   }
 
 }
