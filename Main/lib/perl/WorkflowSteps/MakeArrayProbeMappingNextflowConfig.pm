@@ -15,7 +15,7 @@ sub run {
 
   my $resultsDirectory = $self->getParamValue("resultsDirectory");
 
-  my $gtfFile = $self->getParamValue("gtfFile");finaldire
+  my $gtfFile = $self->getParamValue("gtfFile");
   my $genomeFile = $self->getParamValue("genomeFile");
   my $finalDirectory = $self->getParamValue("finalDirectory");
   my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
