@@ -62,7 +62,7 @@ includeConfig "\$baseDir/conf/nfcore_boilerplate.config"
 includeConfig "$clusterConfigFile"
 
 process {
-  maxForks = 2
+  maxForks = 10
 }
 
 def check_max(obj, type) {
