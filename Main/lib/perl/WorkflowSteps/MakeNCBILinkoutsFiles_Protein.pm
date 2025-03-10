@@ -10,7 +10,7 @@ sub getWebsiteFileCmd {
 
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $gusConfigFile = $self->getGusConfigFile();
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
 
   my $downloadsite = $self->getParamValue('projectName');
 
