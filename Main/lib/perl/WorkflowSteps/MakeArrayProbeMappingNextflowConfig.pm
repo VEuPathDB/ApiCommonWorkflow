@@ -27,7 +27,7 @@ sub run {
   my $wantSplicedAlignments = lc $self->getParamValue("wantSplicedAlignments");
   my $makeCdfFile = lc $self->getParamValue("makeCdfFile");
   my $makeNdfFile = lc $self->getParamValue("makeNdfFile");
-  my $outputFileName = $self->getParamValue("geneProbeMappingFileName");
+  my $geneProbeMappingFileName = $self->getParamValue("geneProbeMappingFileName");
 
   # defaults for non cdf/ndf mapping
   my $vendorMappingFileName = "NA";
@@ -80,7 +80,7 @@ params {
   gtfFile = "$digestedGtfFilePath"
   makeCdfFile = $makeCdfFile
   makeNdfFile = $makeNdfFile
-  outputMappingFileName = "$outputFileName"
+  outputMappingFileName = "$geneProbeMappingFileName"
   vendorMappingFile = "$digestedFinalDir/$vendorMappingFileName"
   arrayRows = $probeRows
   arrayColumns = $probeCols
