@@ -1,4 +1,4 @@
-<workflowGraph name="microarrayExpression">
+<workflowGraph name="microarray">
   <param name="projectName"/>
   <param name="gusConfigFile"/>
   <param name="organismAbbrev"/>
@@ -91,6 +91,7 @@
       <paramValue name="numInsertions">${numInsertions}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <depends name="${name}_loadProbeDataset"/>
+      <depends name="makeMaskGtfForCufflinks"/>
     </subgraph>
 
     <step name="${name}_symLinkArrayProbeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
@@ -152,7 +153,7 @@
       <paramValue name="probeDatasetName">${organismAbbrev}_chipChipPlatform_${name}_RSRC</paramValue>
       <paramValue name="probeDatasetVersion">${version}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="gtfFile"></paramValue>
+      <paramValue name="gtfFile">$$organismAbbrev$$_mask.gtf</paramValue>
       <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
       <paramValue name="makeCdfFile">false</paramValue>
       <paramValue name="makeNdfFile">false</paramValue>
@@ -168,6 +169,7 @@
       <paramValue name="platformDatasetName">${name}</paramValue>
       <paramValue name="platformDatasetVersion">${version}</paramValue>
       <depends name="${name}_loadChipChipProbeDataset"/>
+      <depends name="makeMaskGtfForCufflinks"/>
     </subgraph>
 
 
@@ -194,7 +196,7 @@
       <paramValue name="probeDatasetName">${organismAbbrev}_cghArrayPlatform_${name}_RSRC</paramValue>
       <paramValue name="probeDatasetVersion">${version}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-      <paramValue name="gtfFile"></paramValue>
+      <paramValue name="gtfFile">$$organismAbbrev$$_mask.gtf</paramValue>
       <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
       <paramValue name="makeCdfFile">false</paramValue>
       <paramValue name="makeNdfFile">false</paramValue>
@@ -208,6 +210,7 @@
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <depends name="${name}_loadCghProbeDataset"/>
+      <depends name="makeMaskGtfForCufflinks"/>
     </subgraph>
   </datasetTemplate>
 
@@ -243,7 +246,7 @@
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
       <depends name="${experimentName}_loadExprArrayDataset"/>
-      <depens name="makeSeqSizeFile"/>
+      <depends name="makeSeqSizeFile"/>
     </subgraph>
   </datasetTemplate>
 
@@ -282,6 +285,7 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="assayType">chipChip</paramValue>
       <depends name="loadChipChipDataset_${experimentName}"/>
+      <depends name="makeSeqSizeFile"/>
     </subgraph>
   </datasetTemplate>
 
@@ -320,7 +324,9 @@
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="assayType">cghArray</paramValue>
+      <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
       <depends name="loadChipChipDataset_${experimentName}"/>
+      <depends name="makeSeqSizeFile"/>
     </subgraph>
   </datasetTemplate>
 </workflowGraph>
