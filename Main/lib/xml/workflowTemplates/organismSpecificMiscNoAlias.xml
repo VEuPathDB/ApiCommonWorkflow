@@ -116,18 +116,28 @@
     </subgraph>
   </datasetTemplate>
 
-<!--
-   <datasetTemplate class="GFF">
-    <prop name="name"/>
+  <datasetTemplate class="createGffBigWig">
     <prop name="organismAbbrev"/>
-    <subgraph name="${name}_GFF_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${organismAbbrev}_${name}_GFF_RSRC</paramValue>
+    <prop name="name"/>
+    <prop name="version"/>
+
+    <subgraph name="${name}" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
+
+    <subgraph name="${name}_createGffBigWig" xmlFile="processGffBigWig.xml">
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_${name}_RSRC/final</paramValue>
+     <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_RSRC</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <depends name="${name}"/>
+    </subgraph>
   </datasetTemplate>
--->
 
   <datasetTemplate class="pfalLocationsWithSqlLdr">
     <prop name="name"/>
