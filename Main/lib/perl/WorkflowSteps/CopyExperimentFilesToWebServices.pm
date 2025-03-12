@@ -29,9 +29,9 @@ sub run {
     my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/${assayType}/${fileType}/$experimentDatasetName";
     my $cmd_mkdir = "mkdir -p $copyToDir";
 
-    my $indx_cmd_copy;
+    my $index_cmd_copy;
     if($indexSuffix) {
-        $indx_cmd_copy = "cp $workflowDataDir/$copyFromDir/*.${indexSuffix} $copyToDir";
+        $index_cmd_copy = "cp $workflowDataDir/$copyFromDir/*.${indexSuffix} $copyToDir";
     }
 
 
