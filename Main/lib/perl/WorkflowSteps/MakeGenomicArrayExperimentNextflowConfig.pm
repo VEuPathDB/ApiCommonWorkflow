@@ -37,7 +37,7 @@ sub run {
   my $peakFinderArgs = "NA";
 
   if($loadPeakCalls) {
-      $peaksProfileSetName = "${datasetName} - peaks";
+      $peaksProfileSetName = "${datasetName} [ChIP-chip peaks]";
       $peakFinderArgs = $self->getParamValue("peakFinderArgs");
   }
 
