@@ -70,12 +70,12 @@
     </subgraph>
 
     <subgraph name="${name}_arrayProbeMapping" xmlFile="arrayProbeMapping.xml">
-      <paramValue name="project">$$projectName$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="parentDataDir">$$arrayPlatformsDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="probeSetName">${name}</paramValue>
-      <paramValue name="probeDatasetName">${organismAbbrev}_microarrayPlatform_${name}_RSRC</paramValue>
-      <paramValue name="probeDatasetVersion">${version}</paramValue>
+      <paramValue name="platformDatasetName">${organismAbbrev}_microarrayPlatform_${name}_RSRC</paramValue>
+      <paramValue name="platformDatasetVersion">${version}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="gtfFile">$$dataDir$$/$$organismAbbrev$$_mask.gtf</paramValue>
       <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
@@ -120,7 +120,7 @@
       <depends name="${name}_loadProbeDataset"/>
     </step>
 
-    <step name="${name}_getAndMapProbes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyProviderProbeMappingFiles">
+    <step name="${name}_arrayProbeMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyProviderProbeMappingFiles">
       <paramValue name="outputDir">$$arrayPlatformsDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC/mapped_output</paramValue>
       <paramValue name="inputDir">$$arrayPlatformsDir$$/${organismAbbrev}_microarrayPlatform_${name}_RSRC/final</paramValue>
       <paramValue name="providedMappingFileName">${providedMappingFileName}</paramValue>
@@ -229,7 +229,7 @@
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$arrayStudiesDir$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="${microarrayPlatformName}_getAndMapProbes"/>
+      <depends name="${microarrayPlatformName}_arrayProbeMapping"/>
     </subgraph>
 
     <subgraph name="${experimentName}_analyzeExprArrayExperiment" xmlFile="analyzeMicroarrayExperiment.xml">
