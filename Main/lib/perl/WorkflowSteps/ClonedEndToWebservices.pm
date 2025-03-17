@@ -33,8 +33,8 @@ sub run {
   if($undo) {
     $self->runCmd(0, "rm -f $copyToDir/${externalDatabaseName}*");
     $self->runCmd(0, "rm -f $workingDirectory/${externalDatabaseName}*");
-
   } else{
+    $self->runCmd($test, "mkdir -p $copyToDir") unless (-d $copyToDir);
       if($test){
           $self->runCmd(0, "echo test > $copyToDir/${externalDatabaseName}.gff.gz ");
           $self->runCmd(0, "echo test > $copyToDir/${externalDatabaseName}.gff.gz.tbi");
