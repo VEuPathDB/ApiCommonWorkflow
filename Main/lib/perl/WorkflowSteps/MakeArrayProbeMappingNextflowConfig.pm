@@ -35,7 +35,7 @@ sub run {
   my $probeCols = 0;
 
   if($self->getBooleanParamValue("makeCdfFile") || $self->getBooleanParamValue("makeNdfFile")) {
-      $vendorMappingFileName = $self->getParamValue("vendorMappingFile");
+      $vendorMappingFileName = $self->getParamValue("vendorMappingFileName");
   }
 
   if($self->getBooleanParamValue("makeCdfFile")) {
