@@ -34,7 +34,7 @@
   </step>
 
   <!-- the nextflow config file for this step is optional.  if provided, we use it to get files from sra or set paths in samplesheet.csv-->
-  <step name="runNgsSamplesClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorNextflowNGSSamples" skipIfFile="$$foundNextflowResults$$">
+  <step name="runNgsSamplesClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorNextflowNGSSamples" skipIfFile="$$foundNextflowResults$$" stepLoadTypes="runNextflowOnCluster" stepFailTypes="runNextflowOnCluster">
     <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
     <paramValue name="workingDir">$$analysisDir$$</paramValue>
     <paramValue name="resultsDir">$$analysisDir$$/ngs-samples-results</paramValue>
@@ -47,7 +47,7 @@
   </step>
 
   <!-- TODO:  add stepLoadTypes and stepFailTypes from params??  -->
-  <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow" skipIfFile="$$foundNextflowResults$$">
+  <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow" skipIfFile="$$foundNextflowResults$$" stepLoadTypes="runNextflowOnCluster" stepFailTypes="runNextflowOnCluster">
     <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
     <paramValue name="workingDir">$$analysisDir$$</paramValue>
     <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
@@ -79,7 +79,7 @@
   </step>
 
 
-  <step name="copyNextflowResultsToCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache" skipIfFile="$$foundNextflowResults$$">
+  <step name="copyNextflowResultsToCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache" skipIfFile="$$foundNextflowResults$$" stepLoadTypes="copyNextflowResultsToCache" stepFailTypes="copyNextflowResultsToCache">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="genomeSpec">$$genomeSpec$$</paramValue>
     <paramValue name="isProteomeAnalysis">$$isProteomeAnalysis$$</paramValue>
