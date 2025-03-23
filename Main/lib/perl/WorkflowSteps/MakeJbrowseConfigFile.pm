@@ -31,6 +31,7 @@ sub run {
       $self->runCmd(0, "rm -fr $copyToDir");
   } else{
       if($test){
+          $self->runCmd(0, "mkdir -p $copyToDir");
           $self->runCmd(0, "echo test > $jbrowseConf");
       }
       $self->runCmd($test, "mkdir -p $copyToDir");
