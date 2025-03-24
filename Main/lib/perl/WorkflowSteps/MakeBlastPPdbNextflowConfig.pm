@@ -57,7 +57,6 @@ params {
 
 process {
     maxForks = $maxForks
-    container = 'veupathdb/diamondsimilarity'
 
     withName: diamondSimilarity {
         ext.args = "--evalue $evalue --masking $mask --max-target-seqs $maxTargetSeqs --sensitive --comp-based-stats 0 -f 6"

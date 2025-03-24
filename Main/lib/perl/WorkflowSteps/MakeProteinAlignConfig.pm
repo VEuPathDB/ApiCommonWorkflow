@@ -61,7 +61,6 @@ sub run {
 }
 
 process {
-  container = \"veupathdb/proteintogenomealignment\"
   executor = '$executor'
   queue = '$queue'
   withName: 'exonerate' {

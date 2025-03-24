@@ -68,7 +68,6 @@ params {
 
 }
 process {
-  container = \'veupathdb/blastsimilarity\'
   executor = \'$executor\'
   queue = \'$queue\'
   maxForks = $maxForks

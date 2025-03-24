@@ -42,7 +42,6 @@ params {
 }
 
 process{
-  container = 'rdemko2332/interproscan:latest'
   executor = \'$executor\'
   queue = \'$queue\'
   maxForks = 40

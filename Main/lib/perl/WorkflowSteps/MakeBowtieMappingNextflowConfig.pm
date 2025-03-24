@@ -57,7 +57,6 @@ params {
   extraBowtieParams = \"$extraBowtieParams\"
 }
 process {
-  container = 'veupathdb/bowtiemapping'
   executor = \'$executor\'
   queue = \'$queue\'
 }
