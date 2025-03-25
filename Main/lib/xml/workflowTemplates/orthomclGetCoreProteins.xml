@@ -1,0 +1,189 @@
+<workflowGraph name="">
+  <param name="parentDataDir"/>
+  <param name="coreProteinsDir"/>
+  <param name="oldReleasesGroupFilesDir"/>
+  <param name="projectName"/>
+  <param name="relativeWebServicesDir"/>
+
+  <constant name="dataDir">$$coreProteinsDir$$</constant>
+  <constant name="proteomesDir">$$dataDir$$/coreProteomes</constant>
+  <constant name="proteomeDatasetsDir">$$dataDir$$/proteomeDatasets</constant>
+  <constant name="ecMappingsDir">$$dataDir$$/ecMappings</constant>
+  <constant name="coreInterproDir">$$parentDataDir$$/coreInterpro</constant>
+
+  <step name="makeCoreProteinsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$proteomesDir$$</paramValue>
+    <depends name="makeCoreProteinsDir"/>
+  </step>
+
+  <step name="makeProteomeDatasetsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$proteomeDatasetsDir$$</paramValue>
+    <depends name="makeProteomesDir"/>
+  </step>
+
+  <step name="makeEcMappingsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$ecMappingsDir$$</paramValue>
+    <depends name="makeProteomeDatasetsDir"/>
+  </step>
+
+  <datasetTemplate class="orthomclCoreFromUniprot">
+    <prop name="abbrev"> The unique 4-letter abbreviation used by OrthoMCL for each organism, will be prepended with a pipe to the source_id, e.g. aaeo|NP_212986. </prop>
+    <prop name="ncbiTaxonId"> The ncbi_tax_id for the specific strain, obtained from the NCBI Taxonomy database. </prop>
+    <prop name="proteomeId"> The uniprot proteome ID for this proteome. </prop>
+    <prop name="oldAbbrevsList"> List of old orthomcl abbrevs if they differ from the current e.g. 3:pfa, 4:pfa. </prop>
+    <prop name="organismName">The name of this organism, just used for log messages</prop>
+    <prop name="kingdom">The kingdom that contains this organism (Bacteria, Archaea, or Eukaryota).</prop>
+    <prop name="version"> The version of the organism. </prop>
+
+    <step name="${abbrev}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$dataDir$$/${abbrev}</paramValue>
+      <depends name="makeEcMappingsDir"/>
+    </step>
+
+    <!-- TODO:  make the gus config file to use the single database -->
+    <step name="${abbrev}_makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig" groupName="${abbrev}">
+      <paramValue name="dbName"/>
+      <paramValue name="dataDir">$$dataDir$$/${abbrev}</paramValue>
+      <paramValue name="gusConfigFilename">${abbrev}_gus.config</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <depends name="${abbrev}_makeDataDir"/>
+  </step>
+
+    <subgraph name="${abbrev}_loadProteome" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$dataDir$$/${abbrev}/${abbrev}_gus.config</paramValue>
+      <paramValue name="datasetName">${abbrev}_orthomclProteome_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
+      <paramValue name="parentDataDir">$$proteomeDatasetsDir$$</paramValue>
+      <depends name="${abbrev}_makeGusConfig"/>
+    </subgraph>
+
+    <step name="${abbrev}_copyProteomeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
+      <paramValue name="toFile">$$proteomesDir$$/${abbrev}.fasta</paramValue>
+      <depends name="${abbrev}_loadProteome"/>
+    </step>
+
+    <step name="${abbrev}_makeInterproDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$coreInterproDir$$/${abbrev}_orthomclProteome_RSRC</paramValue>
+        <depends name="${abbrev}_copyProteomeFile"/>
+    </step>
+
+    <step name="${abbrev}_makeGoodProteinsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthomclMakeGoodProteinsForSample">
+      <paramValue name="proteomeFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
+      <paramValue name="outputGoodProteinsFile">$$proteomesDir$$/${abbrev}.fasta</paramValue>
+      <paramValue name="outputBadProteinsFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}_bad.fa</paramValue>
+      <paramValue name="minLength">10</paramValue>
+      <paramValue name="maxStopPercent">20</paramValue>
+      <dependsPattern name="${abbrev}_makeInterproDataDir"/>
+    </step>
+
+    <step name="${abbrev}_CheckForApiDBOrganism" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckForApiDBOrganism">
+      <paramValue name="taxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="skipIfFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/skipIfFile</paramValue>
+      <paramValue name="gusConfigFile">$$dataDir$$/${abbrev}/${abbrev}_gus.config</paramValue>
+      <depends name="${abbrev}_makeGoodProteinsFile"/>
+    </step>
+
+    <step name="${abbrev}_insertOrganism" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrganism" skipIfFile="$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/skipIfFile">
+      <paramValue name="gusConfigFile">$$dataDir$$/${abbrev}/${abbrev}_gus.config</paramValue>
+      <paramValue name="fullName">${organismName}</paramValue>
+      <paramValue name="project">OrthoMCL</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="abbrev">${abbrev}</paramValue>
+      <paramValue name="publicAbbrev">${abbrev}</paramValue>
+      <paramValue name="nameForFilenames">${organismName}</paramValue>
+      <paramValue name="orthomclAbbrev">${abbrev}</paramValue>
+      <paramValue name="strainAbbrev">${abbrev}</paramValue>
+      <paramValue name="refStrainAbbrev">${abbrev}</paramValue>
+      <!-- Reference strain set to true for all core organisms -->
+      <paramValue name="isReferenceStrain">true</paramValue>
+      <paramValue name="isFamilyRepresentative">false</paramValue>
+      <paramValue name="familyRepOrganismAbbrev">Ortho</paramValue>
+      <paramValue name="familyNcbiTaxonIds"></paramValue>
+      <paramValue name="familyNameForFiles"></paramValue>
+      <paramValue name="isAnnotatedGenome">false</paramValue>
+      <paramValue name="hasTemporaryNcbiTaxonId">false</paramValue>
+      <paramValue name="genomeSource">uniprot</paramValue>
+      <paramValue name="isCore">true</paramValue>
+      <depends name="${abbrev}_CheckForApiDBOrganism"/>
+    </step>
+
+    <step name="${abbrev}_insertCoreSequences" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::OrthoLoadFastaSequences">
+      <paramValue name="gusConfigFile">$$dataDir$$/${abbrev}/${abbrev}_gus.config</paramValue>
+      <paramValue name="externalDatabaseName">${abbrev}_orthomclProteome_RSRC</paramValue>
+      <paramValue name="externalDatabaseVersion">${version}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="sequenceFile">$$proteomesDir$$/${abbrev}.fasta</paramValue>
+      <paramValue name="regexSourceId">^>(\S+)</paramValue>
+      <paramValue name="regexSecondaryId">^>(\S+)</paramValue>
+      <paramValue name="regexDesc">product=(.*)</paramValue>
+      <paramValue name="regexName">gene=(\S*)</paramValue>
+      <paramValue name="isCore">1</paramValue>
+      <paramValue name="tableName">DoTS::ExternalAASequence</paramValue>
+      <depends name="${abbrev}_makeGoodProteinsFile"/>
+      <depends name="${abbrev}_insertOrganism"/>
+    </step>
+
+    <step name="${abbrev}_copyProteinsFileForInterpro" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
+      <paramValue name="toFile">$$coreInterproDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
+      <depends name="${abbrev}_insertCoreSequences"/>
+    </step>
+
+    <subgraph name="${abbrev}_InterproScan" xmlFile="interpro.xml">
+        <paramValue name="proteinsFile">$$coreInterproDir$$/${abbrev}_orthomclProteome_RSRC/${abbrev}.fasta</paramValue>
+        <paramValue name="parentDataDir">$$coreInterproDir$$/${abbrev}_orthomclProteome_RSRC</paramValue>
+        <paramValue name="insertVersion">2</paramValue>
+        <paramValue name="aaSeqTable">ExternalAASequence</paramValue>
+        <paramValue name="sourceIdRegex">^\w+\|(\S+)</paramValue>
+        <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+        <paramValue name="gusConfigFile">$$dataDir$$/${abbrev}/${abbrev}_gus.config</paramValue>
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="organismAbbrev">${abbrev}</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">${abbrev}_orthomclProteome_RSRC|${version}</paramValue>
+        <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+        <depends name="${abbrev}_copyProteinsFileForInterpro"/>
+    </subgraph>
+
+    <step name="${abbrev}_insertAliases" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAliases">
+      <paramValue name="gusConfigFile">$$dataDir$$/${abbrev}/${abbrev}_gus.config</paramValue>
+      <paramValue name="externalDatabase">${abbrev}_orthomclProteome_RSRC</paramValue>
+      <paramValue name="inputMappingFile">$$proteomeDatasetsDir$$/${abbrev}_orthomclProteome_RSRC/aliases.tab</paramValue>
+      <depends name="${abbrev}_InterproScan"/>
+    </step>
+
+  </datasetTemplate>
+
+  <datasetTemplate class="orthomclCoreFromUniprotEC">
+    <prop name="abbrev"/>
+    <subgraph name="${abbrev}_enzymes" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${abbrev}_Uniprot_ECAssociations_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
+      <paramValue name="parentDataDir">$$ecMappingsDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$dataDir$$/${abbrev}/${abbrev}_gus.config</paramValue>
+      <depends name="makeEcMappingsDir"/>
+      <depends name="${abbrev}_insertAliases"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <step name="makeProteomeInputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$/fastas</paramValue>
+    <dependsPattern name="*_makeGoodProteinsFile"/>
+  </step>
+
+  <step name="MakeOrthofinderCoreInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthofinderCoreInputDir">
+    <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
+    <paramValue name="outputDir">$$dataDir$$</paramValue>
+    <depends name="makeProteomeInputDir"/>
+  </step>
+
+  <step name="MakeSortedCheckSum" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSortedCheckSum">                    
+    <paramValue name="proteomesDir">$$dataDir$$/fastas</paramValue>
+    <depends name="MakeOrthofinderCoreInputDir"/>
+  </step>
+
+</workflowGraph>

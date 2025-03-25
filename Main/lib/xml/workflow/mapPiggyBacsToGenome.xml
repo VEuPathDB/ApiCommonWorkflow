@@ -16,11 +16,6 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     </subgraph>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/$$piggyBacDatasetName$$</paramValue>
-      <depends name="loadPiggyBacDataset"/>
-    </step>
-
     <subgraph name="runBlastAndLoadFeatures" xmlFile="runBlastAndLoadFeatures.xml">
       <paramValue name="dataDir">$$dataDir$$/$$piggyBacDatasetName$$/mapPiggyBacsToGenome</paramValue>
       <paramValue name="queryFile">$$dataDir$$/$$piggyBacDatasetName$$/piggyBac.fsa</paramValue>
@@ -32,7 +27,6 @@
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="extDbRlsSpec">$$piggyBacExtDbRlsSpec$$</paramValue>
       <paramValue name="organismFullName">$$organismFullName$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="document-mapPiggyBacsToGenome"

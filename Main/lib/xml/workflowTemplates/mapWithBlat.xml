@@ -1,0 +1,129 @@
+<workflowGraph name="mapWithBlat">
+  <param name="parentDataDir"/>
+  <param name="ncbiTaxonId"/>
+  <param name="maxIntronSize"/>
+  <param name="organismAbbrev"/>
+  <param name="isReferenceStrain"/>
+  <param name="genomicSeqsFile"/>
+  <param name="gusConfigFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="projectName"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="organismDatasetLoaderXmlFile"/>
+  <param name="speciesNcbiTaxonId"/>
+
+  <constant name="dataDir">$$parentDataDir$$/blat</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+
+  <!-- NOTE:
+       this file was made from a static file into a plan file so we can have
+       this one template.  Its purpose is to allow us to use an externalDepends
+       which only work inside a plan file.  this is not actually a dataset
+  -->
+
+  <datasetTemplate class="transcriptsFromReferenceStrain">
+    <prop name="referenceStrainOrganismAbbrev"/>
+
+    <subgraph name="mapESTsToGenome" xmlFile="blatDnaAgainstGenome.xml">
+      <paramValue name="dataDir">$$dataDir$$/ESTs</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="targetSeqsFastaFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="queryFile">$$projectName$$/${referenceStrainOrganismAbbrev}/postLoadGenome/genome/ESTs/assemblySeqs/analysisDir/results/blocked.seq</paramValue>
+      <paramValue name="queryTable">AssemblySequence</paramValue>
+      <paramValue name="queryExtDbName"></paramValue>
+      <paramValue name="datasetSpec">$$organismAbbrev$$_dbEST_RSRC</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
+      <paramValue name="skipIfFile">$$projectName$$/${referenceStrainOrganismAbbrev}/postLoadGenome/genome/ESTs/zeroFound/foundZeroESTs</paramValue>
+      <depends name="makeDataDir"/>
+      <dependsExternal name="${referenceStrainOrganismAbbrev}_makeAndBlockAssemblySeqs"/>
+    </subgraph>
+
+
+    <!-- leave foundZeroESTs skip if here -->
+    <step name="toGFF" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TranscriptSequencesToWebservices" skipIfFile="$$projectName$$/${referenceStrainOrganismAbbrev}/postLoadGenome/genome/ESTs/zeroFound/foundZeroESTs">
+      <paramValue name="dataDir">$$dataDir$$/ESTs</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="queryExtDbRlsSpec"></paramValue>
+      <paramValue name="targetExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <depends name="mapESTsToGenome"/>
+    </step>
+  </datasetTemplate>
+
+
+
+  <datasetTemplate class="referenceStrain-clonedInsertEnds">
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="organismAbbrev"/>
+
+    <subgraph name="${organismAbbrev}_${name}_clonedInsertEnds" xmlFile="loadDataset.xml" externalName="${organismAbbrev}_${name}_clonedInsertEnds">
+      <paramValue name="datasetName">${organismAbbrev}_${name}_clonedInsertEnds_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="${name}_mapClonedInsertEnds" xmlFile="mapClonedInsertEnds.xml">
+      <paramValue name="dataDir">$$dataDir$$/${name}_clonedInsertEnds</paramValue>
+      <paramValue name="datasetName">${organismAbbrev}_${name}_clonedInsertEnds_RSRC</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="sourceIdField">${sourceIdField}</paramValue>
+      <paramValue name="sourceIdJoiningRegex">${sourceIdJoiningRegex}</paramValue>
+      <paramValue name="spanLengthCutoff">${spanLengthCutoff}</paramValue>
+      <paramValue name="includeMultipleSpans">${includeMultipleSpans}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
+      <depends name="${organismAbbrev}_${name}_clonedInsertEnds"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="transcript_sequences">
+    <prop name="ncbiTaxonId"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="soTermName"/>
+    <prop name="sourceIdRegex"/>
+
+    <subgraph name="${organismAbbrev}_${name}_transcript_sequences" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_${name}_transcript_sequences_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="${name}_mapTranscript_sequences" xmlFile="mapTranscriptSeqs.xml">
+      <paramValue name="dataDir">$$dataDir$$/${name}_transcript_sequences</paramValue>
+      <paramValue name="datasetName">${organismAbbrev}_${name}_transcript_sequences_RSRC</paramValue>
+      <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="datasetSpec">${organismAbbrev}_${name}_transcript_sequences_RSRC|${version}</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
+      <depends name="${organismAbbrev}_${name}_transcript_sequences"/>
+    </subgraph>
+  </datasetTemplate>
+
+
+
+</workflowGraph>

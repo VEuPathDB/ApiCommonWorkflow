@@ -7,100 +7,100 @@ use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
- my ($self, $test, $undo) = @_;
+  my ($self, $test, $undo) = @_;
 
- #my $workflowDataDir = $self->getWorkflowDataDir();
- my $workflowDataDir = $self->getClusterWorkflowDataDir();
- my $dir = join("/", $workflowDataDir, $self->getParamValue("analysisDir")); 
+  #NOTE: the subset size here would run "X" number of genomic sequences at a time on the cluster (chromosomes or contigs)
+  my $fastaSubsetSize = 5;
 
- open(INTRON, "$dir/maxIntronLen") or die "Cannot read max intron len from $dir/maxIntronLen\n$!\n";
+  my $resultsDirectory = $self->getParamValue("resultsDirectory");
+  my $sampleSheet = $self->getParamValue("sampleSheetFile");
+  my $gtfFile = $self->getParamValue("gtfFile");
+  my $genomeFile = $self->getParamValue("genomeFile");
 
-# read the file, and push every line into an array
- my @lines;
- while (my $line = <INTRON>) {
-    chomp $line;
-    push (@lines,  $line);
- }
+  my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
 
- if (scalar @lines != 1) {
-    die "File $dir/maxIntronLen should only contain one line\n";
- }
+  my $isStranded = $self->getBooleanParamValue("isStranded") ? "true" : "false";
+  my $intronLength = $self->getParamValue("maxIntronLength");
+  my $cdsOrExon = $self->getParamValue("cdsOrExon");
+  my $organismAbbrev = $self->getParamValue("organismAbbrev");
 
- my $maxIntronLen = $lines[0];
+  my $workflowDataDir = $self->getWorkflowDataDir();
 
- my $configPath = join("/", $self->getWorkflowDataDir(), $self->getParamValue("configFileName"));
- my $splitChunk = 1000000;                                                                                                                      
- my $reads =  join("/", $workflowDataDir, $self->getParamValue("dataSource"));
- my $isPaired = $self->getParamValue("isPaired");
- my $isStranded = $self->getParamValue("isStrandSpecific");
- my $isCds = $self->getParamValue("isCDS");
- my $results = join("/", $workflowDataDir, $self->getParamValue("clusterResultDir"));
- my $annotation = join("/", $workflowDataDir, $self->getParamValue("annotation"));
- my $hisat2Index = join("/", $workflowDataDir, $self->getParamValue("hisat2Index"));
- my $createIndex = "false";
- my $organismAbbv = $self->getParamValue("organismAbbrev");
- my $isSRA = $self->getParamValue("isSRA");
+  my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
+  my $digestedSampleSheetPath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $sampleSheet);
+  my $digestedGtfFilePath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $gtfFile);
+  my $digestedGenomeFilePath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $genomeFile);
+  my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
+  my $clusterServer = $self->getSharedConfig('clusterServer');
+  my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
+  my $executor = $self->getClusterExecutor();
+
+  my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
   if ($undo) {
-    $self->runCmd(0,"rm -rf $configPath");
+      $self->runCmd(0, "rm $workflowDataDir/$nextflowConfigFile");
   } else {
-  
-  if ($isSRA eq "true") {
-    my $sraList = join("/", $reads, 'sraSampleList.tsv'); 
-    open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
+      my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
+      open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
 
-    print F
- " 
- params {
-    splitChunk = $splitChunk
-    sraAccession = \"$sraList\"
-    isPaired = $isPaired
-    isStranded = $isStranded
-    intronLength = $maxIntronLen
-    isCds = $isCds
-    results = \"$results\"
-    annotation = \"$annotation\"
-    hisat2Index = \"$hisat2Index\"
-    createIndex = $createIndex
-    organismAbbv = \"$organismAbbv\"
-    local = false
+      my $configString = <<NEXTFLOW;
+params {
+    fasta                      = "$digestedGenomeFilePath"
+    gtf                        = "$digestedGtfFilePath"
+    input                      = "$digestedSampleSheetPath"
+    outdir                     = "$digestedOutputDir"
+    isStranded                 =  $isStranded
+    intronLength               =  $intronLength
+    cdsOrExon                  = "$cdsOrExon"
+    useExistingIndex           =  false
+    genome                     = "$organismAbbrev"
 }
-singularity {
-    enabled = true
-    autoMounts = true
-} 
- ";
 
- close(F);
+includeConfig "\$baseDir/conf/nfcore_boilerplate.config"
 
-} else {
-  open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
-    print F
- " 
- params {
-    splitChunk = $splitChunk
-    reads = \"$reads\"
-    isPaired = $isPaired
-    isStranded = $isStranded
-    intronLength = $maxIntronLen
-    isCds = $isCds
-    results = \"$results\"
-    annotation = \"$annotation\"
-    hisat2Index = \"$hisat2Index\"
-    createIndex = $createIndex
-    organismAbbv = \"$organismAbbv\"
-    local = true
+includeConfig "$clusterConfigFile"
+
+process {
+  maxForks = 10
 }
-singularity {
-    enabled = true
-    autoMounts = true
-} 
- ";
 
- close(F);
+def check_max(obj, type) {
+    if (type == 'memory') {
+        try {
+            if (obj.compareTo(params.max_memory as nextflow.util.MemoryUnit) == 1)
+                return params.max_memory as nextflow.util.MemoryUnit
+            else
+                return obj
+        } catch (all) {
+            println "   ### ERROR ###   Max memory '\${params.max_memory}' is not valid! Using default value: \$obj"
+            return obj
+        }
+    } else if (type == 'time') {
+        try {
+            if (obj.compareTo(params.max_time as nextflow.util.Duration) == 1)
+                return params.max_time as nextflow.util.Duration
+            else
+                return obj
+        } catch (all) {
+            println "   ### ERROR ###   Max time '\${params.max_time}' is not valid! Using default value: \$obj"
+            return obj
+        }
+    } else if (type == 'cpus') {
+        try {
+            return Math.min( obj, params.max_cpus as int )
+        } catch (all) {
+            println "   ### ERROR ###   Max cpus '\${params.max_cpus}' is not valid! Using default value: \$obj"
+            return obj
+        }
     }
+}
 
+NEXTFLOW
+
+      print F $configString;
+      close(F);
   }
 }
+
 1;

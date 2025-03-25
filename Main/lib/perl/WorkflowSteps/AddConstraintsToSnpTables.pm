@@ -9,6 +9,8 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  return if $test;
+
   my $gusInstance = $self->getGusInstanceName();
   my $gusLogin = $self->getGusDatabaseLogin();
   my $gusPassword = $self->getGusDatabasePassword();

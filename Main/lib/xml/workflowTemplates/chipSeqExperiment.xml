@@ -5,7 +5,7 @@
     <param name="organismDatasetLoaderXmlFile"/>
     <param name="relativeWebServicesDir"/>
     <param name="chromSizesFile"/>
-
+    <param name="gusConfigFile"/>
 
   <constant name="dataDir">$$parentDataDir$$/chipSeq</constant>
 
@@ -13,13 +13,6 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
-    <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-    <depends name="makeDataDir"/>
-  </step>
-
-
-  
     <datasetTemplate class="chipSeqExperiment">
         <prop name="projectName"/>
         <prop name="organismAbbrev"/>
@@ -38,11 +31,11 @@
             <paramValue name="experimentName">${name}</paramValue>
             <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
             <paramValue name="extraBowtieParams">${extraBowtieParams}</paramValue>
-	    <paramValue name="experimentType">${experimentType}</paramValue>
+	        <paramValue name="experimentType">${experimentType}</paramValue>
             <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_chipSeq_RSRC</paramValue>
             <paramValue name="experimentDatasetVersion">${version}</paramValue>
-            <paramValue name="topLevelSeqSizeFile">$$chromSizesFile$$</paramValue>
-            <depends name="mirrorToCluster"/>
+            <paramValue name="seqSizeFile">$$chromSizesFile$$</paramValue>
+            <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
         </subgraph>
     </datasetTemplate>
 </workflowGraph>

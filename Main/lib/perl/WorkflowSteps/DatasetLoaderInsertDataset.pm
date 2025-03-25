@@ -11,6 +11,9 @@ sub run {
     my $datasetLoaderXmlFile = $self->getParamValue('datasetLoaderXmlFileName');
     my $dataDirPath = $self->getParamValue('dataDir');
 
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
     my $datasetLoader = $self->getDatasetLoader($datasetName, $datasetLoaderXmlFile, $dataDirPath);
 
     my $extDbName = $datasetLoader->getParentDatasetLoader()?
@@ -28,7 +31,7 @@ sub run {
 
     my $taxonId;
     if ($organismAbbrev) {
-	my $t = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
+	my $t = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
 	$taxonId = "--taxonId $t";
 	die "Can't find taxon_id for organismAbbrev '$organismAbbrev'\n" unless $t;
     }

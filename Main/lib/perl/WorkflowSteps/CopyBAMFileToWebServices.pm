@@ -17,10 +17,12 @@ sub run {
   my $experimentName=$self->getParamValue('experimentName');
   my $snpStrain=$self->getParamValue('snpStrain');
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
-
+  my $gusConfigFile = $self->getGusConfigFile();
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -55,7 +57,7 @@ sub run {
 
       if(!$genomeFileExists) {
         my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
-        my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+        my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
 
         my $sql = "select sa.source_id||chr(9)||ns.length
             from ApidbTuning.${tuningTablePrefix}GenomicSeqAttributes sa, dots.nasequence ns
@@ -63,7 +65,7 @@ sub run {
             and sa.na_sequence_id = ns.na_sequence_id
             and sa.NCBI_TAX_ID = $ncbiTaxonId";
 
-        $self->runCmd($test,"makeFileWithSql --outFile $genomeFile --sql \"$sql\"");
+        $self->runCmd($test,"makeFileWithSql --outFile $genomeFile --sql \"$sql\" --gusConfigFile $gusConfigFile");
       }
 
 

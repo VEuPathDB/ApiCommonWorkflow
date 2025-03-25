@@ -1,4 +1,5 @@
 <workflowGraph name="">
+  <param name="gusConfigFile"/>
   <param name="projectName"/>
   <param name="organismAbbrev"/>
   <param name="experimentDataDir"/>
@@ -9,21 +10,18 @@
   <param name="indexDir"/>
   <param name="experimentName"/>
   <param name="extraBowtieParams"/>
-  <param name="topLevelSeqSizeFile"/>
+  <param name="seqSizeFile"/>
   <param name="experimentType"/>
   <param name="inputName"/>
   <param name="fragmentLength"/>
   <param name="sraQueryString"/>
+  <param name="downloadMethod"/>
 
 <!-- not used  but maybe when we call peaks we want? -->
   <param name="outputDir"/>
 
     <constant name="sampleAnalysisDir">$$experimentDataDir$$/$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_chipSeqSample_RSRC</constant> 
     <constant name="clusterResultsDir">$$experimentDataDir$$/analyze_$$sampleName$$</constant>
-
-    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$</paramValue>
-    </step>
 
     <subgraph name="runBowtie" xmlFile="runBowtie.xml">
         <paramValue name="projectName">$$projectName$$</paramValue>
@@ -34,18 +32,19 @@
         <paramValue name="indexDir">$$indexDir$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+        <paramValue name="downloadMethod">$$downloadMethod$$</paramValue>
         <paramValue name="isColorspace">false</paramValue>
         <paramValue name="removePCRDuplicates">false</paramValue>
         <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
-        <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+        <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
         <paramValue name="writeBedFile">false</paramValue>
-        <paramValue name="sraQueryString">$$sraQueryString$$</paramValue> 
-        <depends name="mirrorSampleAnalysisDirToCluster"/>
+        <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue> 
     </subgraph>
 
     <step name="generateChipSeqCvgPlots" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GenerateChipSeqCvgPlots">
-        <paramValue name="clusterResultsDir">$$clusterResultsDir$$</paramValue>
-        <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+        <paramValue name="clusterResultsDir">$$clusterResultsDir$$/results</paramValue>
+        <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
         <paramValue name="experimentType">$$experimentType$$</paramValue>
 	<paramValue name="sampleName">$$sampleName$$</paramValue>
 	<paramValue name="inputName">$$inputName$$</paramValue>

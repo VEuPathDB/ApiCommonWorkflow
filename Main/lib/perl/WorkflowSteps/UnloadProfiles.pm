@@ -10,14 +10,15 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $datasetName = $self->getParamValue('datasetName');
+  my $gusConfigFile = $self->getGusConfigFile();
 
   if ($undo) {
     #This class doesn't do anything in undo mode
   } else {
     if ($test) {
-        $self->runCmd(0, "undoRnaSeqProfiles.pl --datasetName $datasetName"); # run without commit flag in test mode
+        $self->runCmd($test, "undoRnaSeqProfiles.pl --datasetName $datasetName"); # run without commit flag in test mode
     } else {
-        $self->runCmd($test,"undoRnaSeqProfiles.pl --datasetName $datasetName --commit");
+        $self->runCmd($test,"undoRnaSeqProfiles.pl --datasetName $datasetName --gusConfigFile $gusConfigFile --commit");
     }
   }
 }

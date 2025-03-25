@@ -8,6 +8,9 @@ use ApiCommonWorkflow::Main::Util::OrganismInfo;
 sub run {
   my ($self, $test, $undo) = @_;
 
+
+# PlasmoDB/pfal3D7/rnaseq/pfal3D7_Newbold_ebi_rnaSeq_RSRC/normalize_coverage/results/ERR006184/normalized/final
+
   # get parameters
   my $copyFromDir = $self->getParamValue('copyFromDir');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
@@ -16,22 +19,22 @@ sub run {
   my $experimentDatasetName = $self->getParamValue('experimentDatasetName');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  my $dataType = $self->getParamValue('dataType');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $organismNameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
-  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/bigwig/$experimentDatasetName";
-
+  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/${dataType}/bigwig/$experimentDatasetName";
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $cmd_mkdir = "mkdir -p $copyToDir";
 
   #use legacy or EBI dir structure
-  my $analysisConfig = -e "$workflowDataDir/$copyFromDir/$experimentDatasetName/final/analysisConfig.xml" ? "$workflowDataDir/$copyFromDir/$experimentDatasetName/final/analysisConfig.xml" : "$workflowDataDir/$copyFromDir/../$experimentDatasetName/final/analysisConfig.xml";
+  my $analysisConfig = -e "$workflowDataDir/$copyFromDir/../final/analysisConfig.xml" ? "$workflowDataDir/$copyFromDir/../final/analysisConfig.xml" : "$workflowDataDir/$copyFromDir/../results/analysisConfig.xml";
 
   my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir --outputDir $copyToDir --analysisConfig $analysisConfig"; 
-
-
 
   $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");
 

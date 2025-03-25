@@ -13,7 +13,8 @@
     <param name="maxReadLength"/>
     <param name="sequenceFormat"/>
     <param name="experimentDatasetName"/>
-    <param name="topLevelSeqSizeFile"/>
+    <param name="seqSizeFile"/>
+    <param name="gusConfigFile"/>
 
     <constant name="dataDir">$$parentDataDir$$/smallNcRna</constant>
     <constant name="finalDir">$$dataDir$$/$$experimentDatasetName$$/final</constant>
@@ -23,14 +24,8 @@
         <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-        <depends name="makeDataDir"/>
-    </step>
-
     <step name="makeExperimentDatasetLoaderDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$dataDir$$/$$experimentDatasetName$$</paramValue>
-        <depends name="mirrorToCluster"/>
     </step>
 
                            
@@ -91,7 +86,7 @@
         <paramValue name="projectName">$$projectName$$</paramValue>
         <paramValue name="experimentDir">$$dataDir$$</paramValue>
         <paramValue name="experimentRSRC">$$dataDir$$/$$experimentDatasetName$$</paramValue>
-        <paramValue name="indexDir">$$parentDataDir$$/bowtieIndices/genomicIndexes</paramValue>
+        <paramValue name="indexDir">$$parentDataDir$$/bowtieIndices/</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="experimentName">$$experimentName$$</paramValue>
         <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
@@ -103,7 +98,8 @@
         <paramValue name="sequenceFormat">$$sequenceFormat$$</paramValue>
         <paramValue name="tRNArRNASeqsDir">$$tRNArRNASeqsDir$$</paramValue>
         <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-        <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+        <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
         <depends name="getAndUnpack"/>
     </subgraph>
 

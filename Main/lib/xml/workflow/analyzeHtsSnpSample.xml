@@ -1,5 +1,6 @@
 <workflowGraph name="">
     <param name="projectName"/>
+    <param name="gusConfigFile"/>
     <param name="experimentDataDir"/>
     <param name="readsFile"/>
     <param name="pairedReadsFile"/>
@@ -17,7 +18,7 @@
     <param name="varscanConsDir"/>
     <param name="outputDir"/>
 
-    <!-- mirror the sample directory over to the cluster
+    <!-- copy the sample directory over to the cluster
      This directory will eventually contain the cluster task dir but not the fastq files for the sample
      Those still live in the experiment directory
      -->
@@ -26,12 +27,6 @@
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
-
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-    
 
     <subgraph name="mapSnpsOnCluster"  xmlFile="mapHtsSNPs.xml">
       <paramValue name="readsFile">$$readsFile$$</paramValue>
@@ -45,7 +40,6 @@
       <paramValue name="isColorspace">$$isColorspace$$</paramValue>
       <paramValue name="snpPercentCutoff">$$snpPercentCutoff$$</paramValue>
       <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="document-HTS_snps_bwa"
@@ -53,6 +47,7 @@
       <paramValue name="method">HTS_snps_bowtie_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters">TODO: patch in later</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </step>
 
 <!--
@@ -94,9 +89,10 @@
       <paramValue name="extDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
       <paramValue name="ncbiTaxId"></paramValue>
       <paramValue name="sequenceFile">$$experimentDataDir$$/analyze_$$snpStrain$$/master/mainresult/result.consensus.fa</paramValue>
-      <paramValue name="soTermName">variant_genome</paramValue>
+      <paramValue name="soTermSourceId">SO:0001506</paramValue>
       <paramValue name="regexSourceId">\>(\S+)</paramValue>
       <paramValue name="tableName">DoTS::ExternalNASequence</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="mapSnpsOnCluster"/>
     </step>
 
@@ -120,6 +116,7 @@
       <paramValue name="experimentName">$$experimentName$$</paramValue>
       <paramValue name="snpStrain">$$snpStrain$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="mapSnpsOnCluster"/>
     </step>
 
@@ -130,6 +127,7 @@
       <paramValue name="experimentName">$$experimentName$$</paramValue>
       <paramValue name="snpStrain">$$snpStrain$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="mapSnpsOnCluster"/>
     </step>
 
@@ -138,6 +136,7 @@
       <paramValue name="experimentName">$$organismAbbrev$$ $$experimentName$$ (NGS SNP)</paramValue>
       <paramValue name="extDbRlsSpec">$$snpExtDbRlsSpec$$</paramValue>
       <paramValue name="name">$$snpStrain$$ (Sequence Variation)</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </step>
 
     <step name="addDNASeqMetrics" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDNASeqMetrics" stepLoadTypes="plugin">
@@ -145,6 +144,7 @@
         <paramValue name="studyName">$$organismAbbrev$$ $$experimentName$$ (NGS SNP)</paramValue>
         <paramValue name="sampleName">$$snpStrain$$</paramValue>
         <paramValue name="sampleExtDbSpec">$$snpExtDbRlsSpec$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
         <depends name="addProtocolAppNode"/>
         <depends name="mapSnpsOnCluster"/>
     </step>

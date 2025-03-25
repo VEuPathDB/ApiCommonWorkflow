@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::AnalyzeTranscriptExpression;
+package ApiCommonWorkflow::Main::WorkflowSteps::AnalyzeStudyAssayResults;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -16,7 +16,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "doTranscriptExpression $workflowDataDir/$configXmlFile $workflowDataDir/$resourceDataDir $workflowDataDir/$outputDir";
+    my $cmd = "doStudyAssayResults.pl $workflowDataDir/$configXmlFile $workflowDataDir/$resourceDataDir $workflowDataDir/$outputDir";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$outputDir");

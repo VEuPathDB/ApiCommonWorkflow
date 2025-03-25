@@ -13,10 +13,12 @@ sub run {
 
   my $vectorFile = $self->getConfig('vectorFile');
   my $phrapDir = $self->getConfig('phrapDir');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
-  my $taxonId = $organismInfo->getSpeciesTaxonId();
-  my $taxonIdList = $organismInfo->getTaxonIdList($taxonId);
+  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile);
+  my $speciesNcbiTaxonId = $self->getParamValue('speciesNcbiTaxonId');
+  my $taxonIdList = $organismInfo->getSubTaxaListFromNcbiTaxonId($speciesNcbiTaxonId, $gusConfigFile);
 
   my $soExtDbName = $self->getSharedConfig("sequenceOntologyExtDbName");
 

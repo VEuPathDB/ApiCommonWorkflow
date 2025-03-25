@@ -28,6 +28,7 @@
 
    <step name="extractOligoSeqs"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractNaSeqs">
+      <paramValue name="extDbName">$$gusConfigFile$$</paramValue>
       <paramValue name="extDbRlsSpec">$$oligoExtDbRlsSpec$$</paramValue>
       <paramValue name="table">ExternalNASequence</paramValue>
       <paramValue name="alternateDefline"></paramValue>
@@ -35,12 +36,6 @@
       <paramValue name="separateFastaFiles">false</paramValue>
       <paramValue name="outputDirForSeparateFiles"></paramValue>
       <depends name="makeDataDir"/> 
-    </step>
-
-   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="extractAnnotatedTranscriptSeqs"/>
-      <depends name="extractOligoSeqs"/>
     </step>
 
     <subgraph name="blastnOligoSeqsGenomicSeqs" xmlFile="blast.xml">
@@ -64,7 +59,6 @@
       <paramValue name="maxMemoryGigs">1.5</paramValue>
       <paramValue name="loadSimilarities">true</paramValue>
       <paramValue name="makeSimSeqsFile"></paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <subgraph name="blastnOligoSeqsTranscriptSeqs" xmlFile="blast.xml">
@@ -85,7 +79,6 @@
       <paramValue name="taxonHierarchyForFilter"></paramValue>
       <paramValue name="loadOptions">$$loadOptions$$</paramValue>
       <paramValue name="maxMemoryGigs">1.5</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
 </workflowGraph>

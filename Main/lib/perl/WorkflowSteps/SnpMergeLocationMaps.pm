@@ -11,6 +11,8 @@ sub run {
   my $outputFile = $self->getParamValue('outputFile');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my @inputs = glob "$workflowDataDir/$globInput";
 
@@ -19,7 +21,7 @@ sub run {
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
   my $hssDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/$hsssDir/readFreq$readFreq";
 
   if ($undo) {

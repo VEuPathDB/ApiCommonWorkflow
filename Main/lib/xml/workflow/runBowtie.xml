@@ -10,11 +10,13 @@
     <param name="isColorspace"/>
     <param name="removePCRDuplicates"/>
     <param name="extraBowtieParams"/>
-    <param name="topLevelSeqSizeFile"/>
+    <param name="seqSizeFile"/>
     <param name="writeBedFile"/>
     <param name="sraQueryString"/>
+    <param name="gusConfigFile"/>
+    <param name="downloadMethod"/>
 
-    <!-- mirror the sample directory over to the cluster
+    <!-- copy the sample directory over to the cluster
      This directory will eventually contain the cluster task dir but not the fastq files for the sample
      Those still live in the experiment directory
      -->
@@ -24,34 +26,29 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-    
-
     <subgraph name="runBowtieOnCluster"  xmlFile="bowtieJob.xml">
       <paramValue name="readsFile">$$readsFile$$</paramValue>
       <paramValue name="pairedReadsFile">$$pairedReadsFile$$</paramValue>
-      <paramValue name="hasPairedReads">$$hasPairedEnds$$</paramValue>
+      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
       <paramValue name="indexDir">$$indexDir$$</paramValue>
       <paramValue name="sampleName">$$sampleName$$</paramValue>
       <paramValue name="clusterDataDir">$$dataDir$$</paramValue>
       <paramValue name="isColorspace">$$isColorspace$$</paramValue>
       <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
       <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
-      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
       <paramValue name="writeBedFile">$$writeBedFile$$</paramValue>
-      <paramValue name="sraQueryString">$$sraQueryString$$</paramValue> 
-      <depends name="mirrorToCluster"/>
+      <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue> 
+      <paramValue name="downloadMethod">$$downloadMethod$$</paramValue>
     </subgraph>
-
 
     <step name="document-BowtieMapping"
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
       <paramValue name="method">mapWithBowtie_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters">TODO: patch in later</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
    </step> 
 
 </workflowGraph>

@@ -14,13 +14,14 @@ sub run {
 
   my $projectName = $self->getParamValue('projectName');
 
-  my $gusConfigFile = "$ENV{GUS_HOME}/config/gus.config";
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
-  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/config/";
+  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/genomeAndProteome/config/";
 
   my $jbrowseConf = "${copyToDir}/jbrowse.conf";
   my $cmd = "generateJbrowseMetadata $gusConfigFile $organismAbbrev $jbrowseConf";
@@ -30,6 +31,7 @@ sub run {
       $self->runCmd(0, "rm -fr $copyToDir");
   } else{
       if($test){
+          $self->runCmd(0, "mkdir -p $copyToDir");
           $self->runCmd(0, "echo test > $jbrowseConf");
       }
       $self->runCmd($test, "mkdir -p $copyToDir");

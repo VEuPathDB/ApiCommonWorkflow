@@ -1,52 +1,51 @@
 package ApiCommonWorkflow::Main::Util::OrganismInfo;
 
 use strict;
+use CBIL::Util::PropertySet;
+use DBI;
 
 sub new {
-    my ($class, $workflowStep, $test, $organismAbbrev) = @_;
+    my ($class, $workflowStep, $test, $organismAbbrev, $gusConfigFile) = @_;
 
-    my $self = {test => $test,
-		organismAbbrev => $organismAbbrev,
-		workflowStep => $workflowStep
-	       };
+    my $self = {
+      test => $test,
+		  organismAbbrev => $organismAbbrev,
+		  gusConfigFile => $gusConfigFile,
+		  workflowStep => $workflowStep
+    };
     bless($self,$class);
 
     return $self if $test;
 
+    my @properties;
+    my $gusConfig = CBIL::Util::PropertySet -> new ($gusConfigFile, \@properties, 1);
+
+    my $dbh = DBI->connect($gusConfig->{props}->{dbiDsn},
+                           $gusConfig->{props}->{databaseLogin},
+                           $gusConfig->{props}->{databasePassword}
+        ) or $self->error(DBI->errstr);
+
+
+
+
+
     my $sql = "select organism_id, name_for_filenames, strain_abbrev, public_abbrev,
                       is_family_representative, family_ncbi_taxon_ids, family_name_for_files
-             from apidb.organism
-             where abbrev = '$organismAbbrev'";
+               from apidb.organism
+               where abbrev = '$organismAbbrev'";
 
-    my ($organismId, $nameForFiles, $strainAbbrev, $publicAbbrev, $isFamilyRepresentative, $familyNcbiTaxonIds, $familyNameForFiles) = $workflowStep->runSqlFetchOneRow($test,$sql);
+    my ($organismId, $nameForFiles, $strainAbbrev, $publicAbbrev, $isFamilyRepresentative, $familyNcbiTaxonIds, $familyNameForFiles) = $workflowStep->runSqlFetchOneRowFromOrgDb($test,$sql,$dbh);
 
     $sql = "select tn.name, t.ncbi_tax_id, o.taxon_id
-             from sres.taxonname tn, sres.taxon t, apidb.organism o
-             where o.abbrev = '$organismAbbrev'
-             and t.taxon_id = o.taxon_id
-             and tn.taxon_id = t.taxon_id
-             and tn.name_class = 'scientific name'";
+            from sres.taxonname tn, sres.taxon t, apidb.organism o
+            where o.abbrev = '$organismAbbrev'
+              and t.taxon_id = o.taxon_id
+              and tn.taxon_id = t.taxon_id
+              and tn.name_class = 'scientific name'";
 
-   my ($fullName, $ncbiTaxonId, $taxonId) = $workflowStep->runSqlFetchOneRow($test,$sql);
+    my ($fullName, $ncbiTaxonId, $taxonId) = $workflowStep->runSqlFetchOneRowFromOrgDb($test,$sql, $dbh);
 
     die "Could not find taxon_id for organismAbbrev '$organismAbbrev'" unless $taxonId;
-
-    $sql = "select ncbi_tax_id, taxon_id
-   from
-  (select taxon_id, ncbi_tax_id, rank 
-   from sres.taxon
-   connect by taxon_id = prior parent_id
-   start with taxon_id = $taxonId) t
-   where t.rank = 'species'";
-
-    my ($speciesNcbiTaxonId, $speciesTaxonId) = $workflowStep->runSqlFetchOneRow($test,$sql);
-
-    $sql = "select name
-            from sres.taxonname
-            where taxon_id = $speciesTaxonId
-            and name_class = 'scientific name'";
-
-    my ($speciesName) = $workflowStep->runSqlFetchOneRow($test,$sql);
 
     $self->{fullName} = $fullName;
     $self->{nameForFiles} = $nameForFiles;
@@ -55,9 +54,6 @@ sub new {
     $self->{publicAbbrev} = $publicAbbrev;
     $self->{ncbiTaxonId} = $ncbiTaxonId;
     $self->{taxonId} = $taxonId;
-    $self->{speciesNcbiTaxonId} = $speciesNcbiTaxonId;
-    $self->{speciesTaxonId} = $speciesTaxonId;
-    $self->{speciesName} = $speciesName;
     $self->{isFamilyRepresentative} = $isFamilyRepresentative;
     $self->{familyNcbiTaxonIds} = $familyNcbiTaxonIds;
     $self->{familyNameForFiles} = $familyNameForFiles;
@@ -83,34 +79,16 @@ sub getNcbiTaxonId {
     return $self->{ncbiTaxonId};
 }
 
-sub getSpeciesNcbiTaxonId {
-    my ($self) = @_;
-    return "$self->{organismAbbrev}_SPECIES_NCBI_TAXON_ID" if $self->{test};
-    return $self->{speciesNcbiTaxonId};
-}
-
 sub getTaxonId {
     my ($self) = @_;
     return "$self->{organismAbbrev}_TAXON_ID" if $self->{test};
     return $self->{taxonId};
 }
 
-sub getSpeciesTaxonId {
-    my ($self) = @_;
-    return "$self->{organismAbbrev}_SPECIES_TAXON_ID" if $self->{test};
-    return $self->{speciesTaxonId};
-}
-
-sub getSpeciesName {
-    my ($self) = @_;
-    return "$self->{organismAbbrev}_SPECIES_NAME" if $self->{test};
-    return $self->{speciesName};
-}
-
 sub getSpeciesNameForFiles {
     my ($self) = @_;
     return "$self->{organismAbbrev}_SPECIES_NAME" if $self->{test};
-    my $speciesNameForFiles = $self->{nameForFiles}; 
+    my $speciesNameForFiles = $self->{nameForFiles};
     $speciesNameForFiles =~ s/$self->{strainAbbrev}$//;
     return $speciesNameForFiles;
 }
@@ -119,6 +97,24 @@ sub getOrganismId {
     return "$self->{organismAbbrev}_ORGANISM_ID" if $self->{test};
     return $self->{organismId};
 }
+
+
+sub getSpeciesNameFromNcbiTaxId {
+    my ($self, $ncbiTaxId) = @_;
+
+    my $edirectCommand = "singularity run docker://ncbi/edirect:20.6 esummary -db taxonomy -id $ncbiTaxId 2>/dev/null \| singularity run docker://ncbi/edirect:20.6 xtract -pattern DocumentSummary -element ScientificName 2>/dev/null";
+
+
+    my $speciesName = `$edirectCommand`;
+    $speciesName =~ s/\n$//;
+
+    if($speciesName) {
+        return $speciesName;
+    }
+    die "Could not retrieve a species name for ncbi tax id [$ncbiTaxId]";
+
+}
+
 
 sub getStrainAbbrev {
     my ($self) = @_;
@@ -136,6 +132,19 @@ sub getTaxonIdList {
   my ($self, $taxonId) = @_;
 
     my $idList = $self->{workflowStep}->runCmd($self->{test}, "getSubTaxaList --taxon_id $taxonId");
+
+    if ($self->{test}) {
+      return "$self->{organismAbbrev}_TAXON_ID_LIST";
+    } else {
+      chomp($idList);
+      return  $idList;
+    }
+}
+
+sub getSubTaxaListFromNcbiTaxonId {
+  my ($self, $ncbiTaxonId, $gusConfigFile) = @_;
+
+    my $idList = $self->{workflowStep}->runCmd($self->{test}, "getSubTaxaListFromNcbiTaxonId --NCBITaxId $ncbiTaxonId --gusConfigFile $gusConfigFile");
 
     if ($self->{test}) {
       return "$self->{organismAbbrev}_TAXON_ID_LIST";

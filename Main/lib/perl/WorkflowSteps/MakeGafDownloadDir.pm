@@ -13,9 +13,11 @@ sub run {
     my $relativeDir = $self->getParamValue('relativeDir');
 
     my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
     my $nameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
     my $gafDir = "$websiteFilesDir/$relativeDir/$nameForFiles/gaf";
 

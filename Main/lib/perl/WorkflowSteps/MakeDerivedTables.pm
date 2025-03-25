@@ -9,6 +9,8 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  return if $test;
+
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
   my $tables = $self->getParamValue('tables');
@@ -17,7 +19,8 @@ sub run {
 
   my $instance = $self->getGusInstanceName();
 
-  my $apidbTuningPassword = $self->getConfig('apidbTuningPassword');
+  my $username = $self->getGusDatabaseLogin();
+  my $password = $self->getGusDatabasePassword();
 
   my $dblink = $self->getConfig('dblink');
 
@@ -25,7 +28,8 @@ sub run {
   my $xmlConfigFileString=
 "<?xml version='1.0'?>
 <tuningProps>
-  <password>$apidbTuningPassword</password>
+  <username>$username</username>
+  <password>$password</password>
   <schema>ApidbTuning</schema>
   <housekeepingSchema>apidb</housekeepingSchema>
   <dblink>$dblink</dblink>
@@ -57,10 +61,12 @@ sub run {
 
 sub prefixAndFilterValueCommandString {
   my ($self, $organismAbbrev, $test) = @_;
-  
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+ 
+  my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
     
-  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev)->getTaxonId();
+  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
 
    return "-filterValue $taxonId -prefix '$tuningTablePrefix'  " ;
 }

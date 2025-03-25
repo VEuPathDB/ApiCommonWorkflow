@@ -11,9 +11,11 @@ sub getWebsiteFileCmd {
 
     my $organismSource = $self->getParamValue('organismSource');
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-    my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
-    my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+    my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNcbiTaxonId();
+    my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
 
 =comment out - refs #21487
   my $sql = <<"EOF";
@@ -99,9 +101,9 @@ EOF
 SELECT t.protein_source_id || ' | transcript=' || t.source_id || ' | gene=' || t.gene_source_id || ' | organism=' || replace(t.organism, ' ', '_') || 
   ' | gene_product=' || substr(gene_product, 1, 1000) || ' | transcript_product=' || substr(transcript_product, 1, 1000)
   || ' | location=' || sequence_id || ':' || coding_start || '-' || coding_end
-  || '(' || decode(is_reversed, 1, '-', '+') || ')' 
+  || '(' || CASE WHEN is_reversed = 1 THEN '-' ELSE '+' END || ')'
   || ' | protein_length=' || t.protein_length 
-  || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || decode(is_deprecated, 1, ' | deprecated=true', '') || ' | is_pseudo=' || decode(t.is_pseudo, 1, 'true','false')
+  || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || CASE WHEN is_deprecated = 1 THEN ' | deprecated=true' ELSE '' END  || ' | is_pseudo=' || CASE WHEN t.is_pseudo = 1 THEN 'true' ELSE 'false' END
   as defline, taas.sequence
 FROM ApidbTuning.${tuningTablePrefix}TranscriptAttributes t, DOTS.NASEQUENCE ns, sres.ontologyTerm soseq,
      dots.translatedaasequence taas
@@ -113,7 +115,7 @@ WHERE ns.SOURCE_ID = t.SEQUENCE_ID
 ORDER BY t.chromosome_order_num, t.SEQUENCE_ID,t.source_id, t.coding_start
 EOF
 
-  my $cmd = " gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" ";
+  my $cmd = " gusExtractSequences --gusConfigFile $gusConfigFile --outputFile $downloadFileName  --idSQL \"$sql\" ";
     return $cmd;
 }
 

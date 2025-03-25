@@ -23,6 +23,11 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
+  my $digestedQueryFilePath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $queryFile);
+  my $digestedTargetFilePath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $targetFile);
+  my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $outputDir);
+
   my $executor = $self->getClusterExecutor();
   my $exonerateProcessMemoryRequirement = processMemoryRequirement($executor, $self->getParamValue("exonerateMemory"));
   my $queue = $self->getClusterQueue();
@@ -33,8 +38,8 @@ sub run {
     $self->runCmd(0,"rm -rf $workflowDataDir/$outputDir");
     $self->runCmd(0,"rm -rf $configFile");
   }else {
-    $self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
-    $self->testInputFile('targetDir', "$workflowDataDir/$targetFile");
+    #$self->testInputFile('queryFile', "$workflowDataDir/$queryFile");
+    #$self->testInputFile('targetDir', "$workflowDataDir/$targetFile");
 
     $self->runCmd(0,"mkdir -p $workflowDataDir/$outputDir");
 
@@ -45,17 +50,17 @@ sub run {
 
     print F
 "params {
-  queryFilePath = '$clusterWorkflowDataDir/$queryFile'
-  targetFilePath = '$clusterWorkflowDataDir/$targetFile'
-  outputDir = '$clusterWorkflowDataDir/$outputDir'
+  queryFilePath = '$digestedQueryFilePath'
+  targetFilePath = '$digestedTargetFilePath'
+  outputDir = '$digestedOutputDir'
   queryChunkSize = $queryChunkSize
   esd2esiMemoryLimit = $esd2esiMemoryLimit
   fsmmemory = $exonerateFsmmemory
   maxintron = $maxIntronSize
+  outputFileName = 'nrProteinToGenome.gff'
 }
 
 process {
-  container = \"veupathdb/proteintogenomealignment\"
   executor = '$executor'
   queue = '$queue'
   withName: 'exonerate' {

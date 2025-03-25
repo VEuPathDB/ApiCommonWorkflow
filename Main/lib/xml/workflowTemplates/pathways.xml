@@ -1,0 +1,49 @@
+<workflowGraph name="">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="datasetLoaderXmlFileName"/>
+
+  <constant name="dataDir">$$parentDataDir$$/pathways</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="Pathways">
+    <prop name="version"/>
+    <prop name="format"/>
+    <prop name="source"/>
+
+    <subgraph name="Pathways_${source}_RSRC" xmlFile="loadDataset.xml" stepLoadTypes="runPlugin:insertPathways">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="datasetName">Pathways_${source}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="Pathways_BioCyc">
+    <subgraph name="Pathways_BioCyc_${source}_RSRC" xmlFile="loadDataset.xml" stepLoadTypes="runPlugin:insertPathways">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="datasetName">Pathways_BioCyc_${source}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+  <datasetTemplate class="ReactionsXRefs">
+    <prop name="version"/>
+    <prop name="source"/>
+
+    <subgraph name="ReactionsXRefs_${source}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="datasetName">ReactionsXRefs_${source}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <dependsPattern name="Pathways_*_RSRC"/>
+    </subgraph>
+  </datasetTemplate>
+
+</workflowGraph>

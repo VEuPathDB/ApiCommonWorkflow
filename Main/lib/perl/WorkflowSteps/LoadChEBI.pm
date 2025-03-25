@@ -9,20 +9,37 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $gusInstance = $self->getGusInstanceName();
-  my $chebiLogin = 'chebi';
-  my $chebiPassword = $self->getConfig('chebiPassword');
+  my $login = $self->getGusDatabaseLogin() unless $test;
+  my $password = $self->getGusDatabasePassword() unless $test;
+  my $hostname = $self->getGusDatabaseHostname() unless $test;
+  my $databaseName = $self->getGusDatabaseName() unless $test;
+  my $connectionString = "postgresql://$login:$password\@$hostname/$databaseName";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $dataDir = $workflowDataDir . "/" . $self->getParamValue('dataDir'). "/" . $self->getParamValue('datasetName'). "/final" ;
 
-  my $cmd = "loadChEBI.bash -d $dataDir -i $gusInstance -u $chebiLogin -p $chebiPassword";
+  my @files = qw(
+    compounds.sql
+    chemical_data.sql
+    comments.sql
+    compound_origins.sql
+    database_accession.sql
+    names.sql
+    references.sql
+    relation.sql
+    structures.sql
+  );
 
   if ($undo) {
-     $self->runCmd(0, "echo exit|sqlplus $chebiLogin/$chebiPassword\@$gusInstance \@$dataDir/disable_constraints.sql");
-     $self->runCmd(0, "sqlplus $chebiLogin/$chebiPassword\@$gusInstance \@$ENV{GUS_HOME}/lib/sql/apidbschema/dropChebiTables.sql");
+    $self->runCmd($test, "echo 'SET ROLE GUS_W; SET SEARCH_PATH TO chebi; TRUNCATE TABLE chebi.compounds CASCADE;' | psql --echo-all -v ON_ERROR_STOP=1 $connectionString");
   } else {
-    $self->runCmd($test, $cmd);
+    for my $sqlFile (@files) {
+      # psql 9 doesn't support multiple commands/files. doing workaround.
+      # $self->runCmd($test, "psql --echo-all --single-transaction -v ON_ERROR_STOP=1 -c 'SET ROLE GUS_W' -c 'SET SEARCH_PATH TO chebi' -f $dataDir/$sqlFile $connectionString --single-transaction");
+      $self->logErr( "Running $sqlFile\n");
+      $self->runCmd($test, "echo 'BEGIN; SET ROLE GUS_W; SET SEARCH_PATH TO chebi; \\i $dataDir/$sqlFile \\\\ END;' | psql -v ON_ERROR_STOP=1 $connectionString");
+      $self->logErr( "Finished running $sqlFile\n");
+    }
   }
 }
 

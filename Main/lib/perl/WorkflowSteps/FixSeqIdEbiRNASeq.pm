@@ -11,6 +11,7 @@ sub run {
   my $samplesDir = $self->getParamValue('samplesDir');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $gusConfigFile = $self->getGusConfigFile();
 
   my $fullPath = "$workflowDataDir/$samplesDir";
 
@@ -29,7 +30,7 @@ sub run {
   } else {
 
 
-    $self->runCmd($test, "ebiRNASeqSeqRegionNameMapping.pl --samples_directory $fullPath --organism_abbrev $organismAbbrev");
+    $self->runCmd($test, "ebiRNASeqSeqRegionNameMapping.pl --samples_directory $fullPath --organism_abbrev $organismAbbrev --gusConfigFile $gusConfigFile");
 
 
   }

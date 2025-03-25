@@ -1,0 +1,186 @@
+<workflowGraph name="multipleProjects">
+  <param name="projectName"/> <!-- GenomicsDB -->
+
+  <constant name="globalDatasetLoaderXmlFile">GenomicsGlobal.xml</constant>
+  <constant name="multiProjectsDatasetLoaderXmlFile">MultiProjects.xml</constant>
+  <constant name="multiProjectsDataDir">multiProjects</constant>
+
+<!-- call globalGraph (Mustafa's but we added back things like NRDB ...-->
+  <globalSubgraph name="global" xmlFile="globalGraph.xml">
+    <paramValue name="commonDatasetLoaderXmlFile">$$projectName$$/$$projectName$$Common.xml</paramValue>
+    <paramValue name="globalDatasetLoaderXmlFile">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+  </globalSubgraph>
+
+  <step name="makeMultiProjectsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$multiProjectsDataDir$$</paramValue>
+  </step>
+
+  <step name="initClusterHomeDir"
+        stepClass="ReFlow::StepClasses::InitClusterHomeDir">
+<!--    <depends name="initUserGroupProject"/>-->
+  </step>
+
+<!-- call project.xml (generated) for each component -->
+
+    <subgraph name="PlasmoDB" xmlFile="generated/PlasmoDB/project.xml">
+      <paramValue name="projectName">PlasmoDB</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">false</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+
+    <subgraph name="TriTrypDB" xmlFile="generated/TriTrypDB/project.xml">
+      <paramValue name="projectName">TriTrypDB</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">false</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+
+    <subgraph name="VectorBase" xmlFile="generated/VectorBase/project.xml">
+      <paramValue name="projectName">VectorBase</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">false</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+
+    <subgraph name="ToxoDB" xmlFile="generated/ToxoDB/project.xml">
+      <paramValue name="projectName">ToxoDB</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">false</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+
+    <subgraph name="AmoebaDB" xmlFile="generated/AmoebaDB/project.xml">
+      <paramValue name="projectName">AmoebaDB</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">false</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+
+    <subgraph name="CryptoDB" xmlFile="generated/CryptoDB/project.xml">
+      <paramValue name="projectName">CryptoDB</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">false</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+
+    <subgraph name="FungiDB" xmlFile="generated/FungiDB/project.xml">
+      <paramValue name="projectName">FungiDB</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">false</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+<!--
+    <subgraph name="PiroplasmaDB" xmlFile="generated/PiroplasmaDB/project.xml">
+      <paramValue name="projectName">PiroplasmaDB</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">false</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+
+    <subgraph name="GiardiaDB" xmlFile="generated/GiardiaDB/project.xml">
+      <paramValue name="projectName">GiardiaDB</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">false</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+
+    <subgraph name="MicrosporidiaDB" xmlFile="generated/MicrosporidiaDB/project.xml">
+      <paramValue name="projectName">MicrosporidiaDB</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">false</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+
+    <subgraph name="TrichDB" xmlFile="generated/TrichDB/project.xml">
+      <paramValue name="projectName">TrichDB</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">false</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+
+    <subgraph name="HostDB" xmlFile="generated/HostDB/project.xml">
+      <paramValue name="projectName">HostDB</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="areBigGenomes">True</paramValue>
+      <depends name="initClusterHomeDir"/>
+    </subgraph>
+
+    <subgraph name="OrthoMCLCore" xmlFile="OrthoMCLCore.xml">
+      <paramValue name="projectName">OrthoMCL</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <dependsExternal name="PlasmoDB_checkOrthoCoreProteomeDirs"/>
+      <dependsExternal name="TriTrypDB_checkOrthoCoreProteomeDirs"/>
+      <dependsExternal name="VectorBase_checkOrthoCoreProteomeDirs"/>
+      <dependsExternal name="ToxoDB_checkOrthoCoreProteomeDirs"/>
+      <dependsExternal name="AmoebaDB_checkOrthoCoreProteomeDirs"/>
+      <dependsExternal name="CryptoDB_checkOrthoCoreProteomeDirs"/>
+      <dependsExternal name="FungiDB_checkOrthoCoreProteomeDirs"/>
+      <dependsExternal name="PiroplasmaDB_checkOrthoCoreProteomeDirs"/>
+      <dependsExternal name="GiardiaDB_checkOrthoCoreProteomeDirs"/>
+      <dependsExternal name="MicrosporidiaDB_checkOrthoCoreProteomeDirs"/>
+      <dependsExternal name="TrichDB_checkOrthoCoreProteomeDirs"/>
+      <dependsExternal name="HostDB_checkOrthoCoreProteomeDirs"/>
+    </subgraph>
+
+    <subgraph name="OrthoMCLPeripheral" xmlFile="OrthoMCLPeripheral.xml">
+      <paramValue name="projectName">OrthoMCL</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <paramValue name="residualGroupIdPrefix">OGR7r1_</paramValue>
+      <depends name="OrthoMCLCore"/>
+      <dependsExternal name="PlasmoDB_checkOrthoPeripheralProteomeDirs"/>
+      <dependsExternal name="TriTrypDB_checkOrthoPeripheralProteomeDirs"/>
+      <dependsExternal name="VectorBase_checkOrthoPeripheralProteomeDirs"/>
+      <dependsExternal name="ToxoDB_checkOrthoPeripheralProteomeDirs"/>
+      <dependsExternal name="AmoebaDB_checkOrthoPeripheralProteomeDirs"/>
+      <dependsExternal name="CryptoDB_checkOrthoPeripheralProteomeDirs"/>
+      <dependsExternal name="FungiDB_checkOrthoPeripheralProteomeDirs"/>
+      <dependsExternal name="PiroplasmaDB_checkOrthoPeripheralProteomeDirs"/>
+      <dependsExternal name="GiardiaDB_checkOrthoPeripheralProteomeDirs"/>
+      <dependsExternal name="MicrosporidiaDB_checkOrthoPeripheralProteomeDirs"/>
+      <dependsExternal name="TrichDB_checkOrthoPeripheralProteomeDirs"/>
+      <dependsExternal name="HostDB_checkOrthoPeripheralProteomeDirs"/>
+    </subgraph>
+
+    <subgraph name="alphaFold" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">alphaFold_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$multiProjectsDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$multiProjectsDataDir$$</paramValue>
+     <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+     <depends name="makeMultiProjectsDataDir"/>
+     <depends name="PlasmoDB"/>
+     <depends name="ToxoDB"/>
+     <depends name="TriTrypDB"/>
+     <depends name="VectorBase"/>
+     <depends name="AmoebaDB"/>
+     <depends name="CryptoDB"/>
+     <depends name="FungiDB"/>
+     <depends name="PiroplasmaDB"/>
+     <depends name="GiardiaDB"/>
+     <depends name="MicrosporidiaDB"/>
+     <depends name="TrichDB"/>
+     <depends name="HostDB"/>
+    </subgraph>
+
+    <subgraph name="ExternalResourceUrl" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">ExternalResourceUrl_Ensembl_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$multiProjectsDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$multiProjectsDataDir$$</paramValue>
+     <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+     <depends name="makeMultiProjectsDataDir"/>
+     <depends name="PlasmoDB"/>
+     <depends name="ToxoDB"/>
+     <depends name="TriTrypDB"/>
+     <depends name="VectorBase"/>
+     <depends name="AmoebaDB"/>
+     <depends name="CryptoDB"/>
+     <depends name="FungiDB"/>
+     <depends name="PiroplasmaDB"/>
+     <depends name="GiardiaDB"/>
+     <depends name="MicrosporidiaDB"/>
+     <depends name="TrichDB"/>
+     <depends name="HostDB"/>
+    </subgraph>
+-->
+</workflowGraph>

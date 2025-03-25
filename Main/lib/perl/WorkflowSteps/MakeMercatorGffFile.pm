@@ -10,7 +10,11 @@ sub run {
 
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
-    my $organism = $self->getOrganismInfo($test, $organismAbbrev)->getFullName();
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
+    my $organism = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getFullName();
+    my $gusConfigFile = $self->getGusConfigFile();
     my $outputFile;
 
     if($self->getParamValue('outputFile')){
@@ -28,7 +32,7 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $cmd = "mercatorGffDump.pl  --outputFile $workflowDataDir/$outputFile --organismAbbrev '$organismAbbrev'";
+    my $cmd = "mercatorGffDump.pl  --outputFile $workflowDataDir/$outputFile --organismAbbrev '$organismAbbrev' --gusConfigFile $gusConfigFile";
 
     if ($undo) {
       $self->runCmd(0, "rm -fr $workflowDataDir/$outputFile");

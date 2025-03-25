@@ -61,6 +61,8 @@ sub run {
   my $fileType = $self->getParamValue('fileType');
   my $dataName = $self->getParamValue('dataName');
   my $descripString = $self->getParamValue('descripString');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
   my $isWebServiceFile = $self->getBooleanParamValue('isWebServiceFile');
   my $serviceName;
 
@@ -68,10 +70,10 @@ sub run {
   
   my ($websiteFile, $descripFile, $descripFileCmd);
 
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
-  my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
+  my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesNameForFiles();
   my $isSpeciesLevel = $self->getIsSpeciesLevel();
-  my $familyNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getFamilyNameForFiles();
+  my $familyNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getFamilyNameForFiles();
   my $isFamilyLevel = $self->getIsFamilyLevel();
 
   my $nameForFilesSuffix = $self->getNameForFilesSuffix();
@@ -121,7 +123,9 @@ sub getWebServiceDir {
     $nameForFiles = $speciesNameForFiles if $isSpeciesLevel;
     $nameForFiles = $familyNameForFiles if $isFamilyLevel;
     $nameForFiles .= $nameForFilesSuffix if($nameForFilesSuffix);
-
+    $serviceName = "fasta" if ($serviceName eq "motif");
+    #$serviceName = "genomeAndProteome/". $serviceName if (!$isSpeciesLevel && ($serviceName eq "blast" || $serviceName eq "blat" || $serviceName eq "fasta" || $serviceName eq "gff"));
+    $serviceName = "genomeAndProteome/". $serviceName if ($serviceName eq "blast" || $serviceName eq "blat" || $serviceName eq "fasta" || $serviceName eq "gff");
     return "$websiteFilesDir/$relativeDir/$nameForFiles/$serviceName";
 }
 

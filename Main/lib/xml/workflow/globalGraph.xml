@@ -1,14 +1,8 @@
 <workflowGraph name="global">
-  <param name="commonDatasetLoaderXmlFile"/>
-  <param name="globalDatasetLoaderXmlFile"/>
   <param name="projectName"/>
+  <param name="globalDatasetLoaderXmlFile"/>
 
-  <globalConstant name="global_PDBOutputFile">global/PDBProteinSequences_RSRC/pdb.fsa</globalConstant>
-<!-- JB: only used for BLAST
-  <globalConstant name="global_NRDBOutputFile_shortDefline">global/NRDB_RSRC/nrdb-short-defline.fsa</globalConstant>
-  <globalConstant name="global_NRDBOutputFile_shortDeflineSP">global/NRDB_RSRC/nrdb-short-defline-sp.fsa</globalConstant>
-  <globalConstant name="global_NRDBOutputFile">global/NRDB_RSRC/nr</globalConstant>
--->
+  <constant name="gusConfigFile">$$projectName$$_gus.config</constant>
 
   <constant name="dataDir">global</constant>
 
@@ -16,25 +10,56 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-  <!-- we want all steps in the flow to depend on this one because it validates the project name and version -->
-  <step name="initUserGroupProject" 
-	stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
+  <step name="makeDatabase" stepClass="ReFlow::StepClasses::MakeDatabase">
+    <paramValue name="dbName"/>
+  </step>
+
+  <step name="makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig">
+    <paramValue name="dbName"/>
+    <paramValue name="dataDir"/>
+    <paramValue name="gusConfigFilename">$$gusConfigFile$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="makeDatabase"/>
     <depends name="makeDataDir"/>
   </step>
+
+
+
+  <!-- we want all steps in the flow to depend on this one because it validates the project name and version -->
+  <step name="initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="makeGusConfig"/>
+  </step>
+
+  <step name="registerPlugins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RegisterPlugins">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="initUserGroupProject"/>
+  </step>
+
 
   <subgraph name="GO_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">GO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
   </subgraph>
 
-<!-- to do make a GOSlim_RSRC as above--> 
+  <subgraph name="interpro2GO_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">interpro2GO_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
+  </subgraph>
+
+  <!-- to do make a GOSlim_RSRC as above-->
   <subgraph name="GOSlim_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">GOSlim_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="GO_RSRC"/>
   </subgraph>
 
@@ -42,197 +67,202 @@
     <paramValue name="datasetName">enzymeDB_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
   </subgraph>
 
   <subgraph name="SO_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">SO_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
-  </subgraph>
-
-
-  <subgraph name="PDBProteinSequences_RSRC" xmlFile="loadDataset.xml">
-    <paramValue name="datasetName">PDBProteinSequences_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="SO_RSRC"/>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
   </subgraph>
 
   <subgraph name="taxonomy_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">taxonomy_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="initUserGroupProject"/>
   </subgraph>
 
+  <subgraph name="taxonomyPatches_RSRC" xmlFile="generated/GenomicsGlobal/TaxonPatches/taxonomyPatches.xml">
+    <paramValue name="datasetName">taxonomyPatches_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="taxonomy_RSRC"/>
+  </subgraph>
+
+  <subgraph name="PDBProteinSequences_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">PDBProteinSequences_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="SO_RSRC"/>
+    <depends name="taxonomy_RSRC"/>
+  </subgraph>
+
+<!--
   <subgraph name="updatePDBTaxon_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">updatePDBTaxon_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="PDBProteinSequences_RSRC"/>
     <depends name="taxonomy_RSRC"/>
   </subgraph>
+-->
 
   <subgraph name="Ontology_Relationship_Types_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">Ontology_Relationship_Types_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
   </subgraph>
 
-
-  <subgraph name="oboOntologies" xmlFile="generated/global/oboOntologies.xml" excludeIfXmlFileDoesNotExist="true">
+  <subgraph name="Ontology_ptmt_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="datasetName">Ontology_ptmt_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <depends name="Ontology_Relationship_Types_RSRC"/>
   </subgraph>
 
-
-  <subgraph name="eupathCuratedOntologies" xmlFile="generated/global/eupathCuratedOntologies.xml" excludeIfXmlFileDoesNotExist="true">
+  <subgraph name="oboOntologies" xmlFile="generated/GenomicsGlobal/oboOntologies.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="Ontology_Relationship_Types_RSRC"/>
   </subgraph>
 
+<!--  <subgraph name="eupathCuratedOntologies" xmlFile="generated/GenomicsGlobal/eupathCuratedOntologies.xml" excludeIfXmlFileDoesNotExist="true">-->
+<!--    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>-->
+<!--    <paramValue name="parentDataDir">$$dataDir$$</paramValue>-->
+<!--    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>-->
+<!--    <depends name="Ontology_Relationship_Types_RSRC"/>-->
+<!--  </subgraph>-->
 
   <subgraph name="EuPath_Ontology_RSRC" xmlFile="loadDataset.xml" stepLoadTypes="runPlugin:insertOntologyTermsAndRelationships">
     <paramValue name="datasetName">OntologyTerm_EuPath_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="Ontology_Relationship_Types_RSRC"/>
   </subgraph>
 
-    <subgraph name="geographicLocationGPS_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">geographicLocationGPS_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="oboOntologies"/>
-    </subgraph>
-
+<!--  <subgraph name="geographicLocationGPS_RSRC" xmlFile="loadDataset.xml">-->
+<!--    <paramValue name="datasetName">geographicLocationGPS_RSRC</paramValue>-->
+<!--    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>-->
+<!--    <paramValue name="parentDataDir">$$dataDir$$</paramValue>-->
+<!--    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>-->
+<!--    <depends name="oboOntologies"/>-->
+<!--  </subgraph>-->
 
   <subgraph name="GO_evidence_codes_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">GO_evidence_codes_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
   </subgraph>
 
   <subgraph name="interproscanData_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">InterproscanData_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>    
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
   </subgraph>
 
-  <subgraph name="NRDB_RSRC" xmlFile="loadDataset.xml">
-    <paramValue name="datasetName">NRDB_RSRC</paramValue>
+  <subgraph name="chEBI_Compounds" xmlFile="compounds.xml">
+    <paramValue name="datasetName">compounds_chEBI_RSRC</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
+  </subgraph>
+
+
+<!--  Disabling this because we don't currently use it for anything.  -->
+<!--  <subgraph name="HMDB_Compounds" xmlFile="loadDataset.xml">-->
+<!--    <paramValue name="datasetName">compounds_HMDB_RSRC</paramValue>-->
+<!--    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>-->
+<!--    <paramValue name="parentDataDir">$$dataDir$$</paramValue>-->
+<!--    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>-->
+<!--    <depends name="initUserGroupProject"/>-->
+<!--  </subgraph>-->
+
+<!--  <subgraph name="OBO_Ontology_efo" xmlFile="loadDataset.xml" stepLoadTypes="runPlugin:insertOntologyTermsAndRelationships">-->
+<!--    <paramValue name="datasetName">OBO_Ontology_efo_RSRC</paramValue>-->
+<!--    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>-->
+<!--    <paramValue name="parentDataDir">$$dataDir$$</paramValue>-->
+<!--    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>-->
+<!--    <depends name="Ontology_Relationship_Types_RSRC"/>-->
+<!--  </subgraph>-->
+
+  <subgraph name="Legacy_Datasets_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">Legacy_Datasets_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
+  </subgraph>
+
+  <subgraph name="Pathways" xmlFile="generated/GenomicsGlobal/pathways.xml" excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="enzymeDB_RSRC"/>
+    <depends name="GO_RSRC"/>
+    <depends name="chEBI_Compounds"/>
+    <depends name="EuPath_Ontology_RSRC"/>
+  </subgraph>
+
+  <subgraph name="EcNumberGenus_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="datasetName">EcNumberGenus_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="registerPlugins"/>
+  </subgraph>
+
+  <subgraph name="IEDBDatasetLoader" xmlFile="loadDataset.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="datasetName">epitopes_IEDB_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="taxonomy_RSRC"/>
   </subgraph>
 
   <subgraph name="blatAlignmentQuality_RSRC" xmlFile="loadDataset.xml">
     <paramValue name="datasetName">blatAlignmentQuality_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
   </subgraph>
 
-
-<!--
-  <subgraph name="BibRefType_RSRC" xmlFile="loadDataset.xml">
-    <paramValue name="datasetName">BibRefType_RSRC</paramValue>
+  <subgraph name="NRDB_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">NRDB_RSRC</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
   </subgraph>
--->
 
   <step name="initClusterHomeDir"
-	stepClass="ReFlow::StepClasses::InitClusterHomeDir">
+    stepClass="ReFlow::StepClasses::InitClusterHomeDir">
     <depends name="initUserGroupProject"/>
   </step>
 
   <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
     <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
     <depends name="initClusterHomeDir"/>
-    <depends name="NRDB_RSRC"/>
     <depends name="PDBProteinSequences_RSRC"/>
   </step>
 
-<!-- JB: no longer needed
-  <step name="makeNrdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster">
-    <paramValue name="inputFile">$$global_NRDBOutputFile_shortDeflineSP$$</paramValue>
-    <paramValue name="vendor">wu</paramValue>
-    <paramValue name="seqType">p</paramValue>
-    <depends name="mirrorToCluster"/>
-  </step>
---> 
-
-
-  <step name="makePdbBlastDbOnCluster" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FormatBlastDbOnCluster">
-    <paramValue name="inputFile">$$global_PDBOutputFile$$</paramValue>
-    <paramValue name="vendor">wu</paramValue>
-    <paramValue name="seqType">p</paramValue>
-    <depends name="mirrorToCluster"/>
-  </step>
-
-
-
-  <subgraph name="chEBI_Compounds" xmlFile="compounds.xml">
-    <paramValue name="datasetName">compounds_chEBI_RSRC</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <depends name="initUserGroupProject"/>  
-  </subgraph>
-
-  <subgraph name="HMDB_Compounds" xmlFile="loadDataset.xml">
-    <paramValue name="datasetName">compounds_HMDB_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
-  </subgraph>
-
-  <subgraph name="OBO_Ontology_efo" xmlFile="loadDataset.xml" stepLoadTypes="runPlugin:insertOntologyTermsAndRelationships">
-    <paramValue name="datasetName">OBO_Ontology_efo_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="Ontology_Relationship_Types_RSRC"/>
-  </subgraph>
-
-
-  <subgraph name="UPDATE_Ontologies" xmlFile="generated/global/updateOntologies.xml">
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="eupathCuratedOntologies"/>
-    <depends name="oboOntologies"/>
-  </subgraph>
-
-  <subgraph name="UPDATE_EuPath_Ontology_RSRC" xmlFile="loadDataset.xml" stepLoadTypes="runPlugin:insertOntologyTermsAndRelationships">
-    <paramValue name="datasetName">OntologyTerm_INTERNAL_EuPath_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="EuPath_Ontology_RSRC"/>
-  </subgraph>
-
- <subgraph name="UPDATE_OBO_Ontology_efo_RSRC" xmlFile="loadDataset.xml" stepLoadTypes="runPlugin:insertOntologyTermsAndRelationships">
-    <paramValue name="datasetName">OBO_Ontology_INTERNAL_efo_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="OBO_Ontology_efo"/>
-  </subgraph>
-
-  <subgraph name="Legacy_Datasets_RSRC" xmlFile="loadDataset.xml">
-    <paramValue name="datasetName">Legacy_Datasets_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
-  </subgraph>
 
 </workflowGraph>
-
- 
-
-

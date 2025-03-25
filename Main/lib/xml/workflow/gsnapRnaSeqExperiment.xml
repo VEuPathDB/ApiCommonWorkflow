@@ -1,11 +1,12 @@
 <workflowGraph name="">
+    <param name="gusConfigFile"/>
     <param name="projectName"/>
     <param name="organismAbbrev"/>
     <param name="organismDatasetLoaderXmlFile"/>
     <param name="experimentName"/>
     <param name="parentDataDir"/>
     <param name="genomeExtDbRlsSpec"/>
-    <param name="topLevelSeqSizeFile"/>
+    <param name="seqSizeFile"/>
     <param name="experimentDatasetName"/>
     <param name="experimentDatasetVersion"/>
     <param name="limitNU"/>
@@ -16,8 +17,8 @@
     <param name="gtfFile"/>
     <param name="maskFile"/>
     <param name="gmapDatabase"/>
-    <param name="topLevelFastaFile"/>
-    <param name="topLevelGeneFootprintFile"/>
+    <param name="genomeFastaFile"/>
+    <param name="geneFootprintFile"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
@@ -35,14 +36,9 @@
       <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
-
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeSamplesOutputDir"/>
-      <depends name="experiment_RSRC"/>
-    </step>
 
     <subgraph name="analyzeSamples" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/rnaSeqSamples.xml">
       <paramValue name="experimentDataDir">$$dataDir$$</paramValue>
@@ -60,15 +56,15 @@
       <paramValue name="maskFile">$$maskFile$$</paramValue>
       <paramValue name="gmapDatabase">$$gmapDatabase$$</paramValue>
       <paramValue name="gsnapDirectory">$$parentDataDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
-      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
-      <depends name="mirrorToCluster"/>
+      <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
+      <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
 
 
     <step name="normalizeBedGraph" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraph">
       <paramValue name="inputDir">$$dataDir$$</paramValue>
-      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
       <depends name="analyzeSamples"/>
@@ -88,6 +84,7 @@
       <paramValue name="method">rna_seq_experiment_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters">TODO: patch in later</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </step>
 
     <step name="document-chip_seq_experiment"
@@ -95,6 +92,7 @@
       <paramValue name="method">chip_seq_experiment_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters">TODO: patch in later</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </step>
 
 

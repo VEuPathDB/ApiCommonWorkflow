@@ -10,18 +10,18 @@ sub run {
     my ($self, $test, $undo) = @_;
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
-    my $input = join("/", $clusterWorkflowDataDir, $self->getParamValue("input")); 
-    my $outputDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("outputDir")); 
     my $configFileName = $self->getParamValue("configFileName");
     my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
-    my $fastaSubsetSize = $self->getParamValue("fastaSubsetSize");
-    my $appls = $self->getParamValue("appls");
     my $outputFile = $self->getParamValue("outputFile");
-    my $interproscanDatabase = $self->getParamValue("interproscanDatabase");
-    my $increasedMemory = $self->getParamValue("increasedMemory");
-    my $initialMemory = $self->getParamValue("initialMemory");
-    my $maxForks = $self->getParamValue("maxForks");
-    my $maxRetries = $self->getParamValue("maxRetries");
+    my $clusterServer = $self->getSharedConfig("clusterServer");
+    my $interproscanDatabase = join("/", $self->getSharedConfig("$clusterServer.softwareDatabasesDirectory"),$self->getSharedConfig("interproscanDatabaseDirectory"));
+
+    my $input = $self->getParamValue("input");
+    my $outputDir = $self->getParamValue("outputDir");
+    my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
+
+    my $digestedInput = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $input);
+    my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $outputDir);
 
     my $executor = $self->getClusterExecutor();
     my $queue = $self->getClusterQueue();
@@ -34,25 +34,24 @@ sub run {
     print F
 "
 params {
-  input = \"$input.NoAsterisks\"
-  outputDir = \"$outputDir\"
-  fastaSubsetSize = $fastaSubsetSize
-  appls = \"$appls\" 
+  input = \"$digestedInput\"
+  outputDir = \"$digestedOutputDir\"
+  fastaSubsetSize = 100
+  appls = \"cdd,coils,gene3d,hamap,panther,pfama,pirsf,prints,prositeprofiles,prositepatterns,sfld,smart,superfamily,ncbifam,mobidblite\"
   outputFile = \"$outputFile\"
 }
 
 process{
-  container = 'veupathdb/iprscan5'
   executor = \'$executor\'
   queue = \'$queue\'
-  maxForks = $maxForks
-  maxRetries = $maxRetries
+  maxForks = 40
+  maxRetries = 2
   withName: 'Iprscan' {
     errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' }
     clusterOptions = {
       (task.attempt > 1 && task.exitStatus in 130..140)
-        ? \'-M $increasedMemory -R \"rusage [mem=$increasedMemory] span[hosts=1]\"\'
-        : \'-M $initialMemory -R \"rusage [mem=$initialMemory] span[hosts=1]\"\'
+        ? \'-M 12000 -R \"rusage [mem=12000] span[hosts=1]\"\'
+        : \'-M 4000 -R \"rusage [mem=4000] span[hosts=1]\"\'
     }
   }                                                                                                                                                                             \
 }
@@ -60,7 +59,7 @@ process{
 singularity {
   enabled = true
   autoMounts = true
-  runOptions = \"--bind $interproscanDatabase:/opt/interproscan/data\" 
+  runOptions = \"--bind $interproscanDatabase:/opt/interproscan/data --bind $interproscanDatabase/interproscan.properties:/opt/interproscan/interproscan.properties\" 
 }
 ";
 	close(F);

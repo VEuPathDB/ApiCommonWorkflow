@@ -16,11 +16,13 @@ sub run {
   my $experimentDatasetName = $self->getParamValue('experimentDatasetName');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $organismNameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
-  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/vcf/$experimentDatasetName";
+  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/prealigned/vcf/$experimentDatasetName";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -29,15 +31,13 @@ sub run {
   my $cmd_copy = "cp $workflowDataDir/$vcfFile $copyToDir"; 
 
 
-
-  $self->testInputFile('vcfFile', "$workflowDataDir/$vcfFile");
-
   if ($undo) {
     $self->runCmd(0, "rm -fr $copyToDir");
   } else {
+    $self->testInputFile('vcfFile', "$workflowDataDir/$vcfFile");
     $self->runCmd($test, $cmd_mkdir);
     $self->runCmd($test, $cmd_copy);
-    $self->runCmd($test, "cp $workflowDataDir/$vcfFile.tbi $copyToDir");
+    $self->runCmd($test, "process_folder.pl --folder $copyToDir");
   }
 
 }

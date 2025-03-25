@@ -16,12 +16,11 @@ sub run {
 
     my $targetDir = "$workflowDataDir/$dataDirPath";
 
-    $self->error("Target dir '$targetDir' does not exist") unless -d $targetDir;
-
     if ($undo) {
       $self->runCmd(0, "rm -rf $targetDir/*");
       $self->runCmd(0, "rm -rf $targetDir/.listing") if -e "$targetDir/.listing"; # created mysteriously by wget sometimes
     } else {
+    $self->error("Target dir '$targetDir' does not exist") unless -d $targetDir;
 	$self->getDataset($test, $datasetLoader, $targetDir, $datasetName);
 	$self->unpackDataset($test, $datasetLoader);
 	$self->processDeclaredOutputs($test, $datasetLoader);

@@ -7,58 +7,68 @@ use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
-    my ($self, $test, $undo) = @_;
+  my ($self, $test, $undo) = @_;
 
-    my $workflowDataDir = $self->getWorkflowDataDir();
-    my $outputDir = join("/", $workflowDataDir, $self->getParamValue("outputDir")); 
-    my $configFileName = $self->getParamValue("configFileName");
-    my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
-    my $preConfiguredDatabase = $self->getParamValue("preConfiguredDatabase");
-    my $writeBedFile = $self->getParamValue("writeBedFile");
-    my $hasPairedReads = $self->getParamValue("hasPairedReads");
-    my $isColorSpace = $self->getParamValue("isColorSpace");
-    my $removePCRDuplicates = $self->getParamValue("removePCRDuplicates");
-    my $input = $self->getParamValue("input");
-    my $downloadMethod = $self->getParamValue("downloadMethod");
-    my $databaseFasta = $self->getParamValue("databaseFasta");
-    my $databaseFileDir = $self->getParamValue("databaseFileDir");
-    my $indexFileBasename = $self->getParamValue("indexFileBasename");
-    my $mateAQual = $self->getParamValue("mateAQual");
-    my $mateBQual = $self->getParamValue("mateBQual");
-    my $sampleName = $self->getParamValue("sampleName");
+  my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
+  my $clusterResultDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("clusterResultDir"));
+  my $analysisDir = $self->getParamValue("analysisDir");
+  my $configFileName = $self->getParamValue("configFileName");
+  my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $configFileName);
+
+  my $input = join("/", $clusterWorkflowDataDir, $analysisDir, $self->getParamValue("input"));
+  my $mateA = join("/", $clusterWorkflowDataDir, $self->getParamValue("readsFile"));
+  my $mateB = join("/", $clusterWorkflowDataDir, $self->getParamValue("pairedReadsFile"));
+  my $databaseFileDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("indexDir"));
+  my $databaseFasta = join("/", $clusterWorkflowDataDir, $self->getParamValue("databaseFasta"));
+
+  my $sampleName= $self->getParamValue("sampleName");
+  my $extraBowtieParams = $self->getParamValue("extraBowtieParams");
+  my $downloadMethod = $self->getParamValue("downloadMethod");
   
-    if ($undo) {
-	$self->runCmd(0,"rm -rf $configPath");
-    } else {
-	open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
+  my $preconfiguredDatabase = $self->getParamValue("preconfiguredDatabase");
+  my $removePCRDuplicates = $self->getParamValue("removePCRDuplicates");
+  my $writeBedFile = $self->getParamValue("writeBedFile");
+  my $hasPairedReads = $self->getParamValue("hasPairedEnds");  
+
+  my $executor = $self->getClusterExecutor();
+  my $queue = $self->getClusterQueue();
+
+  if ($undo) {
+    $self->runCmd(0,"rm -rf $configPath");
+  } else {
+    open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
 
     print F
 "
 params {
-  preconfiguredDatabase = $preConfiguredDatabase
+  preconfiguredDatabase = $preconfiguredDatabase
   writeBedFile = $writeBedFile
-  isSingleEnd = $isSingleEnd
-  isColorSpace = $isColorSpace
+  hasPairedReads = $hasPairedReads
   removePCRDuplicates = $removePCRDuplicates
   input = \"$input\"
-  downloadMethod = \"$downloadMethod\"
+  downloadMethod = \'$downloadMethod\'
   databaseFasta = \"$databaseFasta\"
   databaseFileDir = \"$databaseFileDir\"
-  indexFileBasename = \"$indexFileBaseName\"
-  mateAQual = \"$mateAQual\"
-  mateBQual = \"$mateBQual\"
-  outputDir = \"$outputDir\" 
-  sampleName = \"$sampleName\" 
+  indexFileBasename = \"genomicIndexes\"
+  outputDir = \"$clusterResultDir\"
+  sampleName = \"$sampleName\"
+  mateA = \"$mateA\"
+  mateB = \"$mateB\"
+  extraBowtieParams = \"$extraBowtieParams\"
 }
 process {
-  container = 'veupathdb/bowtiemapping'
+  executor = \'$executor\'
+  queue = \'$queue\'
 }
+
 singularity {
   enabled = true
+  autoMounts = true
 }
 ";
-	close(F);
-    }
+  close(F);
+ }
 }
 
 1;
+

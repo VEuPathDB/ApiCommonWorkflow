@@ -15,7 +15,9 @@
     <param name="sequenceFormat"/>
     <param name="tRNArRNASeqsDir"/>
     <param name="relativeWebServicesDir"/>
-    <param name="topLevelSeqSizeFile"/>
+    <param name="seqSizeFile"/>
+    <param name="gusConfigFile"/>
+    <param name="downloadMethod"/>
    
     <constant name="sampleAnalysisDir">$$experimentDataDir$$/$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_smallNcRnaSample_RSRC</constant> 
     <constant name="lengthFilterDir">$$sampleAnalysisDir$$/lengthFilter</constant>
@@ -28,32 +30,21 @@
         <paramValue name="datasetName">$$organismAbbrev$$_$$experimentName$$_$$sampleName$$_smallNcRnaSample_RSRC</paramValue>
         <paramValue name="datasetLoaderXmlFileName">$$projectName$$/$$organismAbbrev$$/$$experimentName$$.xml</paramValue>
         <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
-    
-    <step name="mirrorSampleAnalysisDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$sampleAnalysisDir$$</paramValue>
-        <depends name="loadSmallNcRnaSample"/>
-    </step>
     
     <step name="makeLengthFilterDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$lengthFilterDir$$</paramValue>
-        <depends name="mirrorSampleAnalysisDirToCluster"/>
     </step>
 
     <step name="maketRNArRNAMappingDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$tRNArRNAMappingDir$$</paramValue>
-        <depends name="mirrorSampleAnalysisDirToCluster"/>
     </step>
 
     <step name="makeFilteredReadsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$filteredReadsDir$$</paramValue>
-        <depends name="mirrorSampleAnalysisDirToCluster"/>
     </step>
 
-    <step name="mirrorFilteredReadsDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-        <paramValue name="fileOrDirToMirror">$$filteredReadsDir$$</paramValue>
-        <depends name="makeFilteredReadsDir"/>
-    </step>
 
     <step name="filterFastqByLength" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterFastqByLength">
         <paramValue name="readsFile">$$readsFile$$</paramValue> 
@@ -103,12 +94,14 @@
         <paramValue name="indexDir">$$indexDir$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+        <paramValue name="downloadMethod">$$downloadMethod$$</paramValue>
         <paramValue name="isColorspace">$$isColorspace$$</paramValue>
         <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
         <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
-        <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+        <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
         <paramValue name="writeBedFile">false</paramValue>
         <paramValue name="sraQueryString"></paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
         <depends name="mirrorSampleFiles"/>
     </subgraph>
 
@@ -118,27 +111,29 @@
     </step>
     
     <step name="makeBamIndex" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateBamIndex">
-        <paramValue name="bamFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam</paramValue>
+        <paramValue name="bamFile">$$experimentDataDir$$/analyze_$$sampleName$$/results/$$sampleName$$.bam</paramValue>
         <depends name="runBowtie"/>
     </step>
 
     <step name="copyBamFileToStaging" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBAMFileToWebServices">
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="projectName">$$projectName$$</paramValue>
-        <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam</paramValue>
+        <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$sampleName$$/results/$$sampleName$$.bam</paramValue>
         <paramValue name="experimentName">$$experimentName$$</paramValue>
         <paramValue name="snpStrain">$$sampleName$$</paramValue>
         <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
         <depends name="makeBamIndex"/>
     </step>
 
     <step name="copyBamIndexToStaging" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBAMFileToWebServices">
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="projectName">$$projectName$$</paramValue>
-        <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$sampleName$$/master/mainresult/$$sampleName$$.bam.bai</paramValue>
+        <paramValue name="inputFile">$$experimentDataDir$$/analyze_$$sampleName$$/results/$$sampleName$$.bam.bai</paramValue>
         <paramValue name="experimentName">$$experimentName$$</paramValue>
         <paramValue name="snpStrain">$$sampleName$$</paramValue>
         <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
         <depends name="makeBamIndex"/>
     </step>
 

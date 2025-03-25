@@ -1,11 +1,12 @@
 <workflowGraph name="">
     <param name="projectName"/>
+    <param name="gusConfigFile"/>
     <param name="organismAbbrev"/>
     <param name="organismDatasetLoaderXmlFile"/>
     <param name="experimentName"/>
     <param name="parentDataDir"/>
     <param name="genomeExtDbRlsSpec"/>
-    <param name="topLevelSeqSizeFile"/>
+    <param name="seqSizeFile"/>
     <param name="experimentDatasetName"/>
     <param name="experimentDatasetVersion"/>
     <param name="hasPairedEnds"/>
@@ -14,8 +15,8 @@
     <param name="gtfFile"/>
     <param name="maskFile"/>
     <param name="hisatIndex"/>
-    <param name="topLevelFastaFile"/>
-    <param name="topLevelGeneFootprintFile"/>
+    <param name="genomeFastaFile"/>
+    <param name="geneFootprintFile"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
     <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
@@ -33,16 +34,12 @@
       <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeSamplesOutputDir"/>
-      <depends name="experiment_RSRC"/>
-    </step>
-
     <subgraph name="analyzeSamples" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/rnaSeqSamples.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="experimentDataDir">$$dataDir$$</paramValue>
       <paramValue name="outputDir">$$samplesOutputDir$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -56,15 +53,14 @@
       <paramValue name="maskFile">$$maskFile$$</paramValue>
       <paramValue name="hisatIndex">$$hisatIndex$$</paramValue>
       <paramValue name="hisatDirectory">$$parentDataDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
-      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
-      <depends name="mirrorToCluster"/>
+      <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
+      <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
     </subgraph>
 
 
     <step name="normalizeBedGraph" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraph">
       <paramValue name="inputDir">$$dataDir$$</paramValue>
-      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
       <paramValue name="strandSpecific">$$strandSpecific$$</paramValue>
       <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
       <depends name="analyzeSamples"/>
@@ -73,7 +69,7 @@
     <step name="makeMergedBigwig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RNAseqMerge">
         <paramValue name="inputsDir">$$dataDir$$</paramValue>
         <paramValue name="experimentName">$$experimentName$$</paramValue>
-        <paramValue name="chromSizesFile">$$topLevelSeqSizeFile$$</paramValue>
+        <paramValue name="chromSizesFile">$$seqSizeFile$$</paramValue>
         <paramValue name="analysisConfig">$$dataDir$$/$$experimentDatasetName$$/final/analysisConfig.xml</paramValue>
         <depends name="normalizeBedGraph"/>
     </step>
@@ -83,6 +79,7 @@
       <paramValue name="method">rna_seq_experiment_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters">TODO: patch in later</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </step>
 
 </workflowGraph>

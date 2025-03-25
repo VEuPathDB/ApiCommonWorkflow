@@ -1,52 +1,96 @@
-<!-- 
-
-$$relativeDownloadSiteDir$$ = downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$
-$$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$
-
--->
-
 <workflowGraph name="">
   <param name="projectName"/>
   <param name="projectVersionForWebsiteFiles"/>
   <param name="areBigGenomes"/>
 
-  <constant name="comparativeGenomicsInputDir">comparativeGenomicsInputDir</constant>
+  <!--
+  data/
+      global
+      PlasmoDB
+        comparativeGenomicsInputDir (synteny)
+        pfal3D7
+        pfalIT
+        ...
+      ToxoDB
+ -->
+
   <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
   <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
   <constant name="relativeAuxiliaryDir">auxiliary/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
 
-  <globalSubgraph name="global" xmlFile="globalGraph.xml">
+  <constant name="dataDir">$$projectName$$</constant>
+
+  <constant name="comparativeGenomicsInputDir">$$dataDir$$/comparativeGenomicsInputDir</constant>
+
+  <constant name="orthoCoreDir">$$dataDir$$/orthoCoreProteomes</constant>
+  <constant name="orthoPeripheralDir">$$dataDir$$/orthoPeripheralProteomes</constant>
+
+  <constant name="projectGusConfigBasename">$$projectName$$_gus.config</constant>
+  <constant name="projectGusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <!-- this will be a project specific gusConfigFile.  it should be used for everything in this graph -->
+  <!-- TODO:  fill i params -->
+  <step name="makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig">
+    <paramValue name="dbName"/>
+    <!--
+    <paramValue name="dbName">$$projectName$$</paramValue>
+     -->
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFilename">$$projectGusConfigBasename$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
+    <depends name="makeGusConfig"/>
+  </step>
+
+  <!--
+  <globalSubgraph name="componentGlobal" xmlFile="componentGlobalGraph.xml">
     <paramValue name="commonDatasetLoaderXmlFile">$$projectName$$/$$projectName$$Common.xml</paramValue>
-    <paramValue name="globalDatasetLoaderXmlFile">global.xml</paramValue>
+    <paramValue name="globalDatasetLoaderXmlFile">component.xml</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
   </globalSubgraph>
-
- <step name="makeProjectReleaseDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+  -->
+  <step name="makeProjectReleaseDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
+    <depends name="initUserGroupProject"/>
   </step>
 
   <step name="makeProjectReleaseWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
+    <depends name="initUserGroupProject"/>
   </step>
 
   <step name="makeProjectReleaseAuxiliaryDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeAuxiliaryDir$$</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
+    <depends name="initUserGroupProject"/>
   </step>
-
 
   <step name="makeComparativeGenomicsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$comparativeGenomicsInputDir$$</paramValue>
+    <depends name="makeDataDir"/>
   </step>
 
+  <step name="makeOrthoCoreDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$orthoCoreDir$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
 
+  <step name="makeOrthoPeripheralDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$orthoPeripheralDir$$</paramValue>
+    <depends name="makeOrthoCoreDir"/>
+  </step>
 
   <datasetTemplate class="organism">
     <prop name="organismAbbrev"/>
     <prop name="projectName"/>
-    <prop name="ncbiTaxonId"/>
     <prop name="publicOrganismAbbrev"/>
     <prop name="organismFullName"/>
     <prop name="organismNameForFiles"/>
@@ -68,41 +112,77 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <prop name="runExportPred"/>
     <prop name="taxonFilterForNRProteinsAlignedToGenome"/>
     <prop name="isHugeGenome"/>
-
     <prop name="maxIntronSize"/>
     <prop name="isNotEbiGenome"/>
+    <prop name="isCore"/>
 
     <step name="${organismAbbrev}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir" groupName="${organismAbbrev}">
-      <paramValue name="dataDir">${organismAbbrev}</paramValue>
+      <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}</paramValue>
+      <depends name="makeDataDir"/>
     </step>
-
-    <!-- each organism creates this step, but all are ignored except the one
-         made by the ref strain. -->
-    <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}" groupName="${organismAbbrev}">
-      <paramValue name="dataDir">${organismAbbrev}_strainsComparisonInput</paramValue>
-    </step>
-
-    <step name="${organismAbbrev}_mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" groupName="${organismAbbrev}"  stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">${organismAbbrev}</paramValue>
+<!--
+    <step name="${organismAbbrev}_makeDatabase" stepClass="ReFlow::StepClasses::MakeDatabase" groupName="${organismAbbrev}">
+      <paramValue name="dbName">${organismAbbrev}</paramValue>
       <depends name="${organismAbbrev}_makeDataDir"/>
-      <dependsGlobal name="initClusterHomeDir"/>
+    </step>
+-->
+
+  <!-- TODO:  make the gus config file to use the single database -->
+  <step name="${organismAbbrev}_makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig" groupName="${organismAbbrev}">
+    <paramValue name="dbName"/>
+    <!--  TODO:  put this back when we are creating organism specific dbs
+    <paramValue name="dbName">${organismAbbrev}</paramValue>
+    -->
+      <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}</paramValue>
+      <paramValue name="gusConfigFilename">${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <depends name="${organismAbbrev}_makeDataDir"/>
+    </step>
+
+<!--
+    <step name="${organismAbbrev}_initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject" groupName="${organismAbbrev}">
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <depends name="${organismAbbrev}_makeGusConfig"/>
+    </step>
+
+
+    <step name="${organismAbbrev}_registerPlugins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RegisterPlugins" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <depends name="${organismAbbrev}_initUserGroupProject"/>
+    </step>
+-->
+
+    <!-- each organism creates this step, but all are ignored except the one made by the ref strain. -->
+    <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}" groupName="${organismAbbrev}">
+      <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}_strainsComparisonInput</paramValue>
+      <depends name="makeDataDir"/>
     </step>
 
     <step name="${organismAbbrev}_loadTemporaryNcbiTaxonId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadTemporaryNcbiTaxonId" includeIf="${hasTemporaryNcbiTaxonId}" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="organismFullName">${organismFullName}</paramValue>
       <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
-      <dependsGlobal name="taxonomy_RSRC"/> 
+      <depends name="${organismAbbrev}_makeGusConfig"/>
+      <dependsGlobal name="taxonomy_RSRC"/>
     </step>
-
+    <!-- NOTE: loadNcbiTaxonId will be added back when webdb is organism specific
+    <step name="${organismAbbrev}_loadNcbiTaxonId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadNcbiTaxonId" groupName="${organismAbbrev}">
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="organismFullName">${organismFullName}</paramValue>
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <depends name="${organismAbbrev}_registerPlugins"/>
+    </step>
+    -->
     <subgraph name="${organismAbbrev}_LoadGenome" xmlFile="loadGenome.xml" groupName="${organismAbbrev}">
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismFullName">${organismFullName}</paramValue>
       <paramValue name="organismNameForFiles">${organismNameForFiles}</paramValue>
       <paramValue name="publicOrganismAbbrev">${publicOrganismAbbrev}</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
-      <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
       <paramValue name="isReferenceStrain">${isReferenceStrain}</paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${referenceStrainOrganismAbbrev}</paramValue>
       <paramValue name="isFamilyRepresentative">${isFamilyRepresentative}</paramValue>
@@ -120,71 +200,98 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="relativeAuxiliaryDir">$$relativeAuxiliaryDir$$</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
-      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
-      <paramValue name="genomicSeqs2BitFile">${organismAbbrev}/loadGenome/genomicSeqs.2bit</paramValue>
-      <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
-      <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <paramValue name="genomicSeqsFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
+      <paramValue name="genomicSeqsDir">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
+      <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <paramValue name="genomeSource">${genomeSource}</paramValue>
+      <paramValue name="isCore">${isCore}</paramValue>
       <depends name="makeProjectReleaseDownloadDir"/>
       <depends name="makeProjectReleaseWebServicesDir"/>
-      <depends name="${organismAbbrev}_mirrorToCluster"/>
       <depends name="${organismAbbrev}_loadTemporaryNcbiTaxonId"/>
-      <dependsGlobal name="taxonomy_RSRC"/> 
+      <depends name="${organismAbbrev}_makeGusConfig"/>
+      <!--<depends name="${organismAbbrev}_loadNcbiTaxonId"/>-->
+      <dependsGlobal name="taxonomy_RSRC"/>
       <dependsGlobal name="SO_RSRC"/>
     </subgraph>
 
+    <step name="${organismAbbrev}_CopyCoreProteomeToOrtho" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreProteomeToOrtho" includeIf="${isAnnotatedGenome} &amp;&amp; ${isCore}">
+      <paramValue name="orthomclAbbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <paramValue name="orthoCoreDir">$$orthoCoreDir$$</paramValue>
+      <depends name="${organismAbbrev}_LoadGenome"/>
+    </step>
+
+    <step name="${organismAbbrev}_CopyPeripheralProteomeToOrtho" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralProteomeToOrtho" includeIf="${isAnnotatedGenome} &amp;&amp; !${isCore}" >
+      <paramValue name="orthomclAbbrev">${orthomclAbbrev}</paramValue>
+      <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <paramValue name="orthoPeripheralDir">$$orthoPeripheralDir$$</paramValue>
+      <depends name="${organismAbbrev}_LoadGenome"/>
+    </step>
+
     <!-- a step to load chromosomeMap.txt file, nothing should be depended on this step -->
     <step name="${organismAbbrev}_LoadGenome_LoadChromosomeMap" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadChromosomeMap" excludeIf="${isNotEbiGenome}" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="genomeVersion">${genomeVersion}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
-      <paramValue name="chromosomeMapFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/chromosomeMap.txt</paramValue>
+      <paramValue name="chromosomeMapFile">$$dataDir$$/${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/chromosomeMap.txt</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </step>
 
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
-    <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome" xmlFile="makeAndMaskTopLevelGenome.xml" groupName="${organismAbbrev}">
-      <paramValue name="dataDir">${organismAbbrev}/makeAndMaskTopLevelGenome</paramValue>
-      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
+    <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome" xmlFile="maskGenome.xml" groupName="${organismAbbrev}">
+      <paramValue name="loadGenomeFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
+      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/maskGenome/genomicSeqs.fasta</paramValue>
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}/maskGenome</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="projectName">${projectName}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <paramValue name="isHugeGenome">${isHugeGenome}</paramValue>
       <paramValue name="isNotEbiGenome">${isNotEbiGenome}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
     </subgraph>
 
-
-  <subgraph name="${organismAbbrev}_nrdbProteinsAlignAgainstGenome" xmlFile="proteinAlignToGenome.xml"  excludeIf="${isHugeGenome}">
-    <paramValue name="dataDir">${organismAbbrev}/nrdbProteinsAlignAgainstGenome</paramValue>
-    <paramValue name="targetFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue> 
-    <paramValue name="nrProteinsFile">global/NRDB_RSRC/nr</paramValue>        
-    <paramValue name="taxaFilter">${taxonFilterForNRProteinsAlignedToGenome}</paramValue>
-    <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
-    <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-    <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
-    <dependsGlobal name="mirrorToCluster"/>
-  </subgraph>
+    <subgraph name="${organismAbbrev}_nrdbProteinsAlignAgainstGenome" xmlFile="proteinAlignToGenome.xml"  excludeIf="${isHugeGenome}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}/nrdbProteinsAlignAgainstGenome</paramValue>
+      <paramValue name="targetFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
+      <paramValue name="taxaFilter">${taxonFilterForNRProteinsAlignedToGenome}</paramValue>
+      <paramValue name="nrdbFile">global/NRDB_RSRC/nr.gz</paramValue>
+      <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
+      <dependsGlobal name="NRDB_RSRC"/>
+    </subgraph>
 
     <!-- we include the ref strain as a prefix so we can use it in a dependsPattern for strain comparison -->
     <subgraph name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeCompGenomicsFiles" xmlFile="makeCompGenomicsFiles.xml" groupName="${organismAbbrev}" excludeIf="${isHugeGenome}">
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
-      <paramValue name="makeAndMaskTopLevelGenomeDataDir">${organismAbbrev}/makeAndMaskTopLevelGenome</paramValue>
-      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
+      <paramValue name="maskedGenomeSequenceFile">$$dataDir$$/${organismAbbrev}/maskGenome/analysisDir/results/blocked.seq</paramValue>
+      <paramValue name="genomeSequenceFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="comparativeGenomicsDir">$$comparativeGenomicsInputDir$$</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
-      <paramValue name="strainsComparisonInputDir">${referenceStrainOrganismAbbrev}_strainsComparisonInput</paramValue>
+      <paramValue name="strainsComparisonInputDir">$$dataDir$$/${referenceStrainOrganismAbbrev}_strainsComparisonInput</paramValue>
       <depends name="makeComparativeGenomicsDir"/>
       <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_PostLoadGenome" xmlFile="postLoadGenome.xml" groupName="${organismAbbrev}">
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -198,117 +305,124 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
-      <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome</paramValue>
-      <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <paramValue name="genomicSeqsFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
+      <paramValue name="genomicSeqsDir">$$dataDir$$/${organismAbbrev}/loadGenome</paramValue>
+      <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <paramValue name="isHugeGenome">${isHugeGenome}</paramValue>
       <paramValue name="isNotEbiGenome">${isNotEbiGenome}</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
+      <dependsGlobal name="Ontology_ptmt_RSRC"/> <!-- this is needed for loading mass spec data -->
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_gsnap_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/gsnap.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+
+    <subgraph name="${organismAbbrev}_microarray" xmlFile="generated/${projectName}/${organismAbbrev}/microarray.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
-      <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
-      <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_dnaseq_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/dnaseq.xml" excludeIfXmlFileDoesNotExist="true">
+    <subgraph name="${organismAbbrev}_dnaseq" xmlFile="generated/${projectName}/${organismAbbrev}/dnaseq.xml" excludeIfXmlFileDoesNotExist="true">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${referenceStrainOrganismAbbrev}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/genome.fasta</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_hisat_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/hisat.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+
+
+
+
+    <subgraph name="${organismAbbrev}_rnaseq" xmlFile="generated/${projectName}/${organismAbbrev}/rnaseq.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
-      <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
+      <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_ebi_rnaseq_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/ebiRNASeq.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
-      <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-      <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
-      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
-      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="topLevelFastaFile">${organismAbbrev}/makeAndMaskTopLevelGenome/topLevelGenomicSeqs.fasta</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
-    </subgraph>
-
-   <step name="${organismAbbrev}_PARJunctions" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARJunctions"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
-      <paramValue name="mappingFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
-      <depends name="${organismAbbrev}_ebi_rnaseq_topLevel"/>
+    <step name="${organismAbbrev}_PARJunctions" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARJunctions"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
+     <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+     <paramValue name="mappingFile">$$dataDir$$/${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
+      <depends name="${organismAbbrev}_rnaseq"/>
     </step>
 
     <subgraph name="${organismAbbrev}_ebi_VCF" xmlFile="generated/${projectName}/${organismAbbrev}/ebiVCFfile.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
-
 
     <subgraph name="${organismAbbrev}_ebi_GFF3" xmlFile="generated/${projectName}/${organismAbbrev}/ebiGFF3file.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
-
-
+    <!-- NOTE:  bowtie uses the unmasked version of the genomic seqs file in the maskGenome directory -->
     <subgraph name="${organismAbbrev}_bowtieMapping" xmlFile="mapWithBowtie.xml"  excludeIfXmlFileDoesNotExist="true"  groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">$$projectName$$/${organismAbbrev}.xml</paramValue>
-      <paramValue name="genomicSeqsDir">${organismAbbrev}/makeAndMaskTopLevelGenome</paramValue>
+      <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_specific_topLevel" xmlFile="generated/${projectName}/${organismAbbrev}/organismSpecificOnTopLevelGenome.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
-      <paramValue name="projectName">$$projectName$$</paramValue>
+    <subgraph name="${organismAbbrev}_blatMapping" xmlFile="generated/${projectName}/${organismAbbrev}/mapWithBlat.xml" excludeIfXmlFileDoesNotExist="true">
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-      <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+      <paramValue name="isReferenceStrain">${isReferenceStrain}</paramValue>
+      <paramValue name="genomicSeqsFile">$$dataDir$$/${organismAbbrev}/maskGenome/analysisDir/results/blocked.seq</paramValue>
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">$$projectName$$/${organismAbbrev}.xml</paramValue>
+      <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
+      <depends name="${organismAbbrev}_PostLoadGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_LoadAliases" xmlFile="generated/${projectName}/${organismAbbrev}/aliases.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -318,75 +432,80 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
-
     <subgraph name="${organismAbbrev}_specific_noAlias" xmlFile="OrganismSpecificNoAlias.xml"  groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="relativeAuxiliaryDir">$$relativeAuxiliaryDir$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
-      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
-      <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome</paramValue>
-      <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <paramValue name="genomicSeqsFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
+      <paramValue name="genomicSeqsDir">$$dataDir$$/${organismAbbrev}/loadGenome</paramValue>
+      <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_specific" xmlFile="OrganismSpecific.xml"  groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="maxIntronSize">${maxIntronSize}</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="relativeAuxiliaryDir">$$relativeAuxiliaryDir$$</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
-      <paramValue name="genomicSeqsFile">${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
-      <paramValue name="genomicSeqsDir">${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
+      <paramValue name="genomicSeqsFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
+      <paramValue name="genomicSeqsDir">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
+      <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <depends name="${organismAbbrev}_LoadAliases"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_dbXRefs" xmlFile="generated/${projectName}/${organismAbbrev}/dbXRefs.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
-      <paramValue name="parentDataDir">${organismAbbrev}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="proteinsFile">${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
+      <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <depends name="${organismAbbrev}_LoadAliases"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_EarlyVirtualLocations" xmlFile="virtualLocations.xml" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="mode">early</paramValue>
       <depends name="${organismAbbrev}_PostLoadGenome"/>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_LateVirtualLocations" xmlFile="virtualLocations.xml" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
       <paramValue name="mode">late</paramValue>
       <dependsPattern name="${organismAbbrev}_specific*"/>
       <depends name="${organismAbbrev}_PostLoadGenome"/>
     </subgraph>
-
    <step name="${organismAbbrev}_PARFeatures" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPARFeatures"  groupName="${organismAbbrev}" includeIf="$$areBigGenomes$$">
-      <paramValue name="mappingFile">${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
+     <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+     <paramValue name="mappingFile">$$dataDir$$/${organismAbbrev}/loadGenome/${organismAbbrev}_primary_genome_RSRC/final/pseudoautosomalRegionsMap.txt</paramValue>
       <depends name="${organismAbbrev}_LateVirtualLocations"/>
       <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
     </step>
-
     <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
@@ -400,46 +519,60 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="isNotEbiGenome">${isNotEbiGenome}</paramValue>
       <depends name="${organismAbbrev}_PostLoadGenome"/>
       <depends name="${organismAbbrev}_specific"/>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MakeAndMaskTopLevelGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
       <depends name="${organismAbbrev}_LateVirtualLocations"/>
       <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
       <depends name="${organismAbbrev}_PARFeatures"/>
     </subgraph>
 
+
   </datasetTemplate>
+<!--
+  <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables">
+    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
+    <paramValue name="dataDir">$$dataDir$$/Snp_Table_Constraint</paramValue>
+    <dependsPattern name="*_bowtieMapping"/>
+  </step>
+-->
+  <step name="checkOrthoCoreProteomeDirs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthoCoreProteomeDirs" externalName="$$projectName$$_checkOrthoCoreProteomeDirs">
+    <paramValue name="orthoCoreDir">$$orthoCoreDir$$</paramValue>
+    <dependsPattern name="*_CopyCoreProteomeToOrtho"/>
+  </step>
 
-    <step name="addConstraints" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddConstraintsToSnpTables">
-      <paramValue name="dataDir">Snp_Table_Constraint</paramValue>
-      <dependsPattern name="*_bowtieMapping"/>
-    </step>
+  <step name="checkOrthoPeripheralProteomeDirs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthoPeripheralProteomeDirs" externalName="$$projectName$$_checkOrthoPeripheralProteomeDirs">
+    <paramValue name="orthoPeripheralDir">$$orthoPeripheralDir$$</paramValue>
+    <dependsPattern name="*_CopyPeripheralProteomeToOrtho"/>
+  </step>
 
+
+<!--webdb test
   <subgraph name="comparativeGenomics" xmlFile="generated/$$projectName$$/comparativeGenomics.xml">
-    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="areBigGenomes">$$areBigGenomes$$</paramValue>
     <paramValue name="comparativeGenomicsInputDir">$$comparativeGenomicsInputDir$$</paramValue>
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-    <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
+    <dependsPattern name="*_MaskGenome"/>
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </subgraph>
+-->
+  <!-- depends on MaskGenome, MakeCompGenomicsFiles AND VIRTUAL FEATURE LOCATIONS-->
+<!--webdb test
+  <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid" excludeIf="$$areBigGenomes$$" >
+    <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
+    <paramValue name="mercatorOutputsDir">$$dataDir$$/mercatorOutput</paramValue>
+    <paramValue name="mercatorCacheDir">$$dataDir$$/mercatorCache</paramValue>
+    <paramValue name="mercatorTmpDir">$$dataDir$$/mercatorTmp</paramValue>
+    <dependsPattern name="*_MaskGenome"/>
+    <dependsPattern name="*_MakeCompGenomicsFiles"/>
+  </step>
 
-<!-- depends on MakeAndMaskTopLevelGenome, MakeCompGenomicsFiles AND VIRTUAL FEATURE LOCATIONS-->
-
-    <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid" excludeIf="$$areBigGenomes$$" >
-      <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
-      <paramValue name="mercatorOutputsDir">mercatorOutput</paramValue>
-      <paramValue name="mercatorCacheDir">mercatorCache</paramValue>
-      <paramValue name="mercatorTmpDir">mercatorTmp</paramValue>
-      <dependsPattern name="*_MakeAndMaskTopLevelGenome"/>
-      <dependsPattern name="*_MakeCompGenomicsFiles"/>
-    </step>
-
-    <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin" excludeIf="$$areBigGenomes$$" >
-      <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
-      <paramValue name="mercatorOutputsDir">mercatorOutput</paramValue>
-      <depends name="runPairwiseMercatorMavid"/>
-      <dependsPattern name="*_EarlyVirtualLocations"/>
-    </step>
-
+  <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin" excludeIf="$$areBigGenomes$$" >
+    <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
+    <paramValue name="mercatorOutputsDir">$$dataDir$$/mercatorOutput</paramValue>
+    <depends name="runPairwiseMercatorMavid"/>
+    <dependsPattern name="*_EarlyVirtualLocations"/>
+  </step>
 
   <subgraph name="OrthoMCLDerivedEC" xmlFile="orthoMCLDerivedEC.xml">
     <paramValue name="ecFile">@@manualDeliveryDir@@/$$projectName$$/common/function/OrthoMCLDerived_ECAssociations/Current_Version/final/ec.txt</paramValue>
@@ -448,63 +581,46 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <depends name="comparativeGenomics"/>
     <dependsPattern name="*_specific"/>
     <dependsGlobal name="enzymeDB_RSRC"/>
-  </subgraph> 
-
+  </subgraph>
+-->
   <!-- only reference strains have an instance of this -->
   <!-- it depends on all make and mask genomes for this organism (they all have the ref strain as a prefix) -->
   <datasetTemplate class="referenceStrain">
     <prop name="organismAbbrev"/>      <!-- same as referenceStrainOrganismAbbrev -->
     <prop name="isAnnotatedGenome"/>  <!-- if ref strain is annotated -->
-<!--remove strainsComparison steps from workflow
+    <!--remove strainsComparison steps from workflow
     <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml" includeIf="${isAnnotatedGenome} &amp;&amp; !$$areBigGenomes$$" groupName="${organismAbbrev}" >
-      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${organismAbbrev}</paramValue>
-      <paramValue name="strainsComparisonDir">${organismAbbrev}_strainsComparisonInput</paramValue>
-      <dependsPattern name="${organismAbbrev}_*_MakeAndMaskTopLevelGenome"/>
+      <paramValue name="strainsComparisonDir">$$dataDir$$/${organismAbbrev}_strainsComparisonInput</paramValue>
+      <dependsPattern name="${organismAbbrev}_*_MaskGenome"/>
       <dependsPattern name="${organismAbbrev}_*_MakeCompGenomicsFiles"/>
     </subgraph>
--->
-  </datasetTemplate>
-
-  <datasetTemplate class="Pathways">
-   <prop name="projectName"/>     
-   <prop name="version"/>
-   <prop name="format"/>
-   <prop name="source"/>
-
-   <subgraph name="Pathways_${source}_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">Pathways_${source}_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <dependsGlobal name="enzymeDB_RSRC"/>
-      <dependsGlobal name="oboOntologies"/>
-      <dependsGlobal name="GO_RSRC"/>
-      <dependsGlobal name="chEBI_Compounds"/>
-	  <dependsGlobal name="EuPath_Ontology_RSRC"/>
-   </subgraph>
+    -->
   </datasetTemplate>
 
   <datasetTemplate class="PopBio_Study">
-   <prop name="projectName"/>
-   <prop name="vbId"/>
-   <prop name="version"/>
+    <prop name="projectName"/>
+    <prop name="vbId"/>
+    <prop name="version"/>
 
-   <subgraph name="PopBio_Study_${vbId}_RSRC" xmlFile="loadDataset.xml">
+    <subgraph name="PopBio_Study_${vbId}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
       <paramValue name="datasetName">PopBio_Study_${vbId}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-   </subgraph>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
   </datasetTemplate>
 
   <datasetTemplate class="ISATabPopBio_WDK">
-   <prop name="projectName"/>
-   <prop name="vbId"/>
-   <prop name="version"/>
+    <prop name="projectName"/>
+    <prop name="vbId"/>
+    <prop name="version"/>
 
-   <subgraph name="ISATab_${vbId}_RSRC" xmlFile="loadDataset.xml">
+    <subgraph name="ISATab_${vbId}_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">ISATab_${vbId}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
    </subgraph>
   </datasetTemplate>
 
@@ -549,65 +665,61 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     </subgraph>
   </datasetTemplate>
 
-  <!-- for pathways graph -->
-<!--
-  <step name="makePathwaySolrJsonDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
-    <paramValue name="relativeDir">$$relativeWebServicesDir$$/pathway/solrJson</paramValue>
-      <dependsPattern name="Pathways_*_RSRC"/>
-      <dependsPattern name="ReactionsXRefs_*_RSRC"/>
-  </step>
+  <datasetTemplate class="EDAMegaStudy_WDK">
+    <prop name="projectName"/>
+    <prop name="vbId"/>
+    <prop name="version"/>
 
-  <step name="runPathwaySolrJsonReports" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunWdkSolrJsonReports" stepLoadTypes="runSolrJsonReports">
-      <paramValue name="batchType">pathway</paramValue>
-      <paramValue name="batchName">all</paramValue>
-      <paramValue name="relativeOutputDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="subDir">solrJson</paramValue>
-      <paramValue name="paramName"></paramValue>
-      <paramValue name="paramValue"></paramValue>
-      <depends name="makePathwaySolrJsonDir"/>
-  </step>
--->
-<!-- old template deprecated-->
- <datasetTemplate class="metaboliteProfiles">
-   <prop name="experimentName"/> 
-    <prop name="experimentVersion"/> 
+    <subgraph name="EDAMegaStudy_${vbId}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">EDAMegaStudy_${vbId}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    </subgraph>
+  </datasetTemplate>
+
+  <!-- old template deprecated-->
+  <datasetTemplate class="metaboliteProfiles">
+    <prop name="experimentName"/>
+    <prop name="experimentVersion"/>
 
     <subgraph name="metaboliteProfiles_${experimentName}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
       <paramValue name="datasetName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <dependsGlobal name="chEBI_Compounds"/>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <!--<dependsGlobal name="chEBI_Compounds"/>-->
     </subgraph>
 
     <subgraph name="MetaboliteProfiles" xmlFile="metaboliteProfiles.xml">
-      <paramValue name="parentDataDir"></paramValue>
+      <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="experimentName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
       <paramValue name="experimentVersion">${experimentVersion}</paramValue>
       <depends name="metaboliteProfiles_${experimentName}_RSRC"/>
     </subgraph>
+  </datasetTemplate>
 
- </datasetTemplate>
-
-  <!-- new template for untargeted metabolomics -->                                                                               
+  <!-- new template for untargeted metabolomics -->
   <step name="makeMetabolomicsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">metabolomics</paramValue>
-  </step>    
+    <paramValue name="dataDir">$$dataDir$$/metabolomics</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
 
   <datasetTemplate class="compoundMassSpec">
     <prop name="experimentName"/>
-
     <subgraph name="compoundMassSpec_${experimentName}_RSRC" xmlFile="loadDataset.xml">
-        <paramValue name="datasetName">compoundMassSpec_${experimentName}_RSRC</paramValue>
-        <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-        <paramValue name="parentDataDir">metabolomics</paramValue>
-        <depends name="makeMetabolomicsDataDir"/>
-        <dependsGlobal name="chEBI_Compounds"/>
+
+      <paramValue name="datasetName">compoundMassSpec_${experimentName}_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/metabolomics</paramValue>
+      <depends name="makeMetabolomicsDataDir"/>
+      <!--<dependsGlobal name="chEBI_Compounds"/>-->
     </subgraph>
 
   </datasetTemplate>
 
-<!-- for compounds graph -->
-<!--
+  <!-- for compounds graph -->
+  <!--
   <step name="makeCompoundSolrJsonDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeWebServicesDir$$/compound/solrJson</paramValue>
     <dependsGlobal name="chEBI_Compounds"/>
@@ -615,7 +727,7 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
     <dependsPattern name="compoundMassSpec_*_RSRC"/>
   </step>
 
-  <step name="runCompoundSolrJsonReports"        
+  <step name="runCompoundSolrJsonReports"
       stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunWdkSolrJsonReports" stepLoadTypes="runSolrJsonReports">
       <paramValue name="batchType">compound</paramValue>
       <paramValue name="batchName">all</paramValue>
@@ -624,45 +736,35 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="paramName"></paramValue>
       <paramValue name="paramValue"></paramValue>
       <depends name="makeCompoundSolrJsonDir"/>
-  </step> 
--->
-<!-- EuPath Ontology and Study MetaData -->
-<subgraph name="metadata" xmlFile="metadata.xml" >
+  </step>
+  -->
+
+  <!-- EuPath Ontology and Study MetaData -->
+<!--
+  <subgraph name="metadata" xmlFile="metadata.xml" >
+    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <dependsPattern name="*_specific"/>
     <dependsPattern name="*specific*"/>
     <dependsPattern name="*_bowtieMapping"/>
-    <dependsGlobal name="oboOntologies"/>
-    <dependsGlobal name="eupathCuratedOntologies"/>
-    <dependsGlobal name="EuPath_Ontology_RSRC"/>
-</subgraph>
-
-<!-- AlphaFold is now filtered, must be dependent on loading uniprot ids into sres.dbref in organism specific graph-->
-<subgraph name="alphaFold_RSRC" xmlFile="loadDataset.xml">
-    <paramValue name="datasetName">alphaFold_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
-    <dependsPattern name="*_specific"/>
-    <dependsPattern name="*specific*"/>
-    <dependsPattern name="*_dbXRefs"/>
-</subgraph>
-
-
-
-<!--A generic dataset template to copy and format files from EuPathDB manualDelivery to download sites and web services-->
- <datasetTemplate class="copyAndFormatDownloadFilesFromManualDelivery">
-   <prop name="projectName"/>
-   <prop name="relativeManualDeliveryDir"/>
-   <prop name="relativeDownloadSiteDir"/>
-   <prop name="relativeWebServiceDir"/>
-   <prop name="datasetName"/>
-   <prop name="formatDownloadFile"/>
-   <prop name="argsOfFormatingDownloadFile"/> 
-   <prop name="formattedOutputName"/>
-   <prop name="inputFileNameRegex"/>
-
+-->
+    <!--<dependsGlobal name="oboOntologies"/>-->
+    <!--<dependsGlobal name="eupathCuratedOntologies"/>-->
+    <!--<dependsGlobal name="EuPath_Ontology_RSRC"/>-->
+<!--  </subgraph>-->
+  <!--A generic dataset template to copy and format files from EuPathDB manualDelivery to download sites and web services-->
+  <datasetTemplate class="copyAndFormatDownloadFilesFromManualDelivery">
+    <prop name="projectName"/>
+    <prop name="relativeManualDeliveryDir"/>
+    <prop name="relativeDownloadSiteDir"/>
+    <prop name="relativeWebServiceDir"/>
+    <prop name="datasetName"/>
+    <prop name="formatDownloadFile"/>
+    <prop name="argsOfFormatingDownloadFile"/>
+    <prop name="formattedOutputName"/>
+    <prop name="inputFileNameRegex"/>
 
     <subgraph name="CopyAndFormatDownloadFilesFromManualDelivery" xmlFile="copyAndFormatDownloadFilesFromManualDelivery.xml">
       <paramValue name="relativeManualDeliveryDir">${relativeManualDeliveryDir}</paramValue>
@@ -674,61 +776,33 @@ $$relativeWebservicesDir$$ = webservices/$$projectName$$/release-$$projectVersio
       <paramValue name="argsOfFormatingDownloadFile">${argsOfFormatingDownloadFile}</paramValue>
       <paramValue name="formattedOutputName">${formattedOutputName}</paramValue>
       <paramValue name="inputFileNameRegex">${inputFileNameRegex}</paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
+      <depends name="initUserGroupProject"/>
     </subgraph>
-
- </datasetTemplate>
-
-  <datasetTemplate class="EcNumberGenus">
-   <prop name="projectName"/>   
- 
-   <step name="manuallyImproveEcNumberGenus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoNothingStep">
-     <dependsPattern name="*_LoadGenome"/>
-   </step>
- 
-   <subgraph name="EcNumberGenus_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">EcNumberGenus_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-    <depends name="manuallyImproveEcNumberGenus"/>
-   </subgraph>
   </datasetTemplate>
 
   <datasetTemplate class="StudyResultsLiteral">
-   <prop name="projectName"/>     
-   <prop name="version"/>
-   <prop name="name"/>
+    <prop name="projectName"/>
+    <prop name="version"/>
+    <prop name="name"/>
 
-   <subgraph name="StudyResult_${name}_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">StudyResult_${name}_RSRC</paramValue>
+    <subgraph name="StudyResult_${name}_RSRC" xmlFile="loadDataset.xml">
+        <paramValue name="datasetName">StudyResult_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <dependsGlobal name="oboOntologies"/>
-   </subgraph>
-  </datasetTemplate>
-
-  <datasetTemplate class="ExternalResourceUrl">
-   <prop name="projectName"/>
-   <prop name="version"/>
-   <prop name="name"/>
-
-   <subgraph name="ExternalResourceUrl_${name}_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">ExternalResourceUrl_${name}_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir"></paramValue>
-      <dependsGlobal name="initUserGroupProject"/>
-   </subgraph>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+  <!--<dependsGlobal name="oboOntologies"/>-->
+    </subgraph>
   </datasetTemplate>
 
   <datasetTemplate class="productionDatasets">
-   <prop name="projectName"/>
+    <prop name="projectName"/>
 
-  <subgraph name="Production_Datasets_RSRC" xmlFile="loadDataset.xml">
-    <paramValue name="datasetName">Production_Datasets_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-    <paramValue name="parentDataDir"></paramValue>
-    <dependsGlobal name="initUserGroupProject"/>
-  </subgraph>
+    <subgraph name="Production_Datasets_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
+      <paramValue name="datasetName">Production_Datasets_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="initUserGroupProject"/>
+    </subgraph>
   </datasetTemplate>
 
 </workflowGraph>

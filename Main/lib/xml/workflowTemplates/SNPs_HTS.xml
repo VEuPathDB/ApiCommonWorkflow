@@ -1,5 +1,6 @@
 <workflowGraph name="">
   <param name="parentDataDir"/>
+  <param name="gusConfigFile"/>
   <param name="organismDatasetLoaderXmlFile"/>
   <param name="genomicSeqsFile"/>
   <param name="genomeExtDbRlsSpec"/>
@@ -18,11 +19,6 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
-
   <step name="makeVarscanConsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$varscanConsDir$$</paramValue>
     <depends name="makeDataDir"/>
@@ -32,10 +28,6 @@
     <paramValue name="dataDir">$$cnvDir$$</paramValue>
   </step>
 
-    <step name="mirrorCnvDirToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster"  stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$cnvDir$$</paramValue>
-      <depends name="makeCnvDir"/>
-    </step>
   <!-- Create the external database release -->
 <!--
   <step name="insertHTSExtDbRls" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateExtDbAndDbRls" stepLoadTypes="plugin">
@@ -77,6 +69,7 @@
       <paramValue name="snpPercentCutoff">${snpPercentCutoff}</paramValue>
       <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
       <paramValue name="bowtieIndexDir">$$bowtieIndexDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="makeVarscanConsDir"/>
 
     </subgraph>
@@ -106,9 +99,9 @@
         <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
         <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
         <paramValue name="genomicSeqsFile">$$genomicSeqsFile$$</paramValue>
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
         <depends name="${experimentName}_experiment" />
-        <depends name="mirrorCnvDirToCluster"/>
-        <dependsGlobal name="oboOntologies"/>
+       <!-- <dependsGlobal name="oboOntologies"/>-->
     </subgraph>
   </datasetTemplate>
 
@@ -118,6 +111,7 @@
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="varscanConsDir">$$varscanConsDir$$</paramValue>
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <dependsPattern name="*_experiment"/>
   </subgraph>
 

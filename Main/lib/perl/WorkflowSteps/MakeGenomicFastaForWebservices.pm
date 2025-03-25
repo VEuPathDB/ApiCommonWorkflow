@@ -14,13 +14,17 @@ sub run {
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/fasta/";
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
-  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
+  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/genomeAndProteome/fasta";
 
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNcbiTaxonId();
+
+  my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
+
 
     my $sql = <<"EOF";
        SELECT sa.source_id
@@ -42,10 +46,9 @@ sub run {
 EOF
 
   my $fastaFile = "${copyToDir}/genome.fasta";
-  my $cmd = "gusExtractSequences --outputFile $fastaFile  --idSQL \"$sql\" ";
+  my $cmd = "gusExtractSequences --outputFile $fastaFile  --idSQL \"$sql\" --gusConfigFile $gusConfigFile";
 
-  my $indexCmd = "samtools faidx $fastaFile";
-
+  my $indexCmd = "singularity exec -B $copyToDir docker://staphb/samtools:latest samtools faidx $fastaFile";
 
   if($undo) {
       $self->runCmd(0, "rm -f ${fastaFile}*");

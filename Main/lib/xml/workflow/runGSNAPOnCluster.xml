@@ -11,8 +11,8 @@
       <param name="maskFile"/>
       <param name="gmapDatabase"/>
       <param name="gsnapDirectory"/>
-      <param name="topLevelGeneFootprintFile"/>
-      <param name="topLevelFastaFile"/>
+      <param name="geneFootprintFile"/>
+      <param name="genomeFastaFile"/>
       <param name="sraQueryString"/>
 
     <constant name="dataDir">$$parentDataDir$$</constant>
@@ -33,14 +33,9 @@
       <paramValue name="quantify">$$quantify$$</paramValue>
       <paramValue name="writeCovFiles">$$writeCovFiles$$</paramValue>
       <paramValue name="gsnapDirectory">$$gsnapDirectory$$</paramValue>
-      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
       <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
-    </step>
-
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/input</paramValue>
-      <depends name="makeTaskInputDir"/>
     </step>
 
     <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorDistribJob" stepLoadTypes="gsnapCluster" stepFailTypes="gsnapCluster">
@@ -48,16 +43,6 @@
       <paramValue name="numNodes">20</paramValue>
       <paramValue name="maxMemoryGigs">15</paramValue>
       <paramValue name="processorsPerNode">1</paramValue>
-      <depends name="mirrorToCluster"/>
     </step>
-
-    <step name="mirrorFromCluster" stepClass="ReFlow::StepClasses::MirrorFromComputeCluster" stepLoadTypes="fromCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$/master</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/master/mainresult</paramValue>
-      <paramValue name="outputFiles">TODO</paramValue>
-      <paramValue name="deleteAfterCopy">true</paramValue>
-      <depends name="runClusterTask"/>
-    </step>
-
 
 </workflowGraph>

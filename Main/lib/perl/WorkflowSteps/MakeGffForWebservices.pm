@@ -14,17 +14,20 @@ sub run {
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/gff/";
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
+
+  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/genomeAndProteome/gff";
 
   my $extDbRlsId = $self->getExtDbRlsId($test,$self->getParamValue('genomeExtDbRlsSpec'));
 
-  my $tuningTablePrefix = $self->getTuningTablePrefix($self->getParamValue('organismAbbrev'), $test);
+  my $tuningTablePrefix = $self->getTuningTablePrefix($test, $self->getParamValue('organismAbbrev'), $gusConfigFile);
 
   my $gffFile = "${copyToDir}/annotated_transcripts.gff";
 
-  my $cmd = "makeGff.pl --extDbRlsId $extDbRlsId --outputFile ${gffFile}.tmp --tuningTablePrefix $tuningTablePrefix";
+  my $cmd = "makeGff.pl --extDbRlsId $extDbRlsId --outputFile ${gffFile}.tmp --tuningTablePrefix $tuningTablePrefix --gusConfigFile $gusConfigFile";
 
   # sort and remove header lines
   my $sortGffCmd = "grep -v '^#' ${gffFile}.tmp | sort -k1,1 -k4,4n > $gffFile ";

@@ -1,0 +1,37 @@
+<workflowGraph name="">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="datasetLoaderXmlFileName"/>
+
+  <constant name="patchDatasetLoaderXmlFileName">GenomicsGlobal/TaxonPatches.xml</constant>
+  <constant name="dataDir">$$parentDataDir$$/taxonomyPatch</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="taxonomyPatch">
+    <prop name="mode"/>
+    <prop name="ncbiTaxonId"/>
+    <prop name="parentNcbiTaxonId"/>
+    <prop name="rank"/>
+    <prop name="name"/>
+    <prop name="nameClass"/>
+    <prop name="geneticCodeId"/>
+    <prop name="mitochondrialGeneticCodeId"/>
+    <subgraph name="taxonomyPatch_${ncbiTaxonId}_RSRC" xmlFile="loadDataset.xml"  stepLoadTypes="runPlugin:TaxonomyManualPatches">
+      <paramValue name="datasetLoaderXmlFileName">$$patchDatasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="datasetName">taxonomyPatch_${ncbiTaxonId}_RSRC</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="mode">${mode}</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="parentNcbiTaxonId">${parentNcbiTaxonId}</paramValue>
+      <paramValue name="rank">${rank}</paramValue>
+      <paramValue name="name">${name}</paramValue>
+      <paramValue name="geneticCodeId">${geneticCodeId}</paramValue>
+      <paramValue name="mitochondrialGeneticCodeId">${mitochondrialGeneticCodeId}</paramValue>
+    </subgraph>
+  </datasetTemplate>
+
+</workflowGraph>

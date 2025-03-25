@@ -2,11 +2,12 @@
     <param name="parentDataDir"/>
     <param name="experimentName"/>
     <param name="experimentVersion"/>
+    <param name="gusConfigFile"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
 
-    <!-- Reusing the DoTranscriptExpression WorkflowStep here.  -->
-    <step name="makeProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoTranscriptExpression">
+    <!-- Reusing the DoStudyAssayResults WorkflowStep here.  -->
+    <step name="makeProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoStudyAssayResults">
       <paramValue name="analysisConfigFile">$$parentDataDir$$/$$experimentName$$/final/analysisConfig.xml</paramValue>
       <paramValue name="inputDir">$$dataDir$$/final</paramValue>
       <paramValue name="outputDir">$$dataDir$$/outputDir</paramValue>
@@ -24,9 +25,10 @@
       <paramValue name="configFile">$$dataDir$$/outputDir/insert_study_results_config.txt</paramValue>
       <paramValue name="inputDir">$$dataDir$$/outputDir</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentName$$|$$experimentVersion$$</paramValue>
-    <paramValue name="studyName">$$experimentName$$</paramValue>
+      <paramValue name="studyName">$$experimentName$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="makeProfiles"/>
- <dependsGlobal name="oboOntologies"/>
+ <!--<dependsGlobal name="oboOntologies"/>-->
   </step>
 
 

@@ -1,4 +1,5 @@
 <workflowGraph name="">
+  <param name="gusConfigFile"/>
   <param name="dataDir"/>
   <param name="organismAbbrev"/>
   <param name="organismDatasetLoaderXmlFile"/>
@@ -10,6 +11,19 @@
   <param name="relativeWebServicesDir"/>
   <param name="relativeDownloadSiteDir"/>
 
+   <datasetTemplate class="insertAGPPiece">
+    <prop name="projectName"/>
+    <prop name="version"/>
+    <prop name="organismAbbrev"/>
+    <prop name="assembledLevel"/>
+    <subgraph name="${assembledLevel}_AGP_Piece_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="datasetName">${organismAbbrev}_${assembledLevel}_AGP_Piece_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir"></paramValue>
+    </subgraph>
+  </datasetTemplate>
+
   <datasetTemplate class="GeneImage">
     <prop name="name"/>
     <prop name="organismAbbrev"/>
@@ -17,9 +31,11 @@
       <paramValue name="datasetName">${organismAbbrev}_${name}_GeneImage_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
 
     <step name="copyImageFileToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyImageFileToWebServices">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="inputFile">$$dataDir$$/${organismAbbrev}_${name}_GeneImage_RSRC/final/images/</paramValue>
@@ -38,6 +54,7 @@
       <paramValue name="datasetName">${organismAbbrev}_${name}_cellxgene_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
 
     <step name="${organismAbbrev}_${name}_copyCellxgeneToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyCellxgeneToWebServices">
@@ -61,9 +78,11 @@
       <paramValue name="datasetName">${organismAbbrev}_${name}_NAFeaturePhenotypeImage_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
 
     <step name="copyImageFileToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyImageFileToWebServices">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="inputFile">$$dataDir$$/${organismAbbrev}_${name}_NAFeaturePhenotypeImage_RSRC/final/images/</paramValue>
@@ -81,6 +100,7 @@
       <paramValue name="datasetName">${organismAbbrev}_${name}_NAFeaturePhenotypeGeneric_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate> 
 
@@ -94,8 +114,9 @@
       <paramValue name="datasetName">${organismAbbrev}_${name}_GOAssociations_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <dependsGlobal name="GO_RSRC"/>
-      <dependsGlobal name="GO_evidence_codes_RSRC"/>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <!--<dependsGlobal name="GO_RSRC"/>-->
+      <!--<dependsGlobal name="GO_evidence_codes_RSRC"/>-->
     </subgraph>
   </datasetTemplate>
 
@@ -106,7 +127,8 @@
       <paramValue name="datasetName">${organismAbbrev}_${name}_ECAssociations_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <dependsGlobal name="enzymeDB_RSRC"/>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <!--<dependsGlobal name="enzymeDB_RSRC"/>-->
     </subgraph>
   </datasetTemplate>
 
@@ -117,7 +139,8 @@
       <paramValue name="datasetName">${organismAbbrev}_${name}_ECAssociations_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <dependsGlobal name="enzymeDB_RSRC"/>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <!--<dependsGlobal name="enzymeDB_RSRC"/>-->
     </subgraph>
   </datasetTemplate>
 
@@ -127,7 +150,8 @@
       <paramValue name="datasetName">${organismAbbrev}_Uniprot_ECAssociations_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <dependsGlobal name="enzymeDB_RSRC"/>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <!--<dependsGlobal name="enzymeDB_RSRC"/>-->
     </subgraph>
   </datasetTemplate>
 
@@ -138,6 +162,7 @@
       <paramValue name="datasetName">${organismAbbrev}_interaction_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -148,6 +173,7 @@
       <paramValue name="datasetName">${organismAbbrev}_mRNA_anticodon_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -158,6 +184,7 @@
       <paramValue name="datasetName">${organismAbbrev}_interaction_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -168,8 +195,9 @@
       <paramValue name="datasetName">${organismAbbrev}_phenotype_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <dependsGlobal name="oboOntologies"/>
-      <dependsGlobal name="UPDATE_OBO_Ontology_efo_RSRC"/>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <!--<dependsGlobal name="oboOntologies"/>-->
+      <!--<dependsGlobal name="UPDATE_OBO_Ontology_efo_RSRC"/>-->
     </subgraph>
   </datasetTemplate>
 
@@ -180,6 +208,7 @@
       <paramValue name="datasetName">${organismAbbrev}_cellularLocation_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -190,6 +219,7 @@
       <paramValue name="datasetName">${organismAbbrev}_cellularLocation_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -202,6 +232,7 @@
       <paramValue name="datasetName">${organismAbbrev}_eQTL_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -213,6 +244,7 @@
       <paramValue name="datasetName">${organismAbbrev}_phylogeny_phylogeneticProfiles_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate> 
 
@@ -223,6 +255,7 @@
       <paramValue name="datasetName">${organismAbbrev}_UpdateRodentPlasmoChr_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -236,6 +269,7 @@
       <paramValue name="datasetName">${organismAbbrev}_gene_name_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -246,6 +280,7 @@
       <paramValue name="datasetName">${organismAbbrev}_${name}_comments_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -256,6 +291,7 @@
       <paramValue name="datasetName">${organismAbbrev}_Profiles_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate>
 
@@ -266,6 +302,7 @@
       <paramValue name="datasetName">${organismAbbrev}_massSpec_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
   </datasetTemplate>
  
@@ -278,6 +315,7 @@
       <paramValue name="datasetName">${organismAbbrev}_${name}_stableIdsEvents_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
 
     <step name="copyStableIdsEventsToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyStableIdsEventsToDownloadDir">
@@ -287,27 +325,6 @@
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="experimentName">${name}</paramValue>
       <depends name="${name}_stableIdsEvents"/>
-    </step>
-  </datasetTemplate>
-
-  <datasetTemplate class="stableIdsEventsIndividual">
-    <prop name="organismAbbrev"/>
-    <prop name="buildNumber"/>
-    <prop name="name"/>
-
-    <subgraph name="${name}_stableIdsEventsIndividual" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${organismAbbrev}_${name}_stableIdsEventsIndividual_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    </subgraph>
-
-    <step name="copyStableIdsEventsToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyStableIdsEventsToDownloadDir">
-      <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
-      <paramValue name="copyFromFile">$$dataDir$$/${organismAbbrev}_${name}_stableIdsEventsIndividual_RSRC/${name}.tab</paramValue>
-      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-      <paramValue name="experimentName">${name}</paramValue>
-      <depends name="${name}_stableIdsEventsIndividual"/>
     </step>
   </datasetTemplate>
 

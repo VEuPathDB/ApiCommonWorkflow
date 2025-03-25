@@ -51,7 +51,7 @@ sub run {
         $entry = "-entry $nextflowEntry";
     }
 
-    my $cmd = "export NXF_WORK=$nextflowWork && nextflow -log $nextflowLog -C $nextflowConfig run -ansi-log false -r $gitBranch $nextflowWorkflow $entry -with-trace -resume 1>&2";
+    my $cmd = "export NXF_WORK=$nextflowWork && nextflow -log $nextflowLog -C $nextflowConfig run -ansi-log false -r $gitBranch $nextflowWorkflow $entry -resume 1>&2";
     if($isGitRepo){
         $cmd = "nextflow pull $nextflowWorkflow; $cmd";
     }

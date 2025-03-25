@@ -11,10 +11,13 @@ sub run {
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $relativeDir = $self->getParamValue('relativeDir');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
-  my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
+  my $speciesNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesNameForFiles();
   my $isSpeciesLevel = $self->getIsSpeciesLevel();
-  my $familyNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getFamilyNameForFiles();
+  my $familyNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getFamilyNameForFiles();
   my $isFamilyLevel = $self->getIsFamilyLevel();
   my $projectName = $self->getParamValue('projectName');
   my $projectVersion = $self->getParamValue('projectVersionForWebsiteFiles');

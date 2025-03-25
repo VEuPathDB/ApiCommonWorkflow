@@ -15,7 +15,10 @@ sub run {
     my $relativeDir = $self->getParamValue('relativeDir');
     my $experimentResourceName = $self->getParamValue('experimentDatasetName');
     my $websiteFilesDir = $self->getWebsiteFilesDir($test);
-    my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
+    my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
     my $workflowDataDir = $self->getWorkflowDataDir();
 
 
@@ -23,7 +26,7 @@ sub run {
     my $cmd_mkdir = "mkdir -p $copyToDir";
 
     my $cmd_copy = "cp $workflowDataDir/$copyFromDir/*.bw $copyToDir";
-    
+
     $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");
 
     if ($undo) {

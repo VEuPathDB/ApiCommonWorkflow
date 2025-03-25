@@ -16,28 +16,26 @@ sub run {
   my $experimentDatasetName = $self->getParamValue('experimentDatasetName');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $organismNameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
-  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/gff/$experimentDatasetName";
-
+  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/prealigned/gff/$experimentDatasetName";
   my $workflowDataDir = $self->getWorkflowDataDir();
-
   my $cmd_mkdir = "mkdir -p $copyToDir";
-
   my $cmd_copy = "cp $workflowDataDir/$gff3File $copyToDir"; 
-
-
 
   $self->testInputFile('gff3File', "$workflowDataDir/$gff3File");
 
   if ($undo) {
-    $self->runCmd(0, "rm -fr $copyToDir");
+    $self->runCmd(0, "rm -f $copyToDir/$gff3File.tbi");
+    $self->runCmd(0, "rm -f $copyToDir/$gff3File");
   } else {
     $self->runCmd($test, $cmd_mkdir);
     $self->runCmd($test, $cmd_copy);
-    $self->runCmd($test, "cp $workflowDataDir/$gff3File.tbi $copyToDir");
+    $self->runCmd($test, "process_folder.pl --folder $copyToDir");
   }
 
 }

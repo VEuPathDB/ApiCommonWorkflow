@@ -11,11 +11,13 @@ sub getWebsiteFileCmd {
   # get parameters
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $downloadsite = $self->getParamValue('projectName');
 
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
 
-  my $cmd = "makeNCBILinkoutsFiles_Nucleotide.pl -output $downloadFileName -tuningTablePrefix $tuningTablePrefix --downloadsite $downloadsite";
+  my $cmd = "makeNCBILinkoutsFiles_Nucleotide.pl -gusConfigFile $gusConfigFile -output $downloadFileName -tuningTablePrefix $tuningTablePrefix -downloadsite $downloadsite";
   return $cmd;
 }

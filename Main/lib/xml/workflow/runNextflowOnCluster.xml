@@ -1,0 +1,101 @@
+<workflowGraph name="runNextflowOnCluster">
+  <param name="parentDataDir"/>
+  <param name="analysisDir"/>
+  <param name="nextflowConfigFile"/>
+  <param name="organismAbbrev"/>
+  <param name="genomeSpec"/>
+  <param name="isProteomeAnalysis"/>
+  <param name="datasetSpec"/>
+  <param name="nextflowWorkflow"/>
+  <param name="projectName"/>
+  <param name="gusConfigFile"/>
+  <param name="ngsSamplesNextflowConfigFile"/>
+  <param name="entry"/>
+
+  <constant name="foundNextflowResults">$$parentDataDir$$/foundNextflowResults</constant>
+
+  <step name="checkForNextflowResultsAndCopyFromCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeSpec$$</paramValue>
+    <paramValue name="isProteomeAnalysis">$$isProteomeAnalysis$$</paramValue>
+    <paramValue name="datasetSpec">$$datasetSpec$$</paramValue>
+    <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
+    <paramValue name="foundNextflowResults">$$foundNextflowResults$$</paramValue>
+    <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
+    <paramValue name="mode">checkAndCopyFrom</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+  </step>
+
+
+  <step name="copyToCluster" stepClass="ReFlow::StepClasses::CopyNextflowWorkingDirToCluster" stepLoadTypes="toCluster" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="fileOrDirToCopy">$$parentDataDir$$</paramValue>
+    <depends name="checkForNextflowResultsAndCopyFromCache"/>
+  </step>
+
+  <!-- the nextflow config file for this step is optional.  if provided, we use it to get files from sra or set paths in samplesheet.csv-->
+  <step name="runNgsSamplesClusterTask" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunAndMonitorNextflowNGSSamples" skipIfFile="$$foundNextflowResults$$" stepLoadTypes="runNextflowOnCluster" stepFailTypes="runNextflowOnCluster">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
+    <paramValue name="workingDir">$$analysisDir$$</paramValue>
+    <paramValue name="resultsDir">$$analysisDir$$/ngs-samples-results</paramValue>
+    <paramValue name="nextflowConfigFile">$$ngsSamplesNextflowConfigFile$$</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/ngs-samples-nextflow</paramValue> <!-- this is our one stop shop for getting sample data (example: sra) -->
+    <paramValue name="isGitRepo">true</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="entry">$$entry$$</paramValue>
+    <depends name="copyToCluster"/>
+  </step>
+
+  <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow" skipIfFile="$$foundNextflowResults$$" stepLoadTypes="runNextflowOnCluster" stepFailTypes="runNextflowOnCluster">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
+    <paramValue name="workingDir">$$analysisDir$$</paramValue>
+    <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
+    <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+    <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
+    <paramValue name="isGitRepo">true</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="entry">$$entry$$</paramValue>
+   <depends name="runNgsSamplesClusterTask"/>
+    <depends name="copyToCluster"/>
+  </step>
+
+  <step name="copyResultsFromCluster" stepClass="ReFlow::StepClasses::CopyNextflowResultFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
+    <paramValue name="fileOrDirToCopy">$$analysisDir$$/results</paramValue>
+    <paramValue name="outputDir">$$analysisDir$$/results</paramValue>
+    <paramValue name="outputFiles">*</paramValue>
+    <paramValue name="deleteAfterCopy">true</paramValue>
+    <depends name="runClusterTask"/>
+  </step>
+
+  <step name="copyLogFromCluster" stepClass="ReFlow::StepClasses::CopyNextflowResultFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
+    <paramValue name="fileOrDirToCopy">$$analysisDir$$/nextflow.txt</paramValue>
+    <paramValue name="outputDir">$$analysisDir$$</paramValue>
+    <paramValue name="outputFiles">nextflow.txt</paramValue>
+    <paramValue name="deleteAfterCopy">false</paramValue>
+    <depends name="runClusterTask"/>
+  </step>
+
+
+  <step name="copyNextflowResultsToCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache" skipIfFile="$$foundNextflowResults$$" stepLoadTypes="copyNextflowResultsToCache" stepFailTypes="copyNextflowResultsToCache">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeSpec$$</paramValue>
+    <paramValue name="isProteomeAnalysis">$$isProteomeAnalysis$$</paramValue>
+    <paramValue name="datasetSpec">$$datasetSpec$$</paramValue>
+    <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
+    <paramValue name="foundNextflowResults">$$foundNextflowResults$$</paramValue>
+    <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="mode">copyTo</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <depends name="copyResultsFromCluster"/>
+    <depends name="copyLogFromCluster"/>
+  </step>
+
+  <step name="deletFromCluster" stepClass="ReFlow::StepClasses::DeleteNextflowWorkingDirFromCluster" stepLoadTypes="fromCluster" skipIfFile="$$foundNextflowResults$$">
+    <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
+    <depends name="copyNextflowResultsToCache"/>
+  </step>
+
+</workflowGraph>

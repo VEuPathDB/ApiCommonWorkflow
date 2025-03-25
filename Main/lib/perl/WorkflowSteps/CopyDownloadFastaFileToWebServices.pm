@@ -15,19 +15,22 @@ sub run {
   my $downloadSiteRelativeDir = $self->getParamValue('relativeDownloadSiteDir');  
   my $dataName = $self->getParamValue('dataName');
   my $service = $self->getParamValue('service');
-
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
   # extra params for this step
   my $webServicesRelativeDir = $self->getParamValue('relativeWebServicesDir');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
-  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+  my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
   my $inputDownloadFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getDownloadFileName($websiteFilesDir, $downloadSiteRelativeDir, $organismNameForFiles, undef, 0, undef, 0, $projectName, $projectVersion, 'fasta', $dataName);
 
   my $outputFile = ApiCommonWorkflow::Main::WorkflowSteps::WebsiteFileMaker::getWebServiceFileName($websiteFilesDir, $webServicesRelativeDir, $organismNameForFiles, undef, 0, undef, 0, 'fasta', $dataName, $service);
 
-  my $indexCmd = "samtools faidx $outputFile";
+  my $mountDir = "$websiteFilesDir\/$webServicesRelativeDir\/$organismNameForFiles";
+
+  my $indexCmd = "singularity exec -B $mountDir  docker://staphb/samtools:latest samtools faidx $outputFile";
 
   if($undo) {
     $self->runCmd(0, "rm -f $outputFile*");

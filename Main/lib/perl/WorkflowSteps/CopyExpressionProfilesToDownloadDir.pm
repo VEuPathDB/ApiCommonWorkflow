@@ -18,11 +18,13 @@ sub run {
   my $experimentResourceName = $self->getParamValue('experimentDatasetName');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $organismNameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
-  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/transcriptExpression/$experimentResourceName";
+  my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/StudyAssayResults/$experimentResourceName";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 

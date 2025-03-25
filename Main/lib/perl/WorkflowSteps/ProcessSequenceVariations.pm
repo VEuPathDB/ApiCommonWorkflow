@@ -23,8 +23,13 @@ sub run {
 
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
-  my $organismStrain = $self->getOrganismInfo($test, $organismAbbrev)->getStrainAbbrev();
-  
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
+  my $organismStrain = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getStrainAbbrev();
+
+  my $gusConfigFile = $self->getGusConfigFile();
+
   unless($organismStrain) {
     $self->error("Strain Abbreviation for the reference [$organismAbbrev] was not defined");   
   }
@@ -33,7 +38,7 @@ sub run {
 
   my $dirname = dirname("$workflowDataDir/$newSampleFile");
 
-  my $cmd = "processSequenceVariations.pl --new_sample_file $workflowDataDir/$newSampleFile --cache_file $workflowDataDir/$cacheFile --undone_strains_file $workflowDataDir/$undoneStrainsFile --transcript_extdb_spec '$genomeExtDbRlsSpec' --organism_abbrev $organismAbbrev --reference_strain $organismStrain  --extdb_spec '$snpExtDbRlsSpec'";
+  my $cmd = "processSequenceVariations.pl --new_sample_file $workflowDataDir/$newSampleFile --cache_file $workflowDataDir/$cacheFile --undone_strains_file $workflowDataDir/$undoneStrainsFile --transcript_extdb_spec '$genomeExtDbRlsSpec' --organism_abbrev $organismAbbrev --reference_strain $organismStrain  --extdb_spec '$snpExtDbRlsSpec' --gusConfigFile $gusConfigFile";
 
   if($isLegacy) {
       $cmd .= " --is_legacy_variations --clean_cache";

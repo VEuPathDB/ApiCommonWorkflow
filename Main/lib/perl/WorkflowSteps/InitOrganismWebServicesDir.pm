@@ -13,19 +13,21 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $useSpeciesName = $self->getBooleanParamValue('useSpeciesName');
   my $useFamilyName = $self->getBooleanParamValue('useFamilyName');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   $self->error("Parameters useFamilyName and useSpeciesName cannot both be 'true'") if $useFamilyName && $useSpeciesName;
 
   my $nameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
   if ($useSpeciesName) {
     $nameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesNameForFiles();
   }
   if ($useFamilyName) {
     $nameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getFamilyNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getFamilyNameForFiles();
   }
 
   # this is relative to the website files dir.
@@ -42,7 +44,7 @@ sub run {
   } else {
       # do not use -p.  previous steps should have created parent dirs
       # also, this validates that the dir doesn't already exist
-      $self->runCmd(0, "mkdir $fullPath");
+      $self->runCmd(0, "mkdir -p $fullPath");
   }
 }
 

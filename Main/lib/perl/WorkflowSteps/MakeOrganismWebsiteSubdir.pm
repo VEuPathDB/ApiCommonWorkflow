@@ -17,6 +17,8 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $useSpeciesName = $self->getBooleanParamValue('useSpeciesName');
   my $useFamilyName = $self->getBooleanParamValue('useFamilyName');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   # this is relative to the website files dir.
   # it will look something like downloadSite/ToxoDB/release-6.3
@@ -28,15 +30,15 @@ sub run {
 
   $self->error("Parameters useFamilyName and useSpeciesName cannot both be 'true'") if $useFamilyName && $useSpeciesName;
   my $nameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
   if ($useSpeciesName) {
     $nameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getSpeciesNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getSpeciesNameForFiles();
   }
   if ($useFamilyName) {
     $nameForFiles =
-      $self->getOrganismInfo($test, $organismAbbrev)->getFamilyNameForFiles();
+      $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getFamilyNameForFiles();
   }
 
   my $dir = "$websiteFilesDir/$relativeDir/$nameForFiles/$subDir";
@@ -49,8 +51,8 @@ sub run {
       $self->runCmd(0, "rmdir $dir");  
 
   } else {
-      $self->runCmd(0, "mkdir $dir");
-      $self->runCmd(0, "mkdir $dir/data") if $needsDataSubDir;
+      $self->runCmd(0, "mkdir -p $dir");
+      $self->runCmd(0, "mkdir -p $dir/data") if $needsDataSubDir;
       # go to root of local path to avoid skipping intermediate dirs
       #my @path = split(/\//,$apiSiteFilesDir);
       #$self->runCmd(0, "chmod -R g+w $baseDir/$path[0]");

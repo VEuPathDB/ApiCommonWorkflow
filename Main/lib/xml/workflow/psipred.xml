@@ -1,43 +1,105 @@
-<workflowGraph name="psipredWorkflow">
+<workflowGraph name="psipred">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="proteinSequenceFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
 
-    <param name="proteinsFile"/>
-    <param name="parentDataDir"/>
+  <constant name="dataDir">$$parentDataDir$$/psipred</constant>
+  <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
+  <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
 
-    <constant name="dataDir">$$parentDataDir$$/psipred</constant>
+  <constant name="proteomeSymLink">$$dataDir$$/proteome.fasta</constant>
 
-    <constant name="psipredProteinsFile">$$dataDir$$/proteinsFixedIds.fsa</constant>
+  <!--
+  <constant name="psipredProteinsFile">$$dataDir$$/proteinsFixedIds.fsa</constant>
+  -->
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
 
-    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
-    </step>
+  <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$analysisDirectory$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
 
-    <step name="fixProteinIds" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FixProteinIdsForPsipred">
-      <paramValue name="inputProteinsFile">$$proteinsFile$$</paramValue>
-      <paramValue name="outputProteinsFile">$$psipredProteinsFile$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
+  <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$resultsDirectory$$</paramValue>
+    <depends name="makeAnalysisDir"/>
+  </step>
 
-    <step name="runPsipredSingle" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPsipredSingle">
-      <paramValue name="inputFile">$$psipredProteinsFile$$</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/result</paramValue>
-      <depends name="fixProteinIds"/>
-    </step>
+  <step name="symLinkProteome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$proteomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
 
-    <step name="makeAlgInv" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAlgInv" stepLoadTypes="makeAlgInv,plugin">
-      <paramValue name="algName">Psipred</paramValue>
-      <paramValue name="algVersion">dontcare</paramValue>
-      <paramValue name="algDesc">dontcare</paramValue>
-      <paramValue name="algResult">dontcare</paramValue>
-      <depends name="runPsipredSingle"/>
-    </step>
 
-    <step name="insertPsipred" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadSecondaryStructures" stepLoadTypes="plugin">
-      <paramValue name="algName">Psipred</paramValue>
-      <paramValue name="inputDir">$$dataDir$$/result</paramValue>
-      <paramValue name="algInvResult">dontcare</paramValue>
-      <paramValue name="algImpVer">dontcare</paramValue>
-      <paramValue name="setPercent">true</paramValue>
-      <depends name="makeAlgInv"/>
-    </step>
+  <step name="makePsiPredNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakePsiPredNextflowConfig">
+    <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+    <paramValue name="proteinSequenceFile">$$proteomeSymLink$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
+    <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+    <paramValue name="outputFilePrefix">psipred</paramValue>
+    <depends name="makeResultDir"/>
+  </step>
+
+ <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
+    <paramValue name="ngsSamplesNextflowConfigFile"></paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue> <!-- NAME|version -->
+    <paramValue name="isProteomeAnalysis">true</paramValue>
+    <paramValue name="datasetSpec"></paramValue>
+    <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/psipred-nextflow</paramValue>
+    <paramValue name="entry"></paramValue>
+    <depends name="makePsiPredNextflowConfig"/>
+    <depends name="symLinkProteome"/>
+ </subgraph>
+
+  <step name="copyCoilToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="copyFromFile">$$resultsDirectory$$/psipred_coil.bw</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="indexSuffix"></paramValue>
+    <paramValue name="fileType">bigwig</paramValue>
+    <paramValue name="dataType">genomeAndProteome</paramValue>
+     <paramValue name="extDBName"></paramValue>
+    <depends name="runNextflowOnCluster"/>
+  </step>
+
+
+  <step name="copyHelixToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="copyFromFile">$$resultsDirectory$$/psipred_helix.bw</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="indexSuffix"></paramValue>
+    <paramValue name="fileType">bigwig</paramValue>
+    <paramValue name="dataType">genomeAndProteome</paramValue>
+     <paramValue name="extDBName"></paramValue>
+    <depends name="runNextflowOnCluster"/>
+  </step>
+
+
+  <step name="copyBetaToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="copyFromFile">$$resultsDirectory$$/psipred_extended.bw</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="indexSuffix"></paramValue>
+    <paramValue name="fileType">bigwig</paramValue>
+    <paramValue name="dataType">genomeAndProteome</paramValue>
+     <paramValue name="extDBName"></paramValue>
+    <depends name="runNextflowOnCluster"/>
+  </step>
 
 </workflowGraph>

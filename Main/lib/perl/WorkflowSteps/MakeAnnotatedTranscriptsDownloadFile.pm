@@ -12,10 +12,12 @@ sub getWebsiteFileCmd {
   # get parameters
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $organismSource = $self->getParamValue('organismSource');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev)->getNcbiTaxonId();
+  my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNcbiTaxonId();
 
-  my $tuningTablePrefix = $self->getTuningTablePrefix($organismAbbrev, $test);
+  my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
  
 =comment out in gus4, refs #21487
   my $sql = <<"EOF";
@@ -101,13 +103,13 @@ EOF
 =cut
 
   my $sql = <<EOF;
-SELECT t.source_id || ' | gene=' || gene_source_id || decode(is_deprecated, 1, ' | deprecated=true', '')
-  || ' | organism=' || replace(organism, ' ', '_') || ' | gene_product=' || substr(gene_product, 1, 1000) || ' | transcript_product=' || substr(transcript_product, 1, 1000)
-  || ' | location=' || sequence_id || ':' || coding_start || '-' || coding_end
-  || '(' || decode(is_reversed, 1, '-', '+') || ')' 
+SELECT t.source_id || ' | gene=' || gene_source_id || CASE WHEN is_deprecated = 1 THEN ' | deprecated=true' ELSE '' END
+  || ' | organism=' || replace(organism, ' ', '_') || ' | gene_product=' || gene_product || ' | transcript_product=' || transcript_product
+  || ' | location=' || sequence_id || ':' || t.start_min || '-' || t.end_max
+  || '(' || CASE WHEN is_reversed = 1 THEN '-' ELSE '+' END  || ')'
   || ' | length=' || t.length 
-  || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || decode(is_deprecated, 1, ' | deprecated=true', '')
-  || ' | is_pseudo=' || decode(t.is_pseudo, 1, 'true','false')
+  || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || CASE WHEN is_deprecated = 1 THEN ' | deprecated=true' ELSE '' END
+  || ' | is_pseudo=' ||  CASE WHEN t.is_pseudo = 1 THEN 'true' ELSE 'false' END
   as defline,
   ts.SEQUENCE
 FROM ApidbTuning.${tuningTablePrefix}TranscriptAttributes t, ApidbTuning.${tuningTablePrefix}TranscriptSequence ts,
@@ -116,10 +118,10 @@ WHERE t.source_id = ts.SOURCE_ID
   AND ns.SOURCE_ID = t.SEQUENCE_ID
   AND ns.sequence_ontology_id = soseq.ontology_term_id
   AND t.ncbi_tax_id = $ncbiTaxonId
-ORDER BY t.chromosome_order_num, t.SEQUENCE_ID,t.source_id, t.coding_start
+ORDER BY t.chromosome_order_num, t.SEQUENCE_ID,t.source_id, t.start_min
 EOF
 
-  my $cmd = "gusExtractSequences --outputFile $downloadFileName  --idSQL \"$sql\" --verbose ";
+  my $cmd = "gusExtractSequences --gusConfigFile $gusConfigFile --outputFile $downloadFileName  --idSQL \"$sql\" --verbose ";
 }
 
 1;

@@ -14,12 +14,13 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $outputSkipIfFile = $self->getParamValue('outputSkipIfFile');
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $gusConfigFile = $self->getGusConfigFile();
 
   $experimentName =~ s/_CNV$//;
   my $snpSampleExtDbSpec = "$organismAbbrev"."_$experimentName"."_$sampleName"."_HTS_SNPSample_RSRC|dontcare";
   my $snpSampleExtDbRlsId = $self->getExtDbRlsId($test, $snpSampleExtDbSpec);
 
-  my $cmd = "cnvWorkflowCheckpoint --snpSampleExtDbRlsId $snpSampleExtDbRlsId --sampleName $sampleName --outputSkipIfFile $workflowDataDir/$outputSkipIfFile";
+  my $cmd = "cnvWorkflowCheckpoint --snpSampleExtDbRlsId $snpSampleExtDbRlsId --sampleName $sampleName --outputSkipIfFile $workflowDataDir/$outputSkipIfFile  --gusConfigFile $gusConfigFile";
 
 
   if ($undo) {

@@ -1,0 +1,102 @@
+
+<workflowGraph name="componentGlobal">
+  <param name="projectName"/>
+  <param name="commonDatasetLoaderXmlFile"/>
+  <param name="globalDatasetLoaderXmlFile"/>
+
+
+
+  <constant name="gusConfigFile">$$projectName$$_gus.config</constant>
+  <constant name="dataDir">componentGlobal</constant>
+
+
+  <step name="makeComponentDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeDatabase" stepClass="ReFlow::StepClasses::MakeDatabase">
+    <paramValue name="dbName"/>
+  </step>
+
+  <step name="makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig">
+    <paramValue name="dbName"/>
+    <paramValue name="dataDir"/>
+    <paramValue name="gusConfigFilename">$$gusConfigFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="makeDatabase"/>
+  </step>
+
+  <step name="initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="makeGusConfig"/>
+  </step>
+
+  <step name="registerPlugins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RegisterPlugins">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="initUserGroupProject"/>
+  </step>
+
+  <!-- loading sequence ontology and ptmt;  these are small so ok to do here in component land-->
+  <subgraph name="SO_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">SO_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
+  </subgraph>
+
+
+  <subgraph name="Ontology_Relationship_Types_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">Ontology_Relationship_Types_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
+  </subgraph>
+
+  <subgraph name="Ontology_ptmt_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="datasetName">Ontology_ptmt_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <depends name="Ontology_Relationship_Types_RSRC"/>
+  </subgraph>
+
+
+  <subgraph name="blatAlignmentQuality_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">blatAlignmentQuality_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
+  </subgraph>
+
+  <subgraph name="GO_evidence_codes_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">GO_evidence_codes_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
+  </subgraph>
+
+
+
+  <!-- TODO:  Replace this with call to new subgraph which will call loadDataset.xml AND mirror tab+protinFasta to cluster -->
+  <subgraph name="component_epitope_IEDB_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">component_epitope_IEDB_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="initUserGroupProject"/>
+  </subgraph>
+
+  <subgraph name="NRDB_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">NRDB_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">$$globalDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="registerPlugins"/>
+  </subgraph>
+
+</workflowGraph>

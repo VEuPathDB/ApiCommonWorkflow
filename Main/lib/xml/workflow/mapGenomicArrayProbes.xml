@@ -8,6 +8,8 @@
     <param name="indexDir"/> 
     <param name="organismAbbrev"/> 
     <param name="chromSizesFile"/>
+    <param name="gusConfigFile"/>
+    <param name="downloadMethod"/>
 
     <constant name="platformDir">$$dataDir$$/$$probeSetName$$</constant>
 
@@ -19,6 +21,7 @@
       <paramValue name="datasetName">$$probeDatasetName$$</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$platformDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="makeDataDir"/>
     </subgraph>
 
@@ -26,15 +29,11 @@
       <paramValue name="fastaFile">$$platformDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
       <paramValue name="extDbRlsSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
       <paramValue name="platformName">$$probeSetName$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="probe_RSRC"/>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$platformDir$$</paramValue>
-      <depends name="probe_RSRC"/>
-    </step>
-
-<!-- REPLACES RUM MAPPING GRAPH-->
+<!-- REPLACES RUN MAPPING GRAPH-->
     <subgraph name="runBowtie" xmlFile="runBowtie.xml">
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="experimentDataDir">$$dataDir$$</paramValue>
@@ -42,20 +41,22 @@
       <paramValue name="pairedReadsFile"></paramValue>
       <paramValue name="sampleName">$$probeSetName$$</paramValue>
       <paramValue name="indexDir">$$indexDir$$</paramValue>
+      <paramValue name="downloadMethod">$$downloadMethod$$</paramValue>
       <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="hasPairedEnds">false</paramValue>
       <paramValue name="isColorspace">false</paramValue>
       <paramValue name="removePCRDuplicates">false</paramValue>
       <paramValue name="extraBowtieParams">-D 20 -R 3 -N 1 -L 20 -i S,1,0.50 -I 0 -X 1000 -f</paramValue>
-      <paramValue name="topLevelSeqSizeFile">$$chromSizesFile$$</paramValue>
+      <paramValue name="seqSizeFile">$$chromSizesFile$$</paramValue>
       <paramValue name="writeBedFile">false</paramValue>
       <paramValue name="sraQueryString"></paramValue>
-      <depends name="mirrorToCluster"/>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
 
     <step name="loadReporterLocations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertReporterLocation" stepLoadTypes="plugin">
-        <paramValue name="bamFile">$$dataDir$$/analyze_$$probeSetName$$/master/mainresult/$$probeSetName$$.bam</paramValue>
+        <paramValue name="bamFile">$$dataDir$$/analyze_$$probeSetName$$/results/$$probeSetName$$.bam</paramValue>
         <paramValue name="platformExtDbSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
         <depends name="runBowtie"/>
         <depends name="loadReporter"/>
     </step>
@@ -65,6 +66,7 @@
       <paramValue name="method">getAndMapProbes_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters">TODO: patch in later</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="loadReporterLocations"/>
     </step>
 

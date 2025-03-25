@@ -15,8 +15,9 @@ sub run {
   my $aefSense = $self->getBooleanParamValue('isOneChannel')? 'sense' : 'either';
   my $delimiter = $self->getBooleanParamValue('isOneChannel')? '\\t' : ',';
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $gusConfigFile = $self->getGusConfigFile();
 
-  my $cmd = "mapArrayElementsToGenes.pl --aefExtDbSpec '$probeExtDbSpec' --geneExtDbSpec  '$geneExtDbSpec' --aefSense '$aefSense' --outputFile $workflowDataDir/$outputFile --delimiter '$delimiter'";
+  my $cmd = "mapArrayElementsToGenes.pl --aefExtDbSpec '$probeExtDbSpec' --geneExtDbSpec  '$geneExtDbSpec' --aefSense '$aefSense' --outputFile $workflowDataDir/$outputFile --delimiter '$delimiter'  --gusConfigFile $gusConfigFile";
 
 
   if ($undo) {

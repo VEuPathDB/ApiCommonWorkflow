@@ -23,10 +23,12 @@ sub run {
   my $datasetName = $self->getParamValue('datasetName');
   my $chromosomeMapFile = $self->getParamValue('chromosomeMapFile');
 
-  my $project_name = $self->getWorkflowConfig('name');
+#  my $project_name = $self->getWorkflowConfig('name');
+  my $project_name = $self->getParamValue('projectName');
   my $project_release = $self->getWorkflowConfig('version');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $gusConfigFile = $self->getGusConfigFile();
 
   my $fullGenomeDir = "$workflowDataDir/$genomeDir";
   my $chromosomeMapFullPath = "$workflowDataDir/$chromosomeMapFile";
@@ -37,13 +39,13 @@ sub run {
   my $socketDir = "$fullGenomeDir/mysqld";
   $outputDir = "$workflowDataDir/${outputDir}";
 
-  my $gusSchemaDefFullPath = "${unpackDir}/gusSchemaDefinitions.xml";
+  my $manualDeliveryDir = $self->getSharedConfig('manualDeliveryDir');
 
   my $containerName = $organismAbbrev;
   $containerName =~ s/MPRONA19//;   # shorten the organism abbrev for lsp.NamibiaMPRONA1975252LV425
   $containerName =~ s/[aeiou-]//ig; # shorten the organism abbrev;
 
-  my $cmd = "ebiDumper.pl --socket_directory $socketDir --init_directory $initSqlDir --mysql_directory $mysqlDir --output_directory $outputDir --schema_definition_file $gusSchemaDefFullPath --chromosome_map_file $chromosomeMapFullPath --ncbi_tax_id $ncbiTaxonId --container_name $containerName --dataset_name $datasetName --dataset_version $genomeVersion --project_name $project_name --project_release $project_release --ebi2gus_tag $ebi2gusTag --organism_abbrev $organismAbbrev";
+  my $cmd = "ebiDumper.pl --gusConfigFile $gusConfigFile --socket_directory $socketDir --init_directory $initSqlDir --mysql_directory $mysqlDir --output_directory $outputDir --chromosome_map_file $chromosomeMapFullPath --ncbi_tax_id $ncbiTaxonId --container_name $containerName --dataset_name $datasetName --dataset_version $genomeVersion --project_name $project_name --project_release $project_release --ebi2gus_tag $ebi2gusTag --organism_abbrev $organismAbbrev";
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $mysqlDir");
@@ -57,11 +59,11 @@ sub run {
     $self->runCmd($test, "mkdir -p $unpackDir");
     $self->runCmd($test, "mkdir -p $initSqlDir");
     $self->runCmd($test, "mkdir -p $socketDir");
-    $self->runCmd($test,"wget --ftp-user ${ebiFtpUser} --ftp-password ${ebiFtpPassword} -O ${unpackDir}/init.sql.gz ftp://ftp-private.ebi.ac.uk:/EBIout/${ebiVersion}/coredb/${project_name}/${ebiOrganismName}.sql.gz");
-    $self->runCmd($test,"gunzip -c ${unpackDir}/init.sql.gz >${initSqlDir}/init.sql");
-    $self->runCmd($test,"generateDatabaseSchemaXml >$gusSchemaDefFullPath");
+    #$self->runCmd($test, "wget --ftp-user ${ebiFtpUser} --ftp-password ${ebiFtpPassword} -O ${unpackDir}/init.sql.gz ftp://ftp-private.ebi.ac.uk:/EBIout/${ebiVersion}/coredb/${project_name}/${ebiOrganismName}.sql.gz");
+    $self->runCmd($test, "cp ${manualDeliveryDir}/ebiftp/EBIout/${ebiVersion}/coredb/${project_name}/${ebiOrganismName}.sql.gz ${unpackDir}/init.sql.gz");
+    $self->runCmd($test, "gunzip -c ${unpackDir}/init.sql.gz >${initSqlDir}/init.sql");
 
-    #$self->testInputFile('initSqlFile', "$initSqlDir/*.sql");
+    # $self->testInputFile('initSqlFile', "$initSqlDir/*.sql");
 
     $self->runCmd($test,$cmd);
   }

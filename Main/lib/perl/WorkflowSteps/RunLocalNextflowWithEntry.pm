@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::RunNextflowWithEntry;
+package ApiCommonWorkflow::Main::WorkflowSteps::RunLocalNextflowWithEntry;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 

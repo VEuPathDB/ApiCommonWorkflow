@@ -1,7 +1,7 @@
 <workflowGraph name="getAndMapProbes">
     <param name="parentDataDir"/>
     <param name="gsnapDir"/>    
-
+    <param name="gusConfigFile"/>
     <param name="probeSetName"/>
     <param name="probeDatasetName"/>
     <param name="probeDatasetVersion"/>
@@ -13,14 +13,15 @@
     <param name="gtfFile"/>
     <param name="maskFile"/>
     <param name="gmapDatabase"/>
-    <param name="topLevelGeneFootprintFile"/>
+    <param name="geneFootprintFile"/>
     <param name="makeCdfFile"/>
     <param name="makeNdfFile"/>
     <param name="vendorMappingFileName"/>
     <param name="outputGeneProbeMappingTabFile"/>
     <param name="probeRows"/>
     <param name="probeCols"/>
-    <param name="topLevelFastaFile"/>
+    <param name="genomeFastaFile"/>
+    <param name="gusConfigFile"/>
 
     <constant name="platformDir">$$parentDataDir$$/$$probeSetName$$</constant>
 
@@ -29,6 +30,7 @@
     </step>
 
     <subgraph name="probe_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">$$probeDatasetName$$</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$platformDir$$</paramValue>
@@ -39,11 +41,7 @@
       <paramValue name="fastaFile">$$platformDir$$/$$probeDatasetName$$/final/probes.fsa</paramValue>
       <paramValue name="extDbRlsSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
       <paramValue name="platformName">$$probeSetName$$</paramValue>
-      <depends name="probe_RSRC"/>
-    </step>
-
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$platformDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="probe_RSRC"/>
     </step>
 
@@ -62,17 +60,17 @@
       <paramValue name="maskFile">$$maskFile$$</paramValue>
       <paramValue name="gmapDatabase">$$gmapDatabase$$</paramValue>
       <paramValue name="gsnapDirectory">$$gsnapDir$$</paramValue>
-      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
       <paramValue name="quantify">false</paramValue>
       <paramValue name="writeCovFiles">false</paramValue>
       <paramValue name="sraQueryString"></paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="loadReporterLocations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertReporterLocation" stepLoadTypes="plugin">
         <paramValue name="bamFile">$$platformDir$$/master/mainresult/results_sorted.bam</paramValue>
         <paramValue name="platformExtDbSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
         <depends name="runGSNAP"/>
         <depends name="loadReporter"/>
     </step>
@@ -82,6 +80,7 @@
       <paramValue name="method">getAndMapProbes_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters">TODO: patch in later</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="loadReporterLocations"/>
     </step>
 
@@ -94,6 +93,7 @@
       <paramValue name="probeExtDbSpec">$$probeDatasetName$$|$$probeDatasetVersion$$</paramValue>
       <paramValue name="geneExtDbSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="isOneChannel">$$makeCdfFile$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="loadReporterLocations"/>
     </step>
 

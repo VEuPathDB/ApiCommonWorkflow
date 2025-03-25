@@ -1,0 +1,90 @@
+<workflowGraph name="transcan">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="genomicSequenceFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="relativeWebServicesDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/trnascan</constant>
+
+  <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
+  <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
+
+  <constant name="genomeSymLink">$$dataDir$$/genome.fasta</constant>
+
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+     <paramValue name="dataDir">$$analysisDirectory$$</paramValue>
+     <depends name="makeDataDir"/>
+  </step>
+
+  <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+     <paramValue name="dataDir">$$resultsDirectory$$</paramValue>
+     <depends name="makeAnalysisDir"/>
+  </step>
+
+  <step name="symLinkGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$genomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+
+  <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeTRNAScanConfig">
+    <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+    <paramValue name="genomicSequenceFile">$$genomeSymLink$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
+    <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+    <paramValue name="outputFileName">tRNAScan.out</paramValue>
+    <paramValue name="outputGFFName">tRNAScan.gff</paramValue>
+    <depends name="makeResultDir"/>
+  </step>
+
+  <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
+    <paramValue name="ngsSamplesNextflowConfigFile"></paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue> <!-- NAME|version -->
+    <paramValue name="isProteomeAnalysis">false</paramValue>
+    <paramValue name="datasetSpec"></paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/trna-scan-nextflow</paramValue>
+    <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
+    <paramValue name="entry"></paramValue>
+    <depends name="makeNextflowConfig"/>
+    <depends name="symLinkGenome"/>
+
+  </subgraph>
+
+  <step name="loadTRNAScan" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTRNAScan" stepLoadTypes="plugin">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="inputFile">$$resultsDirectory$$/tRNAScan.out</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="tRNAExtDbRlsSpec">$$organismAbbrev$$TRNAscan-SE|1.3</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <depends name="runNextflowOnCluster"/>
+  </step>
+
+   <step name="copytRNAScanGffToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir">
+     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+     <paramValue name="copyFromFile">$$resultsDirectory$$/tRNAScan.gff.gz</paramValue>
+     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+     <paramValue name="indexSuffix">tbi</paramValue>
+     <paramValue name="fileType">gff</paramValue>
+     <paramValue name="dataType">genomeAndProteome</paramValue>
+     <paramValue name="extDBName"></paramValue>
+     <depends name="runNextflowOnCluster"/>
+   </step>
+
+
+
+</workflowGraph>

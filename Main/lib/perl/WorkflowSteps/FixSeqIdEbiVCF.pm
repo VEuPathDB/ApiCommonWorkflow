@@ -11,8 +11,10 @@ sub run {
   my $vcf = $self->getParamValue('vcfFile');
 #  my $vcf = $self->getParamValue('$$parentDataDir$$/$$experimentDatasetName$$/final/$$experimentName$$.vcf.gz');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
   my $workflowDataDir = $self->getWorkflowDataDir();
 
+  $gusConfigFile = "$workflowDataDir/$gusConfigFile";
   $vcf = "$workflowDataDir/$vcf";
 
   if ($undo) {
@@ -31,7 +33,7 @@ sub run {
   } else {
 
 
-    $self->runCmd($test, "ebiVCFRegionNameMapping.pl --VCF_File $vcf --organism_abbrev $organismAbbrev");
+    $self->runCmd($test, "ebiVCFRegionNameMapping.pl --VCF_File $vcf --organism_abbrev $organismAbbrev --gusConfigFile $gusConfigFile");
 
   }
 

@@ -1,5 +1,6 @@
 <workflowGraph name="">
   <param name="experimentDataDir"/>
+  <param name="gusConfigFile"/>
   <param name="outputDir"/>
   <param name="organismAbbrev"/>
   <param name="projectName"/>
@@ -11,8 +12,8 @@
   <param name="maskFile"/>
   <param name="hisatIndex"/>
   <param name="hisatDirectory"/>
-  <param name="topLevelFastaFile"/>
-  <param name="topLevelGeneFootprintFile"/>
+  <param name="genomeFastaFile"/>
+  <param name="geneFootprintFile"/>
 
   <constant name="experimentDatasetLoadersDataDir">$$experimentDataDir$$/$$experimentDatasetName$$</constant>
 
@@ -21,6 +22,7 @@
     <prop name="sampleName"/>
 
     <subgraph name="${sampleName}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_rnaSeqSample_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
@@ -29,6 +31,7 @@
 
     <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeRnaSeqSample.xml">
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="outputDir">$$outputDir$$</paramValue>
       <paramValue name="sampleName">${sampleName}</paramValue>
       <paramValue name="shortSeqsFile">$$experimentDatasetLoadersDataDir$$/final/${sampleName}</paramValue>
@@ -39,8 +42,8 @@
       <paramValue name="maskFile">$$maskFile$$</paramValue>
       <paramValue name="hisatIndex">$$hisatIndex$$</paramValue>
       <paramValue name="hisatDirectory">$$hisatDirectory$$</paramValue>
-      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
       <paramValue name="sraQueryString"></paramValue>
       <depends name="${sampleName}_RSRC"/>
     </subgraph>
@@ -54,6 +57,7 @@
     <prop name="sraQueryString"/>
 
     <subgraph name="${sampleName}_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_rnaSeqSample_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
@@ -62,6 +66,7 @@
 
     <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeRnaSeqSample.xml">
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="outputDir">$$outputDir$$</paramValue>
       <paramValue name="sampleName">${sampleName}</paramValue>
       <paramValue name="shortSeqsFile">$$experimentDatasetLoadersDataDir$$/final/${sampleName}</paramValue>
@@ -72,8 +77,8 @@
       <paramValue name="maskFile">$$maskFile$$</paramValue>
       <paramValue name="hisatIndex">$$hisatIndex$$</paramValue>
       <paramValue name="hisatDirectory">$$hisatDirectory$$</paramValue>
-      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
       <paramValue name="sraQueryString">${sraQueryString}</paramValue>
       <depends name="${sampleName}_RSRC"/>
     </subgraph>

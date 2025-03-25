@@ -1,5 +1,6 @@
 <workflowGraph name="">
     <param name="parentDataDir"/>
+    <param name="gusConfigFile"/>
     <param name="outputDir"/>
     <param name="sampleName"/>
     <param name="shortSeqsFile"/>
@@ -10,8 +11,8 @@
     <param name="maskFile"/>
     <param name="hisatIndex"/>
     <param name="hisatDirectory"/>
-    <param name="topLevelFastaFile"/>
-    <param name="topLevelGeneFootprintFile"/>
+    <param name="genomeFastaFile"/>
+    <param name="geneFootprintFile"/>
     <param name="sraQueryString"/>
 
     <constant name="dataDir">$$parentDataDir$$/analyze_$$sampleName$$</constant>
@@ -20,11 +21,6 @@
       <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="mirrorToCluster" stepClass="ReFlow::StepClasses::MirrorToComputeCluster" stepLoadTypes="toCluster">
-      <paramValue name="fileOrDirToMirror">$$dataDir$$</paramValue>
-      <depends name="makeDataDir"/>
-    </step>
- 
     <subgraph name="runHisat2OnCluster" xmlFile="runHisat2OnCluster.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="readFilePath">$$shortSeqsFile$$</paramValue>
@@ -36,10 +32,9 @@
       <paramValue name="maskFile">$$maskFile$$</paramValue>
       <paramValue name="hisatIndex">$$hisatIndex$$</paramValue>
       <paramValue name="hisatDirectory">$$hisatDirectory$$</paramValue>
-      <paramValue name="topLevelGeneFootprintFile">$$topLevelGeneFootprintFile$$</paramValue>
-      <paramValue name="topLevelFastaFile">$$topLevelFastaFile$$</paramValue>
+      <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
       <paramValue name="sraQueryString">$$sraQueryString$$</paramValue>
-      <depends name="mirrorToCluster"/>
     </subgraph>
 
     <step name="document-RnaSeqHisat"
@@ -47,6 +42,7 @@
       <paramValue name="method">hisat2_rna_MTHD</paramValue>
       <paramValue name="version">1.0</paramValue>
       <paramValue name="parameters"></paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="runHisat2OnCluster"/>
     </step>
 

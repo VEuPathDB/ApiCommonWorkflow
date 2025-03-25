@@ -9,48 +9,64 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
     my ($self, $test, $undo) = @_;
 
-    my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
+    my $dots = 10;
+
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $outputDir = join("/", $clusterWorkflowDataDir, $self->getParamValue("outputDir")); 
+    my $resultsDirectory = $self->getParamValue("resultsDirectory");
     my $configFileName = $self->getParamValue("configFileName");
     my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
-    my $seqFile = join("/", $clusterWorkflowDataDir, $self->getParamValue("queryFile"));
+    my $seqFile = $self->getParamValue("queryFile");
     my $fastaSubsetSize = $self->getParamValue("fastaSubsetSize");
-    my $databasePath = join("/", $clusterWorkflowDataDir, $self->getParamValue("databasePath"));
+    my $databasePath = $self->getParamValue("databasePath");
     my $maxIntronSize = $self->getParamValue("maxIntronSize");
     my $dbType = $self->getParamValue("dbType");
     my $queryType = $self->getParamValue("queryType");
-    my $blatParams = $self->getParamValue("blatParams");
-    my $trans = $self->getParamValue("trans");
-  
+    my $outputFileName = $self->getParamValue("outputFileName");
+    my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
+
+    my $increasedMemory = $self->getParamValue("increasedMemory");
+    my $initialMemory = $self->getParamValue("initialMemory");
+    my $maxForks = $self->getParamValue("maxForks");
+    my $maxRetries = $self->getParamValue("maxRetries");
+
+    my $executor = $self->getClusterExecutor();
+    my $queue = $self->getClusterQueue();
+
+    my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
+
+
     if ($undo) {
 	$self->runCmd(0,"rm -rf $configPath");
     } else {
 	open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
 
-    print F
-"
+      my $queryFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $seqFile);
+      my $databaseInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $databasePath);
+      my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
+      my $configString = <<NEXTFLOW;
 params {
-  seqFile = \"$seqFile\"
+  queryFasta = "$queryFileInNextflowWorkingDirOnCluster"
   fastaSubsetSize = $fastaSubsetSize
-  databasePath = \"$databasePath\"
-  maxIntron = $maxIntronSize
-  dbType = \"$dbType\"
-  queryType = \"$queryType\"
-  blatParams = \"$blatParams\"
-  trans = $trans
-  outputDir = \"$$outputDir\"
-}
-process {
-  container = 'veupathdb/blat:latest'
-}
-singularity {
-  enabled = true
-  autoMounts = true
-}
-";
-	close(F);
-    }
+  genomeFasta = "$databaseInNextflowWorkingDirOnCluster"
+  dbType = "$dbType"
+  queryType = "$queryType"
+  outputDir = "$resultsDirectoryInNextflowWorkingDirOnCluster"
+  outputFileName = "$outputFileName"
 }
 
+process {
+    maxForks = $maxForks
+
+    withName: runBlat {
+        ext.args = "-dots=$dots -maxIntron=$maxIntronSize"
+  }
+}
+
+includeConfig "$clusterConfigFile"
+NEXTFLOW
+
+    print F $configString;
+    close(F);
+    }
+}
 1;

@@ -11,8 +11,10 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $coverageSnpsFile = $self->getParamValue('coverageSnpsFile');
   my $varscanConsDir = $self->getParamValue('varscanConsDir');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev);
+  my $organismInfo = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile);
   my $referenceOrganism = $organismInfo->getFullName();
   my $workflowDataDir = $self->getWorkflowDataDir();
 

@@ -1,5 +1,6 @@
 <workflowGraph name="">
 <param name="projectName"/>  
+<param name="gusConfigFile"/>
 <param name="experimentDataDir"/>
 <param name="outputDir"/>
 <param name="organismAbbrev"/>
@@ -8,7 +9,7 @@
 <param name="experimentDatasetVersion"/>
 <param name="hasPairedEnds"/>
 <param name="extraBowtieParams"/>
-<param name="topLevelSeqSizeFile"/>
+<param name="seqSizeFile"/>
 <param name="experimentType"/>
 
   <constant name="experimentDatasetLoadersDataDir">$$experimentDataDir$$/$$experimentDatasetName$$</constant>
@@ -24,6 +25,7 @@
       <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_chipSeqSample_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
 
     <subgraph name="analyzeSample-${sampleName}" xmlFile="analyzeChipSeqSamples.xml">
@@ -33,17 +35,18 @@
       <paramValue name="outputDir">$$outputDir$$</paramValue>
       <paramValue name="sampleName">${sampleName}</paramValue>
       <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="downloadMethod">local</paramValue>
       <paramValue name="readsFile">$$readsFilePath$$/${sampleName}</paramValue>
       <paramValue name="sampleName">${sampleName}</paramValue>
       <paramValue name="indexDir">$$indexDir$$</paramValue>
       <paramValue name="experimentName">${experimentName}</paramValue>
       <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
-      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
       <paramValue name="experimentType">$$experimentType$$</paramValue>
       <paramValue name="inputName">${inputName}</paramValue>
       <paramValue name="fragmentLength">${fragmentLength}</paramValue>
       <paramValue name="sraQueryString"></paramValue>
-
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="${sampleName}_RSRC"/>
     </subgraph>
   </datasetTemplate>
@@ -59,6 +62,7 @@
     <subgraph name="${sampleName}_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$organismAbbrev$$_${experimentName}_${sampleName}_chipSeqSample_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$/${organismAbbrev}/${experimentName}.xml</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="parentDataDir">$$experimentDataDir$$</paramValue>
     </subgraph>
 
@@ -69,16 +73,17 @@
       <paramValue name="outputDir">$$outputDir$$</paramValue>
       <paramValue name="sampleName">${sampleName}</paramValue>
       <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+      <paramValue name="downloadMethod">sra</paramValue>
       <paramValue name="readsFile">$$readsFilePath$$/${sampleName}</paramValue>
       <paramValue name="sraQueryString">${sraQueryString}</paramValue>
       <paramValue name="indexDir">$$indexDir$$</paramValue>
       <paramValue name="experimentName">${experimentName}</paramValue>
       <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
-      <paramValue name="topLevelSeqSizeFile">$$topLevelSeqSizeFile$$</paramValue>
+      <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
       <paramValue name="experimentType">$$experimentType$$</paramValue>
       <paramValue name="inputName">${inputName}</paramValue>
       <paramValue name="fragmentLength">${fragmentLength}</paramValue>
-
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="${sampleName}_RSRC"/>
     </subgraph>
   </datasetTemplate> 
