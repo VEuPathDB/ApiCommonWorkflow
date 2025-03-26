@@ -36,7 +36,7 @@ sub run {
 
     if ($undo) {
       $self->runCmd(0, "rm -fr $workflowDataDir/$outputFile");
-      $self->runCmd(0, "deleteSynteny.pl --organismAbbrev $organismAbbrev --commit");
+      $self->runCmd(0, "deleteSynteny.pl --organismAbbrev $organismAbbrev --gus_config $gusConfigFile --commit");
     } else {
 	if ($test) {
 	    $self->runCmd(0,"echo hello > $workflowDataDir/$outputFile");
