@@ -12,6 +12,7 @@ sub run {
     my $dataDirPath = $self->getParamValue('dataDir');
     my $datasetLoader = $self->getDatasetLoader($datasetName, $datasetLoaderXmlFile, $dataDirPath);
     my $parentDatasetLoader = $datasetLoader->getParentDatasetLoader();
+    my $gusConfigFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue('gusConfigFile');
     
     # if version is TODAY, get value from db instead
     my $versionFromDb;
@@ -32,7 +33,7 @@ sub run {
       my $algInvIds = $self->getAlgInvIds();
       
       if ($algInvIds) {
-	  $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $mapFile --algInvocationId $algInvIds --gusConfigFile  --workflowContext --commit");
+	  $self->runCmd($test,"ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo --mapFile $mapFile --algInvocationId $algInvIds --gusConfigFile $gusConfigFile --workflowContext --undoWorkflowStepId $self->{id} --commit");
       } else {
 	$self->log("No algorithm invocation IDs found for this plugin step.  The plugin must have been manually undone.  Exiting");
       }
