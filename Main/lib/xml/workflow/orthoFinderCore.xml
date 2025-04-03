@@ -3,6 +3,8 @@
     <param name="gusConfigFile"/>
     <param name="coreGroupsDir"/>
 
+    <constant name="nextflowWorkflow">VEuPathDB/orthofinder-nextflow</constant>
+
     <step name="makeOrthoFinderCoreNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderCoreNextflowConfig">
       <paramValue name="workingDirRelativePath">$$coreGroupsDir$$</paramValue>
       <paramValue name="clusterResultDir">$$coreGroupsDir$$/analysisDir/results/</paramValue>
@@ -28,13 +30,14 @@
       <paramValue name="genomeSpec">$$projectName$$|coreGroups</paramValue> <!--Doing this to get folder naming in preprocessed data cache-->
       <paramValue name="annotationSpec"></paramValue> <!-- Not neccessary for ortho-->
       <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho-->
-      <paramValue name="nextflowWorkflow">VEuPathDB/orthofinder-nextflow</paramValue>
+      <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
       <paramValue name="isProteomeAnalysis">true</paramValue>
       <paramValue name="entry">coreEntry</paramValue>
       <depends name="makeOrthoFinderCoreNextflowConfig"/>
     </subgraph>
 
     <step name="updateOrthoCorePersistentCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateOrthoCorePersistentCache">
+      <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
       <depends name="runOrthoCoreNextflowOnCluster"/>
     </step>
 

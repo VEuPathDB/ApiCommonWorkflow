@@ -9,6 +9,10 @@ sub run {
 
   my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
 
+  my $nextflowWorkflow = $self->getParamValue("nextflowWorkflow");
+  my $nextflowBranch = $self->getSharedConfig("${nextflowWorkflow}.branch");
+  $nextflowWorkflow =~ s/\//_/g;
+
   if ($undo) {
       $self->runCmd(0, "echo 'undo'");
   }
@@ -17,7 +21,7 @@ sub run {
   }
   else {
 
-      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/VEuPathDB_orthofinder-nextflow_main/**/*  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/*  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
 
       $self->runCmd(0, "mv ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/diamondCache  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/coreCacheDir");
 
