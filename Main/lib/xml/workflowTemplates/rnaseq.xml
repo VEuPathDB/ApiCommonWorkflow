@@ -187,5 +187,43 @@
 
   </datasetTemplate>
 
+  <datasetTemplate class="LongReadRnaSeqExperimentNextflow">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="sequencePlatform"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="isSRA"/>
+
+    <subgraph name="${name}_longReadRnaSeq_loadDataset" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_${name}_rnaSeqNextflow_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="${name}_analyze_longRead_experiment_Nextflow" xmlFile="analyzeLongReadRnaSeqExperimentNextflow.xml">
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="name">${name}</paramValue>
+      <paramValue name="gtfFile">$$dataDir$$/$$organismAbbrev$$_mask.gtf</paramValue>
+      <paramValue name="version">${version}</paramValue>
+      <paramValue name="fromSRA">${isSRA}</paramValue>
+      <paramValue name="experimentName">${name}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_${name}_rnaSeqNextflow_RSRC</paramValue>
+      <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeqNextflow_RSRC</paramValue>
+      <paramValue name="experimentDatasetVersion">${version}</paramValue>
+      <paramValue name="sequencePlatform">${sequencePlatform}</paramValue>
+      <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <depends name="makeMaskGtf"/>
+      <depends name="${name}_longReadRnaSeq_loadDataset"/>
+    </subgraph>
+
+  </datasetTemplate>
+
 
 </workflowGraph>
