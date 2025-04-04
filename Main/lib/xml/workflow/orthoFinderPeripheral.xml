@@ -3,6 +3,8 @@
     <param name="peripheralDir"/>
     <param name="getPeripheralProteinsDir"/>
 
+    <constant name="nextflowWorkflow">VEuPathDB/orthofinder-nextflow</constant>
+
   <step name="makeOrthoFinderPeripheralNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPeripheralNextflowConfig">
     <paramValue name="workingDirRelativePath">$$peripheralDir$$</paramValue>
     <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/results/</paramValue>
@@ -29,12 +31,13 @@
     <paramValue name="isProteomeAnalysis">true</paramValue>
     <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho -->
     <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
-    <paramValue name="nextflowWorkflow">VEuPathDB/orthofinder-nextflow</paramValue>
+    <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="entry">peripheralEntry</paramValue>
     <depends name="makeOrthoFinderPeripheralNextflowConfig"/>
    </subgraph>
 
   <step name="updateOrthoPeripheralPersistentCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateOrthoPeripheralPersistentCache">
+    <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="checkSum">$$getPeripheralProteinsDir$$/fastas/checkSum.tsv</paramValue>
     <paramValue name="newGroupsFile">$$peripheralDir$$/analysisDir/results/fullGroupFile.txt</paramValue>
     <depends name="runPeripheralNextflowOnCluster"/>
