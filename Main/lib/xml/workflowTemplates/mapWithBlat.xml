@@ -27,7 +27,22 @@
 
   <datasetTemplate class="transcriptsFromReferenceStrain">
     <prop name="referenceStrainOrganismAbbrev"/>
+    
+    <step name="copyZeroFoundFileToBlatCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="isProteomeAnalysis">false</paramValue>
+      <paramValue name="datasetSpec">${referenceStrainOrganismAbbrev}_dbEST_RSRC</paramValue>
+      <paramValue name="resultsDir">$$projectName$$/${referenceStrainOrganismAbbrev}/postLoadGenome/genome/ESTs/zeroFound</paramValue>
+      <paramValue name="foundNextflowResults">NA</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/blat-nextflow</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="mode">copyTo</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <depends name="makeDataDir"/>
+    </step>
 
+    
     <subgraph name="mapESTsToGenome" xmlFile="blatDnaAgainstGenome.xml">
       <paramValue name="dataDir">$$dataDir$$/ESTs</paramValue>
       <paramValue name="maxIntronSize">$$maxIntronSize$$</paramValue>
@@ -42,7 +57,7 @@
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
       <paramValue name="skipIfFile">$$projectName$$/${referenceStrainOrganismAbbrev}/postLoadGenome/genome/ESTs/zeroFound/foundZeroESTs</paramValue>
-      <depends name="makeDataDir"/>
+      <depends name="copyZeroFoundFileToBlatCache"/>
       <dependsExternal name="${referenceStrainOrganismAbbrev}_makeAndBlockAssemblySeqs"/>
     </subgraph>
 
