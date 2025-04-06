@@ -18,8 +18,7 @@ sub run {
   } else {
     #$self->testInputFile('fromFile', "$workflowDataDir/$fromFile");
 
-
-    if(-e $workflowDataDir/$fromFile) {
+    if(-e "$workflowDataDir/$fromFile") {
       $self->runCmd(0, "ln -s $workflowDataDir/$fromFile $workflowDataDir/$toFile");
     }
     else {

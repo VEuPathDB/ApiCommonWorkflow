@@ -52,7 +52,7 @@ EOF
 
   if($undo) {
       $self->runCmd(0, "rm -f ${fastaFile}*");
-      $self->runCmd(0, "rmdir $copyToDir");
+      #$self->runCmd(0, "rmdir $copyToDir");
   } else{
       if($test){
           $self->runCmd(0, "echo test > $fastaFile");
