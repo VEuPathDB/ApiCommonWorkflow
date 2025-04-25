@@ -20,7 +20,8 @@ sub run {
 
   my ($parentRank, $geneticCodeId, $mitochondrialGeneticCodeId) = $self->getParentInfoFromSpeciesNcbiTaxId($test,$speciesNcbiTaxonId);
  
-  my $args = "--parentNcbiTaxId $speciesNcbiTaxonId --parentRank $parentRank --ncbiTaxId $ncbiTaxonId --rank 'no rank' --name '$organismFullName' --nameClass 'scientific name' --geneticCodeId $geneticCodeId --mitochondrialGeneticCodeId $mitochondrialGeneticCodeId";
+  #my $args = "--parentNcbiTaxId $speciesNcbiTaxonId --parentRank $parentRank --ncbiTaxId $ncbiTaxonId --rank 'no rank' --name '$organismFullName' --nameClass 'scientific name' --geneticCodeId $geneticCodeId --mitochondrialGeneticCodeId $mitochondrialGeneticCodeId";
+my $args = "--parentNcbiTaxId $speciesNcbiTaxonId --parentRank $parentRank --ncbiTaxId $ncbiTaxonId --rank 'no rank' --name '$organismFullName' --nameClass 'scientific name' --geneticCodeId \"" . ($geneticCodeId // '') . "\" --mitochondrialGeneticCodeId \"" . ($mitochondrialGeneticCodeId // '') . "\"";
 
   $self->runPlugin($test, $undo, "GUS::Supported::Plugin::InsertTaxonAndTaxonName", $args);
 
