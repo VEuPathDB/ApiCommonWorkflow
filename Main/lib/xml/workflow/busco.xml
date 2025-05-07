@@ -1,0 +1,92 @@
+<workflowGraph name="busco">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="proteinSequenceFile"/>
+  <param name="genomeExtDbRlsSpec"/>
+  <param name="genomicSequenceFile$$"/>
+  <param name="buscoLineageMappersFile"/>
+  <param name="isAnnotatedGenome"/>
+  <param name="speciesNcbiTaxonId"/>
+  
+  <constant name="dataDir">$$parentDataDir$$/busco</constant>
+  <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
+  <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
+
+  <constant name="proteomeSymLink">$$dataDir$$/proteome.fasta</constant>
+  <constant name="genomeSymLink">$$dataDir$$/genome.fasta</constant>
+  <constant name="buscoLineageMappersSymLink">$$dataDir$$/lineage_mappers.txt</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$analysisDirectory$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$resultsDirectory$$</paramValue>
+    <depends name="makeAnalysisDir"/>
+  </step>
+
+  <step name="symLinkProteome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile" includeIf="$$isAnnotatedGenome$$">
+    <paramValue name="fromFile">$$proteinSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$proteomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+  <step name="symLinkGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$genomicSequenceFile$$</paramValue>
+    <paramValue name="toFile">$$genomeSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+  <step name="symLinkLineageMappers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$buscoLineageMappersFile$$</paramValue>
+    <paramValue name="toFile">$$buscoLineageMappersSymLink$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="makeBuscoNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBuscoNextflowConfig">
+    <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+    <paramValue name="proteinSequenceFile">$$proteomeSymLink$$</paramValue>
+    <paramValue name="genomicSequenceFile">$$genomeSymLink$$</paramValue>
+    <paramValue name="buscoLineageMappersFile">$$buscoLineageMappersSymLink$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
+    <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+    <paramValue name="isAnnotatedGenome">$$isAnnotatedGenome$$</paramValue>
+    <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>    
+    <depends name="makeResultDir"/>
+  </step>
+
+  <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</paramValue>
+    <paramValue name="ngsSamplesNextflowConfigFile"></paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue> <!-- NAME|version -->
+    <paramValue name="isProteomeAnalysis">false</paramValue>
+    <paramValue name="datasetSpec"></paramValue>
+    <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/busco-nextflow</paramValue>
+    <paramValue name="entry"></paramValue>
+    <depends name="makeBuscoNextflowConfig"/>
+    <depends name="symLinkProteome"/>
+    <depends name="symLinkGenome"/>
+    <depends name="symLinkLineageMappers"/> 
+  </subgraph>
+
+  <step name="loadBusco" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertBusco" stepLoadTypes="plugin">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="proteomeResultsFile">$$resultsDirectory$$/busco_protein.txt</paramValue>
+    <paramValue name="genomeResultsFile">$$resultsDirectory$$/busco_genome.txt</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <depends name="runNextflowOnCluster"/>
+  </step>
+
+
+</workflowGraph>
