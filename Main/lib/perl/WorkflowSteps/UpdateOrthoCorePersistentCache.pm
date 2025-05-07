@@ -14,7 +14,8 @@ sub run {
   $nextflowWorkflow =~ s/\//_/g;
 
   if ($undo) {
-      $self->runCmd(0, "echo 'undo'");
+      $self->runCmd(0, "rm -rf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/groupDiamondResults");
+      $self->runCmd(0, "rm -rf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/Results");
   }
   elsif ($test) {
       $self->runCmd(0, "echo 'test'");
