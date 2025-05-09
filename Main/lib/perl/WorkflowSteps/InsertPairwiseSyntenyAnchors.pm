@@ -12,8 +12,9 @@ sub run {
 
 # the directory that has mercator output.  this is our input
   my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir');
-  my $gusConfigFile = $self->getParamValue('gusConfigFile');
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  $gusConfigFile = $workflowDataDir . "/" . $gusConfigFile;
   my $mercatorPairsDir = join("/", $workflowDataDir,$mercatorOutputsDir);
   my $nextflowDataDir = join("/", $workflowDataDir, "insertPairwiseSyntenyAnchors");
   my $stepDir = $self->getStepDir();
