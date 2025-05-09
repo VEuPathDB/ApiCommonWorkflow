@@ -12,6 +12,7 @@ sub run {
 
 # the directory that has mercator output.  this is our input
   my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $mercatorPairsDir = join("/", $workflowDataDir,$mercatorOutputsDir);
   my $nextflowDataDir = join("/", $workflowDataDir, "insertPairwiseSyntenyAnchors");
@@ -73,6 +74,7 @@ ERRMSG
     my $nfConfig = <<CONFIG;
 params {
   mercatorPairsDir = "$mercatorPairsDir"
+  gusConfigFile = "$gusConfigFile"
 }
 process {
   executor = 'local'
