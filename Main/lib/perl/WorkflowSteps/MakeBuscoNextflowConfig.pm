@@ -22,7 +22,6 @@ sub run {
 
     my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
     my $resultsDirectory = $self->getParamValue("resultsDirectory");
-    my $outputFilePrefix = $self->getParamValue("outputFilePrefix");
     my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
 
     my $skipProteomeAnalysis = $self->getBooleanParamValue('isAnnotatedGenome') ? "false" : "true";
