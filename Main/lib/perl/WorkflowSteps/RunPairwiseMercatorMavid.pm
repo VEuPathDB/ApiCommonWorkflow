@@ -171,7 +171,7 @@ sub ifSkipOnSoTermName {
 	my $tmPrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
 	my $sql = "select distinct sa.sequence_type, organism from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o where o.taxon_id = sa.taxon_id and o.is_annotated_genome = 1";
 
-	my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
+	$gusConfigFile = "--gusConfigFile \"" . $gusConfigFile . "\"";
 
 	my $cmd = "getValueFromTable --idSQL \"$sql\" $gusConfigFile";
 
@@ -205,7 +205,7 @@ sub getIsDraftHash {
 			and sa.taxon_id = o.taxon_id
 			and o.abbrev = '$organismAbbrev'";
 
-		my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
+		my $gusConfigFile = "--gusConfigFile \"" . $gusConfigFile . "\"";
 
 		my $cmd = "getValueFromTable --idSQL \"$sql\" $gusConfigFile";
 
