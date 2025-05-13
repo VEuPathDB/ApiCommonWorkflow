@@ -11,6 +11,7 @@ sub run {
 
     my $maxForks = 2;
 
+    my $clusterServer = $self->getSharedConfig("clusterServer");
     my $buscoLineagesDatabase = join("/", $self->getSharedConfig("$clusterServer.softwareDatabasesDirectory"), $self->getSharedConfig("buscoLineagesDirectory"));
 
     my $workflowDataDir = $self->getWorkflowDataDir();
