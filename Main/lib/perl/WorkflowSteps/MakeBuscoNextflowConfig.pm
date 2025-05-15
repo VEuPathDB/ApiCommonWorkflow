@@ -3,7 +3,6 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeBuscoNextflowConfig;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
 use strict;
-use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 sub run {
@@ -11,6 +10,7 @@ sub run {
 
     my $maxForks = 2;
 
+    my $clusterServer = $self->getSharedConfig("clusterServer");
     my $buscoLineagesDatabase = join("/", $self->getSharedConfig("$clusterServer.softwareDatabasesDirectory"), $self->getSharedConfig("buscoLineagesDirectory"));
 
     my $workflowDataDir = $self->getWorkflowDataDir();
@@ -22,10 +22,9 @@ sub run {
 
     my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
     my $resultsDirectory = $self->getParamValue("resultsDirectory");
-    my $outputFilePrefix = $self->getParamValue("outputFilePrefix");
     my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
 
-    my $skipProteomeAnalysis = $self->getBooleanParmValue("isAnnotatedGenome") ? "false" : "true";
+    my $skipProteomeAnalysis = $self->getBooleanParamValue('isAnnotatedGenome') ? "false" : "true";
 
     my $speciesNcbiTaxonId = $self->getParamValue("speciesNcbiTaxonId");
     
