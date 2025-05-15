@@ -9,7 +9,6 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $mode = $self->getParamValue('mode');   # parent, child or dontcare
-  my $psqlDirPath = $self->getParamValue('psqlDirPath');
   my $tableName = $self->getParamValue('tableName');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $projectId = $self->getParamValue('projectName');
@@ -20,6 +19,7 @@ sub run {
   my $taxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $psqlDirPath = "$ENV{GUS_HOME}/lib/psql/MO/webtables";
 
   my $args = "--mode $mode --psqlDirPath $psqlDirPath --tableName $tableName --schema $schema --projectId $projectId --organismAbbrev $organismAbbrev --taxonId 123456";
 
