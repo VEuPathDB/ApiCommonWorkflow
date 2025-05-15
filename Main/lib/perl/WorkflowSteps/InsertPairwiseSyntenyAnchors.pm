@@ -14,9 +14,10 @@ sub run {
   my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir');
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  my $projectName = $self->getParamValue('projectName');
   $gusConfigFile = $workflowDataDir . "/" . $gusConfigFile;
   my $mercatorPairsDir = join("/", $workflowDataDir,$mercatorOutputsDir);
-  my $nextflowDataDir = join("/", $workflowDataDir, "insertPairwiseSyntenyAnchors");
+  my $nextflowDataDir = join("/", $workflowDataDir, $projectName, "insertPairwiseSyntenyAnchors");
   my $stepDir = $self->getStepDir();
   mkdir ($nextflowDataDir) unless ( -d $nextflowDataDir );
 
