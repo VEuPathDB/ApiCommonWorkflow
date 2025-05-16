@@ -8,7 +8,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $maxForks = 6;
+  my $maxForks = 10;
 
 # the directory that has mercator output.  this is our input
   my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir');
@@ -80,7 +80,7 @@ params {
 }
 process {
   executor = 'local'
-  withName: 'processPairs' { maxForks = $maxForks }
+  withName: 'runPlugins' { maxForks = $maxForks }
 }
 CONFIG
     open(FH, ">$nfConfigFile") or die "Cannot write config file $nfConfigFile: $!\n";
