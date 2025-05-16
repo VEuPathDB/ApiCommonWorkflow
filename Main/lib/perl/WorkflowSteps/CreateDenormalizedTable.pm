@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::CreateDenormalizedTables;
+package ApiCommonWorkflow::Main::WorkflowSteps::CreateDenormalizedTable;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -16,14 +16,17 @@ sub run {
   my $gusConfigFile = $self->getParamValue('gusConfigFile');
 
   $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
-  my $taxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $psqlDirPath = "$ENV{GUS_HOME}/lib/psql/MO/webtables";
+  my $psqlDirPath = "$ENV{GUS_HOME}/lib/psql/webtables/MO";
 
-  my $args = "--mode $mode --psqlDirPath $psqlDirPath --tableName $tableName --schema $schema --projectId $projectId --organismAbbrev $organismAbbrev --taxonId 123456";
-
-  $self->testInputFile('inputFile', "$workflowDataDir/$inputFile");
+  my $args;
+  if ($mode eq 'child') {
+    my $taxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
+    $args = "--mode $mode --psqlDirPath $psqlDirPath --tableName $tableName --schema $schema --projectId $projectId --organismAbbrev $organismAbbrev --taxonId $taxonId";
+  } else {
+    $args = "--mode $mode --psqlDirPath $psqlDirPath --tableName $tableName --schema $schema --projectId $projectId --taxonId 1";
+  }
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CreateDenormalizedTables", $args);
 
