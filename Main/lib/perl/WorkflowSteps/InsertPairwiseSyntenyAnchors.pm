@@ -88,7 +88,7 @@ CONFIG
     close(FH);
   }
 
-  my $executable = join("/", $ENV{'GUS_HOME'}, 'bin', 'processSyntenyPairs');
+  my $executable = join("/", $ENV{'GUS_HOME'}, 'bin', 'processSyntenyPairs.nf');
   my $logFile = join("/", $stepDir, "nextflow.log");
 
   my $cmd = "export NXF_WORK=$nextflowDataDir/work && nextflow -bg -C $nfConfigFile -log $logFile run $executable";
