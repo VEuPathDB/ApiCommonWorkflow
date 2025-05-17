@@ -91,7 +91,7 @@ CONFIG
   my $executable = join("/", $ENV{'GUS_HOME'}, 'bin', 'processSyntenyPairs.nf');
   my $logFile = join("/", $stepDir, "nextflow.log");
 
-  my $cmd = "export NXF_WORK=$nextflowDataDir/work && nextflow -bg -C $nfConfigFile -log $logFile run $executable";
+  my $cmd = "export NXF_WORK=$nextflowDataDir/work && nextflow -bg -C $nfConfigFile -log $logFile run -ansi-log false $executable 1>&2";
 
 ## If you are here to look at an example of nextflow usage:
 # -bg run in background option: nextflow will not run if you run your workflow (rf run real) in a background shell
