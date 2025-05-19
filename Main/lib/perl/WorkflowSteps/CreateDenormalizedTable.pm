@@ -8,6 +8,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  my $psqlDirName = $self->getParamValue('psqlDirName');   # global orgSpecific or comparative
   my $mode = $self->getParamValue('mode');   # parent, child or dontcare
   my $tableName = $self->getParamValue('tableName');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
@@ -18,7 +19,7 @@ sub run {
   $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $psqlDirPath = "$ENV{GUS_HOME}/lib/psql/webtables/MO";
+  my $psqlDirPath = "$ENV{GUS_HOME}/lib/psql/webready/$psqlDirName";
 
   my $args;
   if ($mode eq 'child') {
