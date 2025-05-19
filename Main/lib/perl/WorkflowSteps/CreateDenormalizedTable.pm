@@ -28,7 +28,7 @@ sub run {
     $args = "--mode $mode --psqlDirPath $psqlDirPath --tableName $tableName --schema $schema --projectId $projectId --taxonId 1";
   }
 
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CreateDenormalizedTables", $args);
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CreateDenormalizedTable", $args);
 
 }
 
