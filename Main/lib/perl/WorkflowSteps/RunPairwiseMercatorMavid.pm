@@ -168,23 +168,22 @@ sub ifSkipOnSoTermName {
     my $gusConfigFile = $self->getParamValue('gusConfigFile');
     $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-	my $tmPrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
-	my $sql = "select distinct sa.sequence_type, organism from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o where o.taxon_id = sa.taxon_id and o.is_annotated_genome = 1";
+	my $sql = "select count(*)
+			from dots.nasequence sa, apidb.organism o, sres.ontologyterm ot
+			where ot.name IN ('chromosome', 'supercontig', 'contig')
+			and sa.sequence_ontology_id = ot.ontology_term_id
+			and sa.taxon_id = o.taxon_id
+			and o.is_annotated_genome = 1
+			and o.abbrev = '$organismAbbrev'";
 
-	my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
+	$gusConfigFile = "--gusConfigFile \"" . $gusConfigFile . "\"";
 
 	my $cmd = "getValueFromTable --idSQL \"$sql\" $gusConfigFile";
 
-	my $result = $self->runCmd($test, $cmd);
-	my @soTermNames = split(/\,/, $result);
+	my $rowCount = $self->runCmd($test, $cmd);
 
-	my $ifSkip = "yes";
-	foreach my $soTermName (@soTermNames) {
-		if ($soTermName eq 'chromosome' || $soTermName eq 'supercontig' || $soTermName eq 'contig' ) {
-			$ifSkip = "no";
-			last;
-		}
-	}
+
+	my $ifSkip = $rowCount == 0 ? "yes" : "no";
 	return $ifSkip;
 }
 
@@ -196,16 +195,15 @@ sub getIsDraftHash {
     $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
 	foreach my $organismAbbrev (@$organismAbbrevs) {
-		my $tmPrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
-
 		my $sql = "select count(*)
-			from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o, sres.ontologyterm ot 
+			from dots.nasequence sa, apidb.organism o, sres.ontologyterm ot 
 			where ot.name IN ('chromosome', 'supercontig')
-			and sa.so_id = ot.source_id
+			and sa.sequence_ontology_id = ot.ontology_term_id
 			and sa.taxon_id = o.taxon_id
+			and o.is_annotated_genome = 1
 			and o.abbrev = '$organismAbbrev'";
 
-		my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";
+		my $gusConfigFile = "--gusConfigFile \"" . $gusConfigFile . "\"";
 
 		my $cmd = "getValueFromTable --idSQL \"$sql\" $gusConfigFile";
 
