@@ -1,0 +1,39 @@
+<workflowGraph name="">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="orthomclPeripheralResultsDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/OrthomclDependent</constant>
+
+  <subgraph name="EcNumberGenus_RSRC" xmlFile="loadDataset.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="datasetName">EcNumberGenus_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">GenomicsGlobal.xml</paramValue>
+    <paramValue name="parentDataDir">global</paramValue>
+  </subgraph>
+
+  <step name="insertOrthomclPhyletic" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthomclPhyletic">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="groupsFile">$$orthomclPeripheralResultsDir$$/fullGroupFile.txt</paramValue>
+  </step>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
+  <step name="predictEcNumbers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PredictEcNumbers">
+    <paramValue name="outputDir">$$dataDir$$</paramValue>
+    <paramValue name="organismDir">OrganismNameResources</paramValue>
+    <depends name="makeOrthoMCLDerivedDir"/>
+  </step>
+  <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
+
+  <subgraph name="OrthoMCLDerivedEC" xmlFile="orthoMCLDerivedEC.xml">
+    <paramValue name="ecFile">$$dataDir$$/ec.txt</paramValue>
+    <paramValue name="completedFile">$$dataDir$$/completed</paramValue>
+    <paramValue name="waitSeconds">60</paramValue>
+    <depends name="predictEcNumbers"/>
+  </subgraph>
+
+</workflowGraph>

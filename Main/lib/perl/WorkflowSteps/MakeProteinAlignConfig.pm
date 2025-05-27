@@ -108,7 +108,7 @@ sub processMemoryRequirement {
   my $s3 = clusterOptionsForMemMbs(5 * $mbs);
   return <<"EOF";
     errorStrategy = { task.exitStatus in 130..140 ? 'retry' : 'terminate' }
-    maxRetries = 3
+    maxRetries = 2
     clusterOptions = {
       task.attempt == 1 ? '$s1'
       : task.attempt == 2 ?'$s2'
