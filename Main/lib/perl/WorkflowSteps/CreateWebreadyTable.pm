@@ -20,7 +20,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $psqlDirPath = "$ENV{GUS_HOME}/lib/psql/webready/$psqlDirName";
 
-  my $args = "--mode $mode --psqlDirPath $psqlDirPath --tableName $tableName --schema $schema --projectId $projectId --taxonId 1";
+  my $args = "--mode standard --psqlDirPath $psqlDirPath --tableName $tableName --schema $schema --projectId $projectId --taxonId 1";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CreateDenormalizedTable", $args);
 
