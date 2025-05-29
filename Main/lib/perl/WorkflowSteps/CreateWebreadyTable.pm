@@ -13,7 +13,7 @@ sub run {
   my $projectId = $self->getParamValue('projectName');
   my $gusConfigFile = $self->getParamValue('gusConfigFile');
 
-  my $schema = $self->getSharedConfig('schema');
+  my $schema = $self->getSharedConfig('webreadySchema');
 
   $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 

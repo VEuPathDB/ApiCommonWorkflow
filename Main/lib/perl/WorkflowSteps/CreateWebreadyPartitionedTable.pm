@@ -19,7 +19,7 @@ sub run {
 
   $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-  my $schema = $self->getSharedConfig('schema');
+  my $schema = $self->getSharedConfig('webreadySchema');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $psqlDirPath = "$ENV{GUS_HOME}/lib/psql/webready/$psqlDirName";
