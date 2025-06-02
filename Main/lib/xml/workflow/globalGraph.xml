@@ -264,5 +264,30 @@
     <depends name="PDBProteinSequences_RSRC"/>
   </step>
 
+  <subgraph name="MakeGlobalWebTables" xmlFile="globalWebreadyTables.xml">
+    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="PDBProteinSequences_RSRC"/>
+    <depends name="NRDB_RSRC"/>
+    <depends name="blatAlignmentQuality_RSRC"/>
+    <depends name="IEDBDatasetLoader"/>
+    <depends name="EcNumberGenus_RSRC"/>
+    <depends name="Pathways"/>
+    <depends name="interproscanData_RSRC"/>
+    <depends name="GO_evidence_codes_RSRC"/>
+    <depends name="Ontology_ptmt_RSRC"/>
+    <depends name="oboOntologies"/>
+    <depends name="EuPath_Ontology_RSRC"/>
+    <depends name="GOSlim_RSRC"/>
+    <depends name="interpro2GO_RSRC"/>
+  </subgraph>
+
+  <subgraph name="MakeParentWebTables" xmlFile="orgSpecificWebreadyTables.xml">
+    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev"></paramValue>
+    <paramValue name="mode">parent</paramValue>
+    <depends name="MakeGlobalWebTables"/>
+  </subgraph>
 
 </workflowGraph>
