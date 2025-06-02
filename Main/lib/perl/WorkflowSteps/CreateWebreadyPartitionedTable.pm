@@ -27,9 +27,9 @@ sub run {
   my $args;
   if ($mode eq 'child') {
     my $taxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
-    my $args = "--mode $mode --psqlDirPath $psqlDirPath --tableName $tableName --schema $schema --projectId $projectId --organismAbbrev $organismAbbrev --taxonId $taxonId";
+    $args = "--mode $mode --psqlDirPath $psqlDirPath --tableName $tableName --schema $schema --projectId $projectId --organismAbbrev $organismAbbrev --taxonId $taxonId";
   } else {
-    my $args = "--mode $mode --psqlDirPath $psqlDirPath --tableName $tableName --schema $schema --projectId $projectId --taxonId 1";
+    $args = "--mode $mode --psqlDirPath $psqlDirPath --tableName $tableName --schema $schema --projectId $projectId --taxonId 1";
   }
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CreateDenormalizedTable", $args);
 
