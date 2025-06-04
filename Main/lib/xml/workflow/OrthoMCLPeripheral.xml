@@ -73,11 +73,45 @@
     <depends name="updateEcNumbers"/>
   </step>
 
+  <step name="createTable_GeneOrthologGroup" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateDenormalizedTable">
+    <paramValue name="tableName">GeneOrthologGroup</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="mode">standard</paramValue>
+    <paramValue name="schema">webready</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev"></paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="updateEcNumbers"/>
+  </step>
+
+  <step name="createTable_TranscriptOrthologGroup" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateDenormalizedTable">
+    <paramValue name="tableName">TranscriptOrthologGroup</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="mode">standard</paramValue>
+    <paramValue name="schema">webready</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev"></paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_GeneOrthologGroup"/>
+  </step>
+
+  <step name="createTable_GroupDomainDescription" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateDenormalizedTable">
+    <paramValue name="tableName">GroupDomaindescription</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="mode">standard</paramValue>
+    <paramValue name="schema">webready</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev"></paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_TranscriptOrthologGroup"/>
+  </step>
+
 <!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
 <!-- Will need to do this in the future. I am changing output dir until testing is complete. -->
 <!--  <step name="predictEcNumbers" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::PredictEcNumbers"> -->
     <!-- <paramValue name="outputDir">OrthoMCLDerived_ECAssociations/Current_Version/final</paramValue> -->
 <!--    <paramValue name="organismDir">OrganismNameResources</paramValue> -->
+<!--    <depends name="createTable_GroupDomainDescription"/> -->
 <!--    <depends name="updateEcNumbers"/> -->
 <!--  </step> -->
 
