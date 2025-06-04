@@ -152,10 +152,22 @@
       <depends name="insertOrthogroupCorePeripheralStats"/>
   </step>
 
+  <step name="insertCoreOrthoGroupBlastValues" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupBlastValues" stepLoadTypes="plugin">
+      <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
+      <paramValue name="groupBlastValuesFile">$$peripheralDir$$/analysisDir/results/intraGroupBlastFile.tsv</paramValue>
+      <depends name="insertOrthogroupResidualStats"/>
+  </step>
+
+  <step name="insertResidualOrthoGroupBlastValues" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupBlastValues" stepLoadTypes="plugin">
+      <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
+      <paramValue name="groupBlastValuesFile">$$peripheralDir$$/analysisDir/results/intraResidualGroupBlastFile.tsv</paramValue>
+      <depends name="insertCoreOrthoGroupBlastValues"/>
+  </step>
+
   <step name="insertSimilarOrthologgroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimilarOrthologGroups" stepLoadTypes="plugin">
       <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
       <paramValue name="similarGroups">$$peripheralDir$$/analysisDir/results/similar_groups.tsv</paramValue>
-      <depends name="insertOrthogroupResidualStats"/>
+      <depends name="insertResidualOrthoGroupBlastValues"/>
   </step>
 
   <step name="insertPreviousGroupMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPreviousGroupMapping" stepLoadTypes="plugin">
