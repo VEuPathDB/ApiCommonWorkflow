@@ -14,59 +14,22 @@
   <constant name="projectGusConfigBasename">$$projectName$$_gus.config</constant>
   <constant name="projectGusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</constant>
 
-  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  <step name="MakeOrthofinderCoreInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthofinderCoreInputDir">
+    <paramValue name="proteomesDir">$$coreProteinsDir$$/coreProteomes</paramValue>
+    <paramValue name="outputDir">$$coreProteinsDir$$</paramValue>
   </step>
 
-  <step name="makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig">
-    <paramValue name="dbName"/>
-    <!--                                                                                                                                                                                                   
-    <paramValue name="dbName">$$projectName$$</paramValue>                                                                                                                                                 
-     -->
-    <paramValue name="dataDir">$$dataDir$$</paramValue>
-    <paramValue name="gusConfigFilename">$$projectGusConfigBasename$$</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <depends name="makeDataDir"/>
+  <step name="MakeSortedCheckSum" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSortedCheckSum">
+    <paramValue name="proteomesDir">$$coreProteinsDir$$/fastas</paramValue>
+    <depends name="MakeOrthofinderCoreInputDir"/>
   </step>
 
-  <step name="initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
-    <depends name="makeGusConfig"/>
-  </step>
-
-  <!-- load the OrthomclTaxon table with our tree of life -->
-  <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
-    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
-    <paramValue name="datasetName">orthomclClades_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <!--<depends name="taxonomy"/>-->
-    <!-- <depends name="initClusterHomeDir"/>-->
-    <depends name="initUserGroupProject"/>
-  </subgraph>
-
-  <step name="makeCoreInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$/coreInterpro</paramValue>
-<!--    <depends name="enzymeDB"/> -->
-    <depends name="orthomclClades"/>
-  </step>
-
-  <subgraph name="getCoreProteomes" xmlFile="generated/OrthoMCL/orthomclGetCoreProteins.xml">
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="coreProteinsDir">$$coreProteinsDir$$</paramValue>
-    <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
-    <paramValue name="projectName">OrthoMCL</paramValue>
-    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>    
-    <depends name="makeCoreInterproDir"/>
-  </subgraph>
-
-<!-- Add functionality to create a skip if file to skip orthofinder core if the checkSums are exactly the same -->
+  <!-- Add functionality to create a skip if file to skip orthofinder core if the checkSums are exactly the same -->
   <step name="checkBuildVersionCreateOutdatedClearPeripheral" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthomclBuildVersion">
     <paramValue name="checkSum">$$coreProteinsDir$$/fastas/checkSum.tsv</paramValue>
     <paramValue name="outdatedOrganisms">$$coreProteinsDir$$/outdated.txt</paramValue>
     <paramValue name="skipIfFile">$$coreProteinsDir$$/doNotDoAnalysis</paramValue>
-    <depends name="getCoreProteomes"/>
+    <depends name="MakeSortedCheckSum"/>
   </step>
 
   <step name="makeCoreGroupsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">

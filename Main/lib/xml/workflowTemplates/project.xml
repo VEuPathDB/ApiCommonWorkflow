@@ -579,8 +579,8 @@
   </subgraph>
 -->
   <!-- depends on MaskGenome, MakeCompGenomicsFiles AND VIRTUAL FEATURE LOCATIONS-->
-<!--webdb test
   <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid" excludeIf="$$areBigGenomes$$" >
+    <paramValue name="gusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</paramValue>
     <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
     <paramValue name="mercatorOutputsDir">$$dataDir$$/mercatorOutput</paramValue>
     <paramValue name="mercatorCacheDir">$$dataDir$$/mercatorCache</paramValue>
@@ -589,12 +589,24 @@
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </step>
 
-  <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin" excludeIf="$$areBigGenomes$$" >
+  <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="syntenyPlugin" excludeIf="$$areBigGenomes$$" >
+    <paramValue name="gusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</paramValue>
     <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
     <paramValue name="mercatorOutputsDir">$$dataDir$$/mercatorOutput</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
     <depends name="runPairwiseMercatorMavid"/>
     <dependsPattern name="*_EarlyVirtualLocations"/>
   </step>
+
+<!--webdb test, need more development
+  <subgraph name="OrthoMCLDerivedEC" xmlFile="orthoMCLDerivedEC.xml">
+    <paramValue name="ecFile">@@manualDeliveryDir@@/$$projectName$$/common/function/OrthoMCLDerived_ECAssociations/Current_Version/final/ec.txt</paramValue>
+    <paramValue name="completedFile">@@manualDeliveryDir@@/$$projectName$$/common/function/OrthoMCLDerived_ECAssociations/Current_Version/final/completed</paramValue>
+    <paramValue name="waitSeconds">60</paramValue>
+    <depends name="comparativeGenomics"/>
+    <dependsPattern name="*_specific"/>
+    <dependsGlobal name="enzymeDB_RSRC"/>
+  </subgraph>
 -->
   <!-- only reference strains have an instance of this -->
   <!-- it depends on all make and mask genomes for this organism (they all have the ref strain as a prefix) -->

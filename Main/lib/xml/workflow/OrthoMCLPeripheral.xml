@@ -17,8 +17,17 @@
   <constant name="projectGusConfigBasename">$$projectName$$_gus.config</constant>
   <constant name="projectGusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</constant>
 
-  <step name="makePeripheralInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$/peripheralInterpro</paramValue>
+  <constant name="getPeripheralProteinsDir">$$projectName$$/getPeripheralProteins</constant>
+  <constant name="proteomesDir">$$getPeripheralProteinsDir$$/peripheralProteomes</constant>
+
+  <step name="MakeOrthofinderPeripheralInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthofinderPeripheralInputDir">
+     <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
+     <paramValue name="outputDir">$$getPeripheralProteinsDir$$</paramValue>
+  </step>
+
+  <step name="MakeSortedCheckSum" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSortedCheckSum">
+    <paramValue name="proteomesDir">$$getPeripheralProteinsDir$$/fastas</paramValue>
+    <depends name="MakeOrthofinderPeripheralInputDir"/>
   </step>
 
   <subgraph name="peripheralWorkflow" xmlFile="orthomclPeripheralWorkflow.xml">
@@ -30,7 +39,7 @@
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="coreProteome">$$coreProteinsDir$$/fastas.tar.gz</paramValue>
     <paramValue name="coreResultsDir">$$coreGroupsDir$$/analysisDir/results</paramValue>
-    <depends name="makePeripheralInterproDir"/>
+    <depends name="MakeSortedCheckSum"/>
   </subgraph>
 
   <step name="makeResourcesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
