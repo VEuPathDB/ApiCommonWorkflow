@@ -37,9 +37,15 @@
 
   <datasetTemplate class="orthomclAndProjectDependent">
 
+    <subgraph name="OrthoCoreProteomeRetrieval" xmlFile="OrthoCoreProteomeRetrieval.xml">
+      <paramValue name="projectName">OrthoMCL</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+    </subgraph>
+
     <subgraph name="OrthoMCLCore" xmlFile="OrthoMCLCore.xml">
       <paramValue name="projectName">OrthoMCL</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <depends name="OrthoCoreProteomeRetrieval"/>
       <dependsExternal name="PlasmoDB_checkOrthoCoreProteomeDirs"/>
       <dependsExternal name="TriTrypDB_checkOrthoCoreProteomeDirs"/>
       <dependsExternal name="VectorBase_checkOrthoCoreProteomeDirs"/>
@@ -54,11 +60,17 @@
       <dependsExternal name="HostDB_checkOrthoCoreProteomeDirs"/>
     </subgraph>
 
+    <subgraph name="OrthoPeripheralProteomeRetrieval" xmlFile="OrthoPeripheralProteomeRetrieval.xml">
+      <paramValue name="projectName">OrthoMCL</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <depends name="OrthoMCLCore"/>
+    </subgraph>
+
     <subgraph name="OrthoMCLPeripheral" xmlFile="OrthoMCLPeripheral.xml">
       <paramValue name="projectName">OrthoMCL</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
       <paramValue name="residualGroupIdPrefix">OGR7r1_</paramValue>
-      <depends name="OrthoMCLCore"/>
+      <depends name="OrthoPeripheralProteomeRetrieval"/>
       <dependsExternal name="PlasmoDB_checkOrthoPeripheralProteomeDirs"/>
       <dependsExternal name="TriTrypDB_checkOrthoPeripheralProteomeDirs"/>
       <dependsExternal name="VectorBase_checkOrthoPeripheralProteomeDirs"/>
