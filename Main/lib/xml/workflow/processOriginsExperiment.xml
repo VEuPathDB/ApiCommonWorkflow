@@ -9,9 +9,13 @@
     <param name="coverageWindowSize"/>
     <param name="extraBowtieParams"/>
     <param name="experimentDatasetName"/>
+    <param name="experimentDatasetVersion"/>
     <param name="gusConfigFile"/>
     <param name="fromSRA"/>
+    <param name="genomeExtDbRlsSpec"/>
 
+
+    
     <constant name="dataDir">$$parentDataDir$$/processOriginsExeriment</constant>
     <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
     <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
@@ -67,12 +71,10 @@
         <paramValue name="inputDir">$$analysisDirectory$$/ngs-samples-results</paramValue>
         <paramValue name="sampleSheetFile">samplesheet.csv</paramValue>
         <paramValue name="genomeFile">$$genomeSymLink$$</paramValue>
-
         <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
         <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
         <paramValue name="coverageWindowSize">$$coverageWindowSize$$</paramValue>
         <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
-
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <depends name="makeResultDir"/>
     </step>
@@ -88,8 +90,8 @@
         <paramValue name="isProteomeAnalysis">false</paramValue>
         <paramValue name="datasetSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue> <!--NOTE: the version will be looked up by the step which gets from cache -->
         <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
-        <paramValue name="nextflowWorkflow">VEuPathDB/bulk-rnaseq-nextflow</paramValue>
-        <paramValue name="entry">$$entry$$</paramValue>
+        <paramValue name="nextflowWorkflow">VEuPathDB/bowtie-mapping--nextflow</paramValue>
+        <paramValue name="entry"></paramValue>
         <depends name="nextflowConfig"/>
         <depends name="ngsSamplesNextflowConfig"/>
         <depends name="symLinkGenome"/>
@@ -97,16 +99,13 @@
     </subgraph>
 
 
-
     <!-- TODO
-
-
     <step name="copyBigWigFilesToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBigWigFilesToWebServices">
-        <paramValue name="copyFromDir">$$outputDir$$</paramValue>
+        <paramValue name="copyFromDir">$$resultsDirectory$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
         <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
-        <depends name="calculateCoverageRatios"/>
+        <depends name="runNextflowOnCluster"/>
     </step>
 -->
 
