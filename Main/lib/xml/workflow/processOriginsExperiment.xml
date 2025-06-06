@@ -2,104 +2,105 @@
     <param name="projectName"/>
     <param name="organismAbbrev"/>
     <param name="parentDataDir"/>
-    <param name="organismDatasetLoaderXmlFile"/>
     <param name="relativeWebServicesDir"/>
-    <param name="samtoolsIndex"/>
-    <param name="chromSizesFile"/>
     <param name="experimentName"/>
     <param name="hasPairedEnds"/>
-    <param name="isColorspace"/>
     <param name="removePCRDuplicates"/>
     <param name="coverageWindowSize"/>
     <param name="extraBowtieParams"/>
     <param name="experimentDatasetName"/>
-    <param name="bowtieIndexDir"/>
+    <param name="gusConfigFile"/>
+    <param name="fromSRA"/>
 
-    
-    <constant name="dataDir">$$parentDataDir$$/$$experimentDatasetName$$</constant>
+    <constant name="dataDir">$$parentDataDir$$/processOriginsExeriment</constant>
+    <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
+    <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
+    <constant name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</constant>
+    <constant name="ngsSamplesNextflowConfigFile">$$analysisDirectory$$/ngs-samples-nextflow.config</constant>
 
+    <constant name="finalDir">$$parentDataDir$$/final</constant>
 
-    <constant name="coverageFilesDir">$$dataDir$$/coverageFiles</constant>
-    <constant name="outputDir">$$dataDir$$/output</constant>
-    <constant name="finalDir">$$dataDir$$/final</constant>
-
+    <constant name="genomeSymLink">$$dataDir$$/$$organismAbbrev$$.fasta</constant>
+    <constant name="finalSymLink">$$dataDir$$/final</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeCoverageFilesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$coverageFilesDir$$</paramValue>
-        <depends name="makeDataDir"/>
-    </step>
-                        
-    <step name="makeOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$outputDir$$</paramValue>
-        <depends name="makeDataDir"/>
-    </step>
-                            
-    <!-- make an empty final dir, and mirror it to the cluster.  the samples will each mirror their own file -->
-    <!-- to the cluster, so the mirroring can be done in pieces and in parallel -->
-
-    <step name="makeFinalDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-        <paramValue name="dataDir">$$finalDir$$</paramValue>
+    <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$analysisDirectory$$</paramValue>
         <depends name="makeDataDir"/>
     </step>
 
-    <step name="insertDataset" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertDataset">
-        <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-        <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-        <paramValue name="dataDir">$$finalDir$$</paramValue>
-        <depends name="makeFinalDir"/>
+    <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$resultsDirectory$$</paramValue>
+        <depends name="makeAnalysisDir"/>
     </step>
 
-    <step name="getAndUnpack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderGetAndUnpack">
-        <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-        <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-        <paramValue name="dataDir">$$dataDir$$</paramValue>
+    <step name="symLinkGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+        <paramValue name="fromFile">$$genomeFastaFile$$</paramValue>
+        <paramValue name="toFile">$$genomeSymLink$$</paramValue>
+        <depends name="makeDataDir"/>
     </step>
 
-    <step name="insertExtDb" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertExtDb" stepLoadTypes="plugin">
-        <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-        <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-        <paramValue name="dataDir">$$finalDir$$</paramValue>
-        <depends name="makeFinalDir"/>
+    <step name="symLinkFinal" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+        <paramValue name="fromFile">$$finalDir$$</paramValue>
+        <paramValue name="toFile">$$finalSymLink$$</paramValue>
+        <depends name="makeDataDir"/>
     </step>
 
-    <step name="experiment_RSRC" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderInsertExtDbRls" stepLoadTypes="plugin">
-        <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-        <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-        <paramValue name="dataDir">$$finalDir$$</paramValue>
-        <depends name="insertExtDb"/>
+    <step name="ngsSamplesNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeNgsSamplesNextflowConfig">
+        <paramValue name="analysisDirectory">$$analysisDirectory$$</paramValue>
+        <paramValue name="finalDirectory">$$finalSymLink$$</paramValue>
+        <paramValue name="resultsDirectory">$$analysisDirectory$$/ngs-samples-results</paramValue>
+        <paramValue name="nextflowConfigFile">$$ngsSamplesNextflowConfigFile$$</paramValue>
+        <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+        <paramValue name="sampleSheetName">samplesheet.csv</paramValue>
+        <paramValue name="fromSRA">$$fromSRA$$</paramValue>
+        <depends name="makeResultDir"/>
     </step>
 
-    <!-- end dataset loader -->
-    <subgraph name="doMapping" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/originsOfReplicationSamples.xml">
-        <paramValue name="projectName">$$projectName$$</paramValue>
-        <paramValue name="experimentDir">$$dataDir$$</paramValue>
-        <paramValue name="finalDir">$$finalDir$$</paramValue>
-        <paramValue name="coverageFilesDir">$$coverageFilesDir$$</paramValue>
-        <paramValue name="indexDir">$$bowtieIndexDir$$/</paramValue>
-        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-        <paramValue name="experimentName">$$experimentName$$</paramValue>
+    <step name="nextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOriginsOfReplicationNextflowConfig">
+        <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+        <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+        <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+        <paramValue name="inputDir">$$analysisDirectory$$/ngs-samples-results</paramValue>
+        <paramValue name="sampleSheetFile">samplesheet.csv</paramValue>
+        <paramValue name="genomeFile">$$genomeSymLink$$</paramValue>
+
         <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
-        <paramValue name="isColorspace">$$isColorspace$$</paramValue>
         <paramValue name="removePCRDuplicates">$$removePCRDuplicates$$</paramValue>
-        <paramValue name="windowSize">$$coverageWindowSize$$</paramValue>
+        <paramValue name="coverageWindowSize">$$coverageWindowSize$$</paramValue>
         <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
-        <paramValue name="samtoolsIndex">$$samtoolsIndex$$</paramValue>
-        <paramValue name="chromSizesFile">$$chromSizesFile$$</paramValue>
-        <depends name="getAndUnpack"/>
+
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <depends name="makeResultDir"/>
+    </step>
+
+    <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+        <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+        <paramValue name="ngsSamplesNextflowConfigFile">$$ngsSamplesNextflowConfigFile$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="isProteomeAnalysis">false</paramValue>
+        <paramValue name="datasetSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue> <!--NOTE: the version will be looked up by the step which gets from cache -->
+        <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
+        <paramValue name="nextflowWorkflow">VEuPathDB/bulk-rnaseq-nextflow</paramValue>
+        <paramValue name="entry">$$entry$$</paramValue>
+        <depends name="nextflowConfig"/>
+        <depends name="ngsSamplesNextflowConfig"/>
+        <depends name="symLinkGenome"/>
+        <depends name="symLinkFinal"/>
     </subgraph>
 
-    <step name="calculateCoverageRatios" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateCoverageRatios">
-        <paramValue name="experimentDir">$$coverageFilesDir$$</paramValue>
-        <paramValue name="outputDir">$$outputDir$$</paramValue>
-        <paramValue name="chromSizesFile">$$chromSizesFile$$</paramValue>
-        <depends name="doMapping"/>
-        <depends name="makeOutputDir"/>
-    </step>
-                                                    
+
+
+    <!-- TODO
+
+
     <step name="copyBigWigFilesToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyBigWigFilesToWebServices">
         <paramValue name="copyFromDir">$$outputDir$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -107,11 +108,6 @@
         <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
         <depends name="calculateCoverageRatios"/>
     </step>
-
-    <step name="document-originsOfReplication_experiment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertAnalysisMethodInvocation">
-        <paramValue name="method">originsOfReplication_experiment_MTHD</paramValue>
-        <paramValue name="version">1.0</paramValue>
-        <paramValue name="parameters">TODO: patch in later</paramValue>
-    </step>
+-->
 
 </workflowGraph>
