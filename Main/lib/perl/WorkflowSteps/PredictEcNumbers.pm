@@ -10,6 +10,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $organismDir = $workflowDataDir."/".$self->getParamValue('organismDir');
+  my $outputDir  = $self->getParamValue('outputDir');
 
   if ($undo) {
     next;
