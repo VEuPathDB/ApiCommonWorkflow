@@ -3,86 +3,129 @@
     <param name="gusConfigFile"/>
     <param name="organismAbbrev"/>
     <param name="parentDataDir"/>
-    <param name="organismDatasetLoaderXmlFile"/>
     <param name="relativeWebServicesDir"/>
     <param name="experimentName"/>
     <param name="hasPairedEnds"/>
     <param name="extraBowtieParams"/>
     <param name="experimentDatasetName"/>
     <param name="experimentDatasetVersion"/>
-    <param name="seqSizeFile"/>
     <param name="experimentType"/>
+    <param name="fromSRA"/>
+    <param name="genomeExtDbRlsSpec"/>
 
-    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
-    <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
+    <constant name="dataDir">$$parentDataDir$$/processChipSeq</constant>
+    <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
+    <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
+    <constant name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</constant>
+    <constant name="ngsSamplesNextflowConfigFile">$$analysisDirectory$$/ngs-samples-nextflow.config</constant>
+
+    <constant name="finalDir">$$parentDataDir$$/final</constant>
+
+    <constant name="genomeSymLink">$$dataDir$$/$$organismAbbrev$$.fasta</constant>
+    <constant name="finalSymLink">$$dataDir$$/final</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$dataDir$$</paramValue>
+        <paramValue name="dataDir">$$dataDir$$</paramValue>
     </step>
 
-    <step name="makeSamplesOutputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-      <paramValue name="dataDir">$$samplesOutputDir$$</paramValue>
-      <depends name="makeDataDir"/>
+    <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$analysisDirectory$$</paramValue>
+        <depends name="makeDataDir"/>
     </step>
 
-    <subgraph name="experiment_RSRC" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">$$experimentDatasetName$$</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="makeDataDir"/>
+    <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$resultsDirectory$$</paramValue>
+        <depends name="makeAnalysisDir"/>
+    </step>
+
+    <step name="symLinkGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+        <paramValue name="fromFile">$$genomeFastaFile$$</paramValue>
+        <paramValue name="toFile">$$genomeSymLink$$</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="symLinkFinal" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+        <paramValue name="fromFile">$$finalDir$$</paramValue>
+        <paramValue name="toFile">$$finalSymLink$$</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="ngsSamplesNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeNgsSamplesNextflowConfig">
+        <paramValue name="analysisDirectory">$$analysisDirectory$$</paramValue>
+        <paramValue name="finalDirectory">$$finalSymLink$$</paramValue>
+        <paramValue name="resultsDirectory">$$analysisDirectory$$/ngs-samples-results</paramValue>
+        <paramValue name="nextflowConfigFile">$$ngsSamplesNextflowConfigFile$$</paramValue>
+        <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+        <paramValue name="sampleSheetName">samplesheet.csv</paramValue>
+        <paramValue name="fromSRA">$$fromSRA$$</paramValue>
+        <depends name="makeResultDir"/>
+    </step>
+
+    <step name="nextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeChipSeqNextflowConfig">
+        <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+        <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+        <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+        <paramValue name="inputDir">$$analysisDirectory$$/ngs-samples-results</paramValue>
+        <paramValue name="sampleSheetFile">samplesheet.csv</paramValue>
+        <paramValue name="genomeFile">$$genomeSymLink$$</paramValue>
+        <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
+        <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="experimentType">$$experimentType$$</paramValue>
+        <paramValue name="profileSetName">$$experimentDatasetName$$ - peaks</paramValue>
+        <depends name="makeResultDir"/>
+    </step>
+
+    <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+        <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+        <paramValue name="ngsSamplesNextflowConfigFile">$$ngsSamplesNextflowConfigFile$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="isProteomeAnalysis">false</paramValue>
+        <paramValue name="datasetSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue> <!--NOTE: the version will be looked up by the step which gets from cache -->
+        <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
+        <paramValue name="nextflowWorkflow">VEuPathDB/bowtie-mapping--nextflow</paramValue>
+        <paramValue name="entry"></paramValue>
+        <depends name="nextflowConfig"/>
+        <depends name="ngsSamplesNextflowConfig"/>
+        <depends name="symLinkGenome"/>
+        <depends name="symLinkFinal"/>
     </subgraph>
 
-    <subgraph name="analyzeChipSeqSamples" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/$$experimentName$$/chipSeqSamples.xml">
-      <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="experimentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="outputDir">$$samplesOutputDir$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="indexDir">$$parentDataDir$$/../bowtieIndices/</paramValue>
-      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
-      <paramValue name="experimentDatasetVersion">$$experimentDatasetVersion$$</paramValue>
-      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
-      <paramValue name="extraBowtieParams">$$extraBowtieParams$$</paramValue>
-      <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
-      <paramValue name="experimentType">$$experimentType$$</paramValue>
-    </subgraph>
-
-    <step name="copyChipSeqBedGraphToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyChipSeqBedGraphToWebServiceDir">
-      <paramValue name="copyFromDir">$$dataDir$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-      <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
-      <paramValue name="experimentType">$$experimentType$$</paramValue>
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="analyzeChipSeqSamples"/>
-    </step>
-
-    <step name="makeChipSeqPeakCalls" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeChipSeqPeakCalls" includeIf="'$$experimentType$$'=='histonemod'">
-      <paramValue name="experimentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="experimentType">$$experimentType$$</paramValue>
-      <paramValue name="experimentName">$$experimentName$$ - peaks</paramValue>
-      <depends name="analyzeChipSeqSamples"/>
+    <step name="copyBigWigFilesToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDnaseqBigwig">
+        <paramValue name="copyFromDir">$$resultsDirectory$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+        <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
+        <paramValue name="experimentType">chipSeq</paramValue>
+        <paramValue name="fileType">bigwig</paramValue>
+        <depends name="runNextflowOnCluster"/>
     </step>
 
     <step name="loadPeaksFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin" includeIf="'$$experimentType$$'=='histonemod'">
-      <paramValue name="configFile">$$dataDir$$/peaks/peaksConfig.txt</paramValue>
-      <paramValue name="inputDir">$$dataDir$$/peaks/</paramValue>
+      <paramValue name="configFile">$$resultsDirectory$$/insert_study_results</paramValue>
+      <paramValue name="inputDir">$$resultsDirectory$$</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue> 
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="makeChipSeqPeakCalls"/>
+      <depends name="runNextflowOnCluster"/>
       <!--<dependsGlobal name="oboOntologies"/>-->
     </step>
 
-<!--
-So far coverage plots have only been assessed for histonemod (HOMER software) single-end data and mnase (DANPOS2) paired-end data. Peak calls are made for histonemod only with HOMER, but have only been assessed for single-end data. If the data are not of the types assessed so far, the next step will fail. Data loaders should inspect all results: coverage plots and peak calls (these will only be generated for histonemod) before the list of conditions under which the following step fails is reduced (in the step code).
--->
+   <step name="copyChipSeqPeaksGffToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyIndexedFileToWebServiceDir" includeIf="'$$experimentType$$'=='histonemod'">
+     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+     <paramValue name="copyFromFile">$$resultsDirectory$$/chipSeq_peaks.gff.gz</paramValue>
+     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+     <paramValue name="indexSuffix">tbi</paramValue>
+     <paramValue name="fileType">gff</paramValue>
+     <paramValue name="dataType">chipSeq</paramValue>
+     <paramValue name="extDBName">$$experimentDatasetName$$</paramValue>
+     <depends name="runNextflowOnCluster"/>
+   </step>
 
-    <step name="forceToAssessCvgAndPeaks" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ForceToAssessCvgAndPeaks">
-      <paramValue name="hasPairedEnds">$$hasPairedEnds$$</paramValue>
-      <paramValue name="experimentType">$$experimentType$$</paramValue>
-      <depends name="analyzeChipSeqSamples"/>
-    </step>
 
 </workflowGraph>

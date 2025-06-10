@@ -4,14 +4,14 @@
     <param name="parentDataDir"/>
     <param name="organismDatasetLoaderXmlFile"/>
     <param name="relativeWebServicesDir"/>
-    <param name="chromSizesFile"/>
     <param name="gusConfigFile"/>
+    <param name="genomeExtDbRlsSpec"/>
 
-  <constant name="dataDir">$$parentDataDir$$/chipSeq</constant>
+    <constant name="dataDir">$$parentDataDir$$/chipSeq</constant>
 
-  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$</paramValue>
-  </step>
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
 
     <datasetTemplate class="chipSeqExperiment">
         <prop name="projectName"/>
@@ -20,22 +20,33 @@
         <prop name="version"/>
         <prop name="hasPairedEnds"/>
         <prop name="extraBowtieParams"/>
-	<prop name="experimentType"/>
+        <prop name="experimentType"/>
+        <prop name="fromSRA"/>
+
+        <subgraph name="${name}_chipSeq_loadDataset" xmlFile="loadDataset.xml">
+            <paramValue name="datasetName">${organismAbbrev}_${name}_chipSeq_RSRC</paramValue>
+            <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+            <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+            <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+            <depends name="makeDataDir"/>
+        </subgraph>
+
 
         <subgraph name="${organismAbbrev}_chipSeqExperiment_${name}_RSRC" xmlFile="processChipSeqExperiment.xml">
             <paramValue name="projectName">$$projectName$$</paramValue>
             <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
             <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-            <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
             <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
             <paramValue name="experimentName">${name}</paramValue>
             <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
             <paramValue name="extraBowtieParams">${extraBowtieParams}</paramValue>
-	        <paramValue name="experimentType">${experimentType}</paramValue>
+            <paramValue name="experimentType">${experimentType}</paramValue>
             <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_chipSeq_RSRC</paramValue>
             <paramValue name="experimentDatasetVersion">${version}</paramValue>
-            <paramValue name="seqSizeFile">$$chromSizesFile$$</paramValue>
             <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+            <paramValue name="fromSRA">${fromSRA}</paramValue>
+            <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+            <depends name="${name}_chipSeq_loadDataset"/>
         </subgraph>
     </datasetTemplate>
 </workflowGraph>
