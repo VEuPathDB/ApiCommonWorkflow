@@ -9,11 +9,10 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $inputFileType = "fastq";
   my $datasetType = "chipSeq";
   my $removePCRDuplicates = "false";
 
-
+  my $inputFileType = $self->getParamValue("readsFileType");
   my $experimentType = $self->getParamValue("experimentType");
   my $profileSetName = $self->getParamValue("profileSetName");
 
