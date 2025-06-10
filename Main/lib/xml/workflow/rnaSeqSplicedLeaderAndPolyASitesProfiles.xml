@@ -10,64 +10,66 @@
     <param name="type"/>
     <param name="genomeExtDbRlsSpec"/>
 
-    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
-    <constant name="samplesOutputDir">$$dataDir$$/samplesOutput</constant>
-    <constant name="experimentDatasetDir">$$parentDataDir$$/$$experimentName$$/$$experimentDatasetName$$/final</constant>
+    <constant name="dataDir">$$parentDataDir$$/processSplicedLeaderAndPolyASitesExperiment</constant>
+    <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
+    <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
 
+    <constant name="finalDir">$$parentDataDir$$/final</constant>
+    <constant name="studyAssayResultsDir">$$dataDir$$/studyAssayResultsDir</constant>
 
     <!-- This step makes 2 config files for the loader steps below -->
     <step name="doStudyAssayResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoStudyAssayResults">
-      <paramValue name="analysisConfigFile">$$experimentDatasetDir$$/analysisConfig.xml</paramValue>
-      <paramValue name="inputDir">$$samplesOutputDir$$</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/doStudyAssayResults</paramValue>
+      <paramValue name="analysisConfigFile">$$finalDir$$/analysisConfig.xml</paramValue>
+      <paramValue name="inputDir">$$resultsDirectory$$</paramValue>
+      <paramValue name="outputDir">$$studyAssayResultsDir$$</paramValue>
       <!-- The ancillary file will mostly be unused;  Only here so we can fiddle with the profiles (like scaliing)   -->
       <paramValue name="geneProbeMappingTabFile"></paramValue>
       <paramValue name="geneProbeMappingVendorFile"></paramValue>
-      <paramValue name="platformDirectory">$$experimentDatasetDir$$</paramValue>
+      <paramValue name="platformDirectory">$$finalDir$$</paramValue>
       <paramValue name="expectCdfFile">false</paramValue>
       <paramValue name="expectNdfFile">false</paramValue>
       <paramValue name="passPlatformMappingFile">false</paramValue>
       <paramValue name="technologyType">SpliceSites</paramValue>
     </step>
 
-
     <step name="loadSplicedLeaderFeaturesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$dataDir$$/doStudyAssayResults/insert_study_results_config.txt</paramValue>
-      <paramValue name="inputDir">$$dataDir$$/doStudyAssayResults</paramValue>
+      <paramValue name="configFile">$$studyAssayResultsDir$$/insert_study_results_config.txt</paramValue>
+      <paramValue name="inputDir">$$studyAssayResultsDir$$</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="doStudyAssayResults"/>
-      <!--<dependsGlobal name="oboOntologies"/>-->
     </step>
-
-
 
     <step name="insertSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSplicedLeaderAndPolyASitesGenes">
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="loadSplicedLeaderFeaturesFromConfig"/> 
     </step>
 
 
      <step name="extractSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSplicedLeaderAndPolyASitesGenes">
-      <paramValue name="analysisConfigFile">$$experimentDatasetDir$$/analysisConfig.xml</paramValue>
-      <paramValue name="workingDir">$$dataDir$$/doStudyAssayResults</paramValue>
+      <paramValue name="analysisConfigFile">$$finalDir$$/analysisConfig.xml</paramValue>
+      <paramValue name="workingDir">$$studyAssayResultsDir$$</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="pctTies">min</paramValue>
       <paramValue name="type">$$type$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="insertSplicedLeaderAndPolyASitesGenes"/>
     </step>
 
     <step name="loadSplicedLeaderQuantsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$dataDir$$/doStudyAssayResults/insert_study_results_ss_config.txt</paramValue>
-      <paramValue name="inputDir">$$dataDir$$/doStudyAssayResults</paramValue>
+      <paramValue name="configFile">$$studyAssayResultsDir$$/insert_study_results_ss_config.txt</paramValue>
+      <paramValue name="inputDir">$$studyAssayResultsDir$$</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="extractSplicedLeaderAndPolyASitesGenes"/>
-      <!--<dependsGlobal name="oboOntologies"/>-->
     </step>
+
+
+<!-- TODO:  Dump GFF -->
 
 
 
