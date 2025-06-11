@@ -51,7 +51,7 @@ sub run {
       my $configString = <<NEXTFLOW;
 params {
     input                      = "$digestedInputDirPath"
-    outputdir                  = "$digestedOutputDir"
+    outputDir                  = "$digestedOutputDir"
     genome                     = "$digestedGenomeFilePath"
     samplesheetFileName        = "$sampleSheet"
     datasetType                = "$datasetType"
