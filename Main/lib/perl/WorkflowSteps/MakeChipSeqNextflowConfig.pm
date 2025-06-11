@@ -24,7 +24,6 @@ sub run {
   my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
 
   my $hasPairedEnds = $self->getBooleanParamValue("hasPairedEnds") ? "true" : "false";
-  my $removePCRDuplicates = "false";
   my $extraBowtieParams = $self->getParamValue("extraBowtieParams");
 
   my $organismAbbrev = $self->getParamValue("organismAbbrev");
@@ -62,7 +61,7 @@ params {
     saveCoverage               = true
     inputFileType              = "$inputFileType"
     experimentType             = "$experimentType"
-    profileSetName             = "$profileSeqName"
+    profileSetName             = "$profileSetName"
     gffFileName                = "chipSeq_peaks.gff"
 }
 
