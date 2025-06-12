@@ -12,7 +12,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
   
-    my $args = " --groupBlastValuesFile=$workflowDataDir/$groupBlastValuesFile --gusConfigFile $gusConfigFile";
+    my $args = " --groupBlastValuesFile=$workflowDataDir/$groupBlastValuesFile --outputBlastValuesDatFile $workflowDataDir/$groupBlastValuesFile/../temp.dat --gusConfigFile $gusConfigFile";
 
     if($undo) {
         $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertOrthoGroupBlastValues", $args);
