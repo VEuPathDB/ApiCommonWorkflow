@@ -15,6 +15,15 @@ sub run {
 
   my $resultsDirectory = $self->getParamValue("resultsDirectory");
 
+  my $platformType = $self->getParamValue("platformType");
+  my $projectName = $self->getParamValue("projectName");
+
+  #my $wantSplicedAlignments = lc $self->getParamValue("wantSplicedAlignments");
+  my $wantSplicedAlignments = "true";
+  if($platformType ne 'expression' || $projectName eq 'TriTrypDB') {
+    $wantSplicedAlignments = false;
+  }
+
   my $gtfFile = $self->getParamValue("gtfFile");
   my $genomeFile = $self->getParamValue("genomeFile");
   my $finalDirectory = $self->getParamValue("finalDirectory");
@@ -24,7 +33,7 @@ sub run {
   my $outputFileName = $self->getParamValue("outputFileName");
   my $inputProbesFastaName = $self->getParamValue("inputProbesFastaName");
 
-  my $wantSplicedAlignments = lc $self->getParamValue("wantSplicedAlignments");
+
   my $makeCdfFile = lc $self->getParamValue("makeCdfFile");
   my $makeNdfFile = lc $self->getParamValue("makeNdfFile");
   my $geneProbeMappingFileName = $self->getParamValue("geneProbeMappingFileName");
@@ -77,6 +86,7 @@ params {
   outputFileName = "$outputFileName"
   probesFastaFile = "$digestedFinalDir/$inputProbesFastaName"
   wantSplicedAlignments = $wantSplicedAlignments
+  platformType = "$platformType"
   gtfFile = "$digestedGtfFilePath"
   makeCdfFile = $makeCdfFile
   makeNdfFile = $makeNdfFile
