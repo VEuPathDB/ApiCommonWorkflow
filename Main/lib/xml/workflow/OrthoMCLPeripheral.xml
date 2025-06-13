@@ -131,22 +131,6 @@
     <depends name="createTable_ProteinDomainAssignment"/>
   </step>
 
-  <step name="createTable_GroupPhylogeneticProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
-    <paramValue name="tableName">GroupPhylogeneticProfile</paramValue>
-    <paramValue name="psqlDirName">comparative</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="createTable_PhyleticPattern"/>
-  </step>
-
-  <step name="createTable_OrthologousTranscripts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
-    <paramValue name="tableName">OrthologousTranscripts</paramValue>
-    <paramValue name="psqlDirName">comparative</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="createTable_GroupPhylogeneticProfile"/>
-  </step>
-
   <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
 
   <step name="insertDomainKeywords" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
@@ -172,6 +156,22 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="insertGroupTaxonMatrix"/>
+  </step>
+
+  <step name="createTable_GroupPhylogeneticProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">GroupPhylogeneticProfile</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_PhyleticPattern"/>
+  </step>
+
+  <step name="createTable_OrthologousTranscripts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">OrthologousTranscripts</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_GroupPhylogeneticProfile"/>
   </step>
 
   <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
