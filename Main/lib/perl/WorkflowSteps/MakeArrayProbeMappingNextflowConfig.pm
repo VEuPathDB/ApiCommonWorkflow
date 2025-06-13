@@ -20,7 +20,7 @@ sub run {
 
   #my $wantSplicedAlignments = lc $self->getParamValue("wantSplicedAlignments");
   my $wantSplicedAlignments = "true";
-  if($platformType ne 'expression' || $projectName eq 'TriTrypDB') {
+  if($platformType ne 'expression' || $projectName eq 'TriTrypDB' || $projectName eq 'HostDB') {
     $wantSplicedAlignments = false;
   }
 
