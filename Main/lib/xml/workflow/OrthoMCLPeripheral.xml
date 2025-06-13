@@ -131,14 +131,6 @@
     <depends name="createTable_ProteinDomainAssignment"/>
   </step>
 
-  <step name="createTable_PhyleticPattern" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
-    <paramValue name="tableName">PhyleticPattern</paramValue>
-    <paramValue name="psqlDirName">comparative</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="createTable_GroupDomainDescription"/>
-  </step>
-
   <step name="createTable_GroupPhylogeneticProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
     <paramValue name="tableName">GroupPhylogeneticProfile</paramValue>
     <paramValue name="psqlDirName">comparative</paramValue>
@@ -172,6 +164,14 @@
   <step name="insertGroupTaxonMatrix" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="insertProteinKeywords"/>
+  </step>
+
+  <step name="createTable_PhyleticPattern" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">PhyleticPattern</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="insertGroupTaxonMatrix"/>
   </step>
 
   <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
