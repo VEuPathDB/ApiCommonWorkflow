@@ -36,7 +36,8 @@ sub run {
   my $peaksProfileSetName = "NA";
   my $peakFinderArgs = "NA";
 
-  if($loadPeakCalls) {
+  # always call peaks even if we don't load them
+  if($assayType eq 'chipChip') {
       $peaksProfileSetName = "${datasetName} [ChIP-chip peaks]";
       $peakFinderArgs = $self->getParamValue("peakFinderArgs");
   }
