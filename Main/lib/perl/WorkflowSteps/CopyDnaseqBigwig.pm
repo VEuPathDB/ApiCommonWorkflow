@@ -42,8 +42,8 @@ sub run {
     $self->runCmd(0, "rm -f $copyToDir/metadata*") if($fileType eq 'bigwig');
   } else{
     $self->runCmd($test, "mkdir -p $copyToDir");
-    $self->runCmd($test, "cp $workflowDataDir/${copyFromDirName}/*${fileSuffix} $copyToDir");
-    $self->runCmd($test, "cp $workflowDataDir/${copyFromDirName}/metadata* $copyToDir") if($fileType eq 'bigwig');;
+    $self->runCmd($test, "cp $workflowDataDir/${copyFromDir}/*${fileSuffix} $copyToDir");
+    $self->runCmd($test, "cp $workflowDataDir/${copyFromDir}/metadata* $copyToDir") if($fileType eq 'bigwig');;
   }
 
 }
