@@ -22,11 +22,11 @@
   </step>
   <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
 
-  <subgraph name="OrthoMCLDerivedEC" xmlFile="orthoMCLDerivedEC.xml">
-    <paramValue name="ecFile">$$dataDir$$/ec.txt</paramValue>
-    <paramValue name="completedFile">$$dataDir$$/completed</paramValue>
-    <paramValue name="waitSeconds">60</paramValue>
+  <step name="insertOrthoMCLDerivedECAssociations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedECGenomic" stepLoadTypes="plugin">
+    <paramValue name="inputFile">$$dataDir$$/ec.txt</paramValue>
+    <paramValue name="evidenceCode">OrthoMCLDerived</paramValue>
+    <paramValue name="idSql">select taf.aa_sequence_id from dots.Transcript t, dots.TranslatedAAFeature taf, dots.GeneFeature gf where gf.source_id = ? and gf.na_feature_id = t.parent_id and t.na_featu\re_id = taf.na_feature_id</paramValue>
     <depends name="predictEcNumbers"/>
-  </subgraph>
+  </step>
 
 </workflowGraph>
