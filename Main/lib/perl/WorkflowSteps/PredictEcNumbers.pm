@@ -11,11 +11,13 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $organismDir = $workflowDataDir."/".$self->getParamValue('organismDir');
   my $outputDir  = $self->getParamValue('outputDir');
+  my $outputFile  = $self->getParamValue('outputFile');
 
   if ($undo) {
-    next;
+    my $cmd = "rm $outputFile";
+    $self->runCmd($test, $cmd);
   } else {
-    my $cmd = "orthomclEcPrediction $outputDir $organismDir";
+    my $cmd = "orthomclEcPrediction $outputDir $organismDir $outputFile";
     $self->runCmd($test, $cmd);
   }
 }
