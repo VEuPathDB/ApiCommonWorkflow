@@ -12,7 +12,7 @@ sub run {
   my $organismDir = $workflowDataDir."/".$self->getParamValue('organismDir');
   my $outputDir  = $self->getParamValue('outputDir');
   my $outputFile  = $workflowDataDir."/".$self->getParamValue('outputFile');
-  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
 
   if ($undo) {
     my $cmd = "rm $outputFile";
