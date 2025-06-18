@@ -9,10 +9,11 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $inputFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue('inputFile');
+  my $gusConfigFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue('gusConfigFile');
   my $evidenceCode = $self->getParamValue('evidenceCode');
   my $idSql = $self->getParamValue('idSql');
 
-  my $args = "--ECMappingFile $inputFile --evidenceCode '$evidenceCode' --aaSeqLocusTagMappingSql '$idSql'";
+  my $args = "--gusConfigFile $gusConfigFile --ECMappingFile $inputFile --evidenceCode '$evidenceCode' --aaSeqLocusTagMappingSql '$idSql'";
 
   $self->testInputFile('inputFile', "$inputFile") unless $undo;
 
