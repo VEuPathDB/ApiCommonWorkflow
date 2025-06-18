@@ -11,7 +11,7 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $organismDir = $workflowDataDir."/".$self->getParamValue('organismDir');
   my $outputDir  = $self->getParamValue('outputDir');
-  my $outputFile  = $self->getParamValue('outputFile');
+  my $outputFile  = $workflowDataDir."/".$self->getParamValue('outputFile');
 
   if ($undo) {
     my $cmd = "rm $outputFile";
