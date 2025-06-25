@@ -10,9 +10,8 @@ sub run {
 
     my $groupBlastValuesFile = $self->getParamValue('groupBlastValuesFile');
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
-  
-    my $args = " --groupBlastValuesFile $workflowDataDir/$groupBlastValuesFile --outputBlastValuesDatFile $workflowDataDir/OrthoMCL/peripheral/analysisDir/temp.dat --gusConfigFile $gusConfigFile";
+
+    my $args = " --groupBlastValuesFile $workflowDataDir/$groupBlastValuesFile --outputBlastValuesDatFile $workflowDataDir/OrthoMCL/peripheral/analysisDir/temp.dat";
 
     if($undo) {
         $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertOrthoGroupBlastValues", $args);

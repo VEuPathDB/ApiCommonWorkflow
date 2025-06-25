@@ -9,11 +9,10 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
     my $groupsFile = $self->getParamValue('groupsFile');
     my $orthoFileFullPath = "$workflowDataDir/$groupsFile";
 
-    my $args = " --groupsFile $orthoFileFullPath --gusConfigFile $gusConfigFile";
+    my $args = " --groupsFile $orthoFileFullPath";
 
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertPhylogeneticProfile", $args);
 
