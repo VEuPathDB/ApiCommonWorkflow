@@ -99,7 +99,7 @@ EOF
 
   my $sql = <<EOF;
 SELECT t.protein_source_id || ' | transcript=' || t.source_id || ' | gene=' || t.gene_source_id || ' | organism=' || replace(t.organism, ' ', '_') || 
-  ' | gene_product=' || substr(gene_product, 1, 1000) || ' | transcript_product=' || substr(transcript_product, 1, 1000)
+  ' | gene_product=' || substr(old_gene_product, 1, 1000) || ' | transcript_product=' || substr(transcript_product, 1, 1000)
   || ' | location=' || sequence_id || ':' || coding_start || '-' || coding_end
   || '(' || CASE WHEN is_reversed = 1 THEN '-' ELSE '+' END || ')'
   || ' | protein_length=' || t.protein_length 

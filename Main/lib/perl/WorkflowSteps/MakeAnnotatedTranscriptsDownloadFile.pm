@@ -104,7 +104,7 @@ EOF
 
   my $sql = <<EOF;
 SELECT t.source_id || ' | gene=' || gene_source_id || CASE WHEN is_deprecated = 1 THEN ' | deprecated=true' ELSE '' END
-  || ' | organism=' || replace(organism, ' ', '_') || ' | gene_product=' || gene_product || ' | transcript_product=' || transcript_product
+  || ' | organism=' || replace(organism, ' ', '_') || ' | gene_product=' || old_gene_product || ' | transcript_product=' || transcript_product
   || ' | location=' || sequence_id || ':' || t.start_min || '-' || t.end_max
   || '(' || CASE WHEN is_reversed = 1 THEN '-' ELSE '+' END  || ')'
   || ' | length=' || t.length 
