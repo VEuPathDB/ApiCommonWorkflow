@@ -9,6 +9,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
 
+  my $gusConfigFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue('gusConfigFile');
   my $analysisConfigFile = $self->getParamValue('analysisConfigFile');
   my $workingDir = $self->getParamValue('workingDir');
   my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
@@ -17,7 +18,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "extractSpliceSiteAndPolyAGenes.pl --analysisConfigFile $workflowDataDir/$analysisConfigFile --workingDir $workflowDataDir/$workingDir --type '$type' --extDbRlsSpec '$extDbRlsSpec' --ties $ties";
+  my $cmd = "extractSpliceSiteAndPolyAGenes.pl --gusConfigFile $gusConfigFile --analysisConfigFile $workflowDataDir/$analysisConfigFile --workingDir $workflowDataDir/$workingDir --type '$type' --extDbRlsSpec '$extDbRlsSpec' --ties $ties";
 
     if ($undo) {
       # undo here doesn't need to do anything

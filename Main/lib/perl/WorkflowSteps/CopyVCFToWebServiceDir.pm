@@ -37,8 +37,8 @@ sub run {
     $self->testInputFile('vcfFile', "$workflowDataDir/$vcfFile");
     $self->runCmd($test, $cmd_mkdir);
     $self->runCmd($test, $cmd_copy);
-    $self->runCmd($test, "process_folder.pl --folder $copyToDir");
-  }
+    $self->runCmd($test, "cp $workflowDataDir/$vcfFile.tbi $copyToDir");  
+}
 
 }
 

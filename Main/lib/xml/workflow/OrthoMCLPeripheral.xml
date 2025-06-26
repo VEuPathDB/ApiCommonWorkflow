@@ -55,7 +55,6 @@
 <!-- for this step, two lines in the script change abbrev 'rirr' to 'rhiz' for abbrev on orthomcl, remove when undo 'rhiz' -->
 
   <step name="updateSpeciesResourcesEc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateSpeciesResourcesEc">
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="dataDir">$$dataDir$$/OrganismNameResources</paramValue>
     <depends name="getDataFromVeupathAndUniprot"/>
   </step>
@@ -82,44 +81,93 @@
     <depends name="updateEcNumbers"/>
   </step>
 
-<!--
-  <step name="makeGalaxyFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGalaxyFiles">
-    <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
-    <paramValue name="galaxyDir">galaxyFiles</paramValue>
-    <paramValue name="coreGroupsFile">peripheral/analysisDir/results/GroupsFile.txt</paramValue>
-    <paramValue name="residualGroupsFile">peripheral/analysisDir/results/reformattedGroups.txt</paramValue>
-    <paramValue name="coreSequencesFile">peripheral/analysisDir/results/bestReps.fasta</paramValue>
-    <paramValue name="residualSequencesFiles">peripheral/analysisDir/results/bestReps.fasta</paramValue>
-    <depends name="makeGenomicSitesFiles"/>
+  <step name="createTable_GeneOrthologGroup" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateDenormalizedTable">
+    <paramValue name="tableName">GeneOrthologGroup</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="mode">standard</paramValue>
+    <paramValue name="schema">webready</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev"></paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="updateEcNumbers"/>
   </step>
--->
 
-<!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
-<!-- Will need to do this in the future. I am changing output dir until testing is complete. -->
-<!-- <step name="predictEcNumbers" stepClass="OrthoMCLWorkflow::Main::WorkflowSteps::PredictEcNumbers"> -->
-<!--      <paramValue name="outputDir">OrthoMCLDerived_ECAssociations/Current_Version/final</paramValue> -->
-<!--      <paramValue name="organismDir">OrganismNameResources</paramValue> -->
-<!--      <depends name="updateEcNumbers"/> -->
-<!--  </step> -->
+  <step name="createTable_TranscriptOrthologGroup" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateDenormalizedTable">
+    <paramValue name="tableName">TranscriptOrthologGroup</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="mode">standard</paramValue>
+    <paramValue name="schema">webready</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev"></paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_GeneOrthologGroup"/>
+  </step>
+
+  <step name="createTable_ProteinSequenceGroup" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">ProteinSequenceGroup</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_TranscriptOrthologGroup"/>
+  </step>
+
+  <step name="createTable_ProteinDomainAssignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">ProteinDomainAssignment</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_ProteinSequenceGroup"/>
+  </step>
+
+  <step name="createTable_GroupDomainDescription" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateDenormalizedTable">
+    <paramValue name="tableName">GroupDomainDescriptions</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="mode">standard</paramValue>
+    <paramValue name="schema">webready</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev"></paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_ProteinDomainAssignment"/>
+  </step>
 
   <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
 
-
   <step name="insertDomainKeywords" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="groupTypesCPR">PR</paramValue>
     <depends name="makeGenomicSitesFiles"/>
   </step>
 
   <step name="insertProteinKeywords" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertProteinKeywords">
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="groupTypesCPR">PR</paramValue>
     <depends name="insertDomainKeywords"/>
   </step>
 	
   <step name="insertGroupTaxonMatrix" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="insertProteinKeywords"/>
+  </step>
+
+  <step name="createTable_PhyleticPattern" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">PhyleticPattern</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="insertGroupTaxonMatrix"/>
+  </step>
+
+  <step name="createTable_GroupPhylogeneticProfile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">GroupPhylogeneticProfile</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_PhyleticPattern"/>
+  </step>
+
+  <step name="createTable_OrthologousTranscripts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">OrthologousTranscripts</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_GroupPhylogeneticProfile"/>
   </step>
 
   <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
