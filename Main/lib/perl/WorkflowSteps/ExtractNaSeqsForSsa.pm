@@ -26,9 +26,10 @@ sub run {
 
   if ($useTopLevel) {
     $sql = "select sa.source_id||':1-'||ns.length||'_strand=+', ns.sequence
-            from ApidbTuning.${tuningTablePrefix}GenomicSeqAttributes sa, dots.nasequence ns
+            from webready.GenomicSeqAttributes sa, dots.nasequence ns
             where sa.is_top_level = 1
             and sa.na_sequence_id = ns.na_sequence_id
+            and sa.org_abbrev = '$organismAbbrev'
             and sa.NCBI_TAX_ID = $ncbiTaxonId";
   }
 

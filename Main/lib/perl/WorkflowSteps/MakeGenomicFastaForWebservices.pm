@@ -37,11 +37,12 @@ sub run {
                as defline,
                ns.sequence
            FROM dots.nasequence ns, sres.ontologyTerm so,
-                ApidbTuning.${tuningTablePrefix}GenomicSeqAttributes sa
+                webready.GenomicSeqAttributes sa
           WHERE ns.na_sequence_id = sa.na_sequence_id
             AND sa.ncbi_tax_id = $ncbiTaxonId
             AND sa.is_top_level = 1
             AND so.source_id = sa.so_id
+            AND sa.org_abbrev = '$organismAbbrev'
           ORDER BY sa.chromosome_order_num, sa.source_id
 EOF
 

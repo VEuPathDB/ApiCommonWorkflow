@@ -504,6 +504,28 @@
       <depends name="${organismAbbrev}_LateVirtualLocations"/>
       <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
     </step>
+
+    <subgraph name="${organismAbbrev}_MakeChildWebTables" xmlFile="orgSpecificWebreadyTables.xml" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="mode">child</paramValue>
+      <depends name="${organismAbbrev}_PostLoadGenome"/>
+      <depends name="${organismAbbrev}_LoadAliases"/>
+      <depends name="${organismAbbrev}_specific"/>
+      <depends name="${organismAbbrev}_specific_noAlias"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
+      <depends name="${organismAbbrev}_LateVirtualLocations"/>
+      <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
+      <depends name="${organismAbbrev}_microarray"/>
+      <depends name="${organismAbbrev}_dnaseq"/>
+      <depends name="${organismAbbrev}_rnaseq"/>
+      <depends name="${organismAbbrev}_bowtieMapping"/>
+      <depends name="${organismAbbrev}_PARJunctions"/>
+      <depends name="${organismAbbrev}_blatMapping"/>
+      <dependsGlobal name="MakeParentWebTables"/>
+    </subgraph>
+
     <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
@@ -523,8 +545,8 @@
       <depends name="${organismAbbrev}_LateVirtualLocations"/>
       <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
       <depends name="${organismAbbrev}_PARFeatures"/>
+      <depends name="${organismAbbrev}_MakeChildWebTables"/>
     </subgraph>
-
 
   </datasetTemplate>
 <!--

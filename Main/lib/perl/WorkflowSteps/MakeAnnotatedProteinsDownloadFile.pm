@@ -99,17 +99,18 @@ EOF
 
   my $sql = <<EOF;
 SELECT t.protein_source_id || ' | transcript=' || t.source_id || ' | gene=' || t.gene_source_id || ' | organism=' || replace(t.organism, ' ', '_') || 
-  ' | gene_product=' || substr(gene_product, 1, 1000) || ' | transcript_product=' || substr(transcript_product, 1, 1000)
+  ' | gene_product=' || substr(old_gene_product, 1, 1000) || ' | transcript_product=' || substr(transcript_product, 1, 1000)
   || ' | location=' || sequence_id || ':' || coding_start || '-' || coding_end
   || '(' || CASE WHEN is_reversed = 1 THEN '-' ELSE '+' END || ')'
   || ' | protein_length=' || t.protein_length 
   || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || CASE WHEN is_deprecated = 1 THEN ' | deprecated=true' ELSE '' END  || ' | is_pseudo=' || CASE WHEN t.is_pseudo = 1 THEN 'true' ELSE 'false' END
   as defline, taas.sequence
-FROM ApidbTuning.${tuningTablePrefix}TranscriptAttributes t, DOTS.NASEQUENCE ns, sres.ontologyTerm soseq,
+FROM webready.TranscriptAttributes t, DOTS.NASEQUENCE ns, sres.ontologyTerm soseq,
      dots.translatedaasequence taas
 WHERE ns.SOURCE_ID = t.SEQUENCE_ID
   AND ns.sequence_ontology_id = soseq.ontology_term_id
-  AND t.ncbi_tax_id = $ncbiTaxonId 
+  AND t.ncbi_tax_id = $ncbiTaxonId
+  AND t.org_abbrev = '$organismAbbrev'
   AND (t.so_term_name like 'protein_coding%' OR t.so_term_name like 'transposable_element_gene')
   AND t.protein_source_id = taas.source_id
 ORDER BY t.chromosome_order_num, t.SEQUENCE_ID,t.source_id, t.coding_start

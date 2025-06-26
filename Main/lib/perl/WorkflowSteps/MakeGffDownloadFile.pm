@@ -12,9 +12,10 @@ sub getWebsiteFileCmd {
     my $gusConfigFile = $self->getParamValue('gusConfigFile');
     $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
 
-    my $tuningTablePrefix = $self->getTuningTablePrefix($test, $self->getParamValue('organismAbbrev'), $gusConfigFile);
+#    my $tuningTablePrefix = $self->getTuningTablePrefix($test, $self->getParamValue('organismAbbrev'), $gusConfigFile);
+    my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
-    return "makeGff.pl --gusConfigFile $gusConfigFile --extDbRlsId $extDbRlsId --outputFile $downloadFileName --tuningTablePrefix $tuningTablePrefix";
+    return "makeGff.pl --gusConfigFile $gusConfigFile --extDbRlsId $extDbRlsId --outputFile $downloadFileName --organismAbbrev $organismAbbrev";
 }
 
 1;

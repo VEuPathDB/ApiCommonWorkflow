@@ -18,6 +18,6 @@ sub getWebsiteFileCmd {
 
   my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
 
-  my $cmd = "makeNCBILinkoutsFiles_Nucleotide.pl -gusConfigFile $gusConfigFile -output $downloadFileName -tuningTablePrefix $tuningTablePrefix -downloadsite $downloadsite";
+  my $cmd = "makeNCBILinkoutsFiles_Nucleotide.pl -gusConfigFile $gusConfigFile -output $downloadFileName -tuningTablePrefix $tuningTablePrefix -downloadsite $downloadsite -organismAbbrev $organismAbbrev";
   return $cmd;
 }
