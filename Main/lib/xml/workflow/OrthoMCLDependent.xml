@@ -1,0 +1,34 @@
+<workflowGraph name="">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="orthomclPeripheralResultsDir"/>
+
+  <constant name="dataDir">$$parentDataDir$$/OrthomclDependent</constant>
+
+  <step name="insertOrthomclPhyletic" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthomclPhyletic">
+    <paramValue name="groupsFile">$$orthomclPeripheralResultsDir$$/fullGroupFile.txt</paramValue>
+  </step>
+
+  <step name="makeOrthomclDependentDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
+  <step name="predictEcNumbers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PredictEcNumbers">
+    <paramValue name="outputDir">$$dataDir$$</paramValue>
+    <paramValue name="organismDir">OrganismNameResources</paramValue>
+    <paramValue name="outputFile">$$dataDir$$/ec.txt</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="makeOrthomclDependentDir"/>
+  </step>
+  <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
+
+  <step name="insertOrthoMCLDerivedECAssociations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedECGenomic" stepLoadTypes="plugin">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="inputFile">$$dataDir$$/ec.txt</paramValue>
+    <paramValue name="evidenceCode">OrthoMCLDerived</paramValue>
+    <paramValue name="idSql">select taf.aa_sequence_id from dots.Transcript t, dots.TranslatedAAFeature taf, dots.GeneFeature gf where gf.source_id = ? and gf.na_feature_id = t.parent_id and t.na_feature_id = taf.na_feature_id</paramValue>
+    <depends name="predictEcNumbers"/>
+  </step>
+
+</workflowGraph>

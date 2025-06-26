@@ -10,9 +10,8 @@ sub run {
 
   my $groupTypesCPR = $self->getParamValue('groupTypesCPR');
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
 
-  my $args = " --groupTypesCPR $groupTypesCPR --gusConfigFile $gusConfigFile";
+  my $args = " --groupTypesCPR $groupTypesCPR";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertGroupKeywords", $args);
 

@@ -85,6 +85,27 @@
       <dependsExternal name="HostDB_checkOrthoPeripheralProteomeDirs"/>
     </subgraph>
 
+    <subgraph name="OrthoMCLDependent" xmlFile="OrthoMCLDependent.xml">
+      <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+      <paramValue name="parentDataDir">$$multiProjectsDataDir$$</paramValue>
+      <paramValue name="orthomclPeripheralResultsDir">OrthoMCL/peripheral/analysisDir/results/</paramValue>
+      <depends name="PlasmoDB"/>
+      <depends name="ToxoDB"/>
+      <depends name="TriTrypDB"/>
+      <depends name="VectorBase"/>
+      <depends name="AmoebaDB"/>
+      <depends name="CryptoDB"/>
+      <depends name="FungiDB"/>
+      <depends name="PiroplasmaDB"/>
+      <depends name="GiardiaDB"/>
+      <depends name="MicrosporidiaDB"/>
+      <depends name="TrichDB"/>
+      <depends name="HostDB"/>
+      <depends name="OrthoMCLPeripheral"/>
+      <depends name="makeMultiProjectsDataDir"/>
+      <dependsGlobal name="enzymeDB_RSRC"/>
+    </subgraph>
+
     <subgraph name="alphaFold" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">alphaFold_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">GenomicsDB.xml</paramValue>
@@ -125,4 +146,12 @@
      <depends name="HostDB"/>
     </subgraph>
   </datasetTemplate>
+
+  <subgraph name="MakeComparativeWebTables" xmlFile="comparativeWebreadyTables.xml">
+    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="OrthoMCLDependent"/>
+    <depends name="alphaFold"/>
+  </subgraph>
+
 </workflowGraph>
