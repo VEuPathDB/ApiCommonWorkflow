@@ -395,7 +395,7 @@
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
-      <paramValue name="organismDatasetLoaderXmlFile">$$projectName$$/${organismAbbrev}.xml</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
       <paramValue name="genomeFastaFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
@@ -414,7 +414,7 @@
       <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
-      <paramValue name="organismDatasetLoaderXmlFile">$$projectName$$/${organismAbbrev}.xml</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
       <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
       <depends name="${organismAbbrev}_PostLoadGenome"/>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
@@ -557,8 +557,8 @@
   </subgraph>
 -->
   <!-- depends on MaskGenome, MakeCompGenomicsFiles AND VIRTUAL FEATURE LOCATIONS-->
-<!--webdb test
   <step name="runPairwiseMercatorMavid" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunPairwiseMercatorMavid" excludeIf="$$areBigGenomes$$" >
+    <paramValue name="gusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</paramValue>
     <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
     <paramValue name="mercatorOutputsDir">$$dataDir$$/mercatorOutput</paramValue>
     <paramValue name="mercatorCacheDir">$$dataDir$$/mercatorCache</paramValue>
@@ -567,13 +567,16 @@
     <dependsPattern name="*_MakeCompGenomicsFiles"/>
   </step>
 
-  <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="plugin" excludeIf="$$areBigGenomes$$" >
+  <step name="insertPairwiseSyntenyAnchors" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPairwiseSyntenyAnchors" stepLoadTypes="syntenyPlugin" excludeIf="$$areBigGenomes$$" >
+    <paramValue name="gusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</paramValue>
     <paramValue name="mercatorInputsDir">$$comparativeGenomicsInputDir$$</paramValue>
     <paramValue name="mercatorOutputsDir">$$dataDir$$/mercatorOutput</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
     <depends name="runPairwiseMercatorMavid"/>
     <dependsPattern name="*_EarlyVirtualLocations"/>
   </step>
 
+<!--webdb test, need more development
   <subgraph name="OrthoMCLDerivedEC" xmlFile="orthoMCLDerivedEC.xml">
     <paramValue name="ecFile">@@manualDeliveryDir@@/$$projectName$$/common/function/OrthoMCLDerived_ECAssociations/Current_Version/final/ec.txt</paramValue>
     <paramValue name="completedFile">@@manualDeliveryDir@@/$$projectName$$/common/function/OrthoMCLDerived_ECAssociations/Current_Version/final/completed</paramValue>
@@ -708,7 +711,7 @@
   <datasetTemplate class="compoundMassSpec">
     <prop name="experimentName"/>
     <subgraph name="compoundMassSpec_${experimentName}_RSRC" xmlFile="loadDataset.xml">
-
+      <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
       <paramValue name="datasetName">compoundMassSpec_${experimentName}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$/metabolomics</paramValue>

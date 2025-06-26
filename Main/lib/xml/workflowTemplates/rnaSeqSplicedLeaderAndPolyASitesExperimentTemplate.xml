@@ -2,40 +2,66 @@
     <param name="projectName"/>
     <param name="organismAbbrev"/>
     <param name="organismDatasetLoaderXmlFile"/>
-    <param name="dataDir"/>
-    <param name="bowtieDir"/>
+    <param name="parentDataDir"/>
     <param name="relativeDownloadSiteDir"/>
     <param name="genomeExtDbRlsSpec"/>
+    <param name="relativeWebServicesDir"/>
+    <param name="gusConfigFile"/>
+    <param name="genomeFastaFile"/>
 
-     <datasetTemplate class="rnaSeqSplicedLeaderAndPolyASitesExperiment">
-       <prop name="organismAbbrev"/>
-       <prop name="type"/>
-       <prop name="name"/>
-       <prop name="version"/>
+    <constant name="dataDir">$$parentDataDir$$/splicedLeaderAndPolyASites</constant>
 
-       <subgraph name="${name}_rnaSeqSplicedLeaderAndPolyASites_experiment" xmlFile="rnaSeqSplicedLeaderAndPolyASitesExperiment.xml">
-         <paramValue name="projectName">$$projectName$$</paramValue>
-         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-         <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
-         <paramValue name="experimentName">${name}</paramValue>
-         <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-         <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeqSplicedLeaderAndPolyASites_RSRC</paramValue>
-         <paramValue name="experimentDatasetVersion">${version}</paramValue>
-         <paramValue name="bowtieIndicesDir">$$bowtieDir$$</paramValue>
-       </subgraph>
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
 
-       <subgraph name="${name}_rnaSeqSplicedLeaderAndPolyASites_profiles" xmlFile="rnaSeqSplicedLeaderAndPolyASitesProfiles.xml">
-         <paramValue name="projectName">$$projectName$$</paramValue>
-         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-         <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
-         <paramValue name="experimentName">${name}</paramValue>
-         <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-         <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeqSplicedLeaderAndPolyASites_RSRC</paramValue>
-         <paramValue name="experimentDatasetVersion">${version}</paramValue>
-         <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
-         <paramValue name="type">${type}</paramValue>
-         <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-         <depends name="${name}_rnaSeqSplicedLeaderAndPolyASites_experiment"/>
-       </subgraph>
-     </datasetTemplate>
+    <datasetTemplate class="rnaSeqSplicedLeaderAndPolyASitesExperiment">
+      <prop name="organismAbbrev"/>
+      <prop name="type"/>
+      <prop name="name"/>
+      <prop name="version"/>
+      <prop name="fromSRA"/>
+      <prop name="readsFileType"/>
+      <prop name="hasPairedEnds"/>
+
+      <subgraph name="${name}_rnaSeqSplicedLeaderAndPolyASites_loadDataset" xmlFile="loadDataset.xml">
+        <paramValue name="datasetName">${organismAbbrev}_${name}_rnaSeqSplicedLeaderAndPolyASites_RSRC</paramValue>
+        <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+        <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+        <depends name="makeDataDir"/>
+      </subgraph>
+      
+      <subgraph name="${name}_rnaSeqSplicedLeaderAndPolyASites_experiment" xmlFile="rnaSeqSplicedLeaderAndPolyASitesExperiment.xml">
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="experimentName">${name}</paramValue>
+        <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_${name}_rnaSeqSplicedLeaderAndPolyASites_RSRC</paramValue>
+        <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeqSplicedLeaderAndPolyASites_RSRC</paramValue>
+        <paramValue name="experimentDatasetVersion">${version}</paramValue>
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="hasPairedEnds">${hasPairedEnds}</paramValue>
+        <paramValue name="fromSRA">${fromSRA}</paramValue>
+        <paramValue name="readsFileType">${readsFileType}</paramValue>
+        <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
+        <depends name="${name}_rnaSeqSplicedLeaderAndPolyASites_loadDataset"/>
+      </subgraph>
+
+      
+      <subgraph name="${name}_rnaSeqSplicedLeaderAndPolyASites_profiles" xmlFile="rnaSeqSplicedLeaderAndPolyASitesProfiles.xml">
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="experimentName">${name}</paramValue>
+        <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_${name}_rnaSeqSplicedLeaderAndPolyASites_RSRC</paramValue>
+        <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+        <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_rnaSeqSplicedLeaderAndPolyASites_RSRC</paramValue>
+        <paramValue name="experimentDatasetVersion">${version}</paramValue>
+        <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+        <paramValue name="type">${type}</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+        <depends name="${name}_rnaSeqSplicedLeaderAndPolyASites_experiment"/>
+      </subgraph>
+    </datasetTemplate>
 </workflowGraph>

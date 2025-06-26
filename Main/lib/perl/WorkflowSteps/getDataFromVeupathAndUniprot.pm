@@ -16,7 +16,7 @@ sub run {
   my $cmd = "orthoGetDataFromVeupathAndUniprot.pl --dataDir $dataDir";
 
   if ($undo) {
-    $self->runCmd(0, "rm $dataDir/*");
+    $self->runCmd(0, "rm -fr $dataDir/*");
   } else {
     $self->runCmd($test,$cmd);
   }

@@ -14,14 +14,21 @@ sub run {
   $nextflowWorkflow =~ s/\//_/g;
 
   if ($undo) {
-      $self->runCmd(0, "echo 'undo'");
+      $self->runCmd(0, "rm -rf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/groupDiamondResults");
+      $self->runCmd(0, "rm -rf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/Results");
   }
   elsif ($test) {
       $self->runCmd(0, "echo 'test'");
   }
   else {
 
-      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/*  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/buildVersion.txt  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/groupDiamondResults  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/diamondCache  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/reformattedGroups.txt  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/Results  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/diamondCache/SequenceIDs.txt  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/diamondCache/SpeciesIDs.txt  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
 
       $self->runCmd(0, "mv ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/diamondCache  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/coreCacheDir");
 

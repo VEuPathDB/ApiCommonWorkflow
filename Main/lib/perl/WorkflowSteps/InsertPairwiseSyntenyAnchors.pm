@@ -8,13 +8,16 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $maxForks = 6;
+  my $maxForks = 10;
 
 # the directory that has mercator output.  this is our input
   my $mercatorOutputsDir = $self->getParamValue('mercatorOutputsDir');
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
+  my $projectName = $self->getParamValue('projectName');
+  $gusConfigFile = $workflowDataDir . "/" . $gusConfigFile;
   my $mercatorPairsDir = join("/", $workflowDataDir,$mercatorOutputsDir);
-  my $nextflowDataDir = join("/", $workflowDataDir, "insertPairwiseSyntenyAnchors");
+  my $nextflowDataDir = join("/", $workflowDataDir, $projectName, "insertPairwiseSyntenyAnchors");
   my $stepDir = $self->getStepDir();
   mkdir ($nextflowDataDir) unless ( -d $nextflowDataDir );
 
@@ -73,10 +76,11 @@ ERRMSG
     my $nfConfig = <<CONFIG;
 params {
   mercatorPairsDir = "$mercatorPairsDir"
+  gusConfigFile = "$gusConfigFile"
 }
 process {
   executor = 'local'
-  withName: 'processPairs' { maxForks = $maxForks }
+  withName: 'runPlugins' { maxForks = $maxForks }
 }
 CONFIG
     open(FH, ">$nfConfigFile") or die "Cannot write config file $nfConfigFile: $!\n";
@@ -84,10 +88,10 @@ CONFIG
     close(FH);
   }
 
-  my $executable = join("/", $ENV{'GUS_HOME'}, 'bin', 'processSyntenyPairs');
+  my $executable = join("/", $ENV{'GUS_HOME'}, 'bin', 'processSyntenyPairs.nf');
   my $logFile = join("/", $stepDir, "nextflow.log");
 
-  my $cmd = "export NXF_WORK=$nextflowDataDir/work && nextflow -bg -C $nfConfigFile -log $logFile run $executable";
+  my $cmd = "export NXF_WORK=$nextflowDataDir/work && nextflow -C $nfConfigFile -log $logFile run -ansi-log false $executable 1>&2";
 
 ## If you are here to look at an example of nextflow usage:
 # -bg run in background option: nextflow will not run if you run your workflow (rf run real) in a background shell
@@ -104,6 +108,7 @@ CONFIG
 sub scanNextflowLogForFailures {
   my ($self,$logFile) = @_;
   my $info;
+
   open(FH, "<$logFile") or die "Cannot read $logFile:$!\n";
   while(my $line=<FH>){
     if( $line =~ /nextflow\.trace\.WorkflowStatsObserver/ ){
