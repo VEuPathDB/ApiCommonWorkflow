@@ -10,12 +10,11 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $workflowDataDir = $self->getWorkflowDataDir();
-	my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
 
     my $dataDir = $self->getParamValue('dataDir');
     $dataDir = "$workflowDataDir/$dataDir";
 
-    my $args = " --dataDir $dataDir --gusConfigFile $gusConfigFile";
+    my $args = " --dataDir $dataDir";
 
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::UpdateSpeciesResourcesEc", $args);
 

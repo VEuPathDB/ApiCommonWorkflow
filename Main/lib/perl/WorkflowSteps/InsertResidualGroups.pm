@@ -9,7 +9,6 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
 
     my $orthoVersion = $self->getSharedConfig('buildVersion');
 
@@ -17,7 +16,7 @@ sub run {
 
     my $orthoFileFullPath = "$workflowDataDir/$groupsFile";
 
-    my $args = " --orthoFile $orthoFileFullPath --orthoVersion $orthoVersion --extDbName OrthoMCL --extDbVersion dontcare --gusConfigFile $gusConfigFile";
+    my $args = " --orthoFile $orthoFileFullPath --orthoVersion $orthoVersion --extDbName OrthoMCL --extDbVersion dontcare";
 
     $self->testInputFile('inputGroupsDir', "$orthoFileFullPath");
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertResidualOrthoGroups", $args);
