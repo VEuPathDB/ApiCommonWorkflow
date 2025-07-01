@@ -72,7 +72,8 @@ sub run {
 	  $self->runCmd(0,"echo test > $workflowDataDir/$outputDir/insert_study_results_config.txt");
       }
       if(!$test) {
-        $self->makeSymLinks($inputDir, $outputDir);
+        #$self->makeSymLinks($inputDir, $outputDir);
+	($technologyType eq "SpliceSites") ? $self->CopyFilesInsteadOfSymLinks($inputDir, $outputDir) : $self->makeSymLinks($inputDir, $outputDir);
       }
       $self->runCmd($test,$cmd);
   }
@@ -93,4 +94,16 @@ sub makeSymLinks {
     closedir $dh;
 }
 
+sub CopyFilesInsteadOfSymLinks {
+  my ($self, $inputDir, $outputDir) = @_;
+
+  my $workflowDataDir = $self->getWorkflowDataDir();
+
+  opendir(my $dh, "$workflowDataDir/$inputDir") || $self->error("can't opendir $workflowDataDir/$inputDir: $!");
+  while(my $file = readdir($dh)) {
+      next if $file =~ /^\.+/;
+      $self->runCmd(0, "cp $workflowDataDir/$inputDir/$file $workflowDataDir/$outputDir/$file");
+  }
+  closedir $dh;
+}
 1;
