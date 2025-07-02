@@ -4,6 +4,7 @@
   <constant name="globalDatasetLoaderXmlFile">GenomicsGlobal.xml</constant>
   <constant name="multiProjectsDataDir">multiProjects</constant>
 
+
 <!-- call globalGraph (Mustafa's but we added back things like NRDB ...-->
   <globalSubgraph name="global" xmlFile="globalGraph.xml">
     <paramValue name="commonDatasetLoaderXmlFile">$$projectName$$/$$projectName$$Common.xml</paramValue>
@@ -35,55 +36,15 @@
 
   </datasetTemplate>
 
-  <datasetTemplate class="orthomclAndProjectDependent">
-
-    <subgraph name="OrthoCoreProteomeRetrieval" xmlFile="OrthoCoreProteomeRetrieval.xml">
+  <datasetTemplate class="orthomclGenomics">
+    <!-- ATTENTION:  This graph has dependsExternals by PROJECT.  If you add a project above, you must also add it here -->
+    <subgraph name="OrthoMCL" xmlFile="orthomclGenomics.xml">
       <paramValue name="projectName">OrthoMCL</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+      <depends name="initClusterHomeDir"/>
     </subgraph>
-
-    <subgraph name="OrthoMCLCore" xmlFile="OrthoMCLCore.xml">
-      <paramValue name="projectName">OrthoMCL</paramValue>
-      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
-      <depends name="OrthoCoreProteomeRetrieval"/>
-      <dependsExternal name="PlasmoDB_checkOrthoCoreProteomeDirs"/>
-      <dependsExternal name="TriTrypDB_checkOrthoCoreProteomeDirs"/>
-      <dependsExternal name="VectorBase_checkOrthoCoreProteomeDirs"/>
-      <dependsExternal name="ToxoDB_checkOrthoCoreProteomeDirs"/>
-      <dependsExternal name="AmoebaDB_checkOrthoCoreProteomeDirs"/>
-      <dependsExternal name="CryptoDB_checkOrthoCoreProteomeDirs"/>
-      <dependsExternal name="FungiDB_checkOrthoCoreProteomeDirs"/>
-      <dependsExternal name="PiroplasmaDB_checkOrthoCoreProteomeDirs"/>
-      <dependsExternal name="GiardiaDB_checkOrthoCoreProteomeDirs"/>
-      <dependsExternal name="MicrosporidiaDB_checkOrthoCoreProteomeDirs"/>
-      <dependsExternal name="TrichDB_checkOrthoCoreProteomeDirs"/>
-      <dependsExternal name="HostDB_checkOrthoCoreProteomeDirs"/>
-    </subgraph>
-
-    <subgraph name="OrthoPeripheralProteomeRetrieval" xmlFile="OrthoPeripheralProteomeRetrieval.xml">
-      <paramValue name="projectName">OrthoMCL</paramValue>
-      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
-      <depends name="OrthoMCLCore"/>
-    </subgraph>
-
-    <subgraph name="OrthoMCLPeripheral" xmlFile="OrthoMCLPeripheral.xml">
-      <paramValue name="projectName">OrthoMCL</paramValue>
-      <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
-      <paramValue name="residualGroupIdPrefix">OGR7r1_</paramValue>
-      <depends name="OrthoPeripheralProteomeRetrieval"/>
-      <dependsExternal name="PlasmoDB_checkOrthoPeripheralProteomeDirs"/>
-      <dependsExternal name="TriTrypDB_checkOrthoPeripheralProteomeDirs"/>
-      <dependsExternal name="VectorBase_checkOrthoPeripheralProteomeDirs"/>
-      <dependsExternal name="ToxoDB_checkOrthoPeripheralProteomeDirs"/>
-      <dependsExternal name="AmoebaDB_checkOrthoPeripheralProteomeDirs"/>
-      <dependsExternal name="CryptoDB_checkOrthoPeripheralProteomeDirs"/>
-      <dependsExternal name="FungiDB_checkOrthoPeripheralProteomeDirs"/>
-      <dependsExternal name="PiroplasmaDB_checkOrthoPeripheralProteomeDirs"/>
-      <dependsExternal name="GiardiaDB_checkOrthoPeripheralProteomeDirs"/>
-      <dependsExternal name="MicrosporidiaDB_checkOrthoPeripheralProteomeDirs"/>
-      <dependsExternal name="TrichDB_checkOrthoPeripheralProteomeDirs"/>
-      <dependsExternal name="HostDB_checkOrthoPeripheralProteomeDirs"/>
-    </subgraph>
+    
+  </datasetTemplate>
 
     <subgraph name="alphaFold" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">alphaFold_RSRC</paramValue>
@@ -124,5 +85,7 @@
      <depends name="TrichDB"/>
      <depends name="HostDB"/>
     </subgraph>
-  </datasetTemplate>
+  
+
+
 </workflowGraph>

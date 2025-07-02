@@ -17,7 +17,8 @@ sub run {
   my $second = $self->getParamValue('regexSecondaryId');
   my $source = $self->getParamValue('regexSourceId');
   my $table = $self->getParamValue('tableName');
-  my $isCore = $self->getParamValue('isCore');
+
+  my $isCore = $self->getBooleanParamValue('isCore') ? 1 : 0;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $gusConfigFile = $self->getParamValue('gusConfigFile');
