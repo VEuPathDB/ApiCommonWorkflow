@@ -2,27 +2,39 @@
   <param name="projectName"/>
   <param name="projectVersionForWebsiteFiles"/>
   <param name="residualGroupIdPrefix"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="gusConfigFile"/>
 
   <constant name="dataDir">$$projectName$$</constant>
   <constant name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</constant>
-
-  <constant name="relativeWebServicesDir">webServices/$$projectName$$/build-$$projectVersionForWebsiteFiles$$</constant>
-  <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
+  
   <constant name="oldReleasesGroupFilesDir">oldReleasesGroupFiles</constant>
-  <constant name="globalDatasetLoaderXmlFile">global.xml</constant>
-  <constant name="globalDataDir">global</constant>
+  
   <constant name="coreProteinsDir">$$dataDir$$/coreProteins</constant>
   <constant name="coreGroupsDir">$$dataDir$$/coreGroups</constant>
-
-  <constant name="projectGusConfigBasename">$$projectName$$_gus.config</constant>
-  <constant name="projectGusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</constant>
 
   <constant name="getPeripheralProteinsDir">$$projectName$$/getPeripheralProteins</constant>
   <constant name="proteomesDir">$$getPeripheralProteinsDir$$/peripheralProteomes</constant>
 
+  <!-- load the OrthomclTaxon table with our tree of life -->
+  <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="datasetName">orthomclClades_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+  </subgraph>
+
+
+  <step name="makeProteomeFastasDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$getPeripheralProteinsDir$$/fastas</paramValue>
+    <depends name="makeProteomeFastasDir"/>
+  </step>
+
   <step name="MakeOrthofinderPeripheralInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthofinderPeripheralInputDir">
      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
      <paramValue name="outputDir">$$getPeripheralProteinsDir$$</paramValue>
+     <depends name="makeProteomeFastasDir"/>
   </step>
 
   <step name="MakeSortedCheckSum" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSortedCheckSum">
@@ -36,7 +48,6 @@
     <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
     <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>    
-    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <paramValue name="coreProteome">$$coreProteinsDir$$/fastas.tar.gz</paramValue>
     <paramValue name="coreResultsDir">$$coreGroupsDir$$/analysisDir/results</paramValue>
     <depends name="MakeSortedCheckSum"/>

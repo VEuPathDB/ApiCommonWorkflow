@@ -1,0 +1,104 @@
+<workflowGraph name="orthomclGenomics">
+  <param name="projectName"/>
+  <param name="projectVersionForWebsiteFiles"/>
+
+  <constant name="dataDir">$$projectName$$</constant>
+  <constant name="gusConfigFile">$$projectName$$_gus.config</constant>
+  <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
+  <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
+  
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$projectName$$</paramValue>
+  </step>
+
+  <step name="makeGusConfig" stepClass="ReFlow::StepClasses::MakeGusConfig">
+    <paramValue name="dbName"/>
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+    <paramValue name="gusConfigFilename">$$gusConfigFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="initUserGroupProject" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitUserGroupProject">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$projectName$$/$$gusConfigFile$$</paramValue>
+    <depends name="makeGusConfig"/>
+  </step>
+
+  <step name="makeProjectReleaseWebServicesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
+    <depends name="initUserGroupProject"/>
+  </step>
+
+  <step name="makeProjectReleaseDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <depends name="initUserGroupProject"/>
+  </step>
+
+
+  <subgraph name="getCoreProteomes" xmlFile="generated/OrthoMCL/orthomclGetCoreProteins.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$projectName$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <depends name="makeProjectReleaseWebServicesDir"/>
+    <depends name="makeProjectReleaseDownloadDir"/>
+  </subgraph>
+
+  <subgraph name="orthoMCLCore" xmlFile="OrthoMCLCore.xml">
+    <paramValue name="projectName">OrthoMCL</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="parentDataDir">$$projectName$$</paramValue>
+    <depends name="getCoreProteomes"/>
+    <dependsExternal name="PlasmoDB_checkOrthoCoreProteomeDirs"/>
+    <dependsExternal name="TriTrypDB_checkOrthoCoreProteomeDirs"/>
+    <dependsExternal name="VectorBase_checkOrthoCoreProteomeDirs"/>
+    <dependsExternal name="ToxoDB_checkOrthoCoreProteomeDirs"/>
+    <dependsExternal name="AmoebaDB_checkOrthoCoreProteomeDirs"/>
+    <dependsExternal name="CryptoDB_checkOrthoCoreProteomeDirs"/>
+    <dependsExternal name="FungiDB_checkOrthoCoreProteomeDirs"/>
+    <dependsExternal name="PiroplasmaDB_checkOrthoCoreProteomeDirs"/>
+    <dependsExternal name="GiardiaDB_checkOrthoCoreProteomeDirs"/>
+    <dependsExternal name="MicrosporidiaDB_checkOrthoCoreProteomeDirs"/>
+    <dependsExternal name="TrichDB_checkOrthoCoreProteomeDirs"/>
+    <dependsExternal name="HostDB_checkOrthoCoreProteomeDirs"/>
+  </subgraph>
+
+  <subgraph name="getPeripheralProteomes" xmlFile="generated/OrthoMCL/orthomclGetPeripheralProteins.xml">
+    <paramValue name="parentDataDir">$$projectName$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="makeProjectReleaseWebServicesDir"/>
+  </subgraph>
+
+
+
+  <!-- TEMPORARILY COMMENT OUT ORTHO Peripheral
+       <subgraph name="OrthoMCLPeripheral" xmlFile="OrthoMCLPeripheral.xml">
+       <paramValue name="projectName">OrthoMCL</paramValue>
+       <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+       <paramValue name="residualGroupIdPrefix">OGR7r1_</paramValue>
+       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+       <depends name="getPeripheralProteomes"/>
+       <depends name="orthoMCLCore"/>
+       <dependsExternal name="PlasmoDB_checkOrthoPeripheralProteomeDirs"/>
+       <dependsExternal name="TriTrypDB_checkOrthoPeripheralProteomeDirs"/>
+       <dependsExternal name="VectorBase_checkOrthoPeripheralProteomeDirs"/>
+       <dependsExternal name="ToxoDB_checkOrthoPeripheralProteomeDirs"/>
+       <dependsExternal name="AmoebaDB_checkOrthoPeripheralProteomeDirs"/>
+       <dependsExternal name="CryptoDB_checkOrthoPeripheralProteomeDirs"/>
+       <dependsExternal name="FungiDB_checkOrthoPeripheralProteomeDirs"/>
+       <dependsExternal name="PiroplasmaDB_checkOrthoPeripheralProteomeDirs"/>
+       <dependsExternal name="GiardiaDB_checkOrthoPeripheralProteomeDirs"/>
+       <dependsExternal name="MicrosporidiaDB_checkOrthoPeripheralProteomeDirs"/>
+       <dependsExternal name="TrichDB_checkOrthoPeripheralProteomeDirs"/>
+       <dependsExternal name="HostDB_checkOrthoPeripheralProteomeDirs"/>
+       </subgraph>
+  -->
+
+
+
+</workflowGraph>
