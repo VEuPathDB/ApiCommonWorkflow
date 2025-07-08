@@ -52,7 +52,7 @@ params {
     genome                     = "$digestedGenomeFilePath"
     samplesheetFileName        = "$sampleSheet"
     datasetType                = "$datasetType"
-    hasPairedEnds              = $hasPairedEnds
+    hasPairedReads             = $hasPairedEnds
     removePCRDuplicates        = $removePCRDuplicates                            
     saveAlignments             = true
     saveCoverage               = false
