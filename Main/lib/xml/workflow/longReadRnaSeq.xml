@@ -88,7 +88,7 @@
         <paramValue name="maxFracA">0.5</paramValue>
         <paramValue name="minCount">5</paramValue>
         <paramValue name="minDatasets">2</paramValue>
-        <depends name="makeSamplesOutputDir"/>
+        <depends name="makeResultDir"/>
     </step>
 
 
@@ -104,7 +104,7 @@
         <paramValue name="datasetSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue> <!--NOTE: the version will be looked up by the step which gets from cache -->
         <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
         <paramValue name="nextflowWorkflow">VEuPathDB/longReadRnaSeq</paramValue>
-        <paramValue name="entry">$$entry$$</paramValue>
+        <paramValue name="entry"></paramValue>
         <depends name="nextflowConfig"/>
         <depends name="ngsSamplesNextflowConfig"/>
         <depends name="symLinkGtf"/>
@@ -117,7 +117,7 @@
         <paramValue name="gffFile">$$dataDir$$/results/Gtf/$$experimentDatasetName$$_sorted.gff</paramValue>
         <paramValue name="countFile">$$dataDir$$/results/counts/results_no_filter_talon_abundance.tsv</paramValue>
         <paramValue name="gffFileOut">$$dataDir$$/results/Gtf/$$experimentDatasetName$$_sorted_updated.gff</paramValue>
-        <depends name="mirrorFromCluster"/>
+        <depends name="runNextflowOnCluster"/>
     </step>
 
 
@@ -135,7 +135,7 @@
         <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
         <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
         <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
-        <depends name="mirrorFromCluster"/>
+        <depends name="runNextflowOnCluster"/>
     </step>
 
     <step name="loadLongReadRnaSeqCounts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertLongReadCounts" stepLoadTypes="plugin">
@@ -143,7 +143,7 @@
         <paramValue name="countFile">$$dataDir$$/results/counts/results_no_filter_talon_abundance.tsv</paramValue>
         <paramValue name="extDbRlsSpec">"$$experimentDatasetName$$|$$experimentDatasetVersion$$"</paramValue>
         <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
-        <depends name="mirrorFromCluster"/>
+        <depends name="runNextflowOnCluster"/>
     </step>
 
 </workflowGraph>
