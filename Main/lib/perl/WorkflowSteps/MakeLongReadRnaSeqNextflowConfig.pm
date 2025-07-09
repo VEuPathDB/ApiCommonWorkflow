@@ -17,7 +17,7 @@ sub run {
     my $gtfFile = $self->getParamValue("gtfFile");
     my $inputDir = $self->getParamValue("inputDir");
 
-    my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
+    my $nextflowConfigFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue("nextflowConfigFile");
 
     my $organismAbbrev = $self->getParamValue("organismAbbrev");
     my $platform = $self->getParamValue("platform");
@@ -46,27 +46,27 @@ sub run {
 
 
     if ($undo) {
-        $self->runCmd(0,"rm -rf $configPath");
+        $self->runCmd(0,"rm -rf $nextflowConfigFile");
     } else {
-        open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
+        open(F, ">", $nextflowConfigFile) or die "$! :Can't open config file '$nextflowConfigFile' for writing";
         print F
-            " 
+            "
 params {
-    input = "$digestedInputDirPath"
-    samplesheetFileName = "$samplesheet"
-    gtf = "$digestedGtfFilePath"
-    fasta = "$digestdGenomeFilePath"
+    input = \"$digestedInputDirPath\"
+    samplesheetFileName = \"$sampleSheet\"
+    gtf = \"$digestedGtfFilePath\"
+    fasta = \"$digestedGenomeFilePath\"
     splitChunk = $chunkSize
-    platform = "$platform"
-    build = "$build"
-    annotationName = "$organismAbbrev"
-    results = "$digestedOutputDir"
+    platform = \"$platform\"
+    build = \"$build\"
+    annotationName = \"$organismAbbrev\"
+    results = \"$digestedOutputDir\"
     maxFracA = $maxFracA
     minCount = $minCount
     minDatasets = $minDatasets
 }
 
-includeConfig "$clusterConfigFile"
+includeConfig \"$clusterConfigFile\"
 
  ";
 
