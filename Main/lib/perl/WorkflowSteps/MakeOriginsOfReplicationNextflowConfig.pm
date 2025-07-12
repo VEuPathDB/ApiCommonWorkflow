@@ -18,7 +18,7 @@ sub run {
   my $inputDir = $self->getParamValue("inputDir");
 
   my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
-  
+
   my $hasPairedEnds = $self->getBooleanParamValue("hasPairedEnds") ? "true" : "false";
   my $removePCRDuplicates = $self->getBooleanParamValue("removePCRDuplicates") ? "true" : "false";
   my $coverageWindowSize = $self->getParamValue("coverageWindowSize");
@@ -30,7 +30,7 @@ sub run {
 
   my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
   my $digestedInputDirPath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $inputDir);
-  
+
   my $digestedGenomeFilePath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $genomeFile);
   my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
