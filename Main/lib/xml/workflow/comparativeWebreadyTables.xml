@@ -1,7 +1,21 @@
 <workflowGraph name="">
-
   <param name="gusConfigFile"/>
   <param name="projectName"/>
+
+  <step name="createTable_OrthologousTranscripts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">OrthologousTranscripts</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+  </step>
+
+  <!--Custom workflow step to load an orgSpecific table that already exists -->
+  <step name="loadTable_OrthologTables" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadWebreadyTable">
+    <paramValue name="fileBasename">LoadOrthologTables</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+  </step>
 
   <step name="createTable_AlphaFoldGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
     <paramValue name="tableName">AlphaFoldGenes</paramValue>
@@ -12,11 +26,15 @@
 
   <!--Custom workflow step to load a table that already exists -->
   <step name="loadTable_TranscriptPathway" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadWebreadyTable">
-    <paramValue name="tableName">LoadTranscriptPathway</paramValue>
+    <paramValue name="fileBasename">LoadTranscriptPathway</paramValue>
     <paramValue name="psqlDirName">comparative</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
   </step>
+
+
+
+
 
   <!--TODO add tables that are dependent on transcriptpathway being populated here -->
   <!--PathwayNodeGene???-->

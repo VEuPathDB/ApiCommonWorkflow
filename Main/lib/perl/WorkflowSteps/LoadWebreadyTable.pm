@@ -9,7 +9,7 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $psqlDirName = $self->getParamValue('psqlDirName');
-  my $tableName = $self->getParamValue('tableName');
+  my $tableName = $self->getParamValue('fileBasename');
   my $projectId = $self->getParamValue('projectName');
   my $gusConfigFile = $self->getParamValue('gusConfigFile');
 
