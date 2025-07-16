@@ -127,7 +127,7 @@
   </step>
 
 <!--ATTENTION: this step creates an EMPTY partitioned table, which is populated in the comparative graph-->
-<!--ATTENTION: all tables depending on this step should be moved to comparative-->
+<!--ATTENTION: all tables depending on this table should be created or loaded in comparative-->
   <step name="createTable_TranscriptPathway" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">TranscriptPathway</paramValue>
     <paramValue name="psqlDirName">orgSpecific</paramValue>
@@ -135,13 +135,11 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <!-- I don't think we need these dependencies since we are not loading yet!-->
-<!--    <depends name="createTable_GeneAttributes"/>
-    <depends name="createTable_TranscriptAttributes"/>-->
+    <!-- No dependencies as we are just creating an empty table here -->
   </step>
 
 <!--ATTENTION: this step creates an EMPTY partitioned table, which is populated in the comparative graph -->
-<!--ATTENTION: all tables depending on this step should be moved to comparative -->
+<!--ATTENTION: all tables depending on this table should be created or loaded in comparative -->
   <step name="createTable_TranscriptEC" stepClass="ApiCommonWorkflow::Main::WorkflowSteps:CreateWebreadyPartitionedTable">
     <paramValue name="tableName">TranscriptEC</paramValue>
     <paramValue name="psqlDirName">orgSpecific</paramValue>
@@ -149,19 +147,8 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <!-- No dependencies as we are just creating an empty table here -->
   </step>
-
-<!--TODO: we will be loading TranscriptPathway in comparative - this will need to be moved -->
-<!--TODO: are we using this anywhere?? -->
-<!--  <step name="createTable_PathwayNodeGene" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
-    <paramValue name="tableName">PathwayNodeGene</paramValue>
-    <paramValue name="psqlDirName">orgSpecific</paramValue>
-    <paramValue name="mode">$$mode$$</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="createTable_TranscriptPathway"/>
-  </step> -->
 
  <step name="createTable_IntronUtrCoords" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">IntronUtrCoords</paramValue>
@@ -463,18 +450,6 @@
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="createTable_GeneAttributes"/>
   </step>
-
-<!--TODO: we will be loading TranscriptPathway in comparative - this will need to be moved -->
-<!--
-  <step name="createTable_PathwaysGeneTable" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
-    <paramValue name="tableName">PathwaysGeneTable</paramValue>
-    <paramValue name="psqlDirName">orgSpecific</paramValue>
-    <paramValue name="mode">$$mode$$</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="createTable_TranscriptPathway"/>
-  </step> -->
 
   <step name="createTable_OrganismSelectTaxonRank" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">OrganismSelectTaxonRank</paramValue>
