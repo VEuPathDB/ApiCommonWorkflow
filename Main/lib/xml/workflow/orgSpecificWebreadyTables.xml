@@ -22,6 +22,24 @@
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
   </step>
 
+  <step name="createTable_GeneProduct" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
+    <paramValue name="tableName">GeneProduct</paramValue>
+    <paramValue name="psqlDirName">orgSpecific</paramValue>
+    <paramValue name="mode">$$mode$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+  </step>
+
+  <step name="createTable_SpliceSiteTranscript" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
+    <paramValue name="tableName">SpliceSiteTranscript</paramValue>
+    <paramValue name="psqlDirName">orgSpecific</paramValue>
+    <paramValue name="mode">$$mode$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+  </step>
+
   <step name="createTable_TaxonSpecies" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">TaxonSpecies</paramValue>
     <paramValue name="psqlDirName">orgSpecific</paramValue>
@@ -94,8 +112,10 @@
     <depends name="createTable_TaxonSpecies"/>
     <depends name="createTable_GeneId"/>
     <depends name="createTable_ProteinAttributes"/>
+    <depends name="createTable_GeneProduct"/>
   </step>
 
+  
   <step name="createTable_GeneAttributes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">GeneAttributes</paramValue>
     <paramValue name="psqlDirName">orgSpecific</paramValue>
@@ -106,6 +126,8 @@
     <depends name="createTable_TranscriptAttributes"/>
   </step>
 
+<!--ATTENTION: this step creates an EMPTY partitioned table, which is populated in the comparative graph-->
+<!--ATTENTION: all tables depending on this table should be created or loaded in comparative-->
   <step name="createTable_TranscriptPathway" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">TranscriptPathway</paramValue>
     <paramValue name="psqlDirName">orgSpecific</paramValue>
@@ -113,18 +135,31 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="createTable_GeneAttributes"/>
-    <depends name="createTable_TranscriptAttributes"/>
+    <!-- No dependencies as we are just creating an empty table here -->
   </step>
 
-  <step name="createTable_PathwayNodeGene" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
-    <paramValue name="tableName">PathwayNodeGene</paramValue>
+<!--ATTENTION: this step creates an EMPTY partitioned table, which is populated in the comparative graph -->
+<!--ATTENTION: all tables depending on this table should be created or loaded in comparative -->
+  <step name="createTable_TranscriptEC" stepClass="ApiCommonWorkflow::Main::WorkflowSteps:CreateWebreadyPartitionedTable">
+    <paramValue name="tableName">TranscriptEC</paramValue>
     <paramValue name="psqlDirName">orgSpecific</paramValue>
     <paramValue name="mode">$$mode$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="createTable_TranscriptPathway"/>
+    <!-- No dependencies as we are just creating an empty table here -->
+  </step>
+
+<!-- ATTENTION: this step creates and EMPTY partitioned table, which is populated in the comparative graph -->
+<!-- ATTENTION: all tables depending on this table should be created or loaded in comparative -->
+  <step name="createTable_PathwaysGeneTable" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
+    <paramValue name="tableName">PathwaysGeneTable</paramValue>
+    <paramValue name="psqlDirName">orgSpecific</paramValue>
+    <paramValue name="mode">$$mode$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <!-- No dependencies as we are just creating an empty table here -->
   </step>
 
  <step name="createTable_IntronUtrCoords" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
@@ -225,9 +260,9 @@
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
   </step>
 
-<!--
-  <step name="createTable_NameMappingGIJ" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
-    <paramValue name="tableName">NameMappingGIJ</paramValue>
+
+  <step name="createTable_JunctionToCoverageProfileMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
+    <paramValue name="tableName">JunctionToCoverageProfileMapping</paramValue>
     <paramValue name="psqlDirName">orgSpecific</paramValue>
     <paramValue name="mode">$$mode$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
@@ -235,9 +270,19 @@
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="createTable_PANIO"/>
   </step>
--->
 
-<!--
+
+  <step name="createTable_JunctionGeneLocation" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
+    <paramValue name="tableName">JunctionGeneLocation</paramValue>
+    <paramValue name="psqlDirName">orgSpecific</paramValue>
+    <paramValue name="mode">$$mode$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_JunctionToCoverageProfileMapping"/>
+    <depends name="createTable_GeneAttributes"/>
+  </step>
+
   <step name="createTable_GeneIntronJunction" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">GeneIntronJunction</paramValue>
     <paramValue name="psqlDirName">orgSpecific</paramValue>
@@ -245,9 +290,21 @@
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="createTable_NameMappingGIJ"/>
+    <depends name="createTable_JunctionToCoverageProfileMapping"/>
+    <depends name="createTable_JunctionGeneLocation"/>
   </step>
--->
+
+    <step name="createTable_GeneMaxJunction" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
+    <paramValue name="tableName">GeneMaxJunction</paramValue>
+    <paramValue name="psqlDirName">orgSpecific</paramValue>
+    <paramValue name="mode">$$mode$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_JunctionToCoverageProfileMapping"/>
+    <depends name="createTable_JunctionGeneLocation"/>
+  </step>
+
 
   <step name="createTable_GeneModelDump" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">GeneModelDump</paramValue>
@@ -259,19 +316,6 @@
     <depends name="createTable_TranscriptAttributes"/>
   </step>
 
-<!--
-  <step name="createTable_IntronSupportLevel" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
-    <paramValue name="tableName">IntronSupportLevel</paramValue>
-    <paramValue name="psqlDirName">orgSpecific</paramValue>
-    <paramValue name="mode">$$mode$$</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="createTable_GeneIntronJunction"/>
-    <depends name="createTable_GeneModelDump"/>
-  </step>
--->
-
   <step name="createTable_TranscriptSequence" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">TranscriptSequence</paramValue>
     <paramValue name="psqlDirName">orgSpecific</paramValue>
@@ -282,17 +326,30 @@
     <depends name="createTable_TranscriptAttributes"/>
   </step>
 
-<!--
-  <step name="createTable_GeneIntJuncStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
-    <paramValue name="tableName">GeneIntJuncStats</paramValue>
+
+  <step name="createTable_GenomicSeqJunctionStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
+    <paramValue name="tableName">GenomicSeqJunctionStats</paramValue>
     <paramValue name="psqlDirName">orgSpecific</paramValue>
     <paramValue name="mode">$$mode$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="createTable_GeneIntronJunction"/>
+    <depends name="createTable_GenomicSeqAttributes"/>
   </step>
--->
+
+  <step name="createTable_IntronSupportLevel" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
+    <paramValue name="tableName">IntronSupportLevel</paramValue>
+    <paramValue name="psqlDirName">orgSpecific</paramValue>
+    <paramValue name="mode">$$mode$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_GeneIntronJunction"/>
+    <depends name="createTable_GenomicSeqJunctionStats"/>
+  </step>
+
+
 
   <step name="createTable_TranscriptCenDistance" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">TranscriptCenDistance</paramValue>
@@ -333,18 +390,6 @@
     <depends name="createTable_TranscriptAttributes"/>
   </step>
 
-<!--
-  <step name="createTable_GeneMaxIntronGIJ" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
-    <paramValue name="tableName">GeneMaxIntronGIJ</paramValue>
-    <paramValue name="psqlDirName">orgSpecific</paramValue>
-    <paramValue name="mode">$$mode$$</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="createTable_NameMappingGIJ"/>
-    <depends name="createTable_GeneIntronJunction"/>
-  </step>
--->
 
   <step name="createTable_PdbSimilarity" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">PdbSimilarity</paramValue>
@@ -417,16 +462,6 @@
     <depends name="createTable_GeneAttributes"/>
   </step>
 
-  <step name="createTable_PathwaysGeneTable" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
-    <paramValue name="tableName">PathwaysGeneTable</paramValue>
-    <paramValue name="psqlDirName">orgSpecific</paramValue>
-    <paramValue name="mode">$$mode$$</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="createTable_TranscriptPathway"/>
-  </step>
-
   <step name="createTable_OrganismSelectTaxonRank" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">OrganismSelectTaxonRank</paramValue>
     <paramValue name="psqlDirName">orgSpecific</paramValue>
@@ -465,4 +500,33 @@
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
   </step>
 
+
+  <step name="insert_SpliceSiteTranscript" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSpliceSiteTranscript">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="createTable_SpliceSiteTranscript"/>
+    <depends name="createTable_TranscriptAttributes"/>
+  </step>
+
+
+  <!-- The partitions for these tables are made here but the rows will be added in the OrthoMCLDependent graph -->
+  <step name="createTable_GeneOrthologGroup" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
+    <paramValue name="tableName">GeneOrthologGroup</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="psqlDirName">orgSpecific</paramValue>
+    <paramValue name="mode">$$mode$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+  </step>
+  <step name="createTable_TranscriptOrthologGroup" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
+    <paramValue name="tableName">TranscriptOrthologGroup</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="psqlDirName">orgSpecific</paramValue>
+    <paramValue name="mode">$$mode$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+  </step>
+
+  
 </workflowGraph>

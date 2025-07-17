@@ -13,6 +13,39 @@
     <paramValue name="dataDir">$$dataDir$$</paramValue>
   </step>
 
+  <!-- These webready tables are used by the orthomcl site and for adding the orthomcl derived EC associations -->
+  <step name="createTable_ProteinSequenceGroup" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">ProteinSequenceGroup</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+  </step>
+
+  <step name="createTable_ProteinDomainAssignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">ProteinDomainAssignment</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_ProteinSequenceGroup"/>
+  </step>
+
+
+  <step name="createTable_GroupDomainDescription" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">GroupDomainDescriptions</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_ProteinDomainAssignment"/>
+  </step>
+
+  <step name="createTable_PhyleticPattern" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">PhyleticPattern</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+  </step>
+
+
   <!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
   <step name="predictEcNumbers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PredictEcNumbers">
     <paramValue name="outputDir">$$dataDir$$</paramValue>
@@ -20,6 +53,7 @@
     <paramValue name="outputFile">$$dataDir$$/ec.txt</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="makeOrthomclDependentDir"/>
+    <depends name="createTable_ProteinDomainAssignment"/>
   </step>
   <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
 
