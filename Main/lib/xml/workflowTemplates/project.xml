@@ -505,16 +505,16 @@
       <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
     </step>
 
-    <subgraph name="${organismAbbrev}_MakeChildWebTables" xmlFile="orgSpecificWebreadyTables.xml" groupName="${organismAbbrev}">
+    <subgraph name="MakeChildWebTables_${organismAbbrev}" xmlFile="orgSpecificWebreadyTables.xml" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="mode">child</paramValue>
-      <dependsPattern name="${organismAbbrev}_*(?&lt;!MakeChildWebTables|MakeWebsiteFiles)"/>
+      <dependsPattern name="${organismAbbrev}_*"/>
       <dependsGlobal name="MakeParentWebTables"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml" groupName="${organismAbbrev}">
+    <subgraph name="MakeWebsiteFiles_${organismAbbrev}" xmlFile="makeOrganismWebsiteFiles.xml" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
@@ -527,7 +527,7 @@
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <paramValue name="isHugeGenome">${isHugeGenome}</paramValue>
       <paramValue name="isNotEbiGenome">${isNotEbiGenome}</paramValue>
-      <depends name="${organismAbbrev}_MakeChildWebTables"/>
+      <depends name="MakeChildWebTables_${organismAbbrev}"/>
     </subgraph>
 
   </datasetTemplate>
