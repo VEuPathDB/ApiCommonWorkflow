@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::getDataFromVeupathAndUniprot;
+package ApiCommonWorkflow::Main::WorkflowSteps::dumpECInfo;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 

@@ -47,46 +47,16 @@
     <depends name="peripheralWorkflow"/>
   </step>
 
-  <step name="getDataFromVeupathAndUniprot" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::getDataFromVeupathAndUniprot">
+  <step name="dumpECInfo" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DumpECInfo">
     <paramValue name="dataDir">$$dataDir$$/OrganismNameResources</paramValue>
     <depends name="makeResourcesDir"/>
   </step>
-
-<!-- for this step, two lines in the script change abbrev 'rirr' to 'rhiz' for abbrev on orthomcl, remove when undo 'rhiz' -->
-
-  <step name="updateSpeciesResourcesEc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateSpeciesResourcesEc">
-    <paramValue name="dataDir">$$dataDir$$/OrganismNameResources</paramValue>
-    <depends name="getDataFromVeupathAndUniprot"/>
-  </step>
-
-  <step name="updateEcNumbers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedEC">
-      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <paramValue name="inputFile">$$dataDir$$/OrganismNameResources/ecFromVeupath.txt</paramValue>
-      <paramValue name="evidenceCode">VEuPathDB</paramValue>
-      <paramValue name="idSql">SELECT aa_sequence_id FROM dots.externalaasequence WHERE secondary_identifier = ?</paramValue>
-      <depends name="updateSpeciesResourcesEc"/>
-   </step>
-
-<!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
-
-  <step name="makeGenomicSitesFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGenomicSitesFiles">
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
-    <paramValue name="peripheralDir">$$dataDir$$/getPeripheralProteins/proteomeDatasets</paramValue>
-    <paramValue name="coreMapFile">$$dataDir$$/coreGroups/analysisDir/results/reformattedGroups.txt</paramValue>
-    <paramValue name="peripheralMapFileName">$$dataDir$$/peripheral/analysisDir/results/GroupsFile.txt</paramValue>
-    <paramValue name="residualMapFile">$$dataDir$$/peripheral/analysisDir/results/reformattedGroups.txt</paramValue>
-    <paramValue name="cladeFile">$$dataDir$$/orthomclClades_RSRC/OrthoMCL6/orthomclClades.txt</paramValue>
-    <paramValue name="ecFile">$$dataDir$$/OrganismNameResources/ec_organism.txt</paramValue>
-    <depends name="updateEcNumbers"/>
-  </step>
-
 
   <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
 
   <step name="insertDomainKeywords" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
     <paramValue name="groupTypesCPR">PR</paramValue>
-    <depends name="makeGenomicSitesFiles"/>
+    <depends name="dumpECInfo"/>
   </step>
 
   <step name="insertProteinKeywords" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertProteinKeywords">
@@ -97,7 +67,6 @@
   <step name="insertGroupTaxonMatrix" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
     <depends name="insertProteinKeywords"/>
   </step>
-
 
   <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
