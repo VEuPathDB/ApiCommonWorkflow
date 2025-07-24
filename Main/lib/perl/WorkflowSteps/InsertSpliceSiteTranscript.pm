@@ -19,7 +19,7 @@ sub run {
 
   my $mode = $undo ? "delete" : "load";
 
-  my $cmd = "spliceSiteTranscripts --gusConfigFile $workflowDataDir/$gusConfigFile --orgAbbrev $organismAbbrev --mode load --schema $schema --project $project";
+  my $cmd = "spliceSiteTranscripts.pl --gusConfigFile $workflowDataDir/$gusConfigFile --orgAbbrev $organismAbbrev --mode load --schema $schema --project $project";
   $self->runCmd($test, $cmd);
 }
 
