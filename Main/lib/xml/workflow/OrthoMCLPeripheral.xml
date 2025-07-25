@@ -42,21 +42,11 @@
     <depends name="MakeSortedCheckSum"/>
   </subgraph>
 
-  <step name="makeResourcesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$/OrganismNameResources</paramValue>
-    <depends name="peripheralWorkflow"/>
-  </step>
-
-  <step name="dumpECInfo" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DumpECInfo">
-    <paramValue name="dataDir">$$dataDir$$/OrganismNameResources</paramValue>
-    <depends name="makeResourcesDir"/>
-  </step>
-
   <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
 
   <step name="insertDomainKeywords" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
     <paramValue name="groupTypesCPR">PR</paramValue>
-    <depends name="dumpECInfo"/>
+    <depends name="peripheralWorkflow"/>
   </step>
 
   <step name="insertProteinKeywords" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertProteinKeywords">
@@ -70,7 +60,7 @@
 
   <step name="makeDownloadSiteDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InitSiteDir">
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
-    <depends name="makeResourcesDir"/>
+    <depends name="InsertGroupTaxonMatrix"/>
   </step>
  
   <step name="makeDownloadFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDownloadFiles">
