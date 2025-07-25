@@ -31,18 +31,8 @@
     <depends name="makeGusConfig"/>
   </step>
 
-  <!-- load the OrthomclTaxon table with our tree of life -->
-  <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
-    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
-    <paramValue name="datasetName">orthomclClades_RSRC</paramValue>
-    <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <depends name="initUserGroupProject"/>
-  </subgraph>
-
   <step name="makeCoreInterproDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$/coreInterpro</paramValue>
-    <depends name="orthomclClades"/>
   </step>
 
   <subgraph name="getCoreProteomes" xmlFile="generated/OrthoMCL/orthomclGetCoreProteins.xml">
