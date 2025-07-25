@@ -9,7 +9,6 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $organismDir = $workflowDataDir."/".$self->getParamValue('organismDir');
   my $outputDir  = $self->getParamValue('outputDir');
   my $outputFile  = $workflowDataDir."/".$self->getParamValue('outputFile');
   my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
@@ -18,7 +17,7 @@ sub run {
     my $cmd = "rm $outputFile";
     $self->runCmd($test, $cmd);
   } else {
-    my $cmd = "orthomclEcPrediction $outputDir $organismDir $outputFile $gusConfigFile";
+    my $cmd = "orthomclEcPrediction $outputDir $outputFile $gusConfigFile";
     $self->runCmd($test, $cmd);
   }
 }
