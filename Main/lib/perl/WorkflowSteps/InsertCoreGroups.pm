@@ -16,7 +16,9 @@ sub run {
 
     my $orthoFileFullPath = "$workflowDataDir/$groupsFile";
 
-    my $args = " --orthoFile $orthoFileFullPath --orthoVersion $orthoVersion --extDbName OrthoMCL --extDbVersion dontcare";
+    my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
+
+    my $args = " --orthoFile $orthoFileFullPath --orthoVersion $orthoVersion --extDbName OrthoMCL --extDbVersion dontcare --gusConfigFile $gusConfigFile";
 
     $self->testInputFile('inputGroupsDir', "$orthoFileFullPath");
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertCoreOrthoGroups", $args);
