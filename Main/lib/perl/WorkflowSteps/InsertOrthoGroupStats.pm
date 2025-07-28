@@ -11,8 +11,9 @@ sub run {
     my $groupStatsFile = $self->getParamValue('groupStatsFile');
     my $proteinSubset = $self->getParamValue('proteinSubset');
     my $workflowDataDir = $self->getWorkflowDataDir();
+    my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
   
-    my $args = " --groupStatsFile=$workflowDataDir/$groupStatsFile --proteinSubset=$proteinSubset";
+    my $args = " --groupStatsFile=$workflowDataDir/$groupStatsFile --proteinSubset=$proteinSubset --gusConfigFile $gusConfigFile";
 
     if($undo) {
         $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertOrthoGroupStats", $args);

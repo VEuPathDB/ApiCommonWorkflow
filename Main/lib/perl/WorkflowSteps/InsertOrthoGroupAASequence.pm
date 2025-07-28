@@ -14,7 +14,9 @@ sub run {
 
     my $orthoFileFullPath = "$workflowDataDir/$groupsFile";
 
-    my $args = " --orthoFile $orthoFileFullPath ";
+    my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
+
+    my $args = " --orthoFile $orthoFileFullPath --gusConfigFile $gusConfigFile";
 
     $self->testInputFile('inputGroupsDir', "$orthoFileFullPath");
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertOrthoGroupAASequence", $args);
