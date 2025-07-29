@@ -42,11 +42,15 @@
     <depends name="MakeSortedCheckSum"/>
   </subgraph>
 
-  <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
+  <step name="updateSpeciesResourcesEc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateSpeciesResourcesEc">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="peripheralWorkflow"/>
+  </step>
 
+  <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
   <step name="insertDomainKeywords" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDomainKeywords">
     <paramValue name="groupTypesCPR">PR</paramValue>
-    <depends name="peripheralWorkflow"/>
+    <depends name="updateSpeciesResourcesEc"/>
   </step>
 
   <step name="insertProteinKeywords" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertProteinKeywords">
