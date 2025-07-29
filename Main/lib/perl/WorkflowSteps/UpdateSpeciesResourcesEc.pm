@@ -11,7 +11,7 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $dataDir = $self->getParamValue('gusConfigFile');
+    my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
 
     my $args = " --gusConfigFile $gusConfigFile";
 
