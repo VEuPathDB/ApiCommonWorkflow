@@ -5,7 +5,7 @@
   <constant name="multiProjectsDataDir">multiProjects</constant>
 
 
-<!-- call globalGraph (Mustafa's but we added back things like NRDB ...-->
+  <!-- call globalGraph (Mustafa's but we added back things like NRDB ...-->
   <globalSubgraph name="global" xmlFile="globalGraph.xml">
     <paramValue name="commonDatasetLoaderXmlFile">$$projectName$$/$$projectName$$Common.xml</paramValue>
     <paramValue name="globalDatasetLoaderXmlFile">$$globalDatasetLoaderXmlFile$$</paramValue>
@@ -18,10 +18,10 @@
 
   <step name="initClusterHomeDir"
         stepClass="ReFlow::StepClasses::InitClusterHomeDir">
-<!--    <depends name="initUserGroupProject"/>-->
+    <!--    <depends name="initUserGroupProject"/>-->
   </step>
 
-<!-- call project.xml (generated) for each component -->
+  <!-- call project.xml (generated) for each component -->
 
   <datasetTemplate class="genomicsProject">
     <prop name="projectName"/>
@@ -43,8 +43,6 @@
       <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
       <depends name="initClusterHomeDir"/>
     </subgraph>
-    
-  </datasetTemplate>
 
     <subgraph name="OrthoMCLDependent" xmlFile="OrthoMCLDependent.xml">
       <paramValue name="projectName">OrthoMCL</paramValue>
@@ -63,51 +61,53 @@
       <depends name="MicrosporidiaDB"/>
       <depends name="TrichDB"/>
       <depends name="HostDB"/>
-      <depends name="OrthoMCLPeripheral"/>
+      <depends name="OrthoMCL"/>
       <depends name="makeMultiProjectsDataDir"/>
       <dependsGlobal name="enzymeDB_RSRC"/>
     </subgraph>
 
-    <subgraph name="alphaFold" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">alphaFold_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">GenomicsDB.xml</paramValue>
-      <paramValue name="parentDataDir">$$multiProjectsDataDir$$</paramValue>
-     <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
-     <depends name="makeMultiProjectsDataDir"/>
-     <depends name="PlasmoDB"/>
-     <depends name="ToxoDB"/>
-     <depends name="TriTrypDB"/>
-     <depends name="VectorBase"/>
-     <depends name="AmoebaDB"/>
-     <depends name="CryptoDB"/>
-     <depends name="FungiDB"/>
-     <depends name="PiroplasmaDB"/>
-     <depends name="GiardiaDB"/>
-     <depends name="MicrosporidiaDB"/>
-     <depends name="TrichDB"/>
-     <depends name="HostDB"/>
-    </subgraph>
-
-    <subgraph name="ExternalResourceUrl" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">ExternalResourceUrl_Ensembl_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">GenomicsDB.xml</paramValue>
-      <paramValue name="parentDataDir">$$multiProjectsDataDir$$</paramValue>
-     <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
-     <depends name="makeMultiProjectsDataDir"/>
-     <depends name="PlasmoDB"/>
-     <depends name="ToxoDB"/>
-     <depends name="TriTrypDB"/>
-     <depends name="VectorBase"/>
-     <depends name="AmoebaDB"/>
-     <depends name="CryptoDB"/>
-     <depends name="FungiDB"/>
-     <depends name="PiroplasmaDB"/>
-     <depends name="GiardiaDB"/>
-     <depends name="MicrosporidiaDB"/>
-     <depends name="TrichDB"/>
-     <depends name="HostDB"/>
-    </subgraph>
   </datasetTemplate>
+  
+  <subgraph name="alphaFold" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">alphaFold_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">GenomicsDB.xml</paramValue>
+    <paramValue name="parentDataDir">$$multiProjectsDataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <depends name="makeMultiProjectsDataDir"/>
+    <depends name="PlasmoDB"/>
+    <depends name="ToxoDB"/>
+    <depends name="TriTrypDB"/>
+    <depends name="VectorBase"/>
+    <depends name="AmoebaDB"/>
+    <depends name="CryptoDB"/>
+    <depends name="FungiDB"/>
+    <depends name="PiroplasmaDB"/>
+    <depends name="GiardiaDB"/>
+    <depends name="MicrosporidiaDB"/>
+    <depends name="TrichDB"/>
+    <depends name="HostDB"/>
+  </subgraph>
+
+  <subgraph name="ExternalResourceUrl" xmlFile="loadDataset.xml">
+    <paramValue name="datasetName">ExternalResourceUrl_Ensembl_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">GenomicsDB.xml</paramValue>
+    <paramValue name="parentDataDir">$$multiProjectsDataDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <depends name="makeMultiProjectsDataDir"/>
+    <depends name="PlasmoDB"/>
+    <depends name="ToxoDB"/>
+    <depends name="TriTrypDB"/>
+    <depends name="VectorBase"/>
+    <depends name="AmoebaDB"/>
+    <depends name="CryptoDB"/>
+    <depends name="FungiDB"/>
+    <depends name="PiroplasmaDB"/>
+    <depends name="GiardiaDB"/>
+    <depends name="MicrosporidiaDB"/>
+    <depends name="TrichDB"/>
+    <depends name="HostDB"/>
+  </subgraph>
+
 
   <subgraph name="MakeComparativeWebTables" xmlFile="comparativeWebreadyTables.xml">
     <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
