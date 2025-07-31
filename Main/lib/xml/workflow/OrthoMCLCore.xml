@@ -1,22 +1,22 @@
-<workflowGraph name="">
+<workflowGraph name="OrthoMCLCore">
   <param name="projectName"/>
   <param name="projectVersionForWebsiteFiles"/>
+  <param name="gusConfigFile"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="parentDataDir"/>
 
-  <constant name="dataDir">$$projectName$$</constant>
+  <constant name="coreProteinsDir">$$parentDataDir$$/coreProteins</constant>
+  <constant name="coreGroupsDir">$$parentDataDir$$/coreGroups</constant>
 
-  <constant name="relativeWebServicesDir">webServices/$$projectName$$/build-$$projectVersionForWebsiteFiles$$</constant>
-  <constant name="relativeDownloadSiteDir">downloadSite/$$projectName$$/release-$$projectVersionForWebsiteFiles$$/</constant>
-  <constant name="oldReleasesGroupFilesDir">oldReleasesGroupFiles</constant>
-  <constant name="globalDataDir">global</constant>
-  <constant name="coreProteinsDir">$$dataDir$$/coreProteins</constant>
-  <constant name="coreGroupsDir">$$dataDir$$/coreGroups</constant>
+  <step name="makeProteomeFastasInputDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$coreProteinsDir$$/fastas</paramValue>
+  </step>
 
-  <constant name="projectGusConfigBasename">$$projectName$$_gus.config</constant>
-  <constant name="projectGusConfigFile">$$dataDir$$/$$projectGusConfigBasename$$</constant>
-
+  <!-- THIS puts files into the fastas directory from the step above-->
   <step name="MakeOrthofinderCoreInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthofinderCoreInputDir">
     <paramValue name="proteomesDir">$$coreProteinsDir$$/coreProteomes</paramValue>
     <paramValue name="outputDir">$$coreProteinsDir$$</paramValue>
+    <depends name="makeProteomeFastasInputDir"/>
   </step>
 
   <step name="MakeSortedCheckSum" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSortedCheckSum">
@@ -66,7 +66,7 @@
 
   <subgraph name="makeCoreGroups" xmlFile="orthoFinderCore.xml" skipIfFile="$$coreProteinsDir$$/doNotDoAnalysis">
     <paramValue name="projectName">$$projectName$$</paramValue> 
-    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="coreGroupsDir">$$coreGroupsDir$$</paramValue>
     <depends name="copyCoreGroupsProteomeFile"/>
   </subgraph>
