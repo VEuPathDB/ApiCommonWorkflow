@@ -20,9 +20,10 @@ sub run {
   my $diff_result = `diff $cachedCheckSumFile $checkSumFile`;
 
   if ($undo) {
-      if ($diff_result eq '') {
+      if (-e $skipIfFile) {
 	  $self->runCmd(0, "rm $skipIfFile");
-      } else {
+      }
+      if (-e $outdatedOrganismsFile) {
 	$self->runCmd(0, "rm $outdatedOrganismsFile");
       }
   }
