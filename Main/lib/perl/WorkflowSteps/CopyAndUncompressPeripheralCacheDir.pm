@@ -20,7 +20,7 @@ sub run {
   }
   else {
       $self->runCmd(0, "cp ${peripheralCacheDir} $fullOutputDir/peripheralCacheDir.tar.gz");
-      $self->runCmd(0, "tar -xzf $fullOutputDir/peripheralCacheDir.tar.gz -C $outputDir");
+      $self->runCmd(0, "tar -xzf $fullOutputDir/peripheralCacheDir.tar.gz -C $fullOutputDir");
       $self->runCmd(0, "rm $fullOutputDir/peripheralCacheDir.tar.gz");
       die "$fullOutputDir/peripheralCacheDir does not exist" unless(-e "$fullOutputDir/peripheralCacheDir");
   }
