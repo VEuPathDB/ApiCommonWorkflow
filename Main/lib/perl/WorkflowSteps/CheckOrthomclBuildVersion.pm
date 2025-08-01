@@ -21,8 +21,8 @@ sub run {
 
   if ($undo) {
     $self->runCmd(0, "rm $outdatedOrganismsFile");
-    if ($diff_result eq '') {
-      $self->runCmd(0, "rm $skipIfFile") if -e $skipIfFile;
+    if (-e $skipIfFile) {
+	$self->runCmd(0, "rm $skipIfFile");
     }
   }
   elsif ($test) {
