@@ -8,11 +8,11 @@
   <param name="coreResultsDir"/>
 
   <constant name="projectName">OrthoMCL</constant>
-  <constant name="getPeripheralProteinsDir">$$projectName$$/getPeripheralProteins</constant>
+  <constant name="getPeripheralProteinsDir">$$projectName$$/peripheralProteins</constant>
   <constant name="residualFastaFilesDir">$$getPeripheralProteinsDir$$/residualFastaFiles</constant>
   <constant name="makeResidualGroupsDir">$$projectName$$/makeResidualGroups</constant>
   <constant name="residualGroupsDir">$$projectName$$/residualGroups</constant>
-  <constant name="peripheralDir">$$projectName$$/peripheral</constant>
+  <constant name="peripheralDir">$$projectName$$/peripheralGroups</constant>
 
   <step name="makePeripheralDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$peripheralDir$$</paramValue>
@@ -69,7 +69,7 @@
      <depends name="copyCoreSequenceIds"/>
   </step>
 
-  <step name="copyPeripheralProteomes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+  <step name="copyPeripheralProteomes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
      <paramValue name="fromFile">$$getPeripheralProteinsDir$$/fastas.tar.gz</paramValue>
      <paramValue name="toFile">$$peripheralDir$$/fastas.tar.gz</paramValue>
      <depends name="copyCoreProteomes"/>
