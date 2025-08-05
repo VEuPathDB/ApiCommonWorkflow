@@ -9,8 +9,8 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $workflowDataDir = $self->getWorkflowDataDir();
-	my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
     my $mappingFile = $workflowDataDir . "/" . $self->getParamValue('mappingFile');
+    my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
   
     my $args = " --mappingFile $mappingFile --gusConfigFile $gusConfigFile";
 

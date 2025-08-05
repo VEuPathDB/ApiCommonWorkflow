@@ -21,8 +21,8 @@ sub run {
 
   if ($undo) {
     $self->runCmd(0, "rm $outdatedOrganismsFile");
-    if ($diff_result eq '') {
-      $self->runCmd(0, "rm $skipIfFile") if -e $skipIfFile;
+    if (-e $skipIfFile) {
+	$self->runCmd(0, "rm $skipIfFile");
     }
   }
   elsif ($test) {
@@ -47,7 +47,7 @@ sub run {
           $self->runCmd(0, "rm ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/checkSum.tsv");
       }
       $self->runCmd(0, "touch ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/checkSum.tsv");
-      $self->runCmd(0, "tar -czf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/peripheralCacheDir.tar.gz ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/peripheralCacheDir");
+      $self->runCmd(0, "tar -czf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/peripheralCacheDir.tar.gz -C ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache peripheralCacheDir/");
       $self->runCmd(0, "rm -rf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/peripheralCacheDir");
     }
     $self->runCmd(0, "createOutdatedOrganismsFile --new $checkSumFile --old $cachedCheckSumFile --output $outdatedOrganismsFile");  

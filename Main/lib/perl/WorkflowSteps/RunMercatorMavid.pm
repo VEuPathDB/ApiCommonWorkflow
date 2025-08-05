@@ -117,10 +117,11 @@ sub getIsDraftHash {
   foreach my $organismAbbrev (@$organismAbbrevs) {
     my $tmPrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
     my $sql = "select count(*)
-               from apidbtuning.${tmPrefix}GenomicSeqAttributes sa, apidb.organism o, sres.ontologyterm so
+               from webready.GenomicSeqAttributes sa, apidb.organism o, sres.ontologyterm so
                where so.name IN ('chromosome', 'supercontig')
                  and sa.so_id = so.source_id
                  and sa.taxon_id = o.taxon_id
+                 and sa.org_abbrev = '$organismAbbrev'
                  and o.abbrev = '$organismAbbrev'";
 
     my $gusConfigFile = "--gusConfigFile \"" . $self->getGusConfigFile() . "\"";

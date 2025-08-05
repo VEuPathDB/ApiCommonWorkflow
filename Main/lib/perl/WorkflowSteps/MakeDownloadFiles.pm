@@ -17,7 +17,7 @@ sub run {
   my $residualGroupsFile = $self->getParamValue('residualGroupsFile');
   my $orthomclVersion = $self->getParamValue('orthomclVersion');
   $orthomclVersion =~ s/_//g;
-  my $groupFile = "$workflowDataDir/genomicSitesFiles_$orthomclVersion/orthomclGroups.txt";
+  my $groupFile = $workflowDataDir . "/" . $self->getParamValue('fullGroupFile');
 
   #original for core plus periph proteomes build $self->testInputFile('groupsFile', "$workflowDataDir/finalGroups.txt");
   $self->testInputFile('groupsFile', "$workflowDataDir/$coreGroupsFile");

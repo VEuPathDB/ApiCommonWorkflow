@@ -504,6 +504,32 @@
       <depends name="${organismAbbrev}_LateVirtualLocations"/>
       <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
     </step>
+
+    <!-- ATTENTION:  this subgraph needs to be dependent on anything we make webready tables from -->
+    <subgraph name="${organismAbbrev}_MakeChildWebTables" xmlFile="orgSpecificWebreadyTables.xml" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="mode">child</paramValue>
+      <depends name="${organismAbbrev}_LoadGenome_LoadChromosomeMap"/>
+      <depends name="${organismAbbrev}_microarray"/>
+      <depends name="${organismAbbrev}_dnaseq"/>
+      <depends name="${organismAbbrev}_rnaseq"/>
+      <depends name="${organismAbbrev}_PARJunctions"/>
+      <depends name="${organismAbbrev}_ebi_VCF"/>
+      <depends name="${organismAbbrev}_ebi_GFF3"/>
+      <depends name="${organismAbbrev}_bowtieMapping"/>
+      <depends name="${organismAbbrev}_blatMapping"/>
+      <depends name="${organismAbbrev}_LoadAliases"/>
+      <depends name="${organismAbbrev}_specific_noAlias"/>
+      <depends name="${organismAbbrev}_specific"/>
+      <depends name="${organismAbbrev}_dbXRefs"/>
+      <depends name="${organismAbbrev}_EarlyVirtualLocations"/> <!-- PostloadGenome is a dependency -->
+      <depends name="${organismAbbrev}_LateVirtualLocations"/>
+      <depends name="${organismAbbrev}_PARFeatures"/>
+      <dependsGlobal name="MakeParentWebTables"/>
+    </subgraph>
+
     <subgraph name="${organismAbbrev}_MakeWebsiteFiles" xmlFile="makeOrganismWebsiteFiles.xml" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
@@ -517,14 +543,8 @@
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <paramValue name="isHugeGenome">${isHugeGenome}</paramValue>
       <paramValue name="isNotEbiGenome">${isNotEbiGenome}</paramValue>
-      <depends name="${organismAbbrev}_PostLoadGenome"/>
-      <depends name="${organismAbbrev}_specific"/>
-      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
-      <depends name="${organismAbbrev}_LateVirtualLocations"/>
-      <depends name="${organismAbbrev}_EarlyVirtualLocations"/>
-      <depends name="${organismAbbrev}_PARFeatures"/>
+      <depends name="${organismAbbrev}_MakeChildWebTables"/>
     </subgraph>
-
 
   </datasetTemplate>
 <!--
