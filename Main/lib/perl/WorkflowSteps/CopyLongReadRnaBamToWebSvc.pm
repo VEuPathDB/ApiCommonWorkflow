@@ -14,8 +14,9 @@ sub run {
     my $relativeDir = $self->getParamValue('relativeDir');
     my $experimentResourceName = $self->getParamValue('experimentDatasetName');
     my $websiteFilesDir = $self->getWebsiteFilesDir($test);
-    my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev)->getNameForFiles();
     my $workflowDataDir = $self->getWorkflowDataDir();
+    my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
+    my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
     my $configFile = $self->getParamValue('analysisConfig');
     
     my $configPath = join('/', $workflowDataDir, $configFile);
