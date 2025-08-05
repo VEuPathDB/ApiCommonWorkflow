@@ -9,19 +9,20 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
   my $peripheralCacheDir = join("/",$self->getSharedConfig('preprocessedDataCache'),"OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/peripheralCacheDir.tar.gz");
-  my $outputDir = join("/", $workflowDataDir, $self->getParamValue("outputDir"));
+  my $outputDir = $self->getParamValue("outputDir");
+  my $fullOutputDir = join("/", $workflowDataDir, $self->getParamValue("outputDir"));
 
   if ($undo) {
-      $self->runCmd(0, "rm -rf $outputDir/peripheralCacheDir");
+      $self->runCmd(0, "rm -rf $fullOutputDir/peripheralCacheDir");
   }
   elsif ($test) {
-      $self->runCmd(0, "mkdir $outputDir/peripheralCacheDir");
+      $self->runCmd(0, "mkdir $fullOutputDir/peripheralCacheDir");
   }
   else {
-      $self->runCmd(0, "cp ${peripheralCacheDir} $outputDir/peripheralCacheDir.tar.gz");
-      $self->runCmd(0, "tar -xzf $outputDir/peripheralCacheDir.tar.gz -C $outputDir");
-      $self->runCmd(0, "rm $outputDir/peripheralCacheDir.tar.gz");
-      die "$outputDir/peripheralCacheDir does not exist" unless(-e "$outputDir/peripheralCacheDir");
+      $self->runCmd(0, "cp ${peripheralCacheDir} $fullOutputDir/peripheralCacheDir.tar.gz");
+      $self->runCmd(0, "tar -xzf $fullOutputDir/peripheralCacheDir.tar.gz -C $fullOutputDir");
+      $self->runCmd(0, "rm $fullOutputDir/peripheralCacheDir.tar.gz");
+      die "$fullOutputDir/peripheralCacheDir does not exist" unless(-e "$fullOutputDir/peripheralCacheDir");
   }
 }
 

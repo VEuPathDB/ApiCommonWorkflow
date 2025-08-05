@@ -180,7 +180,7 @@ sub runPlugin {
         $cmd = "ga $undoPlugin --workflowContext --undoWorkflowStepId $self->{id} --algInvocationId '$algInvIds' $gusConfigFile --commit";
       }
     } else {
-      $self->log("No algorithm invocation IDs found for this plugin step.  The plugin must have been manually undone.  Exiting");
+      $self->log("No algorithm invocation IDs found for plugin step id $self->{id}.  The plugin must have been manually undone.  Exiting");
     }
   } else {
     $cmd = "ga $plugin --workflowstepid $self->{id} $gusConfigFile $args --commit --comment \"$comment\"";

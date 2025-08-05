@@ -1,0 +1,82 @@
+<workflowGraph name="">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="orthomclPeripheralResultsDir"/>
+  <param name="projectName"/>
+
+  <constant name="dataDir">$$parentDataDir$$/OrthomclDependent</constant>
+
+  <step name="insertOrthomclPhyletic" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthomclPhyletic">
+    <paramValue name="groupsFile">$$orthomclPeripheralResultsDir$$/fullGroupFile.txt</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+  </step>
+
+  <step name="makeOrthomclDependentDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <!-- load the OrthomclTaxon table with our tree of life -->
+  <subgraph name="orthomclClades" xmlFile="loadDataset.xml">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="datasetName">orthomclClades_RSRC</paramValue>
+    <paramValue name="datasetLoaderXmlFileName">OrthoMCL.xml</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+  </subgraph>
+
+  <!-- These webready tables are used by the orthomcl site and for adding the orthomcl derived EC associations -->
+  <step name="createTable_ProteinSequenceGroup" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">ProteinSequenceGroup</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="orthomclClades"/>
+  </step>
+
+  <step name="createTable_ProteinDomainAssignment" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">ProteinDomainAssignment</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_ProteinSequenceGroup"/>
+  </step>
+
+
+  <step name="createTable_GroupDomainDescription" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">GroupDomainDescriptions</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_ProteinDomainAssignment"/>
+  </step>
+
+  <step name="createTable_PhyleticPattern" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">PhyleticPattern</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+  </step>
+
+  <!-- for this step, the script changes abbrev 'rhiz' to 'rirr' for abbrev on fungidb, remove when undo 'rhiz' -->
+  <step name="predictEcNumbers" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PredictEcNumbers">
+    <paramValue name="outputDir">$$dataDir$$</paramValue>
+    <paramValue name="outputFile">$$dataDir$$/ec.txt</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="makeOrthomclDependentDir"/>
+    <depends name="createTable_GroupDomainDescription"/>
+  </step>
+  <!-- apparently the plugin called by this step needs work. IT IS IGNORING THE KEYWORD FILTERS -->
+
+  <step name="insertOrthoMCLDerivedECAssociations" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoMCLDerivedECGenomic" stepLoadTypes="plugin">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="inputFile">$$dataDir$$/ec.txt</paramValue>
+    <paramValue name="evidenceCode">OrthoMCLDerived</paramValue>
+    <paramValue name="idSql">select taf.aa_sequence_id from dots.Transcript t, dots.TranslatedAAFeature taf, dots.GeneFeature gf where gf.source_id = ? and gf.na_feature_id = t.parent_id and t.na_feature_id = taf.na_feature_id</paramValue>
+    <depends name="predictEcNumbers"/>
+  </step>
+
+  <step name="insertEcNumberGenus" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertEcNumberGenus" stepLoadTypes="plugin">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="insertOrthoMCLDerivedECAssociations"/>
+  </step>
+
+</workflowGraph>

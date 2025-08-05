@@ -15,10 +15,10 @@ sub run {
     my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
     my $copyToDir = "$websiteFilesDir/$webServicesDir/";
-    my $cmd_copy = "cp -r $workflowDataDir/$copyFromDir/ $copyToDir";
+    my $cmd_copy = "cp -r $workflowDataDir/$copyFromDir $copyToDir";
     
     if ($undo) {
-        $self->runCmd(0,"rm -rf $copyToDir");
+        $self->runCmd(0,"rm -rf $copyToDir/geneTrees");
     }else{
         $self->runCmd($test, $cmd_copy);
     }

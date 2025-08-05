@@ -9,13 +9,14 @@ sub run {
     my ($self, $test, $undo) = @_;
 
     my $workflowDataDir = $self->getWorkflowDataDir();
-    my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
 
     my $orthoVersion = $self->getSharedConfig('buildVersion');
 
     my $groupsFile = $self->getParamValue('groupsFile');
 
     my $orthoFileFullPath = "$workflowDataDir/$groupsFile";
+
+    my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
 
     my $args = " --orthoFile $orthoFileFullPath --orthoVersion $orthoVersion --extDbName OrthoMCL --extDbVersion dontcare --gusConfigFile $gusConfigFile";
 

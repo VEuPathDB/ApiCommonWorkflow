@@ -8,7 +8,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $inputFile = $self->getParamValue('inputFile');
+  my $inputFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue('inputFile');
   my $evidenceCode = $self->getParamValue('evidenceCode');
   my $idSql = $self->getParamValue('idSql');
 

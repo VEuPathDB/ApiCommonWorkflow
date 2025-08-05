@@ -9,9 +9,8 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
 
-  my $args = " --gusConfigFile $gusConfigFile";
+  my $args = " ";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertOrthomclGroupTaxonMatrix", $args);
 
