@@ -5,6 +5,10 @@ use strict;
 use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunNextflow;
 
+sub hasPluginCalls {
+    return 1;
+}
+
 sub workflowDataPath {
   my ($self, $file) = @_;
   return join("/",$self->getStudyDirectory() , $file);
