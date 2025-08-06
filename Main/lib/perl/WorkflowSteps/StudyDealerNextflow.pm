@@ -28,7 +28,7 @@ params {
     mode = "$mode"
     outputDir = "${workflowDataDir}/${resultsDirectory}"
     datasetName = "$datasetName"
-    workflowPath = "\${params.workflowDataDir}/${projectName}/${organismAbbrev}/${params.mode}"
+    workflowPath = "\${params.workflowDataDir}/${projectName}/${organismAbbrev}/${mode}"
     filePatterns = [phenotype: "\${params.workflowPath}/\${params.datasetName}/*.{txt,tab}",
                     phenotypeScript: "\${params.workflowPath}/\${params.datasetName}/*.{R,r}" ]
 }
