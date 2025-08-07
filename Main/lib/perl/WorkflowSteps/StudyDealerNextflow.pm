@@ -26,7 +26,7 @@ params {
     gusConfigFile = "${workflowDataDir}/${gusConfigFile}"
     workflowDataDir = "$workflowDataDir"
     mode = "$mode"
-    outputDir = "${workflowDataDir}/${resultsDirectory}"
+    outputDir = "${resultsDirectory}"
     datasetName = "$datasetName"
     workflowPath = "\${params.workflowDataDir}/${projectName}/${organismAbbrev}/\${params.mode}"
     filePatterns = [phenotype: "\${params.workflowPath}/\${params.datasetName}/*.{txt,tab}",
