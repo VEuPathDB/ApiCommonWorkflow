@@ -31,8 +31,8 @@ params {
     outputDir = "${resultsDirectory}"
     datasetName = "$datasetName"
     workflowPath = "\${params.workflowDataDir}/${projectName}/${organismAbbrev}/${workflowGraphDir}"
-    filePatterns = [phenotype: "\${params.workflowPath}/\${params.datasetName}/*.{txt,tab}",
-                    phenotypeScript: "\${params.workflowPath}/\${params.datasetName}/*.{R,r}" ]
+    filePatterns = [phenotype: "\${params.workflowPath}/\${params.datasetName}/final/*.{txt,tab}",
+                    phenotypeScript: "\${params.workflowPath}/\${params.datasetName}/final/*.{R,r}" ]
 }
 
 includeConfig "\$baseDir/conf/singularity.config"
