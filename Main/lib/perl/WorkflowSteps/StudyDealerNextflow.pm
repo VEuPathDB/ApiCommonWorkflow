@@ -21,6 +21,8 @@ sub nextflowConfigAsString {
     my $organismAbbrev = $self->getParamValue("organismAbbrev");
 
 
+    my $workflowGraphDir = "organismSpecific";
+
       my $configString = <<NEXTFLOW;
 params {
     gusConfigFile = "${workflowDataDir}/${gusConfigFile}"
@@ -28,7 +30,7 @@ params {
     mode = "$mode"
     outputDir = "${resultsDirectory}"
     datasetName = "$datasetName"
-    workflowPath = "\${params.workflowDataDir}/${projectName}/${organismAbbrev}/\${params.mode}"
+    workflowPath = "\${params.workflowDataDir}/${projectName}/${organismAbbrev}/${workflowGraphDir}"
     filePatterns = [phenotype: "\${params.workflowPath}/\${params.datasetName}/*.{txt,tab}",
                     phenotypeScript: "\${params.workflowPath}/\${params.datasetName}/*.{R,r}" ]
 }
