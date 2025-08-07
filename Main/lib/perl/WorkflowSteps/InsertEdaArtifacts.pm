@@ -16,7 +16,7 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $args = "--extDbRlsSpec '$extDbRlsSpec' --inputDirectory ${workflowDataDir}/${inputDirectory} --gusConfigFile ${workflowDataDir}/${gusConfgFile} --outputDirectory ${workflowDataDir}/${outputDirectory}";
+  my $args = "--extDbRlsSpec '$extDbRlsSpec' --inputDirectory ${workflowDataDir}/${inputDirectory} --gusConfigFile ${workflowDataDir}/${gusConfigFile} --outputDirectory ${workflowDataDir}/${outputDirectory}";
 
   if($test) {
     $self->runCmd(0, "touch ${workflowDataDir}/${outputDirectory}");
