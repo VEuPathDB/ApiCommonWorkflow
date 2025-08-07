@@ -28,12 +28,12 @@ params {
     mode = "$mode"
     outputDir = "${workflowDataDir}/${resultsDirectory}"
     datasetName = "$datasetName"
-    workflowPath = "\${params.workflowDataDir}/${projectName}/${organismAbbrev}/${mode}"
+    workflowPath = "\${params.workflowDataDir}/${projectName}/${organismAbbrev}/\${params.mode}"
     filePatterns = [phenotype: "\${params.workflowPath}/\${params.datasetName}/*.{txt,tab}",
                     phenotypeScript: "\${params.workflowPath}/\${params.datasetName}/*.{R,r}" ]
 }
 
-includeConfig "\$baseDir/conf/singularity.conf"
+includeConfig "\$baseDir/conf/singularity.config"
 
 NEXTFLOW
 
