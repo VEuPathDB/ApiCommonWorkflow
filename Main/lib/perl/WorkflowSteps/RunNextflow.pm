@@ -8,13 +8,17 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 # Abstract method for generation of nextflow config
 sub nextflowConfigAsString { }
 
+# must declare if the nextflow workflow will be running GUS plugins
+sub hasPluginCalls { }
+
+
 # this is often needed by subclasses when generating config file
 sub getResultsDirectory {
     my ($self) = @_;
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $resultsDir = $self->getParamValue('resultsDir');
 
-    return "${workflowDataDir}${resultsDir}";
+    return "${workflowDataDir}/${resultsDir}";
 }
 
 sub getWorkingDirectory {
@@ -22,9 +26,8 @@ sub getWorkingDirectory {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $workingDir = $self->getParamValue('workingDir');
 
-    return "${workflowDataDir}${workingDir}";
+    return "${workflowDataDir}/${workingDir}";
 }
-
 
 sub run {
     my ($self, $test, $undo) = @_;
@@ -43,7 +46,10 @@ sub run {
 
     my $nextflowWorkflow = $self->getParamValue('nextflowWorkflow');
     my $isGitRepo = $self->getBooleanParamValue("isGitRepo");
-    my $gitBranch = $self->getParamValue("gitBranch");
+
+    my $nextflowWorkflowBranchKey = $self->getParamValue("nextflowWorkflow") . ".branch";
+    my $workflowBranch = $self->getSharedConfigRelaxed($nextflowWorkflowBranchKey) ? $self->getSharedConfigRelaxed($nextflowWorkflowBranchKey) : "main";
+
     my $nextflowEntry = $self->getParamValue("nextflowEntry");
 
     my $entry;
@@ -51,7 +57,7 @@ sub run {
         $entry = "-entry $nextflowEntry";
     }
 
-    my $cmd = "export NXF_WORK=$nextflowWork && nextflow -log $nextflowLog -C $nextflowConfig run -ansi-log false -r $gitBranch $nextflowWorkflow $entry -resume 1>&2";
+    my $cmd = "export NXF_WORK=$nextflowWork && nextflow -log $nextflowLog -C $nextflowConfig run -ansi-log false -r $workflowBranch $nextflowWorkflow $entry -resume 1>&2";
     if($isGitRepo){
         $cmd = "nextflow pull $nextflowWorkflow; $cmd";
     }
@@ -73,7 +79,10 @@ sub run {
     }
     else {
 
-        my $msgForError=
+        my $msgForError;
+        
+        if($self->hasPluginCalls()) {
+            $msgForError=
 "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Since this nextflow step FAILED, please CLEAN UP by calling:
 
@@ -84,6 +93,7 @@ tables.  ga most likely wrote to WorkflowStepAlgInvocation, and those rows
 must be cleaned out.)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ";
+        }
 
         $self->runCmd($test, $cmd, $msgForError);
     }
