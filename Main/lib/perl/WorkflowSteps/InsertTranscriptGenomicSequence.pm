@@ -19,7 +19,10 @@ sub run {
 
   my $mode = $undo ? "delete" : "load";
 
-  my $cmd = "transcriptGenomicSequenceTable --gusConfigFile $workflowDataDir/$gusConfigFile --orgAbbrev $organismAbbrev --mode $mode --schema $schema --project $project";
+  my $cmd = "transcriptGenomicSequenceTable --gusConfigFile $workflowDataDir/$gusConfigFile --mode $mode --schema $schema --project $project";
+
+  $cmd .= " --orgAbbrev $organismAbbrev" if ($organismAbbrev);
+
   $self->runCmd($test, $cmd);
 }
 
