@@ -22,36 +22,24 @@ sub run {
   my $downloadFileName = "$websiteFilesDir/$downloadSiteDir/iprscan_$project-$release.txt";
 
   my $sql = <<"EOF";
-     SELECT xas.secondary_identifier
+SELECT ir.protein_source_id
            || chr(9) ||
          xd.name
            || chr(9) ||
-         dr.primary_identifier
+         ir.INTERPRO_PRIMARY_ID
            || chr(9) ||
-         dr.secondary_identifier
+         ir.INTERPRO_SECONDARY_ID
            || chr(9) ||
-         al.start_min
+         ir.INTERPRO_START_MIN
            || chr(9) ||
-         al.end_min
+         ir.INTERPRO_END_MIN
            || chr(9) ||
-         to_char(df.e_value,'9.9EEEE')
+         to_char(ir.INTERPRO_E_VALUE,'9.9EEEE')
   FROM
-    dots.aalocation al,
-    sres.externaldatabaserelease xdr,
-    sres.externaldatabase xd,
-    sres.dbref dr,
-    dots.DbRefAAFeature draf,
-    dots.domainfeature df,
-    dots.externalaasequence xas
+    apidb.interproresults ir,
+    sres.externaldatabase xd
   WHERE
-     xas.aa_sequence_id = df.aa_sequence_id
-     AND df.aa_feature_id = al.aa_feature_id
-     AND df.aa_feature_id = draf.aa_feature_id
-     AND draf.db_ref_id = dr.db_ref_id
-     AND df.external_database_release_id = xdr.external_database_release_id
-     AND xdr.external_database_id = xd.external_database_id
-     AND xdr.version = '$interproExtDbVer'
-     AND xd.name = '$interproExtDb'
+    xd.name = '$interproExtDb'
 EOF
 
   if ($undo) {
