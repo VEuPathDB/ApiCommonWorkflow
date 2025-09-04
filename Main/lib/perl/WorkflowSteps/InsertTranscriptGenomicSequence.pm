@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::InsertSpliceSiteTranscript;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertTranscriptGenomicSequence;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -19,7 +19,10 @@ sub run {
 
   my $mode = $undo ? "delete" : "load";
 
-  my $cmd = "spliceSiteTranscripts.pl --gusConfigFile $workflowDataDir/$gusConfigFile --orgAbbrev $organismAbbrev --mode $mode --schema $schema --project $project";
+  my $cmd = "transcriptGenomicSequenceTable --gusConfigFile $workflowDataDir/$gusConfigFile --mode $mode --schema $schema --project $project";
+
+  $cmd .= " --orgAbbrev $organismAbbrev" if ($organismAbbrev);
+
   $self->runCmd($test, $cmd);
 }
 

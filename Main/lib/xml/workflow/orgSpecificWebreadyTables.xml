@@ -181,6 +181,16 @@
     <depends name="createTable_GenomicSeqAttributes"/>
   </step>
 
+  <step name="createTable_TranscriptGenomicSequence" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
+    <paramValue name="tableName">TranscriptGenomicSequence</paramValue>
+    <paramValue name="psqlDirName">orgSpecific</paramValue>
+    <paramValue name="mode">$$mode$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_GenomicSequenceSequence"/>
+  </step>
+
   <step name="createTable_EstSequence" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">EstSequence</paramValue>
     <paramValue name="psqlDirName">orgSpecific</paramValue>
@@ -509,7 +519,15 @@
     <depends name="createTable_TranscriptAttributes"/>
   </step>
 
-  <!-- The partitions for these tables are made here but the rows will be added in the comparativeWebreadyTables graph -->
+  <step name="insert_TranscriptGenomicSequence" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertTranscriptGenomicSequence">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <depends name="createTable_TranscriptGenomicSequence"/>
+    <depends name="createTable_GeneAttributes"/>
+  </step>
+
+  <!-- The partitions for these tables are made here but the rows will be added in the OrthoMCLDependent graph -->
   <step name="createTable_GeneOrthologGroup" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyPartitionedTable">
     <paramValue name="tableName">GeneOrthologGroup</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
