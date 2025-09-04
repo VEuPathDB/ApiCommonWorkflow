@@ -1,0 +1,46 @@
+<workflowGraph name="genomicsEdaStudyWrangler">
+  <param name="parentDataDir"/>
+  <param name="projectName"/>
+  <param name="organismAbbrev"/>
+  <param name="datasetName"/>
+  <param name="datasetVersion"/>
+  <param name="gusConfigFile"/>
+  <param name="mode"/>
+
+  <constant name="dataDir">$$parentDataDir$$/studyWrangler</constant>
+  <constant name="resultsDirectory">$$dataDir$$/results</constant>
+  <constant name="artifactLoaderOutputDirectory">$$dataDir$$/artifactLoaderOutputDirectory</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$resultsDirectory$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="studyDealerNextflow" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::StudyDealerNextflow">
+    <paramValue name="workingDir">$$dataDir$$</paramValue>
+    <paramValue name="resultsDir">$$resultsDirectory$$</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/study-dealer-nextflow</paramValue>
+    <paramValue name="isGitRepo">true</paramValue>
+    <paramValue name="nextflowEntry"></paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="mode">$$mode$$</paramValue>
+    <paramValue name="datasetName">$$datasetName$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <depends name="makeResultDir"/>
+  </step>
+
+  <step name="insertEdaArtifacts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertEdaArtifacts" stepLoadTypes="plugin">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="inputDirectory">$$resultsDirectory$$/$$datasetName$$</paramValue>
+    <paramValue name="outputDirectory">$$artifactLoaderOutputDirectory$$</paramValue>
+    <paramValue name="extDbRlsSpec">$$datasetName$$|$$datasetVersion$$</paramValue>
+    <depends name="studyDealerNextflow"/>
+  </step>
+
+
+  </workflowGraph>
