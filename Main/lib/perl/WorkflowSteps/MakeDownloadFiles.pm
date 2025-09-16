@@ -55,8 +55,7 @@ sub run {
     $self->runCmd($test, "gzip $deflinesDownloadFileName");
 
     # domain frequencies
-    my $extDbRlsId = $self->getExtDbRlsId($test, "PFAM|" . $self->getExtDbVersion($test, "PFAM", $gusConfigFile), $gusConfigFile);
-    $sql = $self->getDomainsSql($extDbRlsId);
+    $sql = $self->getDomainsSql();
     $self->runCmd($test, "makeFileWithSql --outFile $domainsDownloadFileName --sql \"$sql\" --gusConfigFile $gusConfigFile");
     $self->runCmd($test, "gzip $domainsDownloadFileName");
 
@@ -100,19 +99,40 @@ sub getDomainsSql {
   my ($self, $extDbRlsId) = @_;
 
 return "
-SELECT name as Orthomcl_Group, primary_identifier as Pfam_Name, round(count(aa_sequence_id)/number_of_members,4) as Frequency
-    FROM ( 
-    SELECT distinct og.group_id as name, db.primary_identifier, ogs.aa_sequence_id, q.number_of_members                                                                                                        FROM apidb.OrthologGroupAaSequence ogs, apidb.OrthologGroup og, dots.DomainFeature df, dots.DbRefAaFeature dbaf, sres.DbRef db, 
-        (SELECT group_id, count(aa_sequence_id) as number_of_members 
-        FROM apidb.orthologgroupaasequence GROUP BY group_id) q
-    WHERE og.ortholog_group_id != 0 
-    AND ogs.group_id = og.group_id 
-    AND ogs.group_id = q.group_id                                                                                                            
-    AND og.is_residual in (0,1) AND df.aa_sequence_id = ogs.aa_sequence_id                                                                                                        
-    AND dbaf.aa_feature_id = df.aa_feature_id AND db.db_ref_id = dbaf.db_ref_id                                                                                                                    
-    AND db.external_database_release_id = $extDbRlsId) qry
-GROUP BY name, number_of_members, primary_identifier                                     
-ORDER BY name, frequency desc
+SELECT 
+    name AS Orthomcl_Group,
+    primary_identifier AS Pfam_Name,
+    ROUND(COUNT(aa_sequence_id) / number_of_members, 4) AS Frequency
+FROM (
+    SELECT DISTINCT 
+        og.group_id AS name,
+        ir.interpro_primary_id as primary_identifier,
+        ogs.aa_sequence_id,
+        q.number_of_members
+    FROM 
+        apidb.OrthologGroupAaSequence ogs
+        JOIN apidb.OrthologGroup og ON ogs.group_id = og.group_id
+        JOIN (
+            SELECT 
+                group_id, 
+                COUNT(aa_sequence_id) AS number_of_members
+            FROM apidb.OrthologGroupAaSequence
+            GROUP BY group_id
+        ) q ON ogs.group_id = q.group_id
+        JOIN dots.aasequence das ON das.aa_sequence_id = ogs.aa_sequence_id
+        JOIN apidb.interproresults ir ON ir.protein_source_id = das.source_id
+    WHERE 
+        og.ortholog_group_id != 0
+        AND og.is_residual IN (0, 1)
+        AND ir.interpro_db_name = 'Pfam'
+) qry
+GROUP BY 
+    name, 
+    number_of_members, 
+    primary_identifier
+ORDER BY 
+    name, 
+    frequency DESC
 "
 }
 
