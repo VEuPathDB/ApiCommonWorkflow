@@ -1,0 +1,57 @@
+<workflowGraph name="">
+  <param name="projectName"/>
+  <param name="orthomclPeripheralResultsDir"/>
+  <paramValue name="projectVersionForWebsiteFiles">CURRENT</paramValue>
+
+  <constant name="relativeWebServicesDir">webServices/$$projectName$$/release-$$projectVersionForWebsiteFiles$$</constant>
+
+  <constant name="geneTreesDir">$$projectName$$/geneTrees</constant>
+  <constant name="nextflowWorkflow">VEuPathDB/geneTree-nextflow</constant>
+
+  <step name="makeGeneTreesAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$geneTreesDir$$/analysisDir</paramValue>
+  </step>
+
+  <step name="makeGeneTreesResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$geneTreesDir$$/analysisDir/results/</paramValue>
+    <depends name="makeGeneTreesAnalysisDir"/>
+  </step>
+
+  <step name="copyGroupFastas" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDir">
+    <paramValue name="fromDir">$$orthomclPeripheralResultsDir$$/groupFastas</paramValue>
+    <paramValue name="toDir">$$geneTreesDir$$/analysisDir/groupFastas</paramValue>
+    <depends name="makeGeneTreesResultsDir"/>
+  </step>
+
+  <step name="makeGeneTreesNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGeneTreesNextflowConfig">
+    <paramValue name="workingDirRelativePath">$$geneTreesDir$$</paramValue>
+    <paramValue name="clusterResultDir">$$geneTreesDir$$/analysisDir/results/</paramValue>
+    <paramValue name="configFileName">nextflow.config</paramValue>
+    <paramValue name="analysisDir">$$geneTreesDir$$/analysisDir</paramValue>
+    <paramValue name="groupFastas">$$geneTreesDir$$/analysisDir/groupsFastas</paramValue>
+    <depends name="copyGroupFastas"/>
+  </step>
+
+   <subgraph name="runGeneTreeNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
+    <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$geneTreesDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$geneTreesDir$$/analysisDir/nextflow.config</paramValue>
+    <paramValue name="ngsSamplesNextflowConfigFile"></paramValue>
+    <paramValue name="organismAbbrev"></paramValue> <!-- Not neccessary for ortho -->
+    <paramValue name="genomeSpec">$$projectName$$|peripheralGroups</paramValue> <!-- Using for correct naming of preprocessed data cache -->
+    <paramValue name="isProteomeAnalysis">true</paramValue>
+    <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho -->
+    <paramValue name="analysisDir">$$geneTreesDir$$/analysisDir</paramValue>
+    <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
+    <paramValue name="entry"></paramValue>
+    <depends name="makeOrthoFinderPeripheralNextflowConfig"/>
+   </subgraph>
+
+  <step name="CopyGeneTreesToWebservices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyGeneTreesToWebServices">
+    <paramValue name="geneTreesDir">$$geneTreesDir$$/analysisDir/results/</paramValue>
+    <paramValue name="webServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <depends name="runGeneTreeNextflowOnCluster"/>
+  </step>
+
