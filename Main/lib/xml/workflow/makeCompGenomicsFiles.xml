@@ -6,7 +6,6 @@
       <param name="organismAbbrev"/>
       <param name="comparativeGenomicsDir"/>
       <param name="isAnnotatedGenome"/>
-      <param name="strainsComparisonInputDir"/>
 
     <constant name="dataDir">$$parentDataDir$$/compGenomicsFiles</constant>
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -16,11 +15,6 @@
     <step name="copyMaskedFastaFileToComparativeGenomicsDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$">
       <paramValue name="fromFile">$$maskedGenomeSequenceFile$$</paramValue>
       <paramValue name="toFile">$$comparativeGenomicsDir$$/$$organismAbbrev$$.fasta</paramValue>
-    </step>
-
-    <step name="copyMaskedFastaFileToStrainsComparisonDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$">
-      <paramValue name="fromFile">$$maskedGenomeSequenceFile$$</paramValue>
-      <paramValue name="toFile">$$strainsComparisonInputDir$$/$$organismAbbrev$$.fasta</paramValue>
     </step>
 
   <step name="makeMercatorGffFile"
@@ -43,13 +37,6 @@
           stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile" includeIf="$$isAnnotatedGenome$$">
       <paramValue name="fromFile">$$dataDir$$/$$organismAbbrev$$_corrected.gff</paramValue>
       <paramValue name="toFile">$$comparativeGenomicsDir$$/$$organismAbbrev$$.gff</paramValue>
-      <depends name="correctReadingFrameInMercatorGffFile"/> 
-    </step>
-
-  <step name="copyCorrectedGffFileToStrainsComparisonDir"
-          stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile"  includeIf="$$isAnnotatedGenome$$">
-      <paramValue name="fromFile">$$dataDir$$/$$organismAbbrev$$_corrected.gff</paramValue>
-      <paramValue name="toFile">$$strainsComparisonInputDir$$/$$organismAbbrev$$.gff</paramValue>
       <depends name="correctReadingFrameInMercatorGffFile"/> 
     </step>
 

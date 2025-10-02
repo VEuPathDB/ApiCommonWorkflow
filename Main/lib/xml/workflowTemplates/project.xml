@@ -153,12 +153,12 @@
     </step>
 -->
 
-    <!-- each organism creates this step, but all are ignored except the one made by the ref strain. -->
+<!--remove strainsComparison steps from workflow, replaced by "Is Syntenic" flag for Orthologs 
     <step name="${organismAbbrev}_makeStrainsComparisonDir" stepClass="ReFlow::StepClasses::MakeDataDir" includeIf="${isReferenceStrain}" groupName="${organismAbbrev}">
       <paramValue name="dataDir">$$dataDir$$/${organismAbbrev}_strainsComparisonInput</paramValue>
       <depends name="makeDataDir"/>
     </step>
-
+-->
     <step name="${organismAbbrev}_loadTemporaryNcbiTaxonId" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadTemporaryNcbiTaxonId" includeIf="${hasTemporaryNcbiTaxonId}" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
@@ -255,7 +255,6 @@
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
       <depends name="${organismAbbrev}_LoadGenome"/>
-      <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
     </subgraph>
 
     <subgraph name="${organismAbbrev}_nrdbProteinsAlignAgainstGenome" xmlFile="proteinAlignToGenome.xml"  excludeIf="${isHugeGenome}">
@@ -282,9 +281,7 @@
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="comparativeGenomicsDir">$$comparativeGenomicsInputDir$$</paramValue>
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
-      <paramValue name="strainsComparisonInputDir">$$dataDir$$/${referenceStrainOrganismAbbrev}_strainsComparisonInput</paramValue>
       <depends name="makeComparativeGenomicsDir"/>
-      <depends name="${referenceStrainOrganismAbbrev}_makeStrainsComparisonDir"/>
       <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>
     </subgraph>
 
@@ -611,7 +608,7 @@
   <datasetTemplate class="referenceStrain">
     <prop name="organismAbbrev"/>      <!-- same as referenceStrainOrganismAbbrev -->
     <prop name="isAnnotatedGenome"/>  <!-- if ref strain is annotated -->
-    <!--remove strainsComparison steps from workflow
+    <!--remove strainsComparison steps from workflow, replaced by "Is Syntenic" flag for Orthologs
     <subgraph name="${organismAbbrev}_strainsComparison" xmlFile="strainsComparison.xml" includeIf="${isAnnotatedGenome} &amp;&amp; !$$areBigGenomes$$" groupName="${organismAbbrev}" >
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="referenceStrainOrganismAbbrev">${organismAbbrev}</paramValue>
