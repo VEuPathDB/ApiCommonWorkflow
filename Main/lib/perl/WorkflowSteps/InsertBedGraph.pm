@@ -18,7 +18,7 @@ sub run {
     my $args = "--bedFile=$workflowDataDir/$bedFile --algorithm='$algorithm' --extDbRlsSpec='$extDbRlsSpec'";
 
     if($self->isProteinAlignments()) {
-        $args  =. " --isProteinAlignments";
+        $args  .= " --isProteinAlignments";
     }
 
     if($undo) {
