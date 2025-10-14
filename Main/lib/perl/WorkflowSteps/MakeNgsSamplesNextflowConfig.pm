@@ -17,8 +17,11 @@ sub run {
 
   my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
   my $sampleSheetName = $self->getParamValue("sampleSheetName");
+  my $assayType = $self->getParamValue("assayType");
+  my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $fromSRA = $self->getBooleanParamValue("fromSRA") ? "true" : "false";
 
+  my $genomeSize = $self->getGenomeSize($test, $organismAbbrev); 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
@@ -44,6 +47,8 @@ params {
   samplesheetName = "$sampleSheetName"
   fromSra = $fromSRA
   outDir = "$digestedOutputDir"
+  genomeSize = $genomeSize
+  assayType = "$assayType"
 }
 
 process {

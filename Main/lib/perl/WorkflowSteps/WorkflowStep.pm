@@ -143,6 +143,27 @@ sub getSoIds {
   return $soIds;
 }
 
+sub getGenomeSize {
+  my ($self, $test, $organismAbbrev, $gusConfigFile) = @_;
+  die "'test' arg '$test' must be a 0 or 1" unless (!$test || $test eq '0' || $test eq '1');
+
+  my $extDbName = "${organismAbbrev}_primary_genome_RSRC";
+  my $sql = "select sum(ns.length)
+             from dots.externalnasequence ns, sres.externaldatabase e, sres.externaldatabaserelease er
+             where ns.external_database_release_id = er.external_database_release_id
+               and er.external_database_id = e.external_database_id
+               and e.name like '${extDbName}'";
+
+  $gusConfigFile = $self->getGusConfigFile() if (!$gusConfigFile);
+  $gusConfigFile = "--gusConfigFile \"" . $gusConfigFile . "\"";
+  my $cmd = "getValueFromTable --idSQL \"$sql\" $gusConfigFile";
+  my $genomeSize = $self->runCmd($test, $cmd);
+  if ($test) {
+    return "UNKNOWN_GENOME_SIZE";
+  } else {
+    return $genomeSize;
+  }
+}
 
 sub runPlugin {
   my ($self, $test, $undo, $plugin, $args) = @_;
