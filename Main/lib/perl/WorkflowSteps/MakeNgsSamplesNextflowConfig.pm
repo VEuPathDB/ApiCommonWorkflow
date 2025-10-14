@@ -47,7 +47,7 @@ params {
   samplesheetName = "$sampleSheetName"
   fromSra = $fromSRA
   outDir = "$digestedOutputDir"
-  genomeSize = "$genomeSize"
+  genomeSize = $genomeSize
   assayType = "$assayType"
 }
 
