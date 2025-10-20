@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeRnaSeqNextflowConfig;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeRnaSeqAnalysisNextflowConfig;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
