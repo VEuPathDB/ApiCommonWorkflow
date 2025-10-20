@@ -13,16 +13,18 @@
   <param name="relativeWebServicesDir"/>
   <param name="studyDir"/>
   <param name="analysisConfig"/>
+  <param name="genomeExtDbRlsSpec"/>
   
-  <constant name="dataDir">$$parentDataDir$$/analysis_output</constant>
   <constant name="tpmDir">$$parentDataDir$$/TPM</constant>
-  <constant name="normalizeCoverageDir">$$parentDataDir$$/normalize_coverage</constant>
 
 
-  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$</paramValue>
-  </step>
+  <constant name="nextflowAnalysisDir">$$parentDataDir$$/nextflowAnalysisDir</constant>
+  <constant name="nextflowConfigFile">$$nextflowAnalysisDir$$/nextflow.config</constant>
 
+  <constant name="nextflowResultsDir">$$nextflowAnalysisDir$$/nextflow_output</constant>
+  <constant name="normalizeCoverageDir">$$nextflowResultsDir$$/normalize_coverage</constant>
+  <constant name="analysisOutputDir">$$nextflowResultsDir$$/analysis_output</constant>
+  
   <step name="tpmFromHtseqCounts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TpmFromHtseqCounts">
     <paramValue name="studyDir">$$studyDir$$</paramValue>
     <paramValue name="outputDir">$$tpmDir$$</paramValue>
@@ -31,21 +33,41 @@
     <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
   </step>
 
-  <step name="doStudyAssayResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoStudyAssayResultsRnaSeq">
+  <step name="makeRnaSeqNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeRnaSeqNextflowConfig">
     <paramValue name="analysisConfigFile">$$analysisConfig$$</paramValue>
-    <paramValue name="outputDir">$$parentDataDir$$</paramValue>
+    <paramValue name="finalDir">$$studyDir$$</paramValue>
+    <paramValue name="outputDirectory">$$nextflowResultsDir$$</paramValue>
     <paramValue name="technologyType">RNASeq</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="inputFile">$$studyDir$$/ancillary.txt</paramValue>
+    <paramValue name="tpmDir">$$tpmDir$$</paramValue>
+    <paramValue name="pseudogenesFile">$$pseudogenesFile$$</paramValue>
+    <paramValue name="chromosomeSizeFile">$$seqSizeFile$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
     <depends name="tpmFromHtseqCounts"/>
   </step>
 
+  <subgraph name="runNextflowLocal" xmlFile="runNextflowLocal.xml">
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <paramValue name="analysisDir">$$nextflowAnalysisDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="isProteomeAnalysis">true</paramValue>
+    <paramValue name="datasetSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/study-assay-results-nextflow</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="entry"></paramValue>
+    <depends name="makeRnaSeqNextflowConfig"/>
+  </subgraph>
+
   <step name="loadStudyResultsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-    <paramValue name="configFile">$$dataDir$$/insert_study_results_config.txt</paramValue>
-    <paramValue name="inputDir">$$dataDir$$</paramValue>
+    <paramValue name="configFile">$$analysisOutputDir$$/insert_study_results_config.txt</paramValue>
+    <paramValue name="inputDir">$$analysisOutputDir$$</paramValue>
     <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
     <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="doStudyAssayResults"/>
+    <depends name="runNextflowLocal"/>
   </step>
 
   <step name="loadRNASeqMetrics" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertRNASeqMetrics" stepLoadTypes="plugin">
@@ -55,15 +77,6 @@
     <depends name="loadStudyResultsFromConfig"/>
   </step>
 
-
-  <step name="normalizeCoverage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NormalizeBedGraphEbi">
-    <paramValue name="inputDir">$$parentDataDir$$</paramValue>
-    <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
-    <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
-  </step>
-
-
-
   <step name="copyNormalizedBedGraphToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyNormalizedBedGraphToWebServiceDir">
     <paramValue name="copyFromDir">$$normalizeCoverageDir$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -72,18 +85,8 @@
     <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="dataType">bulkrnaseq</paramValue>
-    <depends name="doStudyAssayResults"/>
-    <depends name="normalizeCoverage"/>
+    <depends name="runNextflowLocal"/>
   </step>
-
-  <step name="makeMergedBigwigs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RNAseqMerge">
-    <paramValue name="inputsDir">$$parentDataDir$$</paramValue>
-    <paramValue name="experimentName">$$experimentName$$</paramValue>
-    <paramValue name="chromSizesFile">$$seqSizeFile$$</paramValue>
-    <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
-    <depends name="normalizeCoverage"/>
-  </step>
-
 
   <step name="copyMergedBigwigsToWebSvc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyRnaSeqMergedBigwigsToWebSvc">
     <paramValue name="copyFromDir">$$parentDataDir$$/mergedBigwigs</paramValue>
@@ -93,10 +96,11 @@
     <paramValue name="analysisConfig">$$analysisConfig$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="dataType">bulkrnaseq</paramValue>
-    <depends name="makeMergedBigwigs"/>
     <depends name="copyNormalizedBedGraphToWebServiceDir"/>
   </step>
 
+
+  <!-- maybe change this step based on new nextflow dirs?? -->
   <step name="removeIntermediateFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RemoveIntermediateRNASeqFiles">
     <paramValue name="experimentDir">$$parentDataDir$$</paramValue>
     <depends name="loadRNASeqMetrics"/>
