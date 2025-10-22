@@ -34,7 +34,7 @@ sub getWebsiteFileCmd {
                   taaf.translation_start::integer,
                   (taaf.translation_stop - taaf.translation_start + 1)::integer) as sequence
            from apidb.FeatureLocation fl,
-                webready.TranscriptAttributes gf,
+                webready.TranscriptAttributes_p gf,
                 dots.transcript t, dots.splicednasequence snas, dots.translatedaafeature taaf,
                 dots.nasequence ns, sres.ontologyTerm soseq, sres.taxon
       WHERE gf.gene_na_feature_id = t.parent_id

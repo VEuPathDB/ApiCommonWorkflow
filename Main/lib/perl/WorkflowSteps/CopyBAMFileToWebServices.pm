@@ -60,7 +60,7 @@ sub run {
         my $tuningTablePrefix = $self->getTuningTablePrefix($test, $organismAbbrev, $gusConfigFile);
 
         my $sql = "select sa.source_id||chr(9)||ns.length
-            from webready.GenomicSeqAttributes sa, dots.nasequence ns
+            from webready.GenomicSeqAttributes_p sa, dots.nasequence ns
             where sa.is_top_level = 1
             and sa.na_sequence_id = ns.na_sequence_id
             and sa.org_abbrev = '$organismAbbrev'
