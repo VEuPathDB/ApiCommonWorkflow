@@ -23,6 +23,10 @@
     <constant name="nextflowResultsDir">$$nextflowAnalysisDir$$/nextflow_output</constant>
     <constant name="analysisOutputDir">$$nextflowResultsDir$$/analysis_output</constant>
 
+    <step name="makeAnslysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$nextflowAnalysisDir$$</paramValue>
+    </step>
+
     <!-- This step makes the nextflow config file -->
     <step name="makeStudyAssayResultsNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeStudyAssayResultsNextflowConfig">
       <paramValue name="analysisConfigFile">$$finalDir$$/analysisConfig.xml</paramValue>
@@ -35,6 +39,8 @@
       <paramValue name="expectNdfFile">false</paramValue>
       <paramValue name="passPlatformMappingFile">false</paramValue>
       <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+      <depends name="makeAnslysisDir"/>
+
     </step>
 
     <subgraph name="runNextflowLocal" xmlFile="runNextflowLocal.xml">

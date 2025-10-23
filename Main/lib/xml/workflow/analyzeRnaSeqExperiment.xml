@@ -24,6 +24,10 @@
   <constant name="nextflowResultsDir">$$nextflowAnalysisDir$$/nextflow_output</constant>
   <constant name="normalizeCoverageDir">$$nextflowResultsDir$$/normalize_coverage</constant>
   <constant name="analysisOutputDir">$$nextflowResultsDir$$/analysis_output</constant>
+
+  <step name="makeAnslysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$nextflowAnalysisDir$$</paramValue>
+  </step>
   
   <step name="tpmFromHtseqCounts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TpmFromHtseqCounts">
     <paramValue name="studyDir">$$studyDir$$</paramValue>
@@ -44,6 +48,7 @@
     <paramValue name="chromosomeSizeFile">$$seqSizeFile$$</paramValue>
     <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
     <depends name="tpmFromHtseqCounts"/>
+    <depends name="makeAnslysisDir"/>
   </step>
 
   <subgraph name="runNextflowLocal" xmlFile="runNextflowLocal.xml">
