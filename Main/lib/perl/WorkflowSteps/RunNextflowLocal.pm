@@ -27,7 +27,8 @@ sub run {
 
     my $workingDirectory = $self->getWorkingDirectory();
     my $resultsDirectory = $self->getResultsDirectory();
-    my $nextflowConfig = $self->getParamValue('nextflowConfigFile');
+    #my $nextflowConfig = $self->getParamValue('nextflowConfigFile');
+    my $nextflowConfig = $self->getWorkflowDataDir() . "/" . $self->getParamValue('nextflowConfigFile');
 
     chdir $workingDirectory;
 
