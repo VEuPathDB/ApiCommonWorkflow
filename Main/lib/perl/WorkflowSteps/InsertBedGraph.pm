@@ -5,6 +5,8 @@ package ApiCommonWorkflow::Main::WorkflowSteps::InsertBedGraph;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
+sub isProteinAlignments {}
+
 sub run {
     my ($self, $test, $undo) = @_;
 
@@ -14,7 +16,11 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
 
     my $args = "--bedFile=$workflowDataDir/$bedFile --algorithm='$algorithm' --extDbRlsSpec='$extDbRlsSpec'";
-  
+
+    if($self->isProteinAlignments()) {
+        $args  .= " --isProteinAlignments";
+    }
+
     if($undo) {
         $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertBedGraph", $args);
     } else {
