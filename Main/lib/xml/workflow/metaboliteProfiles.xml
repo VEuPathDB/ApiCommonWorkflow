@@ -5,19 +5,17 @@
     <param name="gusConfigFile"/>
 
     <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
+    <constant name="workingDir">$$dataDir$$/workingDir</constant>
+    <constant name="resultsDir">$$dataDir$$/outputDir</constant>
 
-    <!-- Reusing the DoStudyAssayResults WorkflowStep here.  -->
-    <step name="makeProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoStudyAssayResults">
-      <paramValue name="analysisConfigFile">$$parentDataDir$$/$$experimentName$$/final/analysisConfig.xml</paramValue>
-      <paramValue name="inputDir">$$dataDir$$/final</paramValue>
-      <paramValue name="outputDir">$$dataDir$$/outputDir</paramValue>
-      <paramValue name="geneProbeMappingTabFile"></paramValue>
-      <paramValue name="geneProbeMappingVendorFile"></paramValue>
-      <paramValue name="platformDirectory"></paramValue>
-      <paramValue name="expectCdfFile">false</paramValue>
-      <paramValue name="expectNdfFile">false</paramValue>
-      <paramValue name="passPlatformMappingFile">false</paramValue>
+    <step name="makeProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::StudyAssayResultsNextflow">
+      <paramValue name="analysisConfigFile">$$experimentName$$/final/analysisConfig.xml</paramValue>
+      <paramValue name="finalDir">$$experimentName$$/final</paramValue>
+      <paramValue name="workingDir">$$workingDir$$</paramValue>
+      <paramValue name="resultsDir">$$resultsDir$$</paramValue>
       <paramValue name="technologyType">metabolite_massSpec</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/study-assay-results-nextflow</paramValue>
+      <paramValue name="isGitRepo">true</paramValue>
     </step>
 
 

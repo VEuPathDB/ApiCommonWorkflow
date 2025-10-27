@@ -14,9 +14,17 @@
 
     <constant name="seqSizeFile">$$dataDir$$/seqSizes.txt</constant>
     <constant name="geneFootprintFile">$$dataDir$$/geneFootprintFile.txt</constant>
+    <constant name="pseudogenesFile">$$dataDir$$/pseudogenes.txt</constant>
 
     <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
         <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="dumpPseudogenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DumpPseudogenes">
+        <paramValue name="outputFile">$$pseudogenesFile$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+        <depends name="makeDataDir"/>
     </step>
 
     <step name="makeMaskGtf" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGsnapMaskFile">
@@ -87,9 +95,12 @@
           <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
           <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
           <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
+          <paramValue name="pseudogenesFile">$$pseudogenesFile$$</paramValue>
           <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+          <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
           <depends name="makeSeqSizeFile"/>
           <depends name="makeGeneFootprintFile"/>
+          <depends name="dumpPseudogenes"/>
           <depends name="${name}_ebi_rnaSeq_loadDataset"/>
       </subgraph>
     </datasetTemplate>
@@ -176,11 +187,14 @@
             <paramValue name="strandSpecific">${isStrandSpecific}</paramValue>
             <paramValue name="seqSizeFile">$$seqSizeFile$$</paramValue>
             <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
+            <paramValue name="pseudogenesFile">$$pseudogenesFile$$</paramValue>
             <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
             <paramValue name="studyDir">$$dataDir$$/${organismAbbrev}_${name}_rnaSeq_RSRC/bulkrnaseq/analysisDir/results</paramValue>
             <paramValue name="analysisConfig">$$dataDir$$/${organismAbbrev}_${name}_rnaSeq_RSRC/final/analysisConfig.xml</paramValue>
+            <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
             <depends name="makeSeqSizeFile"/>
             <depends name="makeGeneFootprintFile"/>
+            <depends name="dumpPseudogenes"/>
             <depends name="${name}_rnaSeq_experiment"/>
             <depends name="${name}_rnaSeq_experiment_CDS"/>
         </subgraph>

@@ -66,6 +66,11 @@ sub run {
     # $self->testInputFile('initSqlFile', "$initSqlDir/*.sql");
 
     $self->runCmd($test,$cmd);
+
+    $self->runCmd(0, "rm -rf $mysqlDir");
+    $self->runCmd(0, "rm -rf $initSqlDir");
+    $self->runCmd(0, "rm -rf $unpackDir");
+    $self->runCmd(0, "rm -rf $socketDir");
   }
 }
 
