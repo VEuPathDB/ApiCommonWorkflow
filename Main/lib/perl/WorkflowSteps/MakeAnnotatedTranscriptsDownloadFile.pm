@@ -112,7 +112,7 @@ SELECT t.source_id || ' | gene=' || gene_source_id || CASE WHEN is_deprecated = 
   || ' | is_pseudo=' ||  CASE WHEN t.is_pseudo = 1 THEN 'true' ELSE 'false' END
   as defline,
   ts.SEQUENCE
-FROM webready.TranscriptAttributes t, webready.TranscriptSequence ts,
+FROM webready.TranscriptAttributes_p t, webready.TranscriptSequence_p ts,
   DOTS.NASEQUENCE ns, sres.ontologyTerm soseq
 WHERE t.source_id = ts.SOURCE_ID
   AND ns.SOURCE_ID = t.SEQUENCE_ID

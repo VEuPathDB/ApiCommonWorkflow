@@ -21,7 +21,8 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $fromSRA = $self->getBooleanParamValue("fromSRA") ? "true" : "false";
 
-  my $genomeSize = $self->getGenomeSize($test, $organismAbbrev); 
+  my $gusConfig = $self->getWorkflowDataDir() . "/" . $self->getParamValue('gusConfigFile');
+  my $genomeSize = $self->getGenomeSize($test, $organismAbbrev, $gusConfig);
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");

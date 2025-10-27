@@ -105,7 +105,7 @@ SELECT t.protein_source_id || ' | transcript=' || t.source_id || ' | gene=' || t
   || ' | protein_length=' || t.protein_length 
   || ' | sequence_SO=' || soseq.name || ' | SO=' || so_term_name || CASE WHEN is_deprecated = 1 THEN ' | deprecated=true' ELSE '' END  || ' | is_pseudo=' || CASE WHEN t.is_pseudo = 1 THEN 'true' ELSE 'false' END
   as defline, taas.sequence
-FROM webready.TranscriptAttributes t, DOTS.NASEQUENCE ns, sres.ontologyTerm soseq,
+FROM webready.TranscriptAttributes_p t, DOTS.NASEQUENCE ns, sres.ontologyTerm soseq,
      dots.translatedaasequence taas
 WHERE ns.SOURCE_ID = t.SEQUENCE_ID
   AND ns.sequence_ontology_id = soseq.ontology_term_id
