@@ -26,7 +26,7 @@ sub run {
   my $baseConfigFile = "\$baseDir/conf/singularity.config";
 
   # Determine the input file based on platform mapping (logic from DoStudyAssayResults)
-  my $inputFile = "NA";
+  my $inputFile;
   if($passPlatformMappingFile) {
     my $platformDir = "$workflowDataDir/$platformDirectory";
     opendir(DIR, $platformDir);
@@ -62,11 +62,16 @@ params {
   finalDir = "$workflowDataDir/$finalDir"
   outputDirectory = "$workflowDataDir/$outputDirectory"
   technologyType = "$technologyType"
-  inputFile = "$inputFile"
+NEXTFLOW
+
+if (defined $inputFile) {
+    $configString .= "  inputFile = \"$inputfile\"\n";
+}
+
+$configString .= <<NEXTFLOW;
 }
 
 includeConfig "$baseConfigFile"
-
 NEXTFLOW
 
       print F $configString;
