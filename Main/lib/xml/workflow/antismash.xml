@@ -3,6 +3,7 @@
   <param name="parentDataDir"/>
   <param name="projectName"/>
   <param name="genomicSequenceFile"/>
+  <param name="gffFile"/>
   <param name="organismAbbrev"/>
   <param name="genomeExtDbRlsSpec"/>
 
@@ -34,11 +35,10 @@
     <depends name="makeResultDir"/>
   </step>
 
-  <step name="makeGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrgSpecificGffFile">
-    <paramValue name="outputFile">$$dataDir$$/$$organismAbbrev$$.gff</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <depends name="symLinkFasta"/>
+  <step name="symLinkGff" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$gffFile$$</paramValue>
+    <paramValue name="toFile">$$gffSymLink$$</paramValue>
+    <depends name="makeResultDir"/>
   </step>
 
   <step name="makeNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeAntismashNextflowConfig">
@@ -47,7 +47,7 @@
     <paramValue name="configFileName">nextflow.config</paramValue>
     <paramValue name="resultDir">$$resultsDirectory$$</paramValue>
     <paramValue name="fasta">$$fastaSymLink$$</paramValue>
-    <paramValue name="gff">$$dataDir$$/$$organismAbbrev$$.gff</paramValue>
+    <paramValue name="gff">$$gffSymLink$$</paramValue>
     <paramValue name="organism">fungi</paramValue>
     <depends name="makeGffFile"/>
   </step>

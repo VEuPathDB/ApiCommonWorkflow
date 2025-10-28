@@ -61,26 +61,6 @@
     <depends name="makeDataDir"/>
   </subgraph>
 
-
-  <step name="checkForFungiOrganism" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckForFungiOrganism">
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="taxonId">$$ncbiTaxonId$$</paramValue>
-    <paramValue name="skipIfFile">$$dataDir$$/doNotDoAnalysis</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="makeDataDir"/>
-  </step>
-
-  <subgraph name="antismash" xmlFile="antismash.xml" skipIfFile="$$dataDir$$/doNotDoAnalysis">
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="genomicSequenceFile">$$genomicSeqsFile$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <depends name="checkForFungiOrganism"/>
-  </subgraph>
-
-
   <subgraph name="trf" xmlFile="trf.xml" includeIf="!$$isHugeGenome$$">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
