@@ -65,7 +65,7 @@ params {
 NEXTFLOW
 
 if (defined $inputFile) {
-    $configString .= "  inputFile = \"$inputfile\"\n";
+    $configString .= "  inputFile = \"$inputFile\"\n";
 }
 
 $configString .= <<NEXTFLOW;
