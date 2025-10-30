@@ -56,17 +56,10 @@
     <depends name="makeDataDir"/>
   </step>
 
-  <step name="checkForFungiOrganism" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckForFungiOrganism">
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="taxonId">$$ncbiTaxonId$$</paramValue>
-    <paramValue name="skipIfFile">$$dataDir$$/skipAntismashAnalysis</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="makeGffFile"/>
-  </step>
-
-  <subgraph name="antismash" xmlFile="antismash.xml" skipIfFile="$$dataDir$$/skipAntismashAnalysis">
+  <subgraph name="antismash" xmlFile="antismash.xml" includeIf="'$$projectName$$'=='FungiDB'">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="parentDataDir">$$parentDataDir$$/antismash</paramValue>
+    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="genomicSequenceFile">$$genomicSeqsFile$$</paramValue>
