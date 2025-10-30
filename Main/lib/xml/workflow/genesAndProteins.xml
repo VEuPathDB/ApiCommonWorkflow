@@ -6,6 +6,7 @@
   <param name="genomeExtDbRlsSpec"/>
   <param name="runExportPred"/>
   <param name="organismDatasetLoaderXmlFile"/>
+  <param name="genomicSeqsFile"/>
   <param name="proteinsFile"/>
   <param name="isNotEbiGenome"/>
   <param name="relativeDownloadSiteDir"/>
@@ -48,6 +49,31 @@
     </step>
 -->
 
+  <step name="makeGffFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrgSpecificGffFile"> 
+    <paramValue name="outputFile">$$parentDataDir$$/$$organismAbbrev$$.gff</paramValue>  
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="checkForFungiOrganism" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckForFungiOrganism">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="taxonId">$$ncbiTaxonId$$</paramValue>
+    <paramValue name="skipIfFile">$$dataDir$$/skipAntismashAnalysis</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="makeGffFile"/>
+  </step>
+
+  <subgraph name="antismash" xmlFile="antismash.xml" skipIfFile="$$dataDir$$/skipAntismashAnalysis">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="parentDataDir">$$parentDataDir$$/antismash</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomicSequenceFile">$$genomicSeqsFile$$</paramValue>
+    <paramValue name="gffFile">$$parentDataDir$$/$$organismAbbrev$$.gff</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <depends name="checkForFungiOrganism"/>
+  </subgraph>
 
   <subgraph name="tmhmm" xmlFile="tmhmm.xml">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
