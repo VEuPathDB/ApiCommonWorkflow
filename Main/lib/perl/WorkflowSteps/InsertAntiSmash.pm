@@ -1,4 +1,4 @@
-B65;6800;1cpackage ApiCommonWorkflow::Main::WorkflowSteps::InsertAntiSmash;
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertAntiSmash;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
