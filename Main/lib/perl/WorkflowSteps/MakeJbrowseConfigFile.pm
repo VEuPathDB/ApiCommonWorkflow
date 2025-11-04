@@ -28,8 +28,10 @@ sub run {
 
   my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/genomeAndProteome/config/";
 
+  my $jbrowseQueriesXmlFile = $ENV{GUS_HOME}. "/lib/xml/jbrowseQueries.xml";
+  
   my $jbrowseConf = "${copyToDir}/jbrowse.conf";
-  my $cmd = "generateJbrowseMetadata $gusConfigFile $organismAbbrev $jbrowseConf $fullJbrowseDir";
+  my $cmd = "generateJbrowseMetadata --gusConfigFile $gusConfigFile --organismAbbrev $organismAbbrev --jbrowseConf $jbrowseConf --jbrowseFlatFileDir $fullJbrowseDir --jbrowseQueriesXmlFile $jbrowseQueriesXmlFile";
 
 
   if($undo) {
