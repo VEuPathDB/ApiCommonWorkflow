@@ -26,7 +26,7 @@ sub run {
 
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
-  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/genomeAndProteome/config/";
+  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/genomeBrowser/config/";
 
   my $jbrowseQueriesXmlFile = $ENV{GUS_HOME}. "/lib/xml/jbrowseQueries.xml";
   

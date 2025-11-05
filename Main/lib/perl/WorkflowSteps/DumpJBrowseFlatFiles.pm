@@ -12,6 +12,7 @@ sub run {
   my $jbrowseDir = $self->getParamValue('jbrowseDir');
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $seqSizes = $self->getParamValue('seqSizes');
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -24,7 +25,7 @@ sub run {
       if ($test) {
           $self->runCmd(0, "echo test > $workflowDataDir/$jbrowseDir/test.txt");
       }
-      $self->runCmd($test, "jbrowseDumpAllFeatures --output_directory $workflowDataDir/$jbrowseDir --organism_abbrev $organismAbbrev --seq_sizes $workflowDataDir/$seqSizes");
+      $self->runCmd($test, "jbrowseDumpAllFeatures --output_directory $workflowDataDir/$jbrowseDir --organism_abbrev $organismAbbrev --seq_sizes $workflowDataDir/$seqSizes --gus_config_file $workflowDataDir/$gusConfigFile");
   }
 }
 

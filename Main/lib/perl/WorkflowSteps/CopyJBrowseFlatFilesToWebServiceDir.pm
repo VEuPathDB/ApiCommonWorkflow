@@ -33,17 +33,15 @@ sub run {
     $self->runCmd(0, "rm -f $copyToDir/*.bw");
   } else {
     if ($test) {
-      $self->runCmd(0, "mkdir -p $copyToDir");
-      $self->runCmd(0, "echo test > $copyToDir/test.bed.gz");
-      $self->runCmd(0, "echo test > $copyToDir/test.gff.gz");
-      $self->runCmd(0, "echo test > $copyToDir/test.tbi");
-      $self->runCmd(0, "echo test > $copyToDir/test.bw");
+      $self->runCmd($test, "mkdir -p $copyToDir/bed $copyToDir/gff $copyToDir/bigwig $copyToDir/config");
+      $self->runCmd(0, "echo test > $copyToDir/bed/test.bed.gz");
+      $self->runCmd(0, "echo test > $copyToDir/gff/test.gff.gz");
+      $self->runCmd(0, "echo test > $copyToDir/bigwig/test.bw");
     }
-    $self->runCmd($test, "mkdir -p $copyToDir");
-    $self->runCmd($test, "cp $sourceDir/*.bed.gz $copyToDir/ 2>/dev/null || true");
-    $self->runCmd($test, "cp $sourceDir/*.gff.gz $copyToDir/ 2>/dev/null || true");
-    $self->runCmd($test, "cp $sourceDir/*.tbi $copyToDir/ 2>/dev/null || true");
-    $self->runCmd($test, "cp $sourceDir/*.bw $copyToDir/ 2>/dev/null || true");
+    $self->runCmd($test, "mkdir -p $copyToDir/bed $copyToDir/gff $copyToDir/bigwig $copyToDir/config");
+    $self->runCmd($test, "cp $sourceDir/*.bed.gz* $copyToDir/bed/ 2>/dev/null || true");
+    $self->runCmd($test, "cp $sourceDir/*.gff.gz* $copyToDir/gff/ 2>/dev/null || true");
+    $self->runCmd($test, "cp $sourceDir/*.bigwig $copyToDir/ 2>/dev/null || true");
   }
 }
 
