@@ -22,7 +22,7 @@ sub run {
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/jbrowseFlatFiles";
+  my $copyToDir = "$websiteFilesDir/$relativeWebServicesDir/$organismNameForFiles/genomeBrowser";
 
   my $sourceDir = "$workflowDataDir/$jbrowseDir";
 
