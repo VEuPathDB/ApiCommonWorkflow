@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeGffBigWigFile;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeBigWigFileFromBedgraph;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
@@ -14,7 +14,7 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $relativeDir = $self->getParamValue('relativeDir');
   my $experimentDatasetName = $self->getParamValue('experimentDatasetName');
-  my $copyGFFToWS = $self->getBooleanParamValue('copyGFFToWS');
+  my $copyGFFToWS = $self->getBooleanParamValue('hasAncillaryGFF');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $gusConfigFile = $self->getParamValue('gusConfigFile');
@@ -29,7 +29,7 @@ sub run {
 
   my $cmd_mkdir_bigwig = "mkdir -p $bigwigOutputDir";
 
-  my $cmd_createBigWig = "createGffBigWigFile --inputDir $workflowDataDir/$inputsDir --chromSizesFile $workflowDataDir/$chromSizesFile --outputDir $bigwigOutputDir";
+  my $cmd_createBigWig = "createBigWigFromBedgraph --inputDir $workflowDataDir/$inputsDir --chromSizesFile $workflowDataDir/$chromSizesFile --outputDir $bigwigOutputDir";
 
   $self->testInputFile('copyFromDir', "$workflowDataDir/$inputsDir");
 
