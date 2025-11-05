@@ -18,11 +18,7 @@ sub run {
 
     my $gffFileFullPath = "$workflowDataDir/$gffFile";
 
-    my $gusConfigFile = $self->getParamValue('gusConfigFile');
-
-    my $gusConfigFileFullPath = "$workflowDataDir/$gusConfigFile";
-
-    my $args = " --gffFile $gffFileFullPath --ncbiTaxonId $ncbiTaxonId --gusConfigFile $gusConfigFileFullPath --extDbSpec '$extDbSpec'";
+    my $args = " --gffFile $gffFileFullPath --ncbiTaxonId $ncbiTaxonId --extDbSpec '$extDbSpec'";
 
     $self->testInputFile('inputGffFile', "$gffFileFullPath");
     $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertAntiSmash", $args);
