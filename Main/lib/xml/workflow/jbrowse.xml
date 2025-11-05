@@ -1,0 +1,56 @@
+<workflowGraph name="jbrowse">
+  <param name="parentDataDir"/>
+  <param name="gusConfigFile"/>
+  <param name="organismAbbrev"/>
+  <param name="relativeWebServicesDir"/>
+  <param name="projectName"/>
+  <param name="genomicSeqsFile"/>
+
+  <constant name="dataDir">$$parentDataDir$$/jbrowse</constant>
+  <constant name="seqSizeFile">$$dataDir$$/seqSizes.txt</constant>
+  <constant name="massSpecGlobPattern">$$parentDataDir$$/organismSpecific/massSpec/*/analysisDir/results/ms_peptides_genome_align.gff.gz</constant>
+  <constant name="unifiedMassSpecFile">$$dataDir$$/unifiedGenomicMassSpec.gff</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <step name="makeSeqSizeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSeqSizeFileFromFasta">
+    <paramValue name="outputFile">$$seqSizeFile$$</paramValue>
+    <paramValue name="fastaFile">$$genomicSeqsFile$$</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+
+  <step name="dumpJBrowseFlatFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DumpJBrowseFlatFiles">
+    <paramValue name="jbrowseDir">$$dataDir$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="seqSizes">$$seqSizeFile$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="makeSeqSizeFile"/>
+  </step>
+
+  <step name="dumpUnifiedGenomicMassSpecPeptides" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DumpUnifiedGenomicMassSpecPeptides">
+    <paramValue name="globPattern">$$massSpecGlobPattern$$</paramValue>
+    <paramValue name="outputFile">$$unifiedMassSpecFile$$</paramValue>
+    <depends name="dumpJBrowseFlatFiles"/>
+  </step>
+
+  <step name="copyJBrowseFlatFilesToWebServiceDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyJBrowseFlatFilesToWebServiceDir">
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="jbrowseDir">$$dataDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="dumpUnifiedGenomicMassSpecPeptides"/>
+  </step>
+
+  <step name="makeJbrowseConfigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeJbrowseConfigFile">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="jbrowseDir">$$dataDir$$</paramValue>
+    <depends name="dumpUnifiedGenomicMassSpecPeptides"/>
+  </step>
+
+
+</workflowGraph>

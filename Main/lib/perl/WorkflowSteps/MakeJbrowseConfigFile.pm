@@ -14,17 +14,24 @@ sub run {
 
   my $projectName = $self->getParamValue('projectName');
 
+  my $jbrowseDir = $self->getParamValue('jbrowseDir');
+
   my $gusConfigFile = $self->getParamValue('gusConfigFile');
   $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+
+  my $workflowDataDir = $self->getWorkflowDataDir();
+  my $fullJbrowseDir = "$workflowDataDir/$jbrowseDir";
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
 
   my $organismNameForFiles = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNameForFiles();
 
-  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/genomeAndProteome/config/";
+  my $copyToDir = "$websiteFilesDir/$webServicesRelativeDir/$organismNameForFiles/genomeBrowser/config/";
 
+  my $jbrowseQueriesXmlFile = $ENV{GUS_HOME}. "/lib/xml/jbrowseQueries.xml";
+  
   my $jbrowseConf = "${copyToDir}/jbrowse.conf";
-  my $cmd = "generateJbrowseMetadata $gusConfigFile $organismAbbrev $jbrowseConf";
+  my $cmd = "generateJbrowseMetadata --gusConfigFile $gusConfigFile --organismAbbrev $organismAbbrev --jbrowseConf $jbrowseConf --jbrowseFlatFileDir $fullJbrowseDir --jbrowseQueriesXmlFile $jbrowseQueriesXmlFile";
 
 
   if($undo) {
