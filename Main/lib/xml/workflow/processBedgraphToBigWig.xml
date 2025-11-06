@@ -5,7 +5,9 @@
     <param name="relativeWebServicesDir"/>
     <param name="experimentDatasetName"/>
     <param name="gusConfigFile"/>
+    <param name="hasAncillaryGFF"/>
 
+    
     <constant name="seqSizeFile">$$parentDataDir$$/seqSizes.txt</constant>
 
     <step name="makeSeqSizeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSeqSizeFileFromFasta">
@@ -13,14 +15,15 @@
         <paramValue name="fastaFile">$$genomicSeqsFile$$</paramValue>
     </step>
 
-    <step name="makeGffBigWigFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeGffBigWigFile">
+    <step name="makeBigWigFileFromBedgraph" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBigWigFileFromBedgraph">
         <paramValue name="inputsDir">$$parentDataDir$$</paramValue>
         <paramValue name="chromSizesFile">$$seqSizeFile$$</paramValue>
         <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
         <paramValue name="relativeDir">$$relativeWebServicesDir$$</paramValue>
         <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
         <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+        <paramValue name="hasAncillaryGFF">$$hasAncillaryGFF$$</paramValue>
         <depends name="makeSeqSizeFile"/>
     </step>
-    
+
 </workflowGraph>
