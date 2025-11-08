@@ -16,7 +16,7 @@
     <constant name="nextflowAnalysisDir">$$dataDir$$/nextflowAnalysisDir</constant>
     <constant name="nextflowConfigFile">$$nextflowAnalysisDir$$/nextflow.config</constant>
     <constant name="nextflowResultsDir">$$nextflowAnalysisDir$$/nextflow_output</constant>
-    
+    <constant name="analysisOutputDir">$$nextflowResultsDir$$/analysis_output</constant>
 
     <step name="makeAnslysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$nextflowAnalysisDir$$</paramValue>
@@ -54,8 +54,8 @@
   </subgraph>
 
   <step name="loadStudyResultsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-    <paramValue name="configFile">$$nextflowResultsDir$$/insert_study_results_config.txt</paramValue>
-    <paramValue name="inputDir">$$nextflowResultsDir$$</paramValue>
+    <paramValue name="configFile">$$analysisOutputDir$$/insert_study_results_config.txt</paramValue>
+    <paramValue name="inputDir">$$analysisOutputDir$$</paramValue>
     <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
     <paramValue name="studyName">$$studyName$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
@@ -65,8 +65,8 @@
 
 <!-- Remove step which makes download files for generic profiles, redmine #22523
   <step name="copyExpressionProfilesToDownloadDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyExpressionProfilesToDownloadDir">
-    <paramValue name="configFile">$$nextflowResultsDir$$/insert_study_results_config.txt</paramValue>
-    <paramValue name="copyFromDir">$$nextflowResultsDir$$</paramValue>
+    <paramValue name="configFile">$$analysisOutputDir$$/insert_study_results_config.txt</paramValue>
+    <paramValue name="copyFromDir">$$analysisOutputDir$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
     <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
     <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
@@ -78,7 +78,7 @@
   <step name="calculateExpressionStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CalculateExpressionStatsForTimeSeries" stepLoadTypes="plugin" includeIf="$$hasTimeSeries$$" undoRoot="loadExpressionProfilesFromConfig">
     <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
     <paramValue name="configFile">time_series_stats_config.txt</paramValue>
-    <paramValue name="doStudyAssayResultsDir">$$nextflowResultsDir$$</paramValue>
+    <paramValue name="doStudyAssayResultsDir">$$analysisOutputDir$$</paramValue>
     <depends name="loadExpressionProfilesFromConfig"/>
   </step>
 -->
