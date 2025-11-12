@@ -17,43 +17,68 @@
     <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
 
     <constant name="finalDir">$$parentDataDir$$/final</constant>
-    <constant name="studyAssayResultsDir">$$dataDir$$/studyAssayResultsDir</constant>
 
-    <!-- This step makes 2 config files for the loader steps below -->
-    <step name="doStudyAssayResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DoStudyAssayResults">
+    <constant name="nextflowAnalysisDir">$$dataDir$$/nextflowAnalysisDir</constant>
+    <constant name="nextflowConfigFile">$$nextflowAnalysisDir$$/nextflow.config</constant>
+    <constant name="nextflowResultsDir">$$nextflowAnalysisDir$$/nextflow_output</constant>
+    <constant name="analysisOutputDir">$$nextflowResultsDir$$/analysis_output</constant>
+
+    <step name="makeAnslysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$nextflowAnalysisDir$$</paramValue>
+    </step>
+
+    <!-- This step makes the nextflow config file -->
+    <step name="makeStudyAssayResultsNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeStudyAssayResultsNextflowConfig">
       <paramValue name="analysisConfigFile">$$finalDir$$/analysisConfig.xml</paramValue>
-      <paramValue name="inputDir">$$resultsDirectory$$</paramValue>
-      <paramValue name="outputDir">$$studyAssayResultsDir$$</paramValue>
-      <!-- The ancillary file will mostly be unused;  Only here so we can fiddle with the profiles (like scaliing)   -->
+      <paramValue name="finalDir">$$resultsDirectory$$</paramValue>
+      <paramValue name="outputDirectory">$$nextflowResultsDir$$</paramValue>
+      <paramValue name="technologyType">SpliceSites</paramValue>
       <paramValue name="geneProbeMappingTabFile"></paramValue>
-      <paramValue name="geneProbeMappingVendorFile"></paramValue>
       <paramValue name="platformDirectory">$$finalDir$$</paramValue>
       <paramValue name="expectCdfFile">false</paramValue>
       <paramValue name="expectNdfFile">false</paramValue>
       <paramValue name="passPlatformMappingFile">false</paramValue>
-      <paramValue name="technologyType">SpliceSites</paramValue>
+      <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+      <depends name="makeAnslysisDir"/>
+
     </step>
 
+    <subgraph name="runNextflowLocal" xmlFile="runNextflowLocal.xml">
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="analysisDir">$$nextflowAnalysisDir$$</paramValue>
+      <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+      <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <paramValue name="isProteomeAnalysis">true</paramValue>
+      <paramValue name="datasetSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+      <paramValue name="nextflowWorkflow">VEuPathDB/study-assay-results-nextflow</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="entry"></paramValue>
+      <paramValue name="nextflowResultsDir">$$nextflowResultsDir$$</paramValue>
+      <depends name="makeStudyAssayResultsNextflowConfig"/>
+    </subgraph>
+
     <step name="loadSplicedLeaderFeaturesFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$studyAssayResultsDir$$/insert_study_results_config.txt</paramValue>
-      <paramValue name="inputDir">$$studyAssayResultsDir$$</paramValue>
+      <paramValue name="configFile">$$analysisOutputDir$$/insert_study_results_config.txt</paramValue>
+      <paramValue name="inputDir">$$analysisOutputDir$$</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="doStudyAssayResults"/>
+      <depends name="runNextflowLocal"/>
     </step>
 
     <step name="insertSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSplicedLeaderAndPolyASitesGenes">
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-      <depends name="loadSplicedLeaderFeaturesFromConfig"/> 
+      <depends name="loadSplicedLeaderFeaturesFromConfig"/>
     </step>
 
 
      <step name="extractSplicedLeaderAndPolyASitesGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractSplicedLeaderAndPolyASitesGenes">
       <paramValue name="analysisConfigFile">$$finalDir$$/analysisConfig.xml</paramValue>
-      <paramValue name="workingDir">$$studyAssayResultsDir$$</paramValue>
+      <paramValue name="workingDir">$$analysisOutputDir$$</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="pctTies">min</paramValue>
       <paramValue name="type">$$type$$</paramValue>
@@ -62,8 +87,8 @@
     </step>
 
     <step name="loadSplicedLeaderQuantsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
-      <paramValue name="configFile">$$studyAssayResultsDir$$/insert_study_results_ss_config.txt</paramValue>
-      <paramValue name="inputDir">$$studyAssayResultsDir$$</paramValue>
+      <paramValue name="configFile">$$analysisOutputDir$$/insert_study_results_ss_config.txt</paramValue>
+      <paramValue name="inputDir">$$analysisOutputDir$$</paramValue>
       <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
       <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>

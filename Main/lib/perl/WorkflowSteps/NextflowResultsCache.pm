@@ -88,6 +88,7 @@ sub checkAndCopyFrom {
   }
   else {
     if($hasCacheFile) {
+      $self->runCmd($test, "mkdir $resultsPath") unless(-e $resultsPath);
       $self->runCmd($test, "touch $foundNextflowResultsFile");
       $self->runCmd($test, "cp -r $cacheDir/* $resultsPath");
     }     
