@@ -16,7 +16,7 @@ sub run {
   my $outputDir = $self->getParamValue('outputDir');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $gusConfigFile = $self->getGusConfigFile();
+  my $gusConfigFile = $self->getParamValue('gusConfigFile');
 
   # Test input files exist
   $self->testInputFile('entrezGeneInfoFile', "$workflowDataDir/$entrezGeneInfoFile");
@@ -39,7 +39,7 @@ sub run {
     . " --taxId '$ncbiTaxId'"
     . " --speciesTaxId '$speciesNcbiTaxonId'"
     . " --outputDir '$workflowDataDir/$outputDir'"
-    . " --gusConfigFile '$gusConfigFile'";
+    . " --gusConfigFile '$workflowDataDir/$gusConfigFile'";
 
   $self->runCmd($test, $cmd);
 }
