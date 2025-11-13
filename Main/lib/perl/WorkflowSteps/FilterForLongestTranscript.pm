@@ -13,7 +13,7 @@ sub run {
   my $fastaDir = $self->getParamValue('fastaDir');
   my $fastaDirFullPath = "$workflowDataDir/$fastaDir";
 
-  my $cmd = "filterForLongestTranscript --fastaDir $fastaDirfullPath";
+  my $cmd = "filterForLongestTranscript --fastaDir $fastaDirFullPath";
 
   if ($undo) {
       next;
