@@ -37,7 +37,7 @@ params {
   input = \"$digestedInput\"
   outputDir = \"$digestedOutputDir\"
   fastaSubsetSize = 100
-  appls = \"cdd,coils,gene3d,hamap,panther,pfama,pirsf,prints,prositeprofiles,prositepatterns,sfld,smart,superfamily,ncbifam,mobidblite\"
+  appls = \"antifam,cdd,coils,funfam,gene3d,hamap,mobidblite,ncbifam,panther,pfam,pirsf,pirsr,prints,prositepatterns,prositeprofiles,sfld,smart,superfamily\"
   outputFile = \"$outputFile\"
 }
 
