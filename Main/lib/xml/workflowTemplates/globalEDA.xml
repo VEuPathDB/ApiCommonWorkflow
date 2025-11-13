@@ -1,0 +1,35 @@
+<workflowGraph name="">
+  <param name="gusConfigFile"/>
+  <param name="parentDataDir"/>
+  <param name="datasetLoaderXmlFileName"/>
+
+  <constant name="dataDir">$$parentDataDir$$/eda</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+  
+  <datasetTemplate class="PhenotypeEDA">
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="projectName"/>
+
+    <subgraph name="${projectName}_${name}_PhenotypeEDA_dataset" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${projectName}_${name}_Phenotype_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    </subgraph>
+
+    <subgraph name="${projectName}_${name}_PhenotypeEDA_study" xmlFile="genomicsEdaStudyWrangler.xml">
+      <paramValue name="datasetName">${projectName}_${name}_Phenotype_RSRC</paramValue>
+      <paramValue name="datasetVersion">${version}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${projectName}_${name}_Phenotype_RSRC</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="mode">phenotype</paramValue>
+      <depends name="${name}_PhenotypeEDA_dataset"/>
+    </subgraph>
+  </datasetTemplate>
+
+</workflowGraph>
