@@ -15,12 +15,7 @@ sub run {
 
   my $cmd = "filterForLongestTranscript --fastaDir $fastaDirFullPath";
 
-  if ($undo) {
-      next;
-  }else {
-    if ($test){
-        next;
-    }
+  if (!$undo) {
     $self->runCmd($test, $cmd);
   }
 
