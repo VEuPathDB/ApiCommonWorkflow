@@ -12,7 +12,7 @@
     <param name="gusConfigFile"/>
 
 
-    <constant name="dataDir">$$parentDataDir$$/processSplicedLeaderAndPolyASitesExperiment</constant>
+    <constant name="dataDir">$$parentDataDir$$/processSplicedLeaderAndPolyASitesExperiment/profiles</constant>
     <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
     <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
 
@@ -23,8 +23,15 @@
     <constant name="nextflowResultsDir">$$nextflowAnalysisDir$$/nextflow_output</constant>
     <constant name="analysisOutputDir">$$nextflowResultsDir$$/analysis_output</constant>
 
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+
     <step name="makeAnslysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
       <paramValue name="dataDir">$$nextflowAnalysisDir$$</paramValue>
+      <depends name="makeDataDir"/>
     </step>
 
     <!-- This step makes the nextflow config file -->
