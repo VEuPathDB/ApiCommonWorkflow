@@ -21,21 +21,16 @@
     <paramValue name="dataDir">$$getPeripheralProteinsDir$$/fastas</paramValue>
   </step>
 
+  <!-- Now has functionality to only retain longest transcript of genes. Necessary for non-ortho-specific genes -->
   <step name="MakeOrthofinderPeripheralInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthofinderPeripheralInputDir">
      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
      <paramValue name="outputDir">$$getPeripheralProteinsDir$$</paramValue>
      <depends name="makeProteomeFastasDir"/>
   </step>
 
-  <!-- New step to only retain longest transcript of genes. Necessary for non-ortho-specific genes -->
-  <step name="filterForLongestTranscript" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterForLongestTranscript">
-    <paramValue name="fastaDir">$$getPeripheralProteinsDir$$/fastas</paramValue>
-    <depends name="MakeOrthofinderPeripheralInputDir"/>
-  </step>
-
   <step name="MakeSortedCheckSum" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSortedCheckSum">
     <paramValue name="proteomesDir">$$getPeripheralProteinsDir$$/fastas</paramValue>
-    <depends name="filterForLongestTranscript"/>
+    <depends name="MakeOrthofinderPeripheralInputDir"/>
   </step>
 
   <subgraph name="peripheralWorkflow" xmlFile="orthomclPeripheralWorkflow.xml">
