@@ -21,6 +21,7 @@
     <paramValue name="dataDir">$$getPeripheralProteinsDir$$/fastas</paramValue>
   </step>
 
+  <!-- Now has functionality to only retain longest transcript of genes. Necessary for non-ortho-specific genes -->
   <step name="MakeOrthofinderPeripheralInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthofinderPeripheralInputDir">
      <paramValue name="proteomesDir">$$proteomesDir$$</paramValue>
      <paramValue name="outputDir">$$getPeripheralProteinsDir$$</paramValue>
@@ -42,6 +43,13 @@
     <paramValue name="coreResultsDir">$$coreGroupsDir$$/analysisDir/results</paramValue>
     <depends name="MakeSortedCheckSum"/>
   </subgraph>
+
+  <!-- This step has been moved to the model
+  <step name="addNumMembersToGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AddNumberMembers">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="peripheralWorkflow"/>
+  </step>
+  -->
 
   <step name="updateSpeciesResourcesEc" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateSpeciesResourcesEc">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
