@@ -33,4 +33,30 @@
     </subgraph>
   </datasetTemplate>
 
+
+  <datasetTemplate class="AntibodyArrayEDA">
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="projectName"/>
+
+    <subgraph name="${projectName}_${name}_AnibodyArray_dataset" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${projectName}_${name}_AntibodyArray_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="${projectName}_${name}_AnitbodyArray_study" xmlFile="genomicsEdaStudyWrangler.xml">
+      <paramValue name="datasetName">${projectName}_${name}_AntibodyArray_RSRC</paramValue>
+      <paramValue name="datasetVersion">${version}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${projectName}_${name}_AntibodyArray_RSRC</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="mode">antibodyArray</paramValue>
+      <depends name="${projectName}_${name}_AntibodyArray_dataset"/>
+    </subgraph>
+  </datasetTemplate>
+
+
 </workflowGraph>
