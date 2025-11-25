@@ -46,7 +46,9 @@ sub run {
 
   my $queryTempFile = $queryFile;
   my $blatTempFile = $blatFile;
-  $queryTempFile =~ s/blocked.seq/tempMappingBlocked.seq/;
+  #$queryTempFile =~ s/blocked.seq/tempMappingBlocked.seq/;
+  my $organismAbbrev_tempMappingBlocked = $organismAbbrev."_tempMappingBlocked.seq";
+  $queryTempFile =~ s/blocked.seq/$organismAbbrev_tempMappingBlocked/;
   $blatTempFile =~ s/blat.psl/tempMappingBlat.psl/;
   my $hasTempFiles = 0;
   my $checkEsts = `head -n 1 $workflowDataDir/$queryFile`;

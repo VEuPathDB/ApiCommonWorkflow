@@ -1,0 +1,31 @@
+<workflowGraph name="">
+  <param name="gusConfigFile"/>
+  <param name="organismAbbrev"/>
+  <param name="organismDatasetLoaderXmlFile"/>
+  <param name="parentDataDir"/>
+  <param name="projectVersionForWebsiteFiles"/>
+  <param name="projectName"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="genomeExtDbRlsSpec"/>
+
+  <constant name="dataDir">$$parentDataDir$$/patchOrganism</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <datasetTemplate class="patchOrganism">
+    <prop name="organismAbbrev"/>
+    <prop name="version"/>
+    <prop name="name"/>
+    <subgraph name="${name}_patchOrganism_RSRC" xmlFile="loadDataset.xml">
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="datasetName">${organismAbbrev}_${name}_patchOrganism_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+  </datasetTemplate>
+
+</workflowGraph>
+

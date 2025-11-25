@@ -17,6 +17,7 @@ sub run {
   my $relativeDir = $self->getParamValue('relativeDir');
 
   my $experimentDatasetName = $self->getParamValue('experimentDatasetName');
+  my $analysisConfig = $self->getParamValue('analysisConfig');
 
   my $websiteFilesDir = $self->getWebsiteFilesDir($test);
   my $gusConfigFile = $self->getParamValue('gusConfigFile');
@@ -31,10 +32,7 @@ sub run {
 
   my $cmd_mkdir = "mkdir -p $copyToDir";
 
-  #use legacy or EBI dir structure
-  my $analysisConfig = -e "$workflowDataDir/$copyFromDir/../final/analysisConfig.xml" ? "$workflowDataDir/$copyFromDir/../final/analysisConfig.xml" : "$workflowDataDir/$copyFromDir/../results/analysisConfig.xml";
-
-  my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir --outputDir $copyToDir --analysisConfig $analysisConfig"; 
+  my $cmd_copy = "copyNormalizedBedGraphToWebServiceDir.pl --inputDir $workflowDataDir/$copyFromDir --outputDir $copyToDir --analysisConfig $workflowDataDir/$analysisConfig"; 
 
   $self->testInputFile('copyFromDir', "$workflowDataDir/$copyFromDir");
 

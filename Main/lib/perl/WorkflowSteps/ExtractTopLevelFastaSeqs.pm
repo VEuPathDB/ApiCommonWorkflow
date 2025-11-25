@@ -16,7 +16,7 @@ sub run {
   my $ncbiTaxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getNcbiTaxonId();
   my $sql = 
     "select sa.source_id, ns.sequence
-     from webready.GenomicSeqAttributes sa, dots.nasequence ns
+     from webready.GenomicSeqAttributes_p sa, dots.nasequence ns
      where sa.is_top_level = 1
      and sa.na_sequence_id = ns.na_sequence_id
      and sa.org_abbrev = '$organismAbbrev'

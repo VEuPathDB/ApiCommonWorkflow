@@ -214,6 +214,19 @@
       <dependsGlobal name="SO_RSRC"/>
     </subgraph>
 
+
+    <subgraph name="${organismAbbrev}_patchOrganism" xmlFile="generated/${projectName}/${organismAbbrev}/patchOrganism.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+      <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
+      <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+      <depends name="${organismAbbrev}_LoadGenome"/>
+    </subgraph>
+
     <step name="${organismAbbrev}_CopyCoreProteomeToOrtho" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreProteomeToOrtho" includeIf="${isAnnotatedGenome} &amp;&amp; ${isCore}">
       <paramValue name="orthomclAbbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
@@ -467,7 +480,7 @@
       <depends name="${organismAbbrev}_LoadAliases"/>
     </subgraph>
 
-    <subgraph name="${organismAbbrev}_dbXRefs" xmlFile="generated/${projectName}/${organismAbbrev}/dbXRefs.xml" excludeIfXmlFileDoesNotExist="true" groupName="${organismAbbrev}">
+    <subgraph name="${organismAbbrev}_dbXRefs" xmlFile="dbxrefs.xml" groupName="${organismAbbrev}">
       <paramValue name="gusConfigFile">$$dataDir$$/${organismAbbrev}/${organismAbbrev}_gus.config</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="organismDatasetLoaderXmlFile">${projectName}/${organismAbbrev}.xml</paramValue>
@@ -477,6 +490,9 @@
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+      <paramValue name="ncbiTaxonId">${ncbiTaxonId}</paramValue>
+      <paramValue name="speciesNcbiTaxonId">${speciesNcbiTaxonId}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">${organismAbbrev}_primary_genome_RSRC|${genomeVersion}</paramValue>
     <depends name="${organismAbbrev}_LoadAliases"/>
     </subgraph>
 
@@ -509,6 +525,7 @@
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="mode">child</paramValue>
       <depends name="${organismAbbrev}_LoadGenome_LoadChromosomeMap"/>
+      <depends name="${organismAbbrev}_patchOrganism"/>
       <depends name="${organismAbbrev}_microarray"/>
       <depends name="${organismAbbrev}_dnaseq"/>
       <depends name="${organismAbbrev}_rnaseq"/>
@@ -540,6 +557,8 @@
       <paramValue name="isAnnotatedGenome">${isAnnotatedGenome}</paramValue>
       <paramValue name="isHugeGenome">${isHugeGenome}</paramValue>
       <paramValue name="isNotEbiGenome">${isNotEbiGenome}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}</paramValue>
+      <paramValue name="genomicSeqsFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
       <depends name="${organismAbbrev}_MakeChildWebTables"/>
     </subgraph>
 

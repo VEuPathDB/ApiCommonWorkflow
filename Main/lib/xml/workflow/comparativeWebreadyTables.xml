@@ -2,27 +2,43 @@
   <param name="gusConfigFile"/>
   <param name="projectName"/>
 
+  <step name="createTable_TransAttrThinNonPart" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">TranscriptAttributesThin_np</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+  </step>
+
   <!--Custom workflow step to load an orgSpecific table that already exists -->
   <step name="loadTable_OrthologTables" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadWebreadyTable">
     <paramValue name="fileBasename">LoadOrthologTables</paramValue>
     <paramValue name="psqlDirName">comparative</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_TransAttrThinNonPart"/>
   </step>
 
-  <step name="createTable_OrthologousTranscripts" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
-    <paramValue name="tableName">OrthologousTranscripts</paramValue>
+  <step name="loadTable_AlphaFoldGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadWebreadyTable">
+    <paramValue name="fileBasename">LoadAlphaFoldGenesTable</paramValue>
     <paramValue name="psqlDirName">comparative</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+  </step>
+
+  <step name="createTable_SyntenicGene" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateWebreadyTable">
+    <paramValue name="tableName">SyntenicGene_p</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+  </step>
+
+  <step name="loadTable_RefSynOrthologousGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadWebreadyTable">
+    <paramValue name="fileBasename">LoadRefSynOrthologousGenesTable</paramValue>
+    <paramValue name="psqlDirName">comparative</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="createTable_SyntenicGene"/>
     <depends name="loadTable_OrthologTables"/>
-  </step>
-
-  <step name="loadTable_LoadAlphaFoldGenes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadWebreadyTable">
-    <paramValue name="fileBasename">LoadAlphaFoldGenes</paramValue>
-    <paramValue name="psqlDirName">comparative</paramValue>
-    <paramValue name="projectName">$$projectName$$</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
   </step>
 
   <!--Custom workflow step to load a table that already exists -->
