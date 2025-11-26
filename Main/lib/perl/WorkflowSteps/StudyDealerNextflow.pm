@@ -36,7 +36,8 @@ params {
     datasetName = "$datasetName"
     workflowPath = "\${params.workflowDataDir}/${inputDirectory}"
     filePatterns = [phenotype: "\${params.workflowPath}/*.{txt,tab}",
-                    phenotypeScript: "\${params.workflowPath}/*.{R,r}" ]
+                    antibodyArray: "\${params.workflowPath}/*.{txt,tab}"
+                     ]
 }
 
 includeConfig "\$baseDir/conf/singularity.config"
