@@ -20,13 +20,6 @@ sub nextflowConfigAsString {
 
     my $inputDirectory = $self->getParamValue("inputDirectory");
 
-    my $workflowGraphDir = "organismSpecific";
-
-    my @expected = glob("${workflowDataDir}/${$inputDirectory}/*.{txt,tab,r,R}");
-    if($mode eq 'phenotype' && scalar(@expected) != 2) {
-        $self->error("Phenotype dataset must provide both tab/txt and R file");
-    }
-
       my $configString = <<NEXTFLOW;
 params {
     gusConfigFile = "${workflowDataDir}/${gusConfigFile}"
