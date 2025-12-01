@@ -29,8 +29,9 @@ params {
     datasetName = "$datasetName"
     workflowPath = "\${params.workflowDataDir}/${inputDirectory}"
     filePatterns = [phenotype: "\${params.workflowPath}/*.{txt,tab}",
-                    antibodyArray: "\${params.workflowPath}/*.{txt,tab}"
-                     ]
+                    antibodyArray: "\${params.workflowPath}/*.{txt,tab}",
+                    cellularLocalization: "\${params.workflowPath}/*.{txt,tab}"
+                    ]
 }
 
 includeConfig "\$baseDir/conf/singularity.config"
