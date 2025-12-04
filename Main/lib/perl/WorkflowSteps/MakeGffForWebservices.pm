@@ -30,7 +30,7 @@ sub run {
   my $cmd = "makeGff.pl --extDbRlsId $extDbRlsId --outputFile ${gffFile}.tmp --tuningTablePrefix $tuningTablePrefix --gusConfigFile $gusConfigFile";
 
   # sort and remove header lines
-  my $sortGffCmd = "grep -v '^#' ${gffFile}.tmp | sort -k1,1 -k4,4n > $gffFile ";
+  my $sortGffCmd = "grep -v '^#' ${gffFile}.tmp | LC_ALL=C sort -t $'\t' -k1,1V -k4,4n > $gffFile";
   my $bgzipCmd = "bgzip $gffFile";
   my $tabixCmd = "tabix -p gff ${gffFile}.gz";
   my $rmTmpCmd = "rm ${gffFile}.tmp";
