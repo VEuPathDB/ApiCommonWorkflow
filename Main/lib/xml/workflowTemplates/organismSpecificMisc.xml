@@ -24,24 +24,32 @@
     </subgraph>
   </datasetTemplate>
 
-  <datasetTemplate class="GeneImage">
+  <datasetTemplate class="GOAssociationsFromCellularLocalizationImages">
     <prop name="name"/>
     <prop name="organismAbbrev"/>
-    <subgraph name="${name}_GeneImage" xmlFile="loadDataset.xml">
-      <paramValue name="datasetName">${organismAbbrev}_${name}_GeneImage_RSRC</paramValue>
+    <prop name="version"/>
+    <subgraph name="${name}_CellularLocalizationImages" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_${name}_CellularLocalizationImages_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     </subgraph>
 
-    <step name="copyImageFileToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyImageFileToWebServices">
+    <step name="${name}_insertNAFeatureImage" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertNAFeatureImage">
+      <paramValue name="geneImageTabFile">$$dataDir$$/${organismAbbrev}_${name}_CellularLocalizationImages_RSRC/final/geneImage.tab</paramValue>
+      <paramValue name="datasetName">${organismAbbrev}_${name}_CellularLocalizationImages_RSRC</paramValue>
+      <paramValue name="datasetVersion">${version}</paramValue>
+      <depends name="${name}_CellularLocalizationImages"/>
+    </step>
+
+    <step name="${name}_copyImageFileToWebServices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyImageFileToWebServices">
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
       <paramValue name="projectName">$$projectName$$</paramValue>
-      <paramValue name="inputFile">$$dataDir$$/${organismAbbrev}_${name}_GeneImage_RSRC/final/images/</paramValue>
-      <paramValue name="datasetName">${organismAbbrev}_${name}_GeneImage_RSRC</paramValue>
+      <paramValue name="inputFile">$$dataDir$$/${organismAbbrev}_${name}_CellularLocalizationImages_RSRC/final/images/</paramValue>
+      <paramValue name="datasetName">${organismAbbrev}_${name}_CellularLocalizationImages_RSRC</paramValue>
       <paramValue name="relativeAuxiliaryDir">$$relativeAuxiliaryDir$$</paramValue>
-      <depends name="${name}_GeneImage"/>
+      <depends name="${name}_insertNAFeatureImage"/>
     </step>
   </datasetTemplate>
 
