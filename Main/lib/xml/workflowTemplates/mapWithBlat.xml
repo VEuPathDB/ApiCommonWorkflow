@@ -27,6 +27,9 @@
 
   <datasetTemplate class="transcriptsFromReferenceStrain">
     <prop name="referenceStrainOrganismAbbrev"/>
+
+
+    <!-- TODO: Add a step here to remove from the blat-nextflow cache if the EST sequences were remade -->
     
     <step name="copyZeroFoundFileToBlatCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::NextflowResultsCache">
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
@@ -115,6 +118,7 @@
     <prop name="version"/>
     <prop name="soTermName"/>
     <prop name="sourceIdRegex"/>
+    <prop name="referenceStrainOrganismAbbrev"/>
 
     <subgraph name="${organismAbbrev}_${name}_transcript_sequences" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">${organismAbbrev}_${name}_transcript_sequences_RSRC</paramValue>
@@ -122,6 +126,8 @@
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
       <depends name="makeDataDir"/>
+      <!-- NOTE:  The EST (assemblySeqs) file must be created before populating these transcripts -->
+      <dependsExternal name="${referenceStrainOrganismAbbrev}_makeAndBlockAssemblySeqs"/>
     </subgraph>
 
     <subgraph name="${name}_mapTranscript_sequences" xmlFile="mapTranscriptSeqs.xml">

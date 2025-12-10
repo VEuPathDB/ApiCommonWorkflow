@@ -13,20 +13,19 @@ sub nextflowConfigAsString {
     my $resultsDirectory = $self->getResultsDirectory();
     my $workingDirectory = $self->getWorkingDirectory();
 
-
     my $gusConfigFile = $self->getParamValue("gusConfigFile");
     my $mode = $self->getParamValue("mode");
     my $datasetName = $self->getParamValue("datasetName");
     my $projectName = $self->getParamValue("projectName");
-    my $organismAbbrev = $self->getParamValue("organismAbbrev");
+
+    my $inputDirectory = $self->getParamValue("inputDirectory");
 
     my $workflowGraphDir = "organismSpecific";
 
-    my @expected = glob("${workflowDataDir}/${projectName}/${organismAbbrev}/${workflowGraphDir}/${datasetName}/final/*.{txt,tab,r,R}");
+    my @expected = glob("${workflowDataDir}/${$inputDirectory}/*.{txt,tab,r,R}");
     if($mode eq 'phenotype' && scalar(@expected) != 2) {
         $self->error("Phenotype dataset must provide both tab/txt and R file");
     }
-
 
       my $configString = <<NEXTFLOW;
 params {
@@ -35,9 +34,9 @@ params {
     mode = "$mode"
     outputDir = "${resultsDirectory}"
     datasetName = "$datasetName"
-    workflowPath = "\${params.workflowDataDir}/${projectName}/${organismAbbrev}/${workflowGraphDir}"
-    filePatterns = [phenotype: "\${params.workflowPath}/\${params.datasetName}/final/*.{txt,tab}",
-                    phenotypeScript: "\${params.workflowPath}/\${params.datasetName}/final/*.{R,r}" ]
+    workflowPath = "\${params.workflowDataDir}/${inputDirectory}"
+    filePatterns = [phenotype: "\${params.workflowPath}/*.{txt,tab}",
+                    phenotypeScript: "\${params.workflowPath}/*.{R,r}" ]
 }
 
 includeConfig "\$baseDir/conf/singularity.config"

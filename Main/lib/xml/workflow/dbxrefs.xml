@@ -1,0 +1,120 @@
+<workflowGraph name="">
+  <param name="gusConfigFile"/>
+  <param name="organismDatasetLoaderXmlFile"/>
+  <param name="organismAbbrev"/>
+  <param name="projectName"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="parentDataDir"/>
+  <param name="proteinsFile"/>
+  <param name="projectVersionForWebsiteFiles"/>
+  <param name="ncbiTaxonId"/>
+  <param name="speciesNcbiTaxonId"/>
+  <param name="genomeExtDbRlsSpec"/>
+
+
+  <constant name="dataDir">$$parentDataDir$$/dbXRefs</constant>
+  <constant name="UniProtDescripString">Mapping between Gene IDs and UniProt Protein IDs</constant>
+
+  <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$</paramValue>
+  </step>
+
+  <subgraph name="dbXRefsFromTemplates" xmlFile="generated/$$projectName$$/$$organismAbbrev$$/dbXRefs.xml" excludeIfXmlFileDoesNotExist="true">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="organismDatasetLoaderXmlFile">$$organismDatasetLoaderXmlFile$$</paramValue>
+    <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="proteinsFile">$$proteinsFile$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="ncbiTaxonId">$$ncbiTaxonId$$</paramValue>
+    <depends name="makeDataDir"/>
+  </subgraph>
+
+  <step name="associateGenesWithDbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AssociateGenesWithDbXrefs">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="entrezGeneInfoFile">global/EntrezGene_RSRC/gene_info.db</paramValue>
+    <paramValue name="gene2pubmedFile">global/Gene2Pubmed_RSRC/gene2pubmed.db</paramValue>
+    <paramValue name="uniprotIdMappingDbFile">global/UniprotIDs_RSRC/idmapping.db</paramValue>
+    <paramValue name="ncbiTaxId">$$ncbiTaxonId$$</paramValue>
+    <paramValue name="speciesNcbiTaxonId">$$speciesNcbiTaxonId$$</paramValue>
+    <paramValue name="outputDir">$$dataDir$$/associatedGenes</paramValue>
+    <depends name="makeDataDir"/>
+    <dependsGlobal name="EntrezGene_RSRC"/>
+    <dependsGlobal name="Gene2Pubmed_RSRC"/>
+    <dependsGlobal name="UniprotIDs_RSRC"/>
+  </step>
+
+
+
+  
+  <step name="insertPubmedDbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDBxRefs">
+    <paramValue name="inputFile">$$dataDir$$/associatedGenes/pubmed_mappings.txt</paramValue>
+    <paramValue name="extDbName">Gene2Pubmed_RSRC</paramValue>
+    <paramValue name="extDbVersion">%</paramValue>
+    <paramValue name="tableName">DbRefNAFeature</paramValue>
+    <paramValue name="viewName">GeneFeature</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="associateGenesWithDbXrefs"/>
+  </step>
+
+  <step name="insertUniprotDbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDBxRefs">
+    <paramValue name="inputFile">$$dataDir$$/associatedGenes/uniprot_mappings.txt</paramValue>
+    <paramValue name="extDbName">UniprotIDs_RSRC</paramValue>
+    <paramValue name="extDbVersion">%</paramValue>
+    <paramValue name="tableName">DbRefNAFeature</paramValue>
+    <paramValue name="viewName">GeneFeature</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="associateGenesWithDbXrefs"/>
+  </step>
+
+  <step name="insertEntrezGeneDbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDBxRefs">
+    <paramValue name="inputFile">$$dataDir$$/associatedGenes/entrezgene_mappings.txt</paramValue>
+    <paramValue name="extDbName">EntrezGene_RSRC</paramValue>
+    <paramValue name="extDbVersion">%</paramValue>
+    <paramValue name="tableName">DbRefNAFeature</paramValue>
+    <paramValue name="viewName">GeneFeature</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="associateGenesWithDbXrefs"/>
+  </step>
+
+
+  <step name="makeEuPathUniProtLinkFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeEuPathUniProtLinkFile">
+    <paramValue name="dbrefExtDbName">UniprotIDs_RSRC,$$organismAbbrev$$_dbxref_uniprot_linkout_RSRC</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="relativeDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="fileType">txt</paramValue>
+    <paramValue name="dataName">UniProtMapping</paramValue>
+    <paramValue name="descripString">$$UniProtDescripString$$</paramValue>
+    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
+    <paramValue name="isWebServiceFile">false</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <depends name="insertUniprotDbXrefs"/>
+  </step>
+
+
+  <!-- These are descriptions from EntrezGene -->
+  <step name="insertEntrezGeneSymbol" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGeneNamesFromTabFile">
+    <paramValue name="inputFile">$$dataDir$$/associatedGenes/symbol_mappings.txt</paramValue>
+    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="associateGenesWithDbXrefs"/>
+  </step>
+
+  <step name="insertEntrezGeneDescription" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertProductFromTabFile">
+    <paramValue name="inputFile">$$dataDir$$/associatedGenes/description_mappings.txt</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="associateGenesWithDbXrefs"/>
+  </step>
+
+</workflowGraph>

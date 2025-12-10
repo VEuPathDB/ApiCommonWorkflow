@@ -11,9 +11,12 @@ sub getWebsiteFileCmd {
 
   my $dbrefExtDbName = $self->getParamValue('dbrefExtDbName');
   my $projectName = $self->getParamValue('projectName');
+
+  my $genomeExtDbRlsSpec = $self->getParamValue('genomeExtDbRlsSpec');
+
   my $gusConfigFile = $self->getGusConfigFile();
 
-  my $cmd = "dumpEuPath-UniProtLinks --dbrefExtDbName $dbrefExtDbName --outfile $downloadFileName --projectName $projectName --gusConfigFile $gusConfigFile";
+  my $cmd = "dumpEuPath-UniProtLinks --genomeExtDbRlsSpec '$genomeExtDbRlsSpec' --dbrefExtDbName '$dbrefExtDbName' --outfile $downloadFileName --projectName $projectName --gusConfigFile $gusConfigFile";
   return $cmd;
 }
 
