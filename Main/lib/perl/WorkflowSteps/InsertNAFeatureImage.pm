@@ -12,10 +12,11 @@ sub run {
   my $geneImageTabFile = $self->getParamValue('geneImageTabFile');
   my $datasetName = $self->getParamValue('datasetName');
   my $datasetVersion = $self->getParamValue('datasetVersion');
+  my $gusConfigFile = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
 
   my $fileFullPath = "$workflowDataDir/$geneImageTabFile";
 
-  my $args = "--file $fileFullPath --extDBName $datasetName --extDBVer $datasetVersion";
+  my $args = "--file $fileFullPath --extDBName $datasetName --extDBVer $datasetVersion --gusConfigFile $gusConfigFile";
 
   $self->testInputFile('geneImageTabFile', "$fileFullPath");
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertNAFeatureImage", $args);
