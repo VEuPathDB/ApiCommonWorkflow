@@ -30,6 +30,8 @@ params {
 
 includeConfig "\$baseDir/conf/singularity.config"
 
+cleanup = true                                
+
 NEXTFLOW
 
     return $configString;
