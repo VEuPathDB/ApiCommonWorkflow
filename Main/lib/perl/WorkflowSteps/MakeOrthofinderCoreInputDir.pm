@@ -30,6 +30,9 @@ sub run {
       closedir(DIR);
       die "Input directory $outputDir/fastas does not contain any fastas" unless scalar(@fastas);
 
+      
+      $self->runCmd(0, "filterForLongestTranscript --fastaDir $outputDir/fastas");
+
       $self->runCmd(0, "tar -zcvf fastas.tar.gz -C $outputDir fastas");
       $self->runCmd(0, "mv fastas.tar.gz $outputDir/");
   }
