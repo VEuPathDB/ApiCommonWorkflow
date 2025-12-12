@@ -33,6 +33,38 @@
     </subgraph>
   </datasetTemplate>
 
+  <datasetTemplate class="PhenotypeEDAWithLongText">
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="projectName"/>
+
+    <subgraph name="${projectName}_${name}_PhenotypeEDA_dataset" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${projectName}_${name}_Phenotype_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$datasetLoaderXmlFileName$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="${projectName}_${name}_PhenotypeEDA_study" xmlFile="genomicsEdaStudyWrangler.xml">
+      <paramValue name="datasetName">${projectName}_${name}_Phenotype_RSRC</paramValue>
+      <paramValue name="datasetVersion">${version}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${projectName}_${name}_Phenotype_RSRC</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="mode">phenotype</paramValue>
+      <depends name="${projectName}_${name}_PhenotypeEDA_dataset"/>
+    </subgraph>
+
+    <step name="${projectName}_${name}_loadGenePhenotype" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGenePhenotype">
+      <paramValue name="inputFile">$$dataDir$$/${projectName}_${name}_Phenotype_RSRC/final/gene_phenotype.txt</paramValue>
+      <paramValue name="extDbName">${projectName}_${name}_Phenotype_RSRC</paramValue>
+      <paramValue name="extDbVersion">${version}</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <depends name="${projectName}_${name}_PhenotypeEDA_study"/>
+    </step>
+  </datasetTemplate>
+
 
   <datasetTemplate class="AntibodyArrayEDA">
     <prop name="name"/>
