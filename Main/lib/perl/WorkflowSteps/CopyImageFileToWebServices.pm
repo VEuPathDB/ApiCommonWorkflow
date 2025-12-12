@@ -38,7 +38,7 @@ sub run {
       $self->runCmd($test, "mkdir -p $copyToDir");
       #$self->runCmd($test, "cp $workflowDataDir/$inputFile/* $copyToDir");
       # if there are too many image files
-      $self->runCmd($test, "find $workflowDataDir/$inputFile/ -name '*' -exec cp {} $copyToDir \;");
+      $self->runCmd($test, "find $workflowDataDir/$inputFile -name '*' -exec cp {} $copyToDir \\;");
 
       # convert tif file to jpeg format. later should use Image::Info to check image type
       opendir(DIR, "$workflowDataDir/$inputFile/");
