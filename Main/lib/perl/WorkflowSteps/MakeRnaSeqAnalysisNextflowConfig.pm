@@ -8,11 +8,13 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
+  my $ancillary = "ancillary.txt";
+  
   my $analysisConfigFile = $self->getParamValue("analysisConfigFile");
   my $finalDir = $self->getParamValue("finalDir");
   my $outputDirectory = $self->getParamValue("outputDirectory");
   my $technologyType = $self->getParamValue("technologyType");
-  my $inputFile = $self->getParamValue("inputFile");
+  my $inputFile = $self->getParamValue("inputFile"); # this is Deprecated / Unused
   my $tpmDir = $self->getParamValue("tpmDir");
   my $pseudogenesFile = $self->getParamValue("pseudogenesFile");
   my $chromosomeSizeFile = $self->getParamValue("chromosomeSizeFile");
@@ -34,7 +36,7 @@ params {
   finalDir = "$workflowDataDir/$finalDir"
   outputDirectory = "$workflowDataDir/$outputDirectory"
   technologyType = "$technologyType"
-  inputFile = "$workflowDataDir/$inputFile"
+  inputFile = "$workflowDataDir/$finalDir/${ancillary}"
   tpmDir = "$workflowDataDir/$tpmDir"
   pseudogenesFile = "$workflowDataDir/$pseudogenesFile"
   chromosomeSizeFile = "$workflowDataDir/$chromosomeSizeFile"
