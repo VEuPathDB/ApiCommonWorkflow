@@ -4,20 +4,23 @@
     <param name="experimentVersion"/>
     <param name="gusConfigFile"/>
 
-    <constant name="dataDir">$$parentDataDir$$/$$experimentName$$</constant>
-    <constant name="workingDir">$$dataDir$$/workingDir</constant>
-    <constant name="resultsDir">$$dataDir$$/outputDir</constant>
+    <constant name="workingDir">$$parentDataDir$$/workingDir</constant>
+    <constant name="resultsDir">$$parentDataDir$$/outputDir</constant>
+    
+    <step name="makeWorkingDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$workingDir$$</paramValue>
+    </step>
 
     <step name="makeProfiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::StudyAssayResultsNextflow">
-      <paramValue name="analysisConfigFile">$$experimentName$$/final/analysisConfig.xml</paramValue>
-      <paramValue name="finalDir">$$experimentName$$/final</paramValue>
+      <paramValue name="analysisConfigFile">$$parentDataDir$$/final/analysisConfig.xml</paramValue>
+      <paramValue name="finalDir">$$parentDataDir$$/final</paramValue>
       <paramValue name="workingDir">$$workingDir$$</paramValue>
       <paramValue name="resultsDir">$$resultsDir$$</paramValue>
       <paramValue name="technologyType">metabolite_massSpec</paramValue>
       <paramValue name="nextflowWorkflow">VEuPathDB/study-assay-results-nextflow</paramValue>
       <paramValue name="isGitRepo">true</paramValue>
+      <depends name="makeWorkingDir"/>
     </step>
-
 
   <step name="loadStudyResultsFromConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
       <paramValue name="configFile">$$dataDir$$/outputDir/insert_study_results_config.txt</paramValue>

@@ -716,7 +716,12 @@
     </subgraph>
   </datasetTemplate>
 
-  <!-- old template deprecated-->
+  <step name="makeMetabolomicsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dataDir$$/metabolomics</paramValue>
+    <depends name="makeDataDir"/>
+  </step>
+  
+  <!-- old template but still in use -->
   <datasetTemplate class="metaboliteProfiles">
     <prop name="experimentName"/>
     <prop name="experimentVersion"/>
@@ -725,24 +730,22 @@
       <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
       <paramValue name="datasetName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/metabolomics</paramValue>      
+      <depends name="makeMetabolomicsDataDir"/>
       <!--<dependsGlobal name="chEBI_Compounds"/>-->
     </subgraph>
 
     <subgraph name="MetaboliteProfiles" xmlFile="metaboliteProfiles.xml">
       <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/metabolomics/metaboliteProfiles_${experimentName}_RSRC</paramValue>      
       <paramValue name="experimentName">metaboliteProfiles_${experimentName}_RSRC</paramValue>
       <paramValue name="experimentVersion">${experimentVersion}</paramValue>
       <depends name="metaboliteProfiles_${experimentName}_RSRC"/>
     </subgraph>
+
   </datasetTemplate>
 
-  <!-- new template for untargeted metabolomics -->
-  <step name="makeMetabolomicsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$dataDir$$/metabolomics</paramValue>
-    <depends name="makeDataDir"/>
-  </step>
+  <!-- new template for untargeted metabolomics BUT not used on frontend yet -->
 
   <datasetTemplate class="compoundMassSpec">
     <prop name="experimentName"/>
