@@ -11,6 +11,8 @@ sub run {
   my $ancillary = "ancillary.txt";
   
   my $analysisConfigFile = $self->getParamValue("analysisConfigFile");
+  (my $ancillary = $analysisConfigFile) =~ s{/analysisConfig\.xml$}{/ancillary.txt};
+
   my $finalDir = $self->getParamValue("finalDir");
   my $outputDirectory = $self->getParamValue("outputDirectory");
   my $technologyType = $self->getParamValue("technologyType");
@@ -36,7 +38,7 @@ params {
   finalDir = "$workflowDataDir/$finalDir"
   outputDirectory = "$workflowDataDir/$outputDirectory"
   technologyType = "$technologyType"
-  inputFile = "$workflowDataDir/$finalDir/${ancillary}"
+  inputFile = "$workflowDataDir/${ancillary}"
   tpmDir = "$workflowDataDir/$tpmDir"
   pseudogenesFile = "$workflowDataDir/$pseudogenesFile"
   chromosomeSizeFile = "$workflowDataDir/$chromosomeSizeFile"
