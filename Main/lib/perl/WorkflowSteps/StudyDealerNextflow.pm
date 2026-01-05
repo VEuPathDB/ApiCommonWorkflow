@@ -20,9 +20,12 @@ sub nextflowConfigAsString {
 
     my $inputDirectory = $self->getParamValue("inputDirectory");
 
+    my $gusHomeDir = $ENV{GUS_HOME};
+    
       my $configString = <<NEXTFLOW;
 params {
     gusConfigFile = "${workflowDataDir}/${gusConfigFile}"
+    gusHomeDir = "$gusHomeDir"
     workflowDataDir = "$workflowDataDir"
     mode = "$mode"
     outputDir = "${resultsDirectory}"
