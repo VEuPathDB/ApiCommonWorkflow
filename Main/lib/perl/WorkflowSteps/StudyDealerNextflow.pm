@@ -8,6 +8,8 @@ use ApiCommonWorkflow::Main::WorkflowSteps::RunNextflow;
 sub nextflowConfigAsString {
     my ($self) = @_;
 
+    my $studyWranglerTag = "1.0.27";
+    
     my $workflowDataDir = $self->getWorkflowDataDir();
 
     my $resultsDirectory = $self->getResultsDirectory();
@@ -28,6 +30,7 @@ params {
     gusHomeDir = "$gusHomeDir"
     workflowDataDir = "$workflowDataDir"
     mode = "$mode"
+    studyWranglerTag = "$studyWranglerTag"                     
     outputDir = "${resultsDirectory}"
     datasetName = "$datasetName"
     workflowPath = "\${params.workflowDataDir}/${inputDirectory}"
