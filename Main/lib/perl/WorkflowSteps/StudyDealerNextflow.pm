@@ -37,7 +37,7 @@ params {
     filePatterns = [phenotype: "\${params.workflowPath}/*.{txt,tab}",
                     antibodyArray: "\${params.workflowPath}/*.{txt,tab}",
                     rflp: "\${params.workflowPath}/*.{txt,tab}",
-                    cellularLocalization: "\${params.workflowPath}/*.{txt,tab}"
+                    cellularLocalization: "\${params.workflowPath}/*.{txt,tab,csv}"
                     ]
 }
 
