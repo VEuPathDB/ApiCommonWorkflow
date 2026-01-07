@@ -8,7 +8,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::RunNextflow;
 sub nextflowConfigAsString {
     my ($self) = @_;
 
-    my $studyWranglerTag = "1.0.27";
+    my $studyWranglerTag = "1.0.28";
     
     my $workflowDataDir = $self->getWorkflowDataDir();
 
