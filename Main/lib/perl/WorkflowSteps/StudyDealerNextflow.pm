@@ -34,9 +34,9 @@ params {
     outputDir = "${resultsDirectory}"
     datasetName = "$datasetName"
     workflowPath = "\${params.workflowDataDir}/${inputDirectory}"
-    filePatterns = [phenotype: "\${params.workflowPath}/*.{txt,tab}",
-                    antibodyArray: "\${params.workflowPath}/*.{txt,tab}",
-                    rflp: "\${params.workflowPath}/*.{txt,tab}",
+    filePatterns = [phenotype: "\${params.workflowPath}/*.{txt,tab,csv}",
+                    antibodyArray: "\${params.workflowPath}/*.{txt,tab,csv}",
+                    rflp: "\${params.workflowPath}/*.{txt,tab,csv}",
                     cellularLocalization: "\${params.workflowPath}/*.{txt,tab,csv}"
                     ]
 }
