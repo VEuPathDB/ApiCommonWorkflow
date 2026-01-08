@@ -18,8 +18,13 @@ sub nextflowConfigAsString {
     my $gusConfigFile = $self->getParamValue("gusConfigFile");
     my $mode = $self->getParamValue("mode");
     my $datasetName = $self->getParamValue("datasetName");
-    my $projectName = $self->getParamValue("projectName");
 
+    # TODO:  Remove this as it isn't used
+    my $projectName = $self->getParamValue("projectName"); 
+
+    my $sampleDetails = $self->getParamValue("sampleDetails"); #global/metaData_RnaSeq_RSRC/final
+    my $multiDatasetStudiesJson = $self->getParamValue("multiDatasetStudiesJson"); #global/metaData_RnaSeq_RSRC/final/multiDatasetStudy.json
+    
     my $inputDirectory = $self->getParamValue("inputDirectory");
 
     my $gusHomeDir = $ENV{GUS_HOME};
@@ -29,6 +34,7 @@ params {
     gusConfigFile = "${workflowDataDir}/${gusConfigFile}"
     gusHomeDir = "$gusHomeDir"
     workflowDataDir = "$workflowDataDir"
+    multiDatasetStudies = "$workflowDataDir/$multiDatasetStudiesJson"
     mode = "$mode"
     studyWranglerTag = "$studyWranglerTag"                     
     outputDir = "${resultsDirectory}"
@@ -37,7 +43,10 @@ params {
     filePatterns = [phenotype: "\${params.workflowPath}/*.{txt,tab,csv}",
                     antibodyArray: "\${params.workflowPath}/*.{txt,tab,csv}",
                     rflp: "\${params.workflowPath}/*.{txt,tab,csv}",
-                    cellularLocalization: "\${params.workflowPath}/*.{txt,tab,csv}"
+                    cellularLocalization: "\${params.workflowPath}/*.{txt,tab,csv}",
+                    ebiRnaSeqCounts: "${params.workflowPath}/*/nextflowAnalysisDir/nextflow_output/analysis_output/{countsForEda,merged-0.25-eigengenes}*",
+                    rnaSeqCounts: "${params.workflowPath}/*/bulkrnaseq/analysisDir/nextflowAnalysisDir/nextflow_output/analysis_output/countsForEda*",
+                    rnaseqAiMetadata: "${params.workflowDataDir}/$sampleDetails/*/*.{tsv,yaml}"
                     ]
 }
 
