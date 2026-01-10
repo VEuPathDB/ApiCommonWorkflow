@@ -47,7 +47,8 @@ params {
                     cellularLocalization: "\${params.workflowPath}/*.{txt,tab,csv}",
                     ebiRnaSeqCounts: "\${params.workflowPath}/*/nextflowAnalysisDir/nextflow_output/analysis_output/{countsForEda,merged-0.25-eigengenes}*",
                     rnaSeqCounts: "\${params.workflowPath}/*/bulkrnaseq/analysisDir/nextflowAnalysisDir/nextflow_output/analysis_output/countsForEda*",
-                    rnaseqAiMetadata: "\${params.workflowDataDir}/\${params.sampleDetails}/*/*.{tsv,yaml}"
+                    rnaseqAiMetadata: "\${params.workflowDataDir}/\${params.sampleDetails}/*/*.{tsv,yaml}",
+                    chipChipMetadata: "\${params.workflowDataDir}/\${params.sampleDetails}/*/*.{tsv,yaml}"
                     ]
 }
 
