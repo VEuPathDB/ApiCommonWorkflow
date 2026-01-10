@@ -3,11 +3,17 @@
   <param name="gusConfigFile"/>
 
   <constant name="rnaseqDir">$$parentDataDir$$/rnaseq</constant>
+  <constant name="chipChipDir">$$parentDataDir$$/chipChip</constant>
   
   <step name="makeRnaSeqDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$rnaseqDir$$</paramValue>
   </step>
 
+  <step name="makeChipChipDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$chipChipDir$$</paramValue>
+  </step>
+
+  
   <step name="rnaseqStudyDealerNextflow" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::StudyDealerNextflow">
     <paramValue name="sampleDetails">global/metaData_RnaSeq_RSRC/final</paramValue>
     <paramValue name="multiDatasetStudiesJson">global/metaData_RnaSeq_RSRC/final/multiDatasetStudy.json</paramValue>
@@ -26,4 +32,25 @@
     <dependsGlobal name="metaData_RnaSeq_RSRC"/>
   </step>
 
+  <step name="chipChipStudyDealerNextflow" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::StudyDealerNextflow">
+    <paramValue name="sampleDetails">global/metaData_ChIPChip_RSRC/final</paramValue>
+    <paramValue name="workingDir">$$chipChipDir$$</paramValue>
+    <paramValue name="resultsDir">$$chipChipDir$$/results</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/study-dealer-nextflow</paramValue>
+    <paramValue name="isGitRepo">true</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="mode">chipChip</paramValue>
+    <!-- below params not needed in this context -->
+    <paramValue name="multiDatasetStudiesJson"></paramValue>
+    <paramValue name="inputDirectory"></paramValue>
+    <paramValue name="datasetName"></paramValue>
+    <paramValue name="projectName"></paramValue>
+    <paramValue name="nextflowEntry"></paramValue>
+    <depends name="makeChipChipDir"/>
+    <depends name="rnaseqStudyDealerNextflow"/>
+    <dependsGlobal name="metaData_ChIPChip_RSRC"/>
+  </step>
+
+
+  
 </workflowGraph>    
