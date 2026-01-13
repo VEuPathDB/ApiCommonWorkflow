@@ -11,9 +11,9 @@ sub hasPluginCalls {
     my ($self) = @_;
     my $mode = $self->getParamValue("mode");
 
-    if($mode eq 'rnaseq' || $mode eq 'chipChip')
-
-    return 1;
+    if($mode eq 'rnaseq' || $mode eq 'chipChip') {
+      return 1;
+    }
 }
 
 sub isResumable {
