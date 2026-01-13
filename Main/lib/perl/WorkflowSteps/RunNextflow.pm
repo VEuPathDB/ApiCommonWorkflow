@@ -12,6 +12,11 @@ sub nextflowConfigAsString { }
 sub hasPluginCalls { }
 
 
+sub isResumable {
+    return 1;
+}
+
+
 # this is often needed by subclasses when generating config file
 sub getResultsDirectory {
     my ($self) = @_;
@@ -32,6 +37,8 @@ sub getWorkingDirectory {
 sub run {
     my ($self, $test, $undo) = @_;
 
+    my $resume = $self->isResumable() ? "-resume" : ""; 
+    
     my $workingDirectory = $self->getWorkingDirectory();
     my $nextflowConfigAsString = $self->nextflowConfigAsString();
 
@@ -57,7 +64,7 @@ sub run {
         $entry = "-entry $nextflowEntry";
     }
 
-    my $cmd = "export NXF_WORK=$nextflowWork && nextflow -log $nextflowLog -C $nextflowConfig run -ansi-log false -r $workflowBranch $nextflowWorkflow $entry -resume 1>&2";
+    my $cmd = "export NXF_WORK=$nextflowWork && nextflow -log $nextflowLog -C $nextflowConfig run -ansi-log false -r $workflowBranch $nextflowWorkflow $entry $resume 1>&2";
     if($isGitRepo){
         $cmd = "nextflow pull $nextflowWorkflow; $cmd";
     }
@@ -86,11 +93,16 @@ sub run {
 "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Since this nextflow step FAILED, please CLEAN UP by calling:
 
+  Option 1.  Clean up FAILED steps with:
+
+  pushd $workingDirectory; undoNextflowPlugins.bash -f failed && rm -rf .nextflow/; popd
+
+  Option 2. Clean up ALL plugin calls with: 
+
   pushd $workingDirectory; undoNextflowPlugins.bash && rm -rf .nextflow/; popd
 
-(You need to do this cleanup EVEN IF the step did not write any data to *its*
-tables.  ga most likely wrote to WorkflowStepAlgInvocation, and those rows
-must be cleaned out.)
+(NOTE:  Plugin calls from nextflow do NOT write a row to WorkflowStepAlgInvocation.
+The ReFlow workflow will not associte this data with workflow steps.)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ";
         }

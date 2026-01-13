@@ -5,6 +5,22 @@ use strict;
 use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunNextflow;
 
+
+# 
+sub hasPluginCalls {
+    my ($self) = @_;
+    my $mode = $self->getParamValue("mode");
+
+    if($mode eq 'rnaseq' || $mode eq 'chipChip')
+
+    return 1;
+}
+
+sub isResumable {
+    return 0;
+}
+
+
 sub nextflowConfigAsString {
     my ($self) = @_;
 
