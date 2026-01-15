@@ -2,11 +2,12 @@
 
 set -euo pipefail
 
-while getopts f:n: flag
+while getopts f:n:g: flag
 do
     case "${flag}" in
         f) filterarg=${OPTARG};;
         n) namearg=${OPTARG};;
+        g) gusconfigarg=${OPTARG};;
     esac
 done
 
@@ -20,11 +21,12 @@ LAST=$(nextflow log -q |tail -n 1)
 # user can call with named run (default is most recent)
 NAME=${namearg:-$LAST}
 STATUS_FILTER=${filterarg:-".*"}
+GUS_CONFIG_FILE=${gusconfigarg:-""}
 
 echo Undo nextflow run name=$NAME, with filter=$STATUS_FILTER
- 
-nextflow log $NAME -filter "tag == 'plugin' && status =~ /(?i)${STATUS_FILTER}/" -f workdir | # filter by steps tagged as plugin and optionally by status;  
+
+nextflow log $NAME -filter "tag == 'plugin' && status =~ /(?i)${STATUS_FILTER}/" -f workdir | # filter by steps tagged as plugin and optionally by status;
 tac | #print in reverse order
-while read line; do undoCommandFromPluginStderr.pl $line/.command.err 1 | tac ; done |  #pass stderr file to command to parse and get the undo command; 
+while read line; do undoCommandFromPluginStderr.pl $line/.command.err 1 "$GUS_CONFIG_FILE" | tac ; done |  #pass stderr file to command to parse and get the undo command;
 bash -e #run the undo command
 

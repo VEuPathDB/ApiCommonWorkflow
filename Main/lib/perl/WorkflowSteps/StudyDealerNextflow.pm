@@ -5,6 +5,31 @@ use strict;
 use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::RunNextflow;
 
+
+# 
+sub hasPluginCalls {
+    my ($self) = @_;
+    my $mode = $self->getParamValue("mode");
+
+    if($mode eq 'rnaseq' || $mode eq 'chipChip') {
+      return 1;
+    }
+}
+
+sub isResumable {
+    return 0;
+}
+
+sub skipUndo {
+    my ($self) = @_;
+    my $mode = $self->getParamValue("mode");
+
+    if($mode eq 'rnaseq' || $mode eq 'chipChip') {
+      return 1;
+    }
+    return 0;
+}
+
 sub nextflowConfigAsString {
     my ($self) = @_;
 
@@ -18,8 +43,13 @@ sub nextflowConfigAsString {
     my $gusConfigFile = $self->getParamValue("gusConfigFile");
     my $mode = $self->getParamValue("mode");
     my $datasetName = $self->getParamValue("datasetName");
-    my $projectName = $self->getParamValue("projectName");
 
+    # TODO:  Remove this as it isn't used
+    my $projectName = $self->getParamValue("projectName"); 
+
+    my $sampleDetails = $self->getParamValue("sampleDetails"); #global/metaData_RnaSeq_RSRC/final
+    my $multiDatasetStudiesJson = $self->getParamValue("multiDatasetStudiesJson"); #global/metaData_RnaSeq_RSRC/final/multiDatasetStudy.json
+    
     my $inputDirectory = $self->getParamValue("inputDirectory");
 
     my $gusHomeDir = $ENV{GUS_HOME};
@@ -29,15 +59,21 @@ params {
     gusConfigFile = "${workflowDataDir}/${gusConfigFile}"
     gusHomeDir = "$gusHomeDir"
     workflowDataDir = "$workflowDataDir"
+    multiDatasetStudies = "$workflowDataDir/$multiDatasetStudiesJson"
     mode = "$mode"
     studyWranglerTag = "$studyWranglerTag"                     
     outputDir = "${resultsDirectory}"
     datasetName = "$datasetName"
     workflowPath = "\${params.workflowDataDir}/${inputDirectory}"
+    sampleDetails = "$sampleDetails"
     filePatterns = [phenotype: "\${params.workflowPath}/*.{txt,tab,csv}",
                     antibodyArray: "\${params.workflowPath}/*.{txt,tab,csv}",
                     rflp: "\${params.workflowPath}/*.{txt,tab,csv}",
-                    cellularLocalization: "\${params.workflowPath}/*.{txt,tab,csv}"
+                    cellularLocalization: "\${params.workflowPath}/*.{txt,tab,csv}",
+                    ebiRnaSeqCounts: "\${params.workflowPath}/*/nextflowAnalysisDir/nextflow_output/analysis_output/{countsForEda,merged-0.25-eigengenes}*",
+                    rnaSeqCounts: "\${params.workflowPath}/*/bulkrnaseq/analysisDir/nextflowAnalysisDir/nextflow_output/analysis_output/countsForEda*",
+                    rnaseqAiMetadata: "\${params.workflowDataDir}/\${params.sampleDetails}/*/*.{tsv,yaml}",
+                    chipChipMetadata: "\${params.workflowDataDir}/\${params.sampleDetails}/*/*.{tsv,yaml}"
                     ]
 }
 
