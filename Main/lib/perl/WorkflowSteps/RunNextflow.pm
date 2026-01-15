@@ -16,6 +16,9 @@ sub isResumable {
     return 1;
 }
 
+# By default we don't skip
+sub skipUndo { }
+
 
 # this is often needed by subclasses when generating config file
 sub getResultsDirectory {
@@ -72,9 +75,16 @@ sub run {
     # prepend slash to ;, >, and & so that the command is submitted whole
     #$cmd =~ s{([;>&])}{\\$1}g;
 
-    if($undo) {
+    my $skipUndo = $self->skipUndo();
+    if($undo && !$skipUndo) {
         # this will undo all of the plugins in reverse order from the last run
-        $self->runCmd(0, "undoNextflowPlugins.bash");
+        my $gusConfigFile = $self->getParamValue("gusConfigFile");
+        if($gusConfigFile) {
+            my $workflowDataDir = $self->getWorkflowDataDir();
+            $gusConfigFile = "${workflowDataDir}/${gusConfigFile}";
+        }
+
+        $self->runCmd(0, "undoNextflowPlugins.bash -g $gusConfigFile");
 
         # after the plugins have been Undone.. we can remove the working dir
         $self->runCmd(0, "rm -rf $nextflowWork");

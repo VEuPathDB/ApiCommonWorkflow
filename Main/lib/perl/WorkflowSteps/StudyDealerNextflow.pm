@@ -20,6 +20,15 @@ sub isResumable {
     return 0;
 }
 
+sub skipUndo {
+    my ($self) = @_;
+    my $mode = $self->getParamValue("mode");
+
+    if($mode eq 'rnaseq' || $mode eq 'chipChip') {
+      return 1;
+    }
+    return 0;
+}
 
 sub nextflowConfigAsString {
     my ($self) = @_;
