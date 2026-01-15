@@ -89,17 +89,24 @@ sub run {
         my $msgForError;
         
         if($self->hasPluginCalls()) {
+
+            my $gusConfigFile = $self->getParamValue("gusConfigFile");
+            if($gusConfigFile) {
+                my $workflowDataDir = $self->getWorkflowDataDir();
+                $gusConfigFile = "${workflowDataDir}/${gusConfigFile}";
+            }
+            
             $msgForError=
 "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Since this nextflow step FAILED, please CLEAN UP by calling:
 
   Option 1.  Clean up FAILED steps with:
 
-  pushd $workingDirectory; undoNextflowPlugins.bash -f failed && rm -rf .nextflow/; popd
+  pushd $workingDirectory; undoNextflowPlugins.bash -f failed -g $gusConfigFile && rm -rf .nextflow/; popd
 
   Option 2. Clean up ALL plugin calls with: 
 
-  pushd $workingDirectory; undoNextflowPlugins.bash && rm -rf .nextflow/; popd
+  pushd $workingDirectory; undoNextflowPlugins.bash -g $gusConfigFile && rm -rf .nextflow/; popd
 
 (NOTE:  Plugin calls from nextflow do NOT write a row to WorkflowStepAlgInvocation.
 The ReFlow workflow will not associte this data with workflow steps.)
