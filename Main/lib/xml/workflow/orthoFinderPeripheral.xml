@@ -4,11 +4,11 @@
     <param name="getPeripheralProteinsDir"/>
 
     <constant name="nextflowWorkflow">VEuPathDB/orthofinder-nextflow</constant>
-
-  <step name="makeOrthoFinderPeripheralNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPeripheralNextflowConfig">
+  
+  <step name="makeOrthoFinderPeripheralEntryNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPeripheralEntryNextflowConfig">
     <paramValue name="workingDirRelativePath">$$peripheralDir$$</paramValue>
-    <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/results/</paramValue>
-    <paramValue name="configFileName">nextflow.config</paramValue>
+    <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/peripheralEntryResults/</paramValue>
+    <paramValue name="configFileName">peripheralEntryNextflow.config</paramValue>
     <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
     <paramValue name="peripheralProteomes">$$peripheralDir$$/fastas.tar.gz</paramValue>
     <paramValue name="coreProteome">$$peripheralDir$$/coreFastas.tar.gz</paramValue>
@@ -17,14 +17,13 @@
     <paramValue name="coreTranslateSequenceFile">$$peripheralDir$$/SequenceIDs.txt</paramValue>
     <paramValue name="peripheralCacheDir">$$peripheralDir$$/peripheralCacheDir</paramValue>
     <paramValue name="outdated">$$peripheralDir$$/outdated.txt</paramValue>
-    <paramValue name="oldGroupsFile">$$peripheralDir$$/previousGroups.txt</paramValue>
   </step>
 
-   <subgraph name="runPeripheralNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
+   <subgraph name="runOrthoFinderPeripheralEntryNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
     <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="parentDataDir">$$peripheralDir$$</paramValue>
-    <paramValue name="nextflowConfigFile">$$peripheralDir$$/analysisDir/nextflow.config</paramValue>
+    <paramValue name="nextflowConfigFile">$$peripheralDir$$/analysisDir/peripheralEntrynextflow.config</paramValue>
     <paramValue name="ngsSamplesNextflowConfigFile"></paramValue>
     <paramValue name="organismAbbrev"></paramValue> <!-- Not neccessary for ortho -->
     <paramValue name="genomeSpec">$$projectName$$|peripheralGroups</paramValue> <!-- Using for correct naming of preprocessed data cache -->
@@ -33,15 +32,102 @@
     <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="entry">peripheralEntry</paramValue>
-    <depends name="makeOrthoFinderPeripheralNextflowConfig"/>
+    <depends name="makeOrthoFinderPeripheralEntryNextflowConfig"/>
    </subgraph>
+
+  <step name="makeOrthoFinderResidualEntryNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderResidualEntryNextflowConfig">
+    <paramValue name="workingDirRelativePath">$$peripheralDir$$</paramValue>
+    <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/residualEntryResults/</paramValue>
+    <paramValue name="configFileName">residualEntryNextflow.config</paramValue>
+    <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
+    <paramValue name="residualFastaDir">$$peripheralDir$$/analysisDir/peripheralEntryResults/residualFastas.tar.gz</paramValue>
+    <paramValue name="orthoFinderDiamondOutputFields">qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore</paramValue>    
+    <depends name="runOrthoFinderPeripheralEntryNextflowOnCluster"/>    
+  </step>
+
+   <subgraph name="runOrthoFinderResidualEntryNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
+    <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$peripheralDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$peripheralDir$$/analysisDir/residualEntryNextflow.config</paramValue>
+    <paramValue name="ngsSamplesNextflowConfigFile"></paramValue>
+    <paramValue name="organismAbbrev"></paramValue> <!-- Not neccessary for ortho -->
+    <paramValue name="genomeSpec">$$projectName$$|peripheralGroups</paramValue> <!-- Using for correct naming of preprocessed data cache -->
+    <paramValue name="isProteomeAnalysis">true</paramValue>
+    <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho -->
+    <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
+    <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
+    <paramValue name="entry">residualEntry</paramValue>
+    <depends name="makeOrthoFinderResidualEntryNextflowConfig"/>
+   </subgraph>
+
+  <step name="makeOrthoFinderPostResidualEntryNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPostResidualEntryNextflowConfig">
+    <paramValue name="workingDirRelativePath">$$peripheralDir$$</paramValue>
+    <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/postResidualEntryResults/</paramValue>
+    <paramValue name="configFileName">postResidualEntryNextflow.config</paramValue>
+    <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
+    <paramValue name="residualFasta">$$peripheralDir$$/analysisDir/residualEntryResults/residualFasta.fa</paramValue>
+    <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/residualEntryResults/Orthogroups.txt</paramValue>
+    <paramValue name="speciesMapping">$$peripheralDir$$/analysisDir/residualEntryResults/SpeciesIDs.txt</paramValue>
+    <paramValue name="sequenceMapping">$$peripheralDir$$/analysisDir/residualEntryResults/SequenceIDs.txt</paramValue>
+    <paramValue name="diamondResultsFile">$$peripheralDir$$/analysisDir/residualEntryResults/blastsFile.txt</paramValue>
+    <depends name="runOrthoFinderResidualEntryNextflowOnCluster"/>    
+  </step>
+
+   <subgraph name="runOrthoFinderPostResidualEntryNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
+    <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$peripheralDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$peripheralDir$$/analysisDir/postResidualEntryNextflow.config</paramValue>
+    <paramValue name="ngsSamplesNextflowConfigFile"></paramValue>
+    <paramValue name="organismAbbrev"></paramValue> <!-- Not neccessary for ortho -->
+    <paramValue name="genomeSpec">$$projectName$$|peripheralGroups</paramValue> <!-- Using for correct naming of preprocessed data cache -->
+    <paramValue name="isProteomeAnalysis">true</paramValue>
+    <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho -->
+    <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
+    <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
+    <paramValue name="entry">postResidualEntry</paramValue>
+    <depends name="makeOrthoFinderPostResidualEntryNextflowConfig"/>
+   </subgraph>
+
+  <step name="makeOrthoFinderPostProcessingEntryNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPostProcessingEntryNextflowConfig">
+    <paramValue name="workingDirRelativePath">$$peripheralDir$$</paramValue>
+    <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/postProcessingEntryResults/</paramValue>
+    <paramValue name="configFileName">postProcessingEntryNextflow.config</paramValue>
+    <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
+    <paramValue name="residualFasta">$$peripheralDir$$/analysisDir/residualEntryResults/residualFasta.fa</paramValue>    
+    <paramValue name="residualBestRepsFasta">$$peripheralDir$$/analysisDir/postResidualEntryResults/bestReps.fasta</paramValue>
+    <paramValue name="coreBestRepsFasta">$$peripheralDir$$/analysisDir/peripheralEntryResults/coreBestReps.fasta</paramValue>
+    <paramValue name="coreAndPeripheralGroups">$$peripheralDir$$/analysisDir/peripheralEntryResults/GroupsFile.txt</paramValue>
+    <paramValue name="coreAndPeripheralProteome">$$peripheralDir$$/analysisDir/peripheralEntryResults/fullProteome.fasta</paramValue>
+    <paramValue name="residualGroups">$$peripheralDir$$/analysisDir/residualEntryResults/Orthogroups.txt</paramValue>
+    <paramValue name="oldGroupsFile">$$peripheralDir$$/previousGroups.txt</paramValue>    
+    <paramValue name="bestRepDiamondOutputFields">qseqid sseqid evalue</paramValue>        
+    <depends name="runOrthoFinderPostResidualEntryNextflowOnCluster"/>    
+  </step>
+
+   <subgraph name="runOrthoFinderPostProcessingEntryNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
+    <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="parentDataDir">$$peripheralDir$$</paramValue>
+    <paramValue name="nextflowConfigFile">$$peripheralDir$$/analysisDir/postProcessingEntryNextflow.config</paramValue>
+    <paramValue name="ngsSamplesNextflowConfigFile"></paramValue>
+    <paramValue name="organismAbbrev"></paramValue> <!-- Not neccessary for ortho -->
+    <paramValue name="genomeSpec">$$projectName$$|peripheralGroups</paramValue> <!-- Using for correct naming of preprocessed data cache -->
+    <paramValue name="isProteomeAnalysis">true</paramValue>
+    <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho -->
+    <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
+    <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
+    <paramValue name="entry">postProcessingEntry</paramValue>
+    <depends name="makeOrthoFinderPostProcessingEntryNextflowConfig"/>
+   </subgraph>      
 
   <step name="updateOrthoPeripheralPersistentCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateOrthoPeripheralPersistentCache">
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="checkSum">$$getPeripheralProteinsDir$$/fastas/checkSum.tsv</paramValue>
-    <paramValue name="newGroupsFile">$$peripheralDir$$/analysisDir/results/fullGroupFile.txt</paramValue>
-    <paramValue name="previousGroups">$$peripheralDir$$/analysisDir/results/previousGroups.txt</paramValue>
-    <depends name="runPeripheralNextflowOnCluster"/>
+    <paramValue name="newGroupsFile">$$peripheralDir$$/analysisDir/postProcessingEntryResults/fullGroupFile.txt</paramValue>
+    <paramValue name="previousGroups">$$peripheralDir$$/analysisDir/postProcessingEntryResults/previousGroups.txt</paramValue>
+    <depends name="runOrthoFinderPostProcessingEntryNextflowOnCluster"/>
   </step>
 
 </workflowGraph>
