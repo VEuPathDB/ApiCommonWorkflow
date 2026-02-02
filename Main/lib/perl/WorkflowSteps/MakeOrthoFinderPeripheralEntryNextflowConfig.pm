@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPeripheralNextflowConfig;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPeripheralEntryNextflowConfig;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
@@ -16,11 +16,10 @@ sub run {
   my $coreGroupsFile = $self->getParamValue("coreGroupsFile");
   my $coreGroupSimilarities = $self->getParamValue("coreGroupSimilarities");
   my $coreTranslateSequenceFile = $self->getParamValue("coreTranslateSequenceFile");
+  my $outdatedOrganisms = $self->getParamValue("outdatedOrganisms");  
+  my $peripheralDiamondCache = $self->getParamValue("peripheralDiamondCache");
+  
   my $buildVersion = $self->getSharedConfig("buildVersion");
-  my $residualBuildVersion = $self->getSharedConfig("residualBuildVersion");
-  my $peripheralCacheDir = $self->getParamValue("peripheralCacheDir");
-  my $outdatedOrganisms = $self->getParamValue("outdated");
-  my $oldGroupsFile = $self->getParamValue("oldGroupsFile");
 
   my $resultsDirectory = $self->getParamValue("clusterResultDir");
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
@@ -32,9 +31,8 @@ sub run {
   my $coreGroupsFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreGroupsFile);
   my $coreGroupSimilaritiesInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreGroupSimilarities);
   my $coreTranslateSequenceFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreTranslateSequenceFile);
-  my $peripheralCacheDirInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $peripheralCacheDir);
-  my $outdatedFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $outdatedOrganisms);
-  my $oldGroupsFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $oldGroupsFile);
+  my $peripheralDiamondCacheInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $peripheralDiamondCache);
+  my $outdatedOrganismsFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $outdatedOrganisms);
   my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
   my $executor = $self->getClusterExecutor();
@@ -54,15 +52,10 @@ params {
     coreGroupsFile = \"$coreGroupsFileInNextflowWorkingDirOnCluster\"
     coreGroupSimilarities = \"$coreGroupSimilaritiesInNextflowWorkingDirOnCluster\"
     coreTranslateSequenceFile = \"$coreTranslateSequenceFileInNextflowWorkingDirOnCluster\"
-    outdatedOrganisms = \"$outdatedFileInNextflowWorkingDirOnCluster\"
-    oldGroupsFile = \"$oldGroupsFileInNextflowWorkingDirOnCluster\"
-    peripheralDiamondCache = \"$peripheralCacheDirInNextflowWorkingDirOnCluster\"
-    blastArgs = \"\"
+    outdatedOrganisms = \"$outdatedOrganismsFileInNextflowWorkingDirOnCluster\"
+    peripheralDiamondCache = \"$peripheralDiamondCacheInNextflowWorkingDirOnCluster\"
     buildVersion = $buildVersion
-    residualBuildVersion = $residualBuildVersion
-    bestRepDiamondOutputFields = \"qseqid sseqid evalue\"
     orthoFinderDiamondOutputFields = \"qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore\"
-
 }
 
 process {
