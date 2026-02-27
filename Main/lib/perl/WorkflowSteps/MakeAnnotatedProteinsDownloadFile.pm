@@ -112,6 +112,7 @@ WHERE ns.SOURCE_ID = t.SEQUENCE_ID
   AND t.ncbi_tax_id = $ncbiTaxonId
   AND t.org_abbrev = '$organismAbbrev'
   AND (t.so_term_name like 'protein_coding%' OR t.so_term_name like 'transposable_element_gene')
+  AND t.is_pseudo IS DISTINCT FROM 1
   AND t.protein_source_id = taas.source_id
 ORDER BY t.chromosome_order_num, t.SEQUENCE_ID,t.source_id, t.coding_start
 EOF
