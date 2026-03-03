@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPostProcessingNextflowConfig;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPostProcessingEntryNextflowConfig;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
