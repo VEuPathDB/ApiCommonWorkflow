@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderResidualNextflowConfig;
+package ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderResidualEntryNextflowConfig;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
