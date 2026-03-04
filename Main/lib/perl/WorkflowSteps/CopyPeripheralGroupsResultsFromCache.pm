@@ -9,7 +9,7 @@ sub run {
 
   my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $resultsDir = join("/", $workflowDataDir, $self->getParamValue("resultsDir"));
+  my $analysisDir = join("/", $workflowDataDir, $self->getParamValue("analysisDir"));
 
   if ($undo) {
       $self->runCmd(0, "rm -rf $resultsDir/*");
@@ -19,7 +19,29 @@ sub run {
   }
   else {
 
-      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/* $resultsDir/");
+      # peripheralEntryResults
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/peripherals.fasta $analysisDir/peripheralEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/intraGroupBlastFile.tsv $analysisDir/peripheralEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/coreBestReps.txt $analysisDir/peripheralEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/GroupsFile.txt $analysisDir/peripheralEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/peripheralCacheDir.tar.gz $analysisDir/peripheralEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/residuals.fasta $analysisDir/peripheralEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/groupStats $analysisDir/peripheralEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/residuals.fasta $analysisDir/peripheralEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/groupFastas $analysisDir/peripheralEntryResults/");
+      # postResidualEntryResults
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/groupStats $analysisDir/postResidualEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/residualBestReps.txt $analysisDir/postResidualEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/groupFastas $analysisDir/postResidualEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/residualBuildVersion.txt $analysisDir/postResidualEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/intraResidualGroupBlastFile.tsv $analysisDir/postResidualEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/reformattedGroups.txt $analysisDir/postResidualEntryResults");
+      # postProcessingEntryResults
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/bestRepsFull.fasta $analysisDir/postProcessingEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/fullGroupFile.txt $analysisDir/postProcessingEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/similar_groups.tsv $analysisDir/postProcessingEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/ortho7db.dmnd $analysisDir/postProcessingEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/previousGroups.txt $analysisDir/postProcessingEntryResults/");
 
   }
 }
