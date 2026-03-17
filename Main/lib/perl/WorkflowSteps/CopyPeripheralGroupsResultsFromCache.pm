@@ -12,7 +12,7 @@ sub run {
   my $analysisDir = join("/", $workflowDataDir, $self->getParamValue("analysisDir"));
 
   if ($undo) {
-      $self->runCmd(0, "rm -rf $analysisDir/*");
+      next;
   }
   elsif ($test) {
       $self->runCmd(0, "echo 'test'");
@@ -40,7 +40,7 @@ sub run {
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/bestRepsFull.fasta $analysisDir/postProcessingEntryResults/");
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/fullGroupFile.txt $analysisDir/postProcessingEntryResults/");
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/similar_groups.tsv $analysisDir/postProcessingEntryResults/");
-      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/ortho7db.dmnd $analysisDir/postProcessingEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/ortho*db.dmnd $analysisDir/postProcessingEntryResults/");
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/previousGroups.txt $analysisDir/postProcessingEntryResults/");
 
   }
