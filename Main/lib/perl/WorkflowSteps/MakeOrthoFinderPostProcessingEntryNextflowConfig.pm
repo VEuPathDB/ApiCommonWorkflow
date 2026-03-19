@@ -17,6 +17,8 @@ sub run {
   my $coreAndPeripheralGroups = $self->getParamValue("coreAndPeripheralGroups");
   my $coreAndPeripheralProteome = $self->getParamValue("coreAndPeripheralProteome");
   my $residualGroups = $self->getParamValue("residualGroups");
+  my $coreGroupFastas = $self->getParamValue("coreGroupFastas");
+  my $residualGroupFastas = $self->getParamValue("residualGroupFastas");
   my $buildVersion = $self->getSharedConfig("buildVersion");
   my $oldGroupsFile = $self->getParamValue("oldGroupsFile");
   my $bestRepDiamondOutputFields = $self->getParamValue("bestRepDiamondOutputFields");  
@@ -32,6 +34,8 @@ sub run {
   my $coreAndPeripheralGroupsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreAndPeripheralGroups);
   my $coreAndPeripheralProteomeInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreAndPeripheralProteome);
   my $residualGroupsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $residualGroups);
+  my $coreGroupFastasInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreGroupFastas);
+  my $residualGroupFastasInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $residualGroupFastas);
   my $oldGroupsFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $oldGroupsFile);
 
   my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
@@ -54,6 +58,8 @@ params {
     coreAndPeripheralGroups = \"$coreAndPeripheralGroupsInNextflowWorkingDirOnCluster\"
     coreAndPeripheralProteome = \"$coreAndPeripheralProteomeInNextflowWorkingDirOnCluster\"
     residualGroups = \"$residualGroupsInNextflowWorkingDirOnCluster\"
+    coreGroupFastas = \"$coreGroupFastasInNextflowWorkingDirOnCluster\"
+    residualGroupFastas = \"$residualGroupFastasInNextflowWorkingDirOnCluster\"
     buildVersion = $buildVersion
     oldGroupsFile = \"$oldGroupsFileInNextflowWorkingDirOnCluster\"
     bestRepDiamondOutputFields = \"$bestRepDiamondOutputFields\"
