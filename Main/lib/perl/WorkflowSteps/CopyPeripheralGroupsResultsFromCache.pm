@@ -12,7 +12,7 @@ sub run {
   my $analysisDir = join("/", $workflowDataDir, $self->getParamValue("analysisDir"));
 
   if ($undo) {
-      next;
+      $self->runCmd(0, "echo 'undo'");
   }
   elsif ($test) {
       $self->runCmd(0, "echo 'test'");
