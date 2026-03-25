@@ -69,7 +69,12 @@ close GROUPS;
 my @proteinsWithNoGroup;
 open(GENE, ">$geneSourceIdOrthologFile") or die "Cannot open $geneSourceIdOrthologFile: $!";
 while (my ($protein, $gene) = each %proteinToGene) {
-    if (my $group = $proteinToGroup{$protein}) {
+    my $group = $proteinToGroup{$protein};
+    unless ($group) {
+        (my $altProtein = $protein) =~ s/:/\_/g;
+        $group = $proteinToGroup{$altProtein};
+    }
+    if ($group) {
         print GENE "$gene\t$group\n";
     } else {
         push @proteinsWithNoGroup, $protein;
