@@ -34,7 +34,7 @@ sub run {
       $self->runCmd(0, "mkdir -p $analysisDir/postResidualEntryResults/");
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/groupStats $analysisDir/postResidualEntryResults/");
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/residualBestReps.txt $analysisDir/postResidualEntryResults/");
-      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/groupFastas $analysisDir/postResidualEntryResults/");
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/residualGroupFastas $analysisDir/postResidualEntryResults/");
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/residualBuildVersion.txt $analysisDir/postResidualEntryResults/");
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/intraResidualGroupBlastFile.tsv $analysisDir/postResidualEntryResults/");
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/reformattedGroups.txt $analysisDir/postResidualEntryResults");
