@@ -19,6 +19,8 @@ sub run {
     my $proteome = $self->getParamValue("proteome");    
     my $outputDir = $self->getParamValue("outputDir");
     my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
+    my $taxonId = $self->getParamValue("taxonId");
+    my $abbrev = $self->getParamValue("abbrev");
 
     my $digestedInterproResults = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $interproResults);
     my $digestedProteome = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $proteome);    
