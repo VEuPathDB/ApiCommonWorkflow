@@ -29,22 +29,28 @@
      <depends name="makeAnalysisDir"/>
     </step>
 
-    <step name="symLinkProteome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
-      <paramValue name="fromFile">$$proteinsFile$$</paramValue>
-      <paramValue name="toFile">$$proteomeSymLink$$</paramValue>
-      <depends name="makeResultDir"/>
+    <step name="copyInterproResultsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+     <paramValue name="fromFile">$$interproResults$$</paramValue>
+     <paramValue name="toFile">$$analysisDir$$/interproResults.tsv</paramValue>
+     <depends name="makeResultDir"/>
     </step>
-  
+
+    <step name="copyProteomeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+     <paramValue name="fromFile">$$proteinsFile$$</paramValue>
+     <paramValue name="toFile">$$analysisDir$$/proteome.fasta</paramValue>
+     <depends name="copyInterproResultsFile"/>
+    </step>
+ 
     <step name="makeArbaNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeArbaNextflowConfig">
       <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
       <paramValue name="analysisDir">$$analysisDir$$/</paramValue>      
       <paramValue name="configFileName">nextflow.config</paramValue>          
       <paramValue name="outputDir">$$resultsDir$$/</paramValue>
-      <paramValue name="interproResults">$$interproResults$$</paramValue>
-      <paramValue name="proteome">$$proteinsFile$$</paramValue>
+      <paramValue name="interproResults">$$analysisDir$$/interproResults.tsv</paramValue>
+      <paramValue name="proteome">$$analysisDir$$/proteome.fasta</paramValue>
       <paramValue name="taxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="abbrev">$$organismAbbrev$$</paramValue>      
-      <depends name="symLinkProteome"/>
+      <depends name="copyProteomeFile"/>
     </step>
 
     <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
