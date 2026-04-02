@@ -42,7 +42,7 @@ params {
   proteome = \"$digestedProteome\"
   taxonId = $taxonId
   abbrev = \"$abbrev\"
-  ruleSheet = \"$arbaRulesheet\"
+  rulesheet = \"$arbaRulesheet\"
 }
 
 process{
