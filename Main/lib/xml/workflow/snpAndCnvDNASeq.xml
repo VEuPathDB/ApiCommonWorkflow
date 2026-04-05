@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<workflowGraph name="">
+    <param name="organismAbbrev"/>
+    <param name="projectName"/>
+    <param name="name"/>
+    <param name="experimentDatasetName"/>
+    <param name="experimentDatasetVersion"/>
+    <param name="parentDataDir"/>
+    <param name="gtfFile"/>
+    <param name="genomeFastaFile"/>
+    <param name="footprintFile"/>
+    <param name="ploidy"/>
+    <param name="fromSRA"/>
+    <param name="relativeWebServicesDir"/>
+    <param name="gusConfigFile"/>
+    <param name="genomeExtDbRlsSpec"/>
+
+    <constant name="dataDir">$$parentDataDir$$/dnaseq</constant>
+    <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
+    <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
+    <constant name="nextflowConfigFile">$$analysisDirectory$$/nextflow.config</constant>
+    <constant name="ngsSamplesNextflowConfigFile">$$analysisDirectory$$/ngs-samples-nextflow.config</constant>
+    <constant name="finalDir">$$parentDataDir$$/final</constant>
+    <constant name="gtfSymLink">$$dataDir$$/$$organismAbbrev$$.gtf</constant>
+    <constant name="genomeSymLink">$$dataDir$$/$$organismAbbrev$$.fasta</constant>
+    <constant name="finalSymLink">$$dataDir$$/final</constant>
+    <constant name="loadSingleExperimentDir">$$dataDir$$/loadSingleExperiment</constant>
+    <constant name="loadNextflowConfigFile">$$loadSingleExperimentDir$$/nextflow.config</constant>
+
+    <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$dataDir$$</paramValue>
+    </step>
+
+    <step name="makeAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$analysisDirectory$$</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="makeResultDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$resultsDirectory$$</paramValue>
+        <depends name="makeAnalysisDir"/>
+    </step>
+
+    <step name="makeLoadSingleExperimentDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+        <paramValue name="dataDir">$$loadSingleExperimentDir$$</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="symLinkGtf" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+        <paramValue name="fromFile">$$gtfFile$$</paramValue>
+        <paramValue name="toFile">$$gtfSymLink$$</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="symLinkGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+        <paramValue name="fromFile">$$genomeFastaFile$$</paramValue>
+        <paramValue name="toFile">$$genomeSymLink$$</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="symLinkFinal" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+        <paramValue name="fromFile">$$finalDir$$</paramValue>
+        <paramValue name="toFile">$$finalSymLink$$</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="retrieveGeneCNVAndPloidyQueries" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RetrieveGeneCNVAndPloidyQueries">
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="geneSourceIdOrthologFile">$$dataDir$$/geneSourceIdOrthologFile.tsv</paramValue>
+        <paramValue name="chrsForCalcsFile">$$dataDir$$/chrsForCalcsFile.tsv</paramValue>
+        <depends name="makeDataDir"/>
+    </step>
+
+    <step name="ngsSamplesNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeNgsSamplesNextflowConfig">
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+        <paramValue name="analysisDirectory">$$analysisDirectory$$</paramValue>
+        <paramValue name="finalDirectory">$$finalSymLink$$</paramValue>
+        <paramValue name="resultsDirectory">$$analysisDirectory$$/ngs-samples-results</paramValue>
+        <paramValue name="nextflowConfigFile">$$ngsSamplesNextflowConfigFile$$</paramValue>
+        <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+        <paramValue name="sampleSheetName">samplesheet.csv</paramValue>
+        <paramValue name="fromSRA">$$fromSRA$$</paramValue>
+        <paramValue name="assayType">DNASeq</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <depends name="makeResultDir"/>
+    </step>
+
+    <step name="nextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqNextflowConfig">
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+        <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+        <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+        <paramValue name="sampleSheetFile">$$analysisDirectory$$/ngs-samples-results/samplesheet.csv</paramValue>
+        <paramValue name="genomeFile">$$genomeSymLink$$</paramValue>
+        <paramValue name="gtfFile">$$gtfSymLink$$</paramValue>
+        <paramValue name="footprintFile">$$footprintFile$$</paramValue>
+        <paramValue name="ploidy">$$ploidy$$</paramValue>
+        <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="geneSourceIdOrthologFile">$$dataDir$$/geneSourceIdOrthologFile.tsv</paramValue>
+        <paramValue name="chrsForCalcFile">$$dataDir$$/chrsForCalcsFile.tsv</paramValue>
+        <depends name="makeResultDir"/>
+        <depends name="retrieveGeneCNVAndPloidyQueries"/>
+    </step>
+
+    <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+        <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
+        <paramValue name="ngsSamplesNextflowConfigFile">$$ngsSamplesNextflowConfigFile$$</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="isProteomeAnalysis">false</paramValue>
+        <paramValue name="datasetSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+        <paramValue name="analysisDir">$$analysisDirectory$$</paramValue>
+        <paramValue name="nextflowWorkflow">VEuPathDB/dnaseq-nextflow</paramValue>
+        <paramValue name="entry">processSingleExperiment</paramValue>
+        <depends name="nextflowConfig"/>
+        <depends name="ngsSamplesNextflowConfig"/>
+        <depends name="symLinkGtf"/>
+        <depends name="symLinkGenome"/>
+        <depends name="symLinkFinal"/>
+    </subgraph>
+
+    <step name="loadNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqLoadNextflowConfig">
+        <paramValue name="nextflowConfigFile">$$loadNextflowConfigFile$$</paramValue>
+        <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
+        <paramValue name="indelDir">$$resultsDirectory$$</paramValue>
+        <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+        <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <depends name="makeLoadSingleExperimentDir"/>
+        <depends name="runNextflowOnCluster"/>
+    </step>
+
+    <subgraph name="runLoadSingleExperiment" xmlFile="runNextflowLocal.xml">
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+        <paramValue name="projectName">$$projectName$$</paramValue>
+        <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+        <paramValue name="analysisDir">$$loadSingleExperimentDir$$</paramValue>
+        <paramValue name="nextflowConfigFile">$$loadNextflowConfigFile$$</paramValue>
+        <paramValue name="nextflowResultsDir">$$loadSingleExperimentDir$$/results</paramValue>
+        <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+        <paramValue name="genomeSpec">$$genomeExtDbRlsSpec$$</paramValue>
+        <paramValue name="isProteomeAnalysis">false</paramValue>
+        <paramValue name="datasetSpec">$$experimentDatasetName$$|$$experimentDatasetVersion$$</paramValue>
+        <paramValue name="nextflowWorkflow">VEuPathDB/dnaseq-nextflow</paramValue>
+        <paramValue name="entry">loadSingleExperiment</paramValue>
+        <depends name="loadNextflowConfig"/>
+    </subgraph>
+
+</workflowGraph>

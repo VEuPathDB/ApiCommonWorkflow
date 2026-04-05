@@ -1,5 +1,6 @@
 <workflowGraph name="dnaseq">
   <param name="projectName"/>
+  <param name="gusConfigFile"/>
   <param name="organismAbbrev"/>
   <param name="organismDatasetLoaderXmlFile"/>
   <param name="parentDataDir"/>
@@ -30,16 +31,57 @@
     <paramValue name="outputFile">$$geneFootprintFile$$</paramValue>
     <paramValue name="project">$$projectName$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-       <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="makeGtfFile"/>
   </step>
+
+  <datasetTemplate class="dnaseqExperiment">
+    <prop name="projectName"/>
+    <prop name="organismAbbrev"/>
+    <prop name="name"/>
+    <prop name="version"/>
+    <prop name="fromSRA"/>
+    <prop name="ploidy"/>
+
+    <subgraph name="${name}_dnaseq_loadDataset" xmlFile="loadDataset.xml">
+      <paramValue name="datasetName">${organismAbbrev}_${name}_dnaseqExperiment_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <depends name="makeDataDir"/>
+    </subgraph>
+
+    <subgraph name="${name}_snpAndCnvDNASeq" xmlFile="snpAndCnvDNASeq.xml">
+      <paramValue name="organismAbbrev">${organismAbbrev}</paramValue>
+      <paramValue name="projectName">${projectName}</paramValue>
+      <paramValue name="name">${name}</paramValue>
+      <paramValue name="experimentDatasetName">${organismAbbrev}_${name}_dnaseqExperiment_RSRC</paramValue>
+      <paramValue name="experimentDatasetVersion">${version}</paramValue>
+      <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_${name}_dnaseqExperiment_RSRC</paramValue>
+      <paramValue name="gtfFile">$$gtfFile$$</paramValue>
+      <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
+      <paramValue name="footprintFile">$$geneFootprintFile$$</paramValue>
+      <paramValue name="ploidy">${ploidy}</paramValue>
+      <paramValue name="fromSRA">${fromSRA}</paramValue>
+      <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+      <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
+      <depends name="makeGeneFootprintFile"/>
+      <depends name="${name}_dnaseq_loadDataset"/>
+    </subgraph>
+
+  </datasetTemplate>
+
+  <!--
+  DEPRECATED - replaced by dnaseqExperiment above.
+  Retain until all organism dataset XMLs are migrated.
 
   <datasetTemplate class="dnaSeqExperimentFromAccession">
     <prop name="organismAbbrev"/>
     <prop name="name"/>
     <prop name="version"/>
     <prop name="referenceStrainOrganismAbbrev"/>
-    
+
     <subgraph name="${organismAbbrev}_dnaseqExperiment_${name}_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$organismAbbrev$$_dnaseqExperiment_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
@@ -49,7 +91,7 @@
 
     <subgraph name="${organismAbbrev}_${name}_ProcessDnaSeqExperiment" xmlFile="runDnaSeqExperiment.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue> 
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="resultDir">$$dataDir$$/results</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
@@ -57,14 +99,13 @@
       <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
       <paramValue name="isPaired">${isPaired}</paramValue>
       <paramValue name="ploidy">${ploidy}</paramValue>
-      <paramValue name="fromBAM">${fromBAM}</paramValue> 
-      <paramValue name="isLocal">${isLocal}</paramValue> 
-      <paramValue name="name">${name}</paramValue> 
-      <paramValue name="version">${version}</paramValue> 
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue> 
+      <paramValue name="fromBAM">${fromBAM}</paramValue>
+      <paramValue name="isLocal">${isLocal}</paramValue>
+      <paramValue name="name">${name}</paramValue>
+      <paramValue name="version">${version}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
       <depends name="${organismAbbrev}_dnaseqExperiment_${name}_RSRC"/>
     </subgraph>
-
   </datasetTemplate>
 
   <datasetTemplate class="dnaSeqExperimentFromLocal">
@@ -72,17 +113,17 @@
     <prop name="name"/>
     <prop name="version"/>
     <prop name="referenceStrainOrganismAbbrev"/>
-    
+
     <subgraph name="${organismAbbrev}_dnaseqExperiment_${name}_RSRC" xmlFile="loadDataset.xml">
       <paramValue name="datasetName">$$organismAbbrev$$_dnaseqExperiment_${name}_RSRC</paramValue>
       <paramValue name="datasetLoaderXmlFileName">$$organismDatasetLoaderXmlFile$$</paramValue>
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
       <depends name="makeDataDir"/>
-    </subgraph>  
+    </subgraph>
 
     <subgraph name="${organismAbbrev}_${name}_ProcessDnaSeqExperiment" xmlFile="runDnaSeqExperiment.xml">
       <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue> 
+      <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
       <paramValue name="resultDir">$$dataDir$$/results</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
@@ -90,18 +131,18 @@
       <paramValue name="geneFootprintFile">$$geneFootprintFile$$</paramValue>
       <paramValue name="isPaired">${isPaired}</paramValue>
       <paramValue name="ploidy">${ploidy}</paramValue>
-      <paramValue name="fromBAM">${fromBAM}</paramValue> 
-      <paramValue name="isLocal">${isLocal}</paramValue> 
-      <paramValue name="name">${name}</paramValue> 
-      <paramValue name="version">${version}</paramValue> 
-      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue> 
+      <paramValue name="fromBAM">${fromBAM}</paramValue>
+      <paramValue name="isLocal">${isLocal}</paramValue>
+      <paramValue name="name">${name}</paramValue>
+      <paramValue name="version">${version}</paramValue>
+      <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     </subgraph>
-
   </datasetTemplate>
+  -->
 
   <step name="makeMergeExperimentsDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$dataDir$$/$$referenceStrainOrganismAbbrev$$_mergeExperiments</paramValue>
-    <dependsPattern name="*_ProcessDnaSeqExperiment"/>
+    <dependsPattern name="*_snpAndCnvDNASeq"/>
   </step>
 
   <subgraph name="runDnaSeqMergeExperiments" xmlFile="dnaSeqMergeExperiments.xml">
