@@ -11,10 +11,11 @@ sub run {
     my $resultsFile = $self->getParamValue('resultsFile');
     my $ncbiTaxId = $self->getParamValue('ncbiTaxId');
     my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
+    my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
     my $workflowDataDir = $self->getWorkflowDataDir();
 
-    my $args = "--resultsFile=$workflowDataDir/$resultsFile --ncbiTaxId=$ncbiTaxId --extDbRlsSpec='$extDbRlsSpec'";
+    my $args = "--resultsFile=$workflowDataDir/$resultsFile --ncbiTaxId=$ncbiTaxId --extDbRlsSpec='$extDbRlsSpec' --organismAbbrev='$organismAbbrev' ";
   
     if($undo) {
         $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertArbaResults", $args);
