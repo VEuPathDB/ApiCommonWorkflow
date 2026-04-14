@@ -10,7 +10,13 @@ sub run {
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
     my $geneSourceIdOrthologFile = join("/", $self->getWorkflowDataDir(), $self->getParamValue("geneSourceIdOrthologFile"));
     my $chrsForCalcsFile = join("/", $self->getWorkflowDataDir(), $self->getParamValue('chrsForCalcsFile'));
-  
+    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
+    
+    # TODO:  get the groups file from globalConfig?
+
+    my $taxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
+    
     if ($undo) {
 	$self->runCmd(0, "rm -f $geneSourceIdOrthologFile");
 	$self->runCmd(0, "rm -f $chrsForCalcsFile");
@@ -19,7 +25,7 @@ sub run {
             $self->runCmd($test,"echo test > $geneSourceIdOrthologFile");
 	    $self->runCmd($test,"echo test > $chrsForCalcsFile");
 	} else { 
-            $self->runCmd($test,"runGeneCNVAndPloidyQuery --organismAbbrev $organismAbbrev --geneSourceIdOrthologFile $geneSourceIdOrthologFile --chrsForCalcsFile $chrsForCalcsFile");
+            $self->runCmd($test,"runGeneCNVAndPloidyQuery --taxonId $taxonId --geneSourceIdOrthologFile $geneSourceIdOrthologFile --chrsForCalcsFile $chrsForCalcsFile");
 	}
     }
 }
