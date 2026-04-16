@@ -2,7 +2,6 @@
     <param name="projectName"/>
     <param name="organismAbbrev"/>
     <param name="genomeExtDbRlsSpec"/>
-    <param name="proteinsFile"/>
     <param name="parentDataDir"/>
     <param name="ncbiTaxonId"/>
     <param name="gusConfigFile"/>
@@ -35,22 +34,15 @@
      <depends name="makeResultDir"/>
     </step>
 
-    <step name="copyProteomeFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
-     <paramValue name="fromFile">$$proteinsFile$$</paramValue>
-     <paramValue name="toFile">$$analysisDir$$/proteome.fasta</paramValue>
-     <depends name="copyInterproResultsFile"/>
-    </step>
- 
     <step name="makeArbaNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeArbaNextflowConfig">
       <paramValue name="workingDirRelativePath">$$dataDir$$</paramValue>
       <paramValue name="analysisDir">$$analysisDir$$/</paramValue>      
       <paramValue name="configFileName">nextflow.config</paramValue>          
       <paramValue name="outputDir">$$resultsDir$$/</paramValue>
       <paramValue name="interproResults">$$analysisDir$$/interproResults.tsv</paramValue>
-      <paramValue name="proteome">$$analysisDir$$/proteome.fasta</paramValue>
       <paramValue name="taxonId">$$ncbiTaxonId$$</paramValue>
       <paramValue name="abbrev">$$organismAbbrev$$</paramValue>      
-      <depends name="copyProteomeFile"/>
+      <depends name="copyInterproResultsFile"/>
     </step>
 
     <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">

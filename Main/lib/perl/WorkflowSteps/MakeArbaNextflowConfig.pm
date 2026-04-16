@@ -16,14 +16,12 @@ sub run {
     my $arbaRulesheet = join("/", $self->getSharedConfig("$clusterServer.softwareDatabasesDirectory"),$self->getSharedConfig("arbaRulesheet"));
 
     my $interproResults = $self->getParamValue("interproResults");
-    my $proteome = $self->getParamValue("proteome");    
     my $outputDir = $self->getParamValue("outputDir");
     my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
     my $taxonId = $self->getParamValue("taxonId");
     my $abbrev = $self->getParamValue("abbrev");
 
     my $digestedInterproResults = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $interproResults);
-    my $digestedProteome = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $proteome);    
     my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $outputDir);
 
     my $executor = $self->getClusterExecutor();
@@ -39,7 +37,6 @@ sub run {
 params {
   interproResults = \"$digestedInterproResults\"
   outputDir = \"$digestedOutputDir\"
-  proteome = \"$digestedProteome\"
   taxonId = $taxonId
   abbrev = \"$abbrev\"
   rulesheet = \"$arbaRulesheet\"
