@@ -214,7 +214,7 @@ Since this plugin step FAILED, please CLEAN UP THE DATABASE by calling:
 
 or (for the ISF plugin):
 
-  ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo  --workflowContext --undoWorkflowStepId $self->{id} --commit --mapfile YOUR_ISF_MAP_FILE --algInvocationId PLUGIN_ALG_INV_ID_HERE
+  ga GUS::Supported::Plugin::InsertSequenceFeaturesUndo  --workflowContext --undoWorkflowStepId $self->{id} --commit $gusConfigFile --mapfile YOUR_ISF_MAP_FILE --algInvocationId PLUGIN_ALG_INV_ID_HERE
 
 
 Find the plugin's row_algorithm_invocation_id by looking above in this step log
