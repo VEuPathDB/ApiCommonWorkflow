@@ -23,16 +23,31 @@
      <depends name="makePeripheralDir"/>
   </step>
 
-  <step name="makePeripheralResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$peripheralDir$$/analysisDir/results/</paramValue>
+  <step name="makePeripheralEntryResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$peripheralDir$$/analysisDir/peripheralEntryResults/</paramValue>
     <depends name="makePeripheralAnalysisDir"/>
-   </step>
+  </step>
+
+  <step name="makeResidualEntryResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$peripheralDir$$/analysisDir/residualEntryResults/</paramValue>
+    <depends name="makePeripheralEntryResultsDir"/>
+  </step>
+
+  <step name="makePostResidualEntryResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$peripheralDir$$/analysisDir/postResidualEntryResults/</paramValue>
+    <depends name="makeResidualEntryResultsDir"/>
+  </step>
+
+  <step name="makePostProcessingEntryResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$peripheralDir$$/analysisDir/postProcessingEntryResults/</paramValue>
+    <depends name="makePostResidualEntryResultsDir"/>
+  </step>
 
   <step name="checkBuildVersionCreatePeripheralOutdatedOrganisms" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreatePeripheralOutdatedOrganisms">
     <paramValue name="checkSum">$$getPeripheralProteinsDir$$/fastas/checkSum.tsv</paramValue>
     <paramValue name="outdatedOrganisms">$$peripheralDir$$/outdated.txt</paramValue>
     <paramValue name="skipIfFile">$$getPeripheralProteinsDir$$/doNotDoAnalysis</paramValue>
-    <depends name="makePeripheralResultsDir"/>
+    <depends name="makePostProcessingEntryResultsDir"/>
   </step>
 
   <step name="CopyAndUncompressPeripheralCacheDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndUncompressPeripheralCacheDir">
@@ -83,8 +98,9 @@
     <depends name="copyPeripheralProteomes"/>
   </subgraph>
 
+<!-- Add functionality to get all files from split of results -->
   <step name="copyPeripheralResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralGroupsResultsFromCache">
-    <paramValue name="resultsDir">$$peripheralDir$$/analysisDir/results/</paramValue>
+    <paramValue name="analysisDir">$$peripheralDir$$/analysisDir/</paramValue>
     <depends name="makePeripheralGroups"/>
     <depends name="copyPeripheralProteomes"/>
   </step>
@@ -95,72 +111,72 @@
   </step>
 
   <step name="loadCoreGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertCoreGroups">
-    <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/results/GroupsFile.txt</paramValue>
+    <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/GroupsFile.txt</paramValue>
     <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
     <depends name="copyPeripheralCheckSumToCache"/>
   </step>
 
   <step name="loadResidualGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertResidualGroups">
-    <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/results/reformattedGroups.txt</paramValue>
+    <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/reformattedGroups.txt</paramValue>
     <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
     <depends name="loadCoreGroups"/>
   </step>
 
   <step name="loadCoreGroupAASequence" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupAASequence">
-      <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/results/GroupsFile.txt</paramValue>
+      <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/GroupsFile.txt</paramValue>
       <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
       <depends name="loadResidualGroups"/>
   </step>
 
   <step name="loadResidualGroupAASequence" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupAASequence">
-      <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/results/reformattedGroups.txt</paramValue>
+      <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/reformattedGroups.txt</paramValue>
       <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
       <depends name="loadCoreGroupAASequence"/>
   </step>
 
   <step name="insertOrthogroupCoreStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupStats" stepLoadTypes="plugin">
-      <paramValue name="groupStatsFile">$$peripheralDir$$/analysisDir/results/groupStats/core_stats.txt</paramValue>
+      <paramValue name="groupStatsFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/groupStats/core_stats.txt</paramValue>
       <paramValue name="proteinSubset">C</paramValue>
       <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
       <depends name="loadResidualGroupAASequence"/>
   </step>
 
   <step name="insertOrthogroupCorePeripheralStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupStats" stepLoadTypes="plugin">
-      <paramValue name="groupStatsFile">$$peripheralDir$$/analysisDir/results/groupStats/peripheral_stats.txt</paramValue>
+      <paramValue name="groupStatsFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/groupStats/peripheral_stats.txt</paramValue>
       <paramValue name="proteinSubset">C+P</paramValue>
       <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
       <depends name="insertOrthogroupCoreStats"/>
   </step>
 
   <step name="insertOrthogroupResidualStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupStats" stepLoadTypes="plugin">
-      <paramValue name="groupStatsFile">$$peripheralDir$$/analysisDir/results/groupStats/residual_stats.txt</paramValue>
+      <paramValue name="groupStatsFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/groupStats/residual_stats.txt</paramValue>
       <paramValue name="proteinSubset">R</paramValue>
       <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
       <depends name="insertOrthogroupCorePeripheralStats"/>
   </step>
 
   <step name="insertCoreOrthoGroupBlastValues" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupBlastValues" stepLoadTypes="plugin">
-      <paramValue name="groupBlastValuesFile">$$peripheralDir$$/analysisDir/results/intraGroupBlastFile.tsv</paramValue>
+      <paramValue name="groupBlastValuesFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/intraGroupBlastFile.tsv</paramValue>
       <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
       <depends name="insertOrthogroupResidualStats"/>
   </step>
 
   <step name="insertResidualOrthoGroupBlastValues" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertOrthoGroupBlastValues" stepLoadTypes="plugin">
-      <paramValue name="groupBlastValuesFile">$$peripheralDir$$/analysisDir/results/intraResidualGroupBlastFile.tsv</paramValue>
+      <paramValue name="groupBlastValuesFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/intraResidualGroupBlastFile.tsv</paramValue>
       <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
       <depends name="insertCoreOrthoGroupBlastValues"/>
   </step>
 
   <step name="insertSimilarOrthologgroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertSimilarOrthologGroups" stepLoadTypes="plugin">
-      <paramValue name="similarGroups">$$peripheralDir$$/analysisDir/results/similar_groups.tsv</paramValue>
+      <paramValue name="similarGroups">$$peripheralDir$$/analysisDir/postProcessingEntryResults/similar_groups.tsv</paramValue>
       <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
       <depends name="insertResidualOrthoGroupBlastValues"/>
   </step>
 
   <step name="insertPreviousGroupMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertPreviousGroupMapping" stepLoadTypes="plugin">
-      <paramValue name="mappingFile">$$peripheralDir$$/analysisDir/results/previousGroups.txt</paramValue>
+      <paramValue name="mappingFile">$$peripheralDir$$/analysisDir/postProcessingEntryResults/previousGroups.txt</paramValue>
       <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
-      <depends name="makePeripheralGroups"/>
+      <depends name="copyPeripheralResults"/>
   </step>
 
 </workflowGraph>
