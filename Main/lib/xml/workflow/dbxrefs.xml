@@ -47,19 +47,16 @@
   </step>
 
 
-
-  
-  <step name="insertPubmedDbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDBxRefs">
-    <paramValue name="inputFile">$$dataDir$$/associatedGenes/pubmed_mappings.txt</paramValue>
-    <paramValue name="extDbName">Gene2Pubmed_RSRC</paramValue>
-    <paramValue name="extDbVersion">%</paramValue>
-    <paramValue name="tableName">DbRefNAFeature</paramValue>
-    <paramValue name="viewName">GeneFeature</paramValue>
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="associateGenesWithDbXrefs"/>
-  </step>
+  <!--
+    The insertPubmedDbXrefs step has been removed. It loaded NCBI gene2pubmed
+    associations into SRes.DbRef + DoTS.DbRefNAFeature under
+    external_database_release_id = Gene2Pubmed_RSRC. After review, those
+    associations were determined to add no useful biological insight to gene
+    pages: the references are generic and apply the same paper to large
+    numbers of unrelated genes. Curator- and Apollo-submitted PubMed refs
+    (which DO add value) come in via ISF under the PMID/PubMed external
+    database and are unaffected.
+  -->
 
   <step name="insertUniprotDbXrefs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertDBxRefs">
     <paramValue name="inputFile">$$dataDir$$/associatedGenes/uniprot_mappings.txt</paramValue>
