@@ -1,0 +1,93 @@
+<workflowGraph name="">
+  <param name="parentDataDir"/>
+  <param name="coreProteome"/>
+  <param name="coreResultsDir"/>
+
+  <constant name="projectName">OrthoMCL</constant>
+  <constant name="newPeripheralProteinsDir">$$projectName$$/newPeripheralProteins</constant>
+  <constant name="newProteomesDir">$$newPeripheralProteinsDir$$/newPeripheralProteomes</constant>
+  <constant name="updatePeripheralDir">$$projectName$$/updatePeripheralGroups</constant>
+
+  <!-- Create working directories -->
+  <step name="makeUpdatePeripheralDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$updatePeripheralDir$$</paramValue>
+  </step>
+
+  <step name="makeUpdatePeripheralAnalysisDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$updatePeripheralDir$$/analysisDir</paramValue>
+    <depends name="makeUpdatePeripheralDir"/>
+  </step>
+
+  <step name="makeUpdatePeripheralEntryResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$updatePeripheralDir$$/analysisDir/updatePeripheralEntryResults/</paramValue>
+    <depends name="makeUpdatePeripheralAnalysisDir"/>
+  </step>
+
+  <step name="makeUpdateResidualEntryResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$updatePeripheralDir$$/analysisDir/updateResidualEntryResults/</paramValue>
+    <depends name="makeUpdatePeripheralEntryResultsDir"/>
+  </step>
+
+  <step name="makePostUpdateEntryResultsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$updatePeripheralDir$$/analysisDir/postUpdateEntryResults/</paramValue>
+    <depends name="makeUpdateResidualEntryResultsDir"/>
+  </step>
+
+  <!-- Prepare new peripheral proteomes (filter for longest transcript, compress) -->
+  <step name="makeNewPeripheralFastasDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$newPeripheralProteinsDir$$/fastas</paramValue>
+  </step>
+
+  <step name="makeNewPeripheralInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthofinderPeripheralInputDir">
+    <paramValue name="proteomesDir">$$newProteomesDir$$</paramValue>
+    <paramValue name="outputDir">$$newPeripheralProteinsDir$$</paramValue>
+    <depends name="makeNewPeripheralFastasDir"/>
+  </step>
+
+  <!-- Stage all required files from peripheral officialDiamondCache into update working dir -->
+  <step name="copyAndUncompressUpdatePeripheralCacheDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndUncompressUpdatePeripheralCacheDir">
+    <paramValue name="outputDir">$$updatePeripheralDir$$</paramValue>
+    <depends name="makePostUpdateEntryResultsDir"/>
+  </step>
+
+  <!-- Stage files from core workflow results (reformattedGroups.txt used for group assignment) -->
+  <step name="copyCoreGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+    <paramValue name="fromFile">$$coreResultsDir$$/reformattedGroups.txt</paramValue>
+    <paramValue name="toFile">$$updatePeripheralDir$$/reformattedGroups.txt</paramValue>
+    <depends name="copyAndUncompressUpdatePeripheralCacheDir"/>
+  </step>
+
+  <step name="copyCoreDiamondResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDir">
+    <paramValue name="fromDir">$$coreResultsDir$$/groupDiamondResults</paramValue>
+    <paramValue name="toDir">$$updatePeripheralDir$$/groupDiamondResults</paramValue>
+    <depends name="copyCoreGroups"/>
+  </step>
+
+  <step name="copyCoreSequenceIds" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+    <paramValue name="fromFile">$$coreResultsDir$$/SequenceIDs.txt</paramValue>
+    <paramValue name="toFile">$$updatePeripheralDir$$/SequenceIDs.txt</paramValue>
+    <depends name="copyCoreDiamondResults"/>
+  </step>
+
+  <step name="copyCoreProteomes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+    <paramValue name="fromFile">$$coreProteome$$</paramValue>
+    <paramValue name="toFile">$$updatePeripheralDir$$/coreFastas.tar.gz</paramValue>
+    <depends name="copyCoreSequenceIds"/>
+  </step>
+
+  <!-- Symlink new peripheral proteomes tar into update working dir -->
+  <step name="copyNewPeripheralProteomes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
+    <paramValue name="fromFile">$$newPeripheralProteinsDir$$/fastas.tar.gz</paramValue>
+    <paramValue name="toFile">$$updatePeripheralDir$$/fastas.tar.gz</paramValue>
+    <depends name="makeNewPeripheralInputDir"/>
+    <depends name="copyCoreProteomes"/>
+  </step>
+
+  <!-- Run the three update Nextflow entries sequentially -->
+  <subgraph name="makeUpdatePeripheralGroups" xmlFile="orthoFinderUpdatePeripheral.xml">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="updatePeripheralDir">$$updatePeripheralDir$$</paramValue>
+    <depends name="copyNewPeripheralProteomes"/>
+  </subgraph>
+
+</workflowGraph>

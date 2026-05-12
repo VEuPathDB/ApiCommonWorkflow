@@ -1,0 +1,51 @@
+<workflowGraph name="OrthoMCLPeripheralConditional">
+  <param name="parentDataDir"/>
+  <param name="coreProteome"/>
+  <param name="coreResultsDir"/>
+  <param name="residualGroupIdPrefix"/>
+  <param name="oldReleasesGroupFilesDir"/>
+  <param name="relativeDownloadSiteDir"/>
+  <param name="relativeWebServicesDir"/>
+
+  <constant name="projectName">OrthoMCL</constant>
+  <constant name="conditionalDir">$$projectName$$/conditionalCheck</constant>
+
+  <!-- Determine which pipeline to run based on whether core has changed since
+       the last completed peripheral run. Creates exactly one sentinel file:
+         coreHasChanged  -> full pipeline runs, update pipeline skipped
+         coreNotChanged  -> update pipeline runs, full pipeline skipped       -->
+  <step name="makeConditionalCheckDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$conditionalDir$$</paramValue>
+  </step>
+
+  <step name="checkIfCoreHasChanged" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckIfCoreHasChanged">
+    <paramValue name="coreResultsDir">$$coreResultsDir$$</paramValue>
+    <paramValue name="outputDir">$$conditionalDir$$</paramValue>
+    <depends name="makeConditionalCheckDir"/>
+  </step>
+
+  <!-- Full pipeline: peripheral -> residual -> postResidual -> postProcessing
+       Skipped when core has NOT changed.                                      -->
+  <subgraph name="fullPeripheralPipeline" xmlFile="orthomclPeripheralWorkflow.xml"
+            skipIfFile="$$conditionalDir$$/coreNotChanged">
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <paramValue name="residualGroupIdPrefix">$$residualGroupIdPrefix$$</paramValue>
+    <paramValue name="oldReleasesGroupFilesDir">$$oldReleasesGroupFilesDir$$</paramValue>
+    <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
+    <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
+    <paramValue name="coreProteome">$$coreProteome$$</paramValue>
+    <paramValue name="coreResultsDir">$$coreResultsDir$$</paramValue>
+    <depends name="checkIfCoreHasChanged"/>
+  </subgraph>
+
+  <!-- Update pipeline: updatePeripheral -> updateResidual -> postUpdate
+       Skipped when core HAS changed.                                          -->
+  <subgraph name="updatePeripheralPipeline" xmlFile="orthomclUpdatePeripheralWorkflow.xml"
+            skipIfFile="$$conditionalDir$$/coreHasChanged">
+    <paramValue name="parentDataDir">$$parentDataDir$$</paramValue>
+    <paramValue name="coreProteome">$$coreProteome$$</paramValue>
+    <paramValue name="coreResultsDir">$$coreResultsDir$$</paramValue>
+    <depends name="checkIfCoreHasChanged"/>
+  </subgraph>
+
+</workflowGraph>
