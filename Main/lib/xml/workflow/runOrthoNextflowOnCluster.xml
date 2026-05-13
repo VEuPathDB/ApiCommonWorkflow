@@ -2,6 +2,7 @@
   <param name="parentDataDir"/>
   <param name="analysisDir"/>
   <param name="nextflowConfigFile"/>
+  <param name="resultDirName"/>
   <param name="organismAbbrev"/>
   <param name="genomeSpec"/>
   <param name="isProteomeAnalysis"/>
@@ -21,7 +22,7 @@
   <step name="runClusterTask" stepClass="ReFlow::StepClasses::RunAndMonitorNextflow">
     <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
     <paramValue name="workingDir">$$analysisDir$$</paramValue>
-    <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
+    <paramValue name="resultsDir">$$analysisDir$$/$$resultDirName$$</paramValue>
     <paramValue name="nextflowConfigFile">$$nextflowConfigFile$$</paramValue>
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="isGitRepo">true</paramValue>
@@ -32,8 +33,8 @@
 
   <step name="copyResultsFromCluster" stepClass="ReFlow::StepClasses::CopyNextflowResultFromCluster" stepLoadTypes="fromCluster">
     <paramValue name="workingDirRelativePath">$$parentDataDir$$</paramValue>
-    <paramValue name="fileOrDirToCopy">$$analysisDir$$/results</paramValue>
-    <paramValue name="outputDir">$$analysisDir$$/results</paramValue>
+    <paramValue name="fileOrDirToCopy">$$analysisDir$$/$$resultDirName$$</paramValue>
+    <paramValue name="outputDir">$$analysisDir$$/$$resultDirName$$</paramValue>
     <paramValue name="outputFiles">*</paramValue>
     <paramValue name="deleteAfterCopy">true</paramValue>
     <depends name="runClusterTask"/>
@@ -53,7 +54,7 @@
     <paramValue name="genomeSpec">$$genomeSpec$$</paramValue>
     <paramValue name="isProteomeAnalysis">$$isProteomeAnalysis$$</paramValue>
     <paramValue name="datasetSpec">$$datasetSpec$$</paramValue>
-    <paramValue name="resultsDir">$$analysisDir$$/results</paramValue>
+    <paramValue name="resultsDir">$$analysisDir$$/$$resultDirName$$</paramValue>
     <paramValue name="foundNextflowResults">$$foundNextflowResults$$</paramValue>
     <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
