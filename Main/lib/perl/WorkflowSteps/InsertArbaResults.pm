@@ -1,0 +1,28 @@
+package ApiCommonWorkflow::Main::WorkflowSteps::InsertArbaResults;
+
+@ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
+
+use strict;
+use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
+
+sub run {
+    my ($self, $test, $undo) = @_;
+
+    my $resultsFile = $self->getParamValue('resultsFile');
+    my $ncbiTaxId = $self->getParamValue('ncbiTaxId');
+    my $extDbRlsSpec = $self->getParamValue('extDbRlsSpec');
+    my $organismAbbrev = $self->getParamValue('organismAbbrev');
+
+    my $workflowDataDir = $self->getWorkflowDataDir();
+
+    my $args = "--resultsFile=$workflowDataDir/$resultsFile --ncbiTaxId=$ncbiTaxId --extDbRlsSpec='$extDbRlsSpec' --organismAbbrev='$organismAbbrev' ";
+  
+    if($undo) {
+        $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertArbaResults", $args);
+    } else {
+        $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertArbaResults", $args);
+    }
+
+}
+
+1;

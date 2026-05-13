@@ -1,0 +1,16 @@
+<workflowGraph name="">
+  <param name="gusConfigFile"/>
+  <param name="organismAbbrev"/>
+
+  <step name="patchPseudogenicCDS" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PatchPseudogenicCDS" stepLoadTypes="plugin">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+  </step>
+
+  <step name="patchUniprotProductNames" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::PatchUniprotProductNames" stepLoadTypes="plugin">
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <depends name="patchPseudogenicCDS"/>
+  </step>
+
+</workflowGraph>
