@@ -35,10 +35,8 @@ sub run {
   my $varscanPValue = $self->getConfig("varscanPValue");
   my $varscanMinVarFreqSnp = $self->getConfig("varscanMinVarFreqSnp");
   my $varscanMinVarFreqCons = $self->getConfig("varscanMinVarFreqCons");
-  my $maxNumberOfReads = $self->getConfig("maxNumberOfReads");
   my $hisat2Index = $self->getConfig("hisat2Index");
   my $createIndex = $self->getConfig("createIndex");
-  my $trimmomaticAdaptorsFile = $self->getConfig("trimmomaticAdaptorsFile");  
   my $ebiFtpUser = $self->getConfig("ebiFtpUser");  
   my $ebiFtpPassword = $self->getConfig("ebiFtpPassword");  
 
@@ -93,11 +91,9 @@ params {
   hisat2Index = $hisat2Index
   createIndex = $createIndex
   outputDir = \"$clusterResultDir\"
-  trimmomaticAdaptorsFile = $trimmomaticAdaptorsFile
   varscanPValue = $varscanPValue
   varscanMinVarFreqSnp = $varscanMinVarFreqSnp
   varscanMinVarFreqCons = $varscanMinVarFreqCons
-  maxNumberOfReads = $maxNumberOfReads
   taxonId = \"$taxonId\"
   geneSourceIdOrthologFile = \"$geneSourceIdOrthologFile\"
   chrsForCalcFile = \"$chrsForCalcFile\"
