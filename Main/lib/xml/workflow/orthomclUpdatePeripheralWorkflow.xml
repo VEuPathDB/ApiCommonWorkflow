@@ -7,6 +7,8 @@
   <constant name="newPeripheralProteinsDir">$$projectName$$/newPeripheralProteins</constant>
   <constant name="newProteomesDir">$$newPeripheralProteinsDir$$/newPeripheralProteomes</constant>
   <constant name="updatePeripheralDir">$$projectName$$/updatePeripheralGroups</constant>
+  <constant name="allPeripheralFastasDir">$$projectName$$/peripheralProteins/fastas</constant>
+  <constant name="peripheralCheckSum">$$projectName$$/peripheralProteins/fastas/checkSum.tsv</constant>
 
   <!-- Create working directories -->
   <step name="makeUpdatePeripheralDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -38,10 +40,23 @@
     <paramValue name="dataDir">$$newPeripheralProteinsDir$$/fastas</paramValue>
   </step>
 
+  <step name="makeNewProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$newProteomesDir$$</paramValue>
+  </step>
+
+  <!-- Copy only new or changed organism FASTAs into newProteomesDir using checksum diff -->
+  <step name="copyNewPeripheralProteomesForUpdate" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyNewPeripheralProteomesForUpdate">
+    <paramValue name="currentCheckSum">$$peripheralCheckSum$$</paramValue>
+    <paramValue name="sourceFastasDir">$$allPeripheralFastasDir$$</paramValue>
+    <paramValue name="outputDir">$$newProteomesDir$$</paramValue>
+    <depends name="makeNewProteomesDir"/>
+  </step>
+
   <step name="makeNewPeripheralInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthofinderPeripheralInputDir">
     <paramValue name="proteomesDir">$$newProteomesDir$$</paramValue>
     <paramValue name="outputDir">$$newPeripheralProteinsDir$$</paramValue>
     <depends name="makeNewPeripheralFastasDir"/>
+    <depends name="copyNewPeripheralProteomesForUpdate"/>
   </step>
 
   <!-- Stage all required files from peripheral officialDiamondCache into update working dir -->
