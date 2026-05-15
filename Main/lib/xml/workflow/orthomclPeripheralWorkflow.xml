@@ -50,9 +50,18 @@
     <depends name="makePostProcessingEntryResultsDir"/>
   </step>
 
+  <!-- If peripheral proteomes are unchanged but core has changed, outdated.txt
+       will not have been created above. Treat all organisms as outdated so they
+       are re-blasted against the updated core groups. -->
+  <step name="createAllPeripheralOrganismsAsOutdated" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CreateAllPeripheralOrganismsAsOutdated">
+    <paramValue name="fastasDir">$$getPeripheralProteinsDir$$/fastas</paramValue>
+    <paramValue name="outdatedOrganismsFile">$$peripheralDir$$/outdated.txt</paramValue>
+    <depends name="checkBuildVersionCreatePeripheralOutdatedOrganisms"/>
+  </step>
+
   <step name="CopyAndUncompressPeripheralCacheDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndUncompressPeripheralCacheDir">
     <paramValue name="outputDir">$$peripheralDir$$</paramValue>
-    <depends name="checkBuildVersionCreatePeripheralOutdatedOrganisms"/>
+    <depends name="createAllPeripheralOrganismsAsOutdated"/>
   </step>
 
   <step name="RetrievePreviousGroupsMapping" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RetrievePreviousGroupsMapping">
@@ -90,7 +99,7 @@
      <depends name="copyCoreProteomes"/>
   </step>
 
-  <subgraph name="makePeripheralGroups" xmlFile="orthoFinderPeripheral.xml" skipIfFile="$$getPeripheralProteinsDir$$/doNotDoAnalysis">
+  <subgraph name="makePeripheralGroups" xmlFile="orthoFinderPeripheral.xml">
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
     <paramValue name="peripheralDir">$$peripheralDir$$</paramValue>
