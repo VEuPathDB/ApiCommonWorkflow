@@ -7,7 +7,8 @@
   <param name="genomeExtDbRlsSpec"/>
   <param name="relativeWebServicesDir"/>
   <param name="genomeFastaFile"/>
-
+  <param name="repeatMaskedBed"/>
+  
   <constant name="dataDir">$$parentDataDir$$/dnaseq</constant>
   <constant name="geneFootprintFile">$$dataDir$$/geneFootprintFile.txt</constant>
   <constant name="gtfFile">$$dataDir$$/$$organismAbbrev$$.gtf</constant>
@@ -33,8 +34,9 @@
     <paramValue name="project">$$projectName$$</paramValue>
     <paramValue name="genomeExtDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
-    <depends name="makeGtfFile"/>
+    <depends name="makeDataDir"/>
   </step>
+
 
   <step name="retrieveGeneCNVAndPloidyQueries" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RetrieveGeneCNVAndPloidyQueries">
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -69,6 +71,7 @@
       <paramValue name="parentDataDir">$$dataDir$$/${organismAbbrev}_${name}_dnaseqExperiment_RSRC</paramValue>
       <paramValue name="gtfFile">$$gtfFile$$</paramValue>
       <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
+      <paramValue name="repeatMaskedBed">$$repeatMaskedBed$$</paramValue>
       <paramValue name="footprintFile">$$geneFootprintFile$$</paramValue>
       <paramValue name="ploidy">${ploidy}</paramValue>
       <paramValue name="fromSRA">${fromSRA}</paramValue>
@@ -78,6 +81,7 @@
       <paramValue name="geneSourceIdOrthologFile">$$geneSourceIdOrthologFile$$</paramValue>
       <paramValue name="chrsForCalcsFile">$$chrsForCalcsFile$$</paramValue>
       <depends name="makeGeneFootprintFile"/>
+      <depends name="makeGtfFile"/>
       <depends name="retrieveGeneCNVAndPloidyQueries"/>
       <depends name="${name}_dnaseq_loadDataset"/>
     </subgraph>
@@ -89,7 +93,7 @@
     <paramValue name="dataDir">$$dataDir$$/$$organismAbbrev$$_mergeExperiments</paramValue>
     <dependsPattern name="*_snpAndCnvDNASeq"/>
   </step>
-
+<!-- TODO  add this in when ready 
   <subgraph name="runDnaSeqMergeExperiments" xmlFile="dnaSeqMergeExperiments.xml">
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -106,5 +110,5 @@
     <paramValue name="extDbRlsSpec">$$genomeExtDbRlsSpec$$</paramValue>
     <depends name="makeMergeExperimentsDataDir"/>
   </subgraph>
-
+-->
 </workflowGraph>
