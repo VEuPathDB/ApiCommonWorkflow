@@ -20,7 +20,7 @@ sub run {
     my $project = $self->getParamValue("project");
     my $genomeExtDbRlsSpec = $self->getParamValue("genomeExtDbRlsSpec");
     my $cdsOnly = $self->getBooleanParamValue("cdsOnly");
-    my $gusConfigFile = $self->getParamValue('gusConfigFile');
+    my $gusConfigFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue('gusConfigFile');
 
     my $cmd = "makeGtf.pl --outputFile $workflowDataDir/$gtfDir/$outputFile --project $project --genomeExtDbRlsSpec '$genomeExtDbRlsSpec'  --gusConfigFile $gusConfigFile";
 
