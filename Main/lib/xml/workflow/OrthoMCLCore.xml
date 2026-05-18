@@ -20,9 +20,15 @@
     <depends name="makeProteomeFastasInputDir"/>
   </step>
 
+  <step name="FilterPseudogeneProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterPseudogeneProteins">
+    <paramValue name="proteomesDir">$$coreProteinsDir$$/fastas</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="MakeOrthofinderCoreInputDir"/>
+  </step>
+
   <step name="MakeSortedCheckSum" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSortedCheckSum">
     <paramValue name="proteomesDir">$$coreProteinsDir$$/fastas</paramValue>
-    <depends name="MakeOrthofinderCoreInputDir"/>
+    <depends name="FilterPseudogeneProteins"/>
   </step>
 
   <!-- Add functionality to create a skip if file to skip orthofinder core if the checkSums are exactly the same -->

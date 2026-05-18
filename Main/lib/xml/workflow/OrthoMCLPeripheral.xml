@@ -28,9 +28,15 @@
      <depends name="makeProteomeFastasDir"/>
   </step>
 
+  <step name="FilterPseudogeneProteins" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterPseudogeneProteins">
+    <paramValue name="proteomesDir">$$getPeripheralProteinsDir$$/fastas</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <depends name="MakeOrthofinderPeripheralInputDir"/>
+  </step>
+
   <step name="MakeSortedCheckSum" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeSortedCheckSum">
     <paramValue name="proteomesDir">$$getPeripheralProteinsDir$$/fastas</paramValue>
-    <depends name="MakeOrthofinderPeripheralInputDir"/>
+    <depends name="FilterPseudogeneProteins"/>
   </step>
 
   <subgraph name="peripheralWorkflow" xmlFile="orthomclPeripheralConditional.xml">
