@@ -27,6 +27,7 @@ sub run {
     my $digestedResultDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultDir);
 
     my $executor = $self->getClusterExecutor();
+    my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
     my $queue = $self->getClusterQueue();
 
     if ($undo) {
@@ -51,7 +52,7 @@ singularity {
   autoMounts = true
   runOptions = \"--bind $antismashDatabase:/databases\"
 }
-";
+$lsfEnv";
 	close(F);
     }
 }

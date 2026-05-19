@@ -35,6 +35,7 @@ sub run {
 
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $executor = $self->getClusterExecutor();
+    my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
     my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
     if ($undo) {
@@ -89,7 +90,7 @@ includeConfig "$clusterConfigFile"
 
 NEXTFLOW
 
-        print F $configString;
+        print F $configString . $lsfEnv;
         close(F);
     }
 }

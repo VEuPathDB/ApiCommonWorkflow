@@ -30,6 +30,7 @@ sub run {
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
 
   my $executor = $self->getClusterExecutor();
+  my $lsfScratch = ($executor eq 'lsf') ? "\n  NXF_SCRATCH = '\$LSF_TMPDIR'" : '';
   my $queue = $self->getClusterQueue();
 
   if ($undo) {
@@ -73,7 +74,7 @@ process {
 env {
   _JAVA_OPTIONS=\"-Xmx8192M\"
   NXF_OPTS=\"-Xmx8192M\"
-  NXF_JVM_ARGS=\"-Xmx8192M\"
+  NXF_JVM_ARGS=\"-Xmx8192M\"$lsfScratch
 }
 
 singularity {
