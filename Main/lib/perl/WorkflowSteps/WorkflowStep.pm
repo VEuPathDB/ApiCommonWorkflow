@@ -345,6 +345,12 @@ sub getClusterExecutor {
   die "Could not determine executor for nodeClass $nodeClass";
 }
 
+sub getNextflowLsfScratchEnvBlock {
+  my ($self) = @_;
+  return '' unless $self->getClusterExecutor() eq 'lsf';
+  return "\nenv {\n  NXF_SCRATCH = '\$LSF_TMPDIR'\n}\n";
+}
+
 
 sub runSqlFetchOneRowFromOrgDb {
     my ($self, $test, $sql, $dbh) = @_;
