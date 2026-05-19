@@ -22,7 +22,7 @@ sub run {
 
   my $officialCache      = "${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache";
   my $timestampFile      = "${officialCache}/lastPeripheralRunTimestamp";
-  my $coreGroupsFile     = "${coreResultsDir}/reformattedGroups.txt";
+  my $coreGroupsFile     = join ("/", $workflowDataDir, "${coreResultsDir}/reformattedGroups.txt");
   my $coreHasChangedFile = "${outputDir}/coreHasChanged";
   my $coreNotChangedFile = "${outputDir}/coreNotChanged";
 
