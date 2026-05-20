@@ -21,6 +21,7 @@ sub run {
 
     if ($undo) {
         $self->runCmd(0, "rm -f ${outputDir}/*.fasta");
+        $self->runCmd(0, "rm -f ${outputDir}/nothingToUpdate");
     }
     elsif ($test) {
         $self->runCmd(0, "echo 'test'");
@@ -40,6 +41,7 @@ sub run {
         }
         close($cached_fh);
 
+        my $copied = 0;
         open(my $current_fh, "<", $currentCheckSum) or die "Cannot open $currentCheckSum: $!";
         while (<$current_fh>) {
             chomp;
@@ -48,9 +50,15 @@ sub run {
                 my $fastaFile = "${sourceFastasDir}/${abbrev}.fasta";
                 die "FASTA not found for organism '$abbrev': $fastaFile" unless -e $fastaFile;
                 $self->runCmd(0, "cp $fastaFile ${outputDir}/");
+                $copied++;
             }
         }
         close($current_fh);
+
+        unless ($copied) {
+            $self->log("No new or changed peripheral organisms found. Writing nothingToUpdate sentinel to skip downstream steps.");
+            $self->runCmd(0, "touch ${outputDir}/nothingToUpdate");
+        }
     }
 }
 
