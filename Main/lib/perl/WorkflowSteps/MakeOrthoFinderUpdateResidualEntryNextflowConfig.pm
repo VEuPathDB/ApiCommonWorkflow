@@ -32,6 +32,11 @@ sub run {
   if ($undo) {
     $self->runCmd(0, "rm -rf $configPath");
   } else {
+    die "newResidualBuildVersion ($newResidualBuildVersion) in steps.config matches the existing residualBuildVersion ($residualBuildVersion). " .
+        "New residual groups would collide with existing groups (both prefixed OGR${buildVersion}r${newResidualBuildVersion}_). " .
+        "Set newResidualBuildVersion to a different value in steps.config."
+        if $newResidualBuildVersion == $residualBuildVersion;
+
     open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
 
     print F
