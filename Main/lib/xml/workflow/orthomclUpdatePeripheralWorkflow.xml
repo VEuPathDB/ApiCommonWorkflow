@@ -36,12 +36,18 @@
   </step>
 
   <!-- Prepare new peripheral proteomes (filter for longest transcript, compress) -->
-  <step name="makeNewPeripheralFastasDir" stepClass="ReFlow::StepClasses::MakeDataDir">
-    <paramValue name="dataDir">$$newPeripheralProteinsDir$$/fastas</paramValue>
+  <step name="makeNewPeripheralProteinsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$newPeripheralProteinsDir$$</paramValue>
   </step>
 
-  <step name="makeNewProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+  <step name="makeNewPeripheralFastasDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$newPeripheralProteinsDir$$/fastas</paramValue>
+    <depends name="makeNewPeripheralProteinsDir"/>
+  </step>
+
+  <step name="makeNewPeripheralProteomesDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$newProteomesDir$$</paramValue>
+    <depends name="makeNewPeripheralProteinsDir"/>
   </step>
 
   <!-- Copy only new or changed organism FASTAs into newProteomesDir using checksum diff -->
@@ -49,7 +55,7 @@
     <paramValue name="currentCheckSum">$$peripheralCheckSum$$</paramValue>
     <paramValue name="sourceFastasDir">$$allPeripheralFastasDir$$</paramValue>
     <paramValue name="outputDir">$$newProteomesDir$$</paramValue>
-    <depends name="makeNewProteomesDir"/>
+    <depends name="makeNewPeripheralProteomesDir"/>
   </step>
 
   <step name="makeNewPeripheralInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthofinderPeripheralInputDir">
