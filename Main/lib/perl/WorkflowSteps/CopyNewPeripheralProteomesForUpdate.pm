@@ -21,7 +21,6 @@ sub run {
 
     if ($undo) {
         $self->runCmd(0, "rm -f ${outputDir}/*.fasta");
-        $self->runCmd(0, "rm -f ${outputDir}/nothingToUpdate");
     }
     elsif ($test) {
         $self->runCmd(0, "echo 'test'");
@@ -55,10 +54,7 @@ sub run {
         }
         close($current_fh);
 
-        unless ($copied) {
-            $self->log("No new or changed peripheral organisms found. Writing nothingToUpdate sentinel to skip downstream steps.");
-            $self->runCmd(0, "touch ${outputDir}/nothingToUpdate");
-        }
+        die "No new or changed peripheral organisms found. To force a re-run of all organisms, clear the cached checkSum: $cachedCheckSum" unless $copied;
     }
 }
 

@@ -58,8 +58,7 @@
     <depends name="makeNewPeripheralProteomesDir"/>
   </step>
 
-  <step name="makeNewPeripheralInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthofinderPeripheralInputDir"
-        skipIfFile="$$newProteomesDir$$/nothingToUpdate">
+  <step name="makeNewPeripheralInputDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthofinderPeripheralInputDir">
     <paramValue name="proteomesDir">$$newProteomesDir$$</paramValue>
     <paramValue name="outputDir">$$newPeripheralProteinsDir$$</paramValue>
     <depends name="makeNewPeripheralFastasDir"/>
@@ -98,8 +97,7 @@
   </step>
 
   <!-- Symlink new peripheral proteomes tar into update working dir -->
-  <step name="copyNewPeripheralProteomes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile"
-        skipIfFile="$$newProteomesDir$$/nothingToUpdate">
+  <step name="copyNewPeripheralProteomes" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
     <paramValue name="fromFile">$$newPeripheralProteinsDir$$/fastas.tar.gz</paramValue>
     <paramValue name="toFile">$$updatePeripheralDir$$/fastas.tar.gz</paramValue>
     <depends name="makeNewPeripheralInputDir"/>
@@ -107,8 +105,7 @@
   </step>
 
   <!-- Run the three update Nextflow entries sequentially -->
-  <subgraph name="makeUpdatePeripheralGroups" xmlFile="orthoFinderUpdatePeripheral.xml"
-            skipIfFile="$$newProteomesDir$$/nothingToUpdate">
+  <subgraph name="makeUpdatePeripheralGroups" xmlFile="orthoFinderUpdatePeripheral.xml">
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="updatePeripheralDir">$$updatePeripheralDir$$</paramValue>
     <depends name="copyNewPeripheralProteomes"/>
