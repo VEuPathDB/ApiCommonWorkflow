@@ -34,44 +34,44 @@ sub run {
 
       $self->runCmd(0, "cp $previousGroups ${officialCache}/previousGroups.txt");
 
-      $self->runCmd(0, "cp -r ${updateCache}/**/postUpdateEntryResults/bestRepsFull.fasta ${officialCache}/bestRepsFull.fasta");
+      $self->runCmd(0, "cp -r ${updateCache}/**/bestRepsFull.fasta ${officialCache}/bestRepsFull.fasta");
 
-      $self->runCmd(0, "cp -r ${updateCache}/**/postUpdateEntryResults/similar_groups.tsv ${officialCache}/similar_groups.tsv");
+      $self->runCmd(0, "cp -r ${updateCache}/**/similar_groups.tsv ${officialCache}/similar_groups.tsv");
 
-      $self->runCmd(0, "cp -r ${updateCache}/**/postUpdateEntryResults/ortho${orthoBuildVersion}db.dmnd ${officialCache}/");
+      $self->runCmd(0, "cp -r ${updateCache}/**/ortho${orthoBuildVersion}db.dmnd ${officialCache}/");
 
       # mergedResidualBestReps.fasta becomes the new residualBestReps reference for future update runs
-      $self->runCmd(0, "cp -r ${updateCache}/**/postUpdateEntryResults/mergedResidualBestReps.fasta ${officialCache}/residualBestReps.fasta");
+      $self->runCmd(0, "cp -r ${updateCache}/**/mergedResidualBestReps.fasta ${officialCache}/residualBestReps.fasta");
 
       # mergedResidualFasta.fa (existing + new residuals) replaces residuals.fasta for future update runs
-      $self->runCmd(0, "cp -r ${updateCache}/**/postUpdateEntryResults/mergedResidualFasta.fa ${officialCache}/residuals.fasta");
+      $self->runCmd(0, "cp -r ${updateCache}/**/mergedResidualFasta.fa ${officialCache}/residuals.fasta");
 
       # --- Files from updatePeripheralEntryResults ---
 
-      $self->runCmd(0, "cp -r ${updateCache}/**/updatePeripheralEntryResults/GroupsFile.txt ${officialCache}/GroupsFile.txt");
+      $self->runCmd(0, "cp -r ${updateCache}/**/GroupsFile.txt ${officialCache}/GroupsFile.txt");
 
-      $self->runCmd(0, "cp -r ${updateCache}/**/updatePeripheralEntryResults/peripherals.fasta ${officialCache}/peripherals.fasta");
+      $self->runCmd(0, "cp -r ${updateCache}/**/peripherals.fasta ${officialCache}/peripherals.fasta");
 
-      $self->runCmd(0, "cp -r ${updateCache}/**/updatePeripheralEntryResults/fullProteome.fasta ${officialCache}/fullProteome.fasta");
+      $self->runCmd(0, "cp -r ${updateCache}/**/fullProteome.fasta ${officialCache}/fullProteome.fasta");
 
       $self->runCmd(0, "rm -rf ${officialCache}/groupFastas");
-      $self->runCmd(0, "cp -r ${updateCache}/**/updatePeripheralEntryResults/groupFastas ${officialCache}/");
+      $self->runCmd(0, "cp -r ${updateCache}/**/groupFastas ${officialCache}/");
 
       # Add newly computed blast results for new organisms into the existing peripheral cache
-      $self->runCmd(0, "cp -r ${updateCache}/**/updatePeripheralEntryResults/newPeripheralDiamondCache/. ${officialCache}/peripheralCacheDir/");
+      $self->runCmd(0, "cp -r ${updateCache}/**/newPeripheralDiamondCache/. ${officialCache}/peripheralCacheDir/");
 
       $self->runCmd(0, "mkdir -p ${officialCache}/groupStats");
-      $self->runCmd(0, "cp -r ${updateCache}/**/updatePeripheralEntryResults/groupStats/updated_peripheral_stats.txt ${officialCache}/groupStats/");
+      $self->runCmd(0, "cp -r ${updateCache}/**/groupStats/updated_peripheral_stats.txt ${officialCache}/groupStats/");
 
       # --- Files from updateResidualEntryResults ---
 
       # updatedResidualGroups.txt (old OGRr1_* + new OGRr2_*) replaces reformattedGroups.txt
-      $self->runCmd(0, "cp -r ${updateCache}/**/updateResidualEntryResults/updatedResidualGroups.txt ${officialCache}/reformattedGroups.txt");
+      $self->runCmd(0, "cp -r ${updateCache}/**/updatedResidualGroups.txt ${officialCache}/reformattedGroups.txt");
 
       # Add new residual group fastas alongside existing ones
-      $self->runCmd(0, "cp -r ${updateCache}/**/updateResidualEntryResults/residualGroupFastas/. ${officialCache}/residualGroupFastas/");
+      $self->runCmd(0, "cp -r ${updateCache}/**/residualGroupFastas/. ${officialCache}/residualGroupFastas/");
 
-      $self->runCmd(0, "cp -r ${updateCache}/**/updateResidualEntryResults/groupStats/new_residual_stats.txt ${officialCache}/groupStats/");
+      $self->runCmd(0, "cp -r ${updateCache}/**/groupStats/new_residual_stats.txt ${officialCache}/groupStats/");
 
       # Re-compress the peripheral diamond cache to include newly added organism blast results
       $self->runCmd(0, "tar -czf ${officialCache}/peripheralCacheDir.tar.gz -C ${officialCache} peripheralCacheDir");
