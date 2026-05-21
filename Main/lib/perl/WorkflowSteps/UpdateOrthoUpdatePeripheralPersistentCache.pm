@@ -41,7 +41,7 @@ sub run {
       $self->runCmd(0, "cp -r ${updateCache}/**/postUpdateEntryResults/ortho${orthoBuildVersion}db.dmnd ${officialCache}/");
 
       # mergedResidualBestReps.fasta becomes the new residualBestReps reference for future update runs
-      $self->runCmd(0, "cp -r ${updateCache}/**/postUpdateEntryResults/mergedResidualBestReps.fasta ${officialCache}/residualBestReps.txt");
+      $self->runCmd(0, "cp -r ${updateCache}/**/postUpdateEntryResults/mergedResidualBestReps.fasta ${officialCache}/residualBestReps.fasta");
 
       # mergedResidualFasta.fa (existing + new residuals) replaces residuals.fasta for future update runs
       $self->runCmd(0, "cp -r ${updateCache}/**/postUpdateEntryResults/mergedResidualFasta.fa ${officialCache}/residuals.fasta");

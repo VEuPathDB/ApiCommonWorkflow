@@ -55,7 +55,7 @@ sub run {
       $self->runCmd(0, "cp ${cacheDir}/reformattedGroups.txt $fullOutputDir/reformattedResidualGroups.txt");
 
       # Residual best reps fasta for merging in postUpdate
-      $self->runCmd(0, "cp ${cacheDir}/residualBestReps.txt $fullOutputDir/residualBestReps.fasta");
+      $self->runCmd(0, "cp ${cacheDir}/residualBestReps.fasta $fullOutputDir/residualBestReps.fasta");
 
       # Combined residuals fasta for merging in postUpdate
       $self->runCmd(0, "cp ${cacheDir}/residuals.fasta $fullOutputDir/residuals.fasta");
