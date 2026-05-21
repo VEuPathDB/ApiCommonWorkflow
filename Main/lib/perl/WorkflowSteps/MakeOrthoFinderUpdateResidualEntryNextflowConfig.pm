@@ -16,6 +16,7 @@ sub run {
 
   my $buildVersion = $self->getSharedConfig("buildVersion");
   my $newResidualBuildVersion = $self->getSharedConfig("newResidualBuildVersion");
+  my $residualBuildVersion = $self->getSharedConfig("residualBuildVersion");
 
   my $resultsDirectory = $self->getParamValue("clusterResultDir");
   my $configPath = join("/", $self->getWorkflowDataDir(), $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
