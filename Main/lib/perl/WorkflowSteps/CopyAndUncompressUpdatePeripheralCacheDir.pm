@@ -25,6 +25,7 @@ sub run {
       $self->runCmd(0, "rm -f $fullOutputDir/residuals.fasta");
       $self->runCmd(0, "rm -rf $fullOutputDir/residualGroupFastas");
       $self->runCmd(0, "rm -f $fullOutputDir/previousGroups.txt");
+      $self->runCmd(0, "rm -rf $fullOutputDir/groupStats");
   }
   elsif ($test) {
       $self->runCmd(0, "mkdir -p $fullOutputDir/peripheralCacheDir");
@@ -65,6 +66,10 @@ sub run {
 
       # Previous groups mapping for tracking group changes across builds
       $self->runCmd(0, "cp ${cacheDir}/previousGroups.txt $fullOutputDir/previousGroups.txt");
+
+      # Group stats from previous full peripheral run; core_stats.txt is needed by
+      # insertOrthogroupCoreStats in the update path (core stats are unchanged)
+      $self->runCmd(0, "cp -r ${cacheDir}/groupStats $fullOutputDir/");
   }
 }
 
