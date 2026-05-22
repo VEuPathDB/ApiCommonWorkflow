@@ -40,11 +40,13 @@ sub run {
 
       $self->runCmd(0, "cp -r ${updateCache}/**/ortho${orthoBuildVersion}db.dmnd ${officialCache}/");
 
-      # mergedResidualBestReps.fasta becomes the new residualBestReps reference for future update runs
-      $self->runCmd(0, "cp -r ${updateCache}/**/mergedResidualBestReps.fasta ${officialCache}/residualBestReps.fasta");
+      # bestReps.fasta from updateResidualEntry is the complete residual best reps
+      # (all residuals were re-run, so this replaces the previous residualBestReps.fasta)
+      $self->runCmd(0, "cp -r ${updateCache}/**/bestReps.fasta ${officialCache}/residualBestReps.fasta");
 
-      # mergedResidualFasta.fa (existing + new residuals) replaces residuals.fasta for future update runs
-      $self->runCmd(0, "cp -r ${updateCache}/**/mergedResidualFasta.fa ${officialCache}/residuals.fasta");
+      # residualFasta.fa from updateResidualEntry is the complete residuals fasta
+      # (includes existing + new residuals, replaces residuals.fasta entirely)
+      $self->runCmd(0, "cp -r ${updateCache}/**/residualFasta.fa ${officialCache}/residuals.fasta");
 
       # --- Files from updatePeripheralEntryResults ---
 
@@ -65,11 +67,13 @@ sub run {
 
       # --- Files from updateResidualEntryResults ---
 
-      # updatedResidualGroups.txt (old OGRr1_* + new OGRr2_*) replaces reformattedGroups.txt
+      # updatedResidualGroups.txt contains the complete re-versioned residual groups;
+      # replaces reformattedGroups.txt so the next update run starts from a clean base
       $self->runCmd(0, "cp -r ${updateCache}/**/updatedResidualGroups.txt ${officialCache}/reformattedGroups.txt");
 
-      # Add new residual group fastas alongside existing ones
-      $self->runCmd(0, "cp -r ${updateCache}/**/residualGroupFastas/. ${officialCache}/residualGroupFastas/");
+      # All residuals were re-run, so residualGroupFastas is fully replaced (not appended)
+      $self->runCmd(0, "rm -rf ${officialCache}/residualGroupFastas");
+      $self->runCmd(0, "cp -r ${updateCache}/**/residualGroupFastas ${officialCache}/");
 
       $self->runCmd(0, "cp -r ${updateCache}/**/groupStats/new_residual_stats.txt ${officialCache}/groupStats/");
 

@@ -20,16 +20,12 @@ sub run {
       $self->runCmd(0, "rm -f $fullOutputDir/coreBestReps.txt");
       $self->runCmd(0, "rm -f $fullOutputDir/coreBestReps.fasta");
       $self->runCmd(0, "rm -f $fullOutputDir/fullProteome.fasta");
-      $self->runCmd(0, "rm -f $fullOutputDir/reformattedResidualGroups.txt");
-      $self->runCmd(0, "rm -f $fullOutputDir/residualBestReps.fasta");
       $self->runCmd(0, "rm -f $fullOutputDir/residuals.fasta");
-      $self->runCmd(0, "rm -rf $fullOutputDir/residualGroupFastas");
       $self->runCmd(0, "rm -f $fullOutputDir/previousGroups.txt");
       $self->runCmd(0, "rm -rf $fullOutputDir/groupStats");
   }
   elsif ($test) {
       $self->runCmd(0, "mkdir -p $fullOutputDir/peripheralCacheDir");
-      $self->runCmd(0, "mkdir -p $fullOutputDir/residualGroupFastas");
   }
   else {
       # Extract peripheral diamond blast cache for existing organisms
@@ -51,18 +47,9 @@ sub run {
       # Full proteome (core + all current peripheral) for combining with new peripheral sequences
       $self->runCmd(0, "cp ${cacheDir}/fullProteome.fasta $fullOutputDir/fullProteome.fasta");
 
-      # Residual groups from previous postResidual run (OGR prefix); staged under a
-      # distinct name so it does not collide with the core reformattedGroups.txt
-      $self->runCmd(0, "cp ${cacheDir}/reformattedGroups.txt $fullOutputDir/reformattedResidualGroups.txt");
-
-      # Residual best reps fasta for merging in postUpdate
-      $self->runCmd(0, "cp ${cacheDir}/residualBestReps.fasta $fullOutputDir/residualBestReps.fasta");
-
-      # Combined residuals fasta for merging in postUpdate
+      # Existing residuals fasta; fed to updateResidualEntry so all residuals
+      # (existing + new) are re-run together under the new residualBuildVersion
       $self->runCmd(0, "cp ${cacheDir}/residuals.fasta $fullOutputDir/residuals.fasta");
-
-      # Residual per-group fastas for postUpdate gene tree filtering
-      $self->runCmd(0, "cp -r ${cacheDir}/residualGroupFastas $fullOutputDir/");
 
       # Previous groups mapping for tracking group changes across builds
       $self->runCmd(0, "cp ${cacheDir}/previousGroups.txt $fullOutputDir/previousGroups.txt");

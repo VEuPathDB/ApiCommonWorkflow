@@ -12,17 +12,14 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $analysisDir = $self->getParamValue("analysisDir");
   my $coreBestRepsFasta = $self->getParamValue("coreBestRepsFasta");
-  my $existingResidualBestRepsFasta = $self->getParamValue("existingResidualBestRepsFasta");
-  my $newResidualBestRepsFasta = $self->getParamValue("newResidualBestRepsFasta");
-  my $existingResidualFasta = $self->getParamValue("existingResidualFasta");
-  my $newResidualFasta = $self->getParamValue("newResidualFasta");
+  my $residualBestRepsFasta = $self->getParamValue("residualBestRepsFasta");
+  my $residualFasta = $self->getParamValue("residualFasta");
   my $coreAndPeripheralProteome = $self->getParamValue("coreAndPeripheralProteome");
   my $updatedGroupsFile = $self->getParamValue("updatedGroupsFile");
   my $updatedResidualGroupsFile = $self->getParamValue("updatedResidualGroupsFile");
   my $oldGroupsFile = $self->getParamValue("oldGroupsFile");
   my $updatedGroupFastas = $self->getParamValue("updatedGroupFastas");
-  my $existingResidualGroupFastas = $self->getParamValue("existingResidualGroupFastas");
-  my $newResidualGroupFastas = $self->getParamValue("newResidualGroupFastas");
+  my $residualGroupFastas = $self->getParamValue("residualGroupFastas");
   my $bestRepDiamondOutputFields = $self->getParamValue("bestRepDiamondOutputFields");
   my $buildVersion = $self->getSharedConfig("buildVersion");
 
@@ -32,17 +29,14 @@ sub run {
   my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
 
   my $coreBestRepsFastaInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreBestRepsFasta);
-  my $existingResidualBestRepsFastaInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $existingResidualBestRepsFasta);
-  my $newResidualBestRepsFastaInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $newResidualBestRepsFasta);
-  my $existingResidualFastaInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $existingResidualFasta);
-  my $newResidualFastaInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $newResidualFasta);
+  my $residualBestRepsFastaInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $residualBestRepsFasta);
+  my $residualFastaInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $residualFasta);
   my $coreAndPeripheralProteomeInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreAndPeripheralProteome);
   my $updatedGroupsFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $updatedGroupsFile);
   my $updatedResidualGroupsFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $updatedResidualGroupsFile);
   my $oldGroupsFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $oldGroupsFile);
   my $updatedGroupFastasInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $updatedGroupFastas);
-  my $existingResidualGroupFastasInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $existingResidualGroupFastas);
-  my $newResidualGroupFastasInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $newResidualGroupFastas);
+  my $residualGroupFastasInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $residualGroupFastas);
   my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
   my $executor = $self->getClusterExecutor();
@@ -58,17 +52,14 @@ sub run {
 params {
     outputDir = \"$resultsDirectoryInNextflowWorkingDirOnCluster\"
     coreBestRepsFasta = \"$coreBestRepsFastaInNextflowWorkingDirOnCluster\"
-    existingResidualBestRepsFasta = \"$existingResidualBestRepsFastaInNextflowWorkingDirOnCluster\"
-    newResidualBestRepsFasta = \"$newResidualBestRepsFastaInNextflowWorkingDirOnCluster\"
-    existingResidualFasta = \"$existingResidualFastaInNextflowWorkingDirOnCluster\"
-    newResidualFasta = \"$newResidualFastaInNextflowWorkingDirOnCluster\"
+    residualBestRepsFasta = \"$residualBestRepsFastaInNextflowWorkingDirOnCluster\"
+    residualFasta = \"$residualFastaInNextflowWorkingDirOnCluster\"
     coreAndPeripheralProteome = \"$coreAndPeripheralProteomeInNextflowWorkingDirOnCluster\"
     updatedGroupsFile = \"$updatedGroupsFileInNextflowWorkingDirOnCluster\"
     updatedResidualGroupsFile = \"$updatedResidualGroupsFileInNextflowWorkingDirOnCluster\"
     oldGroupsFile = \"$oldGroupsFileInNextflowWorkingDirOnCluster\"
     updatedGroupFastas = \"$updatedGroupFastasInNextflowWorkingDirOnCluster\"
-    existingResidualGroupFastas = \"$existingResidualGroupFastasInNextflowWorkingDirOnCluster\"
-    newResidualGroupFastas = \"$newResidualGroupFastasInNextflowWorkingDirOnCluster\"
+    residualGroupFastas = \"$residualGroupFastasInNextflowWorkingDirOnCluster\"
     buildVersion = $buildVersion
     bestRepDiamondOutputFields = \"$bestRepDiamondOutputFields\"
 }

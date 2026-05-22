@@ -12,7 +12,7 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $analysisDir = $self->getParamValue("analysisDir");
   my $newResidualFastaDir = $self->getParamValue("newResidualFastaDir");
-  my $existingResidualGroupsFile = $self->getParamValue("existingResidualGroupsFile");
+  my $existingResidualFasta = $self->getParamValue("existingResidualFasta");
 
   my $buildVersion = $self->getSharedConfig("buildVersion");
   my $newResidualBuildVersion = $self->getSharedConfig("newResidualBuildVersion");
@@ -24,7 +24,7 @@ sub run {
   my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
 
   my $newResidualFastaDirInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $newResidualFastaDir);
-  my $existingResidualGroupsFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $existingResidualGroupsFile);
+  my $existingResidualFastaInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $existingResidualFasta);
   my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
   my $executor = $self->getClusterExecutor();
@@ -45,7 +45,7 @@ sub run {
 params {
     outputDir = \"$resultsDirectoryInNextflowWorkingDirOnCluster\"
     newResidualFastaDir = \"$newResidualFastaDirInNextflowWorkingDirOnCluster\"
-    existingResidualGroupsFile = \"$existingResidualGroupsFileInNextflowWorkingDirOnCluster\"
+    existingResidualFasta = \"$existingResidualFastaInNextflowWorkingDirOnCluster\"
     buildVersion = $buildVersion
     newResidualBuildVersion = $newResidualBuildVersion
     orthoFinderDiamondOutputFields = \"qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore\"
