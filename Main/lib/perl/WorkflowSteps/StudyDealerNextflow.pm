@@ -66,10 +66,10 @@ params {
     datasetName = "$datasetName"
     workflowPath = "\${params.workflowDataDir}/${inputDirectory}"
     sampleDetails = "$sampleDetails"
-    filePatterns = [phenotype: "\${params.workflowPath}/*.{txt,tab,csv}",
-                    antibodyArray: "\${params.workflowPath}/*.{txt,tab,csv}",
-                    rflp: "\${params.workflowPath}/*.{txt,tab,csv}",
-                    cellularLocalization: "\${params.workflowPath}/*.{txt,tab,csv}",
+    filePatterns = [phenotype: "\${params.workflowPath}/*.{txt,tab,csv,tsv}",
+                    antibodyArray: "\${params.workflowPath}/*.{txt,tab,csv,tsv}",
+                    rflp: "\${params.workflowPath}/*.{txt,tab,csv,tsv}",
+                    cellularLocalization: "\${params.workflowPath}/*.{txt,tab,csv,tsv}",
                     ebiRnaSeqCounts: "\${params.workflowPath}/*/nextflowAnalysisDir/nextflow_output/analysis_output/{countsForEda,merged-0.25-eigengenes}*",
                     rnaSeqCounts: "\${params.workflowPath}/*/bulkrnaseq/analysisDir/nextflowAnalysisDir/nextflow_output/analysis_output/countsForEda*",
                     rnaseqAiMetadata: "\${params.workflowDataDir}/\${params.sampleDetails}/*/*.{tsv,yaml}",
