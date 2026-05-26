@@ -69,8 +69,6 @@ sub run {
 
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/residualBestReps.txt  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/");
 
-      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/postResidualEntryResults/bestReps.fasta  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/residualBestReps.fasta");
-
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/residuals.fasta  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/");
 
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/similar_groups.tsv  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/");
