@@ -5,24 +5,22 @@ package ApiCommonWorkflow::Main::WorkflowSteps::CheckIfCoreHasChanged;
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
-# Compares the modification time of the core reformattedGroups.txt against a
-# timestamp written to the official peripheral cache after each completed run.
+# Compares the current core proteome checksum against the one stored in the
+# official core cache after the last completed core run.
 # Creates exactly one sentinel file in outputDir:
-#   coreHasChanged  — full pipeline should run
-#   coreNotChanged  — update pipeline should run
+#   coreHasChanged  — full peripheral pipeline should run
+#   coreNotChanged  — update peripheral pipeline should run
 # The sentinel files are consumed by skipIfFile on the two downstream subgraphs.
 
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $workflowDataDir    = $self->getWorkflowDataDir();
-  my $coreResultsDir     = $self->getParamValue("coreResultsDir");
-  my $outputDir          = join("/", $workflowDataDir, $self->getParamValue("outputDir"));
+  my $workflowDataDir       = $self->getWorkflowDataDir();
+  my $coreCheckSum          = join("/", $workflowDataDir, $self->getParamValue("coreCheckSum"));
+  my $outputDir             = join("/", $workflowDataDir, $self->getParamValue("outputDir"));
   my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
 
-  my $officialCache      = "${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache";
-  my $timestampFile      = "${officialCache}/lastPeripheralRunTimestamp";
-  my $coreGroupsFile     = join ("/", $workflowDataDir, "${coreResultsDir}/reformattedGroups.txt");
+  my $cachedCheckSum     = "${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/checkSum.tsv";
   my $coreHasChangedFile = "${outputDir}/coreHasChanged";
   my $coreNotChangedFile = "${outputDir}/coreNotChanged";
 
@@ -33,21 +31,19 @@ sub run {
     $self->runCmd(0, "echo 'test'");
   }
   else {
-    die "Core reformattedGroups.txt not found at $coreGroupsFile" unless -e $coreGroupsFile;
+    die "Core checkSum.tsv not found at $coreCheckSum" unless -e $coreCheckSum;
 
-    if (!-e $timestampFile) {
-      # No record of a previous peripheral run — treat as first run
+    if (!-e $cachedCheckSum) {
+      # No cached core checksum — treat as first run
       $self->runCmd(0, "touch $coreHasChangedFile");
     }
     else {
-      my $coreMtime  = (stat($coreGroupsFile))[9];
-      my $cacheMtime = (stat($timestampFile))[9];
-
-      if ($coreMtime > $cacheMtime) {
-        $self->runCmd(0, "touch $coreHasChangedFile");
+      my $diff = system("diff -q $coreCheckSum $cachedCheckSum > /dev/null 2>&1");
+      if ($diff == 0) {
+        $self->runCmd(0, "touch $coreNotChangedFile");
       }
       else {
-        $self->runCmd(0, "touch $coreNotChangedFile");
+        $self->runCmd(0, "touch $coreHasChangedFile");
       }
     }
   }
