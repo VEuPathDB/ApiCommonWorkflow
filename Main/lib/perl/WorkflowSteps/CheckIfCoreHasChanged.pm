@@ -20,7 +20,7 @@ sub run {
   my $outputDir             = join("/", $workflowDataDir, $self->getParamValue("outputDir"));
   my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
 
-  my $cachedCheckSum     = "${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/checkSum.tsv";
+  my $cachedCheckSum     = "${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/coreCheckSum.tsv";
   my $coreHasChangedFile = "${outputDir}/coreHasChanged";
   my $coreNotChangedFile = "${outputDir}/coreNotChanged";
 
@@ -34,7 +34,7 @@ sub run {
     die "Core checkSum.tsv not found at $coreCheckSum" unless -e $coreCheckSum;
 
     if (!-e $cachedCheckSum) {
-      # No cached core checksum — treat as first run
+      # No core checksum stored in peripheral cache — treat as first run
       $self->runCmd(0, "touch $coreHasChangedFile");
     }
     else {

@@ -9,6 +9,7 @@ sub run {
 
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $checkSumFile = join("/", $workflowDataDir, $self->getParamValue("checkSum"));
+    my $coreCheckSumFile = join("/", $workflowDataDir, $self->getParamValue("coreCheckSum"));
     my $newGroupsFile = join("/", $workflowDataDir, $self->getParamValue("newGroupsFile"));
     my $previousGroups = join("/", $workflowDataDir, $self->getParamValue("previousGroups"));
     my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
@@ -28,9 +29,11 @@ sub run {
 
       $self->runCmd(0, "rm -rf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/*");
 
-      $self->runCmd(0, "cp $newGroupsFile ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/newGroups.txt");      
+      $self->runCmd(0, "cp $newGroupsFile ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/newGroups.txt");
 
       $self->runCmd(0, "cp -r $checkSumFile ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/checkSum.tsv");
+
+      $self->runCmd(0, "cp $coreCheckSumFile ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/coreCheckSum.tsv");
 
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/groupFastas  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/");
 
