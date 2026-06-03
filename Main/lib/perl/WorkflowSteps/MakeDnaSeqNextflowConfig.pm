@@ -36,11 +36,32 @@ sub run {
     my $winLen                  = $self->getConfig("winLen");
     my $bwaThreads              = $self->getConfig("bwaThreads");
 
-    my $executor      = $self->getClusterExecutor();
-    my $queue         = $self->getClusterQueue();
-    my $maxMemoryGigs = eval { $self->getParamValue("maxMemoryGigs") };
+    my $executor        = $self->getClusterExecutor();
+    my $queue           = $self->getClusterQueue();
+    my $maxMemoryGigs   = eval { $self->getParamValue("maxMemoryGigs") };
+    my $genomeFastaFile = eval { $self->getParamValue("genomeFastaFile") };
 
     my $isLsf = lc($executor) eq 'lsf';
+
+    # Dynamic bwaMem memory: (genome_Gb * 3.3) + 2 GB, rounded up to next power of 2 for safety
+    my $bwaDefaultMemMb = 4 * 1024;  # fallback: 4 GB
+    if (defined($genomeFastaFile)) {
+        my $genomeSize = 0;
+        open(my $fh, "<", $genomeFastaFile) or die "Cannot open genome fasta '$genomeFastaFile': $!";
+        while (<$fh>) {
+            next if /^>/;
+            chomp;
+            $genomeSize += length($_);
+        }
+        close($fh);
+        my $genomeGb  = $genomeSize / 1_000_000_000;
+        my $rawGb     = ($genomeGb * 3.3) + 2;
+        my $safeGb    = $rawGb * 1.25;
+        my $memGb     = 1;
+        $memGb       *= 2 while $memGb < $safeGb;
+        $bwaDefaultMemMb = $memGb * 1024;
+    }
+    my $bwaRetryMemMb = $bwaDefaultMemMb * 2;
 
     # runFreebayes process block
     my $freebayesBlock = "  withName: 'runFreebayes' {\n";
@@ -69,8 +90,8 @@ sub run {
         } else {
             $bwaBlock .= "    clusterOptions = {\n";
             $bwaBlock .= "      (task.attempt > 1 && task.exitStatus in 130..140)\n";
-            $bwaBlock .= "        ? '-M 12000 -R \"rusage [mem=12000] span[hosts=1]\"'\n";
-            $bwaBlock .= "        : '-M 4000 -R \"rusage [mem=4000] span[hosts=1]\"'\n";
+            $bwaBlock .= "        ? '-M $bwaRetryMemMb -R \"rusage [mem=$bwaRetryMemMb] span[hosts=1]\"'\n";
+            $bwaBlock .= "        : '-M $bwaDefaultMemMb -R \"rusage [mem=$bwaDefaultMemMb] span[hosts=1]\"'\n";
             $bwaBlock .= "    }\n";
         }
     }
