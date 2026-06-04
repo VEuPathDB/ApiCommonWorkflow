@@ -39,7 +39,7 @@ sub run {
     my $executor        = $self->getClusterExecutor();
     my $queue           = $self->getClusterQueue();
     my $maxMemoryGigs   = eval { $self->getParamValue("maxMemoryGigs") };
-    my $genomeFastaFile = eval { $self->getParamValue("genomeFastaFile") };
+    my $genomeFastaFile = $self->getWorkflowDataDir() . "/" . eval { $self->getParamValue("genomeFastaFile") };
 
     my $isLsf = lc($executor) eq 'lsf';
 
