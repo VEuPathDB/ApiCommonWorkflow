@@ -33,8 +33,8 @@ sub skipUndo {
 sub nextflowConfigAsString {
     my ($self) = @_;
 
-    my $studyWranglerTag = "1.0.28";
-    
+    my $studyWranglerTag = $self->getSharedConfig("studyWranglerDockerTag");
+
     my $workflowDataDir = $self->getWorkflowDataDir();
 
     my $resultsDirectory = $self->getResultsDirectory();
