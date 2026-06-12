@@ -42,7 +42,7 @@ sub run {
     my $genomeFastaFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue("genomeFastaFile");
 
     my $genomeSizeBytes = 0;
-    if (defined($genomeFastaFile) && -e $genomeFastaFile) {
+    if (-e $genomeFastaFile) {
         open(my $fh, "<", $genomeFastaFile) or die "Cannot open genome fasta '$genomeFastaFile': $!";
         while (<$fh>) {
             next if /^>/;
@@ -50,6 +50,8 @@ sub run {
             $genomeSizeBytes += length($_);
         }
         close($fh);
+    } else {
+        warn "WARNING: genome FASTA not found at '$genomeFastaFile'; genomeSize will be 0 and memory limits will use minimum defaults\n";
     }
 
     if ($undo) {
