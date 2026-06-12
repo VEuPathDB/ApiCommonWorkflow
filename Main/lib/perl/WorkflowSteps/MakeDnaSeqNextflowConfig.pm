@@ -84,6 +84,8 @@ singularity {
   enabled    = true
   autoMounts = true
 }
+
+includeConfig \"\$baseDir/conf/memory.config\"
 $lsfEnv";
         close(F);
     }
