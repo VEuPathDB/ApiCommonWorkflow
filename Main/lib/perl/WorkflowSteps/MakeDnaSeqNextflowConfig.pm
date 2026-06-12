@@ -38,64 +38,19 @@ sub run {
 
     my $executor        = $self->getClusterExecutor();
     my $queue           = $self->getClusterQueue();
-    my $maxMemoryGigs   = eval { $self->getParamValue("maxMemoryGigs") };
-    my $genomeFastaFile = $self->getWorkflowDataDir() . "/" . eval { $self->getParamValue("genomeFastaFile") };
 
-    my $isLsf = lc($executor) eq 'lsf';
+    my $genomeFastaFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue("genomeFastaFile");
 
-    # Dynamic bwaMem memory: (genome_Gb * 3.3) + 2 GB, rounded up to next power of 2 for safety
-    my $bwaDefaultMemMb = 4 * 1024;  # fallback: 4 GB
-    if (defined($genomeFastaFile)) {
-        my $genomeSize = 0;
+    my $genomeSizeBytes = 0;
+    if (defined($genomeFastaFile) && -e $genomeFastaFile) {
         open(my $fh, "<", $genomeFastaFile) or die "Cannot open genome fasta '$genomeFastaFile': $!";
         while (<$fh>) {
             next if /^>/;
             chomp;
-            $genomeSize += length($_);
+            $genomeSizeBytes += length($_);
         }
         close($fh);
-        my $genomeGb  = $genomeSize / 1_000_000_000;
-        my $rawGb     = ($genomeGb * 3.3) + 2;
-        my $safeGb    = $rawGb * 1.25;
-        my $memGb     = 1;
-        $memGb       *= 2 while $memGb < $safeGb;
-        $bwaDefaultMemMb = $memGb * 1024;
     }
-    my $bwaRetryMemMb = $bwaDefaultMemMb * 2;
-
-    # runFreebayes process block
-    my $freebayesBlock = "  withName: 'runFreebayes' {\n";
-    $freebayesBlock   .= "    maxRetries = 1\n";
-    $freebayesBlock   .= "    errorStrategy = { task.exitStatus in 130..140 ? 'retry' : 'finish' }\n";
-    if ($isLsf) {
-        $freebayesBlock .= "    clusterOptions = {\n";
-        $freebayesBlock .= "      (task.attempt > 1 && task.exitStatus in 130..140)\n";
-        $freebayesBlock .= "        ? '-M 12000 -R \"rusage [mem=12000] span[hosts=1]\"'\n";
-        $freebayesBlock .= "        : '-M 4000 -R \"rusage [mem=4000] span[hosts=1]\"'\n";
-        $freebayesBlock .= "    }\n";
-    }
-    $freebayesBlock   .= "  }\n";
-
-    # bwaMem process block
-    my $bwaRetries = defined($maxMemoryGigs) ? 0 : 1;
-    my $bwaBlock   = "  withName: 'bwaMem' {\n";
-    $bwaBlock     .= "    maxRetries = $bwaRetries\n";
-    if (!defined($maxMemoryGigs)) {
-        $bwaBlock .= "    errorStrategy = { task.exitStatus in 130..140 ? 'retry' : 'finish' }\n";
-    }
-    if ($isLsf) {
-        if (defined($maxMemoryGigs)) {
-            my $memMb = int($maxMemoryGigs * 1024);
-            $bwaBlock .= "    clusterOptions = '-M $memMb -R \"rusage [mem=$memMb] span[hosts=1]\"'\n";
-        } else {
-            $bwaBlock .= "    clusterOptions = {\n";
-            $bwaBlock .= "      (task.attempt > 1 && task.exitStatus in 130..140)\n";
-            $bwaBlock .= "        ? '-M $bwaRetryMemMb -R \"rusage [mem=$bwaRetryMemMb] span[hosts=1]\"'\n";
-            $bwaBlock .= "        : '-M $bwaDefaultMemMb -R \"rusage [mem=$bwaDefaultMemMb] span[hosts=1]\"'\n";
-            $bwaBlock .= "    }\n";
-        }
-    }
-    $bwaBlock .= "  }\n";
 
     if ($undo) {
         $self->runCmd(0, "rm -rf $nextflowConfigFile");
@@ -114,13 +69,12 @@ params {
   outputDir                = \"$digestedResultsDir\"
   geneSourceIdOrthologFile = \"$digestedOrthologFile\"
   chrsForCalcFile          = \"$digestedChrsForCalcFile\"
+  genomeSize               = $genomeSizeBytes
 }
 
 process {
   executor = '$executor'
   queue    = '$queue'
-$freebayesBlock
-$bwaBlock
 }
 
 singularity {
