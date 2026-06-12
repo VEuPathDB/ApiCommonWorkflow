@@ -38,6 +38,7 @@ sub run {
 
     my $executor        = $self->getClusterExecutor();
     my $queue           = $self->getClusterQueue();
+    my $lsfEnv          = $self->getNextflowLsfScratchEnvBlock();
 
     my $genomeFastaFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue("genomeFastaFile");
 
@@ -83,7 +84,7 @@ singularity {
   enabled    = true
   autoMounts = true
 }
-";
+$lsfEnv";
         close(F);
     }
 }
