@@ -30,6 +30,7 @@ sub run {
     my $maxRetries = $self->getParamValue("maxRetries");
 
     my $executor = $self->getClusterExecutor();
+    my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
     my $queue = $self->getClusterQueue();
 
     my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
@@ -65,7 +66,7 @@ process {
 includeConfig "$clusterConfigFile"
 NEXTFLOW
 
-    print F $configString;
+    print F $configString . $lsfEnv;
     close(F);
     }
 }

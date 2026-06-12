@@ -24,6 +24,7 @@ sub run {
     my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $outputDir);
 
     my $executor = $self->getClusterExecutor();
+    my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
     my $queue = $self->getClusterQueue();
 
     if ($undo) {
@@ -61,7 +62,7 @@ singularity {
   autoMounts = true
   runOptions = \"--bind $interproscanDatabase:/opt/interproscan/data --bind $interproscanDatabase/interproscan.properties:/opt/interproscan/interproscan.properties\" 
 }
-";
+$lsfEnv";
 	close(F);
     }
 }
