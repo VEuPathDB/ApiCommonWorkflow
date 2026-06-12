@@ -37,6 +37,7 @@ sub run {
     my $maxRetries = $self->getParamValue("maxRetries");
 
     my $executor = $self->getClusterExecutor();
+    my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
     my $queue = $self->getClusterQueue();
  
     if ($undo) {
@@ -86,7 +87,7 @@ singularity {
   enabled = true
   autoMounts = true
 }
-";
+$lsfEnv";
 	close(F);
     }
 }

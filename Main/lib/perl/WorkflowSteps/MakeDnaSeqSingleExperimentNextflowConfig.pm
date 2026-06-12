@@ -43,6 +43,7 @@ sub run {
   my $ebiFtpPassword = $self->getConfig("ebiFtpPassword");  
 
   my $executor = $self->getClusterExecutor();
+  my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
   my $queue = $self->getClusterQueue();
 
   my $gusConfigFile = $ENV{GUS_HOME}."/config/gus.config";
@@ -120,7 +121,7 @@ singularity {
   enabled = true
   autoMounts = true
 }
-";
+$lsfEnv";
   close(F);
  }
 }

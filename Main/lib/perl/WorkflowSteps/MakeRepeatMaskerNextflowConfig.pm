@@ -38,6 +38,7 @@ sub run {
     my $repeatMaskerDatabase = join("/", $self->getSharedConfig("$clusterServer.softwareDatabasesDirectory"),$self->getSharedConfig("repeatMaskerDatabaseDirectory"),$famdbRelativePath);
 
     my $executor = $self->getClusterExecutor();
+    my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
     my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
@@ -84,7 +85,7 @@ singularity {
 
 
 NEXTFLOW
-    print F $configString;
+    print F $configString . $lsfEnv;
     close(F);
 
     }
