@@ -76,6 +76,10 @@ params {
   varscanFilePath = \"$varscanFilePath\"
   webServicesDir = \"$webServicesDir\"
   extDbRlsSpec = '$extDbRlsSpec'
+  relativeConsensusFilePattern = \"$inputDir/**/*_consensus.fa.gz\"
+  vcfFiles                     = \"$inputDir/**/*.vcf.gz\"
+  indelsFiles                  = \"$inputDir/indels.tsv\"
+  coverageFiles                = \"$inputDir/**/*.coverage.bed.gz\"
 
 }
 
