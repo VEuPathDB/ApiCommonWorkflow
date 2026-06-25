@@ -63,7 +63,6 @@ sub run {
 params {
 
   outputDir = \"$outputDir\"
-  gusConfig = \"\$GUS_HOME/config/gus.config\"
   cacheFile = \"$cacheFileDir/$cacheFile\"
   cacheFileDir = \"$cacheFileDir\"
   undoneStrains = \"$undoneStrainsFile\"
