@@ -13,16 +13,16 @@ sub run {
   my ($self, $test, $undo) = @_;
 
   my $workflowDataDir = $self->getWorkflowDataDir();
-  my $inputDir = join("/", $workflowDataDir, $self->getParamValue("inputDir")); 
-  my $outputDir = join("/", $workflowDataDir, $self->getParamValue("outputDir")); 
+  my $stagingDir = join("/", $workflowDataDir, $self->getParamValue("stagingDir"));
+  my $outputDir = join("/", $workflowDataDir, $self->getParamValue("outputDir"));
   my $configFileName = $self->getParamValue("configFileName");
   my $configPath = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
   my $gtfFile = join("/", $workflowDataDir, $self->getParamValue("gtfFile"));
   my $genomeFastaFile = join("/", $workflowDataDir, $self->getParamValue("genomeFastaFile"));
   my $organismAbbrev = $self->getParamValue("organismAbbrev");
   my $cacheFile = $self->getParamValue("cacheFile");
-  my $cacheFileDir = $self->getParamValue("cacheFileDir");
-  my $undoneStrainsFile = $self->getParamValue("undoneStrainsFile");
+  my $cacheFileDir = join("/", $workflowDataDir, $self->getParamValue("cacheFileDir"));
+  my $undoneStrainsFile = join("/", $workflowDataDir, $self->getParamValue("undoneStrainsFile"));
   my $varscanDirectory = join("/", $workflowDataDir, $self->getParamValue("varscanDirectory"));
   my $varscanFilePath = join("/", $workflowDataDir, $self->getParamValue("varscanFilePath"));
   my $webServicesDir = join("/", $workflowDataDir,  $self->getParamValue("analysisDir"), $self->getParamValue("webServicesDir"));
@@ -62,13 +62,12 @@ sub run {
 "
 params {
 
-  inputDir = \"$inputDir\"
   outputDir = \"$outputDir\"
   gusConfig = \"\$GUS_HOME/config/gus.config\"
   cacheFile = \"$cacheFileDir/$cacheFile\"
   cacheFileDir = \"$cacheFileDir\"
   undoneStrains = \"$undoneStrainsFile\"
-  organism_abbrev = \'$organismAbbrev\' 
+  organism_abbrev = \'$organismAbbrev\'
   reference_strain = \'$referenceStrain\'
   varscan_directory = \"$varscanDirectory\"
   genomeFastaFile = \"$genomeFastaFile\"
@@ -76,10 +75,10 @@ params {
   varscanFilePath = \"$varscanFilePath\"
   webServicesDir = \"$webServicesDir\"
   extDbRlsSpec = '$extDbRlsSpec'
-  relativeConsensusFilePattern = \"$inputDir/**/*_consensus.fa.gz\"
-  vcfFiles                     = \"$inputDir/**/*.vcf.gz\"
-  indelsFiles                  = \"$inputDir/indels.tsv\"
-  coverageFiles                = \"$inputDir/**/*.coverage.bed.gz\"
+  relativeConsensusFilePattern = \"$stagingDir/consensus/*_consensus.fa.gz\"
+  vcfFiles                     = \"$stagingDir/vcfs/*.vcf.gz\"
+  indelsFiles                  = \"$stagingDir/indels/*.tsv\"
+  coverageFiles                = \"$stagingDir/coverage/*.coverage.bed.gz\"
 
 }
 
