@@ -44,7 +44,7 @@ sub run {
             }
 
             if (-f "$resultsDir/indels.tsv") {
-                $self->runCmd(0, "ln -sf $resultsDir/indels.tsv $stagingDir/indels/${experimentName}_indels.tsv");
+                $self->runCmd(0, "sed 's/^/${experimentName}_/' $resultsDir/indels.tsv > $stagingDir/indels/${experimentName}_indels.tsv");
             }
         }
     }
