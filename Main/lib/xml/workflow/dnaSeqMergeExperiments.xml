@@ -12,24 +12,31 @@
   <param name="webServicesDir"/>
   <param name="extDbRlsSpec"/>
 
-  <constant name="dataDir">$$parentDataDir$$/$$referenceStrain$$_mergeExperiments</constant>
+  <constant name="dataDir">$$parentDataDir$$/$$organismAbbrev$$_mergeExperiments</constant>
+  <constant name="stagingDir">$$dataDir$$/mergeInputs</constant>
+
+  <step name="gatherDnaSeqMergeExperimentsInputs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GatherDnaSeqMergeExperimentsInputs">
+    <paramValue name="inputDirGlob">$$inputDir$$</paramValue>
+    <paramValue name="stagingDir">$$stagingDir$$</paramValue>
+  </step>
 
   <step name="makeDnaSeqMergeExperimentsNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqMergeExperimentsNextflowConfig">
     <paramValue name="analysisDir">$$dataDir$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
-    <paramValue name="inputDir">$$inputDir$$</paramValue>
+    <paramValue name="stagingDir">$$stagingDir$$</paramValue>
     <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
     <paramValue name="gtfFile">$$gtfFile$$</paramValue>
     <paramValue name="outputDir">$$dataDir$$/output</paramValue>
-    <paramValue name="cacheFileDir">/home/rdemko/</paramValue>
-    <paramValue name="cacheFile">cache.txt</paramValue>
-    <paramValue name="undoneStrainsFile">/home/rdemko/undoneStrains.txt</paramValue>
-    <paramValue name="varscanDirectory">$$dataDir$$/varscanCons/</paramValue>
+    <paramValue name="cacheFileDir">$$dataDir$$</paramValue>
+    <paramValue name="cacheFile">$$cacheFile$$</paramValue>
+    <paramValue name="undoneStrainsFile">$$dataDir$$/$$undoneStrains$$</paramValue>
+    <paramValue name="varscanDirectory">$$dataDir$$/$$varscanDirectory$$</paramValue>
     <paramValue name="configFileName">nextflow.config</paramValue>
     <paramValue name="varscanFilePath">$$varscanFilePath$$</paramValue>
     <paramValue name="webServicesDir">$$webServicesDir$$</paramValue>
     <paramValue name="extDbRlsSpec">$$extDbRlsSpec$$</paramValue>
-  </step>     
+    <depends name="gatherDnaSeqMergeExperimentsInputs"/>
+  </step>
 
   <step name="runDnaSeqMergeExperiments" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNextflowWithEntry">
     <paramValue name="analysisDir">$$dataDir$$</paramValue>

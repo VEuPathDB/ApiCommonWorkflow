@@ -37,6 +37,30 @@ sub run {
 
   my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
+  # Determine maxForks
+  my $maxForks = 2;
+  if ($assayType eq 'DNASeq') {
+    my $sampleSheetPath = "$workflowDataDir/$finalDir/$sampleSheetName";
+    my $sampleCount = 0;
+    if (open(my $fh, '<', $sampleSheetPath)) {
+      while (<$fh>) {
+	next if /^\s*#/;   # skip comment lines
+	next if /^\s*$/;   # skip blank lines
+	next if /^sample/i; # skip header line
+	$sampleCount++;
+      }
+      close($fh);
+    } else {
+      warn "Could not open sample sheet '$sampleSheetPath': $!. Defaulting maxForks to 2.";
+    }
+
+    if    ($sampleCount <= 5)  { $maxForks = 2; }
+    elsif ($sampleCount <= 10) { $maxForks = 4; }
+    elsif ($sampleCount <= 20) { $maxForks = 6; }
+    elsif ($sampleCount <= 50) { $maxForks = 10; }
+    else                       { $maxForks = 20; }
+  }
+
   if ($undo) {
       $self->runCmd(0, "rm $workflowDataDir/$nextflowConfigFile");
   } else {
@@ -54,7 +78,7 @@ params {
 }
 
 process {
-  maxForks = 2
+  maxForks = $maxForks
 }
 
 includeConfig "$clusterConfigFile"
