@@ -23,7 +23,7 @@ sub run {
             $self->runCmd($test,"echo test > $geneSourceIdOrthologFile");
 	    $self->runCmd($test,"echo test > $chrsForCalcsFile");
 	} else { 
-            $self->runCmd($test,"runGeneCNVAndPloidyQuery --taxonId $taxonId --geneSourceIdOrthologFile $geneSourceIdOrthologFile --chrsForCalcsFile $chrsForCalcsFile --orthoGroupFile $fullGroupsFile");
+            $self->runCmd($test,"runGeneCNVAndPloidyQuery --taxonId $taxonId --geneSourceIdOrthologFile $geneSourceIdOrthologFile --chrsForCalcsFile $chrsForCalcsFile --orthoGroupFile $fullGroupsFile --gusConfigFile $gusConfigFile");
 	}
     }
 }
