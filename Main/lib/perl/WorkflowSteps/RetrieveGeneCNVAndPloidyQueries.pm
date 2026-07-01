@@ -11,22 +11,24 @@ sub run {
     my $geneSourceIdOrthologFile = join("/", $self->getWorkflowDataDir(), $self->getParamValue("geneSourceIdOrthologFile"));
     my $chrsForCalcsFile = join("/", $self->getWorkflowDataDir(), $self->getParamValue('chrsForCalcsFile'));
     my $gusConfigFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue('gusConfigFile');
+    my $fullOrthoGroupsFile = $self->getSharedConfig("fullOrthoGroupsFile");    
 
+    my $taxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
+    
     if ($undo) {
 	$self->runCmd(0, "rm -f $geneSourceIdOrthologFile");
 	$self->runCmd(0, "rm -f $chrsForCalcsFile");
-    } else {
+    } else {  
 	if ($test) {
             $self->runCmd($test,"echo test > $geneSourceIdOrthologFile");
 	    $self->runCmd($test,"echo test > $chrsForCalcsFile");
-	} else {
-            $self->runCmd($test,"runGeneCNVAndPloidyQuery --gusConfigFile $gusConfigFile --organismAbbrev $organismAbbrev --geneSourceIdOrthologFile $geneSourceIdOrthologFile --chrsForCalcsFile $chrsForCalcsFile");
+	} else { 
+            $self->runCmd($test,"runGeneCNVAndPloidyQuery --taxonId $taxonId --geneSourceIdOrthologFile $geneSourceIdOrthologFile --chrsForCalcsFile $chrsForCalcsFile --orthoGroupFile $fullGroupsFile");
 	}
     }
 }
 
 1;
-
 
 
 
