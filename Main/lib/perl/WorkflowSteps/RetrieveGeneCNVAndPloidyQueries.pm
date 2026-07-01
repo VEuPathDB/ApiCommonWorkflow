@@ -11,7 +11,7 @@ sub run {
     my $geneSourceIdOrthologFile = join("/", $self->getWorkflowDataDir(), $self->getParamValue("geneSourceIdOrthologFile"));
     my $chrsForCalcsFile = join("/", $self->getWorkflowDataDir(), $self->getParamValue('chrsForCalcsFile'));
     my $gusConfigFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue('gusConfigFile');
-    my $fullOrthoGroupsFile = $self->getSharedConfig("fullOrthoGroupsFile");    
+    my $fullGroupsFile = $self->getSharedConfig("fullOrthoGroupsFile");    
 
     my $taxonId = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getTaxonId();
     
