@@ -59,7 +59,7 @@ sub writeRow {
     die "No $label file found for sample '$sample' at '$sourceDir/$file'" unless -e "$sourceDir/$file";
 
     my $name = "${sample}_$label";
-    my $profileSet = "$experimentDatasetName - $label";
+    my $profileSet = "$experimentDatasetName - [$label]";
 
     print $out join("\t", $name, $file, $sourceIdType, '', $protocol, '', $profileSet) . "\n";
 }
