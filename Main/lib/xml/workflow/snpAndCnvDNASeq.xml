@@ -28,6 +28,8 @@
     <constant name="repeatMaskedBedSymLink">$$dataDir$$/$$organismAbbrev$$.bed.gz</constant>
 
     <constant name="finalSymLink">$$dataDir$$/final</constant>
+    <constant name="sampleSheetFile">$$finalSymLink$$/samplesheet.csv</constant>
+    <constant name="studyResultsConfigFile">$$analysisDirectory$$/studyResultsConfig.txt</constant>
     
     <constant name="gtfSymLink">$$dataDir$$/$$organismAbbrev$$.gtf</constant>
     <constant name="footprintFileSymLink">$$dataDir$$/geneFootprintFile.txt</constant>
@@ -155,5 +157,27 @@
         <depends name="processSingleExperimentOnCluster"/>
     </step>
 
+    <step name="reformatDnaseqIndelFiles" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ReformatDnaseqIndelFiles">
+        <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+        <paramValue name="sampleSheetFile">$$sampleSheetFile$$</paramValue>
+        <depends name="processSingleExperimentOnCluster"/>
+    </step>
+
+    <step name="writeDnaseqStudyResultsConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::WriteDnaseqStudyResultsConfig">
+        <paramValue name="resultsDirectory">$$resultsDirectory$$</paramValue>
+        <paramValue name="sampleSheetFile">$$sampleSheetFile$$</paramValue>
+        <paramValue name="experimentDatasetName">$$experimentDatasetName$$</paramValue>
+        <paramValue name="configOutputFile">$$studyResultsConfigFile$$</paramValue>
+        <depends name="reformatDnaseqIndelFiles"/>
+    </step>
+
+    <step name="insertDnaseqStudyResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertStudyResults" stepLoadTypes="plugin">
+        <paramValue name="inputDir">$$resultsDirectory$$</paramValue>
+        <paramValue name="configFile">$$studyResultsConfigFile$$</paramValue>
+        <paramValue name="extDbRlsSpec">$$experimentDatasetName$$|%</paramValue>
+        <paramValue name="studyName">$$experimentDatasetName$$</paramValue>
+        <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+        <depends name="writeDnaseqStudyResultsConfig"/>
+    </step>
 
 </workflowGraph>
