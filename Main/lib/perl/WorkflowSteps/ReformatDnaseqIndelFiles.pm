@@ -19,18 +19,17 @@ sub run {
     my @samples = ApiCommonWorkflow::Main::Util::DnaseqSamplesheet::getSampleNames($sampleSheetPath);
 
     foreach my $sample (@samples) {
-        my $indelFile = "$sourceDir/$sample/${sample}_indels.tsv";
+        my $indelFile = "$sourceDir/indels.tsv";
         my $reformattedFile = "$sourceDir/$sample/${sample}_indelsForLoad.tsv";
 
         if ($undo) {
             $self->runCmd(0, "rm -f $reformattedFile");
             next;
-        }
 
-        if ($test) {
+        } elsif ($test) {
             $self->runCmd(0, "echo test > $reformattedFile");
             next;
-        }
+        } else {
 
         die "No indel file found for sample '$sample' at '$indelFile'" unless -e $indelFile;
 
@@ -45,11 +44,12 @@ sub run {
 
             my ($sampleName, $seqId, $location, $shift) = split(/\t/, $line);
 
-            print $out "$seqId\t$location\t$shift\n";
+            print $out "$seqId\t$location\t$shift\n" if ($sampleName eq $sample);
         }
 
         close $in;
         close $out;
+      }
     }
 }
 
