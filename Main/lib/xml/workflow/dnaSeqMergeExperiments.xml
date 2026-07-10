@@ -5,7 +5,6 @@
   <param name="genomeFastaFile"/>
   <param name="gtfFile"/>
   <param name="cacheFile"/>
-  <param name="undoneStrains"/>
 
   <constant name="dataDir">$$parentDataDir$$/$$organismAbbrev$$_mergeExperiments</constant>
   <constant name="stagingDir">$$dataDir$$/mergeInputs</constant>
@@ -16,10 +15,6 @@
     <paramValue name="stagingDir">$$stagingDir$$</paramValue>
   </step>
 
-  <step name="touchUndoneStrains" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::TouchFile">
-    <paramValue name="fileName">$$dataDir$$/$$undoneStrains$$</paramValue>
-  </step>
-
   <step name="makeDnaSeqMergeExperimentsNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqMergeExperimentsNextflowConfig">
     <paramValue name="analysisDir">$$dataDir$$</paramValue>
     <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
@@ -28,11 +23,9 @@
     <paramValue name="gtfFile">$$gtfFile$$</paramValue>
     <paramValue name="outputDir">$$dataDir$$/output</paramValue>
     <paramValue name="cacheFile">$$cacheFile$$</paramValue>
-    <paramValue name="undoneStrainsFile">$$dataDir$$/$$undoneStrains$$</paramValue>
     <paramValue name="configFileName">nextflow.config</paramValue>
     <paramValue name="experimentConfigGlob">$$experimentConfigGlob$$</paramValue>
     <depends name="gatherDnaSeqMergeExperimentsInputs"/>
-    <depends name="touchUndoneStrains"/>
   </step>
 
   <step name="runDnaSeqMergeExperiments" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNextflowWithEntry">

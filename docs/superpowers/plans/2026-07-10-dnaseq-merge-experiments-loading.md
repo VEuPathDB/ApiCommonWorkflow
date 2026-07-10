@@ -10,6 +10,10 @@
 
 **Spec:** `docs/superpowers/specs/2026-07-10-dnaseq-merge-experiments-loading-design.md`
 
+> **Note (post-implementation):** `undoneStrains` was later removed entirely from the workflow
+> (param, `touchUndoneStrains` step, and the config line). The Task 2 / Task 5 text below still
+> shows it as-implemented at the time; the final state has no `undoneStrains`.
+
 **Testing note:** This repo has no unit-test harness (no `t/`, no `Test::More`) and does not run steps outside a live workflow + DB. Verification here is therefore: `perl -c` compile checks resolving deps from the deployed `gus_home`, one runnable harness for the pure ploidy logic, `xmllint` well-formedness, and an end-to-end config-generation dry run against real test data. Full plugin-load and nextflow execution are integration steps requiring a DB/cluster and are out of this plan's automated scope.
 
 **Env vars used by verification commands:**

@@ -2,7 +2,13 @@
 
 **Date:** 2026-07-10
 **Branch:** dnaseq-merge-experiments (current feature branch)
-**Status:** Design — awaiting user review
+**Status:** Design — implemented (PR #93)
+
+> **Amendment (post-implementation):** `undoneStrains` was removed entirely from this
+> workflow at the user's direction — the param, the `touchUndoneStrains` step, and the
+> `undoneStrains` line in the generated nextflow config are all gone. The nextflow-side
+> `processSeqVars` is expected to stop requiring the `undone_strains_file` input. Ignore the
+> `undoneStrains` references below.
 
 ## Problem
 
@@ -25,7 +31,8 @@ Source of truth for the `mergeExperiments` entry is `dnaseq-nextflow`:
 
 Params the merge entry actually consumes:
 `vcfFiles`, `coverageFiles`, `indelsFiles`, `relativeConsensusFilePattern`, `cacheFile`,
-`outputDir`, `genomeFastaFile`, `gtfFile`, `undoneStrains`, `reference_strain`, **`ploidy`**.
+`outputDir`, `genomeFastaFile`, `gtfFile`, `reference_strain`, **`ploidy`** (`undoneStrains`
+removed — see amendment).
 
 `ploidy` is referenced at `modules/mergeExperiments.nf:195` inside `processSeqVars`, which the
 `me` (mergeExperiments) workflow calls at `workflows/mergeExperiments.nf:37`. It is NOT in the
@@ -40,7 +47,7 @@ File: `Main/lib/perl/WorkflowSteps/MakeDnaSeqMergeExperimentsNextflowConfig.pm`
 **Remove these params (unused by the merge entry):** `cacheFileDir`, `organism_abbrev`,
 `varscan_directory`, `varscanFilePath`, `webServicesDir`, `extDbRlsSpec`.
 
-**Keep:** `outputDir`, `cacheFile`, `undoneStrains`, `reference_strain` (still DB-queried via
+**Keep:** `outputDir`, `cacheFile`, `reference_strain` (still DB-queried via
 `REF_STRAIN_ABBREV`), `genomeFastaFile`, `gtfFile`, `relativeConsensusFilePattern`, `vcfFiles`,
 `indelsFiles`, `coverageFiles`.
 

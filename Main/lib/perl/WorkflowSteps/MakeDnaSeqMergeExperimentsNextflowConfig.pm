@@ -49,7 +49,6 @@ sub run {
   my $genomeFastaFile = join("/", $workflowDataDir, $self->getParamValue("genomeFastaFile"));
   my $organismAbbrev  = $self->getParamValue("organismAbbrev");
   my $cacheFile       = join("/", $workflowDataDir, $self->getParamValue("cacheFile"));
-  my $undoneStrainsFile = join("/", $workflowDataDir, $self->getParamValue("undoneStrainsFile"));
   my $experimentConfigGlob = join("/", $workflowDataDir, $self->getParamValue("experimentConfigGlob"));
 
   my $gusConfigFile = $ENV{GUS_HOME}."/config/gus.config";
@@ -86,7 +85,6 @@ params {
 
   outputDir       = \"$outputDir\"
   cacheFile       = \"$cacheFile\"
-  undoneStrains   = \"$undoneStrainsFile\"
   reference_strain = \'$referenceStrain\'
   genomeFastaFile = \"$genomeFastaFile\"
   gtfFile         = \"$gtfFile\"
