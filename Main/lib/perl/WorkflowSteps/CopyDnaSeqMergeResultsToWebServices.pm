@@ -26,7 +26,10 @@ sub run {
   my $sourceDir = "$workflowDataDir/$copyFromDir";
 
   if ($undo) {
-    $self->runCmd(0, "rm -rf $vcfDir $baseDir/readFreq20 $baseDir/readFreq40 $baseDir/readFreq60 $baseDir/readFreq80");
+    # Derive the published readFreq dirs the same way the forward copy creates
+    # them, so undo can't drift from the copy if the frequency set ever changes.
+    my @published = glob("$baseDir/readFreq*");
+    $self->runCmd(0, "rm -rf $vcfDir @published");
     return;
   }
 
