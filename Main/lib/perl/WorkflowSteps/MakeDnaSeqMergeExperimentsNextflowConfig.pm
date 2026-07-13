@@ -96,6 +96,13 @@ params {
 
 }
 
+// Merge processes are singletons over collect()'d inputs (no per-sample scatter),
+// so maxForks only gates the few independent early branches. Serialize them to
+// keep peak memory flat (snpEff JVM, Julia processSeqVars).
+process {
+  maxForks = 1
+}
+
 singularity {
   enabled = true
   autoMounts = true
