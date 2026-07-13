@@ -5,9 +5,6 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeDnaSeqMergeExperimentsNextfl
 use strict;
 use warnings;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
-use GUS::ObjRelP::DbiDatabase;
-use GUS::Supported::GusConfig;
-use CBIL::Util::PropertySet;
 
 # --- TECHNICAL DEBT -------------------------------------------------------
 # Ploidy is not a first-class organism attribute in the database, and the
@@ -50,29 +47,17 @@ sub run {
   my $organismAbbrev  = $self->getParamValue("organismAbbrev");
   my $cacheFile       = join("/", $workflowDataDir, $self->getParamValue("cacheFile"));
   my $experimentConfigGlob = join("/", $workflowDataDir, $self->getParamValue("experimentConfigGlob"));
-
-  my $gusConfigFile = $ENV{GUS_HOME}."/config/gus.config";
-  die "Config file $gusConfigFile does not exist" unless -e $gusConfigFile;
-
-  my @properties = ();
-  my $gusConfig = CBIL::Util::PropertySet->new($gusConfigFile, \@properties, 1);
-
-  my $referenceSql = "select REF_STRAIN_ABBREV from apidb.organism where abbrev = '$organismAbbrev'";
-  my $db = GUS::ObjRelP::DbiDatabase->new($gusConfig->{props}->{dbiDsn},
-                                          $gusConfig->{props}->{databaseLogin},
-                                          $gusConfig->{props}->{databasePassword},
-                                          0,0,1,
-                                          $gusConfig->{props}->{coreSchemaName});
-  my $dbh = $db->getQueryHandle();
-  my $referenceStmt = $dbh->prepare($referenceSql);
-  $referenceStmt->execute();
-  my $referenceStrain;
-  while (my @row = $referenceStmt->fetchrow_array()) { $referenceStrain = $row[0]; }
+  my $gusConfigFile   = join("/", $workflowDataDir, $self->getParamValue("gusConfigFile"));
 
   if ($undo) {
     $self->runCmd(0, "rm -rf $configPath");
     return;
   }
+
+  # dnaseq is only run for reference-strain organisms, so the reference strain
+  # is this organism's own strain_abbrev (which is also the sample name it
+  # carries in the merged VCF).
+  my $referenceStrain = $self->getOrganismInfo($test, $organismAbbrev, $gusConfigFile)->getStrainAbbrev();
 
   # ploidy is derived from the per-experiment configs (see parsePloidyFromConfigs).
   my @experimentConfigs = glob($experimentConfigGlob);
