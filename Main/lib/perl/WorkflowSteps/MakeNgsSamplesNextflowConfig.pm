@@ -21,6 +21,11 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
   my $fromSRA = $self->getBooleanParamValue("fromSRA") ? "true" : "false";
 
+  # Max SRA file size prefetch will download. If a data load fails because prefetch
+  # skipped a run for being "larger than maximum allowed", bump this in the generated
+  # config on the cluster and re-run (default sra-tools limit is 20G).
+  my $maxDownloadSize = "50G";
+
   my $gusConfig = $self->getWorkflowDataDir() . "/" . $self->getParamValue('gusConfigFile');
   my $genomeSize = $self->getGenomeSize($test, $organismAbbrev, $gusConfig);
   my $workflowDataDir = $self->getWorkflowDataDir();
@@ -75,6 +80,7 @@ params {
   outDir = "$digestedOutputDir"
   genomeSize = $genomeSize
   assayType = "$assayType"
+  maxDownloadSize = "$maxDownloadSize"
 }
 
 process {
