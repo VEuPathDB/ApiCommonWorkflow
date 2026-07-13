@@ -77,7 +77,7 @@ params {
   relativeConsensusFilePattern = \"$stagingDir/consensus/*_consensus.fa.gz\"
   vcfFiles                     = \"$stagingDir/vcfs/*.vcf.gz\"
   indelsFiles                  = \"$stagingDir/indels/*.tsv\"
-  coverageFiles                = \"$stagingDir/coverage/*.coverage.bed.gz\"
+  coverageFiles                = \"$stagingDir/coverage/*_coverage.bed.gz\"
 
 }
 
