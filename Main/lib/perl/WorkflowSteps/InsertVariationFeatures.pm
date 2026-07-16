@@ -13,9 +13,11 @@ sub run {
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
 
   my $workflowDataDir = $self->getWorkflowDataDir();
+  my $gusConfigFile  = $workflowDataDir . "/" . $self->getParamValue('gusConfigFile');
 
   my $args = "--inputDir $workflowDataDir/$inputDir "
            . "--extDbRlsSpec '$extDbRlsSpec' "
+           . "--gusConfigFile '$gusConfigFile' "
            . "--organismAbbrev '$organismAbbrev'";
 
   $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::InsertVariationFeatures", $args);
