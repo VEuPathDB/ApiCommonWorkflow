@@ -39,24 +39,27 @@ sub run {
 
     foreach my $sample (@samples) {
         $self->writeRow($out, $sourceDir, $sample, $experimentDatasetName,
-                         'Ploidy', "${sample}_Ploidy.txt", 'NASequence', 'Ploidy');
+                         'Ploidy', "${sample}_Ploidy.txt", 'NASequence', 'Ploidy', 0);
 
         $self->writeRow($out, $sourceDir, $sample, $experimentDatasetName,
-                         'GeneCNV', "${sample}_geneCNVs.txt", 'gene', 'geneCNV');
+                         'GeneCNV', "${sample}_geneCNVs.txt", 'gene', 'geneCNV', 0);
 
         $self->writeRow($out, $sourceDir, $sample, $experimentDatasetName,
-                         'Indel', "${sample}_indelsForLoad.tsv", 'NASequence', 'Indel');
+                         'Indel', "${sample}_indelsForLoad.tsv", 'NASequence', 'Indel', 1);
     }
 
     close $out;
 }
 
 sub writeRow {
-    my ($self, $out, $sourceDir, $sample, $experimentDatasetName, $label, $fileBasename, $sourceIdType, $protocol) = @_;
+    my ($self, $out, $sourceDir, $sample, $experimentDatasetName, $label, $fileBasename, $sourceIdType, $protocol, $required) = @_;
 
     my $file = "$sample/$fileBasename";
 
-    die "No $label file found for sample '$sample' at '$sourceDir/$file'" unless -e "$sourceDir/$file";
+    unless (-e "$sourceDir/$file") {
+        die "No $label file found for sample '$sample' at '$sourceDir/$file'" if $required;
+        return;
+    }
 
     my $name = "${sample}_$label";
     my $profileSet = "$experimentDatasetName - [$label]";

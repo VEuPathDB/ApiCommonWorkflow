@@ -41,7 +41,7 @@ sub run {
         foreach my $sample (@samples) {
             my $sampleCopyToDir = "$experimentCopyToDir/$sample";
             $self->runCmd($test, "mkdir -p $sampleCopyToDir");
-            $self->runCmd($test, "cp $sourceDir/$sample/*.bw $sampleCopyToDir/");
+            $self->runCmd($test, "bash -c 'shopt -s nullglob; files=($sourceDir/$sample/*.bw); if [ \${#files[@]} -gt 0 ]; then cp \"\${files[@]}\" $sampleCopyToDir/; fi'");
         }
     }
 }
