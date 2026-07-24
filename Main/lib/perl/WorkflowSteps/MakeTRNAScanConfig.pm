@@ -24,7 +24,8 @@ sub run {
 
   # The input is RepeatMasker's soft-masked genome, so have the pipeline convert
   # the lowercase (repeat) bases to N before scanning.
-  my $applyHardMask = "true";
+  # TODO:  this could be made a step param if we need to change it per genome
+  my $applyHardMask = "false";
 
   # EukHighConfidenceFilter score cutoffs (tRNAscan-SE tool defaults), emitted
   # explicitly so the generated config records what filtered the annotation.
