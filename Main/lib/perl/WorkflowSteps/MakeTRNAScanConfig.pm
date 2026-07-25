@@ -66,6 +66,12 @@ sub run {
 
   my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
+  # Only lsf takes a queue; the includeConfig above is already executor specific.
+  # Emitted after the include so the workflow's queue wins over any default there.
+  my $queueBlock = $executor eq 'lsf'
+    ? "process {\n  queue = '" . $self->getClusterQueue() . "'\n}\n"
+    : "";
+
   if ($undo) {
       $self->runCmd(0, "rm $workflowDataDir/$nextflowConfigFile");
       $self->runCmd(0, "rm -f $workflowDataDir/$maskedGenomeSymLink");
@@ -103,6 +109,7 @@ params {
 
 includeConfig "$clusterConfigFile"
 
+$queueBlock
 NEXTFLOW
 
     close F;
