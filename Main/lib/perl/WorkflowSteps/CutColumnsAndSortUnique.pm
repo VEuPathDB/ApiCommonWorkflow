@@ -14,8 +14,9 @@ sub run {
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
-  my $cmd = "cut $cutColumns $workflowDataDir/$fromFile | sort -u > $workflowDataDir/$toFile";
-
+  # keep the header 
+  my $cmd = "{ head -n 1 $workflowDataDir/$fromFile | cut $cutColumns; tail -n +2 $workflowDataDir/$fromFile | cut $cutColumns | sort -u; } > $workflowDataDir/$toFile";
+  
   if ($undo) {
       $self->runCmd(0, "rm -f $workflowDataDir/$toFile");
   } else {
