@@ -1,19 +1,15 @@
 <workflowGraph name="dnaSeqMergeExperiments">
   <param name="parentDataDir"/>
   <param name="organismAbbrev"/>
-  <param name="outputDir"/>
   <param name="inputDir"/>
   <param name="genomeFastaFile"/>
   <param name="gtfFile"/>
   <param name="cacheFile"/>
-  <param name="undoneStrains"/>
-  <param name="varscanDirectory"/>
-  <param name="varscanFilePath"/>
-  <param name="webServicesDir"/>
-  <param name="extDbRlsSpec"/>
+  <param name="gusConfigFile"/>
 
   <constant name="dataDir">$$parentDataDir$$/$$organismAbbrev$$_mergeExperiments</constant>
   <constant name="stagingDir">$$dataDir$$/mergeInputs</constant>
+  <constant name="experimentConfigGlob">$$parentDataDir$$/*/dnaseqNextflow/analysisDir/nextflow.config</constant>
 
   <step name="gatherDnaSeqMergeExperimentsInputs" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::GatherDnaSeqMergeExperimentsInputs">
     <paramValue name="inputDirGlob">$$inputDir$$</paramValue>
@@ -27,25 +23,20 @@
     <paramValue name="genomeFastaFile">$$genomeFastaFile$$</paramValue>
     <paramValue name="gtfFile">$$gtfFile$$</paramValue>
     <paramValue name="outputDir">$$dataDir$$/output</paramValue>
-    <paramValue name="cacheFileDir">$$dataDir$$</paramValue>
     <paramValue name="cacheFile">$$cacheFile$$</paramValue>
-    <paramValue name="undoneStrainsFile">$$dataDir$$/$$undoneStrains$$</paramValue>
-    <paramValue name="varscanDirectory">$$dataDir$$/$$varscanDirectory$$</paramValue>
     <paramValue name="configFileName">nextflow.config</paramValue>
-    <paramValue name="varscanFilePath">$$varscanFilePath$$</paramValue>
-    <paramValue name="webServicesDir">$$webServicesDir$$</paramValue>
-    <paramValue name="extDbRlsSpec">$$extDbRlsSpec$$</paramValue>
+    <paramValue name="experimentConfigGlob">$$experimentConfigGlob$$</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="gatherDnaSeqMergeExperimentsInputs"/>
   </step>
 
-  <step name="runDnaSeqMergeExperiments" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNextflowWithEntry">
-    <paramValue name="analysisDir">$$dataDir$$</paramValue>
+  <step name="runDnaSeqMergeExperiments" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RunNextflowLocalMergeDNASeq">
+    <paramValue name="workingDir">$$dataDir$$</paramValue>
     <paramValue name="resultsDir">$$dataDir$$/output</paramValue>
-    <paramValue name="nextflowConfigFile">nextflow.config</paramValue>
+    <paramValue name="nextflowConfigFile">$$dataDir$$/nextflow.config</paramValue>
     <paramValue name="nextflowWorkflow">VEuPathDB/dnaseq-nextflow</paramValue>
     <paramValue name="isGitRepo">true</paramValue>
     <paramValue name="entry">mergeExperiments</paramValue>
-    <paramValue name="gitBranch">main</paramValue>
     <depends name="makeDnaSeqMergeExperimentsNextflowConfig"/>
   </step>
 
