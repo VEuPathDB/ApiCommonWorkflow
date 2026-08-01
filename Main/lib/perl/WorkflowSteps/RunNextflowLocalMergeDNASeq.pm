@@ -14,7 +14,7 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub getSharedConfigRelaxed {
     my ($self, $key) = @_;
 
-    if($key eq 'VEuPathDB/dnaseq-nextflow') {
+    if($key eq 'VEuPathDB/dnaseq-nextflow.branch') {
         return undef;
     }
 
