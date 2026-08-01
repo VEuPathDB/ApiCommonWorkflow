@@ -3,6 +3,8 @@ package ApiCommonWorkflow::Main::WorkflowSteps::RunNextflowLocalMergeDNASeq;
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::RunNextflowLocal);
 
 use strict;
+
+use ApiCommonWorkflow::Main::WorkflowSteps::RunNextflowLocal;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 
