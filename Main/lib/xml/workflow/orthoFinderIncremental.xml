@@ -22,6 +22,9 @@
       <paramValue name="proteinToOrganism">$$peripheralDir$$/proteinToOrganism.tsv</paramValue>
       <paramValue name="outdatedOrganisms">$$peripheralDir$$/outdated.txt</paramValue>
       <paramValue name="stableGroupsDatabase">$$peripheralDir$$/stableGroupsDatabase.dmnd</paramValue>
+      <paramValue name="previousFullProteome">$$peripheralDir$$/previousFullProteome.fasta</paramValue>
+      <paramValue name="cachedCoreBestReps">$$peripheralDir$$/cachedCoreBestReps.txt</paramValue>
+      <paramValue name="cachedResidualBestReps">$$peripheralDir$$/cachedResidualBestReps.txt</paramValue>
     </step>
 
     <subgraph name="runOrthoIncrementalNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
@@ -40,5 +43,90 @@
       <paramValue name="entry">incrementalEntry</paramValue>
       <depends name="makeOrthoFinderIncrementalNextflowConfig"/>
     </subgraph>
+
+    <!-- incrementalEntry's own internal call to residualWorkflow (clustering just the
+         leftover unassigned sequences, X) publishes the exact same residualFasta.fa /
+         Orthogroups.txt / SpeciesIDs.txt / SequenceIDs.txt / blastsFile.txt shape that
+         residualEntry alone produces -- so postResidualEntry can run unchanged, just
+         pointed at incrementalEntryResults/ instead of residualEntryResults/. -->
+    <step name="makeOrthoFinderIncrementalPostResidualEntryNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPostResidualEntryNextflowConfig">
+      <paramValue name="workingDirRelativePath">$$peripheralDir$$</paramValue>
+      <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/postResidualEntryResults/</paramValue>
+      <paramValue name="configFileName">postResidualEntryNextflow.config</paramValue>
+      <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
+      <paramValue name="residualFasta">$$peripheralDir$$/analysisDir/incrementalEntryResults/residualFasta.fa</paramValue>
+      <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/Orthogroups.txt</paramValue>
+      <paramValue name="speciesMapping">$$peripheralDir$$/analysisDir/incrementalEntryResults/SpeciesIDs.txt</paramValue>
+      <paramValue name="sequenceMapping">$$peripheralDir$$/analysisDir/incrementalEntryResults/SequenceIDs.txt</paramValue>
+      <paramValue name="diamondResultsFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/blastsFile.txt</paramValue>
+      <depends name="runOrthoIncrementalNextflowOnCluster"/>
+    </step>
+
+    <subgraph name="runOrthoFinderIncrementalPostResidualEntryNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
+      <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="parentDataDir">$$peripheralDir$$</paramValue>
+      <paramValue name="nextflowConfigFile">$$peripheralDir$$/analysisDir/postResidualEntryNextflow.config</paramValue>
+      <paramValue name="resultDirName">postResidualEntryResults</paramValue>
+      <paramValue name="ngsSamplesNextflowConfigFile"></paramValue>
+      <paramValue name="organismAbbrev"></paramValue> <!-- Not neccessary for ortho -->
+      <paramValue name="genomeSpec">$$projectName$$|peripheralGroups</paramValue> <!-- Using for correct naming of preprocessed data cache -->
+      <paramValue name="isProteomeAnalysis">true</paramValue>
+      <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho -->
+      <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
+      <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
+      <paramValue name="entry">postResidualEntry</paramValue>
+      <depends name="makeOrthoFinderIncrementalPostResidualEntryNextflowConfig"/>
+    </subgraph>
+
+    <!-- coreAndPeripheralGroups/coreBestRepsFasta/coreAndPeripheralProteome come from
+         incrementalEntry's own outputs (updatedStableGroups.txt already contains both
+         updated core AND stable residual groups; coreBestReps.fasta/currentFullProteome
+         are produced directly by incrementalWorkflow) rather than peripheralEntryResults/,
+         since the incremental path never runs peripheralEntry. -->
+    <step name="makeOrthoFinderIncrementalPostProcessingEntryNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPostProcessingEntryNextflowConfig">
+      <paramValue name="workingDirRelativePath">$$peripheralDir$$</paramValue>
+      <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/postProcessingEntryResults/</paramValue>
+      <paramValue name="configFileName">postProcessingEntryNextflow.config</paramValue>
+      <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
+      <paramValue name="residualFasta">$$peripheralDir$$/analysisDir/incrementalEntryResults/residualFasta.fa</paramValue>
+      <paramValue name="residualBestRepsFasta">$$peripheralDir$$/analysisDir/postResidualEntryResults/bestReps.fasta</paramValue>
+      <paramValue name="coreBestRepsFasta">$$peripheralDir$$/analysisDir/incrementalEntryResults/coreBestReps.fasta</paramValue>
+      <paramValue name="coreAndPeripheralGroups">$$peripheralDir$$/analysisDir/incrementalEntryResults/updatedStableGroups.txt</paramValue>
+      <paramValue name="coreAndPeripheralProteome">$$peripheralDir$$/analysisDir/incrementalEntryResults/fullProteome.fasta</paramValue>
+      <paramValue name="coreGroupFastas">$$peripheralDir$$/analysisDir/incrementalEntryResults/touchedGroupFastas</paramValue>
+      <paramValue name="residualGroupFastas">$$peripheralDir$$/analysisDir/postResidualEntryResults/residualGroupFastas</paramValue>
+      <paramValue name="residualGroups">$$peripheralDir$$/analysisDir/incrementalEntryResults/Orthogroups.txt</paramValue>
+      <paramValue name="oldGroupsFile">$$peripheralDir$$/previousGroups.txt</paramValue>
+      <paramValue name="bestRepDiamondOutputFields">qseqid sseqid evalue</paramValue>
+      <depends name="runOrthoFinderIncrementalPostResidualEntryNextflowOnCluster"/>
+    </step>
+
+    <subgraph name="runOrthoFinderIncrementalPostProcessingEntryNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
+      <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="parentDataDir">$$peripheralDir$$</paramValue>
+      <paramValue name="nextflowConfigFile">$$peripheralDir$$/analysisDir/postProcessingEntryNextflow.config</paramValue>
+      <paramValue name="resultDirName">postProcessingEntryResults</paramValue>
+      <paramValue name="ngsSamplesNextflowConfigFile"></paramValue>
+      <paramValue name="organismAbbrev"></paramValue> <!-- Not neccessary for ortho -->
+      <paramValue name="genomeSpec">$$projectName$$|peripheralGroups</paramValue> <!-- Using for correct naming of preprocessed data cache -->
+      <paramValue name="isProteomeAnalysis">true</paramValue>
+      <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho -->
+      <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
+      <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
+      <paramValue name="entry">postProcessingEntry</paramValue>
+      <depends name="makeOrthoFinderIncrementalPostProcessingEntryNextflowConfig"/>
+    </subgraph>
+
+    <!-- loadCoreGroups/loadCoreGroupAASequence (in the parent graph) expect
+         peripheralEntryResults/GroupsFile.txt regardless of which rebuild mode ran;
+         the incremental path's equivalent is updatedStableGroups.txt (already contains
+         both the updated core AND the stable residual groups). -->
+    <step name="copyIncrementalGroupsFileForLoaders" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/updatedStableGroups.txt</paramValue>
+      <paramValue name="toFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/GroupsFile.txt</paramValue>
+      <depends name="runOrthoFinderIncrementalPostProcessingEntryNextflowOnCluster"/>
+    </step>
 
 </workflowGraph>

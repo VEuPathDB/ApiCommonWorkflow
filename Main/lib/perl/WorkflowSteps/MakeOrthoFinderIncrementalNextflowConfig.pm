@@ -16,6 +16,9 @@ sub run {
   my $proteinToOrganism = $self->getParamValue("proteinToOrganism");
   my $outdatedOrganisms = $self->getParamValue("outdatedOrganisms");
   my $stableGroupsDatabase = $self->getParamValue("stableGroupsDatabase");
+  my $previousFullProteome = $self->getParamValue("previousFullProteome");
+  my $cachedCoreBestReps = $self->getParamValue("cachedCoreBestReps");
+  my $cachedResidualBestReps = $self->getParamValue("cachedResidualBestReps");
 
   my $buildVersion = $self->getSharedConfig("buildVersion");
 
@@ -30,6 +33,9 @@ sub run {
   my $proteinToOrganismInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $proteinToOrganism);
   my $outdatedOrganismsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $outdatedOrganisms);
   my $stableGroupsDatabaseInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $stableGroupsDatabase);
+  my $previousFullProteomeInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $previousFullProteome);
+  my $cachedCoreBestRepsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $cachedCoreBestReps);
+  my $cachedResidualBestRepsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $cachedResidualBestReps);
   my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
   my $executor = $self->getClusterExecutor();
@@ -51,6 +57,9 @@ params {
     proteinToOrganism = \"$proteinToOrganismInNextflowWorkingDirOnCluster\"
     outdatedOrganisms = \"$outdatedOrganismsInNextflowWorkingDirOnCluster\"
     stableGroupsDatabase = \"$stableGroupsDatabaseInNextflowWorkingDirOnCluster\"
+    previousFullProteome = \"$previousFullProteomeInNextflowWorkingDirOnCluster\"
+    cachedCoreBestReps = \"$cachedCoreBestRepsInNextflowWorkingDirOnCluster\"
+    cachedResidualBestReps = \"$cachedResidualBestRepsInNextflowWorkingDirOnCluster\"
     buildVersion = $buildVersion
     orthoFinderDiamondOutputFields = \"qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore\"
 }

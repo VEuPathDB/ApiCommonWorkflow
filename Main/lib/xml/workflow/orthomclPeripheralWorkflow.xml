@@ -130,6 +130,24 @@
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
+  <step name="copyPeripheralFullProteomeForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+    <paramValue name="fromFile">fullProteome.fasta</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/previousFullProteome.fasta</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
+  <step name="copyPeripheralCoreBestRepsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+    <paramValue name="fromFile">coreBestReps.txt</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/cachedCoreBestReps.txt</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
+  <step name="copyPeripheralResidualBestRepsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+    <paramValue name="fromFile">residualBestReps.txt</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/cachedResidualBestReps.txt</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
   <!-- Full rebuild: core changed (or both changed) -- unchanged from before. -->
   <subgraph name="makePeripheralGroups" xmlFile="orthoFinderPeripheral.xml" skipIfFile="$$peripheralDir$$/skipFullRebuild">
     <paramValue name="projectName">$$projectName$$</paramValue>
@@ -150,6 +168,9 @@
     <depends name="copyPeripheralResidualGroupFileForIncremental"/>
     <depends name="copyPeripheralProteinToOrganismForIncremental"/>
     <depends name="copyPeripheralStableGroupsDatabaseForIncremental"/>
+    <depends name="copyPeripheralFullProteomeForIncremental"/>
+    <depends name="copyPeripheralCoreBestRepsForIncremental"/>
+    <depends name="copyPeripheralResidualBestRepsForIncremental"/>
   </subgraph>
 
 <!-- Add functionality to get all files from split of results -->
