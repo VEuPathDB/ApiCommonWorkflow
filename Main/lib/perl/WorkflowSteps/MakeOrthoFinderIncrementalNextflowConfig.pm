@@ -19,6 +19,10 @@ sub run {
   my $previousFullProteome = $self->getParamValue("previousFullProteome");
   my $cachedCoreBestReps = $self->getParamValue("cachedCoreBestReps");
   my $cachedResidualBestReps = $self->getParamValue("cachedResidualBestReps");
+  my $cachedCoreStats = $self->getParamValue("cachedCoreStats");
+  my $cachedPeripheralStats = $self->getParamValue("cachedPeripheralStats");
+  my $cachedIntraGroupBlastFile = $self->getParamValue("cachedIntraGroupBlastFile");
+  my $coreSpeciesIds = $self->getParamValue("coreSpeciesIds");
 
   my $buildVersion = $self->getSharedConfig("buildVersion");
 
@@ -36,6 +40,10 @@ sub run {
   my $previousFullProteomeInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $previousFullProteome);
   my $cachedCoreBestRepsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $cachedCoreBestReps);
   my $cachedResidualBestRepsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $cachedResidualBestReps);
+  my $cachedCoreStatsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $cachedCoreStats);
+  my $cachedPeripheralStatsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $cachedPeripheralStats);
+  my $cachedIntraGroupBlastFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $cachedIntraGroupBlastFile);
+  my $coreSpeciesIdsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreSpeciesIds);
   my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
   my $executor = $self->getClusterExecutor();
@@ -60,6 +68,10 @@ params {
     previousFullProteome = \"$previousFullProteomeInNextflowWorkingDirOnCluster\"
     cachedCoreBestReps = \"$cachedCoreBestRepsInNextflowWorkingDirOnCluster\"
     cachedResidualBestReps = \"$cachedResidualBestRepsInNextflowWorkingDirOnCluster\"
+    cachedCoreStats = \"$cachedCoreStatsInNextflowWorkingDirOnCluster\"
+    cachedPeripheralStats = \"$cachedPeripheralStatsInNextflowWorkingDirOnCluster\"
+    cachedIntraGroupBlastFile = \"$cachedIntraGroupBlastFileInNextflowWorkingDirOnCluster\"
+    coreSpeciesIds = \"$coreSpeciesIdsInNextflowWorkingDirOnCluster\"
     buildVersion = $buildVersion
     orthoFinderDiamondOutputFields = \"qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore\"
 }

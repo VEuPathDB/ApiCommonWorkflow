@@ -148,6 +148,30 @@
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
+  <step name="copyPeripheralCoreStatsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+    <paramValue name="fromFile">groupStats/core_stats.txt</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/cachedCoreStats.txt</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
+  <step name="copyPeripheralGroupStatsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+    <paramValue name="fromFile">groupStats/peripheral_stats.txt</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/cachedPeripheralStats.txt</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
+  <step name="copyPeripheralIntraGroupBlastFileForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+    <paramValue name="fromFile">intraGroupBlastFile.tsv</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/cachedIntraGroupBlastFile.tsv</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
+  <step name="copyCoreSpeciesIdsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreCacheFile">
+    <paramValue name="fromFile">SpeciesIDs.txt</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/coreSpeciesIds.txt</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
   <!-- Full rebuild: core changed (or both changed) -- unchanged from before. -->
   <subgraph name="makePeripheralGroups" xmlFile="orthoFinderPeripheral.xml" skipIfFile="$$peripheralDir$$/skipFullRebuild">
     <paramValue name="projectName">$$projectName$$</paramValue>
@@ -171,6 +195,10 @@
     <depends name="copyPeripheralFullProteomeForIncremental"/>
     <depends name="copyPeripheralCoreBestRepsForIncremental"/>
     <depends name="copyPeripheralResidualBestRepsForIncremental"/>
+    <depends name="copyPeripheralCoreStatsForIncremental"/>
+    <depends name="copyPeripheralGroupStatsForIncremental"/>
+    <depends name="copyPeripheralIntraGroupBlastFileForIncremental"/>
+    <depends name="copyCoreSpeciesIdsForIncremental"/>
   </subgraph>
 
 <!-- Add functionality to get all files from split of results -->

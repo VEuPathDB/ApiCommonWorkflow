@@ -25,6 +25,10 @@
       <paramValue name="previousFullProteome">$$peripheralDir$$/previousFullProteome.fasta</paramValue>
       <paramValue name="cachedCoreBestReps">$$peripheralDir$$/cachedCoreBestReps.txt</paramValue>
       <paramValue name="cachedResidualBestReps">$$peripheralDir$$/cachedResidualBestReps.txt</paramValue>
+      <paramValue name="cachedCoreStats">$$peripheralDir$$/cachedCoreStats.txt</paramValue>
+      <paramValue name="cachedPeripheralStats">$$peripheralDir$$/cachedPeripheralStats.txt</paramValue>
+      <paramValue name="cachedIntraGroupBlastFile">$$peripheralDir$$/cachedIntraGroupBlastFile.tsv</paramValue>
+      <paramValue name="coreSpeciesIds">$$peripheralDir$$/coreSpeciesIds.txt</paramValue>
     </step>
 
     <subgraph name="runOrthoIncrementalNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
@@ -126,7 +130,34 @@
     <step name="copyIncrementalGroupsFileForLoaders" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
       <paramValue name="fromFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/updatedStableGroups.txt</paramValue>
       <paramValue name="toFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/GroupsFile.txt</paramValue>
-      <depends name="runOrthoFinderIncrementalPostProcessingEntryNextflowOnCluster"/>
+      <depends name="runOrthoIncrementalNextflowOnCluster"/>
+    </step>
+
+    <!-- insertOrthogroupCoreStats/insertOrthogroupCorePeripheralStats/insertCoreOrthoGroupBlastValues
+         (in the parent graph) expect these files under peripheralEntryResults/ regardless of which
+         rebuild mode ran; incrementalWorkflow already produces the merged (cached-untouched-groups +
+         freshly-recomputed-touched-groups) versions under incrementalEntryResults/. -->
+    <step name="makePeripheralEntryResultsGroupStatsDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$peripheralDir$$/analysisDir/peripheralEntryResults/groupStats</paramValue>
+      <depends name="runOrthoIncrementalNextflowOnCluster"/>
+    </step>
+
+    <step name="copyIncrementalCoreStatsForLoaders" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/groupStats/core_stats.txt</paramValue>
+      <paramValue name="toFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/groupStats/core_stats.txt</paramValue>
+      <depends name="makePeripheralEntryResultsGroupStatsDir"/>
+    </step>
+
+    <step name="copyIncrementalPeripheralStatsForLoaders" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/groupStats/peripheral_stats.txt</paramValue>
+      <paramValue name="toFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/groupStats/peripheral_stats.txt</paramValue>
+      <depends name="makePeripheralEntryResultsGroupStatsDir"/>
+    </step>
+
+    <step name="copyIncrementalIntraGroupBlastFileForLoaders" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/intraGroupBlastFile.tsv</paramValue>
+      <paramValue name="toFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/intraGroupBlastFile.tsv</paramValue>
+      <depends name="runOrthoIncrementalNextflowOnCluster"/>
     </step>
 
 </workflowGraph>
