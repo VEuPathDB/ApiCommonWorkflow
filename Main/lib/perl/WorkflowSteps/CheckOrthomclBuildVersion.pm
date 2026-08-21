@@ -15,6 +15,7 @@ sub run {
   my $checkSumFile = join("/", $workflowDataDir, $self->getParamValue("checkSum"));
   my $outdatedOrganismsFile = join("/", $workflowDataDir, $self->getParamValue("outdatedOrganisms"));
   my $skipIfFile = join("/", $workflowDataDir, $self->getParamValue("skipIfFile"));
+  my $coreChangedFile = join("/", $workflowDataDir, $self->getParamValue("coreChangedFile"));
   my $cachedBuildVersion = `cat $cachedBuildVersionFile`;
 
   my $diff_result = `diff $cachedCheckSumFile $checkSumFile`;
@@ -23,6 +24,9 @@ sub run {
     $self->runCmd(0, "rm $outdatedOrganismsFile");
     if (-e $skipIfFile) {
 	$self->runCmd(0, "rm $skipIfFile");
+    }
+    if (-e $coreChangedFile) {
+	$self->runCmd(0, "rm $coreChangedFile");
     }
   }
   elsif ($test) {
@@ -38,8 +42,11 @@ sub run {
     }
     else {
       if ($cachedBuildVersion eq $buildVersion) {
-        die "Cached build version $cachedBuildVersion and new build version $buildVersion are identical even though the proteomes are different\n";  
+        die "Cached build version $cachedBuildVersion and new build version $buildVersion are identical even though the proteomes are different\n";
       }
+      # Marker for downstream XML to gate on "core changed" directly, without
+      # having to infer it from the absence of $skipIfFile.
+      $self->runCmd(0, "touch $coreChangedFile");
       # Clearing peripheral cache as core has changed
       $self->runCmd(0, "rm -rf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/peripheralCacheDir*");
       $self->runCmd(0, "mkdir ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/peripheralCacheDir");

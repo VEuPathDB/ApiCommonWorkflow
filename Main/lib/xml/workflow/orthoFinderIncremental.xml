@@ -1,0 +1,44 @@
+<workflowGraph name="OrthoFinderIncremental">
+    <param name="projectName"/>
+    <param name="gusConfigFile"/>
+    <param name="peripheralDir"/>
+    <param name="getPeripheralProteinsDir"/>
+
+    <constant name="nextflowWorkflow">VEuPathDB/orthofinder-nextflow</constant>
+
+    <step name="makeOrthoFinderIncrementalNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderIncrementalNextflowConfig">
+      <paramValue name="workingDirRelativePath">$$peripheralDir$$</paramValue>
+      <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/incrementalEntryResults/</paramValue>
+      <paramValue name="configFileName">incrementalEntryNextflow.config</paramValue>
+      <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
+      <paramValue name="changedOrNewProteomes">$$peripheralDir$$/fastas.tar.gz</paramValue>
+      <!-- Previous run's baseline: cached core+peripheral group membership, cached
+           residual group membership, the persisted protein->organism map, and the
+           cached full-proteome diamond database, all copied into peripheralDir from
+           the shared persistent cache by the CopyPeripheralCacheFile steps in the
+           parent graph (orthomclPeripheralWorkflow.xml). -->
+      <paramValue name="fullGroupFile">$$peripheralDir$$/fullGroupFile.txt</paramValue>
+      <paramValue name="residualGroupFile">$$peripheralDir$$/residualReformattedGroups.txt</paramValue>
+      <paramValue name="proteinToOrganism">$$peripheralDir$$/proteinToOrganism.tsv</paramValue>
+      <paramValue name="outdatedOrganisms">$$peripheralDir$$/outdated.txt</paramValue>
+      <paramValue name="stableGroupsDatabase">$$peripheralDir$$/stableGroupsDatabase.dmnd</paramValue>
+    </step>
+
+    <subgraph name="runOrthoIncrementalNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
+      <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
+      <paramValue name="projectName">$$projectName$$</paramValue>
+      <paramValue name="parentDataDir">$$peripheralDir$$</paramValue>
+      <paramValue name="nextflowConfigFile">$$peripheralDir$$/analysisDir/incrementalEntryNextflow.config</paramValue>
+      <paramValue name="resultDirName">incrementalEntryResults</paramValue>
+      <paramValue name="ngsSamplesNextflowConfigFile"></paramValue>
+      <paramValue name="organismAbbrev"></paramValue> <!-- Not neccessary for ortho -->
+      <paramValue name="genomeSpec">$$projectName$$|peripheralGroups</paramValue> <!-- Using for correct naming of preprocessed data cache -->
+      <paramValue name="isProteomeAnalysis">true</paramValue>
+      <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho -->
+      <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
+      <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
+      <paramValue name="entry">incrementalEntry</paramValue>
+      <depends name="makeOrthoFinderIncrementalNextflowConfig"/>
+    </subgraph>
+
+</workflowGraph>

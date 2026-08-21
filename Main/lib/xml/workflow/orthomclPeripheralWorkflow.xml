@@ -90,18 +90,73 @@
      <depends name="copyCoreProteomes"/>
   </step>
 
-  <subgraph name="makePeripheralGroups" xmlFile="orthoFinderPeripheral.xml" skipIfFile="$$getPeripheralProteinsDir$$/doNotDoAnalysis">
+  <!-- Combine "did core change" (CheckOrthomclBuildVersion.pm, over in OrthoMCLCore.xml)
+       and "did peripheral change" (checkBuildVersionCreatePeripheralOutdatedOrganisms,
+       above) into the single-file skip gates the two mutually-exclusive rebuild-mode
+       subgraphs below each need. -->
+  <step name="checkOrthoFinderRebuildMode" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CheckOrthoFinderRebuildMode">
+    <paramValue name="coreChangedFile">$$coreProteinsDir$$/coreChanged</paramValue>
+    <paramValue name="peripheralUnchangedFile">$$getPeripheralProteinsDir$$/doNotDoAnalysis</paramValue>
+    <paramValue name="skipFullRebuildFile">$$peripheralDir$$/skipFullRebuild</paramValue>
+    <paramValue name="skipIncrementalFile">$$peripheralDir$$/skipIncremental</paramValue>
+    <depends name="copyPeripheralProteomes"/>
+  </step>
+
+  <!-- Previous run's baseline artifacts for the incremental path, pulled out of the
+       shared persistent cache (which lives outside the workflow data dir) into the
+       workflow data dir so they travel to the cluster like everything else. Only
+       actually needed when the incremental subgraph runs, but cheap to always copy. -->
+  <step name="copyPeripheralFullGroupFileForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+    <paramValue name="fromFile">fullGroupFile.txt</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/fullGroupFile.txt</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
+  <step name="copyPeripheralResidualGroupFileForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+    <paramValue name="fromFile">reformattedGroups.txt</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/residualReformattedGroups.txt</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
+  <step name="copyPeripheralProteinToOrganismForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+    <paramValue name="fromFile">proteinToOrganism.tsv</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/proteinToOrganism.tsv</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
+  <step name="copyPeripheralStableGroupsDatabaseForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+    <paramValue name="fromFile">orthoBUILDVERSIONdb.dmnd</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/stableGroupsDatabase.dmnd</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
+  <!-- Full rebuild: core changed (or both changed) -- unchanged from before. -->
+  <subgraph name="makePeripheralGroups" xmlFile="orthoFinderPeripheral.xml" skipIfFile="$$peripheralDir$$/skipFullRebuild">
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
     <paramValue name="peripheralDir">$$peripheralDir$$</paramValue>
     <paramValue name="getPeripheralProteinsDir">$$getPeripheralProteinsDir$$</paramValue>
-    <depends name="copyPeripheralProteomes"/>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </subgraph>
+
+  <!-- Incremental: core unchanged, only peripheral organisms changed --
+       reassign into existing core/residual groups and cluster only the leftovers. -->
+  <subgraph name="makeIncrementalGroups" xmlFile="orthoFinderIncremental.xml" skipIfFile="$$peripheralDir$$/skipIncremental">
+    <paramValue name="projectName">$$projectName$$</paramValue>
+    <paramValue name="gusConfigFile">$$projectName$$/$$projectName$$_gus.config</paramValue>
+    <paramValue name="peripheralDir">$$peripheralDir$$</paramValue>
+    <paramValue name="getPeripheralProteinsDir">$$getPeripheralProteinsDir$$</paramValue>
+    <depends name="copyPeripheralFullGroupFileForIncremental"/>
+    <depends name="copyPeripheralResidualGroupFileForIncremental"/>
+    <depends name="copyPeripheralProteinToOrganismForIncremental"/>
+    <depends name="copyPeripheralStableGroupsDatabaseForIncremental"/>
   </subgraph>
 
 <!-- Add functionality to get all files from split of results -->
   <step name="copyPeripheralResults" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralGroupsResultsFromCache">
     <paramValue name="analysisDir">$$peripheralDir$$/analysisDir/</paramValue>
     <depends name="makePeripheralGroups"/>
+    <depends name="makeIncrementalGroups"/>
     <depends name="copyPeripheralProteomes"/>
   </step>
 
