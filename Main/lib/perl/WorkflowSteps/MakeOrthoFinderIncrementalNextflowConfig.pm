@@ -22,6 +22,8 @@ sub run {
   my $cachedCoreStats = $self->getParamValue("cachedCoreStats");
   my $cachedPeripheralStats = $self->getParamValue("cachedPeripheralStats");
   my $cachedIntraGroupBlastFile = $self->getParamValue("cachedIntraGroupBlastFile");
+  my $cachedResidualStats = $self->getParamValue("cachedResidualStats");
+  my $cachedIntraResidualGroupBlastFile = $self->getParamValue("cachedIntraResidualGroupBlastFile");
   my $coreSpeciesIds = $self->getParamValue("coreSpeciesIds");
 
   my $buildVersion = $self->getSharedConfig("buildVersion");
@@ -43,6 +45,8 @@ sub run {
   my $cachedCoreStatsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $cachedCoreStats);
   my $cachedPeripheralStatsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $cachedPeripheralStats);
   my $cachedIntraGroupBlastFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $cachedIntraGroupBlastFile);
+  my $cachedResidualStatsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $cachedResidualStats);
+  my $cachedIntraResidualGroupBlastFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $cachedIntraResidualGroupBlastFile);
   my $coreSpeciesIdsInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $coreSpeciesIds);
   my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
@@ -71,6 +75,8 @@ params {
     cachedCoreStats = \"$cachedCoreStatsInNextflowWorkingDirOnCluster\"
     cachedPeripheralStats = \"$cachedPeripheralStatsInNextflowWorkingDirOnCluster\"
     cachedIntraGroupBlastFile = \"$cachedIntraGroupBlastFileInNextflowWorkingDirOnCluster\"
+    cachedResidualStats = \"$cachedResidualStatsInNextflowWorkingDirOnCluster\"
+    cachedIntraResidualGroupBlastFile = \"$cachedIntraResidualGroupBlastFileInNextflowWorkingDirOnCluster\"
     coreSpeciesIds = \"$coreSpeciesIdsInNextflowWorkingDirOnCluster\"
     buildVersion = $buildVersion
     orthoFinderDiamondOutputFields = \"qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore\"

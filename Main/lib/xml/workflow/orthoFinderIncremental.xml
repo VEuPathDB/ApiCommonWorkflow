@@ -28,6 +28,8 @@
       <paramValue name="cachedCoreStats">$$peripheralDir$$/cachedCoreStats.txt</paramValue>
       <paramValue name="cachedPeripheralStats">$$peripheralDir$$/cachedPeripheralStats.txt</paramValue>
       <paramValue name="cachedIntraGroupBlastFile">$$peripheralDir$$/cachedIntraGroupBlastFile.tsv</paramValue>
+      <paramValue name="cachedResidualStats">$$peripheralDir$$/cachedResidualStats.txt</paramValue>
+      <paramValue name="cachedIntraResidualGroupBlastFile">$$peripheralDir$$/cachedIntraResidualGroupBlastFile.tsv</paramValue>
       <paramValue name="coreSpeciesIds">$$peripheralDir$$/coreSpeciesIds.txt</paramValue>
     </step>
 
@@ -158,6 +160,42 @@
       <paramValue name="fromFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/intraGroupBlastFile.tsv</paramValue>
       <paramValue name="toFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/intraGroupBlastFile.tsv</paramValue>
       <depends name="runOrthoIncrementalNextflowOnCluster"/>
+    </step>
+
+    <!-- insertOrthogroupResidualStats/insertResidualOrthoGroupBlastValues (in the parent
+         graph) unconditionally read postResidualEntryResults/groupStats/residual_stats.txt
+         and postResidualEntryResults/intraResidualGroupBlastFile.tsv. The chained
+         postResidualEntry run above only clusters the leftover unassigned (X) sequences,
+         so its own residual_stats.txt/intraResidualGroupBlastFile.tsv cover only
+         brand-new residual groups -- they know nothing about a pre-existing residual
+         group that simply gained a member this run. incrementalWorkflow already computed
+         that piece (cached-untouched-groups + freshly-recomputed-touched-groups) as
+         mergedResidualStats.txt/mergedIntraResidualGroupBlastFile.tsv; combine the two
+         and overwrite postResidualEntryResults' copy so the loaders see the complete set. -->
+    <step name="concatenateIncrementalResidualStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ConcatenateTwoFiles">
+      <paramValue name="inputFile1">$$peripheralDir$$/analysisDir/incrementalEntryResults/mergedResidualStats.txt</paramValue>
+      <paramValue name="inputFile2">$$peripheralDir$$/analysisDir/postResidualEntryResults/groupStats/residual_stats.txt</paramValue>
+      <paramValue name="outputFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/groupStats/residual_stats_combined.txt</paramValue>
+      <depends name="runOrthoFinderIncrementalPostResidualEntryNextflowOnCluster"/>
+    </step>
+
+    <step name="copyIncrementalResidualStatsForLoaders" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/groupStats/residual_stats_combined.txt</paramValue>
+      <paramValue name="toFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/groupStats/residual_stats.txt</paramValue>
+      <depends name="concatenateIncrementalResidualStats"/>
+    </step>
+
+    <step name="concatenateIncrementalIntraResidualGroupBlastFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ConcatenateTwoFiles">
+      <paramValue name="inputFile1">$$peripheralDir$$/analysisDir/incrementalEntryResults/mergedIntraResidualGroupBlastFile.tsv</paramValue>
+      <paramValue name="inputFile2">$$peripheralDir$$/analysisDir/postResidualEntryResults/intraResidualGroupBlastFile.tsv</paramValue>
+      <paramValue name="outputFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/intraResidualGroupBlastFile_combined.tsv</paramValue>
+      <depends name="runOrthoFinderIncrementalPostResidualEntryNextflowOnCluster"/>
+    </step>
+
+    <step name="copyIncrementalIntraResidualGroupBlastFileForLoaders" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/intraResidualGroupBlastFile_combined.tsv</paramValue>
+      <paramValue name="toFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/intraResidualGroupBlastFile.tsv</paramValue>
+      <depends name="concatenateIncrementalIntraResidualGroupBlastFile"/>
     </step>
 
 </workflowGraph>

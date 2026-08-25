@@ -166,6 +166,18 @@
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
+  <step name="copyPeripheralResidualStatsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+    <paramValue name="fromFile">groupStats/residual_stats.txt</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/cachedResidualStats.txt</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
+  <step name="copyPeripheralIntraResidualGroupBlastFileForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+    <paramValue name="fromFile">intraResidualGroupBlastFile.tsv</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/cachedIntraResidualGroupBlastFile.tsv</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
   <step name="copyCoreSpeciesIdsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreCacheFile">
     <paramValue name="fromFile">SpeciesIDs.txt</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/coreSpeciesIds.txt</paramValue>
@@ -198,6 +210,8 @@
     <depends name="copyPeripheralCoreStatsForIncremental"/>
     <depends name="copyPeripheralGroupStatsForIncremental"/>
     <depends name="copyPeripheralIntraGroupBlastFileForIncremental"/>
+    <depends name="copyPeripheralResidualStatsForIncremental"/>
+    <depends name="copyPeripheralIntraResidualGroupBlastFileForIncremental"/>
     <depends name="copyCoreSpeciesIdsForIncremental"/>
   </subgraph>
 
