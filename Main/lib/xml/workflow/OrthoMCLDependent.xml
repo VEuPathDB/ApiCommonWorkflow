@@ -32,7 +32,10 @@
   <step name="insertGroupTaxonMatrix" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::InsertGroupTaxonMatrix">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <depends name="orthomclClades"/>
-    <dependsGlobal name="insertProteinKeywords"/>
+    <!-- dependsGlobal only resolves against steps declared in global.xml; insertProteinKeywords
+         is an ordinary step in OrthoMCLPeripheral.xml, so this needs dependsExternal instead,
+         matched against its externalName declared there. -->
+    <dependsExternal name="insertProteinKeywords"/>
   </step>
 
   <!-- These webready tables are used by the orthomcl site and for adding the orthomcl derived EC associations -->
