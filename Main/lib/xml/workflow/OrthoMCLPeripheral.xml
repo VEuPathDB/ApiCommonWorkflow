@@ -71,7 +71,13 @@
     <paramValue name="residualGroupsFile">$$dataDir$$/peripheralGroups/analysisDir/postResidualEntryResults/reformattedGroups.txt</paramValue>
     <paramValue name="fullGroupFile">$$dataDir$$/peripheralGroups/analysisDir/postProcessingEntryResults/fullGroupFile.txt</paramValue>
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
-    <dependsGlobal name="insertGroupTaxonMatrix"/>
+    <!-- Used to depend on insertGroupTaxonMatrix (as dependsGlobal, after it moved to
+         OrthoMCLDependent.xml, see 9f8240c6), but that's unsatisfiable: OrthoMCLDependent
+         itself depends on all of OrthoMCL finishing first, which includes this step, making
+         a wait the other way a genuine cycle. MakeDownloadFiles.pm never actually reads
+         apidb.OrthologGroupTaxon, so this was positional, not a real data dependency;
+         falls back to insertProteinKeywords, its immediate predecessor in this file. -->
+    <depends name="insertProteinKeywords"/>
   </step>
 
   <step name="makeInterproDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoInterproDownloadFile">
