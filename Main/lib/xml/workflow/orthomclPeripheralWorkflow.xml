@@ -109,81 +109,85 @@
 
   <!-- Previous run's baseline artifacts for the incremental path, pulled out of the
        shared persistent cache (which lives outside the workflow data dir) into the
-       workflow data dir so they travel to the cluster like everything else. Only
-       actually needed when the incremental subgraph runs, but cheap to always copy. -->
-  <step name="copyPeripheralFullGroupFileForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+       workflow data dir so they travel to the cluster like everything else. Skip-gated
+       on skipIncremental (same file makeIncrementalGroups itself uses below): these
+       files only need to exist for the incremental path, and on a full rebuild they
+       may genuinely be absent (e.g. the very first run, before any incremental-path
+       cache entry has ever been populated); running them unconditionally turned a
+       full rebuild's success into a hostage of files it never actually reads. -->
+  <step name="copyPeripheralFullGroupFileForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
     <paramValue name="fromFile">fullGroupFile.txt</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/fullGroupFile.txt</paramValue>
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
-  <step name="copyPeripheralResidualGroupFileForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+  <step name="copyPeripheralResidualGroupFileForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
     <paramValue name="fromFile">reformattedGroups.txt</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/residualReformattedGroups.txt</paramValue>
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
-  <step name="copyPeripheralProteinToOrganismForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+  <step name="copyPeripheralProteinToOrganismForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
     <paramValue name="fromFile">proteinToOrganism.tsv</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/proteinToOrganism.tsv</paramValue>
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
-  <step name="copyPeripheralStableGroupsDatabaseForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+  <step name="copyPeripheralStableGroupsDatabaseForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
     <paramValue name="fromFile">orthoBUILDVERSIONdb.dmnd</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/stableGroupsDatabase.dmnd</paramValue>
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
-  <step name="copyPeripheralFullProteomeForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+  <step name="copyPeripheralFullProteomeForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
     <paramValue name="fromFile">fullProteome.fasta</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/previousFullProteome.fasta</paramValue>
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
-  <step name="copyPeripheralCoreBestRepsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+  <step name="copyPeripheralCoreBestRepsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
     <paramValue name="fromFile">coreBestReps.txt</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/cachedCoreBestReps.txt</paramValue>
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
-  <step name="copyPeripheralResidualBestRepsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+  <step name="copyPeripheralResidualBestRepsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
     <paramValue name="fromFile">residualBestReps.txt</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/cachedResidualBestReps.txt</paramValue>
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
-  <step name="copyPeripheralCoreStatsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+  <step name="copyPeripheralCoreStatsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
     <paramValue name="fromFile">groupStats/core_stats.txt</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/cachedCoreStats.txt</paramValue>
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
-  <step name="copyPeripheralGroupStatsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+  <step name="copyPeripheralGroupStatsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
     <paramValue name="fromFile">groupStats/peripheral_stats.txt</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/cachedPeripheralStats.txt</paramValue>
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
-  <step name="copyPeripheralIntraGroupBlastFileForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+  <step name="copyPeripheralIntraGroupBlastFileForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
     <paramValue name="fromFile">intraGroupBlastFile.tsv</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/cachedIntraGroupBlastFile.tsv</paramValue>
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
-  <step name="copyPeripheralResidualStatsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+  <step name="copyPeripheralResidualStatsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
     <paramValue name="fromFile">groupStats/residual_stats.txt</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/cachedResidualStats.txt</paramValue>
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
-  <step name="copyPeripheralIntraResidualGroupBlastFileForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile">
+  <step name="copyPeripheralIntraResidualGroupBlastFileForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
     <paramValue name="fromFile">intraResidualGroupBlastFile.tsv</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/cachedIntraResidualGroupBlastFile.tsv</paramValue>
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
-  <step name="copyCoreSpeciesIdsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreCacheFile">
+  <step name="copyCoreSpeciesIdsForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
     <paramValue name="fromFile">SpeciesIDs.txt</paramValue>
     <paramValue name="toFile">$$peripheralDir$$/coreSpeciesIds.txt</paramValue>
     <depends name="checkOrthoFinderRebuildMode"/>
