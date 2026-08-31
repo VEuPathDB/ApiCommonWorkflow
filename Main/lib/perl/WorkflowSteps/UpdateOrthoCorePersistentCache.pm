@@ -27,7 +27,10 @@ sub run {
       $self->runCmd(0, "rm -rf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/diamondCache");
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/diamondCache  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/reformattedGroups.txt  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
-      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/proteinToOrganism.tsv  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
+      # proteinToOrganism.tsv is published into diamondCache/ (see orthoFinderSetup's publishDir
+      # in orthoFinder-nextflow), same as SequenceIDs.txt/SpeciesIDs.txt below -- not at the
+      # results top level, so the glob needs the same diamondCache/ prefix they use.
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/diamondCache/proteinToOrganism.tsv  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/diamondCache/SequenceIDs.txt  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/diamondCache/SpeciesIDs.txt  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_coreGroups/officialDiamondCache/");
 
