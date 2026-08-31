@@ -55,10 +55,16 @@ sub run {
 
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/intraResidualGroupBlastFile.tsv  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/");
 
-      # residual_stats.txt lives under postResidualEntryResults/groupStats/, a sibling of
-      # peripheralEntryResults/groupStats/ (already swept by the groupStats/* copy above) --
-      # named explicitly here rather than relying on that wildcard reaching a sibling path.
-      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/postResidualEntryResults/groupStats/residual_stats.txt  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/groupStats/");
+      # residual_stats.txt is already picked up by the groupStats/* copy above: in the full-rebuild
+      # layout it lives at postResidualEntryResults/groupStats/residual_stats.txt (a sibling of
+      # peripheralEntryResults/groupStats/), and bash's ** here is a single-level match, not
+      # globstar -- but a single-level glob still expands across every sibling directory that
+      # matches, so **/groupStats/* already reaches both. In the incremental layout there's no
+      # postResidualEntryResults subdirectory at all (flat groupStats/ with all three stats files),
+      # so a line hardcoding that path fails outright there. Previously had an explicit copy line
+      # for this file assuming the wildcard didn't reach it; confirmed (via a live glob test) that
+      # assumption was wrong even for the full-rebuild case, so it was just redundant there and
+      # broken here -- removed.
 
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/ortho${orthoBuildVersion}db.dmnd  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/");
 
@@ -84,7 +90,10 @@ sub run {
 
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/similar_groups.tsv  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/");
 
-      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/geneTrees  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/");
+      # geneTrees is only produced by postProcessingEntry (part of the full-rebuild chain --
+      # createGeneTrees is never called from the incremental entry at all), so it genuinely
+      # doesn't exist to copy on the incremental path -- tolerate that instead of hard-failing.
+      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/geneTrees  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/ 2>/dev/null || true");
 
       $self->runCmd(0, "rm -rf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/");
 
