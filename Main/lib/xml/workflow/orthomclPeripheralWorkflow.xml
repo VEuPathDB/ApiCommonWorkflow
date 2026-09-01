@@ -193,6 +193,22 @@
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
+  <!-- Filters the full current peripheral proteome set down to just the organisms
+       makeIncrementalGroups should actually reprocess (changed per outdated.txt, or
+       brand new). Without this, the incremental path was diamond-searching and
+       reassigning every peripheral organism every run, not just what changed. Also,
+       an unchanged organism whose sequences all successfully reassigned back to
+       their existing groups would end up with a 0-sequence leftover fasta, which
+       OrthoFinder can't handle (misreads "no amino acids found" as nucleotide data
+       and hard-fails). -->
+  <step name="makeIncrementalChangedProteomesDir" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeIncrementalChangedProteomesDir" skipIfFile="$$peripheralDir$$/skipIncremental">
+    <paramValue name="proteomesDir">$$getPeripheralProteinsDir$$/fastas</paramValue>
+    <paramValue name="outdatedFile">$$peripheralDir$$/outdated.txt</paramValue>
+    <paramValue name="outputDir">$$peripheralDir$$</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+    <depends name="checkBuildVersionCreatePeripheralOutdatedOrganisms"/>
+  </step>
+
   <!-- Full rebuild: core changed (or both changed)  unchanged from before. -->
   <subgraph name="makePeripheralGroups" xmlFile="orthoFinderPeripheral.xml" skipIfFile="$$peripheralDir$$/skipFullRebuild">
     <paramValue name="projectName">$$projectName$$</paramValue>
@@ -222,6 +238,7 @@
     <depends name="copyPeripheralResidualStatsForIncremental"/>
     <depends name="copyPeripheralIntraResidualGroupBlastFileForIncremental"/>
     <depends name="copyCoreSpeciesIdsForIncremental"/>
+    <depends name="makeIncrementalChangedProteomesDir"/>
   </subgraph>
 
 <!-- Add functionality to get all files from split of results -->

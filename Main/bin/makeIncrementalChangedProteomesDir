@@ -1,0 +1,101 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Long;
+use File::Copy;
+
+=pod
+
+=head1 Description
+
+For the OrthoFinder incremental build path: builds a directory containing only
+the per-organism proteome fastas for peripheral organisms that are either
+outdated (changed or removed member content since the last run) or brand new.
+
+outdated.txt alone is not sufficient here -- createOutdatedOrganismsFile only
+iterates the *old* checksum file's organisms, so it never lists an organism
+that is entirely new (absent from the old checksum file). Without also
+checking for that here, a newly added peripheral organism would never be fed
+into the incremental reassignment step at all.
+
+=head1 Input Parameters
+
+=over 4
+
+=item proteomesDir
+
+Directory of current peripheral organism fastas, one per organism (<abbrev>.fasta)
+
+=item outdatedFile
+
+outdated.txt -- organism abbrevs whose checksum changed since the last run.
+Fine for this to not exist (treated as empty) -- a run whose only difference
+is a brand new organism will have no outdated organisms at all.
+
+=item oldCheckSum
+
+The cached (previous-run) checksum file, used to detect brand-new organisms.
+Fine for this to not exist either (treated as empty, so every current
+organism counts as new) -- covers the very first incremental run.
+
+=item outputDir
+
+Directory to copy the filtered set of fastas into
+
+=back
+
+=cut
+
+my ($proteomesDir, $outdatedFile, $oldCheckSum, $outputDir);
+
+&GetOptions("proteomesDir=s" => \$proteomesDir,
+            "outdatedFile=s" => \$outdatedFile,
+            "oldCheckSum=s" => \$oldCheckSum,
+            "outputDir=s" => \$outputDir);
+
+my %outdated;
+if (-e $outdatedFile) {
+    open(my $fh, '<', $outdatedFile) || die "Could not open file $outdatedFile: $!";
+    while (my $line = <$fh>) {
+        chomp $line;
+        next unless length($line);
+        $outdated{$line} = 1;
+    }
+    close $fh;
+}
+
+my %oldAbbrevs;
+if (-e $oldCheckSum) {
+    open(my $fh, '<', $oldCheckSum) || die "Could not open file $oldCheckSum: $!";
+    while (my $line = <$fh>) {
+        chomp $line;
+        if ($line =~ /^\S+\s+(\S+)/) {
+            $oldAbbrevs{$1} = 1;
+        }
+    }
+    close $fh;
+}
+
+my @proteomeFastas = glob("$proteomesDir/*.fasta");
+die "No proteome fastas found in $proteomesDir\n" unless @proteomeFastas;
+
+my $copiedCount = 0;
+foreach my $file (@proteomeFastas) {
+    my ($abbrev) = $file =~ m{([^/]+)\.fasta$};
+
+    # Changed (outdated.txt) or brand new (absent from the old checksum entirely).
+    next unless $outdated{$abbrev} || !$oldAbbrevs{$abbrev};
+
+    copy($file, "$outputDir/$abbrev.fasta")
+        || die "Could not copy $file to $outputDir/$abbrev.fasta: $!";
+    $copiedCount++;
+}
+
+# This step only ever runs on the incremental path (skip-gated on skipIncremental,
+# which is only absent when peripheral genuinely changed), so finding nothing
+# changed or new here means something upstream is inconsistent -- fail loudly
+# rather than silently handing OrthoFinder an empty run.
+die "No changed or new organisms found under $proteomesDir (outdated file: $outdatedFile)\n" unless $copiedCount;
+
+print "Copied $copiedCount changed/new organism proteome(s) into $outputDir\n";
