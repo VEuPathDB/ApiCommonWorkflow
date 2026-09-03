@@ -160,13 +160,14 @@
     </step>
 
     <!-- coreAndPeripheralGroups/coreBestRepsFasta/coreAndPeripheralProteome come from
-         incrementalEntry's own outputs (updatedStableGroups.txt already contains both
-         updated core AND stable residual groups; coreBestReps.fasta/currentFullProteome
-         are produced directly by incrementalWorkflow) rather than peripheralEntryResults/,
-         since the incremental path never runs peripheralEntry. residualGroups now points
-         at reformattedGroups.txt AFTER copyIncrementalReformattedGroupsForLoaders has
-         already made it comprehensive (see the depends below), so fullGroupFile.txt's
-         residual portion ends up complete too, not just the brand-new groups. -->
+         incrementalEntry's own outputs rather than peripheralEntryResults/, since the
+         incremental path never runs peripheralEntry. coreAndPeripheralGroups must be the
+         OG-only filtered file (filterUpdatedCoreAndPeripheralGroups, above), NOT raw
+         updatedStableGroups.txt. residualGroups (below) now points at reformattedGroups.txt
+         AFTER copyIncrementalReformattedGroupsForLoaders has already made it comprehensive
+         (every existing residual group, re-extracted from that same updatedStableGroups.txt,
+         plus brand-new ones), so combineGroupFiles concatenating raw updatedStableGroups.txt's
+         own OGR lines on top would duplicate every existing residual group in fullGroupFile.txt. -->
     <step name="makeOrthoFinderIncrementalPostProcessingEntryNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPostProcessingEntryNextflowConfig">
       <paramValue name="workingDirRelativePath">$$peripheralDir$$</paramValue>
       <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/postProcessingEntryResults/</paramValue>
@@ -175,7 +176,7 @@
       <paramValue name="residualFasta">$$peripheralDir$$/analysisDir/incrementalEntryResults/residualFasta.fa</paramValue>
       <paramValue name="residualBestRepsFasta">$$peripheralDir$$/analysisDir/postResidualEntryResults/bestReps.fasta</paramValue>
       <paramValue name="coreBestRepsFasta">$$peripheralDir$$/analysisDir/incrementalEntryResults/coreBestReps.fasta</paramValue>
-      <paramValue name="coreAndPeripheralGroups">$$peripheralDir$$/analysisDir/incrementalEntryResults/updatedStableGroups.txt</paramValue>
+      <paramValue name="coreAndPeripheralGroups">$$peripheralDir$$/analysisDir/incrementalEntryResults/updatedCoreAndPeripheralGroups.txt</paramValue>
       <paramValue name="coreAndPeripheralProteome">$$peripheralDir$$/analysisDir/incrementalEntryResults/fullProteome.fasta</paramValue>
       <paramValue name="coreGroupFastas">$$peripheralDir$$/analysisDir/incrementalEntryResults/touchedGroupFastas</paramValue>
       <paramValue name="residualGroupFastas">$$peripheralDir$$/analysisDir/postResidualEntryResults/residualGroupFastas</paramValue>
@@ -183,6 +184,7 @@
       <paramValue name="oldGroupsFile">$$peripheralDir$$/previousGroups.txt</paramValue>
       <paramValue name="bestRepDiamondOutputFields">qseqid sseqid evalue</paramValue>
       <depends name="runOrthoFinderIncrementalPostResidualEntryNextflowOnCluster"/>
+      <depends name="filterUpdatedCoreAndPeripheralGroups"/>
       <depends name="copyIncrementalReformattedGroupsForLoaders"/>
       <depends name="copyIncrementalResidualBestRepsFastaForPostProcessing"/>
     </step>
