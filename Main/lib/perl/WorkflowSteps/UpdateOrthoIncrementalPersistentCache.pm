@@ -46,6 +46,7 @@ sub run {
   my $newGroupsFile = join("/", $workflowDataDir, $self->getParamValue("newGroupsFile"));
   my $previousGroups = join("/", $workflowDataDir, $self->getParamValue("previousGroups"));
   my $fullProteomeFile = join("/", $workflowDataDir, $self->getParamValue("fullProteomeFile"));
+  my $unassignedFastaFile = join("/", $workflowDataDir, $self->getParamValue("unassignedFastaFile"));
   my $groupsFile = join("/", $workflowDataDir, $self->getParamValue("groupsFile"));
   my $coreStatsFile = join("/", $workflowDataDir, $self->getParamValue("coreStatsFile"));
   my $peripheralStatsFile = join("/", $workflowDataDir, $self->getParamValue("peripheralStatsFile"));
@@ -100,6 +101,15 @@ sub run {
       # previousFullProteome frozen at the last full rebuild, silently
       # missing every organism update made by intervening incremental runs.
       $self->runCmd(0, "cp -r $fullProteomeFile $cacheDir/fullProteome.fasta");
+
+      # residuals.fasta: the peripheral-path counterpart of this (peripheralEntryResults/
+      # residuals.fasta, the whole leftover-unassigned pool for that run) is cached and
+      # then copied back into $analysisDir/peripheralEntryResults/residuals.fasta on every
+      # subsequent run (CopyPeripheralGroupsResultsFromCache.pm) -- not read by any loader,
+      # but left un-refreshed here it would stay frozen at the last full rebuild forever.
+      # unassigned.fasta is the incremental path's exact equivalent (this run's own leftover
+      # pool, same full-replace semantics as the peripheral side's own residuals.fasta).
+      $self->runCmd(0, "cp -r $unassignedFastaFile $cacheDir/residuals.fasta");
 
       $self->runCmd(0, "cp -r $reformattedGroupsFile $cacheDir/");
       $self->runCmd(0, "cp -r $buildVersionFile $cacheDir/residualBuildVersion.txt");
