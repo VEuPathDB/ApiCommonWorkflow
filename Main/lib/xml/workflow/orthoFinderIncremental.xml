@@ -137,6 +137,28 @@
       <depends name="concatenateIncrementalReformattedGroups"/>
     </step>
 
+    <!-- Same gap, same fix, for the residual best-representative fasta: postResidualEntry's
+         own bestReps.fasta only covers this run's brand-new residual groups.
+         incrementalWorkflow's own bestReps.fasta (built from mergedResidualBestReps.txt)
+         covers every touched *pre-existing* residual group. postProcessingEntry's
+         mergeCoreAndResidualBestReps builds bestRepsFull.fasta directly from
+         postResidualEntryResults/bestReps.fasta + coreBestReps.fasta, so without this,
+         bestRepsFull.fasta silently drops every pre-existing residual group's
+         representative sequence, touched or not. -->
+    <step name="concatenateIncrementalResidualBestRepsFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ConcatenateTwoFiles">
+      <paramValue name="inputFile1">$$peripheralDir$$/analysisDir/incrementalEntryResults/bestReps.fasta</paramValue>
+      <paramValue name="inputFile2">$$peripheralDir$$/analysisDir/postResidualEntryResults/bestReps.fasta</paramValue>
+      <paramValue name="outputFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/bestReps_combined.fasta</paramValue>
+      <depends name="runOrthoIncrementalNextflowOnCluster"/>
+      <depends name="runOrthoFinderIncrementalPostResidualEntryNextflowOnCluster"/>
+    </step>
+
+    <step name="copyIncrementalResidualBestRepsFastaForPostProcessing" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/bestReps_combined.fasta</paramValue>
+      <paramValue name="toFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/bestReps.fasta</paramValue>
+      <depends name="concatenateIncrementalResidualBestRepsFasta"/>
+    </step>
+
     <!-- coreAndPeripheralGroups/coreBestRepsFasta/coreAndPeripheralProteome come from
          incrementalEntry's own outputs (updatedStableGroups.txt already contains both
          updated core AND stable residual groups; coreBestReps.fasta/currentFullProteome
@@ -162,6 +184,7 @@
       <paramValue name="bestRepDiamondOutputFields">qseqid sseqid evalue</paramValue>
       <depends name="runOrthoFinderIncrementalPostResidualEntryNextflowOnCluster"/>
       <depends name="copyIncrementalReformattedGroupsForLoaders"/>
+      <depends name="copyIncrementalResidualBestRepsFastaForPostProcessing"/>
     </step>
 
     <subgraph name="runOrthoFinderIncrementalPostProcessingEntryNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
