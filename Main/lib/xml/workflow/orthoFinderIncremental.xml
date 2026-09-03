@@ -202,4 +202,44 @@
       <depends name="concatenateIncrementalIntraResidualGroupBlastFile"/>
     </step>
 
+    <!-- Refreshes officialDiamondCache with this run's results. Nothing else
+         does; CopyPeripheralGroupsResultsFromCache.pm (in the parent graph)
+         runs after this subgraph completes and unconditionally overwrites
+         peripheralEntryResults/postResidualEntryResults/postProcessingEntryResults
+         with whatever is currently cached, right before loadCoreGroups and
+         loadResidualGroups read those same paths. Without refreshing the
+         cache here first, that copy would replace this run's own freshly
+         computed group files with the stale pre-run cache content immediately
+         before the loaders read them. See UpdateOrthoIncrementalPersistentCache.pm
+         for the full merge-vs-replace-vs-derive reasoning per artifact. -->
+    <step name="updateOrthoIncrementalPersistentCache" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::UpdateOrthoIncrementalPersistentCache">
+      <paramValue name="checkSum">$$getPeripheralProteinsDir$$/fastas/checkSum.tsv</paramValue>
+      <paramValue name="newGroupsFile">$$peripheralDir$$/analysisDir/postProcessingEntryResults/fullGroupFile.txt</paramValue>
+      <paramValue name="previousGroups">$$peripheralDir$$/analysisDir/postProcessingEntryResults/previousGroups.txt</paramValue>
+      <paramValue name="groupsFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/GroupsFile.txt</paramValue>
+      <paramValue name="coreStatsFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/groupStats/core_stats.txt</paramValue>
+      <paramValue name="peripheralStatsFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/groupStats/peripheral_stats.txt</paramValue>
+      <paramValue name="intraGroupBlastFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/intraGroupBlastFile.tsv</paramValue>
+      <paramValue name="residualStatsFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/groupStats/residual_stats.txt</paramValue>
+      <paramValue name="intraResidualGroupBlastFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/intraResidualGroupBlastFile.tsv</paramValue>
+      <paramValue name="reformattedGroupsFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/reformattedGroups.txt</paramValue>
+      <paramValue name="buildVersionFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/buildVersion.txt</paramValue>
+      <paramValue name="mergedCoreBestReps">$$peripheralDir$$/analysisDir/incrementalEntryResults/mergedCoreBestReps.txt</paramValue>
+      <paramValue name="mergedResidualBestReps">$$peripheralDir$$/analysisDir/incrementalEntryResults/mergedResidualBestReps.txt</paramValue>
+      <paramValue name="narrowResidualBestReps">$$peripheralDir$$/analysisDir/postResidualEntryResults/residualBestReps.txt</paramValue>
+      <paramValue name="bestRepsFullFasta">$$peripheralDir$$/analysisDir/postProcessingEntryResults/bestRepsFull.fasta</paramValue>
+      <paramValue name="similarGroupsFile">$$peripheralDir$$/analysisDir/postProcessingEntryResults/similar_groups.tsv</paramValue>
+      <paramValue name="postProcessingEntryResultsDir">$$peripheralDir$$/analysisDir/postProcessingEntryResults</paramValue>
+      <paramValue name="proteinToOrganismFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/proteinToOrganism.tsv</paramValue>
+      <paramValue name="touchedGroupFastasDir">$$peripheralDir$$/analysisDir/incrementalEntryResults/touchedGroupFastas</paramValue>
+      <paramValue name="residualGroupFastasDir">$$peripheralDir$$/analysisDir/postResidualEntryResults/residualGroupFastas</paramValue>
+      <depends name="copyIncrementalGroupsFileForLoaders"/>
+      <depends name="copyIncrementalCoreStatsForLoaders"/>
+      <depends name="copyIncrementalPeripheralStatsForLoaders"/>
+      <depends name="copyIncrementalIntraGroupBlastFileForLoaders"/>
+      <depends name="copyIncrementalResidualStatsForLoaders"/>
+      <depends name="copyIncrementalIntraResidualGroupBlastFileForLoaders"/>
+      <depends name="runOrthoFinderIncrementalPostProcessingEntryNextflowOnCluster"/>
+    </step>
+
 </workflowGraph>

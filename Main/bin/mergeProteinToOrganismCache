@@ -1,0 +1,86 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Long;
+
+=pod
+
+=head1 Description
+
+For the OrthoFinder incremental build path: merges this run's freshly-computed
+protein->organism mapping into the persistent cache, without dropping entries
+for organisms this run never touched.
+
+An incremental run's own proteinToOrganism.tsv output only covers the
+organisms it actually reprocessed (the outdated/new ones) -- a plain
+overwrite of the cache with just that would silently lose the mapping for
+every other organism, and a future run has no way to know in advance which
+organism will need reassigning next.
+
+=head1 Input Parameters
+
+=over 4
+
+=item oldCache
+
+The previous run's cached proteinToOrganism.tsv (fine if it doesn't exist --
+e.g. the very first incremental run after the cache was seeded by a full
+rebuild that predates this artifact)
+
+=item newMapping
+
+This run's proteinToOrganism.tsv -- covers every organism actually
+reprocessed this run, and is authoritative for all of them (every one of
+their proteins was read directly from the current proteome file this run)
+
+=item output
+
+Where to write the merged mapping
+
+=back
+
+=cut
+
+my ($oldCache, $newMapping, $output);
+
+&GetOptions("oldCache=s" => \$oldCache,
+            "newMapping=s" => \$newMapping,
+            "output=s" => \$output);
+
+# Any organism appearing in the new mapping was fully reprocessed this run,
+# so its entries there are authoritative and should fully replace whatever
+# was cached for it before.
+my %touchedOrganism;
+open(my $newFh, '<', $newMapping) || die "Could not open file $newMapping: $!";
+while (my $line = <$newFh>) {
+    chomp $line;
+    next unless length($line);
+    my (undef, $organism) = split(/\t/, $line);
+    $touchedOrganism{$organism} = 1;
+}
+close($newFh);
+
+open(my $outFh, '>', $output) || die "Could not open file $output for writing: $!";
+
+# Carry forward every cached entry for an organism this run didn't touch.
+if (-e $oldCache) {
+    open(my $oldFh, '<', $oldCache) || die "Could not open file $oldCache: $!";
+    while (my $line = <$oldFh>) {
+        chomp $line;
+        next unless length($line);
+        my (undef, $organism) = split(/\t/, $line);
+        print $outFh "$line\n" unless $touchedOrganism{$organism};
+    }
+    close($oldFh);
+}
+
+# Then add this run's current, authoritative entries for every touched organism.
+open(my $newFh2, '<', $newMapping) || die "Could not open file $newMapping: $!";
+while (my $line = <$newFh2>) {
+    chomp $line;
+    next unless length($line);
+    print $outFh "$line\n";
+}
+close($newFh2);
+close($outFh);
