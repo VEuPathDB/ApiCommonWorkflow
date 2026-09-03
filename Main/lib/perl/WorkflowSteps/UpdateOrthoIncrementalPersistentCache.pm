@@ -47,6 +47,7 @@ sub run {
   my $previousGroups = join("/", $workflowDataDir, $self->getParamValue("previousGroups"));
   my $fullProteomeFile = join("/", $workflowDataDir, $self->getParamValue("fullProteomeFile"));
   my $unassignedFastaFile = join("/", $workflowDataDir, $self->getParamValue("unassignedFastaFile"));
+  my $peripheralsFastaFile = join("/", $workflowDataDir, $self->getParamValue("peripheralsFastaFile"));
   my $groupsFile = join("/", $workflowDataDir, $self->getParamValue("groupsFile"));
   my $coreStatsFile = join("/", $workflowDataDir, $self->getParamValue("coreStatsFile"));
   my $peripheralStatsFile = join("/", $workflowDataDir, $self->getParamValue("peripheralStatsFile"));
@@ -111,6 +112,12 @@ sub run {
       # pool, same full-replace semantics as the peripheral side's own residuals.fasta).
       $self->runCmd(0, "cp -r $unassignedFastaFile $cacheDir/residuals.fasta");
 
+      # peripherals.fasta: exact same reasoning and fix as residuals.fasta just
+      # above -- incrementalWorkflow's splitAssignedAndResidual step already
+      # produces this run's own "matched an existing group" fasta, previously
+      # just never collected/published/wired here.
+      $self->runCmd(0, "cp -r $peripheralsFastaFile $cacheDir/peripherals.fasta");
+
       $self->runCmd(0, "cp -r $reformattedGroupsFile $cacheDir/");
       $self->runCmd(0, "cp -r $buildVersionFile $cacheDir/residualBuildVersion.txt");
 
@@ -152,8 +159,6 @@ sub run {
 
       # --- Deferred: not read by any loader, so not correctness-critical for
       #     this run, but left stale in the cache. ---
-      #
-      # peripherals.fasta: no incremental-path equivalent computed this run.
       #
       # peripheralCacheDir(.tar.gz): a per-organism diamond-results cache that
       # only accelerates a FUTURE full rebuild (skip re-diamonding an
