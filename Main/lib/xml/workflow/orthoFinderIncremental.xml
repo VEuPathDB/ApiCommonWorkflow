@@ -54,6 +54,31 @@
       <depends name="makeOrthoFinderIncrementalNextflowConfig"/>
     </subgraph>
 
+    <!-- updatedStableGroups.txt mixes core+peripheral (OG) and residual (OGR) groups
+         together. GroupsFile.txt (loaded by loadCoreGroups) must be OG-only; residual
+         is loaded separately via reformattedGroups.txt, so including OGR lines there too
+         would double-load them. Split it here into both halves: the OG half feeds
+         GroupsFile.txt directly (below); the OGR half is this run's updated/unchanged
+         *pre-existing* residual groups, combined with postResidualEntry's brand-new-groups-
+         only reformattedGroups.txt further down so reformattedGroups.txt itself ends up
+         a genuinely comprehensive residual-only file before either the loaders or
+         postProcessingEntry's fullGroupFile.txt construction read it. -->
+    <step name="filterUpdatedCoreAndPeripheralGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterGroupFileByPrefix">
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/updatedStableGroups.txt</paramValue>
+      <paramValue name="outputFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/updatedCoreAndPeripheralGroups.txt</paramValue>
+      <paramValue name="prefix">OGR</paramValue>
+      <paramValue name="invert">1</paramValue>
+      <depends name="runOrthoIncrementalNextflowOnCluster"/>
+    </step>
+
+    <step name="filterUpdatedResidualGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::FilterGroupFileByPrefix">
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/updatedStableGroups.txt</paramValue>
+      <paramValue name="outputFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/updatedResidualGroupsOnly.txt</paramValue>
+      <paramValue name="prefix">OGR</paramValue>
+      <paramValue name="invert">0</paramValue>
+      <depends name="runOrthoIncrementalNextflowOnCluster"/>
+    </step>
+
     <!-- incrementalEntry's own internal call to residualWorkflow (clustering just the
          leftover unassigned sequences, X) publishes the exact same residualFasta.fa /
          Orthogroups.txt / SpeciesIDs.txt / SequenceIDs.txt / blastsFile.txt shape that
@@ -89,11 +114,38 @@
       <depends name="makeOrthoFinderIncrementalPostResidualEntryNextflowConfig"/>
     </subgraph>
 
+    <!-- postResidualEntry (reused unchanged) only ever sees this run's leftover pool, so
+         its own reformattedGroups.txt covers only the brand-new residual groups clustered
+         this run; it knows nothing about a pre-existing residual group that simply
+         gained or lost a member. filterUpdatedResidualGroups (above) already extracted
+         that piece from updatedStableGroups.txt; combine the two and overwrite
+         postResidualEntry's copy in place, same pattern already used for
+         residual_stats.txt/intraResidualGroupBlastFile.tsv below. Doing this BEFORE
+         postProcessingEntry runs (not just before the loaders, like those two) means
+         postProcessingEntry's own fullGroupFile.txt construction, which concatenates
+         this same file, also sees the comprehensive version, not just the loaders. -->
+    <step name="concatenateIncrementalReformattedGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ConcatenateTwoFiles">
+      <paramValue name="inputFile1">$$peripheralDir$$/analysisDir/incrementalEntryResults/updatedResidualGroupsOnly.txt</paramValue>
+      <paramValue name="inputFile2">$$peripheralDir$$/analysisDir/postResidualEntryResults/reformattedGroups.txt</paramValue>
+      <paramValue name="outputFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/reformattedGroups_combined.txt</paramValue>
+      <depends name="filterUpdatedResidualGroups"/>
+      <depends name="runOrthoFinderIncrementalPostResidualEntryNextflowOnCluster"/>
+    </step>
+
+    <step name="copyIncrementalReformattedGroupsForLoaders" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
+      <paramValue name="fromFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/reformattedGroups_combined.txt</paramValue>
+      <paramValue name="toFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/reformattedGroups.txt</paramValue>
+      <depends name="concatenateIncrementalReformattedGroups"/>
+    </step>
+
     <!-- coreAndPeripheralGroups/coreBestRepsFasta/coreAndPeripheralProteome come from
          incrementalEntry's own outputs (updatedStableGroups.txt already contains both
          updated core AND stable residual groups; coreBestReps.fasta/currentFullProteome
          are produced directly by incrementalWorkflow) rather than peripheralEntryResults/,
-         since the incremental path never runs peripheralEntry. -->
+         since the incremental path never runs peripheralEntry. residualGroups now points
+         at reformattedGroups.txt AFTER copyIncrementalReformattedGroupsForLoaders has
+         already made it comprehensive (see the depends below), so fullGroupFile.txt's
+         residual portion ends up complete too, not just the brand-new groups. -->
     <step name="makeOrthoFinderIncrementalPostProcessingEntryNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoFinderPostProcessingEntryNextflowConfig">
       <paramValue name="workingDirRelativePath">$$peripheralDir$$</paramValue>
       <paramValue name="clusterResultDir">$$peripheralDir$$/analysisDir/postProcessingEntryResults/</paramValue>
@@ -110,6 +162,7 @@
       <paramValue name="oldGroupsFile">$$peripheralDir$$/previousGroups.txt</paramValue>
       <paramValue name="bestRepDiamondOutputFields">qseqid sseqid evalue</paramValue>
       <depends name="runOrthoFinderIncrementalPostResidualEntryNextflowOnCluster"/>
+      <depends name="copyIncrementalReformattedGroupsForLoaders"/>
     </step>
 
     <subgraph name="runOrthoFinderIncrementalPostProcessingEntryNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
@@ -130,13 +183,15 @@
     </subgraph>
 
     <!-- loadCoreGroups/loadCoreGroupAASequence (in the parent graph) expect
-         peripheralEntryResults/GroupsFile.txt regardless of which rebuild mode ran;
-         the incremental path's equivalent is updatedStableGroups.txt (already contains
-         both the updated core AND the stable residual groups). -->
+         peripheralEntryResults/GroupsFile.txt regardless of which rebuild mode ran, and it
+         must be core+peripheral (OG) only; residual loads separately via
+         reformattedGroups.txt, so residual groups here too would double-load them.
+         filterUpdatedCoreAndPeripheralGroups (above) already stripped the OGR lines out
+         of updatedStableGroups.txt for exactly this. -->
     <step name="copyIncrementalGroupsFileForLoaders" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyDataDirFile">
-      <paramValue name="fromFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/updatedStableGroups.txt</paramValue>
+      <paramValue name="fromFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/updatedCoreAndPeripheralGroups.txt</paramValue>
       <paramValue name="toFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/GroupsFile.txt</paramValue>
-      <depends name="runOrthoIncrementalNextflowOnCluster"/>
+      <depends name="filterUpdatedCoreAndPeripheralGroups"/>
     </step>
 
     <!-- insertOrthogroupCoreStats/insertOrthogroupCorePeripheralStats/insertCoreOrthoGroupBlastValues
