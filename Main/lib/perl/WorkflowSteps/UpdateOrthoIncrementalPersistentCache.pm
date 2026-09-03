@@ -45,6 +45,7 @@ sub run {
   my $checkSumFile = join("/", $workflowDataDir, $self->getParamValue("checkSum"));
   my $newGroupsFile = join("/", $workflowDataDir, $self->getParamValue("newGroupsFile"));
   my $previousGroups = join("/", $workflowDataDir, $self->getParamValue("previousGroups"));
+  my $fullProteomeFile = join("/", $workflowDataDir, $self->getParamValue("fullProteomeFile"));
   my $groupsFile = join("/", $workflowDataDir, $self->getParamValue("groupsFile"));
   my $coreStatsFile = join("/", $workflowDataDir, $self->getParamValue("coreStatsFile"));
   my $peripheralStatsFile = join("/", $workflowDataDir, $self->getParamValue("peripheralStatsFile"));
@@ -91,6 +92,14 @@ sub run {
       $self->runCmd(0, "cp -r $bestRepsFullFasta $cacheDir/");
       $self->runCmd(0, "cp -r $similarGroupsFile $cacheDir/");
       $self->runCmd(0, "cp -r $postProcessingEntryResultsDir/ortho${orthoBuildVersion}db.dmnd $cacheDir/");
+
+      # fullProteome.fasta itself, not just the .dmnd built from it -- the
+      # next incremental run's previousFullProteome.fasta is copied straight
+      # from here (copyPeripheralFullProteomeForIncremental). Without this,
+      # every incremental run after the first would keep combining against a
+      # previousFullProteome frozen at the last full rebuild, silently
+      # missing every organism update made by intervening incremental runs.
+      $self->runCmd(0, "cp -r $fullProteomeFile $cacheDir/fullProteome.fasta");
 
       $self->runCmd(0, "cp -r $reformattedGroupsFile $cacheDir/");
       $self->runCmd(0, "cp -r $buildVersionFile $cacheDir/residualBuildVersion.txt");
