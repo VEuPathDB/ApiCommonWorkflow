@@ -64,7 +64,6 @@
   </step>
 
   <step name="ngsSamplesNextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeNgsSamplesNextflowConfig">
-    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="analysisDirectory">$$analysisDirectory$$</paramValue>
     <paramValue name="finalDirectory">$$finalSymLink$$</paramValue>
     <paramValue name="resultsDirectory">$$analysisDirectory$$/ngs-samples-results</paramValue>
@@ -73,8 +72,9 @@
     <paramValue name="sampleSheetName">samplesheet.csv</paramValue>
     <paramValue name="fromSRA">$$fromSRA$$</paramValue>
     <paramValue name="assayType">RNASeq</paramValue>
-    <paramValue name="organismAbbrev">$$organismAbbrev$$</paramValue>
+    <paramValue name="genomeFile">$$genomeSymLink$$</paramValue>
     <depends name="makeResultDir"/>
+    <depends name="symLinkGenome"/>
   </step>
 
   <step name="nextflowConfig" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeBulkRnaSeqNextflowConfig">
@@ -92,7 +92,7 @@
     <depends name="makeResultDir"/>
   </step>
 
-  <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml">
+  <subgraph name="runNextflowOnCluster" xmlFile="runNextflowOnCluster.xml" stepLoadTypes="runClusterTask:rnaseqNextflow">
     <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
     <paramValue name="projectName">$$projectName$$</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
