@@ -19,6 +19,7 @@ sub run {
   my $sampleSheetName = $self->getParamValue("sampleSheetName");
   my $assayType = $self->getParamValue("assayType");
   my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $genomeFile = $self->getParamValue("genomeFile");
   my $fromSRA = $self->getBooleanParamValue("fromSRA") ? "true" : "false";
 
   # Max SRA file size prefetch will download. If a data load fails because prefetch
@@ -34,6 +35,7 @@ sub run {
   my $digestedFinalDirPath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $finalDir);
   my $digestedAnalysisDirPath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $analysisDirectory);
   my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
+  my $digestedGenomeFile = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $genomeFile);
 
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
@@ -79,6 +81,7 @@ params {
   fromSra = $fromSRA
   outDir = "$digestedOutputDir"
   genomeSize = $genomeSize
+  genomeFastaFile = "$digestedGenomeFile"
   assayType = "$assayType"
   maxDownloadSize = "$maxDownloadSize"
 }
