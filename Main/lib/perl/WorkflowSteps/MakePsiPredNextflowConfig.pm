@@ -23,6 +23,7 @@ sub run {
 
     my $executor = $self->getClusterExecutor();
     my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
+    my $queue = $self->getClusterQueue();
     my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
     if ($undo) {
@@ -43,6 +44,7 @@ params {
 }
 
 process {
+    queue = '$queue'
     maxForks = $maxForks
 
     withName: filterAndMakeIndividualFiles {
