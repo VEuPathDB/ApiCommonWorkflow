@@ -97,6 +97,7 @@ params {
 }
 
 process {
+  beforeScript = 'module load apptainer/1.4.1 && unset LD_LIBRARY_PATH'
   maxForks = $maxForks
   queue = \'$queue\'
 }
