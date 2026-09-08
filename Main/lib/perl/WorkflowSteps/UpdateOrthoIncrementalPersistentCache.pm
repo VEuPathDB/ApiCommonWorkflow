@@ -151,11 +151,15 @@ sub run {
       $self->runCmd(0, "mergeProteinToOrganismCache --oldCache $cacheDir/proteinToOrganism.tsv --newMapping $proteinToOrganismFile --output $cacheDir/proteinToOrganism.tsv.new");
       $self->runCmd(0, "mv $cacheDir/proteinToOrganism.tsv.new $cacheDir/proteinToOrganism.tsv");
 
+      # No touched groups at all (nothing gained/lost a member this run) is a
+      # legitimate outcome, not a failure -- the glob then fails to expand and
+      # cp tries to stat a literal "*.fasta", so tolerate that specifically.
       $self->runCmd(0, "mkdir -p $cacheDir/groupFastas");
-      $self->runCmd(0, "cp -r $touchedGroupFastasDir/*.fasta $cacheDir/groupFastas/");
+      $self->runCmd(0, "cp -r $touchedGroupFastasDir/*.fasta $cacheDir/groupFastas/ 2>/dev/null || true");
 
+      # Same reasoning: no brand-new residual groups this run is legitimate.
       $self->runCmd(0, "mkdir -p $cacheDir/residualGroupFastas");
-      $self->runCmd(0, "cp -r $residualGroupFastasDir/*.fasta $cacheDir/residualGroupFastas/");
+      $self->runCmd(0, "cp -r $residualGroupFastasDir/*.fasta $cacheDir/residualGroupFastas/ 2>/dev/null || true");
 
       # --- Deferred: not read by any loader, so not correctness-critical for
       #     this run, but left stale in the cache. ---
