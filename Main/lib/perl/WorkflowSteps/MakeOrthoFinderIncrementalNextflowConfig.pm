@@ -91,6 +91,14 @@ process {
         : \'-M 25000 -R \"rusage [mem=25000] span[hosts=1]\"\'
     }
   }
+  withName: \'selfDiamondGroup\' {
+    errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' }
+    clusterOptions = {
+      (task.attempt > 1 && task.exitStatus in 130..140)
+        ? \'-M 30000 -R \"rusage [mem=30000] span[hosts=1]\"\'
+        : \'-M 35000 -R \"rusage [mem=35000] span[hosts=1]\"\'
+    }
+  }
 }
 
 env {
