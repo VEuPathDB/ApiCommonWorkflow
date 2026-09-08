@@ -11,6 +11,8 @@ sub run {
   #NOTE: the subset size here would run "X" number of genomic sequences at a time on the cluster (chromosomes or contigs)
   my $fastaSubsetSize = 5;
 
+  my $queue = $self->getClusterQueue();
+  
   my $finalDir = $self->getParamValue("finalDirectory");
   my $resultsDirectory = $self->getParamValue("resultsDirectory");
   my $analysisDirectory = $self->getParamValue("analysisDirectory");
@@ -96,6 +98,7 @@ params {
 
 process {
   maxForks = $maxForks
+  queue = \'$queue\'
 }
 
 includeConfig "$clusterConfigFile"
