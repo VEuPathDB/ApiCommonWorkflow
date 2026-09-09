@@ -17,7 +17,26 @@ sub run {
   my $sequenceMapping = $self->getParamValue("sequenceMapping");
   my $diamondResultsFile = $self->getParamValue("diamondResultsFile");    
   my $buildVersion = $self->getSharedConfig("buildVersion");
-  my $residualBuildVersion = $self->getSharedConfig("residualBuildVersion");
+
+  # residualBuildVersion is normally a static, one-time-set shared config
+  # value (correct for the full-rebuild path, where postResidualEntry only
+  # ever runs once). The incremental path reuses postResidualEntry every
+  # run and needs a fresh, incremented value each time to avoid renumbering
+  # brand-new residual groups into an already-used r${N} namespace -- it
+  # passes residualBuildVersionFile (computed by ComputeNextResidualBuildVersion)
+  # to override the static value with this run's actual next one.
+  my $residualBuildVersionFile = $self->getParamValue("residualBuildVersionFile");
+  my $residualBuildVersion;
+  if ($residualBuildVersionFile) {
+    my $fullPath = join("/", $self->getWorkflowDataDir(), $residualBuildVersionFile);
+    open(my $fh, '<', $fullPath) || die "Could not open file $fullPath: $!";
+    $residualBuildVersion = <$fh>;
+    close($fh);
+    chomp $residualBuildVersion;
+    $residualBuildVersion =~ s/\s+//g;
+  } else {
+    $residualBuildVersion = $self->getSharedConfig("residualBuildVersion");
+  }
 
   my $resultsDirectory = $self->getParamValue("clusterResultDir");
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));

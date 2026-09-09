@@ -78,6 +78,20 @@
       <depends name="runOrthoIncrementalNextflowOnCluster"/>
     </step>
 
+    <!-- postResidualEntry numbers every brand-new residual group it creates starting
+         from OGR${buildVersion}r${residualBuildVersion}_0000001, using OrthoFinder's
+         own internal sequential numbering for whatever pool it just clustered; it has
+         no awareness of residual group IDs any earlier run already created. Fine for a
+         full rebuild (postResidualEntry only ever runs once); on the incremental path,
+         reusing postResidualEntry every run with a static residualBuildVersion would
+         renumber into an already-used namespace and collide head-on with existing
+         residual group IDs. Move to the next residualBuildVersion first so this run's
+         brand-new groups land in their own untouched namespace instead. -->
+    <step name="computeNextResidualBuildVersion" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ComputeNextResidualBuildVersion">
+      <paramValue name="cachedResidualBuildVersion">$$peripheralDir$$/cachedResidualBuildVersion.txt</paramValue>
+      <paramValue name="outputFile">$$peripheralDir$$/analysisDir/nextResidualBuildVersion.txt</paramValue>
+    </step>
+
     <!-- incrementalEntry's own internal call to residualWorkflow (clustering just the
          leftover unassigned sequences, X) publishes the exact same residualFasta.fa /
          Orthogroups.txt / SpeciesIDs.txt / SequenceIDs.txt / blastsFile.txt shape that
@@ -93,7 +107,9 @@
       <paramValue name="speciesMapping">$$peripheralDir$$/analysisDir/incrementalEntryResults/SpeciesIDs.txt</paramValue>
       <paramValue name="sequenceMapping">$$peripheralDir$$/analysisDir/incrementalEntryResults/SequenceIDs.txt</paramValue>
       <paramValue name="diamondResultsFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/blastsFile.txt</paramValue>
+      <paramValue name="residualBuildVersionFile">$$peripheralDir$$/analysisDir/nextResidualBuildVersion.txt</paramValue>
       <depends name="runOrthoIncrementalNextflowOnCluster"/>
+      <depends name="computeNextResidualBuildVersion"/>
     </step>
 
     <subgraph name="runOrthoFinderIncrementalPostResidualEntryNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">

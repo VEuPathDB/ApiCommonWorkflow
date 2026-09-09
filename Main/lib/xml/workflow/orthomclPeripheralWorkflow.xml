@@ -187,6 +187,17 @@
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
+  <!-- Baseline for computeNextResidualBuildVersion (orthoFinderIncremental.xml):
+       postResidualEntry numbers every brand-new residual group starting from
+       0000001 with no awareness of IDs created by an earlier run, so the
+       incremental path needs to know the last residualBuildVersion used in
+       order to move to the next one and avoid colliding with it. -->
+  <step name="copyPeripheralResidualBuildVersionForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
+    <paramValue name="fromFile">residualBuildVersion.txt</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/cachedResidualBuildVersion.txt</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
   <!-- Filters the full current peripheral proteome set down to just the organisms
        makeIncrementalGroups should actually reprocess (changed per outdated.txt, or
        brand new). Without this, the incremental path was diamond-searching and
@@ -231,6 +242,7 @@
     <depends name="copyPeripheralIntraGroupBlastFileForIncremental"/>
     <depends name="copyPeripheralResidualStatsForIncremental"/>
     <depends name="copyPeripheralIntraResidualGroupBlastFileForIncremental"/>
+    <depends name="copyPeripheralResidualBuildVersionForIncremental"/>
     <depends name="makeIncrementalChangedProteomesDir"/>
   </subgraph>
 
