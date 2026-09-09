@@ -1,0 +1,65 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Long;
+use File::Basename;
+
+=pod
+
+=head1 Description
+
+For the OrthoFinder incremental build path: touchedGroupFastas/ (a per-group fasta per
+touched group) is split from updatedStableGroups.txt before this run's group-ID rename
+pass runs, so its filenames ("<oldId>.fasta") still carry each touched group's pre-rename
+ID. Group fasta filenames matter downstream (they eventually feed the gene-tree workflow
+by group ID, which has to line up with whatever ID is actually in the database) -- so
+rename the files themselves here, using the same rename map applied to file content
+elsewhere. A file whose basename isn't in the map (an untouched group) is left alone.
+
+=head1 Input Parameters
+
+=over 4
+
+=item renameMap
+
+Tab-separated oldId\tnewId, one per touched group (from computeGroupIdRenameMap)
+
+=item dir
+
+Directory of "<groupId>.fasta" files to rename in place
+
+=back
+
+=cut
+
+my ($renameMap, $dir);
+
+&GetOptions("renameMap=s" => \$renameMap,
+            "dir=s" => \$dir);
+
+my %rename;
+open(my $mapFh, '<', $renameMap) || die "Could not open file $renameMap: $!";
+while (my $line = <$mapFh>) {
+    chomp $line;
+    next unless length($line);
+    my ($oldId, $newId) = split(/\t/, $line);
+    $rename{$oldId} = $newId;
+}
+close($mapFh);
+
+opendir(my $dh, $dir) || die "Could not open directory $dir: $!";
+my @files = grep { /\.fasta$/ } readdir($dh);
+closedir($dh);
+
+my $renamedCount = 0;
+foreach my $file (@files) {
+    my $id = basename($file, '.fasta');
+    if (exists $rename{$id}) {
+        rename("$dir/$file", "$dir/$rename{$id}.fasta")
+          || die "Could not rename $dir/$file to $dir/$rename{$id}.fasta: $!";
+        $renamedCount++;
+    }
+}
+
+print STDERR "renameGroupIdFastaFiles: renamed $renamedCount file(s) in $dir\n";

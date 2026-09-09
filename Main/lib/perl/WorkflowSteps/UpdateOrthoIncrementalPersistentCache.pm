@@ -65,6 +65,7 @@ sub run {
   my $proteinToOrganismFile = join("/", $workflowDataDir, $self->getParamValue("proteinToOrganismFile"));
   my $touchedGroupFastasDir = join("/", $workflowDataDir, $self->getParamValue("touchedGroupFastasDir"));
   my $residualGroupFastasDir = join("/", $workflowDataDir, $self->getParamValue("residualGroupFastasDir"));
+  my $groupIdRenameMapFile = join("/", $workflowDataDir, $self->getParamValue("groupIdRenameMapFile"));
 
   my $preprocessedDataCache = $self->getSharedConfig('preprocessedDataCache');
   my $orthoBuildVersion = $self->getSharedConfig('buildVersion');
@@ -162,7 +163,18 @@ sub run {
       $self->runCmd(0, "mkdir -p $cacheDir/groupFastas");
       $self->runCmd(0, "cp -r $touchedGroupFastasDir/*.fasta $cacheDir/groupFastas/ 2>/dev/null || true");
 
-      # Same reasoning: no brand-new residual groups this run is legitimate.
+      # touchedGroupFastas/ is split from updatedStableGroups.txt before this run's
+      # rename pass runs, so a touched group's fasta file is still named after its
+      # pre-rename ID. Group fasta filenames matter downstream (they eventually feed the
+      # gene-tree workflow by group ID, which has to line up with what's actually in the
+      # database), so rename the files themselves here, in the persistent cache -- the
+      # durable, canonical copy any future consumer should read from. residualGroupFastas
+      # needs no equivalent treatment: postResidualEntry's brand-new groups are split from
+      # the already offset-corrected reformattedGroups.txt, so their filenames already
+      # carry the correct final ID from birth.
+      $self->runCmd(0, "renameGroupIdFastaFiles --renameMap $groupIdRenameMapFile --dir $cacheDir/groupFastas");
+
+      # Same reasoning as groupFastas above: no brand-new residual groups this run is legitimate.
       $self->runCmd(0, "mkdir -p $cacheDir/residualGroupFastas");
       $self->runCmd(0, "cp -r $residualGroupFastasDir/*.fasta $cacheDir/residualGroupFastas/ 2>/dev/null || true");
 
