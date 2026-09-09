@@ -28,6 +28,7 @@ sub run {
 
     my $executor = $self->getClusterExecutor();
     my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
+    my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock();
     my $queue = $self->getClusterQueue();
 
     if ($undo) {
@@ -36,7 +37,7 @@ sub run {
 	open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
 
     print F
-"
+"$sharedClusterConfig
 params {
   fasta = \"$digestedFasta\"
   gff = \"$digestedGff\"

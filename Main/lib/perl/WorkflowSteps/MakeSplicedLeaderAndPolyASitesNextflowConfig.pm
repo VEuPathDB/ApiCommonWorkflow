@@ -37,6 +37,7 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $executor = $self->getClusterExecutor();
   my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
+  my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock();
 
   my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
@@ -77,7 +78,7 @@ process {
 
 NEXTFLOW
 
-      print F $configString . $lsfEnv;
+      print F $sharedClusterConfig . $configString . $lsfEnv;
       close(F);
   }
 }

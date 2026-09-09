@@ -42,6 +42,7 @@ sub run {
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $executor = $self->getClusterExecutor();
     my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
+    my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock();
     my $queue = $self->getClusterQueue();
 
     my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
@@ -52,7 +53,7 @@ sub run {
     } else {
         open(F, ">", $nextflowConfigFile) or die "$! :Can't open config file '$nextflowConfigFile' for writing";
         print F
-            "
+            "$sharedClusterConfig
 params {
     input = \"$digestedInputDirPath\"
     samplesheetFileName = \"$sampleSheet\"

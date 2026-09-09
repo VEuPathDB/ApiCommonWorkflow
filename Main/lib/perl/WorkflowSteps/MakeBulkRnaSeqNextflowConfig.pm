@@ -36,6 +36,7 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $executor = $self->getClusterExecutor();
   my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
+  my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock();
   my $queue = $self->getClusterQueue();
 
   my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
@@ -101,7 +102,7 @@ def check_max(obj, type) {
 
 NEXTFLOW
 
-      print F $configString . $lsfEnv;
+      print F $sharedClusterConfig . $configString . $lsfEnv;
       close(F);
   }
 }

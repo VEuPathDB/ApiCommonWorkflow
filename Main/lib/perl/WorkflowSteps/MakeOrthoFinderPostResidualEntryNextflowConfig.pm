@@ -33,6 +33,7 @@ sub run {
 
   my $executor = $self->getClusterExecutor();
   my $lsfScratch = ($executor eq 'lsf') ? "\n  NXF_SCRATCH = '\$LSF_TMPDIR'" : '';
+  my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock();
   my $queue = $self->getClusterQueue();
 
   if ($undo) {
@@ -41,7 +42,7 @@ sub run {
     open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
 
     print F
-"
+"$sharedClusterConfig
 params {
     outputDir = \"$resultsDirectoryInNextflowWorkingDirOnCluster\"
     residualFasta = \"$residualFastaInNextflowWorkingDirOnCluster\"

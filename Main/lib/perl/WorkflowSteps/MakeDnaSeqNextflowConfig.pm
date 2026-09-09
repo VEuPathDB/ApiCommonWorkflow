@@ -39,6 +39,7 @@ sub run {
     my $executor        = $self->getClusterExecutor();
     my $queue           = $self->getClusterQueue();
     my $lsfEnv          = $self->getNextflowLsfScratchEnvBlock();
+    my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock();
 
     my $genomeFastaFile = $self->getWorkflowDataDir() . "/" . $self->getParamValue("genomeFastaFile");
 
@@ -59,7 +60,7 @@ sub run {
         $self->runCmd(0, "rm -rf $nextflowConfigFile");
     } else {
         open(F, ">", $nextflowConfigFile) or die "$! :Can't open config file '$nextflowConfigFile' for writing";
-        print F "
+        print F "$sharedClusterConfig
 params {
   samplesheet              = \"$digestedSampleSheet\"
   bwaThreads               = $bwaThreads
