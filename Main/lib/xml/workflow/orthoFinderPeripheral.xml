@@ -73,7 +73,13 @@
     <paramValue name="speciesMapping">$$peripheralDir$$/analysisDir/residualEntryResults/SpeciesIDs.txt</paramValue>
     <paramValue name="sequenceMapping">$$peripheralDir$$/analysisDir/residualEntryResults/SequenceIDs.txt</paramValue>
     <paramValue name="diamondResultsFile">$$peripheralDir$$/analysisDir/residualEntryResults/blastsFile.txt</paramValue>
-    <depends name="runOrthoFinderResidualEntryNextflowOnCluster"/>    
+    <!-- Full rebuild: no incremental-run override, so residualBuildVersion/residualGroupNumberOffset
+         fall back to their static defaults (residualBuildVersion=1, offset=0); correct here, since
+         a full rebuild's own residual clustering is the only one that will ever run this build cycle,
+         with nothing yet existing to collide with. -->
+    <paramValue name="residualBuildVersionFile"></paramValue>
+    <paramValue name="residualGroupNumberOffsetFile"></paramValue>
+    <depends name="runOrthoFinderResidualEntryNextflowOnCluster"/>
   </step>
 
    <subgraph name="runOrthoFinderPostResidualEntryNextflowOnCluster" xmlFile="runOrthoNextflowOnCluster.xml">
