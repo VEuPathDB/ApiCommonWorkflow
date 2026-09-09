@@ -348,7 +348,24 @@ sub getClusterExecutor {
 sub getNextflowLsfScratchEnvBlock {
   my ($self) = @_;
   return '' unless $self->getClusterExecutor() eq 'lsf';
-  return "\nenv {\n  NXF_SCRATCH = '\$LSF_TMPDIR'\n}\n";
+  # LSF_TMPDIR isn't guaranteed to be exported by every LSF cluster/job; without the
+  # ':-' default this crashes under nextflow's own 'set -u' if it's ever unset.
+  return "\nenv {\n  NXF_SCRATCH = '\${LSF_TMPDIR:-}'\n}\n";
+}
+
+# Opt-in include of a shared, cluster-provided nextflow config file (e.g. one that sets
+# process { beforeScript = '...' } for module loads that shouldn't have to be repeated in
+# every Make*NextflowConfig.pm generator by hand). Reads $clusterServer.sharedNextflowConfig
+# from stepsShared.prop; if it isn't set, this is a silent no-op -- existing builds that
+# don't configure it are unaffected. If it is set, the returned line pulls that config in
+# via nextflow's own includeConfig directive, so a single shared file can add or change a
+# cluster-wide setting without touching every step class that generates a nextflow config.
+sub getSharedClusterNextflowConfigIncludeBlock {
+  my ($self) = @_;
+  my $clusterServer = $self->getSharedConfig('clusterServer');
+  my $path = $self->getSharedConfigRelaxed("$clusterServer.sharedNextflowConfig");
+  return '' unless $path;
+  return "includeConfig '$path'\n";
 }
 
 
