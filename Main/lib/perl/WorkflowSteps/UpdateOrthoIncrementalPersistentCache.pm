@@ -119,6 +119,11 @@ sub run {
       $self->runCmd(0, "cp -r $peripheralsFastaFile $cacheDir/peripherals.fasta");
 
       $self->runCmd(0, "cp -r $reformattedGroupsFile $cacheDir/");
+
+      # Re-derive the highest-OGR-number baseline from this run's own comprehensive,
+      # just-cached reformattedGroups.txt (same reasoning as the full-rebuild writer) --
+      # this run may have created brand-new residual groups, raising the bar for next time.
+      $self->runCmd(0, "findHighestResidualGroupNumber --input $cacheDir/reformattedGroups.txt > $cacheDir/highestResidualGroupNumber.txt");
       $self->runCmd(0, "cp -r $buildVersionFile $cacheDir/residualBuildVersion.txt");
 
       $self->runCmd(0, "mkdir -p $cacheDir/groupStats");

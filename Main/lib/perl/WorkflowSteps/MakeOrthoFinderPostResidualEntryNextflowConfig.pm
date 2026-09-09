@@ -38,6 +38,23 @@ sub run {
     $residualBuildVersion = $self->getSharedConfig("residualBuildVersion");
   }
 
+  # Same override pattern for the brand-new-residual-group numbering offset: 0 for the
+  # full-rebuild path (nothing yet exists to collide with), or the highest OGR number any
+  # earlier run has already used, computed by the incremental path via
+  # findHighestResidualGroupNumber against the cached baseline.
+  my $residualGroupNumberOffsetFile = $self->getParamValue("residualGroupNumberOffsetFile");
+  my $residualGroupNumberOffset;
+  if ($residualGroupNumberOffsetFile) {
+    my $fullPath = join("/", $self->getWorkflowDataDir(), $residualGroupNumberOffsetFile);
+    open(my $fh, '<', $fullPath) || die "Could not open file $fullPath: $!";
+    $residualGroupNumberOffset = <$fh>;
+    close($fh);
+    chomp $residualGroupNumberOffset;
+    $residualGroupNumberOffset =~ s/\s+//g;
+  } else {
+    $residualGroupNumberOffset = 0;
+  }
+
   my $resultsDirectory = $self->getParamValue("clusterResultDir");
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
 
@@ -70,6 +87,7 @@ params {
     diamondResultsFile = \"$diamondResultsFileInNextflowWorkingDirOnCluster\"
     buildVersion = $buildVersion
     residualBuildVersion = $residualBuildVersion
+    residualGroupNumberOffset = $residualGroupNumberOffset
 }
 
 process {

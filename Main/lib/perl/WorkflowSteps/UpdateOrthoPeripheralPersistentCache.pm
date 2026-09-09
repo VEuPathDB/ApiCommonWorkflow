@@ -74,6 +74,12 @@ sub run {
 
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/reformattedGroups.txt  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/");
 
+      # Baseline for the incremental path's group-ID numbering: the highest OGR numeric
+      # suffix this rebuild used, so a future incremental run's brand-new residual groups
+      # never reuse a number. A full rebuild has no earlier OGR IDs to collide with, but
+      # still has to seed this for whatever incremental run comes next.
+      $self->runCmd(0, "findHighestResidualGroupNumber --input ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/reformattedGroups.txt > ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/highestResidualGroupNumber.txt");
+
       # proteinToOrganism.tsv is published into diamondCache/ (orthoFinderSetup's publishDir in
       # orthoFinder-nextflow), not at the entry-results top level -- needs the same diamondCache/
       # prefix used above for SequenceIDs.txt/SpeciesIDs.txt on the core side.

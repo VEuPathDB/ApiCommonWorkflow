@@ -1,0 +1,63 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Long;
+
+=pod
+
+=head1 Description
+
+For the OrthoFinder incremental build path: given the list of groups touched this run
+(gained or lost a member -- both OG and OGR alike), compute each one's new ID. A touched
+group keeps its permanent numeric identity; only its subVersion ("r{N}") component moves
+to this run's newly-computed value, so a modified group's ID reflects that it changed as
+of this release without ever reusing another group's number.
+
+Untouched groups are not included in the output map at all -- their IDs never change.
+
+=head1 Input Parameters
+
+=over 4
+
+=item touchedGroups
+
+One group ID per line (old IDs, as they are before this run's rename)
+
+=item newSubVersion
+
+This run's newly-computed subVersion -- every touched group's "r{N}" component becomes
+this value
+
+=item output
+
+Tab-separated oldId\tnewId, one per touched group
+
+=back
+
+=cut
+
+my ($touchedGroups, $newSubVersion, $output);
+
+&GetOptions("touchedGroups=s" => \$touchedGroups,
+            "newSubVersion=i" => \$newSubVersion,
+            "output=s" => \$output);
+
+open(my $inFh, '<', $touchedGroups) || die "Could not open file $touchedGroups: $!";
+open(my $outFh, '>', $output) || die "Could not open file $output for writing: $!";
+
+while (my $line = <$inFh>) {
+    chomp $line;
+    next unless length($line);
+
+    my $newId = $line;
+    unless ($newId =~ s/r\d+_/r${newSubVersion}_/) {
+        die "Group ID '$line' in $touchedGroups doesn't match the expected "
+          . "OG/OGR\\d+r\\d+_\\d+ format -- can't compute its renumbered ID";
+    }
+
+    print $outFh "$line\t$newId\n";
+}
+
+close($inFh);
+close($outFh);

@@ -1,0 +1,109 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Long;
+
+=pod
+
+=head1 Description
+
+For the OrthoFinder incremental build path: apply a group-ID rename map (produced by
+computeGroupIdRenameMap) to any file keyed by group ID in its first field, rewriting just
+the group ID and leaving everything else on each line untouched. A line whose group ID
+isn't in the map (an untouched group) passes through byte-identical.
+
+Handles both shapes used across this pipeline's loader-facing files:
+
+  colon  "groupId: seq1 seq2 ...\n"                  (GroupsFile.txt, reformattedGroups.txt)
+  tsv    "groupId\tfield2\t...\n"                     (best-reps/stats/blast-values/previousGroups
+                                                        files -- most have the group ID only in
+                                                        column 1, but similar_groups.tsv has one in
+                                                        column 2 as well, hence --columns)
+
+=head1 Input Parameters
+
+=over 4
+
+=item renameMap
+
+Tab-separated oldId\tnewId, one per touched group (from computeGroupIdRenameMap)
+
+=item input
+
+=item format
+
+"colon" or "tsv" (see above)
+
+=item columns
+
+tsv only: comma-separated, 1-indexed tab-field positions that may contain a group ID
+(default "1"; similar_groups.tsv needs "1,2")
+
+=item output
+
+=back
+
+=cut
+
+my ($renameMap, $input, $format, $columnsArg, $output);
+
+&GetOptions("renameMap=s" => \$renameMap,
+            "input=s" => \$input,
+            "format=s" => \$format,
+            "columns=s" => \$columnsArg,
+            "output=s" => \$output);
+
+die "--format must be 'colon' or 'tsv'" unless $format eq 'colon' || $format eq 'tsv';
+
+$columnsArg ||= '1';
+my @columns = map { $_ - 1 } split(/,/, $columnsArg); # 1-indexed args -> 0-indexed array positions
+
+my %rename;
+open(my $mapFh, '<', $renameMap) || die "Could not open file $renameMap: $!";
+while (my $line = <$mapFh>) {
+    chomp $line;
+    next unless length($line);
+    my ($oldId, $newId) = split(/\t/, $line);
+    $rename{$oldId} = $newId;
+}
+close($mapFh);
+
+open(my $inFh, '<', $input) || die "Could not open file $input: $!";
+open(my $outFh, '>', $output) || die "Could not open file $output for writing: $!";
+
+my $renamedCount = 0;
+while (my $line = <$inFh>) {
+    if ($format eq 'colon') {
+        if ($line =~ /^([^:]+):(\s.*)?$/s) {
+            my ($id, $rest) = ($1, $2 // '');
+            if (exists $rename{$id}) {
+                $renamedCount++;
+                print $outFh "$rename{$id}:$rest";
+                next;
+            }
+        }
+        print $outFh $line;
+    }
+    else {
+        my $hadNewline = ($line =~ /\n$/);
+        chomp $line;
+        my @fields = split(/\t/, $line, -1);
+        my $lineRenamed = 0;
+        foreach my $col (@columns) {
+            next unless defined $fields[$col];
+            if (exists $rename{$fields[$col]}) {
+                $fields[$col] = $rename{$fields[$col]};
+                $lineRenamed = 1;
+            }
+        }
+        $renamedCount++ if $lineRenamed;
+        print $outFh join("\t", @fields);
+        print $outFh "\n" if $hadNewline;
+    }
+}
+
+close($inFh);
+close($outFh);
+
+print STDERR "renameGroupIds: renamed $renamedCount row(s) in $input\n";

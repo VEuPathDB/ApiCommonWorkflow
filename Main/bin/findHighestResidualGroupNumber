@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Long;
+
+=pod
+
+=head1 Description
+
+Scan an OGR-prefixed group file (reformattedGroups.txt shape: "OGR<buildVersion>r<subVersion>_<N>: ...")
+and print the highest numeric suffix N found, so a future run can allocate brand-new
+residual groups starting above it and never reuse a number. Prints 0 if the file has no
+OGR lines at all (e.g. a build with no residual groups yet).
+
+=head1 Input Parameters
+
+=over 4
+
+=item input
+
+=back
+
+=cut
+
+my ($input);
+
+&GetOptions("input=s" => \$input);
+
+open(my $inFh, '<', $input) || die "Could not open file $input: $!";
+
+my $highest = 0;
+while (my $line = <$inFh>) {
+    if ($line =~ /^OGR\d+r\d+_(\d+):/) {
+        my $number = $1 + 0; # numeric context strips leading zeros
+        $highest = $number if $number > $highest;
+    }
+}
+close($inFh);
+
+print "$highest\n";

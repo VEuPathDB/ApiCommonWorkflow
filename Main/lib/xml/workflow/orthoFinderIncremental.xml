@@ -108,6 +108,12 @@
       <paramValue name="sequenceMapping">$$peripheralDir$$/analysisDir/incrementalEntryResults/SequenceIDs.txt</paramValue>
       <paramValue name="diamondResultsFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/blastsFile.txt</paramValue>
       <paramValue name="residualBuildVersionFile">$$peripheralDir$$/analysisDir/nextResidualBuildVersion.txt</paramValue>
+      <!-- cachedHighestResidualGroupNumber.txt already holds "highest OGR number used so
+           far"; used directly as the offset (offsetResidualGroupIds.pl adds it to
+           OrthoFinder's own 1-indexed numbering, so the first brand-new group naturally
+           lands one past whatever was already used; no separate increment needed here,
+           unlike residualBuildVersion). -->
+      <paramValue name="residualGroupNumberOffsetFile">$$peripheralDir$$/cachedHighestResidualGroupNumber.txt</paramValue>
       <depends name="runOrthoIncrementalNextflowOnCluster"/>
       <depends name="computeNextResidualBuildVersion"/>
     </step>
@@ -297,6 +303,136 @@
       <depends name="concatenateIncrementalIntraResidualGroupBlastFile"/>
     </step>
 
+    <!-- A group that gained or lost a member this run (OG or OGR alike) keeps its
+         permanent numeric identity but moves to this run's subVersion, so its ID
+         reflects that it changed as of this release without ever reusing another
+         group's number. Compute the old-id -> new-id map once here, from
+         touchedGroups.txt (this run's own touched-group list, published by
+         identifyTouchedGroups) and the same newly-computed subVersion already used for
+         postResidualEntry's brand-new groups; then apply it, below, as the very last
+         step before every loader-facing/cache-facing file is finalized. Every step
+         upstream of this point (self-diamond, best-rep selection, stats, blast) keeps
+         operating on the *old* IDs exactly as it already does, so none of that upstream
+         cache-merge logic (mergeByGroupId.pl, mergeBestReps.pl) needs to change;
+         only the final, comprehensive copies get renamed. -->
+    <step name="computeGroupIdRenameMap" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ComputeGroupIdRenameMap">
+      <paramValue name="touchedGroups">$$peripheralDir$$/analysisDir/incrementalEntryResults/touchedGroups.txt</paramValue>
+      <paramValue name="newSubVersionFile">$$peripheralDir$$/analysisDir/nextResidualBuildVersion.txt</paramValue>
+      <paramValue name="outputFile">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <depends name="runOrthoIncrementalNextflowOnCluster"/>
+      <depends name="computeNextResidualBuildVersion"/>
+    </step>
+
+    <!-- Every group-ID-keyed file the loaders or the cache-update step below reads,
+         renamed in place. A line whose group ID isn't in the map (untouched this run)
+         passes through byte-identical, so this is safe even when nothing was touched. -->
+
+    <step name="renameGroupIdsGroupsFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
+      <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/GroupsFile.txt</paramValue>
+      <paramValue name="format">colon</paramValue>
+      <depends name="computeGroupIdRenameMap"/>
+      <depends name="copyIncrementalGroupsFileForLoaders"/>
+    </step>
+
+    <step name="renameGroupIdsReformattedGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
+      <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/reformattedGroups.txt</paramValue>
+      <paramValue name="format">colon</paramValue>
+      <depends name="computeGroupIdRenameMap"/>
+      <depends name="copyIncrementalReformattedGroupsForLoaders"/>
+    </step>
+
+    <step name="renameGroupIdsFullGroupFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
+      <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/postProcessingEntryResults/fullGroupFile.txt</paramValue>
+      <paramValue name="format">colon</paramValue>
+      <depends name="computeGroupIdRenameMap"/>
+      <depends name="runOrthoFinderIncrementalPostProcessingEntryNextflowOnCluster"/>
+    </step>
+
+    <step name="renameGroupIdsCoreStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
+      <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/groupStats/core_stats.txt</paramValue>
+      <paramValue name="format">tsv</paramValue>
+      <depends name="computeGroupIdRenameMap"/>
+      <depends name="copyIncrementalCoreStatsForLoaders"/>
+    </step>
+
+    <step name="renameGroupIdsPeripheralStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
+      <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/groupStats/peripheral_stats.txt</paramValue>
+      <paramValue name="format">tsv</paramValue>
+      <depends name="computeGroupIdRenameMap"/>
+      <depends name="copyIncrementalPeripheralStatsForLoaders"/>
+    </step>
+
+    <step name="renameGroupIdsResidualStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
+      <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/groupStats/residual_stats.txt</paramValue>
+      <paramValue name="format">tsv</paramValue>
+      <depends name="computeGroupIdRenameMap"/>
+      <depends name="copyIncrementalResidualStatsForLoaders"/>
+    </step>
+
+    <step name="renameGroupIdsIntraGroupBlastFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
+      <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/intraGroupBlastFile.tsv</paramValue>
+      <paramValue name="format">tsv</paramValue>
+      <depends name="computeGroupIdRenameMap"/>
+      <depends name="copyIncrementalIntraGroupBlastFileForLoaders"/>
+    </step>
+
+    <step name="renameGroupIdsIntraResidualGroupBlastFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
+      <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/postResidualEntryResults/intraResidualGroupBlastFile.tsv</paramValue>
+      <paramValue name="format">tsv</paramValue>
+      <depends name="computeGroupIdRenameMap"/>
+      <depends name="copyIncrementalIntraResidualGroupBlastFileForLoaders"/>
+    </step>
+
+    <step name="renameGroupIdsPreviousGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
+      <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/postProcessingEntryResults/previousGroups.txt</paramValue>
+      <paramValue name="format">tsv</paramValue>
+      <depends name="computeGroupIdRenameMap"/>
+      <depends name="runOrthoFinderIncrementalPostProcessingEntryNextflowOnCluster"/>
+    </step>
+
+    <!-- similar_groups.tsv is "groupId\tsimilarGroup\tevalue"; a group ID can appear
+         in either column, so both need checking (unlike every other file here, which
+         only ever has a group ID in column 1). -->
+    <step name="renameGroupIdsSimilarGroups" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
+      <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/postProcessingEntryResults/similar_groups.tsv</paramValue>
+      <paramValue name="format">tsv</paramValue>
+      <paramValue name="columns">1,2</paramValue>
+      <depends name="computeGroupIdRenameMap"/>
+      <depends name="runOrthoFinderIncrementalPostProcessingEntryNextflowOnCluster"/>
+    </step>
+
+    <!-- mergedCoreBestReps.txt/mergedResidualBestReps.txt are incrementalWorkflow's own
+         cache-merge outputs (cached-untouched-groups + freshly-recomputed-touched-groups,
+         all still in old-id space); these feed the persistent cache's own
+         coreBestReps.txt/residualBestReps.txt below, so a touched group's best-rep entry
+         has to carry its new ID or it would be orphaned (unmatchable by either its old or
+         new ID) the next time this cache is read back. -->
+    <step name="renameGroupIdsMergedCoreBestReps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
+      <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/mergedCoreBestReps.txt</paramValue>
+      <paramValue name="format">tsv</paramValue>
+      <depends name="computeGroupIdRenameMap"/>
+      <depends name="runOrthoIncrementalNextflowOnCluster"/>
+    </step>
+
+    <step name="renameGroupIdsMergedResidualBestReps" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
+      <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/mergedResidualBestReps.txt</paramValue>
+      <paramValue name="format">tsv</paramValue>
+      <depends name="computeGroupIdRenameMap"/>
+      <depends name="runOrthoIncrementalNextflowOnCluster"/>
+    </step>
+
     <!-- Refreshes officialDiamondCache with this run's results. Nothing else
          does; CopyPeripheralGroupsResultsFromCache.pm (in the parent graph)
          runs after this subgraph completes and unconditionally overwrites
@@ -331,13 +467,18 @@
       <paramValue name="proteinToOrganismFile">$$peripheralDir$$/analysisDir/incrementalEntryResults/proteinToOrganism.tsv</paramValue>
       <paramValue name="touchedGroupFastasDir">$$peripheralDir$$/analysisDir/incrementalEntryResults/touchedGroupFastas</paramValue>
       <paramValue name="residualGroupFastasDir">$$peripheralDir$$/analysisDir/postResidualEntryResults/residualGroupFastas</paramValue>
-      <depends name="copyIncrementalGroupsFileForLoaders"/>
-      <depends name="copyIncrementalCoreStatsForLoaders"/>
-      <depends name="copyIncrementalPeripheralStatsForLoaders"/>
-      <depends name="copyIncrementalIntraGroupBlastFileForLoaders"/>
-      <depends name="copyIncrementalResidualStatsForLoaders"/>
-      <depends name="copyIncrementalIntraResidualGroupBlastFileForLoaders"/>
-      <depends name="runOrthoFinderIncrementalPostProcessingEntryNextflowOnCluster"/>
+      <depends name="renameGroupIdsGroupsFile"/>
+      <depends name="renameGroupIdsReformattedGroups"/>
+      <depends name="renameGroupIdsFullGroupFile"/>
+      <depends name="renameGroupIdsCoreStats"/>
+      <depends name="renameGroupIdsPeripheralStats"/>
+      <depends name="renameGroupIdsResidualStats"/>
+      <depends name="renameGroupIdsIntraGroupBlastFile"/>
+      <depends name="renameGroupIdsIntraResidualGroupBlastFile"/>
+      <depends name="renameGroupIdsPreviousGroups"/>
+      <depends name="renameGroupIdsSimilarGroups"/>
+      <depends name="renameGroupIdsMergedCoreBestReps"/>
+      <depends name="renameGroupIdsMergedResidualBestReps"/>
     </step>
 
 </workflowGraph>

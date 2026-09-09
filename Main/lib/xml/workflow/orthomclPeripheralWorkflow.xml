@@ -198,6 +198,15 @@
     <depends name="checkOrthoFinderRebuildMode"/>
   </step>
 
+  <!-- Baseline for the incremental path's brand-new-residual-group numbering: the
+       highest OGR numeric suffix any earlier run (full rebuild or incremental) has
+       already used, so this run's brand-new groups never reuse a number. -->
+  <step name="copyPeripheralResidualGroupNumberForIncremental" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralCacheFile" skipIfFile="$$peripheralDir$$/skipIncremental">
+    <paramValue name="fromFile">highestResidualGroupNumber.txt</paramValue>
+    <paramValue name="toFile">$$peripheralDir$$/cachedHighestResidualGroupNumber.txt</paramValue>
+    <depends name="checkOrthoFinderRebuildMode"/>
+  </step>
+
   <!-- Filters the full current peripheral proteome set down to just the organisms
        makeIncrementalGroups should actually reprocess (changed per outdated.txt, or
        brand new). Without this, the incremental path was diamond-searching and
@@ -243,6 +252,7 @@
     <depends name="copyPeripheralResidualStatsForIncremental"/>
     <depends name="copyPeripheralIntraResidualGroupBlastFileForIncremental"/>
     <depends name="copyPeripheralResidualBuildVersionForIncremental"/>
+    <depends name="copyPeripheralResidualGroupNumberForIncremental"/>
     <depends name="makeIncrementalChangedProteomesDir"/>
   </subgraph>
 
