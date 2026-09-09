@@ -36,6 +36,7 @@ sub run {
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $executor = $self->getClusterExecutor();
     my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
+    my $queue = $self->getClusterQueue();
     my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
     if ($undo) {
@@ -59,6 +60,7 @@ params {
   nonTaxaShortPeptideCutoff = $nonTaxaShortPeptideCutoff
 }
 process {
+  queue = '$queue'
   maxForks = $maxForks
 
   withName: 'epitopeMapping:smallExactPepMatch:preprocess' {

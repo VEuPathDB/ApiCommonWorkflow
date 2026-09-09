@@ -56,6 +56,7 @@ params {
 }
 
 process {
+    queue = '$queue'
     maxForks = $maxForks
 
     withName: runBlat {

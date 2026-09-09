@@ -22,6 +22,7 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $executor = $self->getClusterExecutor();
   my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
+  my $queue = $self->getClusterQueue();
 
   my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
@@ -41,6 +42,10 @@ params {
   outputFileName = "$outputFileName"
   fastaSubsetSize = $fastaSubsetSize
   seqType = "aa"
+}
+
+process {
+  queue = '$queue'
 }
 
 includeConfig "$clusterConfigFile"

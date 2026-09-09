@@ -39,6 +39,7 @@ sub run {
 
     my $executor = $self->getClusterExecutor();
     my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
+    my $queue = $self->getClusterQueue();
     my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
     my $organismAbbrev = $self->getParamValue('organismAbbrev');
@@ -74,6 +75,7 @@ params {
 }
 
 process{
+  queue = '$queue'
   maxForks = $maxForks
 }
 
