@@ -59,7 +59,8 @@ sub run {
         $self->runCmd(0, "rm -rf $nextflowConfigFile");
     } else {
         open(F, ">", $nextflowConfigFile) or die "$! :Can't open config file '$nextflowConfigFile' for writing";
-        print F "
+        my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($nextflowConfigFile);
+        print F "$sharedClusterConfig
 params {
   samplesheet              = \"$digestedSampleSheet\"
   bwaThreads               = $bwaThreads

@@ -40,6 +40,7 @@ sub run {
 	$self->runCmd(0,"rm -rf $configPath");
     } else {
 	open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
+	my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($configPath);
 
       my $queryFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $seqFile);
       my $databaseInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $databasePath);
@@ -67,7 +68,7 @@ process {
 includeConfig "$clusterConfigFile"
 NEXTFLOW
 
-    print F $configString . $lsfEnv;
+    print F $sharedClusterConfig . $configString . $lsfEnv;
     close(F);
     }
 }

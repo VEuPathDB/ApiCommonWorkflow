@@ -16,15 +16,16 @@ sub run {
   my $footprintFile = join("/", $workflowDataDir, $self->getParamValue("footprintFile"));
   my $ploidy = $self->getParamValue("ploidy");
   my $taxonId = $self->getParamValue("taxonId");
-  my $outputDir = join("/", $workflowDataDir, $self->getParamValue("clusterResultDir"));   
+  my $outputDir = join("/", $workflowDataDir, $self->getParamValue("clusterResultDir"));
 
   if ($undo) {
     $self->runCmd(0,"rm -rf $configPath");
   } else {
     open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
+    my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($configPath);
 
     print F
-"
+"$sharedClusterConfig
 params {
   input = \"$input\"
   outputDir = \"$outputDir\"

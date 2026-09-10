@@ -60,6 +60,7 @@ sub run {
 	$self->runCmd(0,"rm -rf $configPath");
     } else {
 	open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
+	my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($configPath);
 
     my $configString = <<NEXTFLOW;
 params {
@@ -87,7 +88,7 @@ singularity {
 
 
 NEXTFLOW
-    print F $configString . $lsfEnv;
+    print F $sharedClusterConfig . $configString . $lsfEnv;
     close(F);
 
     }

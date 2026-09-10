@@ -31,6 +31,7 @@ sub run {
   } else {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open nextflow config file '$nextflowConfig' for writing";
+      my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($nextflowConfig);
 
       my $configString = <<NEXTFLOW;
 params {
@@ -48,7 +49,7 @@ includeConfig "$baseConfigFile"
 
 NEXTFLOW
 
-      print F $configString;
+      print F $sharedClusterConfig . $configString;
       close(F);
   }
 }
