@@ -33,7 +33,7 @@ sub run {
 
   my $executor = $self->getClusterExecutor();
   my $lsfScratch = ($executor eq 'lsf') ? "\n  NXF_SCRATCH = '\$LSF_TMPDIR'" : '';
-  my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock();
+  my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($analysisDir, $workingDirRelativePath);
   my $queue = $self->getClusterQueue();
 
   if ($undo) {

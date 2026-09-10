@@ -353,19 +353,36 @@ sub getNextflowLsfScratchEnvBlock {
   return "\nenv {\n  NXF_SCRATCH = '\${LSF_TMPDIR:-}'\n}\n";
 }
 
-# Opt-in include of a shared, cluster-provided nextflow config file (e.g. one that sets
+# Opt-in include of a shared nextflow config file (e.g. one that sets
 # process { beforeScript = '...' } for module loads that shouldn't have to be repeated in
-# every Make*NextflowConfig.pm generator by hand). Reads $clusterServer.sharedNextflowConfig
-# from stepsShared.prop; if it isn't set, this is a silent no-op -- existing builds that
-# don't configure it are unaffected. If it is set, the returned line pulls that config in
-# via nextflow's own includeConfig directive, so a single shared file can add or change a
-# cluster-wide setting without touching every step class that generates a nextflow config.
+# every Make*NextflowConfig.pm generator by hand).
+#
+# The file lives on the workflow server (yew), not the cluster, so which cluster actually
+# runs the processing can change without moving it. It is symlinked into the run's
+# analysisDir here; CopyNextflowWorkingDirToCluster later carries analysisDir to the
+# cluster with 'tar cfh', whose -h dereferences the symlink into real content there. The
+# returned line then points includeConfig at that file's cluster-side path, translated the
+# same way every other path these generators emit is.
+#
+# Reads the flat 'sharedNextflowConfig' key from stepsShared.prop (via getSharedConfigRelaxed,
+# so unset is a silent no-op -- existing builds are unaffected). $analysisDir and
+# $workingDirRelativePath are the calling generator's own locals; a caller that doesn't
+# have them (i.e. can't place the symlink) also gets a silent no-op.
 sub getSharedClusterNextflowConfigIncludeBlock {
-  my ($self) = @_;
-  my $clusterServer = $self->getSharedConfig('clusterServer');
-  my $path = $self->getSharedConfigRelaxed("$clusterServer.sharedNextflowConfig");
-  return '' unless $path;
-  return "includeConfig '$path'\n";
+  my ($self, $analysisDir, $workingDirRelativePath) = @_;
+
+  my $sharedPath = $self->getSharedConfigRelaxed('sharedNextflowConfig');
+  return '' unless $sharedPath;
+  return '' unless $analysisDir && $workingDirRelativePath;
+
+  $self->error("sharedNextflowConfig '$sharedPath' does not exist on the workflow server")
+    unless -e $sharedPath;
+
+  my $localLink = join("/", $self->getWorkflowDataDir(), $analysisDir, "sharedNextflow.config");
+  $self->runCmd(0, "ln -sfn $sharedPath $localLink");
+
+  my $clusterPath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, "$analysisDir/sharedNextflow.config");
+  return "includeConfig '$clusterPath'\n";
 }
 
 
