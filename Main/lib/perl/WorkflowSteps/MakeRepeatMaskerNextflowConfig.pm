@@ -39,7 +39,6 @@ sub run {
 
     my $executor = $self->getClusterExecutor();
     my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
-    my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock();
     my $queue = $self->getClusterQueue();
     my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
@@ -61,6 +60,7 @@ sub run {
 	$self->runCmd(0,"rm -rf $configPath");
     } else {
 	open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
+	my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($configPath);
 
     my $configString = <<NEXTFLOW;
 params {

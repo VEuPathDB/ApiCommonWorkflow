@@ -38,7 +38,6 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $executor = $self->getClusterExecutor();
   my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
-  my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock();
 
   my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
@@ -47,6 +46,7 @@ sub run {
   } else {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
+      my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($nextflowConfig);
 
       my $configString = <<NEXTFLOW;
 params {

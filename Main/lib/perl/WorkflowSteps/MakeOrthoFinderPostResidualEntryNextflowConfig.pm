@@ -33,13 +33,13 @@ sub run {
 
   my $executor = $self->getClusterExecutor();
   my $lsfScratch = ($executor eq 'lsf') ? "\n  NXF_SCRATCH = '\$LSF_TMPDIR'" : '';
-  my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($analysisDir, $workingDirRelativePath);
   my $queue = $self->getClusterQueue();
 
   if ($undo) {
     $self->runCmd(0,"rm -rf $configPath");
   } else {
     open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
+    my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($configPath);
 
     print F
 "$sharedClusterConfig

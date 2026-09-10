@@ -24,7 +24,6 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $baseConfigFile = "\$baseDir/conf/singularity.config";
-  my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock();
 
   # Determine the input file based on platform mapping (logic from DoStudyAssayResults)
   my $inputFile;
@@ -56,6 +55,7 @@ sub run {
   } else {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open nextflow config file '$nextflowConfig' for writing";
+      my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($nextflowConfig);
 
       my $configString = <<NEXTFLOW;
 params {

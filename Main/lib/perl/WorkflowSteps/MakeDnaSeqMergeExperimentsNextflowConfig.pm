@@ -63,9 +63,8 @@ sub run {
   my @experimentConfigs = glob($experimentConfigGlob);
   my $ploidy = parsePloidyFromConfigs(@experimentConfigs);
 
-  my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock();
-
   open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
+  my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($configPath);
   print F
 "$sharedClusterConfig
 params {

@@ -25,13 +25,13 @@ sub run {
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $baseConfigFile = "\$baseDir/conf/singularity.config";
-  my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock();
 
   if ($undo) {
       $self->runCmd(0, "rm $workflowDataDir/$nextflowConfigFile");
   } else {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open nextflow config file '$nextflowConfig' for writing";
+      my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($nextflowConfig);
 
       my $configString = <<NEXTFLOW;
 params {
