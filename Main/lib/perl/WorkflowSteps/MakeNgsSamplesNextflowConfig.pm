@@ -11,6 +11,8 @@ sub run {
   #NOTE: the subset size here would run "X" number of genomic sequences at a time on the cluster (chromosomes or contigs)
   my $fastaSubsetSize = 5;
 
+  my $queue = $self->getClusterQueue();
+  
   my $finalDir = $self->getParamValue("finalDirectory");
   my $resultsDirectory = $self->getParamValue("resultsDirectory");
   my $analysisDirectory = $self->getParamValue("analysisDirectory");
@@ -18,7 +20,7 @@ sub run {
   my $nextflowConfigFile = $self->getParamValue("nextflowConfigFile");
   my $sampleSheetName = $self->getParamValue("sampleSheetName");
   my $assayType = $self->getParamValue("assayType");
-  my $organismAbbrev = $self->getParamValue('organismAbbrev');
+  my $genomeFile = $self->getParamValue("genomeFile");
   my $fromSRA = $self->getBooleanParamValue("fromSRA") ? "true" : "false";
 
   # Max SRA file size prefetch will download. If a data load fails because prefetch
@@ -26,14 +28,21 @@ sub run {
   # config on the cluster and re-run (default sra-tools limit is 20G).
   my $maxDownloadSize = "50G";
 
-  my $gusConfig = $self->getWorkflowDataDir() . "/" . $self->getParamValue('gusConfigFile');
-  my $genomeSize = $self->getGenomeSize($test, $organismAbbrev, $gusConfig);
+  # Depth gate. minOnTargetFraction doubles as the inflation cap: a 0.05 floor means a
+  # contaminated sample is asked for at most 20x the reads a clean one would get.
+  # Below minPlausibleFraction the sample is flagged as probably-wrong-genome, not failed.
+  my $targetCoverage = 60;
+  my $minOnTargetFraction = 0.05;
+  my $minPlausibleFraction = 0.01;
+  my $pilotSize = 100000;
+
   my $workflowDataDir = $self->getWorkflowDataDir();
 
   my $workingDirRelativePath = $self->getParamValue("workingDirRelativePath");
   my $digestedFinalDirPath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $finalDir);
   my $digestedAnalysisDirPath = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $analysisDirectory);
   my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
+  my $digestedReferenceFasta = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $genomeFile);
 
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
@@ -79,14 +88,18 @@ params {
   samplesheetName = "$sampleSheetName"
   fromSra = $fromSRA
   outDir = "$digestedOutputDir"
-  genomeSize = $genomeSize
+  referenceFasta = "$digestedReferenceFasta"
   assayType = "$assayType"
+  targetCoverage = $targetCoverage
+  minOnTargetFraction = $minOnTargetFraction
+  minPlausibleFraction = $minPlausibleFraction
+  pilotSize = $pilotSize
   maxDownloadSize = "$maxDownloadSize"
 }
 
 process {
-  queue = '$queue'
   maxForks = $maxForks
+  queue = \'$queue\'
 }
 
 includeConfig "$clusterConfigFile"
