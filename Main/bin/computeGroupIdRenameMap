@@ -22,7 +22,13 @@ Untouched groups are not included in the output map at all -- their IDs never ch
 
 =item touchedGroups
 
-One group ID per line (old IDs, as they are before this run's rename)
+One group ID per line (old IDs, as they are before this run's rename). Normally already
+carries an "r{N}" subVersion component (OG/OGR<buildVersion>r<subVersion>_<N>) from a prior
+pass through this rename step or from reformatGroupsFile.pl's full-rebuild output -- but a
+group that predates the subVersion scheme entirely and has never been touched since (no
+prior rename computed for it) can still be in the old bare OG/OGR<buildVersion>_<N> form.
+Such a group is treated as if its subVersion had never been set, and gets one for the first
+time here.
 
 =item newSubVersion
 
@@ -51,9 +57,10 @@ while (my $line = <$inFh>) {
     next unless length($line);
 
     my $newId = $line;
-    unless ($newId =~ s/r\d+_/r${newSubVersion}_/) {
+    unless ($newId =~ s/r\d+_/r${newSubVersion}_/
+            || $newId =~ s/^(OGR?\d+)_/${1}r${newSubVersion}_/) {
         die "Group ID '$line' in $touchedGroups doesn't match the expected "
-          . "OG/OGR\\d+r\\d+_\\d+ format -- can't compute its renumbered ID";
+          . "OG/OGR\\d+[r\\d+]_\\d+ format -- can't compute its renumbered ID";
     }
 
     print $outFh "$line\t$newId\n";
