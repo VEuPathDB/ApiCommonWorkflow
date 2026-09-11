@@ -96,10 +96,8 @@ sub run {
 
       $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/similar_groups.tsv  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/");
 
-      # geneTrees is only produced by postProcessingEntry (part of the full-rebuild chain --
-      # createGeneTrees is never called from the incremental entry at all), so it genuinely
-      # doesn't exist to copy on the incremental path -- tolerate that instead of hard-failing.
-      $self->runCmd(0, "cp -r ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/${nextflowWorkflow}_${nextflowBranch}/**/geneTrees  ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/officialDiamondCache/ 2>/dev/null || true");
+      # Gene trees are not part of this cache: they're either generated dynamically by the
+      # website or produced by a separate nextflow workflow that runs outside ReFlow entirely.
 
       $self->runCmd(0, "rm -rf ${preprocessedDataCache}/OrthoMCL/OrthoMCL_peripheralGroups/genesAndProteins/");
 
