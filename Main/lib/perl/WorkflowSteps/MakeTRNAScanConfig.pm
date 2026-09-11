@@ -4,7 +4,6 @@ package ApiCommonWorkflow::Main::WorkflowSteps::MakeTRNAScanConfig;
 
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
-use File::Basename;
 
 sub run {
   my ($self, $test, $undo) = @_;
@@ -22,8 +21,8 @@ sub run {
   # Retain only tRNAscan-SE's high confidence set (EukHighConfidenceFilter).
   my $applyHighConfFilter = "true";
 
-  # The input is RepeatMasker's soft-masked genome, so have the pipeline convert
-  # the lowercase (repeat) bases to N before scanning.
+  # Leave the soft-masked (lowercase) repeat bases as they are rather than
+  # converting them to N.  Not every organism has a masked genome to begin with.
   # TODO:  this could be made a step param if we need to change it per genome
   my $applyHardMask = "false";
 
@@ -35,28 +34,6 @@ sub run {
 
   # Infernal score cutoff, used only when applyHighConfFilter is false
   my $minInfScore = 60;
-
-  # ----------------------------------------------------------------------------
-  # TODO TEMPORARY - remove at the next full rebuild.
-  #
-  # tRNAscan must run on the RepeatMasked genome, but the trnascan graph lives in
-  # postLoadGenome, which has no dependency on maskGenome.  The real fix is to
-  # move the trnascan subgraph out of postLoadGenome to a point that depends on
-  # the repeat masked genome.  We can't do that now: changing the graph would
-  # invalidate many downstream genome steps in workflows that have already run.
-  #
-  # Until then we ignore the genomicSequenceFile param, symlink the RepeatMasked
-  # genome next to it, and hand the symlink to nextflow.
-  #
-  # Consequence of the missing dependency: nothing guarantees the masked genome
-  # exists when this step runs.  If it doesn't, we fail below and the step must be
-  # rerun once maskGenome has produced blocked.seq.
-  # ----------------------------------------------------------------------------
-  my $maskedGenomeFile = $genomicSequenceFile;
-  $maskedGenomeFile =~ s|/postLoadGenome/.*|/maskGenome/analysisDir/results/blocked.seq|
-    or $self->error("Cannot derive the RepeatMasked genome path from genomicSequenceFile '$genomicSequenceFile': expected a path under postLoadGenome");
-
-  my $maskedGenomeSymLink = dirname($genomicSequenceFile) . "/genome_masked.fasta";
 
   my $workflowDataDir = $self->getWorkflowDataDir();
 
@@ -74,16 +51,9 @@ sub run {
 
   if ($undo) {
       $self->runCmd(0, "rm $workflowDataDir/$nextflowConfigFile");
-      $self->runCmd(0, "rm -f $workflowDataDir/$maskedGenomeSymLink");
   } else {
 
-    # see the TEMPORARY note above
-    $self->error("The RepeatMasked genome '$workflowDataDir/$maskedGenomeFile' does not exist yet.  Rerun this step after maskGenome has made blocked.seq for this organism.")
-      unless -e "$workflowDataDir/$maskedGenomeFile";
-
-    $self->runCmd(0, "ln -sf $workflowDataDir/$maskedGenomeFile $workflowDataDir/$maskedGenomeSymLink");
-
-    my $genomicSequenceFileOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $maskedGenomeSymLink);
+    my $genomicSequenceFileOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $genomicSequenceFile);
     my $resultsDirectoryOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
     my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";

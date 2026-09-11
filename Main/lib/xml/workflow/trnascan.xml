@@ -4,6 +4,8 @@
   <param name="projectName"/>
   <param name="organismAbbrev"/>
   <param name="genomicSequenceFile"/>
+  <!-- tRNAscan prefers the RepeatMasked (soft masked) genome; not every organism has one -->
+  <param name="maskedGenomicSequenceFile"/>
   <param name="genomeExtDbRlsSpec"/>
   <param name="relativeWebServicesDir"/>
 
@@ -12,7 +14,7 @@
   <constant name="analysisDirectory">$$dataDir$$/analysisDir</constant>
   <constant name="resultsDirectory">$$analysisDirectory$$/results</constant>
 
-  <constant name="genomeSymLink">$$dataDir$$/genome.fasta</constant>
+  <constant name="genomeSymLink">$$dataDir$$/genomeInput.fasta</constant>
 
 
   <step name="makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
@@ -29,8 +31,9 @@
      <depends name="makeAnalysisDir"/>
   </step>
 
-  <step name="symLinkGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkDataDirFile">
-    <paramValue name="fromFile">$$genomicSequenceFile$$</paramValue>
+  <step name="symLinkGenome" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::SymLinkMaskedGenomeFile">
+    <paramValue name="maskedGenomeFile">$$maskedGenomicSequenceFile$$</paramValue>
+    <paramValue name="unmaskedGenomeFile">$$genomicSequenceFile$$</paramValue>
     <paramValue name="toFile">$$genomeSymLink$$</paramValue>
     <depends name="makeDataDir"/>
   </step>
