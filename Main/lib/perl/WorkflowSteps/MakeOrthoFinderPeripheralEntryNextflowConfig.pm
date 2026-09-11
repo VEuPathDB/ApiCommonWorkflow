@@ -71,6 +71,12 @@ process {
         : \'-M 25000 -R \"rusage [mem=25000] span[hosts=1]\"\'
     }
   }
+  withName: \'selfDiamondGroup\' {
+    // Matches the --threads 1 pinned in selfDiamondGroup.bash: without an
+    // explicit cpus request here, diamond's own auto-detected thread count
+    // (every core on the node) had nothing to line up against.
+    cpus = 1
+  }
 }
 
 env {
