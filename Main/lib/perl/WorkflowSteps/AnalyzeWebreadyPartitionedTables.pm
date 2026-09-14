@@ -2,7 +2,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::AnalyzeWebreadyPartitionedTables
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 
-# create a child partition table
+# analyze the parent tables of the partitioned webready tables
 
 use strict;
 use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
@@ -10,14 +10,10 @@ use ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 sub run {
   my ($self, $test, $undo) = @_;
 
-  my $gusConfigFile = $self->getParamValue('gusConfigFile');
-
-  $gusConfigFile = $self->getWorkflowDataDir() . "/$gusConfigFile";
-
   my $schema = $self->getSharedConfig('webreadySchema');
 
   my $args = "--schema $schema";
-  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::CreateDenormalizedTable", $args);
+  $self->runPlugin($test, $undo, "ApiCommonData::Load::Plugin::AnalyzePartitionedTables", $args);
 
 }
 
