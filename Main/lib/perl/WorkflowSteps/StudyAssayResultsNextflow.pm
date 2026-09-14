@@ -20,8 +20,14 @@ sub nextflowConfigAsString {
 
     my $resultsDirectory = $self->getResultsDirectory();
 
+    # RunNextflow::run() always writes this sub's return value to
+    # $workingDirectory/nextflow.config, so that's the path to anchor the shared
+    # config's sibling symlink to, even though run() hasn't written the file yet.
+    my $workingDirectory = $self->getWorkingDirectory();
+    my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock("$workingDirectory/nextflow.config");
+
     my $configString = <<NEXTFLOW;
-params {
+${sharedClusterConfig}params {
   analysisConfigFile = "$workflowDataDir/$analysisConfigFile"
   finalDir = "$workflowDataDir/$finalDir"
   outputDirectory = "$resultsDirectory"

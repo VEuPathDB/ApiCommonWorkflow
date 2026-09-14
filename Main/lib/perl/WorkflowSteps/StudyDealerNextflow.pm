@@ -53,9 +53,14 @@ sub nextflowConfigAsString {
     my $inputDirectory = $self->getParamValue("inputDirectory");
 
     my $gusHomeDir = $ENV{GUS_HOME};
-    
+
+    # RunNextflow::run() always writes this sub's return value to
+    # $workingDirectory/nextflow.config, so that's the path to anchor the shared
+    # config's sibling symlink to, even though run() hasn't written the file yet.
+    my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock("$workingDirectory/nextflow.config");
+
       my $configString = <<NEXTFLOW;
-params {
+${sharedClusterConfig}params {
     gusConfigFile = "${workflowDataDir}/${gusConfigFile}"
     gusHomeDir = "$gusHomeDir"
     workflowDataDir = "$workflowDataDir"

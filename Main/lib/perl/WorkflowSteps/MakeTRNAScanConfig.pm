@@ -88,9 +88,10 @@ sub run {
 
     my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
     open(F, ">$nextflowConfig") || die "Cannot open '$nextflowConfig' for writing\n";
+    my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($nextflowConfig);
 
     print F <<NEXTFLOW;
-params {
+${sharedClusterConfig}params {
   inputFilePath = "$genomicSequenceFileOnCluster"
   outputDir = "$resultsDirectoryOnCluster"
   outputFileName = "$trnascanOutputFileName"

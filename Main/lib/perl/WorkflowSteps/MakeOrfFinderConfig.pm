@@ -31,6 +31,7 @@ sub run {
   } else {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
+      my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($nextflowConfig);
       my $genomicSequenceFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $genomicSequenceFile);
       my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
@@ -51,7 +52,7 @@ includeConfig "$clusterConfigFile"
 
 NEXTFLOW
 
-      print F $configString;
+      print F $sharedClusterConfig . $configString;
       close(F);
   }
 }
