@@ -71,7 +71,18 @@
     <paramValue name="residualGroupsFile">$$dataDir$$/peripheralGroups/analysisDir/postResidualEntryResults/reformattedGroups.txt</paramValue>
     <paramValue name="fullGroupFile">$$dataDir$$/peripheralGroups/analysisDir/postProcessingEntryResults/fullGroupFile.txt</paramValue>
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
-    <dependsGlobal name="insertGroupTaxonMatrix"/>
+    <!-- Was <dependsGlobal name="insertGroupTaxonMatrix"/>; insertGroupTaxonMatrix is an
+         ordinary step in OrthoMCLDependent.xml (not global.xml), so dependsGlobal could
+         never resolve it, and OrthoMCLDependent doesn't even start until this whole
+         OrthoMCLPeripheral graph finishes, so dependsExternal couldn't either (that
+         direction is unsatisfiable, unlike insertGroupTaxonMatrix's own dependsExternal on
+         insertProteinKeywords). MakeDownloadFiles.pm reads apidb.orthologgroupaasequence,
+         apidb.interproresults, and apidb.organism/orthomclresource; nothing from
+         apidb.orthologgrouptaxon (what insertGroupTaxonMatrix populates), so there was no
+         real data dependency here, just a stale edge. Kept this step in its place in the
+         chain via a real dependency on the step immediately before it instead of leaving it
+         with none. -->
+    <depends name="insertProteinKeywords"/>
   </step>
 
   <step name="makeInterproDownloadFile" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::MakeOrthoInterproDownloadFile">
