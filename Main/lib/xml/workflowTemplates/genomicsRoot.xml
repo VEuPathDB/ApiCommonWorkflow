@@ -140,22 +140,11 @@
   </subgraph>
 
   <!-- the partitioned parent tables are never analyzed by the per organism steps;
-       do it once all organism webready tables exist so clones inherit the stats -->
+       do it once every partitioned webready table exists, org specific and comparative,
+       so clones inherit the stats -->
   <step name="analyzeWebreadyPartitionedTables" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AnalyzeWebreadyPartitionedTables">
     <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
-    <depends name="PlasmoDB"/>
-    <depends name="ToxoDB"/>
-    <depends name="TriTrypDB"/>
-    <depends name="VectorBase"/>
-    <depends name="AmoebaDB"/>
-    <depends name="CryptoDB"/>
-    <depends name="FungiDB"/>
-    <depends name="PiroplasmaDB"/>
-    <depends name="GiardiaDB"/>
-    <depends name="MicrosporidiaDB"/>
-    <depends name="TrichDB"/>
-    <depends name="HostDB"/>
-    <depends name="HelminthDB"/>
+    <depends name="MakeComparativeWebTables"/>
   </step>
 
 </workflowGraph>
