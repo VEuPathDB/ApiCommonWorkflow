@@ -54,13 +54,14 @@ sub nextflowConfigAsString {
 
     my $gusHomeDir = $ENV{GUS_HOME};
 
-    # RunNextflow::run() always writes this sub's return value to
-    # $workingDirectory/nextflow.config, so that's the path to anchor the shared
-    # config's sibling symlink to, even though run() hasn't written the file yet.
-    my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock("$workingDirectory/nextflow.config");
+    # Deliberately NOT calling getSharedClusterNextflowConfigIncludeBlock() here.
+    # RunNextflow::run() execs nextflow directly (no ssh, no bsub) on whatever host
+    # the ReFlow controller itself runs on -- this pipeline never dispatches to a
+    # compute cluster, so the shared config's cluster-only setup (module load
+    # apptainer) doesn't apply and breaks the run when included.
 
       my $configString = <<NEXTFLOW;
-${sharedClusterConfig}params {
+params {
     gusConfigFile = "${workflowDataDir}/${gusConfigFile}"
     gusHomeDir = "$gusHomeDir"
     workflowDataDir = "$workflowDataDir"

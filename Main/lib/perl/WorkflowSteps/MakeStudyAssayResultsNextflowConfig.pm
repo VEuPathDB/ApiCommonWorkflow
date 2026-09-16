@@ -55,7 +55,13 @@ sub run {
   } else {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open nextflow config file '$nextflowConfig' for writing";
-      my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($nextflowConfig);
+
+      # Deliberately NOT calling getSharedClusterNextflowConfigIncludeBlock() here.
+      # This config feeds RunNextflowLocal, which execs nextflow directly (no ssh,
+      # no bsub) on whatever host the ReFlow controller itself runs on -- this
+      # pipeline never dispatches to a compute cluster, so the shared config's
+      # cluster-only setup (module load apptainer) doesn't apply and breaks the
+      # run when included.
 
       my $configString = <<NEXTFLOW;
 params {
@@ -75,7 +81,7 @@ $configString .= <<NEXTFLOW;
 includeConfig "$baseConfigFile"
 NEXTFLOW
 
-      print F $sharedClusterConfig . $configString;
+      print F $configString;
       close(F);
   }
 }
