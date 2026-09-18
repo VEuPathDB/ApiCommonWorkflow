@@ -47,9 +47,11 @@ sub run {
     my $configFile = "$workflowDataDir/$configFileName";
 
     open(F, ">$configFile") || die "Can't open config file '$configFile' for writing";
+    my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($configFile);
 
     print F
-"params {
+"$sharedClusterConfig
+params {
   queryFilePath = '$digestedQueryFilePath'
   targetFilePath = '$digestedTargetFilePath'
   outputDir = '$digestedOutputDir'
