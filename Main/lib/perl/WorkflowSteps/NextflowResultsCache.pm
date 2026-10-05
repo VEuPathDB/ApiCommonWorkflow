@@ -120,19 +120,36 @@ sub copyTo {
 
   if($undo) {} #nothing to see here
   else {
-	if ($test) {
+        if ($test) {
         $cacheDir =~ s/\s+//g;      # Remove all whitespace
         $cacheDir =~ s/\R\z//;      # Remove any newline or carriage return at the end
-	    $self->runCmd(0, "mkdir -p $cacheDir");
-        $self->runCmd(0, "cp -r $resultsPath/* $cacheDir/");
+            $self->runCmd(0, "mkdir -p $cacheDir");
+        $self->copyResultsIntoCache(0, $cacheDir, $resultsPath);
     }
     $self->runCmd($test, "mkdir -p $cacheDir");
 
-    my @filesAndDirs = glob("$resultsPath/*");
+    $self->copyResultsIntoCache($test, $cacheDir, $resultsPath);
+  }
+}
 
-    if(scalar(@filesAndDirs) > 0 ) {
-        $self->runCmd($test, "cp -r $resultsPath/* $cacheDir/");
-    }
+# $cacheDir is shared/accumulated across every nextflow entry that feeds this cache
+# (peripheralEntry, residualEntry, postResidualEntry, postProcessingEntry all copy into
+# the same cache key), and is never reset between unrelated runs -- only the caller's
+# higher-level "officialDiamondCache" wipe (UpdateOrthoPeripheralPersistentCache.pm) is,
+# and only after already copying from here. A bare "cp -r $resultsPath/* $cacheDir/"
+# overwrites a same-named FILE cleanly, but MERGES into a same-named DIRECTORY instead of
+# replacing it -- so a stale directory entry (e.g. residualGroupFastas) left behind by any
+# earlier, unrelated run (an abandoned incremental attempt, say) silently survives inside
+# a later run's "fresh" copy forever. Removing each top-level entry individually before
+# copying it back in -- rather than wiping the whole $cacheDir, which would also destroy
+# sibling entries already cached by other entries in this same run -- closes that gap.
+sub copyResultsIntoCache {
+  my ($self, $test, $cacheDir, $resultsPath) = @_;
+
+  foreach my $item (glob("$resultsPath/*")) {
+    my $basename = File::Basename::basename($item);
+    $self->runCmd($test, "rm -rf $cacheDir/$basename");
+    $self->runCmd($test, "cp -r $item $cacheDir/");
   }
 }
 
