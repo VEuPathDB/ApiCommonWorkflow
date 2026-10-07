@@ -138,18 +138,31 @@ sub copyTo {
 # higher-level "officialDiamondCache" wipe (UpdateOrthoPeripheralPersistentCache.pm) is,
 # and only after already copying from here. A bare "cp -r $resultsPath/* $cacheDir/"
 # overwrites a same-named FILE cleanly, but MERGES into a same-named DIRECTORY instead of
-# replacing it -- so a stale directory entry (e.g. residualGroupFastas) left behind by any
-# earlier, unrelated run (an abandoned incremental attempt, say) silently survives inside
-# a later run's "fresh" copy forever. Removing each top-level entry individually before
-# copying it back in -- rather than wiping the whole $cacheDir, which would also destroy
-# sibling entries already cached by other entries in this same run -- closes that gap.
+# replacing it -- so a stale file left behind by any earlier, unrelated run (an abandoned
+# incremental attempt, say) silently survives inside a later run's "fresh" copy forever.
+#
+# Recursing and clearing at the FILE level (not wiping a whole top-level directory
+# before recopying it) matters: some of these directories -- groupStats being the clear
+# case -- are shared landing zones that *different* nextflow entries each contribute a
+# different subset of files to (peripheralEntry's own call here writes core_stats.txt/
+# peripheral_stats.txt into groupStats/; postResidualEntry's separate call later writes
+# only residual_stats.txt into that same cache subdirectory). Wiping the whole directory
+# before either call's copy would destroy the other call's already-cached files. Clearing
+# only each individual file's own prior cache entry avoids that, while still replacing any
+# stale same-named file from an earlier run.
 sub copyResultsIntoCache {
   my ($self, $test, $cacheDir, $resultsPath) = @_;
 
   foreach my $item (glob("$resultsPath/*")) {
     my $basename = File::Basename::basename($item);
-    $self->runCmd($test, "rm -rf $cacheDir/$basename");
-    $self->runCmd($test, "cp -r $item $cacheDir/");
+    if (-d $item) {
+      $self->runCmd($test, "mkdir -p $cacheDir/$basename");
+      $self->copyResultsIntoCache($test, "$cacheDir/$basename", $item);
+    }
+    else {
+      $self->runCmd($test, "rm -f $cacheDir/$basename");
+      $self->runCmd($test, "cp $item $cacheDir/");
+    }
   }
 }
 
