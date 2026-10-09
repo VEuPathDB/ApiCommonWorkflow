@@ -16,7 +16,7 @@ sub run{
         $self->runCmd(0, "rm -rf ${workflowDataDir}/${experimentDir}/mergedBigwigs");
         $self->runCmd(0, "rm -rf ${workflowDataDir}/${experimentDir}/normalize_coverage");
         $self->runCmd(0, "rm -rf ${workflowDataDir}/${experimentDir}/results");
-        $self->runCmd(0, "rm -rf ${workflowDataDir}/${experimentDir}/TPM");
+        #$self->runCmd(0, "rm -rf ${workflowDataDir}/${experimentDir}/TPM");
     }
 }
 
