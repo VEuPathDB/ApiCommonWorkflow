@@ -59,7 +59,8 @@ sub run {
         $self->runCmd(0, "rm -rf $nextflowConfigFile");
     } else {
         open(F, ">", $nextflowConfigFile) or die "$! :Can't open config file '$nextflowConfigFile' for writing";
-        print F "
+        my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($nextflowConfigFile);
+        print F "$sharedClusterConfig
 params {
   samplesheet              = \"$digestedSampleSheet\"
   bwaThreads               = $bwaThreads
@@ -76,6 +77,7 @@ params {
 }
 
 process {
+  beforeScript = 'module load apptainer/1.4.1 && unset LD_LIBRARY_PATH'
   executor = '$executor'
   queue    = '$queue'
 }

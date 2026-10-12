@@ -22,6 +22,7 @@ sub run {
   my $clusterServer = $self->getSharedConfig('clusterServer');
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $executor = $self->getClusterExecutor();
+  my $queue = $self->getClusterQueue();
 
   my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
@@ -30,6 +31,7 @@ sub run {
   } else {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
+      my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($nextflowConfig);
       my $genomicSequenceFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $genomicSequenceFile);
       my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
@@ -42,11 +44,15 @@ params {
   fastaSubsetSize = $fastaSubsetSize
 }
 
+process {
+  queue = '$queue'
+}
+
 includeConfig "$clusterConfigFile"
 
 NEXTFLOW
 
-      print F $configString;
+      print F $sharedClusterConfig . $configString;
       close(F);
   }
 }

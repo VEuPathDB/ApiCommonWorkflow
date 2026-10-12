@@ -51,6 +51,7 @@
     <depends name="MicrosporidiaDB"/>
     <depends name="TrichDB"/>
     <depends name="HostDB"/>
+    <depends name="HelminthDB"/>
     <depends name="makeMultiProjectsDataDir"/>
   </subgraph>
 
@@ -80,6 +81,7 @@
       <depends name="MicrosporidiaDB"/>
       <depends name="TrichDB"/>
       <depends name="HostDB"/>
+      <depends name="HelminthDB"/>
       <depends name="OrthoMCL"/>
       <depends name="makeMultiProjectsDataDir"/>
       <dependsGlobal name="enzymeDB_RSRC"/>
@@ -105,6 +107,7 @@
     <depends name="MicrosporidiaDB"/>
     <depends name="TrichDB"/>
     <depends name="HostDB"/>
+    <depends name="HelminthDB"/>
   </subgraph>
 
   <subgraph name="ExternalResourceUrl" xmlFile="loadDataset.xml">
@@ -125,6 +128,7 @@
     <depends name="MicrosporidiaDB"/>
     <depends name="TrichDB"/>
     <depends name="HostDB"/>
+    <depends name="HelminthDB"/>
   </subgraph>
 
 
@@ -134,5 +138,24 @@
     <depends name="OrthoMCLDependent"/>
     <depends name="alphaFold"/>
   </subgraph>
+
+  <!-- the partitioned parent tables are never analyzed by the per organism steps;
+       do it once all organism webready tables exist so clones inherit the stats -->
+  <step name="analyzeWebreadyPartitionedTables" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::AnalyzeWebreadyPartitionedTables">
+    <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+    <depends name="PlasmoDB"/>
+    <depends name="ToxoDB"/>
+    <depends name="TriTrypDB"/>
+    <depends name="VectorBase"/>
+    <depends name="AmoebaDB"/>
+    <depends name="CryptoDB"/>
+    <depends name="FungiDB"/>
+    <depends name="PiroplasmaDB"/>
+    <depends name="GiardiaDB"/>
+    <depends name="MicrosporidiaDB"/>
+    <depends name="TrichDB"/>
+    <depends name="HostDB"/>
+    <depends name="HelminthDB"/>
+  </step>
 
 </workflowGraph>

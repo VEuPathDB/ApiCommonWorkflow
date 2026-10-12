@@ -36,6 +36,7 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $executor = $self->getClusterExecutor();
   my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
+  my $queue = $self->getClusterQueue();
 
   my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
@@ -44,6 +45,7 @@ sub run {
   } else {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
+      my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($nextflowConfig);
 
       my $configString = <<NEXTFLOW;
 params {
@@ -63,6 +65,7 @@ includeConfig "\$baseDir/conf/nfcore_boilerplate.config"
 includeConfig "$clusterConfigFile"
 
 process {
+  queue = '$queue'
   maxForks = 10
 }
 
@@ -99,7 +102,7 @@ def check_max(obj, type) {
 
 NEXTFLOW
 
-      print F $configString . $lsfEnv;
+      print F $sharedClusterConfig . $configString . $lsfEnv;
       close(F);
   }
 }

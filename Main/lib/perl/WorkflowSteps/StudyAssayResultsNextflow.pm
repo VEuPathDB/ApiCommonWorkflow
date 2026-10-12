@@ -20,6 +20,11 @@ sub nextflowConfigAsString {
 
     my $resultsDirectory = $self->getResultsDirectory();
 
+    # Deliberately NOT calling getSharedClusterNextflowConfigIncludeBlock() here.
+    # RunNextflow::run() execs nextflow directly (no ssh, no bsub) on whatever host
+    # the ReFlow controller itself runs on -- this pipeline never dispatches to a
+    # compute cluster, so the shared config's cluster-only setup (module load
+    # apptainer) doesn't apply and breaks the run when included.
     my $configString = <<NEXTFLOW;
 params {
   analysisConfigFile = "$workflowDataDir/$analysisConfigFile"

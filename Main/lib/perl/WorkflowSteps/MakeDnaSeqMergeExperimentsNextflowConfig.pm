@@ -64,8 +64,9 @@ sub run {
   my $ploidy = parsePloidyFromConfigs(@experimentConfigs);
 
   open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
+  my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($configPath);
   print F
-"
+"$sharedClusterConfig
 params {
 
   outputDir       = \"$outputDir\"
@@ -85,6 +86,7 @@ params {
 // so maxForks only gates the few independent early branches. Serialize them to
 // keep peak memory flat (snpEff JVM, Julia processSeqVars).
 process {
+  beforeScript = 'module load apptainer/1.4.1 && unset LD_LIBRARY_PATH'
   maxForks = 1
 }
 

@@ -22,6 +22,7 @@ sub run {
   my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
   my $executor = $self->getClusterExecutor();
   my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
+  my $queue = $self->getClusterQueue();
 
   my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
@@ -30,6 +31,7 @@ sub run {
   } else {
       my $nextflowConfig = "$workflowDataDir/$nextflowConfigFile";
       open(F, ">$nextflowConfig") || die "Can't open task prop file '$nextflowConfig' for writing";
+      my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($nextflowConfig);
 
       my $proteinSequenceFileInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $proteinSequenceFile);
       my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
@@ -43,11 +45,15 @@ params {
   seqType = "aa"
 }
 
+process {
+  queue = '$queue'
+}
+
 includeConfig "$clusterConfigFile"
 
 NEXTFLOW
 
-      print F $configString . $lsfEnv;
+      print F $sharedClusterConfig . $configString . $lsfEnv;
       close(F);
   }
 }
