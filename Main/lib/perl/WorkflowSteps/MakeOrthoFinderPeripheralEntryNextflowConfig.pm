@@ -36,7 +36,7 @@ sub run {
   my $resultsDirectoryInNextflowWorkingDirOnCluster = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $resultsDirectory);
 
   my $executor = $self->getClusterExecutor();
-  my $lsfScratch = ($executor eq 'lsf') ? "\n  NXF_SCRATCH = '\$LSF_TMPDIR'" : '';
+  my $lsfScratch = ($executor eq 'lsf') ? "\n  NXF_SCRATCH = '\${LSF_TMPDIR:-}'" : '';
   my $queue = $self->getClusterQueue();
 
   if ($undo) {
@@ -61,6 +61,7 @@ params {
 }
 
 process {
+  beforeScript = 'module load apptainer/1.4.1 && unset LD_LIBRARY_PATH'
   executor = \'$executor\'
   queue = \'$queue\'
   withName: \'peripheralDiamond\' {
@@ -70,6 +71,12 @@ process {
         ? \'-M 20000 -R \"rusage [mem=20000] span[hosts=1]\"\'
         : \'-M 25000 -R \"rusage [mem=25000] span[hosts=1]\"\'
     }
+  }
+  withName: \'selfDiamondGroup\' {
+    // Matches the --threads 1 pinned in selfDiamondGroup.bash: without an
+    // explicit cpus request here, diamond's own auto-detected thread count
+    // (every core on the node) had nothing to line up against.
+    cpus = 1
   }
 }
 

@@ -71,17 +71,12 @@
     <paramValue name="residualGroupsFile">$$dataDir$$/peripheralGroups/analysisDir/postResidualEntryResults/reformattedGroups.txt</paramValue>
     <paramValue name="fullGroupFile">$$dataDir$$/peripheralGroups/analysisDir/postProcessingEntryResults/fullGroupFile.txt</paramValue>
     <paramValue name="orthomclVersion">$$residualGroupIdPrefix$$</paramValue>
-    <!-- Was <dependsGlobal name="insertGroupTaxonMatrix"/>; insertGroupTaxonMatrix is an
-         ordinary step in OrthoMCLDependent.xml (not global.xml), so dependsGlobal could
-         never resolve it, and OrthoMCLDependent doesn't even start until this whole
-         OrthoMCLPeripheral graph finishes, so dependsExternal couldn't either (that
-         direction is unsatisfiable, unlike insertGroupTaxonMatrix's own dependsExternal on
-         insertProteinKeywords). MakeDownloadFiles.pm reads apidb.orthologgroupaasequence,
-         apidb.interproresults, and apidb.organism/orthomclresource; nothing from
-         apidb.orthologgrouptaxon (what insertGroupTaxonMatrix populates), so there was no
-         real data dependency here, just a stale edge. Kept this step in its place in the
-         chain via a real dependency on the step immediately before it instead of leaving it
-         with none. -->
+    <!-- Used to depend on insertGroupTaxonMatrix (as dependsGlobal, after it moved to
+         OrthoMCLDependent.xml, see 9f8240c6), but that's unsatisfiable: OrthoMCLDependent
+         itself depends on all of OrthoMCL finishing first, which includes this step, making
+         a wait the other way a genuine cycle. MakeDownloadFiles.pm never actually reads
+         apidb.OrthologGroupTaxon, so this was positional, not a real data dependency;
+         falls back to insertProteinKeywords, its immediate predecessor in this file. -->
     <depends name="insertProteinKeywords"/>
   </step>
 
@@ -99,13 +94,6 @@
     <paramValue name="webServicesDir">$$relativeWebServicesDir$$</paramValue>
     <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
     <depends name="makeInterproDownloadFile"/>
-  </step>
-
-  <step name="CopyGeneTreesToWebservices" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyGeneTreesToWebServices">
-    <paramValue name="geneTreesDir">$$dataDir$$/peripheralGroups/analysisDir/postProcessingEntryResults/geneTrees</paramValue>
-    <paramValue name="webServicesDir">$$relativeWebServicesDir$$</paramValue>
-    <paramValue name="projectVersionForWebsiteFiles">$$projectVersionForWebsiteFiles$$</paramValue>
-    <depends name="CopyDiamondDatabaseToWebservices"/>
   </step>
 
 </workflowGraph>

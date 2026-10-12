@@ -30,7 +30,7 @@ sub run {
   my $configPath = join("/", $self->getWorkflowDataDir(),  $self->getParamValue("analysisDir"), $self->getParamValue("configFileName"));
 
   my $executor = $self->getClusterExecutor();
-  my $lsfScratch = ($executor eq 'lsf') ? "\n  NXF_SCRATCH = '\$LSF_TMPDIR'" : '';
+  my $lsfScratch = ($executor eq 'lsf') ? "\n  NXF_SCRATCH = '\${LSF_TMPDIR:-}'" : '';
   my $queue = $self->getClusterQueue();
 
   if ($undo) {
@@ -53,6 +53,7 @@ params {
 }
 
 process {
+  beforeScript = 'module load apptainer/1.4.1 && unset LD_LIBRARY_PATH'
   executor = \'$executor\'
   queue = \'$queue\'
   withName: \'diamond\' {

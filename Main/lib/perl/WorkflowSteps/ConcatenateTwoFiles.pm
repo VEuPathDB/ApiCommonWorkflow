@@ -16,7 +16,7 @@ sub run {
     my $workflowDataDir = $self->getWorkflowDataDir();
     my $stepDir = $self->getStepDir();
 
-    my $cmd = "cat $in1 $in2 > $out";
+    my $cmd = "cat $workflowDataDir/$in1 $workflowDataDir/$in2 > $workflowDataDir/$out";
 
     if ($undo) {
 	$self->runCmd(0, "rm -f $workflowDataDir/$out");
