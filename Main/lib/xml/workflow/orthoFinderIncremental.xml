@@ -354,6 +354,23 @@
       <depends name="runOrthoFinderIncrementalPostProcessingEntryNextflowOnCluster"/>
     </step>
 
+    <!-- mergeCoreAndResidualBestReps (postProcessingEntry) builds bestRepsFull.fasta
+         directly from postResidualEntryResults/bestReps.fasta plus coreBestReps.fasta,
+         both still in old-id space for every touched group, same as every other
+         per-group file upstream of this rename pass. Unlike those, nothing else was
+         renaming this one: confirmed live that fullGroupFile.txt correctly carried a
+         touched group's new (r2) ID while bestRepsFull.fasta's header for the exact
+         same group still had the old (r1) one. Not currently loaded into the DB with
+         a group_id constraint, so it didn't fail the run, but it's wrong, and it gets
+         cached as-is for the next run to read back as its own "previous" baseline. -->
+    <step name="renameGroupIdsBestRepsFasta" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
+      <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
+      <paramValue name="inputFile">$$peripheralDir$$/analysisDir/postProcessingEntryResults/bestRepsFull.fasta</paramValue>
+      <paramValue name="format">fasta</paramValue>
+      <depends name="computeGroupIdRenameMap"/>
+      <depends name="runOrthoFinderIncrementalPostProcessingEntryNextflowOnCluster"/>
+    </step>
+
     <step name="renameGroupIdsCoreStats" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::RenameGroupIds">
       <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
       <paramValue name="inputFile">$$peripheralDir$$/analysisDir/peripheralEntryResults/groupStats/core_stats.txt</paramValue>
@@ -483,6 +500,7 @@
       <depends name="renameGroupIdsGroupsFile"/>
       <depends name="renameGroupIdsReformattedGroups"/>
       <depends name="renameGroupIdsFullGroupFile"/>
+      <depends name="renameGroupIdsBestRepsFasta"/>
       <depends name="renameGroupIdsCoreStats"/>
       <depends name="renameGroupIdsPeripheralStats"/>
       <depends name="renameGroupIdsResidualStats"/>

@@ -13,13 +13,16 @@ computeGroupIdRenameMap) to any file keyed by group ID in its first field, rewri
 the group ID and leaving everything else on each line untouched. A line whose group ID
 isn't in the map (an untouched group) passes through byte-identical.
 
-Handles both shapes used across this pipeline's loader-facing files:
+Handles all three shapes used across this pipeline's loader-facing files:
 
   colon  "groupId: seq1 seq2 ...\n"                  (GroupsFile.txt, reformattedGroups.txt)
   tsv    "groupId\tfield2\t...\n"                     (best-reps/stats/blast-values/previousGroups
                                                         files -- most have the group ID only in
                                                         column 1, but similar_groups.tsv has one in
                                                         column 2 as well, hence --columns)
+  fasta  ">groupId optional rest\nSEQUENCE\n..."       (bestRepsFull.fasta -- only header lines are
+                                                        ever touched; sequence lines pass through
+                                                        unchanged regardless of content)
 
 =head1 Input Parameters
 
@@ -54,7 +57,7 @@ my ($renameMap, $input, $format, $columnsArg, $output);
             "columns=s" => \$columnsArg,
             "output=s" => \$output);
 
-die "--format must be 'colon' or 'tsv'" unless $format eq 'colon' || $format eq 'tsv';
+die "--format must be 'colon', 'tsv', or 'fasta'" unless $format eq 'colon' || $format eq 'tsv' || $format eq 'fasta';
 
 $columnsArg ||= '1';
 my @columns = map { $_ - 1 } split(/,/, $columnsArg); # 1-indexed args -> 0-indexed array positions
@@ -80,6 +83,17 @@ while (my $line = <$inFh>) {
             if (exists $rename{$id}) {
                 $renamedCount++;
                 print $outFh "$rename{$id}:$rest";
+                next;
+            }
+        }
+        print $outFh $line;
+    }
+    elsif ($format eq 'fasta') {
+        if ($line =~ /^>(\S+)(.*)$/s) {
+            my ($id, $rest) = ($1, $2);
+            if (exists $rename{$id}) {
+                $renamedCount++;
+                print $outFh ">$rename{$id}$rest";
                 next;
             }
         }
