@@ -8,6 +8,7 @@ package ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep;
 
 use strict;
 use Carp;
+use File::Basename;
 
 use ReFlow::Controller::WorkflowStepHandle;
 use GUS::Supported::GusConfig;
@@ -348,7 +349,38 @@ sub getClusterExecutor {
 sub getNextflowLsfScratchEnvBlock {
   my ($self) = @_;
   return '' unless $self->getClusterExecutor() eq 'lsf';
-  return "\nenv {\n  NXF_SCRATCH = '\$LSF_TMPDIR'\n}\n";
+  # LSF_TMPDIR isn't guaranteed to be exported by every LSF cluster/job; without the
+  # ':-' default this crashes under nextflow's own 'set -u' if it's ever unset.
+  return "\nenv {\n  NXF_SCRATCH = '\${LSF_TMPDIR:-}'\n}\n";
+}
+
+# Opt-in include of a shared nextflow config file (e.g. one that sets
+# process { beforeScript = '...' } for module loads that shouldn't have to be repeated in
+# every Make*NextflowConfig.pm generator by hand).
+#
+# The file lives on the workflow server (yew), not the cluster, so which cluster actually
+# runs the processing can change without moving it. It is symlinked in as a sibling of the
+# config file being generated ($configFilePath, the caller's own local path). That file
+# has to reach the cluster for the run, and CopyNextflowWorkingDirToCluster copies it with
+# 'tar cfh' -- the -h dereferences the symlink into real content on the cluster, right
+# beside the config. So the returned line is just a relative include: nextflow resolves
+# includeConfig relative to the config file it was invoked with.
+#
+# Reads the flat 'sharedNextflowConfig' key from stepsShared.prop via getSharedConfigRelaxed,
+# so an unset key is a silent no-op and existing builds are unaffected.
+sub getSharedClusterNextflowConfigIncludeBlock {
+  my ($self, $configFilePath) = @_;
+
+  my $sharedPath = $self->getSharedConfigRelaxed('sharedNextflowConfig');
+  return '' unless $sharedPath;
+
+  $self->error("sharedNextflowConfig '$sharedPath' does not exist on the workflow server")
+    unless -e $sharedPath;
+
+  my $dir = dirname($configFilePath);
+  $self->runCmd(0, "ln -sfn $sharedPath $dir/sharedNextflow.config");
+
+  return "includeConfig 'sharedNextflow.config'\n";
 }
 
 

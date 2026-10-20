@@ -73,9 +73,10 @@ sub run {
     $self->runCmd(0,"rm -rf $configPath");
   } else {
     open(F, ">", $configPath) or die "$! :Can't open config file '$configPath' for writing";
+    my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($configPath);
 
     print F
-"
+"$sharedClusterConfig
 params {
   input = \"$input\"
   fromBAM = $fromBAM
@@ -101,6 +102,7 @@ params {
 }
 
 process {
+  beforeScript = 'module load apptainer/1.4.1 && unset LD_LIBRARY_PATH'
   executor = \'$executor\'
   queue = \'$queue\'
   withName: 'gatk' {

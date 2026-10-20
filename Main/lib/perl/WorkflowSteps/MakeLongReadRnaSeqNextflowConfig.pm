@@ -42,6 +42,7 @@ sub run {
     my $clusterWorkflowDataDir = $self->getClusterWorkflowDataDir();
     my $executor = $self->getClusterExecutor();
     my $lsfEnv = $self->getNextflowLsfScratchEnvBlock();
+    my $queue = $self->getClusterQueue();
 
     my $clusterConfigFile = "\$baseDir/conf/${executor}.config";
 
@@ -50,8 +51,9 @@ sub run {
         $self->runCmd(0,"rm -rf $nextflowConfigFile");
     } else {
         open(F, ">", $nextflowConfigFile) or die "$! :Can't open config file '$nextflowConfigFile' for writing";
+        my $sharedClusterConfig = $self->getSharedClusterNextflowConfigIncludeBlock($nextflowConfigFile);
         print F
-            "
+            "$sharedClusterConfig
 params {
     input = \"$digestedInputDirPath\"
     samplesheetFileName = \"$sampleSheet\"
@@ -65,6 +67,10 @@ params {
     maxFracA = $maxFracA
     minCount = $minCount
     minDatasets = $minDatasets
+}
+
+process {
+    queue = \'$queue\'
 }
 
 includeConfig \"$clusterConfigFile\"

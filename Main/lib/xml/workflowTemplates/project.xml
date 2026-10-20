@@ -320,11 +320,12 @@
       <paramValue name="relativeDownloadSiteDir">$$relativeDownloadSiteDir$$</paramValue>
       <paramValue name="relativeWebServicesDir">$$relativeWebServicesDir$$</paramValue>
       <paramValue name="genomicSeqsFile">$$dataDir$$/${organismAbbrev}/loadGenome/genomicSeqs.fa</paramValue>
+      <paramValue name="maskedGenomicSeqsFile">$$dataDir$$/${organismAbbrev}/maskGenome/analysisDir/results/blocked.seq</paramValue>
       <paramValue name="genomicSeqsDir">$$dataDir$$/${organismAbbrev}/loadGenome</paramValue>
       <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <paramValue name="isHugeGenome">${isHugeGenome}</paramValue>
       <paramValue name="isNotEbiGenome">${isNotEbiGenome}</paramValue>
-      <depends name="${organismAbbrev}_LoadGenome"/>
+      <depends name="${referenceStrainOrganismAbbrev}_${organismAbbrev}_MaskGenome"/>  <!-- tRNAScan needs repeatMasked genome -->
       <dependsGlobal name="Ontology_ptmt_RSRC"/> <!-- this is needed for loading mass spec data -->
     </subgraph>
 
@@ -847,23 +848,13 @@
     </subgraph>
   </datasetTemplate>
 
-  <datasetTemplate class="productionDatasets">
-    <prop name="projectName"/>
-
-    <subgraph name="Production_Datasets_RSRC" xmlFile="loadDataset.xml">
-    <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
-      <paramValue name="datasetName">Production_Datasets_RSRC</paramValue>
-      <paramValue name="datasetLoaderXmlFileName">${projectName}.xml</paramValue>
-      <paramValue name="parentDataDir">$$dataDir$$</paramValue>
-      <depends name="initUserGroupProject"/>
-    </subgraph>
-  </datasetTemplate>
-
-
   <subgraph name="EDA" xmlFile="generated/$$projectName$$/eda.xml" excludeIfXmlFileDoesNotExist="true">
     <paramValue name="datasetLoaderXmlFileName">$$projectName$$.xml</paramValue>
     <paramValue name="parentDataDir">$$dataDir$$</paramValue>
     <paramValue name="gusConfigFile">$$projectGusConfigFile$$</paramValue>
+    <!-- these datasets are global scope but name an organismAbbrev, so the
+         taxon must already be in the db -->
+    <dependsPattern name="*_specific"/>
     <dependsGlobal name="registerPlugins"/>
   </subgraph>
 
