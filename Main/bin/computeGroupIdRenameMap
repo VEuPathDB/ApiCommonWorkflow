@@ -35,19 +35,38 @@ time here.
 This run's newly-computed subVersion -- every touched group's "r{N}" component becomes
 this value
 
+=item updatedStableGroups
+
+This run's comprehensive, current group-membership file (colon format: "groupId: seq1 seq2
+...", one still-valid group per line). A touched group (gained OR lost a member this run)
+that dropped below the minimum group size no longer appears here under any ID -- it's
+included in touchedGroups (correctly: mergeByGroupId.pl/mergeBestReps.pl need it there, to
+know to drop its cached rows with nothing to replace them), but has nothing left to compute
+a rename for. Skip it rather than emit a groupIdRenameMap.tsv entry for a group that's gone.
+
 =item output
 
-Tab-separated oldId\tnewId, one per touched group
+Tab-separated oldId\tnewId, one per touched group that's still a valid group
 
 =back
 
 =cut
 
-my ($touchedGroups, $newSubVersion, $output);
+my ($touchedGroups, $newSubVersion, $updatedStableGroups, $output);
 
 &GetOptions("touchedGroups=s" => \$touchedGroups,
             "newSubVersion=i" => \$newSubVersion,
+            "updatedStableGroups=s" => \$updatedStableGroups,
             "output=s" => \$output);
+
+my %currentGroupIds;
+open(my $stableFh, '<', $updatedStableGroups) || die "Could not open file $updatedStableGroups: $!";
+while (my $line = <$stableFh>) {
+    if ($line =~ /^([^:]+):/) {
+        $currentGroupIds{$1} = 1;
+    }
+}
+close($stableFh);
 
 open(my $inFh, '<', $touchedGroups) || die "Could not open file $touchedGroups: $!";
 open(my $outFh, '>', $output) || die "Could not open file $output for writing: $!";
@@ -55,6 +74,7 @@ open(my $outFh, '>', $output) || die "Could not open file $output for writing: $
 while (my $line = <$inFh>) {
     chomp $line;
     next unless length($line);
+    next unless $currentGroupIds{$line};
 
     my $newId = $line;
     unless ($newId =~ s/r\d+_/r${newSubVersion}_/
