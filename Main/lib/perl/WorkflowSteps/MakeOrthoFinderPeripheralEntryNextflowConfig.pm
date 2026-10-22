@@ -48,6 +48,7 @@ sub run {
     print F
 "$sharedClusterConfig
 params {
+    entry = \"peripheralEntry\"
     outputDir = \"$resultsDirectoryInNextflowWorkingDirOnCluster\"
     coreProteomes = \"$coreProteomesInNextflowWorkingDirOnCluster\"
     peripheralProteomes = \"$peripheralProteomesInNextflowWorkingDirOnCluster\"

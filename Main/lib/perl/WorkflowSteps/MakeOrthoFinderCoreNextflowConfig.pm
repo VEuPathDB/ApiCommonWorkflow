@@ -42,6 +42,7 @@ sub run {
     print F
 "$sharedClusterConfig
 params {
+  entry = \"coreEntry\"
   proteomes = \"$proteomesInNextflowWorkingDirOnCluster\"
   outputDir = \"$resultsDirectoryInNextflowWorkingDirOnCluster\"
   outdatedOrganisms = \"$outdatedFileInNextflowWorkingDirOnCluster\"

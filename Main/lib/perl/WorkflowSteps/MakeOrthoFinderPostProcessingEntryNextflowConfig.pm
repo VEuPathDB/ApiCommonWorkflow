@@ -53,6 +53,7 @@ sub run {
     print F
 "$sharedClusterConfig
 params {
+    entry = \"postProcessingEntry\"
     outputDir = \"$resultsDirectoryInNextflowWorkingDirOnCluster\"
     residualFasta  = \"$residualFastaInNextflowWorkingDirOnCluster\"
     residualBestRepsFasta = \"$residualBestRepsFastaInNextflowWorkingDirOnCluster\"
