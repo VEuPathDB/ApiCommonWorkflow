@@ -1,4 +1,4 @@
-package ApiCommonWorkflow::Main::WorkflowSteps::CopyAndFilterCoreProteomeToOrtho;
+package ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreProteomeToOrthoAndFilterPseudogenes;
 
 @ISA = (ApiCommonWorkflow::Main::WorkflowSteps::WorkflowStep);
 use strict;
