@@ -24,7 +24,7 @@ sub run {
       $self->runCmd(0, "echo 'test' > $outputFasta");
   }
   else {
-      $self->runCmd($test, "dumpPseudogeneProteins.pl --outputFile $pseudogenesFile --organismAbbrev $organismAbbrev --gusConfigFile $gusConfigFile");
+      $self->runCmd($test, "dumpPseudogeneProteins.pl --outputFile $pseudogenesFile --organismAbbrev $organismAbbrev --proteinsFile $proteinsFile --gusConfigFile $gusConfigFile");
       $self->runCmd($test, "removePseudogenesFromFasta.pl --inputFasta $proteinsFile --pseudogenes $pseudogenesFile --outputFasta $outputFasta");
   }
 }
