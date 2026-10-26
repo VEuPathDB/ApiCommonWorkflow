@@ -25,8 +25,7 @@ sub run {
     $fileType =~ s/\d$//;
     my $copyToDir = "$websiteFilesDir/$relativeDir/$organismNameForFiles/prealigned/$fileType/${organismAbbrev}_${experimentName}_WebService_RSRC";
     my $cmd_mkdir = "mkdir -p $copyToDir";
-    my $cmd_copy = "cp $workflowDataDir/$copyFromDir/* $copyToDir";
-
+    my $cmd_copy = "cp -r $workflowDataDir/$copyFromDir/* $copyToDir";
     if ($undo) {
         $self->runCmd(0,"rm -rf $copyToDir");
     }else{
