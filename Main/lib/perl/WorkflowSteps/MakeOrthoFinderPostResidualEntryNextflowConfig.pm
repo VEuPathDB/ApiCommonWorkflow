@@ -80,6 +80,7 @@ sub run {
     print F
 "$sharedClusterConfig
 params {
+    entry = \"postResidualEntry\"
     outputDir = \"$resultsDirectoryInNextflowWorkingDirOnCluster\"
     residualFasta = \"$residualFastaInNextflowWorkingDirOnCluster\"
     groupsFile = \"$groupsFileInNextflowWorkingDirOnCluster\"

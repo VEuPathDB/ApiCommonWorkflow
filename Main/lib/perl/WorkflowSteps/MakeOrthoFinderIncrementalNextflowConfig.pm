@@ -60,6 +60,7 @@ sub run {
     print F
 "
 params {
+    entry = \"incrementalEntry\"
     outputDir = \"$resultsDirectoryInNextflowWorkingDirOnCluster\"
     changedOrNewProteomes = \"$changedOrNewProteomesInNextflowWorkingDirOnCluster\"
     fullGroupFile = \"$fullGroupFileInNextflowWorkingDirOnCluster\"

@@ -34,6 +34,7 @@ sub run {
     print F
 "$sharedClusterConfig
 params {
+    entry = \"residualEntry\"
     outputDir = \"$resultsDirectoryInNextflowWorkingDirOnCluster\"
     residualFastaDir = \"$residualFastaDirInNextflowWorkingDirOnCluster\"
     orthoFinderDiamondOutputFields = \"qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore\"

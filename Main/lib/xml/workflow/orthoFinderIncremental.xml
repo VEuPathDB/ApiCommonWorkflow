@@ -49,7 +49,6 @@
       <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho -->
       <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
       <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
-      <paramValue name="entry">incrementalEntry</paramValue>
       <depends name="makeOrthoFinderIncrementalNextflowConfig"/>
     </subgraph>
 
@@ -131,7 +130,6 @@
       <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho -->
       <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
       <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
-      <paramValue name="entry">postResidualEntry</paramValue>
       <depends name="makeOrthoFinderIncrementalPostResidualEntryNextflowConfig"/>
     </subgraph>
 
@@ -224,7 +222,6 @@
       <paramValue name="datasetSpec"></paramValue> <!-- Not neccessary for ortho -->
       <paramValue name="analysisDir">$$peripheralDir$$/analysisDir</paramValue>
       <paramValue name="nextflowWorkflow">$$nextflowWorkflow$$</paramValue>
-      <paramValue name="entry">postProcessingEntry</paramValue>
       <depends name="makeOrthoFinderIncrementalPostProcessingEntryNextflowConfig"/>
     </subgraph>
 
@@ -318,6 +315,7 @@
     <step name="computeGroupIdRenameMap" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ComputeGroupIdRenameMap">
       <paramValue name="touchedGroups">$$peripheralDir$$/analysisDir/incrementalEntryResults/touchedGroups.txt</paramValue>
       <paramValue name="newSubVersionFile">$$peripheralDir$$/analysisDir/nextResidualBuildVersion.txt</paramValue>
+      <paramValue name="updatedStableGroups">$$peripheralDir$$/analysisDir/incrementalEntryResults/updatedStableGroups.txt</paramValue>
       <paramValue name="outputFile">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
       <depends name="runOrthoIncrementalNextflowOnCluster"/>
       <depends name="computeNextResidualBuildVersion"/>
@@ -367,6 +365,10 @@
       <paramValue name="renameMap">$$peripheralDir$$/analysisDir/groupIdRenameMap.tsv</paramValue>
       <paramValue name="inputFile">$$peripheralDir$$/analysisDir/postProcessingEntryResults/bestRepsFull.fasta</paramValue>
       <paramValue name="format">fasta</paramValue>
+      <!-- RenameGroupIds.pm always calls getParamValue("columns"), even though fasta
+           format never uses it: leave empty rather than omitting it, same convention
+           as the nextflow "entry" paramValue: getParamValue dies if missing entirely. -->
+      <paramValue name="columns"></paramValue>
       <depends name="computeGroupIdRenameMap"/>
       <depends name="runOrthoFinderIncrementalPostProcessingEntryNextflowOnCluster"/>
     </step>

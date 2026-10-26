@@ -227,7 +227,7 @@
       <depends name="${organismAbbrev}_LoadGenome"/>
     </subgraph>
 
-    <step name="${organismAbbrev}_CopyCoreProteomeToOrtho" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndFilterCoreProteomeToOrtho" includeIf="${isAnnotatedGenome} &amp;&amp; ${isCore}">
+    <step name="${organismAbbrev}_CopyCoreProteomeToOrtho" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyCoreProteomeToOrthoAndFilterPseudogenes" includeIf="${isAnnotatedGenome} &amp;&amp; ${isCore}">
       <paramValue name="orthomclAbbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <paramValue name="orthoCoreDir">$$orthoCoreDir$$</paramValue>
@@ -236,7 +236,7 @@
       <depends name="${organismAbbrev}_LoadGenome"/>
     </step>
 
-    <step name="${organismAbbrev}_CopyPeripheralProteomeToOrtho" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyAndFilterPeripheralProteomeToOrtho" includeIf="${isAnnotatedGenome} &amp;&amp; !${isCore}" >
+    <step name="${organismAbbrev}_CopyPeripheralProteomeToOrtho" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::CopyPeripheralProteomeToOrthoAndFilterPseudogenes" includeIf="${isAnnotatedGenome} &amp;&amp; !${isCore}" >
       <paramValue name="orthomclAbbrev">${orthomclAbbrev}</paramValue>
       <paramValue name="proteinsFile">$$dataDir$$/${organismAbbrev}/loadGenome/AnnotatedProteins.fsa</paramValue>
       <paramValue name="orthoPeripheralDir">$$orthoPeripheralDir$$</paramValue>
