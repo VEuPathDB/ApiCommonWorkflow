@@ -65,6 +65,7 @@ params {
 process {
   executor = '$executor'
   queue = '$queue'
+  clusterOptions = '-Q \"EXCLUDE(255)\"'
   withName: 'exonerate' {
     maxForks = $exonerateMaxForks
     $exonerateProcessMemoryRequirement
@@ -84,7 +85,7 @@ singularity {
 
 sub clusterOptionsForMemMbs {
   my ($mbs) = @_;
-  return "-M ${mbs} -R \"rusage [mem=${mbs}] span[hosts=1]\"";
+  return "-M ${mbs} -R \"rusage [mem=${mbs}] span[hosts=1]\" -Q \"EXCLUDE(255)\"";
 }
 
 sub processMemoryRequirement {

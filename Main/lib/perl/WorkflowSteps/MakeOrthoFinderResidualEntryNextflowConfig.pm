@@ -44,6 +44,7 @@ process {
   beforeScript = 'module load apptainer/1.4.1 && unset LD_LIBRARY_PATH'
   executor = \'$executor\'
   queue = \'$queue\'
+  clusterOptions = \'-Q \"EXCLUDE(255)\"\'
 }
 
 env {
