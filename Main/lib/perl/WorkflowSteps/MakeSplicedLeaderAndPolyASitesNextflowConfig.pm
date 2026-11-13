@@ -62,6 +62,7 @@ params {
 }
 
 includeConfig "$clusterConfigFile"
+includeConfig "\$baseDir/conf/processResources.conf"
 
 process {
   maxForks = 10

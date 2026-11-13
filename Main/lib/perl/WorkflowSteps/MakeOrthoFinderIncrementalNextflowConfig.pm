@@ -86,19 +86,12 @@ process {
   clusterOptions = \'-Q \"EXCLUDE(255)\"\'
   withName: \'incrementalDiamond\' {
     errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' }
-    clusterOptions = {
-      (task.attempt > 1 && task.exitStatus in 130..140)
-        ? \'-M 20000 -R \"rusage [mem=20000] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
-        : \'-M 25000 -R \"rusage [mem=25000] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
-    }
+    memory = { task.attempt > 1 ? \'20 GB\' : \'25 GB\' }
   }
   withName: \'selfDiamondGroup\' {
+    cpus = 1
     errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' }
-    clusterOptions = {
-      (task.attempt > 1 && task.exitStatus in 130..140)
-        ? \'-M 30000 -R \"rusage [mem=30000] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
-        : \'-M 35000 -R \"rusage [mem=35000] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
-    }
+    memory = { task.attempt > 1 ? \'30 GB\' : \'35 GB\' }
   }
 }
 

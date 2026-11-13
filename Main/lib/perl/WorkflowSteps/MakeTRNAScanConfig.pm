@@ -79,6 +79,7 @@ ${sharedClusterConfig}params {
 }
 
 includeConfig "$clusterConfigFile"
+includeConfig "\$baseDir/conf/processResources.conf"
 
 $queueBlock
 NEXTFLOW

@@ -55,6 +55,7 @@ process {
 
 
 includeConfig "$clusterConfigFile"
+includeConfig "\$baseDir/conf/processResources.conf"
 
 NEXTFLOW
       print F $sharedClusterConfig . $configString . $lsfEnv;

@@ -29,7 +29,7 @@ sub run {
   my $digestedOutputDir = $self->relativePathToNextflowClusterPath($workingDirRelativePath, $outputDir);
 
   my $executor = $self->getClusterExecutor();
-  my $exonerateProcessMemoryRequirement = processMemoryRequirement($executor, $self->getParamValue("exonerateMemory"));
+  my $exonerateProcessMemoryRequirement = processMemoryRequirement($self->getParamValue("exonerateMemory"));
   my $queue = $self->getClusterQueue();
 
   my $configFile = "$workflowDataDir/$configFileName";
@@ -83,21 +83,9 @@ singularity {
  }
 }
 
-sub clusterOptionsForMemMbs {
-  my ($mbs) = @_;
-  return "-M ${mbs} -R \"rusage [mem=${mbs}] span[hosts=1]\" -Q \"EXCLUDE(255)\"";
-}
-
 sub processMemoryRequirement {
-  my ($executor, $memoryParameter) = @_;
+  my ($memoryParameter) = @_;
 
-  # If not on LSF:
-  # Assume the Nextflow shorthands for memory use are correct
-  # Also, don't attempt the three tries
-  return "memory = '$memoryParameter'" unless $executor eq 'lsf';
-
-  # On PMACS LSF, the parameters don't correctly translate to memory requirements
-  # Prepare a submission string instead
   my $mbs;
   if ($memoryParameter =~ m{(^\d+(?:\.\d+)?) GB}){
     $mbs = int($1 * 1000);
@@ -106,16 +94,15 @@ sub processMemoryRequirement {
   } else {
     die "Could not extract num MB/GB from memory parameter: $memoryParameter";
   }
-  my $s1 = clusterOptionsForMemMbs(1 * $mbs);
-  my $s2 = clusterOptionsForMemMbs(2 * $mbs);
-  my $s3 = clusterOptionsForMemMbs(5 * $mbs);
+  my $doubleMbs = $mbs * 2;
+  my $fiveTimesMbs = $mbs * 5;
   return <<"EOF";
     errorStrategy = { task.exitStatus in 130..140 ? 'retry' : 'terminate' }
     maxRetries = 2
-    clusterOptions = {
-      task.attempt == 1 ? '$s1'
-      : task.attempt == 2 ?'$s2'
-      : '$s3'
+    memory = {
+      task.attempt == 1 ? '${mbs} MB'
+      : task.attempt == 2 ? '${doubleMbs} MB'
+      : '${fiveTimesMbs} MB'
     }
 EOF
 }

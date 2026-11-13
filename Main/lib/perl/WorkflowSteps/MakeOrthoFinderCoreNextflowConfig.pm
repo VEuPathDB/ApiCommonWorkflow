@@ -59,19 +59,11 @@ process {
   clusterOptions = \'-Q \"EXCLUDE(255)\"\'
   withName: \'diamond\' {
     errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' }
-    clusterOptions = {
-      (task.attempt > 1 && task.exitStatus in 130..140)
-        ? \'-M 20000 -R \"rusage [mem=20000] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
-        : \'-M 25000 -R \"rusage [mem=25000] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
-    }
+    memory = { task.attempt > 1 ? \'20 GB\' : \'25 GB\' }
   }
   withName: \'computeGroups\' {
     errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' }
-    clusterOptions = {
-    (task.attempt > 1 && task.exitStatus in 130..140)
-      ? \'-M 45000 -R \"rusage [mem=45000] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
-      : \'-M 40000 -R \"rusage [mem=40000] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
-    }
+    memory = { task.attempt > 1 ? \'45 GB\' : \'40 GB\' }
   }
 }
 env {

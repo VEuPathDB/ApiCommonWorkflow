@@ -119,6 +119,7 @@ process {
 }
 
 includeConfig "$clusterConfigFile"
+includeConfig "\$baseDir/conf/processResources.conf"
 
 NEXTFLOW
 

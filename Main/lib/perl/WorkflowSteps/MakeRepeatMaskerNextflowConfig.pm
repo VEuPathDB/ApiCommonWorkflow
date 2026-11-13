@@ -81,6 +81,7 @@ process{
 }
 
 includeConfig "$clusterConfigFile"
+includeConfig "\$baseDir/conf/processResources.conf"
 
 singularity {
   runOptions = "--bind ${repeatMaskerDatabase}:/opt/RepeatMasker/Libraries/famdb"

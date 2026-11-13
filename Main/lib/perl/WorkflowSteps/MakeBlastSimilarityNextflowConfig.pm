@@ -77,11 +77,7 @@ process {
   clusterOptions = \'-Q \"EXCLUDE(255)\"\'
   withName: \'blastSimilarity\' {
     errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' }
-    clusterOptions = {
-      (task.attempt > 1 && task.exitStatus in 130..140)
-        ? \'-M $increasedMemory -R \"rusage [mem=$increasedMemory] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
-        : \'-M $initialMemory -R \"rusage [mem=$initialMemory] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
-    }
+    memory = { task.attempt > 1 ? \"$increasedMemory MB\" : \"$initialMemory MB\" }
   }
 }
 

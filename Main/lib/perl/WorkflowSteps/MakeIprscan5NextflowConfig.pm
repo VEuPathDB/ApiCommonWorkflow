@@ -51,12 +51,8 @@ process{
   clusterOptions = \'-Q \"EXCLUDE(255)\"\'
   withName: 'Iprscan' {
     errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' }
-    clusterOptions = {
-      (task.attempt > 1 && task.exitStatus in 130..140)
-        ? \'-M 12000 -R \"rusage [mem=12000] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
-        : \'-M 4000 -R \"rusage [mem=4000] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
-    }
-  }                                                                                                                                                                             \
+    memory = { task.attempt > 1 ? \'12 GB\' : \'4 GB\' }
+  }
 }
 
 singularity {
