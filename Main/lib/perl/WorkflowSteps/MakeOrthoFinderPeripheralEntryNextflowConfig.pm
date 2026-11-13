@@ -65,12 +65,13 @@ process {
   beforeScript = 'module load apptainer/1.4.1 && unset LD_LIBRARY_PATH'
   executor = \'$executor\'
   queue = \'$queue\'
+  clusterOptions = \'-Q \"EXCLUDE(255)\"\'
   withName: \'peripheralDiamond\' {
     errorStrategy = { task.exitStatus in 130..140 ? \'retry\' : \'finish\' }
     clusterOptions = {
       (task.attempt > 1 && task.exitStatus in 130..140)
-        ? \'-M 20000 -R \"rusage [mem=20000] span[hosts=1]\"\'
-        : \'-M 25000 -R \"rusage [mem=25000] span[hosts=1]\"\'
+        ? \'-M 20000 -R \"rusage [mem=20000] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
+        : \'-M 25000 -R \"rusage [mem=25000] span[hosts=1]\" -Q \"EXCLUDE(255)\"\'
     }
   }
   withName: \'selfDiamondGroup\' {

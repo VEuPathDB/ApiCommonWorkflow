@@ -61,6 +61,7 @@ params {
 process {
   executor = \'$executor\'
   queue = \'$queue\'
+  clusterOptions = \'-Q \"EXCLUDE(255)\"\'
 }
 
 singularity {
