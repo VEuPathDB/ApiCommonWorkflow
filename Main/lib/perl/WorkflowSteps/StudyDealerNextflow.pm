@@ -7,13 +7,16 @@ use ApiCommonWorkflow::Main::WorkflowSteps::RunNextflow;
 
 
 # 
-sub hasPluginCalls {
+sub loadsEdaStudies {
     my ($self) = @_;
     my $mode = $self->getParamValue("mode");
 
-    if($mode eq 'rnaseq' || $mode eq 'chipChip') {
-      return 1;
-    }
+    return $mode eq 'rnaseq' || $mode eq 'chipChip' || $mode eq 'dnaseq';
+}
+
+sub hasPluginCalls {
+    my ($self) = @_;
+    return $self->loadsEdaStudies() ? 1 : 0;
 }
 
 sub isResumable {
@@ -22,12 +25,7 @@ sub isResumable {
 
 sub skipUndo {
     my ($self) = @_;
-    my $mode = $self->getParamValue("mode");
-
-    if($mode eq 'rnaseq' || $mode eq 'chipChip') {
-      return 1;
-    }
-    return 0;
+    return $self->loadsEdaStudies() ? 1 : 0;
 }
 
 sub nextflowConfigAsString {
@@ -72,6 +70,7 @@ params {
     datasetName = "$datasetName"
     workflowPath = "\${params.workflowDataDir}/${inputDirectory}"
     sampleDetails = "$sampleDetails"
+    sampleDetailsDir = "${workflowDataDir}/${sampleDetails}"
     filePatterns = [phenotype: "\${params.workflowPath}/*.{txt,tab,csv,tsv}",
                     antibodyArray: "\${params.workflowPath}/*.{txt,tab,csv,tsv}",
                     rflp: "\${params.workflowPath}/*.{txt,tab,csv,tsv}",
@@ -79,7 +78,9 @@ params {
                     ebiRnaSeqCounts: "\${params.workflowPath}/*/nextflowAnalysisDir/nextflow_output/analysis_output/{countsForEda,merged-0.25-eigengenes}*",
                     rnaSeqCounts: "\${params.workflowPath}/*/bulkrnaseq/analysisDir/nextflowAnalysisDir/nextflow_output/analysis_output/countsForEda*",
                     rnaseqAiMetadata: "\${params.workflowDataDir}/\${params.sampleDetails}/*/*.{tsv,yaml}",
-                    chipChipMetadata: "\${params.workflowDataDir}/\${params.sampleDetails}/*/*.{tsv,yaml}"
+                    chipChipMetadata: "\${params.workflowDataDir}/\${params.sampleDetails}/*/*.{tsv,yaml}",
+                    dnaseq: "\${params.workflowPath}/*/dnaseqNextflow/analysisDir/results/*/*_alignment_stats.tsv",
+                    dnaseqStf: "\${params.sampleDetailsDir}/*/*/entity-sample.{tsv,yaml}"
                     ]
 }
 
