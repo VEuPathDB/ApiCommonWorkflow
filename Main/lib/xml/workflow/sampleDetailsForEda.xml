@@ -4,13 +4,18 @@
 
   <constant name="rnaseqDir">$$parentDataDir$$/rnaseq</constant>
   <constant name="chipChipDir">$$parentDataDir$$/chipChip</constant>
-  
+  <constant name="dnaseqDir">$$parentDataDir$$/dnaseq</constant>
+
   <step name="makeRnaSeqDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$rnaseqDir$$</paramValue>
   </step>
 
   <step name="makeChipChipDir" stepClass="ReFlow::StepClasses::MakeDataDir">
     <paramValue name="dataDir">$$chipChipDir$$</paramValue>
+  </step>
+
+  <step name="makeDnaSeqDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+    <paramValue name="dataDir">$$dnaseqDir$$</paramValue>
   </step>
 
   
@@ -49,6 +54,26 @@
     <depends name="makeChipChipDir"/>
     <depends name="rnaseqStudyDealerNextflow"/>
     <dependsGlobal name="metaData_ChIPChip_RSRC"/>
+  </step>
+
+  <!-- one EDA study per reference organism, from every dnaseq experiment's alignment stats -->
+  <step name="dnaseqStudyDealerNextflow" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::StudyDealerNextflow">
+    <paramValue name="sampleDetails">global/metaData_DnaSeq_RSRC/final</paramValue>
+    <paramValue name="workingDir">$$dnaseqDir$$</paramValue>
+    <paramValue name="resultsDir">$$dnaseqDir$$/results</paramValue>
+    <paramValue name="nextflowWorkflow">VEuPathDB/study-dealer-nextflow</paramValue>
+    <paramValue name="isGitRepo">true</paramValue>
+    <paramValue name="gusConfigFile">$$gusConfigFile$$</paramValue>
+    <paramValue name="mode">dnaseq</paramValue>
+    <paramValue name="inputDirectory">*/*/dnaseq</paramValue>
+    <!-- below params not needed in this context -->
+    <paramValue name="multiDatasetStudiesJson"></paramValue>
+    <paramValue name="datasetName"></paramValue>
+    <paramValue name="projectName"></paramValue>
+    <paramValue name="nextflowEntry"></paramValue>
+    <depends name="makeDnaSeqDir"/>
+    <depends name="chipChipStudyDealerNextflow"/>
+    <dependsGlobal name="metaData_DnaSeq_RSRC"/>
   </step>
 
 
