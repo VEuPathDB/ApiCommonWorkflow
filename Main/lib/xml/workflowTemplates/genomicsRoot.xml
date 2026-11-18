@@ -158,4 +158,63 @@
     <depends name="HelminthDB"/>
   </step>
 
+  <!-- apidb.fileattributes (download file records).  The loads run last, once all
+       data the download files come from (ESTs included) is in the DB. -->
+
+  <datasetTemplate class="fileAttributesHistory">
+    <prop name="historyFile"/>
+
+    <step name="fileAttributesHistory_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$multiProjectsDataDir$$/fileAttributesHistory_RSRC</paramValue>
+      <depends name="makeMultiProjectsDataDir"/>
+    </step>
+
+    <!-- manualGet: copies manualDelivery common/downloadData/${historyFile} into the data dir -->
+    <step name="fileAttributesHistory_getAndUnpack" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::DatasetLoaderGetAndUnpack">
+      <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+      <paramValue name="datasetName">fileAttributesHistory_RSRC</paramValue>
+      <paramValue name="datasetLoaderXmlFileName">GenomicsDB.xml</paramValue>
+      <paramValue name="dataDir">$$multiProjectsDataDir$$/fileAttributesHistory_RSRC</paramValue>
+      <depends name="fileAttributesHistory_makeDataDir"/>
+    </step>
+
+    <step name="fileAttributesHistory_load" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadFileAttributes">
+      <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+      <paramValue name="inputFile">$$multiProjectsDataDir$$/fileAttributesHistory_RSRC/${historyFile}</paramValue>
+      <depends name="fileAttributesHistory_getAndUnpack"/>
+      <depends name="analyzeWebreadyPartitionedTables"/>
+      <depends name="MakeComparativeWebTables"/>
+      <depends name="sampleDetailsForEda"/>
+      <depends name="ExternalResourceUrl"/>
+    </step>
+  </datasetTemplate>
+
+  <!-- the extract reads this workflow's staging downloadSite, so it runs after
+       every graph that writes download files -->
+  <datasetTemplate class="fileAttributesRelease">
+    <prop name="release"/>
+
+    <step name="fileAttributesRelease_${release}_makeDataDir" stepClass="ReFlow::StepClasses::MakeDataDir">
+      <paramValue name="dataDir">$$multiProjectsDataDir$$/fileAttributesRelease_${release}</paramValue>
+      <depends name="makeMultiProjectsDataDir"/>
+    </step>
+
+    <step name="fileAttributesRelease_${release}_extract" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::ExtractFileAttributes">
+      <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+      <paramValue name="release">${release}</paramValue>
+      <paramValue name="outputFile">$$multiProjectsDataDir$$/fileAttributesRelease_${release}/bld${release}.tab</paramValue>
+      <depends name="fileAttributesRelease_${release}_makeDataDir"/>
+      <depends name="analyzeWebreadyPartitionedTables"/>
+      <depends name="MakeComparativeWebTables"/>
+      <depends name="sampleDetailsForEda"/>
+      <depends name="ExternalResourceUrl"/>
+    </step>
+
+    <step name="fileAttributesRelease_${release}_load" stepClass="ApiCommonWorkflow::Main::WorkflowSteps::LoadFileAttributes">
+      <paramValue name="gusConfigFile">$$projectName$$_gus.config</paramValue>
+      <paramValue name="inputFile">$$multiProjectsDataDir$$/fileAttributesRelease_${release}/bld${release}.tab</paramValue>
+      <depends name="fileAttributesRelease_${release}_extract"/>
+    </step>
+  </datasetTemplate>
+
 </workflowGraph>
